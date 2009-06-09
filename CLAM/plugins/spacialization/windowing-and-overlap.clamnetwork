@@ -58,12 +58,12 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>AudioWindowing_0.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>AudioMixer_0.Input 0</in>
   </port_connection>
 

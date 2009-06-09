@@ -46,7 +46,7 @@
   <processing id="magphase" position="306,209" size="100,58" type="Spectrum2MagPhaseSpectrum" />
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>FFT.Audio Buffer</in>
   </port_connection>
 
@@ -97,7 +97,7 @@
 
   <port_connection>
     <out>gain.Output Audio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>
