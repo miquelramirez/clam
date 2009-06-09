@@ -166,9 +166,7 @@ namespace Hidden
 		if ( not mEOFReached ) return true; // Still in the middle
 		if ( not mConfig.GetLoop() ) return false; // End reached, not looping
 
-		// Looping TODO: This could imply some expensive operations
-		ConcreteStop();
-		ConcreteStart();
+		mNativeStream->SeekTo(0);
 		return true;
 	}
 }
