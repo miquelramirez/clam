@@ -64,6 +64,7 @@ namespace AudioCodecs
 
 		mSamplesDecoded = 0;
 		mFramePosition = 0;
+		_mp3Frame = 0;
 	}
 
 	void MpegAudioStream::PrepareWriting()
@@ -82,6 +83,24 @@ namespace AudioCodecs
 		while( mDecodeBuffer[0].size() < nFrames
 		       && mBitstream.NextFrame() )
 		{
+			unsigned long filePos = mBitstream.CurrentFrameFileOffset();
+			if (_mp3Frame>=_seekCache.size())
+				_seekCache.push_back(filePos);
+			else
+			{
+/*
+				std::cout
+					<< "Mp3 frame "
+					<< mFramePosition << " "
+					<< _mp3Frame << " R:"
+					<< filePos << " E:"
+					<< _seekCache[_mp3Frame] << " R-E:"
+					<< int(filePos)-int(_seekCache[_mp3Frame])
+					<< std::endl;
+*/
+				CLAM_WARNING(filePos==_seekCache[_mp3Frame],
+					"MP3 indexing not matching");
+			}
 			mBitstream.SynthesizeCurrent();
 			
 			CLAM_ASSERT( mChannels == MAD_NCHANNELS( &mBitstream.CurrentFrame().header ),
@@ -98,6 +117,7 @@ namespace AudioCodecs
 							 channelData + samplesDecodedThisTime );
 			}
 			mSamplesDecoded += samplesDecodedThisTime;
+			_mp3Frame++;
 		}
 		
 		mFramesLastRead = mDecodeBuffer[0].size();
@@ -140,11 +160,9 @@ namespace AudioCodecs
 
 				mInterleavedData[ currOffset + i ] = TData(sampleValue);
 			}
-			
 			mDecodeBuffer[i].erase( mDecodeBuffer[i].begin(),
 				mDecodeBuffer[i].begin() + nFrames );
 		}
-
 		mFramePosition += nFrames;
 	}
 
@@ -155,26 +173,73 @@ namespace AudioCodecs
 
 	void MpegAudioStream::SeekTo(unsigned long framePosition)
 	{
+		// Warning: two 'frames' here, mp3's and AudioStream's (items*channels)
 		if (framePosition==mFramePosition) return;
-		// Mad doesn't know going back so rewind it all if we move backwards
-		if (framePosition<mFramePosition)
+		unsigned mp3FrameSize = 32*MAD_NSBSAMPLES(&mBitstream.CurrentFrame().header);
+		unsigned targetMp3Frame = framePosition/mp3FrameSize;
+		std::cout << "targetMp3Frame: " << targetMp3Frame << std::endl;
+		// TODO: Jumps beyond the last played frame are too expensive to be frame accurate
+		unsigned maxForwarJump = _seekCache.size()+100;
+		if (targetMp3Frame>maxForwarJump) targetMp3Frame=maxForwarJump;
+		if (targetMp3Frame>=_seekCache.size())
 		{
-			fseek(mpHandle, 0, SEEK_SET);
+			// Construct the index beyond current limits, til the target frame
+			fseek(mpHandle, _seekCache[_seekCache.size()-2], SEEK_SET);
 			mBitstream.Init();
-			mFramePosition = 0;
+			for (unsigned mp3Frame=_seekCache.size();
+				mp3Frame<=targetMp3Frame; mp3Frame++)
+			{
+				if (not mBitstream.NextFrame()) return;
+				unsigned long filePos = mBitstream.CurrentFrameFileOffset();
+/*
+				std::cout << "fwd "
+					<< _seekCache.back() << " "
+					<< filePos << " " 
+					<< int(filePos)-_seekCache.back() << std::endl;
+*/
+				if (filePos<=_seekCache.back()) continue; // filtering already done
+				_seekCache.push_back(filePos);
+			}
 		}
-		// And now in any case move frame to frame
-		while ( mBitstream.NextFrame() )
+		unsigned skip = targetMp3Frame>4?3:0;
+		unsigned jumpingFrame = targetMp3Frame-skip;
+		std::cout << "jumpingFrame:" << jumpingFrame << std::endl;
+		fseek(mpHandle, _seekCache[jumpingFrame], SEEK_SET);
+		mBitstream.Init();
+		_mp3Frame = targetMp3Frame;
+		// TODO: Because the already buffered bins this is not true
+		mFramePosition = mp3FrameSize * _mp3Frame;
+		if (targetMp3Frame == 0) return;
+		unsigned long previousFrameFilePos = _seekCache[targetMp3Frame-1];
+		while (true)
 		{
-			std::cout << "Seeking " << mFramePosition << std::endl;
-			unsigned frameSize= 32*MAD_NSBSAMPLES(&mBitstream.CurrentFrame().header);
-			if (mFramePosition+2*frameSize>framePosition)
-				break;
-			mFramePosition+=frameSize;
+			mBitstream.NextFrame();
+			unsigned long filePos = mBitstream.CurrentFrameFileOffset();
+/*
+			std::cout << "seek "
+				<< filePos << " "
+				<< previousFrameFilePos << std::endl;
+*/
+			if (filePos >= previousFrameFilePos) break;
 		}
-		// We should synthsize the previous frame to the one we want.
 		mBitstream.SynthesizeCurrent();
-	}
+
+		unsigned long filePos = mBitstream.CurrentFrameFileOffset();
+/*
+		std::cout << "Jump n target: " 
+			<< _mp3Frame << " "
+			<< targetMp3Frame << " "
+			<< filePos << " "
+			<< _seekCache[targetMp3Frame-1]
+			<< std::endl;
+*/
+		// TODO: Sample accurate seek (now it is frame accurate)
+/*
+		CLAM_ASSERT(_seekCache[targetMp3Frame-1]==filePos,
+			"File postions don't match");
+		CLAM_ASSERT(_mp3Frame==targetMp3Frame, "Seek mp3 frames don't match");
+		// We should synthesize the previous frame to the one we want.
+*/	}
 }
 	
 }

@@ -56,10 +56,12 @@ namespace AudioCodecs
 		FILE*         mpHandle;
 		MpegBitstream mBitstream;
 		int           mEncodedSampleRate;
+		unsigned      _mp3Frame;
 
 		static const TSize                    mMaxDecodedBlockSize;
 		std::vector<std::deque<mad_fixed_t> > mDecodeBuffer;
 		TSize                                 mSamplesDecoded;
+		std::vector<unsigned long> _seekCache;
 	};
 }
 
