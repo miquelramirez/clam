@@ -20,6 +20,7 @@ class LibloSingleton
 public:
 	struct OSCInstance
 	{
+		//TODO: save the processing "this" address too in the sctructure!! (and use on unregistration)
 		OSCInstance() {}
 		OSCInstance(unsigned int initPort,lo_server_thread initThread, std::string initPath, std::string initTypespec)
 		: port(initPort)
@@ -107,6 +108,8 @@ public:
 		}
 
 		lo_server_thread_add_method(thread, path.c_str(), typespec.c_str(), callbackMethod, instanceData);
+
+		//TODO: register the processing "this" address too!! (and use on Unregistration)
 		_OSCInstances.push_back(OSCInstance(port,thread,path,typespec));
 		return true;
 	}
