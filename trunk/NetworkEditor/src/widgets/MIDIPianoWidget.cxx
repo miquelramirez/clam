@@ -170,10 +170,10 @@ unsigned MIDIPianoWidget::identifyMidiByPosition(TSize x, TSize y)
 	unsigned sharpWidth = whiteKeyWidth/2;
 	const TSize octaveConst = 12;
 
-	bool isSharpZone = (y<=sharpHeight) and (x+sharpWidth*3/4)%whiteKeyWidth < sharpWidth;
+	bool isSharpZone = (y<=sharpHeight) and (x+whiteKeyWidth/4)%whiteKeyWidth <= sharpWidth;
 	if (isSharpZone)
 	{
-		unsigned sharpNote = (x-sharpWidth/2)/whiteKeyWidth;
+		unsigned sharpNote = (x+whiteKeyWidth/2)/whiteKeyWidth-1;
 		switch (sharpNote)
 		{
 			case 0: return eCSharpNote;
@@ -185,7 +185,7 @@ unsigned MIDIPianoWidget::identifyMidiByPosition(TSize x, TSize y)
 			case 6: break; // B
 		}
 	}
-	unsigned flatNote = x/whiteKeyWidth;
+	unsigned flatNote = x*7/width();
 	switch (flatNote)
 	{
 		case 0: return eCNote;
