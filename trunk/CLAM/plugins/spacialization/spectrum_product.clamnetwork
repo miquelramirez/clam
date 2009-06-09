@@ -97,7 +97,7 @@
 
   <port_connection>
     <out>AudioMixer_0.Output Audio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>
@@ -106,7 +106,7 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>SpectralAnalysis_0.Input</in>
   </port_connection>
 
