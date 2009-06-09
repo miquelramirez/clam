@@ -45,9 +45,8 @@ class MIDIPianoWidget: public QWidget
 
 public:
 	MIDIPianoWidget(Processing *processing, QWidget * parent=NULL)
-		:
-		QWidget(parent),
-		_processing(processing)
+		: QWidget(parent)
+		, _processing(processing)
 	{
 		_background = new QSvgRenderer(QString(":/icons/images/piano.svg"), this);
 		_controlPiano = dynamic_cast< ControlPiano* >(_processing);
@@ -97,7 +96,7 @@ protected:
 	void pressPixmapMainKey(QPainter &painter, TSize keyNumber);
 	void pressPixmapSharpKey(QPainter &painter, TSize keyNumber);
 
-	TSize identifyMidiByPosition(TSize x, TSize y);
+	unsigned identifyMidiByPosition(TSize x, TSize y);
 	void processData();
 
 private:

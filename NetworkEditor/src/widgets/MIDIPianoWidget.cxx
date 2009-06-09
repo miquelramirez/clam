@@ -66,8 +66,8 @@ void MIDIPianoWidget::paintEvent(QPaintEvent *event)
 
 void MIDIPianoWidget::pressPixmapMainKey(QPainter &painter, TSize keyNumber)
 {
-	TSize PIXMAP_KEY_WIDTH = width()/7.;
-	TSize STEP = PIXMAP_KEY_WIDTH/52.;
+	TSize whiteKeyWidth = width()/7.;
+	TSize STEP = whiteKeyWidth/52.;
 
 	painter.setPen(QColor("black")); //edge
 	painter.setBrush(palette().highlight()); //fill
@@ -78,29 +78,29 @@ void MIDIPianoWidget::pressPixmapMainKey(QPainter &painter, TSize keyNumber)
 	case eCNote: //C
 		xpos = 0.; break;
 	case eDNote:
-		xpos = STEP + PIXMAP_KEY_WIDTH; break;
+		xpos = STEP + whiteKeyWidth; break;
 	case eENote:
-		xpos = 2.*STEP + PIXMAP_KEY_WIDTH*2.; break;
+		xpos = 2.*STEP + whiteKeyWidth*2.; break;
 	case eFNote:
-		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*3.; break;
+		xpos = 3.*STEP + whiteKeyWidth*3.; break;
 	case eGNote:
-		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*4.; break;
+		xpos = 3.*STEP + whiteKeyWidth*4.; break;
 	case eANote:
-		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*5.; break;
+		xpos = 3.*STEP + whiteKeyWidth*5.; break;
 	case eBNote:
-		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*6.; break;
+		xpos = 3.*STEP + whiteKeyWidth*6.; break;
 	default: return; //keyNumber error
 	}
 	if ( width()>5.*height() )
-		painter.drawRect(PIXMAP_KEY_WIDTH/4.+xpos, height()*3./4., PIXMAP_KEY_WIDTH/2., height()/6.);
+		painter.drawRect(whiteKeyWidth/4.+xpos, height()*3./4., whiteKeyWidth/2., height()/6.);
 	else
-		painter.drawRect(PIXMAP_KEY_WIDTH/4.+xpos, height()*3./4., PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
+		painter.drawRect(whiteKeyWidth/4.+xpos, height()*3./4., whiteKeyWidth/2., whiteKeyWidth/2.);
 }
 
 void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, TSize keyNumber)
 {
-	TSize PIXMAP_KEY_WIDTH = width()/7.;
-	TSize STEP = PIXMAP_KEY_WIDTH/52.;
+	TSize whiteKeyWidth = width()/7.;
+	TSize STEP = whiteKeyWidth/52.;
 
 	painter.setPen(QColor("black")); //edge
 	painter.setBrush(palette().highlight()); //fill
@@ -109,21 +109,21 @@ void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, TSize keyNumber)
 	switch( keyNumber )
 	{
 	case eCSharpNote:
-		xpos = PIXMAP_KEY_WIDTH*3./4.; break;
+		xpos = whiteKeyWidth*3./4.; break;
 	case eDSharpNote:
-		xpos = 2.*STEP+PIXMAP_KEY_WIDTH*7./4.; break;
+		xpos = 2.*STEP+whiteKeyWidth*7./4.; break;
 	case eFSharpNote:
-		xpos = 3.*STEP+PIXMAP_KEY_WIDTH*15./4.; break;
+		xpos = 3.*STEP+whiteKeyWidth*15./4.; break;
 	case eGSharpNote:
-		xpos = 4.*STEP+PIXMAP_KEY_WIDTH*19./4.; break;
+		xpos = 4.*STEP+whiteKeyWidth*19./4.; break;
 	case eASharpNote:
-		xpos = 5.*STEP+PIXMAP_KEY_WIDTH*23./4.; break;
+		xpos = 5.*STEP+whiteKeyWidth*23./4.; break;
 	default: return; //keyNumber error
 	}
 	if ( width()>5.*height() )
-		painter.drawRect(xpos, height()/2.2, PIXMAP_KEY_WIDTH/2., height()/6.);
+		painter.drawRect(xpos, height()/2.2, whiteKeyWidth/2., height()/6.);
 	else
-		painter.drawRect(xpos, height()/2.2, PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
+		painter.drawRect(xpos, height()/2.2, whiteKeyWidth/2., whiteKeyWidth/2.);
 }
 
 void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
@@ -132,7 +132,7 @@ void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
 	if (event->button() == Qt::LeftButton) {
 		TSize x=event->x(), y=event->y();
 
-		TSize note = identifyMidiByPosition(x,y);
+		unsigned note = identifyMidiByPosition(x,y);
 		_controlPiano->SetNoteStatus(note%12,true);
 		note += 21 + (_controlPiano->GetOctave()-1)*12;
 
@@ -150,8 +150,9 @@ void MIDIPianoWidget::mouseReleaseEvent(QMouseEvent *event)
 		TSize x=event->x(), y=event->y();
 
 //FIXME: there is a bug if you press in one note, move the mouse and release the click in a different (note) one
+// DGG: Suggestion: keep the state of a pressed key, and here, just release the one we pressed
 
-		TSize note = identifyMidiByPosition(x,y);
+		unsigned note = identifyMidiByPosition(x,y);
 		_controlPiano->SetNoteStatus(note%12,false);
 		note += 21 + (_controlPiano->GetOctave()-1)*12;
 		MIDI::Message tmpMessage(128, note, _controlPiano->GetVelocity(), 0); //128 NoteOff, note, velocity
@@ -161,88 +162,41 @@ void MIDIPianoWidget::mouseReleaseEvent(QMouseEvent *event)
 	}
 }
 
-TSize MIDIPianoWidget::identifyMidiByPosition(TSize x, TSize y)
+unsigned MIDIPianoWidget::identifyMidiByPosition(TSize x, TSize y)
 {
-	TSize SHARP_BREAK = height()*.5;
-	TSize PIXMAP_KEY_WIDTH = width()/7.;
-	TSize note = 0;
+	unsigned whiteKeyWidth = width()/7.;
+	if (not  whiteKeyWidth) return eCNote; // TODO: return eNoNote?
+	unsigned sharpHeight = height()/2;
+	unsigned sharpWidth = whiteKeyWidth/2;
 	const TSize octaveConst = 12;
 
-	if (y>SHARP_BREAK) {
-		//below: only main keys
-		switch ((int)round(float(x)/PIXMAP_KEY_WIDTH))
+	bool isSharpZone = (y<=sharpHeight) and (x+sharpWidth*3/4)%whiteKeyWidth < sharpWidth;
+	if (isSharpZone)
+	{
+		unsigned sharpNote = (x-sharpWidth/2)/whiteKeyWidth;
+		switch (sharpNote)
 		{
-		case 0:
-			note = eCNote; break;
-		case 1:
-			note = eDNote; break;
-		case 2:
-			note = eENote; break;
-		case 3:
-			note = eFNote; break;
-		case 4:
-			note = eGNote; break;
-		case 5:
-			note = eANote+octaveConst; break;
-		case 6:
-			note = eBNote+octaveConst; break;
+			case 0: return eCSharpNote;
+			case 1: return eDSharpNote;
+			case 2: break; // E
+			case 3: return eFSharpNote;
+			case 4: return eGSharpNote;
+			case 5: return eASharpNote+octaveConst;
+			case 6: break; // B
 		}
-		return note;
 	}
-	else {
-		//above: main and sharp keys
-		TSize SHARP_WIDTH = PIXMAP_KEY_WIDTH/2.;
-
-		if (x<PIXMAP_KEY_WIDTH*3./4.)
-		{
-			note = eCNote;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*3./4. && x<PIXMAP_KEY_WIDTH*3./4.+SHARP_WIDTH)
-		{
-			note = eCSharpNote;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*(1.+1./4.) && x<PIXMAP_KEY_WIDTH*(1.+3./4.))
-		{
-			note = eDNote;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*(1.+3./4.) && x<PIXMAP_KEY_WIDTH*(1.+3./4.)+SHARP_WIDTH)
-		{
-			note = eDSharpNote;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*(2.+1./4.) && x<PIXMAP_KEY_WIDTH*3.)
-		{
-			note = eENote;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*3. && x<PIXMAP_KEY_WIDTH*(3.+3./4.))
-		{
-			note = eFNote;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*(3.+3./4.) && x<PIXMAP_KEY_WIDTH*(3.+3./4.)+SHARP_WIDTH)
-		{
-			note = eFSharpNote;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*(4.+1./4.) && x<PIXMAP_KEY_WIDTH*(4.+3./4.))
-		{
-			note = eGNote;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*(4.+3./4.) && x<PIXMAP_KEY_WIDTH*(4.+3./4.)+SHARP_WIDTH)
-		{
-			note = eGSharpNote;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*(5.+1./4.) && x<PIXMAP_KEY_WIDTH*(5.+3./4.))
-		{
-			note = eANote+octaveConst;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*(5.+3./4.) && x<PIXMAP_KEY_WIDTH*(5.+3./4.)+SHARP_WIDTH)
-		{
-			note = eASharpNote+octaveConst;
-		}
-		else if (x>PIXMAP_KEY_WIDTH*(6.+1./4.) && x<PIXMAP_KEY_WIDTH*7.)
-		{
-			note = eBNote+octaveConst;
-		}
-		return note;
+	unsigned flatNote = x/whiteKeyWidth;
+	switch (flatNote)
+	{
+		case 0: return eCNote;
+		case 1: return eDNote;
+		case 2: return eENote;
+		case 3: return eFNote;
+		case 4: return eGNote;
+		case 5: return eANote+octaveConst;
+		case 6: return eBNote+octaveConst;
 	}
+	return eCNote; // TODO: return eNoNote?
 }
 
 void MIDIPianoWidget::setDataSource(VM::FloatArrayDataSource & dataSource )
@@ -260,10 +214,14 @@ void MIDIPianoWidget::noDataSource()
 void MIDIPianoWidget::processData()
 {
 	_data = _dataSource->frameData();
+	float max = 0;
+	for (unsigned bin = 0; bin < _nBins; bin++)
+		if (max<_data[bin]) max = _data[bin];
+
 	for (unsigned bin = 0; bin < _nBins; bin++)
 	{
 		//(bin+10)%12 since dataSource array starts in 'G' and NoteStatus one in 'A'
-		if (_data[bin]>0.01)
+		if (_data[bin]>0.5*max)
 			_controlPiano->SetNoteStatus((bin+10)%12,true);
 		else
 			_controlPiano->SetNoteStatus((bin+10)%12,false);
