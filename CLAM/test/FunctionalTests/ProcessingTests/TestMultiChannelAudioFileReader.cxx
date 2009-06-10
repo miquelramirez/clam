@@ -139,7 +139,7 @@ namespace CLAMTest
 			
 			const std::vector< CLAM::TIndex >& channels = proc.GetSelectedChannels();
 
-			CPPUNIT_ASSERT_EQUAL ( channels.size(), unsigned(proc.GetHeader().GetChannels()) );
+			CPPUNIT_ASSERT_EQUAL ( channels.size(), size_t(proc.GetHeader().GetChannels()) );
 
 			bool allChannelsPresent = true;
 			for ( unsigned i = 0; i < channels.size(); i++ )
@@ -182,7 +182,7 @@ namespace CLAMTest
 			
 			const std::vector< CLAM::TIndex >& channels = proc.GetSelectedChannels();
 
-			CPPUNIT_ASSERT_EQUAL ( channels.size(), unsigned(cfg.GetSelectedChannels().Size()) );
+			CPPUNIT_ASSERT_EQUAL ( channels.size(), size_t(cfg.GetSelectedChannels().Size()) );
 
 			bool allChannelsPresent = true;
 			for (unsigned i = 0; i < channels.size(); i++ )
