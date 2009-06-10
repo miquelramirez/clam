@@ -14,30 +14,25 @@ class JACKNetworkPlayer : public NetworkPlayer
 {
 private:
 	//Structures to keep information about every external input and output processing
-	struct SourceJackBinding //TODO use mAudioSources/Sinks in the parent class instead.
+	//TODO use mAudioSources/Sinks in the parent class instead.
+	template<typename T>
+	struct JackBinding 
 	{
 		const char* PortName() 
 		{
 			return jack_port_name(jackPort);
 		}
 		jack_port_t* jackPort;
-		AudioSource* source;
+		T* processing;
 		unsigned port;
 	};
+	
+	typedef JackBinding<AudioSource> SourceJackBinding;
 	typedef std::vector<SourceJackBinding> SourceJackBindings;
-
-	struct SinkJackBinding
-	{
-		const char* PortName() 
-		{
-			return jack_port_name(jackPort);
-		}
-		jack_port_t* jackPort;
-		AudioSink* sink;
-		unsigned port;
-	};
+	
+	typedef JackBinding<AudioSink> SinkJackBinding;
 	typedef std::vector<SinkJackBinding> SinkJackBindings;
-        
+
 	struct JackConnection
 	{
 		std::string processingName;
