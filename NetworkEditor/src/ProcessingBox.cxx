@@ -516,11 +516,15 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 	}
 	if (region==inportsRegion)
 	{
-		_canvas->addLinkedProcessingSender(this,point,"AudioSource");
+		int index = portIndexByYPos(_canvas->translatedPos(event));
+		if (((CLAM::Processing*)_processing)->GetInPort(index).GetTypeId()==typeid(CLAM::TData))
+			_canvas->addLinkedProcessingSender(this,point,"AudioSource");
 	}
 	if (region==outportsRegion)
 	{
-		_canvas->addLinkedProcessingReceiver(this,point,"AudioSink");
+		int index = portIndexByYPos(_canvas->translatedPos(event));
+		if (((CLAM::Processing*)_processing)->GetOutPort(index).GetTypeId()==typeid(CLAM::TData))
+			_canvas->addLinkedProcessingReceiver(this,point,"AudioSink");
 	}
 }
 
