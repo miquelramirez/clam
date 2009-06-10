@@ -514,6 +514,14 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 	{
 		_canvas->addControlPrinterProcessing(this, point);
 	}
+	if (region==inportsRegion)
+	{
+		_canvas->addLinkedProcessingSender(this,point,"AudioSource");
+	}
+	if (region==outportsRegion)
+	{
+		_canvas->addLinkedProcessingReceiver(this,point,"AudioSink");
+	}
 }
 
 bool ProcessingBox::rename()
