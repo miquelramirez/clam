@@ -648,6 +648,8 @@ public:
 	virtual bool editConfiguration(ProcessingBox * box) = 0;
 	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point ) = 0;
 	virtual void addControlPrinterProcessing( ProcessingBox * processing, QPoint point ) = 0;
+	virtual void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nInPort =0) =0;
+	virtual void addLinkedProcessingSender ( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nOutPort =0) =0;
 
 	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
 	virtual void processingContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing) { }
