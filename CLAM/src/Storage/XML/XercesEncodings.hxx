@@ -62,24 +62,24 @@ private :
 class XercesUnicode2Local
 {
 public :
-    XercesUnicode2Local(const XMLCh* const toTranscode)
-    {
-        // Call the private transcoding method
-        _localForm = xercesc::XMLString::transcode(toTranscode);
-    }
+	XercesUnicode2Local(const XMLCh* const toTranscode)
+	{
+		// Call the private transcoding method
+		_localForm = xercesc::XMLString::transcode(toTranscode);
+	}
 
-    ~XercesUnicode2Local()
-    {
-        xercesc::XMLString::release(&_localForm);
-    }
+	~XercesUnicode2Local()
+	{
+		xercesc::XMLString::release(&_localForm);
+	}
 
-    const char* localForm() const
-    {
-        return _localForm;
-    }
+	const char* localForm() const
+	{
+		return _localForm;
+	}
 
 private :
-    char*   _localForm;
+	char*   _localForm;
 };
 
 #define U(str) ::CLAM::XercesLocal2Unicode(str).unicodeForm()
