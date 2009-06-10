@@ -89,7 +89,7 @@ void JACKNetworkPlayer::RegisterPorts()
 
 void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 {
-	Network::AudioSources sources=net.getOrderedSources();
+	const Network::AudioSources & sources = net.getOrderedSources();
 
 	CLAM_ASSERT( _sourceJackBindings.empty(),
 		"JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
@@ -99,7 +99,7 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 	{
 		std::string processingName = net.GetNetworkId(*it);
 
-		AudioSource::Ports ports = (*it)->GetPorts();
+		const AudioSource::Ports & ports = (*it)->GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 		{
 				//Get Processing address
@@ -129,7 +129,7 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 
 void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 {
-	Network::AudioSinks sinks=net.getOrderedSinks();
+	const Network::AudioSinks & sinks = net.getOrderedSinks();
 
 	CLAM_ASSERT( _sinkJackBindings.empty(),
 		"JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");	
@@ -138,7 +138,7 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 	{
 		std::string processingName = net.GetNetworkId( *it );
 
-		CLAM::AudioSink::Ports ports = (*it)->GetPorts();
+		const AudioSink::Ports & ports = (*it)->GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 		{
 				//Get Processing address

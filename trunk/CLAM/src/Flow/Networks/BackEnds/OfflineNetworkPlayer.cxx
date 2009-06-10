@@ -19,8 +19,10 @@ bool OfflineNetworkPlayer::IsWorking()
 std::string OfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
-	ss << GetSourcesSize() << " inputs and " << GetSinksSize() << " outputs needed but just " 
-	   << _inFileNames.size() << " input files provided" << _outFileNames.size() << " output files provided" 
+	ss << GetSourcesSize() << " inputs and " 
+	   << GetSinksSize() << " outputs needed but just " 
+	   << _inFileNames.size() << " input files provided" 
+	   << _outFileNames.size() << " output files provided" 
 	   << std::ends;
 	return ss.str();
 }
@@ -32,15 +34,15 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(SndFileHandles cons
 	
 	Network & net = GetNetwork();
 	
-	Network::AudioSources sources = GetAudioSources();
+	const Network::AudioSources & sources = GetAudioSources();
 	unsigned inFileIndex = 0;
 	unsigned inChannel = 0;
 
-	for (Network::AudioSources::iterator it = sources.begin(); it != sources.end(); ++it)
+	for (Network::AudioSources::const_iterator it = sources.begin(); it != sources.end(); ++it)
 	{
 		std::string processingName = net.GetNetworkId(*it);
 
-		AudioSource::Ports ports = (*it)->GetPorts();
+		const AudioSource::Ports & ports = (*it)->GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 		{
 			//Register port on the JACK server
@@ -63,15 +65,15 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(SndFileHandles cons
 		}
 	}
 
-	Network::AudioSinks sinks = GetAudioSinks();
+	const Network::AudioSinks & sinks = GetAudioSinks();
 	unsigned outFileIndex = 0;
 	unsigned outChannel = 0;
 
-	for (Network::AudioSinks::iterator it = sinks.begin(); it != sinks.end(); ++it)
+	for (Network::AudioSinks::const_iterator it = sinks.begin(); it != sinks.end(); ++it)
 	{
 		std::string processingName = net.GetNetworkId( *it );
 
-		AudioSink::Ports ports = (*it)->GetPorts();
+		const AudioSink::Ports & ports = (*it)->GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 		{
 			//Register port on the JACK server
@@ -105,6 +107,7 @@ void OfflineNetworkPlayer::Start()
 	BePlaying();
 
 	const int frameSize = 512;
+	
 	//Open the files, get the total number of channels and the sample rate
 	int sampleRate = 0; 
 	unsigned inputChannelsCount = 0;
@@ -193,7 +196,7 @@ void OfflineNetworkPlayer::Start()
 			inbuffers[sourceIndex].SetSize( frameSize );
 			AudioSource& source = *GetAudioSources()[sourceIndex];
 
-			AudioSource::Ports ports = source.GetPorts();
+			const AudioSource::Ports & ports = source.GetPorts();
 			for(unsigned port = 0; port < ports.size(); ++port)
 				source.SetExternalBuffer( &(inbuffers[sourceIndex][0]),frameSize, port);
 
@@ -230,7 +233,7 @@ void OfflineNetworkPlayer::Start()
 			outbuffers[sinkIndex].SetSize( frameSize );
 			AudioSink& sink = *GetAudioSinks()[sinkIndex];
 
-			AudioSink::Ports ports = sink.GetPorts();
+			const AudioSink::Ports & ports = sink.GetPorts();
 			for(unsigned port = 0; port < ports.size(); ++port)
 				sink.SetExternalBuffer(&(outbuffers[sinkIndex][0]), frameSize, port);
 
@@ -270,7 +273,7 @@ void OfflineNetworkPlayer::Start()
 			//Save the bufferReader into the sources' buffers.
 			for(int frameIndex=0; frameIndex <frameSize; frameIndex ++)
 			{	
-				for(int channel=0; channel < nChannels; channel++)
+				for(unsigned channel=0; channel < nChannels; channel++)
 				{
 					inbuffers[inAudioIndex+channel][frameIndex] = bufferReader[(frameIndex*nChannels)+channel];
 				}
@@ -327,6 +330,7 @@ void OfflineNetworkPlayer::Stop()
 	if ( IsStopped() ) 
 		return;
 	BeStopped();
+
 	//TODO close files
 }
 
