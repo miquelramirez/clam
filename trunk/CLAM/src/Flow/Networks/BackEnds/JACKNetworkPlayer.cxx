@@ -104,8 +104,8 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 		{
 				//Get Processing address
 				SourceJackBinding pair;
-				pair.source=*it;
-				pair.source->SetFrameAndHopSize(_jackBufferSize, port);
+				pair.processing=*it;
+				pair.processing->SetFrameAndHopSize(_jackBufferSize, port);
 
 				//Register port on the JACK server
 				std::stringstream portName;
@@ -143,8 +143,8 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 		{
 				//Get Processing address
 				SinkJackBinding pair;
-				pair.sink=*it;
-				pair.sink->SetFrameAndHopSize(_jackBufferSize, port);
+				pair.processing=*it;
+				pair.processing->SetFrameAndHopSize(_jackBufferSize, port);
 
 				//Register port on the JACK server
 				std::stringstream portName;
@@ -195,7 +195,7 @@ void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes
 		jack_default_audio_sample_t *jackInBuffer = 
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
 		//Tell the AudioSource where to look for data in its Do()
-		it->source->SetExternalBuffer( jackInBuffer, nframes, it->port);
+		it->processing->SetExternalBuffer( jackInBuffer, nframes, it->port);
 	}
 }
 
@@ -207,7 +207,7 @@ void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 		jack_default_audio_sample_t *jackOutBuffer = 
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
 		//Tell the AudioSource where to copy data consumed in its Do()
-		it->sink->SetExternalBuffer( jackOutBuffer, nframes, it->port);	
+		it->processing->SetExternalBuffer( jackOutBuffer, nframes, it->port);	
 	}
 }
 
