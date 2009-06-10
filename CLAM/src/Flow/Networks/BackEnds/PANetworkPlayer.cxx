@@ -94,21 +94,8 @@ void PANetworkPlayer::Start()
 	if (CheckPaError(Pa_Initialize())) return;
 	displayPADevices();
 
-	int nInChannels = 0;
-	Network::AudioSources const& sources = GetAudioSources();
-    for (Network::AudioSources::const_iterator it=sources.begin(); it!=sources.end(); ++it)
-	{
-		AudioSource::Ports ports = (*it)->GetPorts();
-		nInChannels += ports.size();
-	}
-
-	int nOutChannels = 0;
-	Network::AudioSinks sinks = GetAudioSinks();
-	for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); it++)
-	{
-		AudioSink::Ports ports = (*it)->GetPorts();
-		nOutChannels += ports.size();
-	}
+	int nInChannels = GetSourcesSize();
+	int nOutChannels = GetSinksSize();
 
 	PaHostApiTypeId apiTryList[] = {
 		paDirectSound,
@@ -240,7 +227,6 @@ std::string PANetworkPlayer::NonWorkingReason()
 	return mErrorMessage;
 }
 
-
 bool PANetworkPlayer::CheckPaError(PaError result)
 {
 	mError = result;
@@ -291,11 +277,11 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 {
 	int i=0;
-	Network::AudioSources sources=GetAudioSources();
-	for ( Network::AudioSources::iterator it=sources.begin(); it!=sources.end(); it++ )
+	const Network::AudioSources & sources=GetAudioSources();
+	for ( Network::AudioSources::const_iterator it=sources.begin(); it!=sources.end(); it++ )
 	{
-		AudioSource::Ports ports = (*it)->GetPorts();
-		for (unsigned port = 0; port < ports.size(); ++port) 
+		unsigned ports_size = (*it)->GetPorts().size();
+		for (unsigned port = 0; port < ports_size; ++port) 
 			(*it)->SetExternalBuffer( input[i++], nframes, port);
 	}
 }
@@ -303,11 +289,11 @@ void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 {
 	int i=0;
-	Network::AudioSinks sinks=GetAudioSinks();
-	for (Network::AudioSinks::iterator it=sinks.begin(); it!=sinks.end(); it++)
+	const Network::AudioSinks & sinks=GetAudioSinks();
+	for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); it++)
 	{
-		AudioSink::Ports ports = (*it)->GetPorts();
-		for (unsigned port = 0; port < ports.size(); ++port) 
+		unsigned ports_size = (*it)->GetPorts().size();
+		for (unsigned port = 0; port < ports_size; ++port) 
 			(*it)->SetExternalBuffer(output[i++], nframes, port);
 	}
 }
@@ -316,12 +302,9 @@ void PANetworkPlayer::MuteOutBuffers(float** output, unsigned long nframes)
 {
 	unsigned nSinks = 0;
 
-	Network::AudioSinks sinks = GetAudioSinks();
+	const Network::AudioSinks & sinks = GetAudioSinks();
 	for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); ++it)
-	{
-		CLAM::AudioSink::Ports ports = (*it)->GetPorts();
-		nSinks += ports.size();
-    } 
+		nSinks += (*it)->GetPorts().size();
 
 	for (unsigned i=0; i<nSinks; i++)
 		std::memset(output[i], 0, nframes*sizeof(float));

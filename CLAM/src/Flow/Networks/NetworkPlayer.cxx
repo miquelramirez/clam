@@ -28,13 +28,13 @@ namespace CLAM
 	{
 		std::string sourceNames;
 		std::string sinkNames;
-		Network & net = GetNetwork();
-		Network::AudioSources sources = GetAudioSources();
-		Network::AudioSinks sinks = GetAudioSinks();
-		for (Network::AudioSources::iterator it=sources.begin(); it!=sources.end(); it++)
+		const Network & net = GetNetwork();
+		const Network::AudioSources & sources = GetAudioSources();
+		const Network::AudioSinks & sinks = GetAudioSinks();
+		for (Network::AudioSources::const_iterator it=sources.begin(); it!=sources.end(); ++it)
 			sourceNames += " * source:\t"+net.GetNetworkId( *it )+"\n";
 
-		for (Network::AudioSinks::iterator it=sinks.begin(); it!=sinks.end(); it++)
+		for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); ++it)
 			sinkNames += " * sink:\t"+net.GetNetworkId( *it )+"\n";
 			
 

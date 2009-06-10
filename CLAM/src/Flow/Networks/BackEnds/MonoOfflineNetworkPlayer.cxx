@@ -50,7 +50,7 @@ void MonoOfflineNetworkPlayer::Start()
 		audioBuffers[fileIndex].SetSize( frameSize );
 		
 		AudioSource& source = *GetAudioSources()[fileIndex];
-		AudioSource::Ports ports = source.GetPorts();
+		const AudioSource::Ports & ports = source.GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 			source.SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
 
@@ -76,7 +76,7 @@ void MonoOfflineNetworkPlayer::Start()
 		audioBuffers[fileIndex].SetSize( frameSize );
 
 		AudioSink& sink = *GetAudioSinks()[i];
-		AudioSink::Ports ports = sink.GetPorts();
+		const AudioSink::Ports & ports = sink.GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 			sink.SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
 
