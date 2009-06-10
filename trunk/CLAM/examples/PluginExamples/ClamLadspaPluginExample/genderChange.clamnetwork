@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" position="795,114" size="141,111" type="AudioSink"/>
+  <processing id="AudioSink_0" position="795,114" size="141,111" type="AudioSink" />
 
-  <processing id="AudioSource_0" position="27,22" size="165,108" type="AudioSource"/>
+  <processing id="AudioSource_0" position="27,22" size="165,108" type="AudioSource" />
 
   <processing id="Control" position="473,8" size="199,91" type="OutControlSender">
     <Min>0</Min>
@@ -161,7 +160,7 @@
   </processing>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>SMSAnalysisCore_0.Input Audio</in>
   </port_connection>
 
@@ -192,7 +191,7 @@
 
   <port_connection>
     <out>SMSSynthesis_0.OutputAudio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <control_connection>
