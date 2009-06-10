@@ -31,18 +31,14 @@ namespace CLAM
 
 namespace {
 
-template<typename Container, typename Audio>
+template<typename Container>
 unsigned GetSize(Container const& t)
 {
 	unsigned nrOfPorts = 0;
-
 	for (typename Container::const_iterator it = t.begin(); it != t.end(); ++it)
 	{
-		// contained type is not deductable
-		typename Audio::Ports ports = (*it)->GetPorts();
-		nrOfPorts += ports.size();
+		nrOfPorts += (*it)->GetPorts().size();
 	}
-
 	return nrOfPorts;
 }
 
@@ -62,9 +58,9 @@ protected:
 	enum Status { Playing=0, Stopped=1, Paused=2 };
 public:
 	NetworkPlayer()
+		: _network(NULL)
+		, _status(Stopped)
 	{
-		_status=Stopped;
-		_network=NULL;
 	}
 
 	virtual ~NetworkPlayer()
@@ -73,19 +69,23 @@ public:
 
 	/// Should return true when the backend is able to run the network
 	virtual bool IsWorking() = 0;
+	
 	/// Whenever the backend is not working, this method returns the reason
 	virtual std::string NonWorkingReason() = 0;
 
 	/// Redefine to add any initialization after being attached to a network
 	/// TODO: Consider removing it as just Jack backend uses it but it is redundant
 	virtual void Init() {}
+	
 	/// Redefine to make the backend ready to process and start the network.
 	/// If IsPlaying() should do nothing.
 	/// If it IsPaused() you should consider just call BePlaying()
 	/// without starting the processings.
 	virtual void Start()=0; // { if (not IsPlaying()) BePlaying(); }
+	
 	/// Redefine it to deactivate the backend.
 	virtual void Stop()=0; // { if (not IsStopped()) BeStopped(); }
+	
 	virtual void Pause() { if (IsPlaying()) BePaused(); }
 
 	void SetNetworkBackLink( Network& net )
@@ -126,12 +126,12 @@ protected:
 
 	unsigned GetSourcesSize()
 	{
-		return GetSize<Network::AudioSources, AudioSource>(GetAudioSources());
+		return GetSize<Network::AudioSources>(GetAudioSources());
 	}
 
 	unsigned GetSinksSize()
 	{
-		return GetSize<Network::AudioSinks, AudioSink>(GetAudioSinks());
+		return GetSize<Network::AudioSinks>(GetAudioSinks());
 	}
 
 private:
