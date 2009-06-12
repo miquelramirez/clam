@@ -1,0 +1,4 @@
+version=3
+http://clam-project.org/download/src/svnsnapshots/index.html chordata-(.*)\.tar\.gz debian uupdate
+http://clam-project.org/download/src/index.html chordata-(.*)\.tar\.gz debian uupdate
+
