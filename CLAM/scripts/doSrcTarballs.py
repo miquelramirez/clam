@@ -41,6 +41,7 @@ for package, version in versions.iteritems() :
 		sandbox = "%(package)s-%(ver)s" % dict
 		run("svn export http://clam-project.org/clam/trunk/%s %s" % (package, sandbox))
 	tarball = "%s.tar.gz" % sandbox
+	run("rm -rf %s/debian" % (sandbox) )
 	run("echo '%s' > %s/SVN_REVISION" % (versionInfo.remoteSvnRevision(), sandbox) )
 	run("tar czf %s %s " % (tarball, sandbox) )
 	run("rm -rf %s/" % sandbox)
