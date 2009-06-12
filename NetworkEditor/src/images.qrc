@@ -759,6 +759,13 @@
     <file>images/clear_left.png</file>
     <file>images/reload.svg</file>
     <file>images/piano.svg</file>
+    <file>images/text_bold.png</file>
+    <file>images/text_under.png</file>
+    <file>images/text_italic.png</file>
+    <file>images/text_center.png</file>
+    <file>images/text_right.png</file>
+    <file>images/text_left.png</file>
+    <file>images/text_block.png</file>
   </qresource>
   <qresource prefix="/interfaces" >
     <file>prototyper/DefaultInterface.ui</file>

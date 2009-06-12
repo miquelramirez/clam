@@ -7,7 +7,6 @@
 #include <QtGui/QWhatsThis>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-#include <QtGui/QTextEdit>
 #include <QtCore/QSettings>
 #include <QtCore/QStringList>
 #include <QtCore/QTimer>
@@ -19,6 +18,7 @@
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
+#include "RichTextEditor.hxx"
 
 // copied from Annotator:
 #include "TaskRunner.hxx"
@@ -113,7 +113,7 @@ public:
 		_descriptionPanel = new QDockWidget(this);
 		_descriptionPanel->setObjectName("Description");
 		_descriptionPanel->setWindowTitle(tr("Description"));
-		_textDescriptionEdit = new QTextEdit(_descriptionPanel);
+		_textDescriptionEdit = new RichTextEditor(_descriptionPanel);
 		_descriptionPanel->setWidget(_textDescriptionEdit);
 		addDockWidget(Qt::LeftDockWidgetArea, _descriptionPanel);
 
@@ -372,7 +372,7 @@ public slots:
 	void updateNetworkDescription()
 	{
 		QString text(_textDescriptionEdit->toPlainText());
-		
+	
 		if(!_canvas->isChanged())
 			_canvas->markAsChanged();
 		
@@ -574,8 +574,8 @@ private:
 	PlaybackIndicator * _playingLabel;
 	QStringList _recentFiles;
 	QDockWidget * _descriptionPanel;
-	QTextEdit * _textDescriptionEdit; 
-
+	RichTextEditor * _textDescriptionEdit; 
+	
 	QDockWidget * _processingTreeDock;
 	NetworkGUI::ProcessingTree * _processingTree;
 };
