@@ -27,3 +27,10 @@ qt-mac-opensource-src-4.2.2/tools/designer/src/components/formeditor/images/widg
 /usr/share/icons/crystalsvg/32x32/actions/clear_left.png
 /usr/share/icons/crystalsvg/32x32/actions/player_pause.png
 /usr/share/icons/crystalsvg/32x32/actions/player_play.png
+/usr/share/icons/crystalsvg/32x32/actions/text_bold.png
+/usr/share/icons/crystalsvg/32x32/actions/text_italic.png
+/usr/share/icons/crystalsvg/32x32/actions/text_under.png
+/usr/share/icons/crystalsvg/32x32/actions/text_left.png
+/usr/share/icons/crystalsvg/32x32/actions/text_right.png
+/usr/share/icons/crystalsvg/32x32/actions/text_center.png
+/usr/share/icons/crystalsvg/32x32/actions/text_block.png
