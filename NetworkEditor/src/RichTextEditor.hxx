@@ -43,7 +43,7 @@ class RichTextEditor: public QWidget
 		void textSize(const QString &p);
 		void currentCharFormatChanged(const QTextCharFormat &format);
 		void cursorPositionChanged();
-		QString toPlainText();
+		QString toHtml();
 		void setText(const QString & text);
 		
 	signals:

@@ -232,7 +232,7 @@ public:
 			clear();
 			return;
 		}
-		_textDescriptionEdit->setText(_network.GetDescription().c_str());
+		_textDescriptionEdit->setText(QString::fromLocal8Bit(_network.GetDescription().c_str()));
 
 		_playingLabel->setNetwork(&_network);
 		_canvas->loadNetwork(&_network);
@@ -371,12 +371,12 @@ public slots:
 
 	void updateNetworkDescription()
 	{
-		QString text(_textDescriptionEdit->toPlainText());
+		QString text(_textDescriptionEdit->toHtml());
 	
 		if(!_canvas->isChanged())
 			_canvas->markAsChanged();
 		
-		_network.SetDescription(text.toStdString());
+		_network.SetDescription(text.toLocal8Bit().constData());
 	}
 
 	void on_action_Embed_SVG_Diagrams_Option_changed()
