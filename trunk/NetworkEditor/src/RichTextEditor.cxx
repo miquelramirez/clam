@@ -307,9 +307,9 @@ void RichTextEditor::alignmentChanged(Qt::Alignment a)
 	}
 }
 
-QString RichTextEditor::toPlainText()
+QString RichTextEditor::toHtml()
 {
-	return _textEdit->toPlainText();
+	return _textEdit->toHtml();
 }
 
 void RichTextEditor::setText(const QString & text)
