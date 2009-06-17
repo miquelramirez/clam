@@ -50,7 +50,7 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(SndFileHandles cons
 			if (ports.size() == 1)
 				 portName << processingName;
 			else
-				 portName << processingName << "_" << ports[port].mAudioOut->GetName();
+				 portName << processingName << "_" << ports[port].mPort->GetName();
 
 			inChannel++;
 			result << " * source:\t" << portName.str() << "\t";		
@@ -81,7 +81,7 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(SndFileHandles cons
 			if (ports.size() == 1)
 				 portName << processingName;
 			else
-				 portName << processingName << "_" << ports[port].mAudioIn->GetName();
+				 portName << processingName << "_" << ports[port].mPort->GetName();
 
 			outChannel++;
 			result << " * sink:\t" << portName.str() << "\t";
