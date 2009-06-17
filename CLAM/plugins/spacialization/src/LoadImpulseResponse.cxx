@@ -66,14 +66,14 @@ bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<Co
 	// TODO: case where offset > size
 	const unsigned validSamples = buffer.size() - samplesOffset;
 	AudioSource source;
-	int portIndex(0);
+	int portIndex = 0;
 	source.SetExternalBuffer(&buffer[0]+samplesOffset, validSamples, portIndex);
 	const unsigned nSamples = neededFramesForNSamples( validSamples, framesize) * framesize;
 
 	// this works by the grace of audiocource being constructed locally,
 	// by default always having one port with index '0'
-	source.GetOutPort(0).SetSize(nSamples);
-	source.GetOutPort(0).SetHop(nSamples);
+	source.GetOutPort(portIndex).SetSize(nSamples);
+	source.GetOutPort(portIndex).SetHop(nSamples);
 	
 	return computeResponseSpectrums(source, responseSpectrums, framesize, errorMsg);
 }
