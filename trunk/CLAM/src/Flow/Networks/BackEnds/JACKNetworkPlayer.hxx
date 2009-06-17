@@ -10,34 +10,24 @@
 
 namespace CLAM
 {
+
 class JACKNetworkPlayer : public NetworkPlayer
 {
 private:
-	//Structures to keep information about every external input and output processing
-	//TODO use mAudioSources/Sinks in the parent class instead.
-	template<typename T>
-	struct JackBinding 
+	struct JackPort 
 	{
-		const char* PortName() 
-		{
-			return jack_port_name(jackPort);
-		}
+		const char* PortName() { return jack_port_name(jackPort); }
 		jack_port_t* jackPort;
-		T* processing;
-		unsigned port;
 	};
 	
-	typedef JackBinding<AudioSource> SourceJackBinding;
-	typedef std::vector<SourceJackBinding> SourceJackBindings;
-	
-	typedef JackBinding<AudioSink> SinkJackBinding;
-	typedef std::vector<SinkJackBinding> SinkJackBindings;
+	typedef std::vector<JackPort> JackPorts;
 
 	struct JackConnection
 	{
 		std::string processingName;
 		const char ** outsideConnections;
 	};
+
 	typedef std::list<JackConnection> JackConnections;
 
 private:
@@ -45,11 +35,11 @@ private:
 	int _jackBufferSize;
 	bool _autoConnect;
 
+	JackPorts _sourceJackPorts;
+	JackPorts _sinkJackPorts;
+
 	JackConnections _incomingJackConnections;
 	JackConnections _outgoingJackConnections;
-
-	SourceJackBindings _sourceJackBindings;
-	SinkJackBindings _sinkJackBindings;
 
 	std::string _jackOutPortAutoConnectList;
 	std::string _jackInPortAutoConnectList;
@@ -59,7 +49,8 @@ private:
 	std::string _jackClientName;
 
 private:
-        void AddSourceJackBinding(Network::AudioSources::const_iterator& it, std::string const& name, unsigned index);
+	void AddSourceJackBinding(Network::AudioSources::const_iterator& it, 
+							  std::string const& name, unsigned index);
 
 public:
 	JACKNetworkPlayer(const std::string & name="CLAM network player");
@@ -84,10 +75,12 @@ public:
 	virtual void Start();
 	virtual void Stop();
 	virtual void Init();
+	
 	virtual unsigned BackendBufferSize() 
 	{
 		return _jackBufferSize; 
 	}
+
 	virtual unsigned BackendSampleRate() { return _jackSampleRate; }
 	
 	void Do(const jack_nframes_t nframes);

@@ -36,9 +36,7 @@ unsigned GetSize(Container const& t)
 {
 	unsigned nrOfPorts = 0;
 	for (typename Container::const_iterator it = t.begin(); it != t.end(); ++it)
-	{
 		nrOfPorts += (*it)->GetPorts().size();
-	}
 	return nrOfPorts;
 }
 
@@ -56,6 +54,10 @@ class NetworkPlayer
 {
 protected:
 	enum Status { Playing=0, Stopped=1, Paused=2 };
+
+	Network::AudioSources _audioSources;
+	Network::AudioSinks _audioSinks;
+
 public:
 	NetworkPlayer()
 		: _network(NULL)
@@ -92,20 +94,24 @@ public:
 	{
 		_network=&net;
 	}
+
 	void BePaused() { _status=Paused; }
 	void BeStopped() { _status=Stopped; }
 	void BePlaying() { _status=Playing; }
 	bool IsPaused() const { return _status==Paused; }
 	bool IsStopped() const { return _status==Stopped; }
 	bool IsPlaying() const { return _status==Playing; }
+
 	virtual unsigned BackendBufferSize()
 	{
 		return 512;
 	}
+
 	virtual unsigned BackendSampleRate()
 	{
 		return 44100;
 	}
+
 	std::string SourcesAndSinksToString();
 
 protected:
@@ -119,25 +125,23 @@ protected:
 	{
 		return GetNetwork().getOrderedSources();
 	}
+
 	Network::AudioSinks GetAudioSinks() 
 	{ 
 		return GetNetwork().getOrderedSinks(); 
 	}
 
-	unsigned GetSourcesSize()
+	void CacheSourcesAndSinks()
 	{
-		return GetSize<Network::AudioSources>(GetAudioSources());
-	}
-
-	unsigned GetSinksSize()
-	{
-		return GetSize<Network::AudioSinks>(GetAudioSinks());
+		_audioSources = GetAudioSources();
+		_audioSinks = GetAudioSinks();
 	}
 
 private:
 	Network *_network;
 	volatile Status _status;
 };
+
 } //namespace CLAM
 
 #endif // NetworkPlayer_hxx
