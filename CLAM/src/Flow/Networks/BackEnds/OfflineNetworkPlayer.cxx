@@ -13,14 +13,15 @@ namespace CLAM
 
 bool OfflineNetworkPlayer::IsWorking()
 {
-	return (_outFileNames.size() != GetSourcesSize()) && (_inFileNames.size() != GetSinksSize());
+	return (_outFileNames.size() != GetSize<Network::AudioSources>(GetAudioSources()))
+		&& (_inFileNames.size() != GetSize<Network::AudioSinks>(GetAudioSinks()));
 }
 
 std::string OfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
-	ss << GetSourcesSize() << " inputs and " 
-	   << GetSinksSize() << " outputs needed but just " 
+	ss << GetSize<Network::AudioSources>(GetAudioSources()) << " inputs and " 
+	   << GetSize<Network::AudioSinks>(GetAudioSinks()) << " outputs needed but just " 
 	   << _inFileNames.size() << " input files provided" 
 	   << _outFileNames.size() << " output files provided" 
 	   << std::ends;
@@ -45,7 +46,6 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(SndFileHandles cons
 		const AudioSource::Ports & ports = (*it)->GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 		{
-			//Register port on the JACK server
 			std::stringstream portName;
 			if (ports.size() == 1)
 				 portName << processingName;
@@ -106,6 +106,8 @@ void OfflineNetworkPlayer::Start()
 
 	BePlaying();
 
+	CacheSourcesAndSinks();
+
 	const int frameSize = 512;
 	
 	//Open the files, get the total number of channels and the sample rate
@@ -138,10 +140,11 @@ void OfflineNetworkPlayer::Start()
 	}
 
 	// Check that the number of input channels matches the network	
-	if( inputChannelsCount != GetSourcesSize())
+	unsigned nInChannels = GetSize<Network::AudioSources>(_audioSources);
+	if( inputChannelsCount != nInChannels)
 	{
 	 	std::cout <<"The number of input channels is different than the number of sources in the provided network." << std::endl
-			<<"There are "<<GetSourcesSize()<<" sources and "
+			<<"There are "<<nInChannels<<" sources and "
 			<<inputChannelsCount<<" input channels summing all channels in "<<infiles.size()<<" input files"<<std::endl;
 		exit(-1);
 	}
@@ -163,10 +166,11 @@ void OfflineNetworkPlayer::Start()
 	}
 
 	// Check that the number of output channels matches the network	
-	if( outputChannelsCount != GetSinksSize())
+	unsigned nOutChannels = GetSize<Network::AudioSinks>(_audioSinks);
+	if( outputChannelsCount != nOutChannels)
 	{
 	 	std::cout <<"The number of output channels is different than the number of sinks in the provided network." << std::endl
-			  <<"There are "<<GetSinksSize()<<" sinks and "
+			  <<"There are "<<nOutChannels<<" sinks and "
 			   <<outputChannelsCount<<" output channels summing all channels in "<<outfiles.size()<<" output files"<<std::endl;
 		exit(-1);
 	}
@@ -178,13 +182,13 @@ void OfflineNetworkPlayer::Start()
 	std::vector<DataArray> inbuffers(inputChannelsCount);
 	unsigned sourceIndex=0;
 	unsigned fileIndex = 0;
-	while(sourceIndex<GetAudioSources().size())
+	while(sourceIndex<_audioSources.size())
 	{	
 		if(fileIndex>=infiles.size())
 		{
 			std::cout 
 				<< "The number of sources is greater than the intput files. " 
-				<< "There are " << GetSourcesSize() <<" sources and "
+				<< "There are " << GetSize<Network::AudioSources>(GetAudioSources()) <<" sources and "
 				<< infiles.size() << "input files" 
 				<< std::endl;
 			exit(-1);
@@ -194,12 +198,11 @@ void OfflineNetworkPlayer::Start()
 		{
 			inbuffers[sourceIndex].Resize( frameSize );
 			inbuffers[sourceIndex].SetSize( frameSize );
-			AudioSource& source = *GetAudioSources()[sourceIndex];
 
-			const AudioSource::Ports & ports = source.GetPorts();
-			for(unsigned port = 0; port < ports.size(); ++port)
-				source.SetExternalBuffer( &(inbuffers[sourceIndex][0]),frameSize, port);
-
+			unsigned port_size = _audioSources[sourceIndex]->GetPorts().size();
+			for(unsigned port = 0; port < port_size; ++port)
+				_audioSources[sourceIndex]->SetExternalBuffer( &(inbuffers[sourceIndex][0]),frameSize, port);
+				
 			//std::cout << " In: " << _inFileNames[fileIndex] << " channel "<< channel<< std::endl;
 			sourceIndex++;
 		}
@@ -210,32 +213,32 @@ void OfflineNetworkPlayer::Start()
 	std::vector<DataArray> outbuffers(outputChannelsCount);
 	fileIndex = 0;
 	unsigned sinkIndex = 0;
-	while(sinkIndex < GetAudioSinks().size())
+	while(sinkIndex < _audioSinks.size())
 	{
 		if(fileIndex >= outfiles.size())
 		{
 			std::cout << "The number of sinks is greater than the output files. " 
-			          << "There are " <<GetSinksSize() << " sinks " << " and " 
+			          << "There are " << GetSize<Network::AudioSinks>(GetAudioSinks()) << " sinks and " 
 					  << outfiles.size() <<"output files" << std::endl;
 			exit(-1);
 		}
 
 		for(int channel = 0;channel < outfiles[fileIndex]->channels(); channel++)
 		{
-			if(fileIndex+channel >= GetSinksSize())
+			unsigned sinkSize = GetSize<Network::AudioSinks>(GetAudioSinks());
+			if(fileIndex+channel >= sinkSize)
 			{
 			 	std::cout << "The number of output channels is greater than the sinks. "
-						  << "There are " << GetSinksSize() << " sinks and " 
+						  << "There are " << sinkSize << " sinks and " 
 						  << fileIndex+channel << " ouput channels" << std::endl;
 				exit(-1);
 			}
 			outbuffers[sinkIndex].Resize( frameSize );
 			outbuffers[sinkIndex].SetSize( frameSize );
-			AudioSink& sink = *GetAudioSinks()[sinkIndex];
 
-			const AudioSink::Ports & ports = sink.GetPorts();
-			for(unsigned port = 0; port < ports.size(); ++port)
-				sink.SetExternalBuffer(&(outbuffers[sinkIndex][0]), frameSize, port);
+			unsigned port_size = _audioSinks[sinkIndex]->GetPorts().size();
+			for(unsigned port = 0; port < port_size; ++port)
+				_audioSinks[sinkIndex]->SetExternalBuffer(&(outbuffers[sinkIndex][0]), frameSize, port);
 
 			//std::cout << " Out: " << _outFileNames[fileIndex] << " channel "<< channel<< std::endl;
 			sinkIndex++;

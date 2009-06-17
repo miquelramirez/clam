@@ -26,6 +26,8 @@ void MonoOfflineNetworkPlayer::Start()
 		return;
 	BePlaying();
 
+	CacheSourcesAndSinks();
+
 	const int frameSize = 512;
 	const int sampleRate = 48000; //TODO deduce from inputs.
 
@@ -33,7 +35,7 @@ void MonoOfflineNetworkPlayer::Start()
 	std::vector<MonoAudioFileReader*> readers;
 	MonoAudioFileReaderConfig readercfg;
 	unsigned fileIndex=0;
-	for (unsigned i=0; i<GetAudioSources().size(); i++)
+	for (unsigned i=0; i<_audioSources.size(); i++)
 	{
 		CLAM_ASSERT(fileIndex<_filenames.size(),
 			"Not all the network inputs could be fullfiled. Have you checked the IsWorking() method?");
@@ -49,10 +51,9 @@ void MonoOfflineNetworkPlayer::Start()
 		readers.push_back(fileReader);
 		audioBuffers[fileIndex].SetSize( frameSize );
 		
-		AudioSource& source = *GetAudioSources()[fileIndex];
-		const AudioSource::Ports & ports = source.GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
-			source.SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
+		unsigned port_size = _audioSources[i]->GetPorts().size();
+		for(unsigned port = 0; port < port_size; ++port)
+			_audioSources[i]->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
 
 		std::cout << " In: " << _filenames[fileIndex] << std::endl;
 		fileIndex++;
@@ -60,7 +61,7 @@ void MonoOfflineNetworkPlayer::Start()
 
 	std::vector<MonoAudioFileWriter*> writers;
 	MonoAudioFileWriterConfig writercfg;
-	for (unsigned i=0; i<GetAudioSinks().size(); i++)
+	for (unsigned i=0; i<_audioSinks.size(); i++)
 	{
 		if (fileIndex>=_filenames.size())
 		{
@@ -75,10 +76,9 @@ void MonoOfflineNetworkPlayer::Start()
 		writers.push_back(fileWriter);
 		audioBuffers[fileIndex].SetSize( frameSize );
 
-		AudioSink& sink = *GetAudioSinks()[i];
-		const AudioSink::Ports & ports = sink.GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
-			sink.SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
+		unsigned port_size = _audioSinks[i]->GetPorts().size();
+		for(unsigned port = 0; port < port_size; ++port)
+			_audioSinks[i]->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
 
 		std::cout << " Out: " << _filenames[fileIndex] << std::endl;
 		fileIndex++;

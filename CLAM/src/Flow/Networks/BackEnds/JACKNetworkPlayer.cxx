@@ -89,84 +89,65 @@ void JACKNetworkPlayer::RegisterPorts()
 
 void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 {
-	const Network::AudioSources & sources = net.getOrderedSources();
-
-	CLAM_ASSERT( _sourceJackBindings.empty(),
+	CLAM_ASSERT( _sourceJackPorts.empty(),
 		"JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
 
-	//Get them from the Network and add it to local list
-	for (Network::AudioSources::const_iterator it=sources.begin(); it!=sources.end(); it++)
+	for(unsigned i = 0; i < _audioSources.size(); ++i)
 	{
-		std::string processingName = net.GetNetworkId(*it);
+		AudioSource* audioSource = _audioSources[i];
+		std::string processingName = net.GetNetworkId(audioSource);
 
-		const AudioSource::Ports & ports = (*it)->GetPorts();
+		const AudioSource::Ports & ports = audioSource->GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 		{
-				//Get Processing address
-				SourceJackBinding pair;
-				pair.processing=*it;
-				pair.processing->SetFrameAndHopSize(_jackBufferSize, port);
+			JackPort jp;
+			std::stringstream portName;
+			if (ports.size() == 1)
+				 portName << processingName;
+			else
+				 portName << processingName << "_" << ports[port].mPort->GetName();
 
-				//Register port on the JACK server
-				std::stringstream portName;
-				if (ports.size() == 1)
-					 portName << processingName;
-				else
-					 portName << processingName << "_" << ports[port].mPort->GetName();
+			jp.jackPort = jack_port_register(_jackClient, portName.str().c_str(), 
+											   JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0); 
+			_sourceJackPorts.push_back(jp);
 
-				pair.jackPort = jack_port_register(_jackClient, portName.str().c_str(), 
-												   JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0); 
-
-				// the index is used when there are more ports in an audiosource 
-				// to decide which port should receive the data
-				pair.port = port;
-
-				//Add the pair (jack port, clam jack receiver) to the list
-				_sourceJackBindings.push_back(pair);
+			audioSource->SetFrameAndHopSize(_jackBufferSize, port);
 		}
 	}
 }
 
 void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 {
-	const Network::AudioSinks & sinks = net.getOrderedSinks();
-
-	CLAM_ASSERT( _sinkJackBindings.empty(),
+	CLAM_ASSERT( _sinkJackPorts.empty(),
 		"JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");	
 
-	for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); it++)
+	for(unsigned i = 0; i < _audioSinks.size(); ++i)
 	{
-		std::string processingName = net.GetNetworkId( *it );
+		AudioSink* audioSink = _audioSinks[i];
+		std::string processingName = net.GetNetworkId(audioSink);
 
-		const AudioSink::Ports & ports = (*it)->GetPorts();
+		const AudioSink::Ports & ports = audioSink->GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 		{
-				//Get Processing address
-				SinkJackBinding pair;
-				pair.processing=*it;
-				pair.processing->SetFrameAndHopSize(_jackBufferSize, port);
+			JackPort jp;
+			std::stringstream portName;
+			if (ports.size() == 1)
+				 portName << processingName;
+			else
+				 portName << processingName << "_" << ports[port].mPort->GetName();
 
-				//Register port on the JACK server
-				std::stringstream portName;
-				if (ports.size() == 1)
-					 portName << processingName;
-				else
-					 portName << processingName << "_" << ports[port].mPort->GetName();
+			jp.jackPort=jack_port_register(_jackClient, portName.str().c_str(),
+											  JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+			_sinkJackPorts.push_back(jp);
 
-				pair.jackPort=jack_port_register (_jackClient, portName.str().c_str(),
-												  JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
-			   
-				pair.port = port;
-
-				//Add the pair (jack port, clam jack receiver) to the list
-				_sinkJackBindings.push_back(pair);
+			audioSink->SetFrameAndHopSize(_jackBufferSize, port);
 		}
 	}
 }
 
 void JACKNetworkPlayer::UnRegisterPorts()
 {
-	for (SinkJackBindings::iterator it=_sinkJackBindings.begin(); it!=_sinkJackBindings.end(); it++)
+	for (JackPorts::iterator it=_sinkJackPorts.begin(); it!=_sinkJackPorts.end(); it++)
 	{
 		if ( jack_port_unregister ( _jackClient, it->jackPort) )
 		{
@@ -174,9 +155,9 @@ void JACKNetworkPlayer::UnRegisterPorts()
 			exit(1);
 		}
 	}
-	_sinkJackBindings.clear();
+	_sinkJackPorts.clear();
 	
-	for (SourceJackBindings::iterator it=_sourceJackBindings.begin(); it!=_sourceJackBindings.end(); it++)
+	for (JackPorts::iterator it=_sourceJackPorts.begin(); it!=_sourceJackPorts.end(); it++)
 	{
 		if ( jack_port_unregister ( _jackClient, it->jackPort) )
 		{
@@ -184,36 +165,48 @@ void JACKNetworkPlayer::UnRegisterPorts()
 			exit(1);
 		}
 	}
-	_sourceJackBindings.clear();
+	_sourceJackPorts.clear();
 }
     
 void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes)
 {
-	for (SourceJackBindings::iterator it=_sourceJackBindings.begin(); it!=_sourceJackBindings.end(); it++)
+	unsigned buffer=0;
+	for (unsigned i = 0; i < _audioSources.size(); ++i)
 	{
-		//Retrieve JACK buffer location
-		jack_default_audio_sample_t *jackInBuffer = 
-			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
-		//Tell the AudioSource where to look for data in its Do()
-		it->processing->SetExternalBuffer( jackInBuffer, nframes, it->port);
+		unsigned port_size = _audioSources[i]->GetPorts().size();
+		for(unsigned port = 0; port < port_size; ++port)
+		{
+			//Retrieve JACK buffer location
+			jack_default_audio_sample_t *jackInBuffer = 
+				(jack_default_audio_sample_t*) jack_port_get_buffer(_sourceJackPorts[buffer++].jackPort, nframes);
+
+			//Tell the AudioSource where to look for data in its Do()
+			_audioSources[i]->SetExternalBuffer(jackInBuffer, nframes, port);
+		}	
 	}
 }
 
 void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 {
-	for (SinkJackBindings::iterator it=_sinkJackBindings.begin(); it!=_sinkJackBindings.end(); it++)
+	unsigned buffer=0;
+	for (unsigned i = 0; i < _audioSinks.size(); ++i)
 	{
-		//Retrieve JACK buffer location
-		jack_default_audio_sample_t *jackOutBuffer = 
-			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
-		//Tell the AudioSource where to copy data consumed in its Do()
-		it->processing->SetExternalBuffer( jackOutBuffer, nframes, it->port);	
+		unsigned port_size = _audioSinks[i]->GetPorts().size();
+		for(unsigned port = 0; port < port_size; ++port)
+		{
+			//Retrieve JACK buffer location
+			jack_default_audio_sample_t* jackOutBuffer = 
+				(jack_default_audio_sample_t*) jack_port_get_buffer(_sinkJackPorts[buffer++].jackPort, nframes);
+
+			//Tell the AudioSource where to copy data consumed in its Do()
+			_audioSinks[i]->SetExternalBuffer(jackOutBuffer, nframes, port);	
+		}
 	}
 }
 
 void JACKNetworkPlayer::BlankJackBuffers(const jack_nframes_t nframes)
 {
-	for (SinkJackBindings::iterator it=_sinkJackBindings.begin(); it!=_sinkJackBindings.end(); it++)
+	for (JackPorts::iterator it=_sinkJackPorts.begin(); it!=_sinkJackPorts.end(); it++)
 	{
 		jack_default_audio_sample_t *jackOutBuffer = 
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
@@ -231,6 +224,8 @@ void JACKNetworkPlayer::Start()
 	}
 	if (!_jackClient) InitClient();
 	if (!_jackClient) return;
+
+	CacheSourcesAndSinks();
 
 	BePlaying();
 	UnRegisterPorts();
@@ -257,8 +252,8 @@ void JACKNetworkPlayer::OnShutdown()
 	if (not _jackClient) return;
 	BeStopped();
 	GetNetwork().Stop();
-	_sinkJackBindings.clear(); // TODO: May we save them?
-	_sourceJackBindings.clear(); // TODO: May we save them?;
+	_sinkJackPorts.clear(); // TODO: May we save them?
+	_sourceJackPorts.clear(); // TODO: May we save them?;
 	_jackClient=0;
 }
 
@@ -292,7 +287,7 @@ void JACKNetworkPlayer::Do(const jack_nframes_t nframes)
 //Saves the connections made to our local in/out jack ports
 void JACKNetworkPlayer::StoreConnections()
 {
-	for (SourceJackBindings::iterator it=_sourceJackBindings.begin(); it!=_sourceJackBindings.end(); it++)
+	for (JackPorts::iterator it=_sourceJackPorts.begin(); it!=_sourceJackPorts.end(); it++)
 	{
 		JackConnection connection;
 		connection.processingName = it->PortName();
@@ -300,7 +295,7 @@ void JACKNetworkPlayer::StoreConnections()
 		_incomingJackConnections.push_back(connection);
 	}
 	
-	for (SinkJackBindings::iterator it=_sinkJackBindings.begin(); it!=_sinkJackBindings.end(); it++)
+	for (JackPorts::iterator it=_sinkJackPorts.begin(); it!=_sinkJackPorts.end(); it++)
 	{
 		JackConnection connection;
 		connection.processingName = it->PortName();
@@ -359,7 +354,7 @@ void JACKNetworkPlayer::AutoConnectPorts()
 		int i=0;
 
 		//Double iterate AudioSources & found JACK out ports
-		for ( SourceJackBindings::iterator it= _sourceJackBindings.begin(); it!=_sourceJackBindings.end(); it++)
+		for ( JackPorts::iterator it= _sourceJackPorts.begin(); it!=_sourceJackPorts.end(); it++)
 		{
 			std::cout << "- Connecting " << portnames[i] << " -> " 
 				<< it->PortName() << std::endl;
@@ -385,7 +380,7 @@ void JACKNetworkPlayer::AutoConnectPorts()
 	int i=0;
 
 	//Double iterate found JACK in ports & ExterSinks
-	for (SinkJackBindings::iterator it= _sinkJackBindings.begin(); it!=_sinkJackBindings.end(); it++)
+	for (JackPorts::iterator it= _sinkJackPorts.begin(); it!=_sinkJackPorts.end(); it++)
 	{
 		std::cout << "- Connecting "<< it->PortName()
 			<< " -> " << portnames[i] << std::endl;
