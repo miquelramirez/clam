@@ -115,7 +115,8 @@ namespace CLAM
 				return true;
 			}
 
-			Ports & GetPorts() { return _ports; }
+			Ports& GetPorts() { return _ports; }
+			Ports const& GetPorts() const { return _ports; }
 
 		private:
 			void ResizePorts(unsigned sources)
