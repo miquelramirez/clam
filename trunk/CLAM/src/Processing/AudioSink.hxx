@@ -16,16 +16,16 @@ namespace CLAM
 			float* mFloatBuffer;
 			double* mDoubleBuffer;
 			unsigned mBufferSize;
-			AudioInPort* mAudioIn;
+			AudioInPort* mPort;
 			
 			//resize needs a default constructor
 			Port()
-			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mAudioIn(0) 
+			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(0) 
 			{
 			} 
 
 			explicit Port(AudioInPort* p) 
-			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mAudioIn(p) 
+			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(p) 
 			{
 			}
 		};
@@ -71,7 +71,7 @@ namespace CLAM
 		~AudioSink()
 		{
 			for (unsigned port = 0; port < _ports.size(); ++port)
-				delete _ports[port].mAudioIn;
+				delete _ports[port].mPort;
 		}
 
 		/// @deprecated Delegated to SetExternalBuffer
@@ -79,16 +79,16 @@ namespace CLAM
 		{
 			CLAM_ASSERT(1 == _ports.size(), "no AudioInPort available");
 			Port& port = _ports[0];
-			port.mAudioIn->SetSize(val);
-			port.mAudioIn->SetHop(val);
+			port.mPort->SetSize(val);
+			port.mPort->SetHop(val);
 		}
 
 		void SetFrameAndHopSize(const int val, unsigned index)
 		{
 			CLAM_ASSERT(index < _ports.size(), "AudioInPort index out of range");
 			Port& port = _ports[index];
-			port.mAudioIn->SetSize(val);
-			port.mAudioIn->SetHop(val);
+			port.mPort->SetSize(val);
+			port.mPort->SetHop(val);
 		}
 		
 		void SetExternalBuffer(float* buf, unsigned nframes, unsigned index);
@@ -122,7 +122,7 @@ namespace CLAM
 				return;
 
 			for (unsigned port = sinks; port < _ports.size(); ++port)
-				delete _ports[port].mAudioIn;
+				delete _ports[port].mPort;
 				
 			unsigned oldSize = _ports.size();
 			_ports.resize(sinks);

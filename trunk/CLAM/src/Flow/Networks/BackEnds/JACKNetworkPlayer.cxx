@@ -112,7 +112,7 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 				if (ports.size() == 1)
 					 portName << processingName;
 				else
-					 portName << processingName << "_" << ports[port].mAudioOut->GetName();
+					 portName << processingName << "_" << ports[port].mPort->GetName();
 
 				pair.jackPort = jack_port_register(_jackClient, portName.str().c_str(), 
 												   JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0); 
@@ -151,7 +151,7 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 				if (ports.size() == 1)
 					 portName << processingName;
 				else
-					 portName << processingName << "_" << ports[port].mAudioIn->GetName();
+					 portName << processingName << "_" << ports[port].mPort->GetName();
 
 				pair.jackPort=jack_port_register (_jackClient, portName.str().c_str(),
 												  JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);

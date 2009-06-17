@@ -25,7 +25,7 @@ bool AudioSink::Do()
 	for (Ports::iterator it = _ports.begin(); it != _ports.end(); ++it)
 	{
 		Port& port = (*it);
-		AudioInPort* in = port.mAudioIn;
+		AudioInPort* in = port.mPort;
 
 		const CLAM::Audio& so=in->GetAudio();
 		CLAM_DEBUG_ASSERT(port.mFloatBuffer, "No float buffer");
@@ -46,8 +46,8 @@ void AudioSink::SetExternalBuffer(float* buf, unsigned nframes, unsigned index)
 {
 	CLAM_ASSERT(index < _ports.size(), "AudioInPort index out of range");
 	Port& port = _ports[index];
-	port.mAudioIn->SetSize(nframes);
-	port.mAudioIn->SetHop(nframes);
+	port.mPort->SetSize(nframes);
+	port.mPort->SetHop(nframes);
 	port.mFloatBuffer = buf;
 	port.mBufferSize = nframes;
 	port.mDoubleBuffer = 0;
@@ -58,8 +58,8 @@ void AudioSink::SetExternalBuffer(double* buf, unsigned nframes, unsigned index)
 {
 	CLAM_ASSERT(index < _ports.size(), "AudioInPort index out of range");
 	Port& port = _ports[index];
-	port.mAudioIn->SetSize(nframes);
-	port.mAudioIn->SetHop(nframes);
+	port.mPort->SetSize(nframes);
+	port.mPort->SetHop(nframes);
 	port.mDoubleBuffer = buf;
 	port.mBufferSize = nframes;
 	port.mFloatBuffer = 0;
