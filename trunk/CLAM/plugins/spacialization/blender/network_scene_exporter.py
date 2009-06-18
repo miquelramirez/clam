@@ -142,6 +142,7 @@ def makeChoreoSequencer(processingName,choreoFilename,fps,position,size=(194,65)
 	return Processing % vars()
 
 def makeLibloSource(processingName,path,position,argumentsNumber,port=7000,size=(130,65)):
+	typespec="f"*argumentsNumber
 	processingPosition="%i,%i" % (position[0],position[1])
 	processingSize="%i,%i" % (size[0],size[1])
 	typeName="MultiLibloSource"
@@ -177,7 +178,9 @@ ControlPrinterConfig="""  <Identifier>%(printerId)s</Identifier>
     <GuiOnly>1</GuiOnly>"""
 LibloSourceConfig="""  <OscPath>%(path)s</OscPath>
     <ServerPort>%(port)s</ServerPort>
-    <NumberOfArguments>%(argumentsNumber)s</NumberOfArguments>"""
+    <OSCTypeSpec>%(typespec)s</OSCTypeSpec>
+    <EnableMulticast>0</EnableMulticast>
+    <MultiCastIP>224.0.0.1</MultiCastIP>"""
 ChoreoSequencerConfig="""  <Filename>%(choreoFilename)s</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>

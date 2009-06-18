@@ -24,19 +24,23 @@ namespace CLAM
 
 class MultiLibloSourceConfig : public CLAM::ProcessingConfig
 {
-	DYNAMIC_TYPE_USING_INTERFACE( MultiLibloSourceConfig, 3, ProcessingConfig );
+	DYNAMIC_TYPE_USING_INTERFACE( MultiLibloSourceConfig, 5, ProcessingConfig );
 	DYN_ATTRIBUTE( 0, public, std::string, OscPath);
 	DYN_ATTRIBUTE( 1, public, unsigned int, ServerPort);
 	DYN_ATTRIBUTE( 2, public, std::string, OSCTypeSpec);
+	DYN_ATTRIBUTE( 3, public, bool, EnableMulticast);
+	DYN_ATTRIBUTE( 4, public, std::string, MultiCastIP);
 	//TODO number of arguments/ports
 protected:
 	void DefaultInit()
 	{
 		AddAll();
 		UpdateData();
-		SetOSCTypeSpec("fff");
 		SetOscPath("/clam/target");
 		SetServerPort(0);
+		SetOSCTypeSpec("fff");
+		SetEnableMulticast(false);
+		SetMultiCastIP("224.0.0.1");
 	};
 };
 
@@ -54,6 +58,9 @@ public:
 		, _isConfigured(false)
 	{
 		Configure( config );
+#ifdef __MULTICAST_LIBLO__
+std::cout<<"liblomulticast"<<std::endl;
+#endif
 	}
 	
 	~MultiLibloSource()
@@ -178,9 +185,15 @@ protected:
 		_oscPath=_config.GetOscPath();
 		_port=port;
 
-		if (_libloSingleton.RegisterOscCallback(_port, _oscPath, _typespec,&controls_handler,this)==false)
+		bool registered=false;
+		if (_config.GetEnableMulticast() and _config.GetMultiCastIP()!="")
+			registered=_libloSingleton.RegisterOscCallback(_port, _oscPath, _typespec,&controls_handler,this,_config.GetMultiCastIP());
+		else
+			registered=_libloSingleton.RegisterOscCallback(_port, _oscPath, _typespec,&controls_handler,this);
+
+		if (registered==false)
 		{
-			AddConfigErrorMessage("Error creating OSC server instance");
+			AddConfigErrorMessage(_libloSingleton.GetErrorMessage());
 			_isConfigured=false;
 			return false;
 		}

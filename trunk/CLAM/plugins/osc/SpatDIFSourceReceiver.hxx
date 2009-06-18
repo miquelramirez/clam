@@ -30,10 +30,12 @@ namespace CLAM
 
 class SpatDIFSourceReceiverConfig : public CLAM::ProcessingConfig
 {
-	DYNAMIC_TYPE_USING_INTERFACE( SpatDIFSourceReceiverConfig, 3, ProcessingConfig );
+	DYNAMIC_TYPE_USING_INTERFACE( SpatDIFSourceReceiverConfig, 5, ProcessingConfig );
 	DYN_ATTRIBUTE( 0, public, std::string, SourceName);
 	DYN_ATTRIBUTE( 1, public, unsigned int, VoicesNumber);
 	DYN_ATTRIBUTE( 2, public, unsigned int, ServerPort);
+	DYN_ATTRIBUTE( 3, public, bool, EnableMulticast);
+	DYN_ATTRIBUTE( 4, public, std::string, MultiCastIP);
 	//TODO number of arguments/ports
 	
 protected:
@@ -44,6 +46,8 @@ protected:
 		SetSourceName("");
 		SetVoicesNumber(4);
 		SetServerPort(0);
+		SetEnableMulticast(false);
+		SetMultiCastIP("224.0.0.1");
 	};
 };
 
@@ -128,7 +132,6 @@ protected:
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
-
 		_libloSingleton=_libloSingleton.GetInstance();
 		CopyAsConcreteConfig(_config, config);
 
@@ -138,7 +141,6 @@ protected:
 			return false;
 		}
 		_baseOSCPath="/SpatDIF/source/"+_config.GetSourceName();
-
 
 		if (_config.GetVoicesNumber()==0)
 		{
@@ -156,27 +158,29 @@ protected:
 
 		_port=port;
 
-
 		// if exists previous callback methods clear them
 //		if (_libloSingleton.GetConfiguredPaths().size()!=0)
 		UnregisterOscCallbacks();
 
 		if (RegisterOscCallbacks()==false)
 		{
-			AddConfigErrorMessage("Error creating OSC server instance");
+			AddConfigErrorMessage(_libloSingleton.GetErrorMessage());
 			return false;
 		}
 		// add instance on map
 		return true; // Configuration ok
 	}
 
-
-
 	const bool RegisterCallback(const unsigned int & port, const std::string & path,
 				 const std::string & typespec, lo_method_handler callbackMethod)
 	{
-		bool success=_libloSingleton.RegisterOscCallback(port,path,typespec,callbackMethod,this);
-		if (success)
+		bool registered=false;
+		if (_config.GetEnableMulticast() and _config.GetMultiCastIP()!="")
+			registered=_libloSingleton.RegisterOscCallback(port,path,typespec,callbackMethod,this,_config.GetMultiCastIP());
+		else
+			registered=_libloSingleton.RegisterOscCallback(port,path,typespec,callbackMethod,this);
+
+		if (registered)
 		{
 			CLAM::LibloSingleton::OSCInstance instance;
 			instance.path=path;
@@ -185,7 +189,7 @@ protected:
 			instance.thread=NULL;
 			_OSCInstances.push_back(instance);
 		}
-		return success;
+		return registered;
 	}
 
 	const bool UnregisterCallback(const unsigned int & port, const std::string & path,
@@ -231,13 +235,9 @@ protected:
 
 	void UnregisterOscCallbacks()
 	{
-
-std::cout<<"unregistering callbacks...."<<std::endl;
 		while (_OSCInstances.size()!=0)
 		{
-//std::cout<<"\tgetconfiguredpaths.size: "<<_libloSingleton.GetConfiguredPaths().size()<<std::endl;
 			CLAM::LibloSingleton::OSCInstance instance=_OSCInstances.front();
-//std::cout<<"\tpath= "<<firstPath.oscPath << " - port: "<<_port<<" - typespec: "<<firstPath.typespec<<std::endl;
 			UnregisterCallback(instance.port, instance.path, instance.typespec);
 		}
 	}
