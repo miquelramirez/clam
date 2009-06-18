@@ -10,7 +10,7 @@
     <OscPath>/clam/target</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>sssf</OSCTypeSpec>
-  </processing>
+  <EnableMulticast>0</EnableMulticast><MultiCastIP>224.0.0.1</MultiCastIP></processing>
 
   <control_connection>
     <out>MultiLibloSourceTyped._clam_target_0</out>

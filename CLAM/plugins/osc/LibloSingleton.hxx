@@ -33,9 +33,24 @@ public:
 		std::string path;
 		std::string typespec;
 	};
+	const std::string GetErrorMessage()
+	{
+		const std::string copy=_errorMessage;
+		_errorMessage="";
+		return copy;
+	}
 
 private:
+
+	void SetAndPrintErrorMessage(const std::string & message)
+	{
+		_errorMessage=message;
+		std::cout<<"LibloSingleton: "<<message<<std::endl;
+	}
+
+
 	std::list<OSCInstance> _OSCInstances;
+	std::string _errorMessage;
 
 	LibloSingleton() {}
 	LibloSingleton(const LibloSingleton &) {}
@@ -58,21 +73,38 @@ private:
 		return (GetServerThread(port)!=NULL);
 	}
 
-	const lo_server_thread StartServer(const unsigned int & port)
+	const lo_server_thread StartServer(const unsigned int & port,const std::string multicastIP="")	
 	{
 		if (IsPortUsed(port))
 		{
-			std::cout<< "LibloSigleton: server not started (previous instance exists)"<<std::endl;
+			SetAndPrintErrorMessage("server not started (previous instance exists)");
 			return NULL;
 		}
 
 		char portCString[10];
 		sprintf(portCString,"%u",port);
 
-		std::cout << "LibloSingleton: Starting the server on port " << portCString << std::endl;
-
-		lo_server_thread serverThread = lo_server_thread_new(portCString, error);
-		if (not serverThread) return NULL;
+		lo_server_thread serverThread;
+		if (multicastIP!="")
+		{
+// TODO: defined by SConstruct if liblo version > 0.26 (include multicast support)
+#ifndef __MULTICAST_LIBLO__
+			SetAndPrintErrorMessage("not compiled with multicast support (requires liblo>0.26)");
+			return NULL;
+#endif
+			serverThread = lo_server_thread_new_multicast(multicastIP.c_str(),portCString, error);
+			std::cout << "LibloSingleton: Starting the multicast server on port " << portCString << " (IP: "<<multicastIP<<")"<< std::endl;
+		}
+		else
+		{
+			serverThread = lo_server_thread_new(portCString, error);
+			std::cout << "LibloSingleton: Starting the server on port " << portCString << std::endl;
+		}
+		if (not serverThread)
+		{
+			SetAndPrintErrorMessage("Error creating OSC server instance");
+			return NULL;
+		}
 		/* add method that will match any path and args */
 		lo_server_thread_add_method(serverThread, NULL, NULL, generic_handler, NULL);
 		/* add method that will match the path /quit with no args */
@@ -86,16 +118,22 @@ public:
 	const bool RegisterOscCallback(const unsigned int & port, const std::string & path,
 				 const std::string & typespec, lo_method_handler callbackMethod,void * instanceData)
 	{
+		return RegisterOscCallback(port,path,typespec,callbackMethod,instanceData,"");
+	}
+
+	const bool RegisterOscCallback(const unsigned int & port, const std::string & path,
+				 const std::string & typespec, lo_method_handler callbackMethod,void * instanceData, const std::string multicastIP)
+	{
 		bool newServer=false;
 		lo_server_thread thread=GetServerThread(port);
 		if (thread==NULL)
 		{
 			std::cout<<"LibloSingleton: starting server thread for port "<<port<<std::endl;
 			std::cout<<" (path: "<<path<<")"<<std::endl;
-			thread=StartServer(port);
+			thread=StartServer(port,multicastIP);
 			if (thread==NULL)
 			{
-				std::cout<<"LibloSingleton: Error starting the server on port "<<port<<std::endl;
+				SetAndPrintErrorMessage("Error starting the server");
 				return false;
 			}
 			newServer=true;
@@ -103,7 +141,7 @@ public:
 
 		if (not newServer and IsPathRegistered(port,path,typespec))
 		{
-			std::cout<<"LibloSingleton: Cannot create a method instance of an already registered path"<<std::endl;
+			SetAndPrintErrorMessage("Cannot create a method instance of an already registered path");
 			return false;
 		}
 

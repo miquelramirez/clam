@@ -10,19 +10,19 @@
     <OscPath>/clam/target1</OscPath>
     <ServerPort>8000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
-  </processing>
+  <EnableMulticast>0</EnableMulticast><MultiCastIP>224.0.0.1</MultiCastIP></processing>
 
   <processing id="MultiLibloSource_1" position="181,21" size="144,65" type="MultiLibloSource">
     <OscPath>/clam/target1</OscPath>
     <ServerPort>8000</ServerPort>
     <OSCTypeSpec>f</OSCTypeSpec>
-  </processing>
+  <EnableMulticast>0</EnableMulticast><MultiCastIP>224.0.0.1</MultiCastIP></processing>
 
   <processing id="MultiLibloSource_2" position="314,20" size="144,65" type="MultiLibloSource">
     <OscPath>/clam/target2</OscPath>
     <ServerPort>8000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
-  </processing>
+  <EnableMulticast>0</EnableMulticast><MultiCastIP>224.0.0.1</MultiCastIP></processing>
 
   <control_connection>
     <out>MultiLibloSource._clam_target1_0</out>
