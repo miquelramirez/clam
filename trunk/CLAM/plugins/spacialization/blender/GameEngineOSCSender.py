@@ -97,10 +97,11 @@ def main(controller):
 		ports=object.get('osc_ports').split()
 	else:
 		ports=[7000]
+	name=object.name[2:].replace(".","_")
 
 	for port in ports:
-		sendObjectValue(object.name.replace(".","_"),typeName,"xyz",location,port)
-		sendObjectValue(object.name.replace(".","_"),typeName,"ypr",rotation,port)
+		sendObjectValue(name,typeName,"xyz",location,port)
+		sendObjectValue(name,typeName,"ypr",rotation,port)
 	return
 
 # This lets you can import the script without running it
