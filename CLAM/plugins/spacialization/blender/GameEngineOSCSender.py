@@ -66,10 +66,13 @@ for testpath in pathToOSCList:
 if configured==0:
 	print "Can't found OSC.py. Aborting."
 	
-def sendObjectValue(objectName,typeName,typeValue,value,port):
+def sendObjectValue(objectName,typeName,typeValue,value,port,ipToSend):
 	message="/SpatDIF/%s/%s/%s" % (typeName,objectName,typeValue)
 	print "sending ", value, " to path %s to port %i" % (message,port)
-	Message(message,value).sendlocal(port)
+	if ipToSend:
+		Message(message,value).sendto(ipToSend,port)
+	else:
+		Message(message,value).sendlocal(port)
 
 def main(controller):
 	typename=None
@@ -99,9 +102,14 @@ def main(controller):
 		ports=[7000]
 	name=object.name[2:].replace(".","_")
 
+	ipToSend=None
+
+	if object.has_key('osc_send_to_ip'):
+		ipToSend=object.get('osc_send_to_ip')
+
 	for port in ports:
-		sendObjectValue(name,typeName,"xyz",location,port)
-		sendObjectValue(name,typeName,"ypr",rotation,port)
+		sendObjectValue(name,typeName,"xyz",location,port,ipToSend)
+		sendObjectValue(name,typeName,"ypr",rotation,port,ipToSend)
 	return
 
 # This lets you can import the script without running it
