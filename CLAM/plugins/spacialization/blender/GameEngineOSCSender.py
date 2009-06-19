@@ -38,32 +38,20 @@ from sys import path
 from os import getenv
 import Blender
 import re
+import GameLogic
 
 
-CheckObjectsNames=False
 listenerId="listener"
 sourceId="source"
-def checkObjectName(object):
-	if object.name.lower().find(listenerId)!=-1:
-		return "listener"
-	if object.name.lower().find(sourceId)!=-1:
-		return "source"
-	return None
 
+def getTypeOfObject(owner):
+#	print owner
+#	print owner.has_key('sound_type')
 
-
-def getTypeOfObject(controller):
-	dictTypes={"moving_source": "source",
-		"fixed_source": "source",
-		"listener": "listener" }
-	for sensorName in dictTypes.keys():
-		try:
-			sensor=controller.getSensor(sensorName)
-		except:
-			continue
-		if sensor.triggered and sensor.positive:
-			return dictTypes[sensorName]
-	return False
+	if not owner.has_key('sound_type'):
+		print "Warning: connected an object without sound_type attribute."
+		return None
+	return owner.get('sound_type')
 
 # use OSC client module for python - by Stefan Kersten
 home=getenv("HOME")
@@ -80,42 +68,39 @@ if configured==0:
 	
 def sendObjectValue(objectName,typeName,typeValue,value,port):
 	message="/SpatDIF/%s/%s/%s" % (typeName,objectName,typeValue)
+	print "sending ", value, " to path %s to port %i" % (message,port)
 	Message(message,value).sendlocal(port)
 
-def main():
+def main(controller):
 	typename=None
-	controller=GameLogic.getCurrentController()
-	object=controller.getOwner()
-#	print object.name
+#	controller=GameLogic.getCurrentController()
+	object=controller.owner
 
-	
-	if CheckObjectsNames and checkObjectName(object)==None:
+	typeName=getTypeOfObject(object)
+	if typeName==None:
 		return
-
 	location=object.getPosition()
-#	print location
-	ori=object.orientation
-#	print ori
-	matr=Blender.Mathutils.Matrix(ori[0],ori[1],ori[2])
-	roll, descention, yaw=matr.transpose().toEuler()
+	ori=object.worldOrientation
+	orientation=Blender.Mathutils.Matrix(ori[0],ori[1],ori[2]).transpose()
+#	print Blender.Mathutils.Matrix(orientation[0],orientation[1],orientation[2]).transpose().toEuler()
+	print orientation.toEuler()
+	if object.isA('KX_Camera') and typeName=='listener': # if the listener is a camera, do a proper rotation acording to conventions: azimuth 0: seeing at x+
+		rotationMatrix=Blender.Mathutils.Euler(90,0,-90).toMatrix().invert()
+		orientation = rotationMatrix * orientation
+	print "new: ", orientation.toEuler()
+	roll, descention, yaw=orientation.toEuler()
 	pitch = -descention
 	yaw+=90
 	rotation = (yaw,pitch,roll)
-	ports=[7000]
-	# try to get the ports on object name:
-	if re.search('_p([0-9_]+)$',object.name)!=None:
-		ports=[]
-		portsInName=re.search("_p([0-9_]+)$",object.name).group(1).split("_")
-		for portString in portsInName:
-			ports.append(int(portString))
 
-	typeName=getTypeOfObject(controller)
-	if typeName==False:
-		return
+	if object.has_key('osc_ports'):
+		ports=object.get('osc_ports').split()
+	else:
+		ports=[7000]
+
 	for port in ports:
 		sendObjectValue(object.name.replace(".","_"),typeName,"xyz",location,port)
 		sendObjectValue(object.name.replace(".","_"),typeName,"ypr",rotation,port)
-#		print "UPDATE L Source "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 	return
 
 # This lets you can import the script without running it
