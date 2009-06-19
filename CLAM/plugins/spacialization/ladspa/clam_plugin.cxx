@@ -41,6 +41,8 @@ CLAM_EXTERNAL_FILE_DATA(vbap20,"vbap20.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(vbap21,"vbap21.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(vbap22,"vbap22.clamnetwork")
 
+CLAM_EXTERNAL_FILE_DATA(decoded_bformat15,"decoded_bformat15.clamnetwork")
+
 #include <iostream>
 
 extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
@@ -83,7 +85,7 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 */
 
 
-	static CLAM::LadspaNetworkExporter n3015(library, vbap15_shorter_distance, 3015,
+	static CLAM::LadspaNetworkExporter n3115(library, vbap15_shorter_distance, 3115,
 			"id_vbap_15_shorter_distance", "vbap15_shorter_distance",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
@@ -143,5 +145,8 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"id_bformat_22", "bformat22",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
+	static CLAM::LadspaNetworkExporter n3015(library, decoded_bformat15, 3015,
+			"id_decoded_bformat_15", "decoded_bformat15",
+			"BarcelonaMedia-Audio", "GNU GPL");
 	return library.pluginAt(index);
 }
