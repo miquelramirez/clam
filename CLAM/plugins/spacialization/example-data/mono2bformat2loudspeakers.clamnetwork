@@ -7,10 +7,6 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="1 Sintetic input" position="-52,503" size="132,108" type="AudioSource">
-    <NSources>1</NSources>
-  </processing>
-
   <processing id="AudioSink" position="1089,266" size="128,270" type="AudioSink">
     <NSinks>15</NSinks>
   </processing>
@@ -45,7 +41,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="Hoa2RegularSpeakerArray" position="848,263" size="205,270" type="Hoa2RegularSpeakerArray">
     <Order>1</Order>
-    <SpeakerLayout>/home/pauarumi/clam/CLAM/plugins/spacialization/layouts/15_audiolab.layout</SpeakerLayout>
+    <SpeakerLayout>/usr/local/share/clam/layouts/15.layout</SpeakerLayout>
     <IgnoreLabels>0</IgnoreLabels>
   </processing>
 
@@ -71,11 +67,17 @@ p, li { white-space: pre-wrap; }
     <InitGain>0</InitGain>
   </processing>
 
-  <processing id="gain directionality" position="375,134" size="152,58" type="ControlSource">
-    <MinValue>0</MinValue>
-    <MaxValue>2</MaxValue>
+  <processing id="module" position="717,105" size="185,78" type="OutControlSender">
+    <Min>0</Min>
+    <Default>1</Default>
+    <Max>2</Max>
     <Step>0.01</Step>
-    <UnitName>-</UnitName>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="monoInput" position="-44,559" size="132,108" type="AudioSource">
+    <NSources>1</NSources>
   </processing>
 
   <processing id="x" position="81,283" size="162,84" type="ControlPrinter">
@@ -95,26 +97,6 @@ p, li { white-space: pre-wrap; }
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
-
-  <port_connection>
-    <out>1 Sintetic input.1</out>
-    <in>amp_W.Input Audio</in>
-  </port_connection>
-
-  <port_connection>
-    <out>1 Sintetic input.1</out>
-    <in>amp_X.Input Audio</in>
-  </port_connection>
-
-  <port_connection>
-    <out>1 Sintetic input.1</out>
-    <in>amp_Y.Input Audio</in>
-  </port_connection>
-
-  <port_connection>
-    <out>1 Sintetic input.1</out>
-    <in>amp_Z.Input Audio</in>
-  </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Back Horizontal</out>
@@ -211,6 +193,26 @@ p, li { white-space: pre-wrap; }
     <in>Hoa2RegularSpeakerArray.Z</in>
   </port_connection>
 
+  <port_connection>
+    <out>monoInput.1</out>
+    <in>amp_W.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>monoInput.1</out>
+    <in>amp_X.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>monoInput.1</out>
+    <in>amp_Y.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>monoInput.1</out>
+    <in>amp_Z.Input Audio</in>
+  </port_connection>
+
   <control_connection>
     <out>Azimuth.output</out>
     <in>Spherical2CartesianControl.azimuth</in>
@@ -252,7 +254,7 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>gain directionality.output</out>
+    <out>module.out</out>
     <in>Spherical2CartesianControl.module</in>
   </control_connection>
 
