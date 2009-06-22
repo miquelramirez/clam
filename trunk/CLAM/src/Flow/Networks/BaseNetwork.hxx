@@ -36,7 +36,7 @@
 #include <map>
 #include <set>
 #include "Component.hxx"
-#include <Text.hxx>
+#include "Text.hxx"
 
 namespace CLAM
 {
