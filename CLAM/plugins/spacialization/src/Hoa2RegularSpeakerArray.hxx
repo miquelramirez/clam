@@ -211,7 +211,7 @@ private:
 		for (unsigned i=maxOrder+1; i<=maxOrder+order; i++)
 			g /= i;
 		if (order) g *= 2;
-		std::cout << "Inphase decoding " << maxOrder << "," << order << " " << g << std::endl;
+//		std::cout << "Inphase decoding " << maxOrder << "," << order << " " << g << std::endl;
 		return g;
 	}
  
