@@ -28,8 +28,8 @@ std::string OfflineNetworkPlayer::NonWorkingReason()
 	return ss.str();
 }
 
-std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(SndFileHandles const& infiles, 
-															 SndFileHandles const& outfiles)
+std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandles & infiles, 
+															 const SndFileHandles & outfiles)
 {
 	std::ostringstream result;
 	
@@ -121,7 +121,7 @@ void OfflineNetworkPlayer::Start()
 			"Not all the network inputs could be fullfiled. Have you checked the IsWorking() method?");
 		std::ifstream checkfile(_inFileNames[fileIndex].c_str());
 
-		CLAM_ASSERT(checkfile.is_open(), std::string(std::string("Could not open one of the input files: ")+_inFileNames[fileIndex]).c_str());
+		CLAM_ASSERT(checkfile.is_open(),std::string("Could not open one of the input files: "+_inFileNames[fileIndex]).c_str());
 		SndfileHandle* infile = new SndfileHandle(_inFileNames[fileIndex].c_str(), SFM_READ );
 
 		CLAM_ASSERT(*infile, "Can not create the infile ");		
@@ -130,24 +130,15 @@ void OfflineNetworkPlayer::Start()
 		if(fileIndex == 0)
 			sampleRate = infile->samplerate();
 
-		if(infile->samplerate() != sampleRate)
-		{
-			std::cout << "All the input audio files have to have the same sample rate" << std::endl;
-			exit(-1);	
-		}
+		CLAM_ASSERT(infile->samplerate() == sampleRate, 
+			"All the input audio files have to have the same sample rate");
 
 		infiles.push_back(infile);
 	}
 
-	// Check that the number of input channels matches the network	
-	unsigned nInChannels = GetSize<Network::AudioSources>(_audioSources);
-	if( inputChannelsCount != nInChannels)
-	{
-	 	std::cout <<"The number of input channels is different than the number of sources in the provided network." << std::endl
-			<<"There are "<<nInChannels<<" sources and "
-			<<inputChannelsCount<<" input channels summing all channels in "<<infiles.size()<<" input files"<<std::endl;
-		exit(-1);
-	}
+	// Check that the number of input channels matches the number of ports in the network	
+	CLAM_ASSERT(inputChannelsCount == GetSize<Network::AudioSources>(_audioSources), 
+	 	"The number of input channels is different than the number of sourceports in the provided network.");
 
 	//Open the files and get the total number of channels
 	unsigned outputChannelsCount=0;
@@ -159,96 +150,56 @@ void OfflineNetworkPlayer::Start()
 			std::cerr << "Not all the network outputs could be fullfiled.";
 			break;
 		}
-		SndfileHandle* outfile = new SndfileHandle(_outFileNames[fileIndex].c_str(), SFM_WRITE,_format,_outChannelsFiles[fileIndex],sampleRate);
+
+		SndfileHandle* outfile = new SndfileHandle(_outFileNames[fileIndex].c_str(), SFM_WRITE,
+												   _format,_outChannelsFiles[fileIndex],sampleRate);
 		CLAM_ASSERT(*outfile, "Can not create the outfile ");		
 		outputChannelsCount +=_outChannelsFiles[fileIndex];
 		outfiles.push_back(outfile);
 	}
 
-	// Check that the number of output channels matches the network	
-	unsigned nOutChannels = GetSize<Network::AudioSinks>(_audioSinks);
-	if( outputChannelsCount != nOutChannels)
-	{
-	 	std::cout <<"The number of output channels is different than the number of sinks in the provided network." << std::endl
-			  <<"There are "<<nOutChannels<<" sinks and "
-			   <<outputChannelsCount<<" output channels summing all channels in "<<outfiles.size()<<" output files"<<std::endl;
-		exit(-1);
-	}
+	// Check that the number of output channels matches the of ports in the network	
+	CLAM_ASSERT(outputChannelsCount == GetSize<Network::AudioSinks>(_audioSinks),
+	 	"The number of output channels is different than the number of sinkports in the provided network.");
 
 	std::cout << "Sources and Sinks list:" <<std::endl;
 	std::cout << listOfSourcesSinksAndFiles(infiles,outfiles)<<std::endl;
 
 	// Prepare the sources
+	//CLAM_ASSERT(_audioSources.size() == infiles.size(),
+	//		"The number of sources is greater than the intput files.");
+
 	std::vector<DataArray> inbuffers(inputChannelsCount);
-	unsigned sourceIndex=0;
-	unsigned fileIndex = 0;
-	while(sourceIndex<_audioSources.size())
+	for(unsigned buffer = 0, i = 0; i < _audioSources.size(); ++i)
 	{	
-		if(fileIndex>=infiles.size())
+		unsigned port_size = _audioSources[i]->GetPorts().size();
+		for(unsigned port = 0; port < port_size; ++port, ++buffer)
 		{
-			std::cout 
-				<< "The number of sources is greater than the intput files. " 
-				<< "There are " << GetSize<Network::AudioSources>(GetAudioSources()) <<" sources and "
-				<< infiles.size() << "input files" 
-				<< std::endl;
-			exit(-1);
+			inbuffers[buffer].Resize( frameSize );
+			inbuffers[buffer].SetSize( frameSize );
+			_audioSources[i]->SetExternalBuffer( &(inbuffers[buffer][0]),frameSize, port);
 		}
-
-		for(int channel = 0; channel < infiles[fileIndex]->channels();channel++)
-		{
-			inbuffers[sourceIndex].Resize( frameSize );
-			inbuffers[sourceIndex].SetSize( frameSize );
-
-			unsigned port_size = _audioSources[sourceIndex]->GetPorts().size();
-			for(unsigned port = 0; port < port_size; ++port)
-				_audioSources[sourceIndex]->SetExternalBuffer( &(inbuffers[sourceIndex][0]),frameSize, port);
-				
-			//std::cout << " In: " << _inFileNames[fileIndex] << " channel "<< channel<< std::endl;
-			sourceIndex++;
-		}
-		fileIndex++;
 	}
 
 	//Prepare the sinks
+	//CLAM_ASSERT(_audioSinks.size() == outfiles.size(),
+	//		"The number of sinks is greater than the output files ");
+
 	std::vector<DataArray> outbuffers(outputChannelsCount);
-	fileIndex = 0;
-	unsigned sinkIndex = 0;
-	while(sinkIndex < _audioSinks.size())
+	for( unsigned buffer = 0, i = 0; i < _audioSinks.size(); ++i)
 	{
-		if(fileIndex >= outfiles.size())
+		unsigned port_size = _audioSinks[i]->GetPorts().size();
+		for(unsigned port = 0; port < port_size; ++port, ++buffer) 
 		{
-			std::cout << "The number of sinks is greater than the output files. " 
-			          << "There are " << GetSize<Network::AudioSinks>(GetAudioSinks()) << " sinks and " 
-					  << outfiles.size() <<"output files" << std::endl;
-			exit(-1);
-		}
-
-		for(int channel = 0;channel < outfiles[fileIndex]->channels(); channel++)
-		{
-			unsigned sinkSize = GetSize<Network::AudioSinks>(GetAudioSinks());
-			if(fileIndex+channel >= sinkSize)
-			{
-			 	std::cout << "The number of output channels is greater than the sinks. "
-						  << "There are " << sinkSize << " sinks and " 
-						  << fileIndex+channel << " ouput channels" << std::endl;
-				exit(-1);
-			}
-			outbuffers[sinkIndex].Resize( frameSize );
-			outbuffers[sinkIndex].SetSize( frameSize );
-
-			unsigned port_size = _audioSinks[sinkIndex]->GetPorts().size();
-			for(unsigned port = 0; port < port_size; ++port)
-				_audioSinks[sinkIndex]->SetExternalBuffer(&(outbuffers[sinkIndex][0]), frameSize, port);
-
-			//std::cout << " Out: " << _outFileNames[fileIndex] << " channel "<< channel<< std::endl;
-			sinkIndex++;
+			outbuffers[buffer].Resize( frameSize );
+			outbuffers[buffer].SetSize( frameSize );
+			_audioSinks[i]->SetExternalBuffer(&(outbuffers[buffer][0]), frameSize, port);
 		}		
-		fileIndex++;
 	}
 
 	long iterationIndex = 0;
 	bool timeLimitedMode = _resultWavsTime > 0.001;
-	fileIndex = 0;
+	int fileIndex = 0;
 	while(true)
 	{
 		std::cout << "." << std::flush;

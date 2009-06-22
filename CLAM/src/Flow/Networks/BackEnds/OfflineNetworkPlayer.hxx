@@ -39,7 +39,8 @@ public:
 	std::string NonWorkingReason();
 	
 	typedef std::vector<SndfileHandle*> SndFileHandles;
-	std::string listOfSourcesSinksAndFiles(SndFileHandles const& infiles, SndFileHandles const& outfiles);
+	std::string listOfSourcesSinksAndFiles(const SndFileHandles & infiles, 
+										   const SndFileHandles & outfiles);
 	
 	virtual void Start();
 	virtual void Stop();
