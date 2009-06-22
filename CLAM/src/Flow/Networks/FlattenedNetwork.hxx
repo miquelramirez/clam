@@ -27,6 +27,7 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "BaseNetwork.hxx"
+#include "Text.hxx"
 #include <string>
 #include <list>
 #include <map>
