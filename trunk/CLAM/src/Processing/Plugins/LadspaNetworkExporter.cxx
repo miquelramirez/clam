@@ -191,7 +191,7 @@ void NetworkLADSPAPlugin::LocateConnections()
 			info.name = portName.str().c_str();
 			info.port = port;
 			info.processing=*it;
-			info.processing->SetFrameAndHopSize( mExternBufferSize );
+			info.processing->SetFrameAndHopSize( mExternBufferSize, port );
 			mReceiverList.push_back(info);
 		}
 	}
@@ -213,7 +213,7 @@ void NetworkLADSPAPlugin::LocateConnections()
 			info.name = portName.str().c_str();
 			info.port = port;
 			info.processing =*it;
-			info.processing->SetFrameAndHopSize ( mExternBufferSize );		
+			info.processing->SetFrameAndHopSize ( mExternBufferSize, port );		
 			mSenderList.push_back(info);	
 		}
 	}
@@ -240,11 +240,13 @@ void NetworkLADSPAPlugin::UpdatePortFrameAndHopSize()
 {
 	//AudioSources
 	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-		it->processing->SetFrameAndHopSize( mExternBufferSize );
+        for(unsigned port = 0; port < it->processing->GetPorts().size(); ++port)
+			it->processing->SetFrameAndHopSize( mExternBufferSize, port );
 
 	//AudioSinks
 	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-		it->processing->SetFrameAndHopSize( mExternBufferSize );
+        for(unsigned port = 0; port < it->processing->GetPorts().size(); ++port)
+			it->processing->SetFrameAndHopSize( mExternBufferSize, port );
 }
 
 void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )

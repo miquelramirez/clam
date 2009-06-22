@@ -72,6 +72,12 @@ back2BackTests = [
 		, [
 			"vbap15.wav"
 		 ]),
+    ("ladspab2b-test",
+        "OfflinePlayer example-data/mono2bformat_via_ladspa.clamnetwork b2b/spacialization/inputs/jaume.wav -o -c 4 bformat.wav;"
+        , [
+            "bformat.wav",
+        ]),
+
 		
 ]
 

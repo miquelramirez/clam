@@ -77,14 +77,6 @@ namespace CLAM
 					delete _ports[port].mPort;
 			}
 
-			void SetFrameAndHopSize(const int val)
-			{
-				CLAM_ASSERT(1 == _ports.size(), "no AudioOutPort available");
-				Port& port = _ports[0];
-				port.mPort->SetSize(val);
-				port.mPort->SetHop(val);
-			}
-
 			void SetFrameAndHopSize(const int val, unsigned index)
 			{
 				CLAM_ASSERT(index < _ports.size(), "AudioOutPort index out of range");
