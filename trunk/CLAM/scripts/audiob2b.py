@@ -1,5 +1,6 @@
 from diff_audio_files import diff_files
 import os, sys, string
+import subprocess
 
 def run(command) :
 	print '\033[32m:: ', command, '\033[0m'
@@ -71,10 +72,17 @@ def passB2BTests(datapath, back2BackCases) :
 	failedCases = []
 	for case, command, outputs in back2BackCases :
 		phase("Test: %s Command: '%s'"%(case,command))
-		failures = []
 		for output in outputs :
 			removeIfExists(output)
-		os.system(command)
+		try :
+			commandError = subprocess.call(command, shell=True)
+			if commandError :
+				failedCases.append((case, ["Command failed with return code %i:\n'%s'"%(commandError,command)]))
+				continue
+		except OSError, e :
+			failedCases.append((case, ["Unable to run command: '%s'"%(command)]))
+			continue
+		failures = []
 		for output in outputs :
 			base = prefix(datapath, case, output)
 			expected = expectedName(base)
