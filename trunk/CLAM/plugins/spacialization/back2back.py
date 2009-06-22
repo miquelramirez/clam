@@ -55,7 +55,7 @@ back2BackTests = [
 	# TODO: take an existing bformat
 	("bformat2surround",
 		"OfflinePlayer example-data/mono2bformat.clamnetwork b2b/spacialization/inputs/jaume.wav -o -c 4 bformat.wav;"
-		"OfflinePlayer example-data/bformat2surround.clamnetwork bformat.wav -o -c 2 surround.wav;"
+		"OfflinePlayer example-data/bformat2surround.clamnetwork bformat.wav -o -c 5 surround.wav;"
 		, [
 			"bformat.wav",
 			"surround.wav",
