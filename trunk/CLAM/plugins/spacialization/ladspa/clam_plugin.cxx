@@ -85,7 +85,7 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 */
 
 
-	static CLAM::LadspaNetworkExporter n3115(library, vbap15_shorter_distance, 3115,
+	static CLAM::LadspaNetworkExporter n1115(library, vbap15_shorter_distance, 1115,
 			"id_vbap_15_shorter_distance", "vbap15_shorter_distance",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
