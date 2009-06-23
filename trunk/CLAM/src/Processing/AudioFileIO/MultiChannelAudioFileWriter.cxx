@@ -35,9 +35,9 @@ namespace CLAM
 namespace Hidden
 {
 	static const char * metadata[] = {
-		"key", "MultiChannelAudioFileReaderConfig",
+		"key", "MultiChannelAudioFileWriter",
 		"category", "Audio File I/O",
-		"description", "MultiChannelAudioFileReaderConfig",
+		"description", "MultiChannelAudioFileWriter",
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, MultiChannelAudioFileWriter> reg = metadata;
