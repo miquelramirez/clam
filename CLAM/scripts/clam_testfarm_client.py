@@ -126,7 +126,7 @@ clam.add_subtask('CLAM Plugins', [
 	'scons install',
 
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization/ladspa/'%localDefinitions,
-	'scons clean',
+	'scons -c',
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
