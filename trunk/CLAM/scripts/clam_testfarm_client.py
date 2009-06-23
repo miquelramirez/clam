@@ -41,6 +41,7 @@ repositories = localDefinitions['repositories'].split()
 os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitions
 os.environ['PATH']='%(installPath)s/bin:' % localDefinitions + os.environ['PATH']
 os.environ['CLAM_PLUGIN_PATH']='%(installPath)s/lib/clam' % localDefinitions
+os.environ['LADSPA_PATH']='%(installPath)s/lib/ladspa' % localDefinitions
 
 
 client = Client(localDefinitions['name'])
