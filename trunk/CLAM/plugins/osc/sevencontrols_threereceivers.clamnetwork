@@ -25,37 +25,37 @@
   <EnableMulticast>0</EnableMulticast><MultiCastIP>224.0.0.1</MultiCastIP></processing>
 
   <control_connection>
-    <out>MultiLibloSource._clam_target1_0</out>
+    <out>MultiLibloSource.0</out>
     <in>ControlPrinter.ControlPrinter_0</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSource._clam_target1_1</out>
+    <out>MultiLibloSource.1</out>
     <in>ControlPrinter.ControlPrinter_1</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSource._clam_target1_2</out>
+    <out>MultiLibloSource.2</out>
     <in>ControlPrinter.ControlPrinter_2</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSource_1._clam_target1_0</out>
+    <out>MultiLibloSource_1.0</out>
     <in>ControlPrinter.ControlPrinter_3</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSource_2._clam_target2_0</out>
+    <out>MultiLibloSource_2.0</out>
     <in>ControlPrinter.ControlPrinter_4</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSource_2._clam_target2_1</out>
+    <out>MultiLibloSource_2.1</out>
     <in>ControlPrinter.ControlPrinter_5</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSource_2._clam_target2_2</out>
+    <out>MultiLibloSource_2.2</out>
     <in>ControlPrinter.ControlPrinter_6</in>
   </control_connection>
 

@@ -162,7 +162,7 @@ protected:
 		for (unsigned i=0;i<nOutputs;i++)
 		{
 			std::ostringstream controlName;
-			controlName<<oscPath<<"_"<<i;
+			controlName<<i;
 			std::string type;
 			type=_config.GetOSCTypeSpec()[i];
 			_outControls.push_back(createControl(type,controlName.str()));

@@ -1,0 +1,316 @@
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="4,372" size="267,59" type="AbsoluteCoordinates2RelativeAngles" />
+
+  <processing id="AudioAmplifier" position="-164,554" size="126,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+    <PortsNumber>1</PortsNumber>
+  </processing>
+
+  <processing id="AudioAmplifier_1" position="-328,585" size="141,59" type="AudioAmplifier">
+    <MaxGain>10</MaxGain>
+    <InitGain>1</InitGain>
+    <PortsNumber>1</PortsNumber>
+  </processing>
+
+  <processing id="Gain" position="-623,366" size="188,76" type="OutControlSender">
+    <Min>0</Min>
+    <Default>1</Default>
+    <Max>10</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="GainBecauseOfDistance" position="-167,464" size="188,59" type="GainBecauseOfDistance">
+    <DistanceExponent>1</DistanceExponent>
+    <MinimumDistance>1</MinimumDistance>
+    <DistanceThreshold>0</DistanceThreshold>
+  </processing>
+
+  <processing id="Loop in-Control" position="-577,143" size="180,76" type="OutControlSender">
+    <Min>0</Min>
+    <Default>1</Default>
+    <Max>1</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Pause in-Control" position="-413,270" size="180,76" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Seek in-Control" position="-555,228" size="180,76" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="SndfilePlayer" position="-387,438" size="116,59" type="SndfilePlayer">
+    <SourceFile />
+    <Loop>1</Loop>
+    <SavedNumberOfChannels>1</SavedNumberOfChannels>
+  </processing>
+
+  <processing id="Vbap3D" position="-17,548" size="85,270" type="Vbap3D">
+    <SpeakerLayout>/usr/local/share/clam/layouts/15.layout</SpeakerLayout>
+    <Triangulation>/usr/local/share/clam/layouts/15.triangulation</Triangulation>
+    <IgnoreLabels>1</IgnoreLabels>
+  </processing>
+
+  <processing id="VbapOutput" position="169,542" size="128,270" type="AudioSink">
+    <NSinks>15</NSinks>
+  </processing>
+
+  <processing id="listener_camera_xyz" position="-163,24" size="165,59" type="MultiLibloSource">
+    <OscPath>/SpatDIF/listener/listener_camera/xyz</OscPath>
+    <ServerPort>7000</ServerPort>
+    <OSCTypeSpec>fff</OSCTypeSpec>
+    <EnableMulticast>1</EnableMulticast>
+    <MultiCastIP>224.0.0.1</MultiCastIP>
+  </processing>
+
+  <processing id="listener_camera_ypr" position="-3,23" size="164,59" type="MultiLibloSource">
+    <OscPath>/SpatDIF/listener/listener_camera/ypr</OscPath>
+    <ServerPort>7000</ServerPort>
+    <OSCTypeSpec>fff</OSCTypeSpec>
+    <EnableMulticast>1</EnableMulticast>
+    <MultiCastIP>224.0.0.1</MultiCastIP>
+  </processing>
+
+  <processing id="listener_xyz_ypr" position="337,327" size="265,217" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>6</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="source_xyz" position="146,22" size="207,59" type="MultiLibloSource">
+    <OscPath>/SpatDIF/source/source0/xyz</OscPath>
+    <ServerPort>7000</ServerPort>
+    <OSCTypeSpec>fff</OSCTypeSpec>
+    <EnableMulticast>1</EnableMulticast>
+    <MultiCastIP>224.0.0.1</MultiCastIP>
+  </processing>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output</out>
+    <in>Vbap3D.W</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier_1.Audio Output</out>
+    <in>AudioAmplifier.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SndfilePlayer.out0</out>
+    <in>AudioAmplifier_1.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.01</out>
+    <in>VbapOutput.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.02</out>
+    <in>VbapOutput.2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.03</out>
+    <in>VbapOutput.3</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.04</out>
+    <in>VbapOutput.4</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.05</out>
+    <in>VbapOutput.5</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.06</out>
+    <in>VbapOutput.6</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.07</out>
+    <in>VbapOutput.7</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.08</out>
+    <in>VbapOutput.8</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.09</out>
+    <in>VbapOutput.9</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.10</out>
+    <in>VbapOutput.10</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.11</out>
+    <in>VbapOutput.11</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.12</out>
+    <in>VbapOutput.12</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.13</out>
+    <in>VbapOutput.13</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.14</out>
+    <in>VbapOutput.14</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.15</out>
+    <in>VbapOutput.15</in>
+  </port_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
+    <in>Vbap3D.azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
+    <in>Vbap3D.elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.distance</out>
+    <in>GainBecauseOfDistance.input distance</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain.out</out>
+    <in>AudioAmplifier_1.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>GainBecauseOfDistance.calculated output gain</out>
+    <in>AudioAmplifier.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Loop in-Control.out</out>
+    <in>SndfilePlayer.Loop in-Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pause in-Control.out</out>
+    <in>SndfilePlayer.Pause in-Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Seek in-Control.out</out>
+    <in>SndfilePlayer.Seek in-Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_xyz.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_xyz.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_xyz.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_xyz.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_xyz.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_xyz.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_ypr.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_ypr.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_ypr.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_ypr.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_4</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_ypr.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_camera_ypr.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_5</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Z</in>
+  </control_connection>
+
+</network>

@@ -535,62 +535,62 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>listener x/y/z._SpatDIF_listener_OBlistener_p7001_xyz_0</out>
+    <out>listener x/y/z.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener X</in>
   </control_connection>
 
   <control_connection>
-    <out>listener x/y/z._SpatDIF_listener_OBlistener_p7001_xyz_0</out>
+    <out>listener x/y/z.1</out>
     <in>ControlPrinter_2.ControlPrinter_0</in>
   </control_connection>
 
   <control_connection>
-    <out>listener x/y/z._SpatDIF_listener_OBlistener_p7001_xyz_1</out>
+    <out>listener x/y/z.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener Y</in>
   </control_connection>
 
   <control_connection>
-    <out>listener x/y/z._SpatDIF_listener_OBlistener_p7001_xyz_1</out>
+    <out>listener x/y/z.1</out>
     <in>ControlPrinter_2.ControlPrinter_1</in>
   </control_connection>
 
   <control_connection>
-    <out>listener x/y/z._SpatDIF_listener_OBlistener_p7001_xyz_2</out>
+    <out>listener x/y/z.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener Z</in>
   </control_connection>
 
   <control_connection>
-    <out>listener x/y/z._SpatDIF_listener_OBlistener_p7001_xyz_2</out>
+    <out>listener x/y/z.1</out>
     <in>ControlPrinter_2.ControlPrinter_2</in>
   </control_connection>
 
   <control_connection>
-    <out>listener yaw/pitch/roll._SpatDIF_listener_OBlistener_p7001_ypr_0</out>
+    <out>listener yaw/pitch/roll.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>listener yaw/pitch/roll._SpatDIF_listener_OBlistener_p7001_ypr_0</out>
+    <out>listener yaw/pitch/roll.1</out>
     <in>ControlPrinter_5.ControlPrinter_0</in>
   </control_connection>
 
   <control_connection>
-    <out>listener yaw/pitch/roll._SpatDIF_listener_OBlistener_p7001_ypr_1</out>
+    <out>listener yaw/pitch/roll.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
   </control_connection>
 
   <control_connection>
-    <out>listener yaw/pitch/roll._SpatDIF_listener_OBlistener_p7001_ypr_1</out>
+    <out>listener yaw/pitch/roll.1</out>
     <in>ControlPrinter_5.ControlPrinter_1</in>
   </control_connection>
 
   <control_connection>
-    <out>listener yaw/pitch/roll._SpatDIF_listener_OBlistener_p7001_ypr_2</out>
+    <out>listener yaw/pitch/roll.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
   </control_connection>
 
   <control_connection>
-    <out>listener yaw/pitch/roll._SpatDIF_listener_OBlistener_p7001_ypr_2</out>
+    <out>listener yaw/pitch/roll.1</out>
     <in>ControlPrinter_5.ControlPrinter_2</in>
   </control_connection>
 
