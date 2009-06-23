@@ -93,7 +93,6 @@ def main(controller):
 	print "new: ", orientation.toEuler()
 	roll, descention, yaw=orientation.toEuler()
 	pitch = -descention
-	yaw+=90
 	rotation = (yaw,pitch,roll)
 
 	if object.has_key('osc_ports'):
