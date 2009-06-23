@@ -54,7 +54,7 @@ print """\
 for i, channel in enumerate(channels) :
 	print """\
   <port_connection>
-    <out>%i %s in.AudioOut</out>
+    <out>%i %s in.1</out>
     <in>Hoa2RegularSpeakerArray.%s</in>
   </port_connection>
 """ % (i+1, channel, channel)
@@ -63,7 +63,7 @@ for speaker, label in enumerate(speakers) :
 	print """\
   <port_connection>
     <out>Hoa2RegularSpeakerArray.%(speakerName)s</out>
-    <in>%(speakerName)s.AudioIn</in>
+    <in>%(speakerName)s.1</in>
   </port_connection>
 """ % dict(
 #	speakerNumber=speaker+1,

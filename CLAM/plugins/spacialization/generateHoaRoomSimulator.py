@@ -132,17 +132,17 @@ for i, channel in enumerate(channels) :
 	)
 print """
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>AudioMixer.Input 0</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>ChoreoSequencer.sync</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>RoomImpulseResponseSimulator.synchronization</in>
   </port_connection>
 
@@ -236,7 +236,7 @@ for channel in channels :
 
   <port_connection>
     <out>XFade %(channel)s.CrossFadedBuffer</out>
-    <in>%(channel)s.AudioIn</in>
+    <in>%(channel)s.1</in>
   </port_connection>
 
   <port_connection>

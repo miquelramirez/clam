@@ -60,7 +60,7 @@ print """
   </processing>
 
   <port_connection>
-    <out>1 Audio Input.AudioOut</out>
+    <out>1 Audio Input.1</out>
     <in>Input Gain.Input Audio</in>
   </port_connection>
 
@@ -70,7 +70,7 @@ print """
   </port_connection>
 
   <port_connection>
-    <out>1 Audio Input.AudioOut</out>
+    <out>1 Audio Input.1</out>
     <in>ChoreoSequencer_1.sync</in>
   </port_connection>
 """% {
@@ -84,7 +84,7 @@ for i, label in enumerate(speakers) :
 	print """
   <port_connection>
     <out>Vbap3D.%(speakerLabel)s</out>
-    <in>%(speakerLabel)s.AudioIn</in>
+    <in>%(speakerLabel)s.1</in>
   </port_connection>
 """ % {
 	'speakerNumber' : i+1,
