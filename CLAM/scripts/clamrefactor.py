@@ -44,6 +44,7 @@ class ClamNetwork() :
 		self.log = []
 		self.verbose = False
 		self.ensuredVersion = ""
+		self.modified = False
 
 	def _featuredVersion(self, fullVersion) :
 		feature = ".".join(fullVersion.split(".")[:2])
@@ -57,6 +58,7 @@ class ClamNetwork() :
 
 	def _log(self, message) :
 		if self.verbose : print >> sys.stderr,message
+		self.modified = True
 		self.log.append(message)
 	def _versionNotApplies(self) :
 		if not self.ensuredVersion : return False
@@ -285,10 +287,12 @@ if __name__ == "__main__" :
 			network.runCommand(command)
 
 		output = sys.stdout
-		if options.apply :
-			print "Updating", filename
-			output = open(filename,"w")
-		network.dump(output)
+		if network.modified :
+			if options.apply :
+				print "Updating", filename
+				output = open(filename,"w")
+			network.dump(output)
+		print >> sys.stderr, "No changes applied."
 
 
 
