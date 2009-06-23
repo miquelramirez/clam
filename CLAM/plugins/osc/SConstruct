@@ -61,6 +61,7 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	
 #check for multicast capable version of liblo:
 if subprocess.call("pkg-config --atleast-version=0.26 liblo",shell=True)==0:
+	env.Append( LIBPATH=['/usr/local/lib'] )
 	env.Append( CPPDEFINES=['__MULTICAST_LIBLO__'] )
 
 
