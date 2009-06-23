@@ -45,27 +45,27 @@ print """
   </processing>
 
   <port_connection>
-    <out>1.AudioOut</out>
+    <out>1.1</out>
     <in>SndfileWriter.in1</in>
   </port_connection>
 
   <port_connection>
-    <out>2.AudioOut</out>
+    <out>2.1</out>
     <in>SndfileWriter.in2</in>
   </port_connection>
 
   <port_connection>
-    <out>3.AudioOut</out>
+    <out>3.1</out>
     <in>SndfileWriter.in3</in>
   </port_connection>
 
   <port_connection>
-    <out>4.AudioOut</out>
+    <out>4.1</out>
     <in>SndfileWriter.in4</in>
   </port_connection>
 
   <port_connection>
-    <out>LoopBack.AudioOut</out>
+    <out>LoopBack.1</out>
     <in>SndfileWriter.in5</in>
   </port_connection>
 
@@ -84,7 +84,7 @@ for speaker in xrange(nSpeakers) :
 
   <port_connection>
     <out>AudioAmplifier.Audio Output%(mixerPort)s</out>
-    <in>%(sourceNumber)s.AudioIn</in>
+    <in>%(sourceNumber)s.1</in>
   </port_connection>""" % {
 	'mixerPort': (" %i"%speaker) if speaker else '',
 	'playerPort': str(speaker),

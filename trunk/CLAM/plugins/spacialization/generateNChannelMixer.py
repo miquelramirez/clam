@@ -49,18 +49,18 @@ for i in xrange(nSpeakers) :
 for i in xrange(nSpeakers) :
 	print """\
   <port_connection>
-    <out>Input_%(i)02i_0.AudioOut</out>
+    <out>Input_%(i)02i_0.1</out>
     <in>Mixer_%(i)02i.Input 0</in>
   </port_connection>
 
   <port_connection>
-    <out>Input_%(i)02i_1.AudioOut</out>
+    <out>Input_%(i)02i_1.1</out>
     <in>Mixer_%(i)02i.Input 1</in>
   </port_connection>
 
   <port_connection>
     <out>Mixer_%(i)02i.Output Audio</out>
-    <in>Ouput_%(i)02i.AudioIn</in>
+    <in>Ouput_%(i)02i.1</in>
   </port_connection>
 """%dict(i=i)
 
