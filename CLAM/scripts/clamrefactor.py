@@ -19,6 +19,7 @@
 from xml.etree import ElementTree, ElementPath
 import xml.dom
 import sys
+import re
 
 class NotACommand(Exception) :
 	def __init__(self, command, available) :
@@ -117,6 +118,20 @@ class ClamNetwork() :
 			connection.text = ".".join([processing, newName])
 			self._log("Updating %s: %s.%s -> %s.%s" %(
 				connectorKind, processing, oldName, processing, newName))
+
+	def renameConnectorRegExp(self, processingType, connectorKind, oldName, newNameExpression) :
+		if self._versionNotApplies() : return
+		names = self._namesForType(processingType)
+		regexpr = re.compile(oldName)
+		for connection in self.connections[connectorKind] :
+			processing, connector = connection.text.split(".")
+			if processing not in names: continue
+			match = regexpr.match(connector)
+			if not match : continue
+			newName= regexpr.sub(newNameExpression, connector)
+			connection.text = ".".join([processing, newName])
+			self._log("Updating %s: %s.%s -> %s.%s" %(
+				connectorKind, processing, connector, processing, newName))
 
 	def renameConfig(self, processingType, oldName, newName) :
 		"""Change the name of a config parameter"""
