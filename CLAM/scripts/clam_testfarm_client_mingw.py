@@ -121,9 +121,9 @@ clam.add_subtask('CLAM Plugins', [
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
-	'cd %(sandbox)s/clam/CLAM/plugins/osc'%localDefinitions,
-	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
-	'scons install',
+#	'cd %(sandbox)s/clam/CLAM/plugins/osc'%localDefinitions,
+#	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+#	'scons install',
 
 	'cd %(sandbox)s/clam/CLAM/plugins/speech'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
