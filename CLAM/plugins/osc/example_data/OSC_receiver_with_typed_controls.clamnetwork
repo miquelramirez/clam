@@ -13,22 +13,22 @@
   <EnableMulticast>0</EnableMulticast><MultiCastIP>224.0.0.1</MultiCastIP></processing>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_0</out>
+    <out>MultiLibloSourceTyped.1</out>
     <in>ControlPrinterTyped.ControlPrinterTyped_0</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_1</out>
+    <out>MultiLibloSourceTyped.1</out>
     <in>ControlPrinterTyped.ControlPrinterTyped_1</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_2</out>
+    <out>MultiLibloSourceTyped.1</out>
     <in>ControlPrinterTyped.ControlPrinterTyped_2</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_3</out>
+    <out>MultiLibloSourceTyped.1</out>
     <in>ControlPrinterTyped.ControlPrinterTyped_3</in>
   </control_connection>
 
