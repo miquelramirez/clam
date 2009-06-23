@@ -26,7 +26,7 @@ def ellapsedTime():
 	return time.time() - startTime
 
 localDefinitions = dict(
-	name= 'linux_ubuntu_hardy',
+	name= 'BM_hardy',
 	description= '<img src="http://clam-project.org/images/linux_icon.png"/> <img src="http://clam-project.org/images/ubuntu_icon.png"/>',
 #	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
 	repositories = "clam acustica data_acustica clam/testdata",
@@ -43,7 +43,6 @@ os.environ['PATH']='%(installPath)s/bin:' % localDefinitions + os.environ['PATH'
 os.environ['CLAM_PLUGIN_PATH']='%(installPath)s/lib/clam' % localDefinitions
 os.environ['LADSPA_PATH']='%(installPath)s/lib/ladspa' % localDefinitions
 
-
 client = Client(localDefinitions['name'])
 client.brief_description = localDefinitions['description']
 
@@ -51,7 +50,7 @@ client.brief_description = localDefinitions['description']
 clam = Task(
 	project = Project('CLAM','<a href="http://clam-project.org">clam web</a>' ), 
 	client = client, 
-	task_name='svn up --accept postpone|DEBUG' 
+	task_name='svn up|DEBUG' 
 	)
 
 clam.set_check_for_new_commits( 
@@ -124,6 +123,11 @@ clam.add_subtask('CLAM Plugins', [
 
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s raytracing=traditional'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/clam/CLAM/plugins/spacialization/ladspa/'%localDefinitions,
+	'scons clean',
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
 	'cd %(sandbox)s/clam/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
@@ -218,7 +222,7 @@ print "force Run: ", forceRun
 Runner( clam, 
 	continuous = False,
 	first_run_always = forceRun,
-	remote_server_url = 'http://84.88.76.190/testfarm_server',
+	remote_server_url = 'http://84.88.76.186/testfarm_server',
 #	local_base_dir='/tmp',
 )
 
