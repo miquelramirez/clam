@@ -66,7 +66,7 @@ private:
 	int _currentTriangle;
 	
 	static float deltaAngle() { return 0.01; }
-	static float deltaNumeric() { 0.00001; } 
+	static float deltaNumeric() { return 0.00001; } 
 
 	static Vector vectorialProduct(const Vector& v1, const Vector& v2)
 	{
