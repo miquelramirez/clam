@@ -92,7 +92,9 @@ private:
 			SetAndPrintErrorMessage("not compiled with multicast support (requires liblo>0.26)");
 			return NULL;
 #endif
+#ifdef __MULTICAST_LIBLO__ //to avoid compiler error...
 			serverThread = lo_server_thread_new_multicast(multicastIP.c_str(),portCString, error);
+#endif
 			std::cout << "LibloSingleton: Starting the multicast server on port " << portCString << " (IP: "<<multicastIP<<")"<< std::endl;
 		}
 		else
