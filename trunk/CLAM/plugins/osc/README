@@ -10,6 +10,10 @@ on the port 7000. (This is commonly used by OSC clients as the
 default port.)
 
 
+Optionally you can use the 0.26 version with multicast :
+  wget http://puzzle.dl.sourceforge.net/sourceforge/liblo/liblo-0.26.tar.gz
+  tar xvzf liblo-0.26.tar.gz && (cd liblo-0.26/ && ./configure && make && sudo make install)
+
 about OSC and linux 64 bits:
 using this version
 http://www.audiomulch.com/~rossb/code/oscpack/oscpack_1_0_2.zip
