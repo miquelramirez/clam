@@ -6,3 +6,4 @@ addConfig MultiLibloSource EnableMulticast 0
 addConfig MultiLibloSource MultiCastIP '224.0.0.1'
 addConfig SpatDIFSourceReceiver EnableMulticast 0
 addConfig SpatDIFSourceReceiver MultiCastIP '224.0.0.1'
+renameConnectorRegExp MultiLibloSource outcontrol ^.*_([0-9]+)$ \1
