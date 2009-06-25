@@ -167,6 +167,7 @@ namespace Hidden
 		if ( not mConfig.GetLoop() ) return false; // End reached, not looping
 
 		mNativeStream->SeekTo(0);
+		mEOFReached=false;
 		return true;
 	}
 }
