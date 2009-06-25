@@ -7,8 +7,6 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="AbsoluteCoordinates2RelativeAngles" position="489,167" size="267,59" type="AbsoluteCoordinates2RelativeAngles"/>
-
   <processing id="AudioAmplifier_1" position="-75,498" size="141,94" type="AudioAmplifier">
     <MaxGain>10</MaxGain>
     <InitGain>1</InitGain>
@@ -19,8 +17,17 @@ p, li { white-space: pre-wrap; }
     <NSinks>4</NSinks>
   </processing>
 
-  <processing id="ControlSum" position="381,331" size="110,59" type="ControlSum">
+  <processing id="ControlSum" position="139,351" size="110,59" type="ControlSum">
     <RightTerm>0</RightTerm>
+  </processing>
+
+  <processing id="Dominance" position="310,402" size="334,83" type="OutControlSender">
+    <Min>0.25</Min>
+    <Default>2.125</Default>
+    <Max>4</Max>
+    <Step>0.01875</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
   </processing>
 
   <processing id="Gain" position="-95,335" size="188,76" type="OutControlSender">
@@ -98,20 +105,6 @@ p, li { white-space: pre-wrap; }
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="source_xyz" position="759,22" size="126,59" type="MultiLibloSource">
-    <OscPath>/SpatDIF/source/source/xyz</OscPath>
-    <ServerPort>7000</ServerPort>
-    <OSCTypeSpec>fff</OSCTypeSpec>
-    <EnableMulticast>1</EnableMulticast>
-    <MultiCastIP>224.0.0.1</MultiCastIP>
-  </processing>
-
-  <processing id="source_xyz_" position="975,43" size="248,139" type="ControlPrinter">
-    <Identifier>ControlPrinter</Identifier>
-    <NumberOfInputs>3</NumberOfInputs>
-    <GuiOnly>1</GuiOnly>
-  </processing>
-
   <port_connection>
     <out>AudioAmplifier_1.Audio Output</out>
     <in>bformat_rotation_zoom1.1 Win</in>
@@ -173,18 +166,13 @@ p, li { white-space: pre-wrap; }
   </port_connection>
 
   <control_connection>
-    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
-    <in>ControlSum.Operator 1</in>
-  </control_connection>
-
-  <control_connection>
-    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
-    <in>bformat_rotation_zoom1.Elevation</in>
-  </control_connection>
-
-  <control_connection>
     <out>ControlSum.Sum</out>
     <in>bformat_rotation_zoom1.Azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Dominance.out</out>
+    <in>bformat_rotation_zoom1.Dominance</in>
   </control_connection>
 
   <control_connection>
@@ -214,17 +202,7 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>listener_aer.0</out>
-    <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
-  </control_connection>
-
-  <control_connection>
-    <out>listener_aer.0</out>
     <in>listener_xyz_ypr.ControlPrinter_3</in>
-  </control_connection>
-
-  <control_connection>
-    <out>listener_aer.1</out>
-    <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
   </control_connection>
 
   <control_connection>
@@ -233,8 +211,8 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.2</out>
-    <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
+    <out>listener_aer.1</out>
+    <in>bformat_rotation_zoom1.Elevation</in>
   </control_connection>
 
   <control_connection>
@@ -249,17 +227,7 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>listener_xyz.0</out>
-    <in>AbsoluteCoordinates2RelativeAngles.listener X</in>
-  </control_connection>
-
-  <control_connection>
-    <out>listener_xyz.0</out>
     <in>listener_xyz_ypr.ControlPrinter_0</in>
-  </control_connection>
-
-  <control_connection>
-    <out>listener_xyz.1</out>
-    <in>AbsoluteCoordinates2RelativeAngles.listener Y</in>
   </control_connection>
 
   <control_connection>
@@ -269,42 +237,7 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>listener_xyz.2</out>
-    <in>AbsoluteCoordinates2RelativeAngles.listener Z</in>
-  </control_connection>
-
-  <control_connection>
-    <out>listener_xyz.2</out>
     <in>listener_xyz_ypr.ControlPrinter_2</in>
-  </control_connection>
-
-  <control_connection>
-    <out>source_xyz.0</out>
-    <in>AbsoluteCoordinates2RelativeAngles.source X</in>
-  </control_connection>
-
-  <control_connection>
-    <out>source_xyz.0</out>
-    <in>source_xyz_.ControlPrinter_0</in>
-  </control_connection>
-
-  <control_connection>
-    <out>source_xyz.1</out>
-    <in>AbsoluteCoordinates2RelativeAngles.source Y</in>
-  </control_connection>
-
-  <control_connection>
-    <out>source_xyz.1</out>
-    <in>source_xyz_.ControlPrinter_1</in>
-  </control_connection>
-
-  <control_connection>
-    <out>source_xyz.2</out>
-    <in>AbsoluteCoordinates2RelativeAngles.source Z</in>
-  </control_connection>
-
-  <control_connection>
-    <out>source_xyz.2</out>
-    <in>source_xyz_.ControlPrinter_2</in>
   </control_connection>
 
 </network>
