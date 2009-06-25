@@ -15,13 +15,13 @@ p, li { white-space: pre-wrap; }
     <PortsNumber>1</PortsNumber>
   </processing>
 
-  <processing id="AudioAmplifier_1" position="-328,585" size="141,59" type="AudioAmplifier">
+  <processing id="AudioAmplifier_1" position="-319,554" size="141,59" type="AudioAmplifier">
     <MaxGain>10</MaxGain>
     <InitGain>1</InitGain>
     <PortsNumber>1</PortsNumber>
   </processing>
 
-  <processing id="Gain" position="-623,366" size="188,76" type="OutControlSender">
+  <processing id="Gain" position="-319,360" size="188,76" type="OutControlSender">
     <Min>0</Min>
     <Default>1</Default>
     <Max>10</Max>
@@ -36,37 +36,19 @@ p, li { white-space: pre-wrap; }
     <DistanceThreshold>0</DistanceThreshold>
   </processing>
 
-  <processing id="Loop in-Control" position="-577,143" size="180,76" type="OutControlSender">
-    <Min>0</Min>
-    <Default>1</Default>
-    <Max>1</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
+  <processing id="MonoAudioFileReader" position="-522,548" size="169,59" type="MonoAudioFileReader">
+    <SourceFile></SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
   </processing>
 
-  <processing id="Pause in-Control" position="-413,270" size="180,76" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0</Default>
-    <Max>1</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
-  </processing>
-
-  <processing id="Seek in-Control" position="-555,228" size="180,76" type="OutControlSender">
+  <processing id="Seek in-Control" position="-522,421" size="180,76" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
     <Mapping>Linear</Mapping>
-  </processing>
-
-  <processing id="SndfilePlayer" position="-387,438" size="116,59" type="SndfilePlayer">
-    <SourceFile></SourceFile>
-    <Loop>1</Loop>
-    <SavedNumberOfChannels>1</SavedNumberOfChannels>
   </processing>
 
   <processing id="Vbap3D" position="-17,548" size="85,270" type="Vbap3D">
@@ -79,7 +61,7 @@ p, li { white-space: pre-wrap; }
     <NSinks>15</NSinks>
   </processing>
 
-  <processing id="listener_camera_xyz" position="-163,24" size="165,59" type="MultiLibloSource">
+  <processing id="listener_camera_xyz" position="-105,110" size="165,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/listener_camera/xyz</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
@@ -87,7 +69,7 @@ p, li { white-space: pre-wrap; }
     <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
-  <processing id="listener_camera_ypr" position="-3,23" size="164,59" type="MultiLibloSource">
+  <processing id="listener_camera_ypr" position="55,109" size="164,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/listener_camera/ypr</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
@@ -101,7 +83,7 @@ p, li { white-space: pre-wrap; }
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="source_xyz" position="146,22" size="207,59" type="MultiLibloSource">
+  <processing id="source_xyz" position="204,108" size="207,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/source/source0/xyz</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
@@ -109,7 +91,7 @@ p, li { white-space: pre-wrap; }
     <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
-  <processing id="source_xyz_" position="285,163" size="200,139" type="ControlPrinter">
+  <processing id="source_xyz_" position="343,249" size="200,139" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>3</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
@@ -126,7 +108,7 @@ p, li { white-space: pre-wrap; }
   </port_connection>
 
   <port_connection>
-    <out>SndfilePlayer.out0</out>
+    <out>MonoAudioFileReader.Samples Read</out>
     <in>AudioAmplifier_1.Input Audio</in>
   </port_connection>
 
@@ -231,18 +213,8 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>Loop in-Control.out</out>
-    <in>SndfilePlayer.Loop in-Control</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Pause in-Control.out</out>
-    <in>SndfilePlayer.Pause in-Control</in>
-  </control_connection>
-
-  <control_connection>
     <out>Seek in-Control.out</out>
-    <in>SndfilePlayer.Seek in-Control</in>
+    <in>MonoAudioFileReader.Seek</in>
   </control_connection>
 
   <control_connection>
