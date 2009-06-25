@@ -60,22 +60,10 @@ p, li { white-space: pre-wrap; }
     <DistanceThreshold>0</DistanceThreshold>
   </processing>
 
-  <processing id="Loop in-Control" position="-154,229" size="180,76" type="OutControlSender">
-    <Min>0</Min>
-    <Default>1</Default>
-    <Max>1</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
-  </processing>
-
-  <processing id="Pause in-Control" position="-318,229" size="180,76" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0</Default>
-    <Max>1</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
+  <processing id="MonoAudioFileReader" position="-387,438" size="169,59" type="MonoAudioFileReader">
+    <SourceFile></SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
   </processing>
 
   <processing id="Seek in-Control" position="-484,227" size="180,76" type="OutControlSender">
@@ -85,12 +73,6 @@ p, li { white-space: pre-wrap; }
     <Step>1</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
     <Mapping>Linear</Mapping>
-  </processing>
-
-  <processing id="SndfilePlayer" position="-376,419" size="116,59" type="SndfilePlayer">
-    <SourceFile></SourceFile>
-    <Loop>1</Loop>
-    <SavedNumberOfChannels>1</SavedNumberOfChannels>
   </processing>
 
   <processing id="Spherical2CartesianControl" position="552,443" size="208,59" type="Spherical2CartesianControl"/>
@@ -198,7 +180,7 @@ p, li { white-space: pre-wrap; }
   </port_connection>
 
   <port_connection>
-    <out>SndfilePlayer.out0</out>
+    <out>MonoAudioFileReader.Samples Read</out>
     <in>AudioAmplifier_1.Input Audio</in>
   </port_connection>
 
@@ -268,18 +250,8 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>Loop in-Control.out</out>
-    <in>SndfilePlayer.Loop in-Control</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Pause in-Control.out</out>
-    <in>SndfilePlayer.Pause in-Control</in>
-  </control_connection>
-
-  <control_connection>
     <out>Seek in-Control.out</out>
-    <in>SndfilePlayer.Seek in-Control</in>
+    <in>MonoAudioFileReader.Seek</in>
   </control_connection>
 
   <control_connection>
