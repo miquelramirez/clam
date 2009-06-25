@@ -39,6 +39,13 @@ p, li { white-space: pre-wrap; }
     <Mapping>Linear</Mapping>
   </processing>
 
+  <processing id="GainSource" position="-231,353" size="125,59" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>100</MaxValue>
+    <Step>1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
   <processing id="Loop in-Control" position="-154,229" size="180,76" type="OutControlSender">
     <Min>0</Min>
     <Default>1</Default>
@@ -177,6 +184,11 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>Gain.out</out>
+    <in>AudioAmplifier_1.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>GainSource.output</out>
     <in>AudioAmplifier_1.Gain</in>
   </control_connection>
 
