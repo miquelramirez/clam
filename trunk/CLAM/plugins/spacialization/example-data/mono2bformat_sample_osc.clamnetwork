@@ -146,12 +146,24 @@ p, li { white-space: pre-wrap; }
     <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
+  <processing id="listener_xyz_ypr" position="763,183" size="265,217" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>6</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
   <processing id="source_xyz" position="759,22" size="126,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/source/source/xyz</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
     <EnableMulticast>1</EnableMulticast>
     <MultiCastIP>224.0.0.1</MultiCastIP>
+  </processing>
+
+  <processing id="source_xyz_" position="975,43" size="248,139" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>3</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
   </processing>
 
   <processing id="xyz" position="798,485" size="242,139" type="ControlPrinter">
@@ -223,6 +235,11 @@ p, li { white-space: pre-wrap; }
   <control_connection>
     <out>AbsoluteCoordinates2RelativeAngles.distance</out>
     <in>GainBecauseOfDistance.input distance</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ControlSum.Sum</out>
+    <in>Spherical2CartesianControl.azimuth</in>
   </control_connection>
 
   <control_connection>
@@ -301,13 +318,13 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>azimuth offset.out</out>
-    <in>Spherical2CartesianControl.azimuth</in>
+    <out>listener_aer.0</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
   </control_connection>
 
   <control_connection>
     <out>listener_aer.0</out>
-    <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
+    <in>listener_xyz_ypr.ControlPrinter_3</in>
   </control_connection>
 
   <control_connection>
@@ -316,8 +333,18 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
+    <out>listener_aer.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_4</in>
+  </control_connection>
+
+  <control_connection>
     <out>listener_aer.2</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_aer.2</out>
+    <in>listener_xyz_ypr.ControlPrinter_5</in>
   </control_connection>
 
   <control_connection>
@@ -326,8 +353,18 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
+    <out>listener_xyz.0</out>
+    <in>listener_xyz_ypr.ControlPrinter_0</in>
+  </control_connection>
+
+  <control_connection>
     <out>listener_xyz.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_1</in>
   </control_connection>
 
   <control_connection>
@@ -336,8 +373,18 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
+    <out>listener_xyz.2</out>
+    <in>listener_xyz_ypr.ControlPrinter_2</in>
+  </control_connection>
+
+  <control_connection>
     <out>source_xyz.0</out>
     <in>AbsoluteCoordinates2RelativeAngles.source X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.0</out>
+    <in>source_xyz_.ControlPrinter_0</in>
   </control_connection>
 
   <control_connection>
@@ -346,8 +393,18 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
+    <out>source_xyz.1</out>
+    <in>source_xyz_.ControlPrinter_1</in>
+  </control_connection>
+
+  <control_connection>
     <out>source_xyz.2</out>
     <in>AbsoluteCoordinates2RelativeAngles.source Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.2</out>
+    <in>source_xyz_.ControlPrinter_2</in>
   </control_connection>
 
 </network>
