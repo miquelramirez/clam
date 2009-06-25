@@ -52,8 +52,6 @@ public slots:
 	void OpenAudioFile();
 
 private:
-	void Substitute(std::string & subject, const char * pattern, const char * substitution);
-	
 	std::string GetNetworkNameFromWidgetName(const char * widgetName);
 
 	void ConnectWidgetsWithIntegerControls();
