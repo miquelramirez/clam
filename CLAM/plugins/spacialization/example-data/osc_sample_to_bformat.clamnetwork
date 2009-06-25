@@ -91,7 +91,7 @@ p, li { white-space: pre-wrap; }
   <processing id="bformat_rotation_zoom1" position="241,502" size="193,94" type="bformat_rotation_zoom1"/>
 
   <processing id="listener_aer" position="652,21" size="126,59" type="MultiLibloSource">
-    <OscPath>/SpatDIF/listener/listener/ypr</OscPath>
+    <OscPath>/SpatDIF/listener/listener_camera/ypr</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
     <EnableMulticast>1</EnableMulticast>
@@ -99,7 +99,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="listener_xyz" position="545,20" size="126,59" type="MultiLibloSource">
-    <OscPath>/SpatDIF/listener/listener/xyz</OscPath>
+    <OscPath>/SpatDIF/listener/listener_camera/xyz</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
     <EnableMulticast>1</EnableMulticast>
@@ -178,6 +178,11 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
+    <out>ControlSum.Sum</out>
+    <in>listener_xyz_ypr.ControlPrinter_3</in>
+  </control_connection>
+
+  <control_connection>
     <out>Dominance.out</out>
     <in>bformat_rotation_zoom1.Dominance</in>
   </control_connection>
@@ -214,17 +219,17 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>listener_aer.0</out>
-    <in>listener_xyz_ypr.ControlPrinter_3</in>
-  </control_connection>
-
-  <control_connection>
-    <out>listener_aer.1</out>
-    <in>listener_xyz_ypr.ControlPrinter_4</in>
+    <in>ControlSum.Operator 1</in>
   </control_connection>
 
   <control_connection>
     <out>listener_aer.1</out>
     <in>bformat_rotation_zoom1.Elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_aer.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_4</in>
   </control_connection>
 
   <control_connection>
