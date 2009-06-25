@@ -60,12 +60,26 @@
 #include "ProgressControlWidget.hxx"
 #include <CLAM/ControlSource.hxx>
 
-inline bool FileExists( const std::string filename )
+namespace
+{
+
+static bool FileExists( const std::string filename )
 {
 	//Check for existence of XML Network file
 	std::ifstream file( filename.c_str() );
 	if( !file ) return false;
 	return true;
+}
+
+static void Substitute(std::string & subject, const char * pattern, const char * substitution)
+{
+	for (std::string::size_type position = subject.find(pattern, 0);
+		position!=std::string::npos;
+		position = subject.find(pattern, position))
+	{
+		subject.replace(position, strlen(pattern), substitution);
+	}
+}
 }
 
 namespace CLAM
@@ -87,15 +101,6 @@ protected:
 		Substitute(networkName,"___", " ");
 		Substitute(networkName,"__", ".");
 		return networkName;
-	}
-	void Substitute(std::string & subject, const char * pattern, const char * substitution)
-	{
-		for (std::string::size_type position = subject.find(pattern, 0);
-			position!=std::string::npos;
-			position = subject.find(pattern, position))
-		{
-			subject.replace(position, strlen(pattern), substitution);
-		}
 	}
 	bool ReportMissingProcessing(const std::string & processingName, Network & network, QWidget * userInterface)
 	{
@@ -587,16 +592,6 @@ void PrototypeLoader::UpdatePlayStatus()
 	if (_playButton) _playButton->setEnabled(not _network.IsPlaying());
 	if (_pauseButton) _pauseButton->setEnabled(_network.IsPlaying());
 	if (_stopButton) _stopButton->setEnabled(not _network.IsStopped());
-}
-
-void PrototypeLoader::Substitute(std::string & subject, const char * pattern, const char * substitution)
-{
-	for (std::string::size_type position = subject.find(pattern, 0);
-		position!=std::string::npos;
-		position = subject.find(pattern, position))
-	{
-		subject.replace(position, strlen(pattern), substitution);
-	}
 }
 
 std::string PrototypeLoader::GetNetworkNameFromWidgetName(const char * widgetName)
