@@ -127,7 +127,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="listener_aer" position="652,21" size="126,59" type="MultiLibloSource">
-    <OscPath>/SpatDIF/listener/listener/ypr</OscPath>
+    <OscPath>/SpatDIF/listener/listener_camera/ypr</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
     <EnableMulticast>1</EnableMulticast>
@@ -135,7 +135,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="listener_xyz" position="545,20" size="126,59" type="MultiLibloSource">
-    <OscPath>/SpatDIF/listener/listener/xyz</OscPath>
+    <OscPath>/SpatDIF/listener/listener_camera/xyz</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
     <EnableMulticast>1</EnableMulticast>
