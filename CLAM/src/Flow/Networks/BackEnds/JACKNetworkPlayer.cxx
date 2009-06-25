@@ -170,8 +170,7 @@ void JACKNetworkPlayer::UnRegisterPorts()
     
 void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes)
 {
-	unsigned buffer=0;
-	for (unsigned i = 0; i < _audioSources.size(); ++i)
+	for (unsigned buffer = 0, i = 0; i < _audioSources.size(); ++i)
 	{
 		unsigned port_size = _audioSources[i]->GetPorts().size();
 		for(unsigned port = 0; port < port_size; ++port)
@@ -188,8 +187,7 @@ void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes
 
 void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 {
-	unsigned buffer=0;
-	for (unsigned i = 0; i < _audioSinks.size(); ++i)
+	for (unsigned buffer = 0, i = 0; i < _audioSinks.size(); ++i)
 	{
 		unsigned port_size = _audioSinks[i]->GetPorts().size();
 		for(unsigned port = 0; port < port_size; ++port)
