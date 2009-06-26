@@ -3,15 +3,15 @@ import os
 import glob
 import sys
 
-options = Variables('options.cache', ARGUMENTS)
-options.Add(PathVariable('prefix', 'The prefix where the application will be installed', '/usr/local'))
-options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
-options.Add(BoolVariable('release', 'Enabling compiler optimizations', 'no') )
+options = Options('options.cache', ARGUMENTS)
+options.Add(PathOption('prefix', 'The prefix where the application will be installed', '/usr/local'))
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
+options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
-options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
-options.Add(PathVariable('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
+options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+options.Add(PathOption('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
 if sys.platform=="linux2" :
-	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+	options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
