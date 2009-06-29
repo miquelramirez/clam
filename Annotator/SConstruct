@@ -3,15 +3,15 @@ import os
 import glob
 import sys
 
-options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('prefix', 'The prefix where the application will be installed', ''))
-options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
-options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
-options.Add(PathOption('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
-options.Add(BoolOption('semweb', 'An extractor that requires python (provisional option)', 'no'))
+options = Variables('options.cache', ARGUMENTS)
+options.Add(PathVariable('prefix', 'The prefix where the application will be installed', ''))
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(BoolVariable('release', 'Enabling compiler optimizations', 'no') )
+options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
+options.Add(PathVariable('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
+options.Add(BoolVariable('semweb', 'An extractor that requires python (provisional option)', 'no'))
 if sys.platform=="linux2" :
-	options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []

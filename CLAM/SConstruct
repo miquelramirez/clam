@@ -11,8 +11,8 @@ from clam_dependent_libs_checks import *
 # crosscompiling option is one option we should know on beforehand
 crosscompiling = False
 if sys.platform == 'linux2' :
-	opts = Options('options.cache',ARGUMENTS)
-	opts.Add( BoolOption( 'crossmingw', '', 'no' ))
+	opts = Variables('options.cache',ARGUMENTS)
+	opts.Add( BoolVariable( 'crossmingw', '', 'no' ))
 	crosscompiling = Environment(options=opts)['crossmingw']
 	if crosscompiling : print "Warning: Crosscompiling mode"
 
@@ -21,7 +21,7 @@ isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 def load_config_file_to_env( env, dir ):
-	opts = Options(dir+'/flags.conf')
+	opts = Variables(dir+'/flags.conf')
 	opts.Add( 'CPPPATH', 'CPP PATH')
 	opts.Add( 'CCFLAGS', 'CC FLAGS')
 	opts.Add( 'CPPFLAGS', 'CPP FLAGS')
@@ -33,7 +33,7 @@ def load_config_file_to_env( env, dir ):
 
 def save_config_file_from_env( env, dir ):
 	# workaround due to bug in scons (if we add the flag after loading it will add "" to the new flagand will fail
-	opts = Options()
+	opts = Variables()
 	opts.Add( 'CPPPATH', 'CPP PATH', '')
 	opts.Add( 'CCFLAGS', 'CC FLAGS', '')
 	opts.Add( 'CPPFLAGS', 'CPP FLAGS', '')
@@ -119,51 +119,51 @@ def configureModules( clam_env ) :
 # helper functions
 def setup_build_options( env ) :
 	# configuration options:
-	opts = Options('options.cache')
+	opts = Variables('options.cache')
 	
 	# global options
-	opts.Add( PathOption( 'prefix', 'Install location for CLAM', '/usr/local'))
-	opts.Add( PathOption( 'prefix_for_packaging', 'Install location when packaging (just for .deb creation)', '.'))
+	opts.Add( PathVariable( 'prefix', 'Install location for CLAM', '/usr/local'))
+	opts.Add( PathVariable( 'prefix_for_packaging', 'Install location when packaging (just for .deb creation)', '.'))
 	if isWindowsPlatform :
-		opts.Add( PathOption( 'sandbox_path', 'The working directory in mingw where the external libraries are placed', '' ) )
-	opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no'))
-	opts.Add( BoolOption( 'intel_optimize', 'Build CLAM with newer intel specific optimizations', 'no'))
-	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
-	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ))
+		opts.Add( PathVariable( 'sandbox_path', 'The working directory in mingw where the external libraries are placed', '' ) )
+	opts.Add( BoolVariable( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no'))
+	opts.Add( BoolVariable( 'intel_optimize', 'Build CLAM with newer intel specific optimizations', 'no'))
+	opts.Add( BoolVariable( 'double', 'CLAM TData type will be double','no'))
+	opts.Add( BoolVariable( 'checks', 'Postcondition checks enabled', 'yes' ))
 	if sys.platform == "linux2" :
-		opts.Add( BoolOption( 'crossmingw', '', 'no' ))
+		opts.Add( BoolVariable( 'crossmingw', '', 'no' ))
 
-	opts.Add( BoolOption( 'verbose', 'Display commands', False) )
-	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
-	opts.Add( BoolOption( 'optimize_and_lose_precision', 'Use tabulated trigonometric functions and the like', 'no' )) 
-	opts.Add( BoolOption( 'force_avoid_configure', 'Avoid configure phase. Useful for Eclipse scons plugin. Enable it only if you know what you are doing', 'no' ) )
+	opts.Add( BoolVariable( 'verbose', 'Display commands', False) )
+	opts.Add( BoolVariable( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
+	opts.Add( BoolVariable( 'optimize_and_lose_precision', 'Use tabulated trigonometric functions and the like', 'no' )) 
+	opts.Add( BoolVariable( 'force_avoid_configure', 'Avoid configure phase. Useful for Eclipse scons plugin. Enable it only if you know what you are doing', 'no' ) )
 	# clam_core options
-	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
+	opts.Add( EnumVariable( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
 	if not isWindowsPlatform :
-		opts.Add( BoolOption( 'with_jack', 'Enables/Disable JACK support', 'yes') )
+		opts.Add( BoolVariable( 'with_jack', 'Enables/Disable JACK support', 'yes') )
 	else :
-		opts.Add( BoolOption( 'with_jack', 'Enables/Disable JACK support', 'no') )
+		opts.Add( BoolVariable( 'with_jack', 'Enables/Disable JACK support', 'no') )
 
 	ladspa_option = (sys.platform == 'linux2' and not crosscompiling)
-	opts.Add( BoolOption( 'with_ladspa', 'Ladspa plugin support', ladspa_option) )
+	opts.Add( BoolVariable( 'with_ladspa', 'Ladspa plugin support', ladspa_option) )
 	
 	# clam_processing options
-	opts.Add( BoolOption( 'with_fftw3', 'Selects whether to use fftw3 or not', 'yes'))
-	opts.Add( BoolOption( 'with_nr_fft', 'Selects whether to use Numerical Recipes fft algorithm implementation or not', 'yes') )
+	opts.Add( BoolVariable( 'with_fftw3', 'Selects whether to use fftw3 or not', 'yes'))
+	opts.Add( BoolVariable( 'with_nr_fft', 'Selects whether to use Numerical Recipes fft algorithm implementation or not', 'yes') )
 
 	# clam_audioio options
-	opts.Add( BoolOption( 'with_sndfile', 'Enables PCM files reading and writing', 'yes' ) )	
-	opts.Add( BoolOption( 'with_oggvorbis', 'Enables ogg/vorbis reading and writing support', 'yes' ) )
-	opts.Add( BoolOption( 'with_mad', 'Enables mpeg 1 layer 3 files reading and writing support', 'yes' ) )
-	opts.Add( BoolOption( 'with_id3', 'Enables support for accesing ID3 tags on mpeg audio streams', 'yes') )
-	opts.Add( BoolOption( 'with_portaudio', 'Enables audio device I/O using PortAudio', 'yes') )
+	opts.Add( BoolVariable( 'with_sndfile', 'Enables PCM files reading and writing', 'yes' ) )	
+	opts.Add( BoolVariable( 'with_oggvorbis', 'Enables ogg/vorbis reading and writing support', 'yes' ) )
+	opts.Add( BoolVariable( 'with_mad', 'Enables mpeg 1 layer 3 files reading and writing support', 'yes' ) )
+	opts.Add( BoolVariable( 'with_id3', 'Enables support for accesing ID3 tags on mpeg audio streams', 'yes') )
+	opts.Add( BoolVariable( 'with_portaudio', 'Enables audio device I/O using PortAudio', 'yes') )
 	if isLinuxPlatform :
-		opts.Add( BoolOption( 'with_alsa', 'Enables PCM and MIDI device I/O through ALSA', 'yes' ) )
+		opts.Add( BoolVariable( 'with_alsa', 'Enables PCM and MIDI device I/O through ALSA', 'yes' ) )
 	elif isDarwinPlatform :
-		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','portaudio') ) )
+		opts.Add( EnumVariable( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','portaudio') ) )
 	elif isWindowsPlatform :
-		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
-	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
+		opts.Add( EnumVariable( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
+	opts.Add( BoolVariable( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
 
 	opts.Add( 'distcc_hosts', 'Defines compiling hosts, if defined enables the distcc compiler', '')
 	

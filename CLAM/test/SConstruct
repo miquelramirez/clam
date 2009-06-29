@@ -5,16 +5,16 @@ import sys, os
 
 clamToolPath="../scons/sconstools"
 
-options = Options('options.cache')
+options = Variables('options.cache')
 
-options.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '') )
+options.Add( PathVariable( 'clam_prefix', 'Prefix were CLAM was installed', '') )
 if sys.platform == 'darwin' :
-	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '/opt/local' ))
+	options.Add( PathVariable( 'cppunit_prefix', 'Prefix were cppunit was installed', '/opt/local' ))
 else:
-	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '/usr' ))
-options.Add( BoolOption( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
-options.Add( PathOption( 'test_data_path', 'Path to the TestDataPrefix', '') )
-options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode in linux', 'no') )
+	options.Add( PathVariable( 'cppunit_prefix', 'Prefix were cppunit was installed', '/usr' ))
+options.Add( BoolVariable( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
+options.Add( PathVariable( 'test_data_path', 'Path to the TestDataPrefix', '') )
+options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode in linux', 'no') )
 
 toolchain='default'
 if sys.platform == 'win32': toolchain = 'mingw'
@@ -51,7 +51,7 @@ if sys.platform == 'darwin':
 	env.AppendUnique( LIBPATH=['/opt/local/lib'] )
 
 if 'crossmingw' in env['TOOLS']:
-#	env.ParseOptions( 'PKG_CONFIG=~/CajitasDeArena/mingw/local/lib/pkgconfig pkg-config -libs'  )
+#	env.ParseVariables( 'PKG_CONFIG=~/CajitasDeArena/mingw/local/lib/pkgconfig pkg-config -libs'  )
 	env.Append( LIBS="xerces-c2_8_0 xml++-2.6 xml2 glibmm-2.4 gobject-2.0 sigc-2.0 glib-2.0".split())
 
 
