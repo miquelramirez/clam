@@ -3,11 +3,11 @@ import os
 import glob
 import sys
 
-options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('prefix', 'The prefix where the application will be installed', ''))
-options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
-options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+options = Variables('options.cache', ARGUMENTS)
+options.Add(PathVariable('prefix', 'The prefix where the application will be installed', ''))
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(BoolVariable('release', 'Enabling compiler optimizations', 'no') )
+options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
 
 
 def scanFiles(pattern, paths) :

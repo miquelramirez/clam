@@ -2,11 +2,11 @@ import os, sys
 import glob
 
 options_filename = 'options.cache'
-opts = Options(options_filename,ARGUMENTS)
-#TODO: opts.Add(PathOption('prefix', 'The prefix where the application will be installed', ''))
-opts.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+opts = Variables(options_filename,ARGUMENTS)
+#TODO: opts.Add(PathVariable('prefix', 'The prefix where the application will be installed', ''))
+opts.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 opts.Add(PackageOption('plugins_prefix', 'The prefix where the CLAM plugins are installed. Use No for disable them and Yes to use the same CLAM installation path.', 'no'))
-opts.Add(BoolOption('debug', 'Enables debug symbols', 'no'))
+opts.Add(BoolVariable('debug', 'Enables debug symbols', 'no'))
 opts.Add( 'distcc_hosts', 'Defines compiling hosts, if defined enables the distcc compiler', '')
 env = Environment(ENV=os.environ, options=opts)
 Help(opts.GenerateHelpText(env))

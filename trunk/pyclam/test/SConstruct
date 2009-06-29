@@ -1,8 +1,8 @@
 import os, sys
 
 options_filename = 'options.cache'
-opts = Options(options_filename,ARGUMENTS)
-opts.Add( PathOption( 'test_data_path', 'Path to the TestDataPrefix', '') )
+opts = Variables(options_filename,ARGUMENTS)
+opts.Add( PathVariable( 'test_data_path', 'Path to the TestDataPrefix', '') )
 env = Environment(ENV=os.environ, options=opts)
 Help(opts.GenerateHelpText(env))
 
