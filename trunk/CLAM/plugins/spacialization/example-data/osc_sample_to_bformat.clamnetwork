@@ -7,12 +7,6 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="AudioAmplifier_1" position="-75,498" size="141,94" type="AudioAmplifier">
-    <MaxGain>10</MaxGain>
-    <InitGain>1</InitGain>
-    <PortsNumber>4</PortsNumber>
-  </processing>
-
   <processing id="BFormat_output" position="663,509" size="138,111" type="AudioSink">
     <NSinks>4</NSinks>
   </processing>
@@ -30,13 +24,10 @@ p, li { white-space: pre-wrap; }
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="Gain" position="-95,335" size="188,76" type="OutControlSender">
-    <Min>0</Min>
-    <Default>1</Default>
-    <Max>10</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
+  <processing id="Gain" position="-75,498" size="141,94" type="AudioAmplifier">
+    <MaxGain>10</MaxGain>
+    <InitGain>1</InitGain>
+    <PortsNumber>4</PortsNumber>
   </processing>
 
   <processing id="GainSource" position="-231,353" size="125,59" type="ControlSource">
@@ -44,6 +35,15 @@ p, li { white-space: pre-wrap; }
     <MaxValue>100</MaxValue>
     <Step>1</Step>
     <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="Gain_" position="-95,335" size="188,76" type="OutControlSender">
+    <Min>0</Min>
+    <Default>1</Default>
+    <Max>10</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
   </processing>
 
   <processing id="Loop in-Control" position="-154,229" size="180,76" type="OutControlSender">
@@ -113,43 +113,43 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <port_connection>
-    <out>AudioAmplifier_1.Audio Output</out>
+    <out>Gain.Audio Output</out>
     <in>bformat_rotation_zoom1.1 Win</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioAmplifier_1.Audio Output 1</out>
+    <out>Gain.Audio Output 1</out>
     <in>bformat_rotation_zoom1.2 Xin</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioAmplifier_1.Audio Output 2</out>
+    <out>Gain.Audio Output 2</out>
     <in>bformat_rotation_zoom1.3 Yin</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioAmplifier_1.Audio Output 3</out>
+    <out>Gain.Audio Output 3</out>
     <in>bformat_rotation_zoom1.4 Zin</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out0</out>
-    <in>AudioAmplifier_1.Input Audio</in>
+    <in>Gain.Input Audio</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out1</out>
-    <in>AudioAmplifier_1.Input Audio 1</in>
+    <in>Gain.Input Audio 1</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out2</out>
-    <in>AudioAmplifier_1.Input Audio 2</in>
+    <in>Gain.Input Audio 2</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out3</out>
-    <in>AudioAmplifier_1.Input Audio 3</in>
+    <in>Gain.Input Audio 3</in>
   </port_connection>
 
   <port_connection>
@@ -188,13 +188,13 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>Gain.out</out>
-    <in>AudioAmplifier_1.Gain</in>
+    <out>GainSource.output</out>
+    <in>Gain.Gain</in>
   </control_connection>
 
   <control_connection>
-    <out>GainSource.output</out>
-    <in>AudioAmplifier_1.Gain</in>
+    <out>Gain_.out</out>
+    <in>Gain.Gain</in>
   </control_connection>
 
   <control_connection>
