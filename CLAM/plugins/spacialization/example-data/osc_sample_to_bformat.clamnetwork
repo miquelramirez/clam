@@ -90,7 +90,7 @@ p, li { white-space: pre-wrap; }
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="listener_aer" position="360,54" size="126,59" type="MultiLibloSource">
+  <processing id="listener_ypr" position="360,54" size="126,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/listener_camera/ypr</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
@@ -218,27 +218,27 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.0</out>
+    <out>listener_ypr.0</out>
     <in>ControlSum.Operator 1</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.1</out>
+    <out>listener_ypr.1</out>
     <in>listener_xyz_ypr.ControlPrinter_4</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.1</out>
+    <out>listener_ypr.1</out>
     <in>BFormatRotationZoom.elevation</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.2</out>
+    <out>listener_ypr.2</out>
     <in>listener_xyz_ypr.ControlPrinter_5</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.2</out>
+    <out>listener_ypr.2</out>
     <in>BFormatRotationZoom.roll</in>
   </control_connection>
 
