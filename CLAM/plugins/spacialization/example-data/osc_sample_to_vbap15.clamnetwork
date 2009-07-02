@@ -68,16 +68,16 @@ p, li { white-space: pre-wrap; }
     <NSinks>15</NSinks>
   </processing>
 
-  <processing id="listener_camera_xyz" position="-105,110" size="165,59" type="MultiLibloSource">
-    <OscPath>/SpatDIF/listener/listener_camera/xyz</OscPath>
+  <processing id="listener_xyz" position="-105,110" size="165,59" type="MultiLibloSource">
+    <OscPath>/SpatDIF/listener/listener/xyz</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
     <EnableMulticast>1</EnableMulticast>
     <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
-  <processing id="listener_camera_ypr" position="55,109" size="164,59" type="MultiLibloSource">
-    <OscPath>/SpatDIF/listener/listener_camera/ypr</OscPath>
+  <processing id="listener_ypr" position="55,109" size="164,59" type="MultiLibloSource">
+    <OscPath>/SpatDIF/listener/listener/ypr</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
     <EnableMulticast>1</EnableMulticast>
@@ -230,62 +230,62 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_xyz.0</out>
+    <out>listener_xyz.0</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener X</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_xyz.0</out>
+    <out>listener_xyz.0</out>
     <in>listener_xyz_ypr.ControlPrinter_0</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_xyz.1</out>
+    <out>listener_xyz.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener Y</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_xyz.1</out>
+    <out>listener_xyz.1</out>
     <in>listener_xyz_ypr.ControlPrinter_1</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_xyz.2</out>
+    <out>listener_xyz.2</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener Z</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_xyz.2</out>
+    <out>listener_xyz.2</out>
     <in>listener_xyz_ypr.ControlPrinter_2</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_ypr.0</out>
+    <out>listener_ypr.0</out>
     <in>listener_xyz_ypr.ControlPrinter_3</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_ypr.0</out>
+    <out>listener_ypr.0</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_ypr.1</out>
+    <out>listener_ypr.1</out>
     <in>listener_xyz_ypr.ControlPrinter_4</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_ypr.1</out>
+    <out>listener_ypr.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_ypr.2</out>
+    <out>listener_ypr.2</out>
     <in>listener_xyz_ypr.ControlPrinter_5</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_camera_ypr.2</out>
+    <out>listener_ypr.2</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
   </control_connection>
 
