@@ -126,7 +126,7 @@ p, li { white-space: pre-wrap; }
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="listener_aer" position="652,21" size="126,59" type="MultiLibloSource">
+  <processing id="listener_ypr" position="652,21" size="126,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/listener_camera/ypr</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
@@ -314,32 +314,32 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.0</out>
+    <out>listener_ypr.0</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.0</out>
+    <out>listener_ypr.0</out>
     <in>listener_xyz_ypr.ControlPrinter_3</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.1</out>
+    <out>listener_ypr.1</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.1</out>
+    <out>listener_ypr.1</out>
     <in>listener_xyz_ypr.ControlPrinter_4</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.2</out>
+    <out>listener_ypr.2</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
   </control_connection>
 
   <control_connection>
-    <out>listener_aer.2</out>
+    <out>listener_ypr.2</out>
     <in>listener_xyz_ypr.ControlPrinter_5</in>
   </control_connection>
 
