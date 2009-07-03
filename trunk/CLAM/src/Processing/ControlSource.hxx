@@ -30,11 +30,12 @@ namespace CLAM{
 	class ControlSourceConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE ( ControlSourceConfig, 4, ProcessingConfig);
-		DYN_ATTRIBUTE(0,public,TData, MinValue);
+		DYNAMIC_TYPE_USING_INTERFACE ( ControlSourceConfig, 5, ProcessingConfig);
+		DYN_ATTRIBUTE(0,public,TData, MinValue);		
 		DYN_ATTRIBUTE(1,public,TData, MaxValue);
-		DYN_ATTRIBUTE(2,public,TData, Step);
-		DYN_ATTRIBUTE(3,public, std::string, UnitName);
+		DYN_ATTRIBUTE(2,public,TData, DefaultValue);
+		DYN_ATTRIBUTE(3,public,TData, Step);
+		DYN_ATTRIBUTE(4,public, std::string, UnitName);
 	protected:
 		void DefaultInit()
 		{
@@ -42,6 +43,7 @@ namespace CLAM{
 			UpdateData();
 			SetMinValue(0.0);
 			SetMaxValue(100.0);
+			SetDefaultValue(50.0);
 			SetStep(1.0);
 			SetUnitName("-");
 		}
