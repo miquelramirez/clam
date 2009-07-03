@@ -34,3 +34,4 @@ qt-mac-opensource-src-4.2.2/tools/designer/src/components/formeditor/images/widg
 /usr/share/icons/crystalsvg/32x32/actions/text_right.png
 /usr/share/icons/crystalsvg/32x32/actions/text_center.png
 /usr/share/icons/crystalsvg/32x32/actions/text_block.png
+http://upload.wikimedia.org/wikipedia/commons/c/c4/LV2_shaded_black.svg
