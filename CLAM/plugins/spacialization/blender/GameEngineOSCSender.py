@@ -113,4 +113,4 @@ def main(controller):
 
 # This lets you can import the script without running it
 if __name__ == '__main__':
-	main()
+	main(GameLogic.getCurrentController())
