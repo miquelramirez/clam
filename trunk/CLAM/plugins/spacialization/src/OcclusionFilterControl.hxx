@@ -49,6 +49,12 @@ class OcclusionFilterControl : public CLAM::Processing
 	float _minCutoffFrequency,_maxCutoffFrequency;
 	float _occlusionFactor;
 
+	int _framesForFade;
+	int _counterFrames;
+
+	enum StatesEnum {DirectSound,FadeOut,Occlusion,FadeIn};
+	StatesEnum _actualState;
+
 public:
 	const char* GetClassName() const { return "OcclusionFilterControl"; }
 	OcclusionFilterControl(const Config& config= Config())
@@ -59,6 +65,10 @@ public:
 		, _directSoundPressureWithOcclusions ("direct sound pressure with occlusions",this)
 		, _gainOutControl ("calculated output gain",this)
 		, _cutoffFrequencyOutControl("LP cutoff frequency",this)
+
+		, _framesForFade(5)
+		, _counterFrames(0)
+		, _actualState(DirectSound)
 	{
 		Configure( config );
 	}
