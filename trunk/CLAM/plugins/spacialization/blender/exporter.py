@@ -41,6 +41,10 @@ _choreoHeader="#ClamChoreoVersion 1.3\n"
 
 #options:
 _convertToTriangles=True
+#default properties in case there is a geometric object without assigned acoustic material
+_defaultImpedance=complex(100.,0.)
+_defaultDiffusion=0.15
+_defaultMaterialName="default_material"
 
 #templates:
 FaceLineTemplate="%(verts)s %(impedanceReal)f %(impedanceImag)f %(diffusion)f %(materialName)s\n"
@@ -92,6 +96,9 @@ def geometryExport(scene):
 #	for object in scene.objects:
 #	print "---------- acoustic objects: %s" % list(Acoustic.getAcousticObjects(scene))
 	for object in Acoustic.getAcousticObjects(scene):
+		impedance=None
+		diffusion=None
+		materialName=""
 		print "Reading object: %s" % object.name
 #		data=bpy.data.meshes[object.getData().name]
 		if type(object.getData())!=Blender.Types.NMeshType:
@@ -101,35 +108,37 @@ def geometryExport(scene):
 			print "%s is an actor, skipping" % object.name
 			continue
 		materials=Acoustic.getObjectMaterials(object)
-		if materials==None or materials==[]: 
-			print "doesnt contains acoustic material, skipping..."
-			continue #if doesnt have any acoustic (by name) material, doesnt export
+		if (materials==None or materials==[]): 
+			print "\tdoesn't contains acoustic materials,",
+			if Acoustic.getObjectSoundTypeGameProperty(object)!='geometry':
+				print 'nor game object property "sound_type"=="geometry", skipping...'
+				continue #if doesnt have any acoustic (by name) material, doesnt export
+			print 'WARNING: setting material as "%s", with default acoustic properties (impedance: %s, diff.: %s)' % (_defaultMaterialName,str(_defaultImpedance),str(_defaultDiffusion))
+			impedance=_defaultImpedance
+			diffusion=_defaultDiffusion
+			materialName=_defaultMaterialName
 		BPyNMesh.ApplySizeAndRotation(object)
-#		data=object.getData() # do it again after transformation
 		data=object.getData(False,True) # get mesh instead name or NMesh (name_only=False / mesh=True)
 		print "Exporting %s..."%object.name
 		bufferObject= "<%s>\n" % object.name
 		bufferObject+= "<VERTS>\n"
-#		location=object.getLocation()
 		location=object.mat.translationPart()
 		for vert in data.verts:
 			bufferObject+="%f %f %f\n" % (vert.co[0]+location[0],vert.co[1]+location[1],vert.co[2]+location[2])
 		bufferObject+="<FACES>\n"
 
-		# else, use first linked material with acoustic properties 
-		impedance=complex(0,0)
-		diffusion=0.0
-		materialName=""
-		for material in materials:
-			print material.name
-			impedance=Acoustic.getImpedance(material)
-			if (impedance==None):
-				continue
-			diffusion=Acoustic.getDiffusion(material)
-			if (diffusion==None):
-				continue
-			materialName=material.name
-			break
+		if impedance==None and diffusion==None: # it doesn't have assigned the default material
+			# use first linked material with acoustic properties 
+			for material in materials:
+				print material.name
+				impedance=Acoustic.getImpedance(material)
+				if (impedance==None):
+					continue
+				diffusion=Acoustic.getDiffusion(material)
+				if (diffusion==None):
+					continue
+				materialName=material.name
+				break
 		if (impedance==None) or (diffusion==None):
 			print "any material have acoustic parameters, skipping..."
 			continue 

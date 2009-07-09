@@ -111,11 +111,16 @@ def getObjectMaterials(object,scene=Blender.Scene.GetCurrent()):
 			acousticMaterials.append(material)
 	return acousticMaterials
 
+def getObjectSoundTypeGameProperty(object):
+	properties_names= [property.name for property in object.game_properties]
+	if 'sound_type' not in properties_names:
+		return None
+	return object.getProperty('sound_type').getData()
 
 def getAcousticObjects(scene=Blender.Scene.GetCurrent()):
 	objects=[]
 	for object in scene.objects:
-		if (getObjectMaterials(object,scene)!=None):
+		if (getObjectMaterials(object,scene)!=None or getObjectSoundTypeGameProperty(object)=='geometry'):
 			objects.append(object)
 	return objects
 	
