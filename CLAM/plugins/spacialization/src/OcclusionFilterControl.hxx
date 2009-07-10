@@ -47,10 +47,10 @@ class OcclusionFilterControl : public CLAM::Processing
 	CLAM::FloatOutControl _cutoffFrequencyOutControl;
 
 	float _minCutoffFrequency,_maxCutoffFrequency;
-	float _occlusionFactor;
+	float _minOcclusionFactor;
 
-	int _framesForFade;
-	int _counterFrames;
+	int _framesForFade; // number of frames to make the fades in/out
+	int _counterFrames; // counter of frames of fades
 
 	enum StatesEnum {DirectSound,FadeOut,Occlusion,FadeIn};
 	StatesEnum _actualState;
@@ -66,7 +66,7 @@ public:
 		, _gainOutControl ("calculated output gain",this)
 		, _cutoffFrequencyOutControl("LP cutoff frequency",this)
 
-		, _framesForFade(5)
+		, _framesForFade(18)
 		, _counterFrames(0)
 		, _actualState(DirectSound)
 	{
@@ -80,12 +80,14 @@ public:
 
 	bool Do()
 	{
+		double directSoundPressure=_directSoundPressureWithOcclusions.GetLastValue();
+		const bool isActuallyOccluded = (directSoundPressure==0);
 		double distance=_distance.GetLastValue();
 		double exponent=_exponent.GetLastValue();
 		double minimumDistance=_exponent.GetLastValue();
 		double distanceThreshold=_distanceThreshold.GetLastValue();
 		double gain=0;
-		double directSoundPressure=_directSoundPressureWithOcclusions.GetLastValue();
+
 		if (minimumDistance==0)
 			minimumDistance=0.0001; // avoid by zero division
 		if (distance < minimumDistance)
@@ -93,9 +95,51 @@ public:
 		if (distanceThreshold==0 or distance <= distanceThreshold)
 			gain=1.0/pow(distance,exponent);
 
-		if (directSoundPressure==0)
-			gain*=_occlusionFactor;
+		if (_counterFrames==_framesForFade)
+		{
+			if (_actualState==FadeOut)
+				_actualState=Occlusion;
+			if (_actualState==FadeIn)
+				_actualState=DirectSound;
+		}
 
+		double occlusionFactor=1;
+
+		switch (_actualState)
+		{
+			case FadeOut:
+				_counterFrames+=1;
+			case Occlusion:
+				if (isActuallyOccluded) //if it keeps in FadeOut/Occlusion mode
+					occlusionFactor = 1. - float(_counterFrames) / _framesForFade;
+				else
+				{
+					_actualState=FadeIn;
+					_counterFrames=1;
+					occlusionFactor =  float(_counterFrames) / _framesForFade;
+				}
+				break;
+			case FadeIn:
+				_counterFrames+=1;
+			case DirectSound:
+			default:
+				if (not isActuallyOccluded)
+					occlusionFactor = float(_counterFrames) / _framesForFade;
+				else
+				{
+					_actualState=FadeOut;
+					_counterFrames=1;
+					occlusionFactor = 1. - float(_counterFrames) / _framesForFade;
+				}
+				break;
+		}
+
+		if (isActuallyOccluded)
+		{
+			occlusionFactor=occlusionFactor*(1.-_minOcclusionFactor);
+			occlusionFactor+=_minOcclusionFactor;
+			gain*=occlusionFactor;
+		}
 		_gainOutControl.SendControl(gain);
 		_cutoffFrequencyOutControl.SendControl( directSoundPressure==0 ? _minCutoffFrequency : _maxCutoffFrequency);
 		return true;
@@ -112,7 +156,7 @@ public:
 
 		_minCutoffFrequency = _config.HasMinCutoffFrequency() ? _config.GetMinCutoffFrequency() : 350;
 		_maxCutoffFrequency = _config.HasMaxCutoffFrequency() ? _config.GetMaxCutoffFrequency() : 24000;
-		_occlusionFactor = _config.HasOcclusionGainFactor() ? _config.GetOcclusionGainFactor() : 0.3;
+		_minOcclusionFactor = _config.HasOcclusionGainFactor() ? _config.GetOcclusionGainFactor() : 0.3;
 		
 		return true;
 	}
