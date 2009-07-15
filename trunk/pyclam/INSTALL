@@ -26,6 +26,7 @@ Note: By now only tested in linux, but all the tools are cross-platform and shou
 
 After those steps you should get the clam.so ready to use.
 
+WARNING: At the moment it has been tested sucesfully with a gcc-4.2 version. You could experience some problems with gcc-4.3. Seem there is a problem parsing unistd.h (see the error when 'gccxml /usr/include/unistd.h').
 
 === Use ===
 * Put the clam.so file in a visible place for your scripts (PYTHONPATH or the directory where your scripts are placed).
