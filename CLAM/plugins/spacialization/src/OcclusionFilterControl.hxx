@@ -103,6 +103,7 @@ public:
 		}
 
 		double occlusionFactor=1;
+		double filterGainFactor=1;
 
 		switch (_actualState)
 		{
@@ -133,14 +134,17 @@ public:
 				break;
 		}
 
+
 //		if (isActuallyOccluded)
 //		{
+			float cutoffFrequency=occlusionFactor*float(_maxCutoffFrequency-_minCutoffFrequency);
+			cutoffFrequency+=_minCutoffFrequency;
 			occlusionFactor=occlusionFactor*(1.-_minOcclusionFactor);
 			occlusionFactor+=_minOcclusionFactor;
 			gain*=occlusionFactor;
 //		}
 		_gainOutControl.SendControl(gain);
-		_cutoffFrequencyOutControl.SendControl( directSoundPressure==0 ? _minCutoffFrequency : _maxCutoffFrequency);
+		_cutoffFrequencyOutControl.SendControl(cutoffFrequency);
 		return true;
 	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
