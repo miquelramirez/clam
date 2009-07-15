@@ -222,7 +222,7 @@ namespace CLAM
 	}
 	unsigned Processing::BackendSampleRate()
 	{
-		return _network? _network->BackendBufferSize() : 44100;
+		return _network? _network->BackendSampleRate() : 44100;
 	}
 
 	void Processing::RegisterOutPort(OutPortBase* out) 
