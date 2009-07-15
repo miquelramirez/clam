@@ -155,9 +155,10 @@ public:
 		_distanceThreshold.DoControl(distanceThreshold);
 
 		_minCutoffFrequency = _config.HasMinCutoffFrequency() ? _config.GetMinCutoffFrequency() : 350;
-		_maxCutoffFrequency = _config.HasMaxCutoffFrequency() ? _config.GetMaxCutoffFrequency() : 24000;
+		const unsigned nyquistFreq=unsigned (BackendSampleRate()/2);
+		_maxCutoffFrequency = _config.HasMaxCutoffFrequency() ? _config.GetMaxCutoffFrequency() : nyquistFreq;
 		_minOcclusionFactor = _config.HasOcclusionGainFactor() ? _config.GetOcclusionGainFactor() : 0.3;
-		
+
 		return true;
 	}
 };
