@@ -19,7 +19,7 @@ class OcclusionFilterControl : public CLAM::Processing
 		DYN_ATTRIBUTE(0,public,TData,DistanceExponent);
 		DYN_ATTRIBUTE(1,public,TData,MinimumDistance);
 		DYN_ATTRIBUTE(2,public,TData,DistanceThreshold);
-		DYN_ATTRIBUTE(3,public,TData,MaxCutoffFrequency);
+		DYN_ATTRIBUTE(3,public,TData,FadeInMs);
 		DYN_ATTRIBUTE(4,public,TData,MinCutoffFrequency);
 		DYN_ATTRIBUTE(5,public,TData,OcclusionGainFactor);
 	protected:
@@ -30,7 +30,7 @@ class OcclusionFilterControl : public CLAM::Processing
 			SetDistanceExponent(1.0);
 			SetMinimumDistance(1.0);
 			SetDistanceThreshold(0.0);	//0 means no limit
-			SetMaxCutoffFrequency(24000.);
+			SetFadeInMs(500.);
 			SetMinCutoffFrequency(350.);
 			SetOcclusionGainFactor(0.3);
 		};
@@ -65,8 +65,7 @@ public:
 		, _directSoundPressureWithOcclusions ("direct sound pressure with occlusions",this)
 		, _gainOutControl ("calculated output gain",this)
 		, _cutoffFrequencyOutControl("LP cutoff frequency",this)
-
-		, _framesForFade(18)
+		, _framesForFade(0)
 		, _counterFrames(0)
 		, _actualState(DirectSound)
 	{
@@ -134,12 +133,12 @@ public:
 				break;
 		}
 
-		if (isActuallyOccluded)
-		{
+//		if (isActuallyOccluded)
+//		{
 			occlusionFactor=occlusionFactor*(1.-_minOcclusionFactor);
 			occlusionFactor+=_minOcclusionFactor;
 			gain*=occlusionFactor;
-		}
+//		}
 		_gainOutControl.SendControl(gain);
 		_cutoffFrequencyOutControl.SendControl( directSoundPressure==0 ? _minCutoffFrequency : _maxCutoffFrequency);
 		return true;
@@ -156,7 +155,8 @@ public:
 
 		_minCutoffFrequency = _config.HasMinCutoffFrequency() ? _config.GetMinCutoffFrequency() : 350;
 		const unsigned nyquistFreq=unsigned (BackendSampleRate()/2);
-		_maxCutoffFrequency = _config.HasMaxCutoffFrequency() ? _config.GetMaxCutoffFrequency() : nyquistFreq;
+		_framesForFade=float(_config.GetFadeInMs()*0.001) / (float(BackendBufferSize())/float(BackendSampleRate()));
+ 		_maxCutoffFrequency = nyquistFreq;
 		_minOcclusionFactor = _config.HasOcclusionGainFactor() ? _config.GetOcclusionGainFactor() : 0.3;
 
 		return true;
