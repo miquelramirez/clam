@@ -40,7 +40,7 @@ _choreoFilename="exported_coreo.data"
 _choreoHeader="#ClamChoreoVersion 1.3\n"
 
 #options:
-_convertToTriangles=True
+_convertToTriangles=False #test if it works, simplifies the exportation process for linked objects
 #default properties in case there is a geometric object without assigned acoustic material
 _defaultImpedance=complex(100.,0.)
 _defaultDiffusion=0.15
@@ -111,7 +111,7 @@ def geometryExport(scene):
 		if (materials==None or materials==[]): 
 			print "\tdoesn't contains acoustic materials,",
 			if Acoustic.getObjectSoundTypeGameProperty(object)!='geometry':
-				print 'nor game object property "sound_type"=="geometry", skipping...'
+				print 'no game object property "sound_type"=="geometry", skipping...'
 				continue #if doesnt have any acoustic (by name) material, doesnt export
 			print 'WARNING: setting material as "%s", with default acoustic properties (impedance: %s, diff.: %s)' % (_defaultMaterialName,str(_defaultImpedance),str(_defaultDiffusion))
 			impedance=_defaultImpedance
