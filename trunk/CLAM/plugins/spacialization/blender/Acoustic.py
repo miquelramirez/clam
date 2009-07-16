@@ -69,7 +69,7 @@ def makeProperty(object,propertyName,propertyType):
 
 # listeners related methods
 def isListener(object):
-	return testObjectName(_listenersPatternId,object)
+	return (testObjectName(_listenersPatternId,object) or getObjectSoundTypeGameProperty(object)=='listener')
 def getListeners(scene=Blender.Scene.GetCurrent()):
 	listeners=[]
 	for object in scene.objects:
@@ -79,7 +79,7 @@ def getListeners(scene=Blender.Scene.GetCurrent()):
 
 # acoustic sources related methods
 def isSource(object):
-	return testObjectName(_sourcesPatternId,object)
+	return (testObjectName(_sourcesPatternId,object) or getObjectSoundTypeGameProperty(object)=='source')
 def getSources(scene=Blender.Scene.GetCurrent()):
 	sources=[]
 	for object in scene.objects:
@@ -120,8 +120,12 @@ def getObjectSoundTypeGameProperty(object):
 def getAcousticObjects(scene=Blender.Scene.GetCurrent()):
 	objects=[]
 	for object in scene.objects:
-		if (getObjectMaterials(object,scene)!=None or getObjectSoundTypeGameProperty(object)=='geometry'):
-			objects.append(object)
+		allTheObjects=[object]
+		for dupObject,dupMatrix in object.DupObjects: #this is for dupliframe objects (like linked ones...)
+			allTheObjects.append(dupObject)
+		for individualObject in allTheObjects:
+			if (getObjectMaterials(individualObject,scene)!=None or getObjectSoundTypeGameProperty(individualObject)=='geometry'):
+				objects.append(individualObject)
 	return objects
 	
 
