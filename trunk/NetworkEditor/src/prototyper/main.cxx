@@ -7,6 +7,11 @@
 #include <QtGui/QApplication>
 #include <iostream>
 
+#ifdef USE_LADSPA
+#	include <CLAM/RunTimeLadspaLibraryLoader.hxx>
+#	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
+#endif
+
 int usage(const std::string & program)
 {
 		std::cout << " Usage: " << program
@@ -26,6 +31,14 @@ int main( int argc, char *argv[] )
 	CLAM::ProcessingModule::init();
 	CLAM::AudioIOModule::init();
 #endif
+
+#ifdef USE_LADSPA
+	RunTimeLadspaLibraryLoader ladspaLoader;
+	ladspaLoader.Load();
+	RunTimeFaustLibraryLoader faustLoader;
+	faustLoader.Load();
+#endif
+
 
 	QApplication app( argc, argv );
 
