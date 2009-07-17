@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="569,136" size="267,59" type="AbsoluteCoordinates2RelativeAngles"/>
+
+  <processing id="AudioAmplifier" position="4,445" size="126,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+    <PortsNumber>1</PortsNumber>
+  </processing>
+
+  <processing id="Azimuth_offset" position="182,135" size="130,59" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>100</MaxValue>
+    <Step>1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="BFormat_output" position="585,547" size="138,111" type="AudioSink">
+    <NSinks>4</NSinks>
+  </processing>
+
+  <processing id="ControlSum" position="381,331" size="110,59" type="ControlSum">
+    <RightTerm>0</RightTerm>
+  </processing>
+
+  <processing id="Gain" position="-182,417" size="141,59" type="AudioAmplifier">
+    <MaxGain>10</MaxGain>
+    <InitGain>1</InitGain>
+    <PortsNumber>1</PortsNumber>
+  </processing>
+
+  <processing id="Gain Directionality" position="1034,289" size="267,78" type="OutControlSender">
+    <Min>-1</Min>
+    <Default>1</Default>
+    <Max>2</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Gain Omni" position="1040,364" size="267,78" type="OutControlSender">
+    <Min>-1</Min>
+    <Default>0.707</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="GainSource" position="-270,159" size="125,59" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>100</MaxValue>
+    <Step>1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="Gain_" position="-92,314" size="188,76" type="OutControlSender">
+    <Min>0</Min>
+    <Default>1</Default>
+    <Max>10</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="LP cutoff frequency" position="754,752" size="156,87" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="MonoAudioFileReader" position="-387,438" size="169,59" type="MonoAudioFileReader">
+    <SourceFile></SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
+  </processing>
+
+  <processing id="OcclusionFilterControl" position="711,660" size="171,59" type="OcclusionFilterControl">
+    <DistanceExponent>1</DistanceExponent>
+    <MinimumDistance>1</MinimumDistance>
+    <DistanceThreshold>0</DistanceThreshold>
+    <FadeInMs>300</FadeInMs>
+    <MinCutoffFrequency>350</MinCutoffFrequency>
+    <OcclusionGainFactor>0.5</OcclusionGainFactor>
+  </processing>
+
+  <processing id="RoomImpulseResponseSimulator" position="-148,87" size="243,94" type="RoomImpulseResponseSimulator">
+    <FrameSize>512</FrameSize>
+    <Model3DFile>entorns/salo_simplificat.dat</Model3DFile>
+    <GridDivisions>500</GridDivisions>
+    <NRays>1</NRays>
+    <NRebounds>1</NRebounds>
+    <IrLength>0.3</IrLength>
+    <Order>0</Order>
+    <ExtraOptions></ExtraOptions>
+    <SeparateDirectSoundAndReverb>1</SeparateDirectSoundAndReverb>
+    <SupressInitialDelay>0</SupressInitialDelay>
+  </processing>
+
+  <processing id="Seek in-Control" position="-484,227" size="180,76" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Spherical2CartesianControl" position="552,443" size="208,59" type="Spherical2CartesianControl"/>
+
+  <processing id="amp" position="238,438" size="114,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+  </processing>
+
+  <processing id="amp_1" position="233,505" size="114,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+  </processing>
+
+  <processing id="amp_2" position="226,568" size="128,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+  </processing>
+
+  <processing id="amp_3" position="228,626" size="114,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+  </processing>
+
+  <processing id="azimuth offset" position="51,220" size="433,76" type="OutControlSender">
+    <Min>-360</Min>
+    <Default>0</Default>
+    <Max>360</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="calculated output gain" position="557,754" size="176,87" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="listener_xyz" position="545,20" size="126,59" type="MultiLibloSource">
+    <OscPath>/SpatDIF/listener/listener_camera/xyz</OscPath>
+    <ServerPort>7000</ServerPort>
+    <OSCTypeSpec>fff</OSCTypeSpec>
+    <EnableMulticast>1</EnableMulticast>
+    <MultiCastIP>224.0.0.1</MultiCastIP>
+  </processing>
+
+  <processing id="listener_xyz_ypr" position="763,183" size="265,217" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>6</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="listener_ypr" position="652,21" size="126,59" type="MultiLibloSource">
+    <OscPath>/SpatDIF/listener/listener_camera/ypr</OscPath>
+    <ServerPort>7000</ServerPort>
+    <OSCTypeSpec>fff</OSCTypeSpec>
+    <EnableMulticast>1</EnableMulticast>
+    <MultiCastIP>224.0.0.1</MultiCastIP>
+  </processing>
+
+  <processing id="lpf0" position="102,584" size="57,59" type="lpf0"/>
+
+  <processing id="source_xyz" position="759,22" size="126,59" type="MultiLibloSource">
+    <OscPath>/SpatDIF/source/source/xyz</OscPath>
+    <ServerPort>7000</ServerPort>
+    <OSCTypeSpec>fff</OSCTypeSpec>
+    <EnableMulticast>1</EnableMulticast>
+    <MultiCastIP>224.0.0.1</MultiCastIP>
+  </processing>
+
+  <processing id="source_xyz_" position="975,43" size="248,139" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>3</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="xyz" position="798,485" size="242,139" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>3</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output</out>
+    <in>lpf0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Gain.Audio Output</out>
+    <in>AudioAmplifier.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MonoAudioFileReader.Samples Read</out>
+    <in>Gain.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MonoAudioFileReader.Samples Read</out>
+    <in>RoomImpulseResponseSimulator.synchronization</in>
+  </port_connection>
+
+  <port_connection>
+    <out>amp.Audio Output</out>
+    <in>BFormat_output.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>amp_1.Audio Output</out>
+    <in>BFormat_output.2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>amp_2.Audio Output</out>
+    <in>BFormat_output.3</in>
+  </port_connection>
+
+  <port_connection>
+    <out>amp_3.Audio Output</out>
+    <in>BFormat_output.4</in>
+  </port_connection>
+
+  <port_connection>
+    <out>lpf0.Output</out>
+    <in>amp.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>lpf0.Output</out>
+    <in>amp_1.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>lpf0.Output</out>
+    <in>amp_2.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>lpf0.Output</out>
+    <in>amp_3.Input Audio</in>
+  </port_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
+    <in>ControlSum.Operator 1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
+    <in>Spherical2CartesianControl.elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.distance</out>
+    <in>OcclusionFilterControl.input distance</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Azimuth_offset.output</out>
+    <in>ControlSum.Operator 2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ControlSum.Sum</out>
+    <in>Spherical2CartesianControl.azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain Directionality.out</out>
+    <in>Spherical2CartesianControl.module</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain Omni.out</out>
+    <in>amp.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>GainSource.output</out>
+    <in>Gain.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_.out</out>
+    <in>Gain.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OcclusionFilterControl.calculated output gain</out>
+    <in>AudioAmplifier.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OcclusionFilterControl.calculated output gain</out>
+    <in>calculated output gain.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OcclusionFilterControl.LP cutoff frequency</out>
+    <in>lpf0.Cutoff Frequency (Hz)</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OcclusionFilterControl.LP cutoff frequency</out>
+    <in>LP cutoff frequency.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>RoomImpulseResponseSimulator.directSoundPressure</out>
+    <in>OcclusionFilterControl.direct sound pressure with occlusions</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Seek in-Control.out</out>
+    <in>MonoAudioFileReader.Seek</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Spherical2CartesianControl.x</out>
+    <in>amp_1.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Spherical2CartesianControl.x</out>
+    <in>xyz.ControlPrinter_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Spherical2CartesianControl.y</out>
+    <in>amp_2.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Spherical2CartesianControl.y</out>
+    <in>xyz.ControlPrinter_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Spherical2CartesianControl.z</out>
+    <in>amp_3.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Spherical2CartesianControl.z</out>
+    <in>xyz.ControlPrinter_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>azimuth offset.out</out>
+    <in>ControlSum.Operator 2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.0</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.0</out>
+    <in>listener_xyz_ypr.ControlPrinter_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.0</out>
+    <in>RoomImpulseResponseSimulator.listener X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.1</out>
+    <in>RoomImpulseResponseSimulator.listener Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.2</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.2</out>
+    <in>listener_xyz_ypr.ControlPrinter_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_xyz.2</out>
+    <in>RoomImpulseResponseSimulator.listener Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_ypr.0</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_ypr.0</out>
+    <in>listener_xyz_ypr.ControlPrinter_3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_ypr.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_ypr.1</out>
+    <in>listener_xyz_ypr.ControlPrinter_4</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_ypr.2</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
+  </control_connection>
+
+  <control_connection>
+    <out>listener_ypr.2</out>
+    <in>listener_xyz_ypr.ControlPrinter_5</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.0</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.0</out>
+    <in>source_xyz_.ControlPrinter_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.0</out>
+    <in>RoomImpulseResponseSimulator.source X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.1</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.1</out>
+    <in>source_xyz_.ControlPrinter_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.1</out>
+    <in>RoomImpulseResponseSimulator.source Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.2</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.2</out>
+    <in>source_xyz_.ControlPrinter_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>source_xyz.2</out>
+    <in>RoomImpulseResponseSimulator.source Z</in>
+  </control_connection>
+
+</network>
