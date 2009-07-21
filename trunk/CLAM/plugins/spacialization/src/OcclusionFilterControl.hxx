@@ -103,8 +103,6 @@ public:
 		}
 
 		double occlusionFactor=1;
-		double filterGainFactor=1;
-
 		switch (_actualState)
 		{
 			case FadeOut:
@@ -133,7 +131,6 @@ public:
 				}
 				break;
 		}
-
 
 //		if (isActuallyOccluded)
 //		{
