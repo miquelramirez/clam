@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed Network">
+
+  <processing id="AudioSink" position="493,83" size="128,270" type="AudioSink">
+    <NSinks>15</NSinks>
+  </processing>
+
+  <processing id="AudioSource" position="11,96" size="128,270" type="AudioSource">
+    <NSources>15</NSources>
+  </processing>
+
+  <processing id="Hoa2RegularSpeakerArray" position="240,82" size="205,286" type="Hoa2RegularSpeakerArray">
+    <Order>3</Order>
+    <SpeakerLayout>/home/pauarumi/clam/CLAM/plugins/spacialization/layouts/15_audiolab.layout</SpeakerLayout>
+    <IgnoreLabels>1</IgnoreLabels>
+  </processing>
+
+  <port_connection>
+    <out>AudioSource.1</out>
+    <in>Hoa2RegularSpeakerArray.W</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.2</out>
+    <in>Hoa2RegularSpeakerArray.Y</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.3</out>
+    <in>Hoa2RegularSpeakerArray.Z</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.4</out>
+    <in>Hoa2RegularSpeakerArray.X</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.5</out>
+    <in>Hoa2RegularSpeakerArray.V</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.6</out>
+    <in>Hoa2RegularSpeakerArray.T</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.7</out>
+    <in>Hoa2RegularSpeakerArray.R</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.8</out>
+    <in>Hoa2RegularSpeakerArray.S</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.9</out>
+    <in>Hoa2RegularSpeakerArray.U</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.10</out>
+    <in>Hoa2RegularSpeakerArray.Q</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.11</out>
+    <in>Hoa2RegularSpeakerArray.O</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.12</out>
+    <in>Hoa2RegularSpeakerArray.M</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.13</out>
+    <in>Hoa2RegularSpeakerArray.K</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.14</out>
+    <in>Hoa2RegularSpeakerArray.L</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.15</out>
+    <in>Hoa2RegularSpeakerArray.P</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.01</out>
+    <in>AudioSink.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.02</out>
+    <in>AudioSink.2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.03</out>
+    <in>AudioSink.3</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.04</out>
+    <in>AudioSink.4</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.05</out>
+    <in>AudioSink.5</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.06</out>
+    <in>AudioSink.6</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.07</out>
+    <in>AudioSink.7</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.08</out>
+    <in>AudioSink.8</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.09</out>
+    <in>AudioSink.9</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.10</out>
+    <in>AudioSink.10</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.11</out>
+    <in>AudioSink.11</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.12</out>
+    <in>AudioSink.12</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.13</out>
+    <in>AudioSink.13</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.14</out>
+    <in>AudioSink.14</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.15</out>
+    <in>AudioSink.15</in>
+  </port_connection>
+
+</network>
