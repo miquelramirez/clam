@@ -16,8 +16,7 @@
 namespace CLAM
 {
 /**
- Sends the control values stored in a file in space separated columns.
- @todo: move EnvironmentManager into CLAM as it is too general to be in the spacialization plugin.
+  Read an environment configuration file, which have the name and limits of a geometry and an impulse response file for each environment, and outputs the proper one according to the input control position
 */
 
 class EnvironmentManager : public CLAM::Processing
