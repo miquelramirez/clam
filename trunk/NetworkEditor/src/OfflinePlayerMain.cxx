@@ -46,8 +46,11 @@ int version()
 
 bool isWavFile(std::string filename)
 {
+	if (filename.size()<=5)
+		return false;
 	std::string originalExtension = "wav";
 	int posDot = filename.size()-(originalExtension.size()+1);
+
 	std::string fileExtension = filename.substr(posDot+1);
 
 	if(filename.at(posDot)!='.')
@@ -118,7 +121,7 @@ int main( int argc, char *argv[] )
 	while(std::string(argv[argIndex]) != "-o")
 	{
 		if(!isWavFile(std::string(argv[argIndex])))
-		{	std::cout << "The input files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
+		{	std::cout << "Found bad input file. The input files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
 			return -1;			
 		}
 		player->AddInputFile(argv[argIndex]);
