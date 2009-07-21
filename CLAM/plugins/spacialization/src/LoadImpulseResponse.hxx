@@ -41,14 +41,16 @@ bool computeResponseSpectrums(
 		const std::string & wavfile, 
 		ImpulseResponse & responseSpectrums, 
 		unsigned frameSize, 
-		std::string & errorMsg);
+		std::string & errorMsg,
+		unsigned sampleRate=44100);
 
 bool computeResponseSpectrums(
 		const std::vector<double> & buffer,
 		ImpulseResponse & responseSpectrums, 
 		unsigned frameSize, 
 		std::string & errorMsg,
-		unsigned samplesOffset=0);
+		unsigned samplesOffset=0,
+		unsigned sampleRate=44100);
 
 unsigned neededFramesForNSamples(unsigned nsamples, unsigned frameSize);
 
