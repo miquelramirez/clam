@@ -33,7 +33,7 @@ namespace Hidden
 	static ProcessingDataPlugin::Registrator<ImpulseResponse*> registrator("green","CLAM::ImpulseResponse");
 }
 
-bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg);
+bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned sampleRate=44100);
 
 unsigned neededFramesForNSamples(unsigned nsamples, unsigned frameSize)
 {
@@ -41,7 +41,7 @@ unsigned neededFramesForNSamples(unsigned nsamples, unsigned frameSize)
 }
 
 
-bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg)
+bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned sampleRate)
 {
 	MonoAudioFileReaderConfig readerConfig;
 	readerConfig.SetSourceFile(wavfile);
@@ -58,10 +58,10 @@ bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSp
 	reader.GetOutPort(0).SetSize(nSamples);
 	reader.GetOutPort(0).SetHop(nSamples);
 
-	return computeResponseSpectrums(reader, responseSpectrums, framesize, errorMsg);
+	return computeResponseSpectrums(reader, responseSpectrums, framesize, errorMsg, sampleRate);
 }
 
-bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned samplesOffset)
+bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned samplesOffset, unsigned sampleRate)
 {
 	// TODO: case where offset > size
 	const unsigned validSamples = buffer.size() - samplesOffset;
@@ -75,13 +75,13 @@ bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<Co
 	source.GetOutPort(portIndex).SetSize(nSamples);
 	source.GetOutPort(portIndex).SetHop(nSamples);
 	
-	return computeResponseSpectrums(source, responseSpectrums, framesize, errorMsg);
+	return computeResponseSpectrums(source, responseSpectrums, framesize, errorMsg, sampleRate);
 }
 
-bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg)
+bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned sampleRate)
 {
 	AudioWindowingConfig windowerConfig;
-	windowerConfig.SetSamplingRate(44100); // TODO: Take it from the file
+	windowerConfig.SetSamplingRate(sampleRate); // TODO: Take it from the file
 	windowerConfig.SetHopSize(framesize);
 	windowerConfig.SetWindowSize(framesize+1);
 	windowerConfig.SetFFTSize(framesize*2);
