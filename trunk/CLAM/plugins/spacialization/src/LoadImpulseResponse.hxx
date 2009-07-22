@@ -43,15 +43,15 @@ bool computeResponseSpectrums(
 		unsigned frameSize, 
 		std::string & errorMsg,
 		unsigned selectedChannel,
-		unsigned sampleRate=44100);
+		unsigned sampleRate);
 
 bool computeResponseSpectrums(
 		const std::vector<double> & buffer,
 		ImpulseResponse & responseSpectrums, 
 		unsigned frameSize, 
 		std::string & errorMsg,
-		unsigned samplesOffset=0,
-		unsigned sampleRate=44100);
+		unsigned sampleRate,
+		unsigned samplesOffset=0);
 
 unsigned neededFramesForNSamples(unsigned nsamples, unsigned frameSize);
 
@@ -69,7 +69,8 @@ public:
 	bool loadImpulseResponseDatabase( 
 			const std::string & filePrefix,
 			unsigned frameSize,
-			std::string & errorMsg );
+			std::string & errorMsg,
+			unsigned sampleRate );
 	ImpulseResponse & get(unsigned x1, unsigned y1, unsigned z1, unsigned x2, unsigned y2, unsigned z2);
 };
 

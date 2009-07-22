@@ -186,12 +186,13 @@ protected:
 		}
 		std::vector<Environment>::iterator it;
 		std::string errorMsg;
+		const unsigned sampleRate=44100;
 		for (it=_environments.begin(); it!=_environments.end(); it++)
 		{
-			if (!computeResponseSpectrums( it->irWavfile, it->ir.irW, _config.GetFrameSize(), errorMsg, 0 ) 
-				or !computeResponseSpectrums( it->irWavfile, it->ir.irX, _config.GetFrameSize(), errorMsg, 1)
-				or !computeResponseSpectrums( it->irWavfile, it->ir.irY, _config.GetFrameSize(), errorMsg, 2)
-				or !computeResponseSpectrums( it->irWavfile, it->ir.irZ, _config.GetFrameSize(), errorMsg, 3)	)
+			if (!computeResponseSpectrums( it->irWavfile, it->ir.irW, _config.GetFrameSize(), errorMsg, 0, sampleRate) 
+				or !computeResponseSpectrums( it->irWavfile, it->ir.irX, _config.GetFrameSize(), errorMsg, 1, sampleRate)
+				or !computeResponseSpectrums( it->irWavfile, it->ir.irY, _config.GetFrameSize(), errorMsg, 2, sampleRate)
+				or !computeResponseSpectrums( it->irWavfile, it->ir.irZ, _config.GetFrameSize(), errorMsg, 3, sampleRate)	)
 			{
 				AddConfigErrorMessage(errorMsg + " while using environment "+it->name);
 				return false;
@@ -203,7 +204,7 @@ protected:
 		{
 			zerosBuffer.push_back(0);
 		}
-		if (!computeResponseSpectrums( zerosBuffer, _silenceIR, _config.GetFrameSize(), errorMsg ))
+		if (!computeResponseSpectrums( zerosBuffer, _silenceIR, _config.GetFrameSize(), errorMsg, sampleRate ))
 		{
 			AddConfigErrorMessage(errorMsg + ". Cannot compute the silence IR");
 			return false;
