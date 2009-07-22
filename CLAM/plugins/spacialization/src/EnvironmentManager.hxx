@@ -23,9 +23,10 @@ class EnvironmentManager : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, InFilename, EnvironmentImpulseResponsesFile);
-		DYN_ATTRIBUTE( 1, public, int, FrameSize );
+		DYN_ATTRIBUTE( 1, public, unsigned, FrameSize);
+		DYN_ATTRIBUTE( 2, public, unsigned, SampleRate);
 	protected:
 		void DefaultInit()
 		{
@@ -68,7 +69,6 @@ class EnvironmentManager : public CLAM::Processing
 	OutPort<ImpulseResponse*> _responseSpectrumsY;
 	OutPort<ImpulseResponse*> _responseSpectrumsZ;
 	AudioInPort _inSync;
-
 	ImpulseResponse _silenceIR;
 
 public:
@@ -139,6 +139,7 @@ protected:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
+
 		_environments.clear();
 		//Load the sequence
 		if (_config.GetEnvironmentImpulseResponsesFile()=="") 
@@ -186,7 +187,7 @@ protected:
 		}
 		std::vector<Environment>::iterator it;
 		std::string errorMsg;
-		const unsigned sampleRate=44100;
+		const unsigned sampleRate=_config.GetSampleRate();
 		for (it=_environments.begin(); it!=_environments.end(); it++)
 		{
 			if (!computeResponseSpectrums( it->irWavfile, it->ir.irW, _config.GetFrameSize(), errorMsg, 0, sampleRate) 
