@@ -305,10 +305,11 @@ private:
 		}
 		std::string errorMsg;
 		const unsigned nChannel=0;
-		if (!computeResponseSpectrums(fileW, _current->W, _config.GetFrameSize(), errorMsg, nChannel)
-			|| !computeResponseSpectrums(fileX, _current->X, _config.GetFrameSize(), errorMsg, nChannel)
-			|| !computeResponseSpectrums(fileY, _current->Y , _config.GetFrameSize(), errorMsg, nChannel) 
-			|| !computeResponseSpectrums(fileZ, _current->Z , _config.GetFrameSize(), errorMsg, nChannel) )
+		const unsigned sampleRate=44100;
+		if (!computeResponseSpectrums(fileW, _current->W, _config.GetFrameSize(), errorMsg, nChannel, sampleRate)
+			|| !computeResponseSpectrums(fileX, _current->X, _config.GetFrameSize(), errorMsg, nChannel, sampleRate)
+			|| !computeResponseSpectrums(fileY, _current->Y , _config.GetFrameSize(), errorMsg, nChannel, sampleRate) 
+			|| !computeResponseSpectrums(fileZ, _current->Z , _config.GetFrameSize(), errorMsg, nChannel, sampleRate) )
 		{
 			std::cout << "ERROR: RoomImpulseResponseSimulatorCommandLine::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;

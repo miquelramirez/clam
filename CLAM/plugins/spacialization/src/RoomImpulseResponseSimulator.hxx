@@ -334,11 +334,12 @@ private:
 		std::string errorMsg;
 		SphericalHarmonicsDefinition *sh = Orientation::sphericalHarmonics();
 		_current->resize(_outputs.size());
+		const unsigned sampleRate=44100;
 		for (unsigned component = 0; component < _outputs.size(); component++)
 		{
 			const std::vector<double> & response =
 				_scene->getTimeResponse(sh[component].order, sh[component].zProjection*sh[component].sign);
-			if (computeResponseSpectrums(response, (*_current)[component], _config.GetFrameSize(), errorMsg, offsetToStrip)) continue;
+			if (computeResponseSpectrums(response, (*_current)[component], _config.GetFrameSize(), errorMsg, sampleRate, offsetToStrip)) continue;
 			std::cout << "ERROR: RoomImpulseResponseSimulator::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;
 		}

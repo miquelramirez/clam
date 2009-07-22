@@ -33,7 +33,7 @@ namespace Hidden
 	static ProcessingDataPlugin::Registrator<ImpulseResponse*> registrator("green","CLAM::ImpulseResponse");
 }
 
-bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned sampleRate=44100);
+bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned sampleRate);
 
 unsigned neededFramesForNSamples(unsigned nsamples, unsigned frameSize)
 {
@@ -62,7 +62,7 @@ bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSp
 	return computeResponseSpectrums(reader, responseSpectrums, framesize, errorMsg, sampleRate);
 }
 
-bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned samplesOffset, unsigned sampleRate)
+bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned sampleRate, unsigned samplesOffset )
 {
 	// TODO: case where offset > size
 	const unsigned validSamples = buffer.size() - samplesOffset;
@@ -154,7 +154,8 @@ unsigned searchCoordinateUpperLimit(
 bool ImpulseResponseDatabase::loadImpulseResponseDatabase( 
 		const std::string & filePrefix,
 		unsigned frameSize,
-		std::string & errorMsg )
+		std::string & errorMsg,
+		unsigned sampleRate )
 {
 	std::string file;
 	file = formatFile(filePrefix, 0,0,0,0,0,0);
@@ -184,7 +185,7 @@ bool ImpulseResponseDatabase::loadImpulseResponseDatabase(
 	for (unsigned zReceiver=0; zReceiver<NZReceiver; zReceiver++)
 	{
 		std::string file = formatFile(filePrefix, xEmitter,yEmitter,zEmitter,xReceiver,yReceiver,zReceiver);
-		if (!computeResponseSpectrums( file, _storage[i], frameSize, errorMsg, nChannel )) return false;
+		if (!computeResponseSpectrums( file, _storage[i], frameSize, errorMsg, nChannel, sampleRate )) return false;
 		i++;
 		if (int(i/float(totalFiles)*10)>percentDone)
 		{

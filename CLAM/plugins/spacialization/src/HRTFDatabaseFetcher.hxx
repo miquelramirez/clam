@@ -70,7 +70,8 @@ public:
 	bool loadImpulseResponseDatabase(
 			const std::string & path,
 			unsigned frameSize,
-			std::string & errorMsg )
+			std::string & errorMsg,
+			unsigned sampleRate )
 	{
 		if (path.empty()) return error(errorMsg, "No database file specified");
 		std::string base = baseDir(path);
@@ -96,7 +97,7 @@ public:
 		_storage.resize(_orientations.size());
 		const unsigned nChannel=0;
 		for (unsigned i=0; i < _storage.size(); i++)
-			if (!computeResponseSpectrums(_waveFiles[i], _storage[i], frameSize, errorMsg, nChannel))
+			if (!computeResponseSpectrums(_waveFiles[i], _storage[i], frameSize, errorMsg, nChannel, sampleRate))
 				return false;
 		return true;
 	}
@@ -199,8 +200,8 @@ public:
 		CopyAsConcreteConfig(_config, config);
 
 		std::string errorMsg;
-
-		if (!_database.loadImpulseResponseDatabase(_config.GetHrtfDatabase(), _config.GetFrameSize(), errorMsg ))
+		const unsigned sampleRate=44100;
+		if (!_database.loadImpulseResponseDatabase(_config.GetHrtfDatabase(), _config.GetFrameSize(), errorMsg, sampleRate))
 		{
 			AddConfigErrorMessage(errorMsg);
 			return false;

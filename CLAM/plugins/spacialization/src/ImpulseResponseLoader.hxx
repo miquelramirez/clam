@@ -76,7 +76,8 @@ public:
 		CopyAsConcreteConfig(_config, config);
 		std::string errorMsg;
 		const unsigned nChannel=0;
-		if (!computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums, _config.GetFrameSize(), errorMsg, nChannel) )
+		const unsigned sampleRate=44100;
+		if (!computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums, _config.GetFrameSize(), errorMsg, nChannel, sampleRate) )
 		{
 			AddConfigErrorMessage(errorMsg);
 			return false;

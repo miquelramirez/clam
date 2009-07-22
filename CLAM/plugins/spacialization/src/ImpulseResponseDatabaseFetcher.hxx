@@ -102,7 +102,8 @@ public:
 		if (_numberOfConfigureCalls<=2) 
 			return false;
 		std::string errorMsg;
-		if (!_database.loadImpulseResponseDatabase(_config.GetPath() + _config.GetPrefix(), _config.GetFrameSize(), errorMsg ))
+		const unsigned sampleRate=44100;
+		if (!_database.loadImpulseResponseDatabase(_config.GetPath() + _config.GetPrefix(), _config.GetFrameSize(), errorMsg , sampleRate))
 		{
 			AddConfigErrorMessage(errorMsg);
 			return false;
