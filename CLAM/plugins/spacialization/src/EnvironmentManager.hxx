@@ -81,7 +81,6 @@ public:
 		, _responseSpectrumsX("ImpulseResponseX",this)
 		, _responseSpectrumsY("ImpulseResponseY",this)
 		, _responseSpectrumsZ("ImpulseResponseZ",this)
-		
 		, _inSync("Sync in",this)
 		
 	{
@@ -189,10 +188,10 @@ protected:
 		std::string errorMsg;
 		for (it=_environments.begin(); it!=_environments.end(); it++)
 		{
-			if (!computeResponseSpectrums( it->irWavfile, it->ir.irW , _config.GetFrameSize(), errorMsg ) 
-				or !computeResponseSpectrums( it->irWavfile, it->ir.irX , _config.GetFrameSize(), errorMsg )
-				or !computeResponseSpectrums( it->irWavfile, it->ir.irY , _config.GetFrameSize(), errorMsg )
-				or !computeResponseSpectrums( it->irWavfile, it->ir.irZ , _config.GetFrameSize(), errorMsg )	)
+			if (!computeResponseSpectrums( it->irWavfile, it->ir.irW, _config.GetFrameSize(), errorMsg, 0 ) 
+				or !computeResponseSpectrums( it->irWavfile, it->ir.irX, _config.GetFrameSize(), errorMsg, 1)
+				or !computeResponseSpectrums( it->irWavfile, it->ir.irY, _config.GetFrameSize(), errorMsg, 2)
+				or !computeResponseSpectrums( it->irWavfile, it->ir.irZ, _config.GetFrameSize(), errorMsg, 3)	)
 			{
 				AddConfigErrorMessage(errorMsg + " while using environment "+it->name);
 				return false;
