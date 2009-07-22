@@ -37,14 +37,7 @@ class EnvironmentManager : public CLAM::Processing
 		};
 	};
 
-	Config _config;
-	FloatOutControl _actualEnvironment;
-	FloatInControl _xInControl;
-	FloatInControl _yInControl;
-	FloatInControl _zInControl;
-
 	typedef std::vector<std::string> Row;
-
 	struct bformatIR
 	{
 		ImpulseResponse irW;
@@ -52,24 +45,28 @@ class EnvironmentManager : public CLAM::Processing
 		ImpulseResponse irY;
 		ImpulseResponse irZ;
 	};
-
 	struct Environment
 	{
 		std::string name;
 		float x0,y0,z0;
 		float x1,y1,z1;
 		std::string irWavfile;
-//		ImpulseResponse ir;
 		bformatIR ir;
 	};
-
 	std::vector<Environment> _environments;
+	ImpulseResponse _silenceIR;
+
+	Config _config;
+
+	FloatOutControl _actualEnvironment;
+	FloatInControl _xInControl;
+	FloatInControl _yInControl;
+	FloatInControl _zInControl;
 	OutPort<ImpulseResponse*> _responseSpectrumsW;
 	OutPort<ImpulseResponse*> _responseSpectrumsX;
 	OutPort<ImpulseResponse*> _responseSpectrumsY;
 	OutPort<ImpulseResponse*> _responseSpectrumsZ;
 	AudioInPort _inSync;
-	ImpulseResponse _silenceIR;
 
 public:
 	EnvironmentManager(const Config& config = Config()) 
