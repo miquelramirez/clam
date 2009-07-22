@@ -94,8 +94,9 @@ public:
 			_waveFiles.push_back(base+filename);
 		}
 		_storage.resize(_orientations.size());
+		const unsigned nChannel=0;
 		for (unsigned i=0; i < _storage.size(); i++)
-			if (!computeResponseSpectrums(_waveFiles[i], _storage[i], frameSize, errorMsg))
+			if (!computeResponseSpectrums(_waveFiles[i], _storage[i], frameSize, errorMsg, nChannel))
 				return false;
 		return true;
 	}

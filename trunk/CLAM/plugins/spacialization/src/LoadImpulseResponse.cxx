@@ -174,6 +174,7 @@ bool ImpulseResponseDatabase::loadImpulseResponseDatabase(
 	_storage.resize( totalFiles);
 	int percentDone=-1;
 	std::cout << "Loading impulse response files: " << std::flush;
+	const unsigned nChannel=0;
 	unsigned i=0;
 	for (unsigned xEmitter=0; xEmitter<NXEmitter; xEmitter++)
 	for (unsigned yEmitter=0; yEmitter<NYEmitter; yEmitter++)
@@ -183,7 +184,7 @@ bool ImpulseResponseDatabase::loadImpulseResponseDatabase(
 	for (unsigned zReceiver=0; zReceiver<NZReceiver; zReceiver++)
 	{
 		std::string file = formatFile(filePrefix, xEmitter,yEmitter,zEmitter,xReceiver,yReceiver,zReceiver);
-		if (!computeResponseSpectrums( file, _storage[i], frameSize, errorMsg )) return false;
+		if (!computeResponseSpectrums( file, _storage[i], frameSize, errorMsg, nChannel )) return false;
 		i++;
 		if (int(i/float(totalFiles)*10)>percentDone)
 		{

@@ -54,6 +54,7 @@ namespace CLAM
  @todo Turn GridDivisions into a more meaningfull parameter (Hysteresis?)
  @todo Document RoomImpulseResponseSimulator
  @todo Document Model 3D format or providing a reference
+ @todo: make it multichannel with a similar behavior as sndfileplayer (config parameter with num channels)
 
  @param FrameSize [Config] The size used to split the ImpulseResponses
  @param Model3DFile [Config] The file containing the geometry to be simulated
@@ -303,10 +304,11 @@ private:
 			fileZ = zFileTrimmed;
 		}
 		std::string errorMsg;
-		if (!computeResponseSpectrums(fileW, _current->W, _config.GetFrameSize(), errorMsg)
-			|| !computeResponseSpectrums(fileX, _current->X, _config.GetFrameSize(), errorMsg)
-			|| !computeResponseSpectrums(fileY, _current->Y , _config.GetFrameSize(), errorMsg) 
-			|| !computeResponseSpectrums(fileZ, _current->Z , _config.GetFrameSize(), errorMsg) )
+		const unsigned nChannel=0;
+		if (!computeResponseSpectrums(fileW, _current->W, _config.GetFrameSize(), errorMsg, nChannel)
+			|| !computeResponseSpectrums(fileX, _current->X, _config.GetFrameSize(), errorMsg, nChannel)
+			|| !computeResponseSpectrums(fileY, _current->Y , _config.GetFrameSize(), errorMsg, nChannel) 
+			|| !computeResponseSpectrums(fileZ, _current->Z , _config.GetFrameSize(), errorMsg, nChannel) )
 		{
 			std::cout << "ERROR: RoomImpulseResponseSimulatorCommandLine::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;

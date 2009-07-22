@@ -38,6 +38,8 @@ namespace CLAM
  @param AudioInFilename [Config] The name of the wave file to load.
  @param[out] ImpulseResponse [Port] The generated impulse response.
  @ingroup RealTimeConvolution
+
+ @todo: (TODO) make it multichannel with a similar behavior as sndfileplayer (config parameter with num channels)
 */
 class ImpulseResponseLoader : public Processing
 { 
@@ -73,7 +75,8 @@ public:
 	{
 		CopyAsConcreteConfig(_config, config);
 		std::string errorMsg;
-		if (!computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums, _config.GetFrameSize(), errorMsg ))
+		const unsigned nChannel=0;
+		if (!computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums, _config.GetFrameSize(), errorMsg, nChannel) )
 		{
 			AddConfigErrorMessage(errorMsg);
 			return false;
