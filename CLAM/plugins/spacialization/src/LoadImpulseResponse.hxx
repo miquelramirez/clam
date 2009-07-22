@@ -42,6 +42,7 @@ bool computeResponseSpectrums(
 		ImpulseResponse & responseSpectrums, 
 		unsigned frameSize, 
 		std::string & errorMsg,
+		unsigned selectedChannel=0,
 		unsigned sampleRate=44100);
 
 bool computeResponseSpectrums(

@@ -44,16 +44,29 @@ class EnvironmentManager : public CLAM::Processing
 
 	typedef std::vector<std::string> Row;
 
+	struct bformatIR
+	{
+		ImpulseResponse irW;
+		ImpulseResponse irX;
+		ImpulseResponse irY;
+		ImpulseResponse irZ;
+	};
+
 	struct Environment
 	{
 		std::string name;
 		float x0,y0,z0;
 		float x1,y1,z1;
 		std::string irWavfile;
-		ImpulseResponse ir;
+//		ImpulseResponse ir;
+		bformatIR ir;
 	};
+
 	std::vector<Environment> _environments;
-	OutPort<ImpulseResponse*> _responseSpectrums;
+	OutPort<ImpulseResponse*> _responseSpectrumsW;
+	OutPort<ImpulseResponse*> _responseSpectrumsX;
+	OutPort<ImpulseResponse*> _responseSpectrumsY;
+	OutPort<ImpulseResponse*> _responseSpectrumsZ;
 	AudioInPort _inSync;
 
 	ImpulseResponse _silenceIR;
@@ -64,7 +77,11 @@ public:
 		, _xInControl("X in",this)
 		, _yInControl("Y in",this)
 		, _zInControl("Z in",this)
-		, _responseSpectrums("ImpulseResponse",this)
+		, _responseSpectrumsW("ImpulseResponseW",this)
+		, _responseSpectrumsX("ImpulseResponseX",this)
+		, _responseSpectrumsY("ImpulseResponseY",this)
+		, _responseSpectrumsZ("ImpulseResponseZ",this)
+		
 		, _inSync("Sync in",this)
 		
 	{
@@ -87,15 +104,28 @@ public:
 		{
 			if (x>it->x0 and x<it->x1 and y>it->y0 and y<it->y1 and z>it->z0 and z<it->z1)
 			{
-				_responseSpectrums.GetData()= &(it->ir);
-				_responseSpectrums.Produce();
+				_responseSpectrumsW.GetData()= &(it->ir.irW);
+				_responseSpectrumsW.Produce();
+				_responseSpectrumsX.GetData()= &(it->ir.irX);
+				_responseSpectrumsX.Produce();
+				_responseSpectrumsY.GetData()= &(it->ir.irY);
+				_responseSpectrumsY.Produce();
+				_responseSpectrumsZ.GetData()= &(it->ir.irZ);
+				_responseSpectrumsZ.Produce();
+
 				_actualEnvironment.SendControl(environment);
 				return true;
 			}
 			environment++;
 		}
-		_responseSpectrums.GetData()= &_silenceIR;
-		_responseSpectrums.Produce();
+		_responseSpectrumsW.GetData()= &_silenceIR;
+		_responseSpectrumsW.Produce();
+		_responseSpectrumsX.GetData()= &_silenceIR;
+		_responseSpectrumsX.Produce();
+		_responseSpectrumsY.GetData()= &_silenceIR;
+		_responseSpectrumsY.Produce();
+		_responseSpectrumsZ.GetData()= &_silenceIR;
+		_responseSpectrumsZ.Produce();
 		_actualEnvironment.SendControl(0);
 		return true;
 	}
@@ -159,7 +189,10 @@ protected:
 		std::string errorMsg;
 		for (it=_environments.begin(); it!=_environments.end(); it++)
 		{
-			if (!computeResponseSpectrums( it->irWavfile, it->ir , _config.GetFrameSize(), errorMsg ))
+			if (!computeResponseSpectrums( it->irWavfile, it->ir.irW , _config.GetFrameSize(), errorMsg ) 
+				or !computeResponseSpectrums( it->irWavfile, it->ir.irX , _config.GetFrameSize(), errorMsg )
+				or !computeResponseSpectrums( it->irWavfile, it->ir.irY , _config.GetFrameSize(), errorMsg )
+				or !computeResponseSpectrums( it->irWavfile, it->ir.irZ , _config.GetFrameSize(), errorMsg )	)
 			{
 				AddConfigErrorMessage(errorMsg + " while using environment "+it->name);
 				return false;

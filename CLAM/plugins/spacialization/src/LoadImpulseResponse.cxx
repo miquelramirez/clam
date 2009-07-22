@@ -41,10 +41,11 @@ unsigned neededFramesForNSamples(unsigned nsamples, unsigned frameSize)
 }
 
 
-bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned sampleRate)
+bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned selectedChannel, unsigned sampleRate)
 {
 	MonoAudioFileReaderConfig readerConfig;
 	readerConfig.SetSourceFile(wavfile);
+	readerConfig.SetSelectedChannel(selectedChannel);
 	MonoAudioFileReader reader(readerConfig);
 	if (!reader.IsConfigured())
 	{
