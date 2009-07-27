@@ -46,9 +46,10 @@ class ImpulseResponseLoader : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
 		DYN_ATTRIBUTE( 1, public, AudioInFilename, ImpulseResponse);
+		DYN_ATTRIBUTE( 2, public, bool, IsBFormatFile);
 
 	protected:
 		void DefaultInit()
@@ -61,26 +62,42 @@ public:
 
 private:
 	Config _config;
-	OutPort< std::vector<ComplexSpectrum>* > _impulseResponse;
-	std::vector<ComplexSpectrum> _responseSpectrums;
+	typedef std::vector<ComplexSpectrum> ImpulseResponse;
+	std::vector<ImpulseResponse> _responseSpectrums;
+	std::vector< OutPort<ImpulseResponse*> *> _impulseResponseOutputsPorts;
 
 public:
 	const char* GetClassName() const { return "ImpulseResponseLoader"; }
 	ImpulseResponseLoader(const Config& config = Config()) 
-		: _impulseResponse("ImpulseResponse", this)
 	{
 		Configure( config );
+	}
+	~ImpulseResponseLoader()
+	{
+		for (unsigned port = 0; port < _impulseResponseOutputsPorts.size(); ++port)
+			delete _impulseResponseOutputsPorts[port];
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		std::string errorMsg;
-		const unsigned nChannel=0;
-		const unsigned sampleRate=44100;
-		if (!computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums, _config.GetFrameSize(), errorMsg, nChannel, sampleRate) )
+		const bool isBformat = (_config.HasIsBFormatFile() and _config.GetIsBFormatFile());
+		std::vector <std::string> portNames;
+		if (isBformat)
 		{
-			AddConfigErrorMessage(errorMsg);
-			return false;
+			portNames.push_back("W");
+			portNames.push_back("X");
+			portNames.push_back("Y");
+			portNames.push_back("Z");
+		}
+		else	portNames.push_back("ImpulseResponse");
+
+		createOutputs (portNames);
+		std::string errorMsg;
+		const unsigned sampleRate=44100;
+		for (unsigned nChannel=0; nChannel<_responseSpectrums.size();nChannel++)
+		{
+			if (!computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums[nChannel], _config.GetFrameSize(), errorMsg, nChannel, sampleRate) )
+				return AddConfigErrorMessage(errorMsg);
 		}
 		return true;
 	}
@@ -88,9 +105,31 @@ public:
 
 	bool Do()
 	{
-		_impulseResponse.GetData()= &_responseSpectrums;
-		_impulseResponse.Produce();
+		std::vector< OutPort<ImpulseResponse*> *>::iterator it;
+		unsigned i=0;
+
+		for (it=_impulseResponseOutputsPorts.begin(); it!=_impulseResponseOutputsPorts.end();it++)
+		{
+			(*it)->GetData()= &_responseSpectrums[i];
+			(*it)->Produce();
+			i++;
+		}
 		return true;
+	}
+
+	void createOutputs(const std::vector<std::string> & portNames)
+	{
+
+		for (unsigned port = 0; port < _impulseResponseOutputsPorts.size(); ++port)
+			delete _impulseResponseOutputsPorts[port];
+		_impulseResponseOutputsPorts.clear();
+		_responseSpectrums.clear();
+		std::vector<std::string>::const_iterator it;
+		for (it=portNames.begin();it!=portNames.end();it++)
+		{
+			_impulseResponseOutputsPorts.push_back(new OutPort<ImpulseResponse*>((*it),this)); 
+			_responseSpectrums.push_back(ImpulseResponse());
+		}
 	}
 };
 
