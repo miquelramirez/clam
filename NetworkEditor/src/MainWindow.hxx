@@ -91,9 +91,10 @@ public:
 		setCentralWidget(centralTab);
 		centralTab->setTabPosition(QTabWidget::South);
 #endif//AFTER13RELEASE
-		QScrollArea * scroll = new QScrollArea(this);
+//		QScrollArea * scroll = new QScrollArea(this);
 		_canvas = new ClamNetworkCanvas;
-		scroll->setWidget(_canvas);
+		ClamNetworkCanvas * scroll = _canvas;
+//		scroll->setWidget(_canvas);
 
 #ifdef AFTER13RELEASE
 		QScrollArea * backendScroll = new QScrollArea(this);
