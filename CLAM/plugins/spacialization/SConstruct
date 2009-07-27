@@ -69,7 +69,7 @@ if env['raytracing']=='traditional' or env['raytracing']=='convergent':
 	env.Append(LIBS=['raytracing',"GL","GLU","lo"])
 else :
 	sources.remove(os.path.join('src','RoomImpulseResponseSimulator.cxx'))
-
+	sources.remove(os.path.join('src','EnvironmentManager.cxx'))
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 #	env.SharedLibrary(target="clam_plugins", source = sources+['ladspa/clam_plugin.cxx'], SHLIBPREFIX=''),
