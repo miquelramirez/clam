@@ -27,11 +27,14 @@
 #include <CLAM/Assert.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <iostream>
+#include <QtGui/QGraphicsView>
+#include <QtGui/QGraphicsScene>
+#include <QtGui/QGraphicsRectItem>
+#include <QtGui/QResizeEvent>
+#include <QtGui/QGraphicsSceneMouseEvent>
+#include <QtGui/QPainter>
 
-
-
-
-class NetworkCanvas : public QWidget
+class NetworkCanvas : public QGraphicsView
 {
 	Q_OBJECT
 public:
@@ -47,7 +50,7 @@ public:
 		SelectionDrag
 	};
 	NetworkCanvas(QWidget * parent=0)
-		: QWidget(parent)
+		: QGraphicsView(parent)
 		, _zoomFactor(1.)
 		, _changed(false)
 		, _dragStatus(NoDrag)
@@ -70,7 +73,17 @@ public:
 		, _colorPortWireOutline   (0x50,0x50,0x22)
 		, _colorControlWire       (0x4b,0x99,0xb4)
 		, _colorControlWireOutline(0x20,0x50,0x52)
+		, _scene(0)
+		, _maxZ(0)
 	{
+		_scene=new QGraphicsScene(this);
+		_scene->setItemIndexMethod(QGraphicsScene::BspTreeIndex);
+		setScene(_scene);
+		setAlignment(Qt::AlignLeft | Qt::AlignTop);
+		setRenderHint(QPainter::Antialiasing);
+		setTransformationAnchor ( QGraphicsView::NoAnchor );
+		viewport ()->setStyleSheet("background-color: transparent;");
+		
 		setGreenColorsForBoxes();
 
 		setMouseTracking(true);
@@ -95,6 +108,7 @@ public:
 		addAction(_clearSelectionAction);
 		connect(_clearSelectionAction, SIGNAL(triggered()), this, SLOT(onClearSelections()));
 	}
+	
 	void setGreenColorsForBoxes()
 	{
 		_colorBoxFrameText = QColor(0xff,0xff,0xff);
@@ -115,11 +129,8 @@ public:
 	}
 	void raise(ProcessingBox * toRaise)
 	{
-		std::vector<ProcessingBox*>::iterator search = std::find(_processings.begin(), _processings.end(), toRaise);
-		if (search==_processings.end()) return;
-		_processings.erase(search);
-		_processings.push_back(toRaise);
 		toRaise->raiseEmbeded();
+		toRaise->setZValue(++_maxZ);
 	}
 	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -136,6 +147,7 @@ public:
 			delete _processings[i];
 		_processings.clear();
 		update();
+		_maxZ=0;
 	}
 	void clearWires()
 	{
@@ -194,38 +206,27 @@ public:
 	}
 // Drawing routines
 protected:
-	void paint(QPainter & painter)
+
+	void resizeEvent(QResizeEvent * event)
 	{
-		_boundingBox=QRect(0,0,1,1);
+		viewport()->resize(event->size());
+		QGraphicsView::resizeEvent(event);
+	}
+	void recomputeSceneRect()
+	{
+		QRect boundingBox(0,0,1,1);
 		for (unsigned i = 0; i<_processings.size(); i++)
-			_boundingBox = _boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+			boundingBox = boundingBox.unite(QRect(_processings[i]->position(),_processings[i]->size()));
 		for (unsigned i = 0; i<_controlWires.size(); i++)
-			_controlWires[i]->expand(_boundingBox);
+			_controlWires[i]->expand(boundingBox);
 		for (unsigned i = 0; i<_portWires.size(); i++)
-			_portWires[i]->expand(_boundingBox);
-		_boundingBox = _boundingBox.unite(QRect(_boundingBox.topLeft(),((QWidget*)parent())->size()/_zoomFactor));
-		resize(_boundingBox.size()*_zoomFactor);
-
-		painter.setRenderHint(QPainter::Antialiasing);
-		painter.scale(_zoomFactor,_zoomFactor);
-		painter.translate(-_boundingBox.topLeft());
-
-		for (unsigned i = 0; i<_controlWires.size(); i++)
-			_controlWires[i]->draw(painter);
-		for (unsigned i = 0; i<_portWires.size(); i++)
-			_portWires[i]->draw(painter);
-		for (unsigned i = 0; i<_processings.size(); i++)
-			_processings[i]->paintFromParent(painter);
-		if (_dragStatus==InportDrag)
-			PortWire::draw(painter, _dragPoint, _dragProcessing->getInportPos(_dragConnection));
-		if (_dragStatus==OutportDrag)
-			PortWire::draw(painter, _dragProcessing->getOutportPos(_dragConnection), _dragPoint);
-		if (_dragStatus==IncontrolDrag)
-			ControlWire::draw(painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnection));
-		if (_dragStatus==OutcontrolDrag)
-			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
-		drawSelectBox(painter);
-		drawTooltip(painter);
+			_portWires[i]->expand(boundingBox);
+		_scene->setSceneRect(boundingBox);
+	}
+	void paintEvent ( QPaintEvent * event )
+	{
+		recomputeSceneRect();
+		QGraphicsView::paintEvent(event);
 	}
 	void drawSelectBox(QPainter & painter)
 	{
@@ -241,18 +242,21 @@ protected:
 		int margin =3;
 		int cursorSize = 16;
 
+		QPoint viewPortTopLeft=mapToScene(0,0).toPoint();
+		QPoint viewPortBottomRight=mapToScene(viewport()->width(), viewport()->height()).toPoint();
+
 		QRect boundingRect = metrics.boundingRect(QRect(0,0,width(),height()), Qt::AlignLeft, _tooltipText);
 		double tooltipWidth = boundingRect.width()+2*margin;
 		double x = _tooltipPos.x()+cursorSize;
-		if (x + tooltipWidth > width())
+		if (x + tooltipWidth > viewPortBottomRight.x())
 			x = _tooltipPos.x() - tooltipWidth;
-		if (x<0) x=0;
+		if (x<viewPortTopLeft.x()) x=viewPortTopLeft.x();
 
 		double tooltipHeight = boundingRect.height()+2*margin;
 		double y = _tooltipPos.y() +cursorSize;
-		if (y + tooltipHeight > height())
+		if (y + tooltipHeight > viewPortBottomRight.y())
 			y = _tooltipPos.y() - tooltipHeight;
-		if (y<0) y=0;
+		if (y<viewPortTopLeft.y()) y=viewPortTopLeft.y();
 
 		QRectF tooltip(x, y, tooltipWidth, tooltipHeight)  ;
 		painter.setBrush(_colorTooltipBody);
@@ -261,6 +265,27 @@ protected:
 		painter.setPen(_colorTooltipText);
 		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
 	}
+	void drawForeground ( QPainter * painter, const QRectF & rect )
+	{
+		if (_dragStatus==InportDrag)
+			PortWire::draw(*painter, _dragPoint, _dragProcessing->getInportPos(_dragConnection));
+		if (_dragStatus==OutportDrag)
+			PortWire::draw(*painter, _dragProcessing->getOutportPos(_dragConnection), _dragPoint);
+		if (_dragStatus==IncontrolDrag)
+			ControlWire::draw(*painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnection));
+		if (_dragStatus==OutcontrolDrag)
+			ControlWire::draw(*painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
+
+		drawSelectBox(*painter);
+		drawTooltip(*painter);
+	}
+	void drawBackground ( QPainter * painter, const QRectF & rect )
+	{
+		for (unsigned i = 0; i<_controlWires.size(); i++)
+			_controlWires[i]->draw(*painter);
+		for (unsigned i = 0; i<_portWires.size(); i++)
+			_portWires[i]->draw(*painter);
+	}
 
 public: // Helpers
 	void setToolTip(const QString & text)
@@ -268,19 +293,12 @@ public: // Helpers
 		_tooltipText = text;
 	}
 
-	QRect translatedRect(QRect rect)
+	QRect translatedRect(const QRect & rect)
 	{
-		rect.setSize(rect.size()*_zoomFactor);
-		rect.moveTopLeft((rect.topLeft()-_boundingBox.topLeft())*_zoomFactor);
-		return rect;
-	}
-	template <class Event> QPoint translatedPos(Event * event)
-	{
-		return event->pos()/_zoomFactor+_boundingBox.topLeft();
-	}
-	template <class Event> QPoint translatedGlobalPos(Event * event)
-	{
-		return event->globalPos()/_zoomFactor;
+		QPoint topLeft = mapFromScene(rect.topLeft())+viewport()->pos();
+		QPoint bottomRight = mapFromScene(rect.bottomRight())+viewport()->pos();
+
+		return QRect(topLeft, bottomRight);
 	}
 protected:
 	/// Given a connector region it return the complementary one.
@@ -342,6 +360,7 @@ protected:
 public: // Actions
 	void clearSelections()
 	{
+		setCursor(Qt::ArrowCursor);
 		for (unsigned i=0; i<_processings.size(); i++)
 			_processings[i]->deselect();
 	}
@@ -350,14 +369,24 @@ public: // Actions
 		for (unsigned i=0; i<_processings.size(); i++)
 			_processings[i]->select();
 	}
-	void startMovingSelected(QMouseEvent * event)
+	void startMovingSelected(const QPoint& point)
 	{
+		setCursor(Qt::ClosedHandCursor);
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
 			if (!_processings[i]->isSelected()) continue;
-			_processings[i]->startMoving(translatedGlobalPos(event));
+			_processings[i]->startMoving(point);
 		}
-		setCursor(Qt::SizeAllCursor);
+	}
+	void keepMovingSelected(const QPoint& delta)
+	{
+		setCursor(Qt::ClosedHandCursor);
+		for (unsigned i=0; i<_processings.size(); i++)
+		{
+			if (!_processings[i]->isSelected()) continue;
+			_processings[i]->keepMoving(delta);
+		}
+		//setCursor(Qt::SizeAllCursor);
 	}
 	/**
 	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
@@ -413,7 +442,7 @@ public slots:
 		dialog->exec();
 		QPainter painter;
 		painter.begin(&printer);
-		paint(painter);
+		render(&painter);
 		painter.end();
 
 		// Restore display colors
@@ -497,10 +526,13 @@ public:
 		else
 			for (int i=0; i>steps; i--)
 				_zoomFactor/=1.0625;
+		resetTransform();
+		scale(_zoomFactor,_zoomFactor);
 		update();
 	}
 	void resetZoom()
 	{
+		resetTransform();
 		_zoomFactor=1.;
 		update();
 	}
@@ -509,13 +541,14 @@ public:
 		QPixmap pixmap(size());
 		QPainter painter;
 		painter.begin(&pixmap);
-		paint(painter);
+		render(&painter);
 		painter.end();
 		// if greater than 800x800, rescale it
 		if (size()!=size().boundedTo(QSize(800,800)))
 			return pixmap.scaled(800,800,Qt::KeepAspectRatio, mode);
 		return pixmap;
 	}
+
 protected:
 	ProcessingBox * getBox(const QString & name)
 	{
@@ -609,7 +642,7 @@ protected:
 		QRect boundingBox;
 		for (unsigned i = 0; i<_processings.size(); i++)
 			if (_processings[i]->isSelected())
-				boundingBox = boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+				boundingBox = boundingBox.unite(QRect(_processings[i]->position(),_processings[i]->size()));
 		return boundingBox;
 	}
 
@@ -651,10 +684,9 @@ public:
 	virtual void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nInPort =0) =0;
 	virtual void addLinkedProcessingSender ( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nOutPort =0) =0;
 
-	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
-	virtual void processingContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing) { }
+	virtual void connectionContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
+	virtual void processingContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing) { }
 	virtual void canvasContextMenu(QMenu * menu, QContextMenuEvent * event) { }
-
 
 signals:
 	void changed();
@@ -677,29 +709,28 @@ public: // Event Handlers
 
 	void mouseMoveEvent(QMouseEvent * event)
 	{
-		_dragPoint = translatedPos(event);
+		_dragPoint = mapToScene(event->pos()).toPoint();
+
 		setToolTip(0);
 		setStatusTip(0);
-		setCursor(Qt::ArrowCursor);
+		
+		if(cursor().shape()!=Qt::ClosedHandCursor)
+			setCursor(Qt::ArrowCursor);
+
+		QGraphicsView::mouseMoveEvent(event);
 		for (unsigned i = _processings.size(); i--; )
-			_processings[i]->mouseMoveEvent(event);
+			_processings[i]->hover(mapToScene(event->pos()).toPoint());
 		_tooltipPos=_dragPoint;
 		update();
 	}
 	void mousePressEvent(QMouseEvent * event)
 	{
 		if (event->button()!=Qt::LeftButton) return;
-		QPoint translatedPoint = translatedPos(event);
-		for (unsigned i = _processings.size(); i--; )
-		{
-			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
-			_processings[i]->mousePressEvent(event);
-			update();
-			return;
-		}
-		if (! (event->modifiers() & Qt::ControlModifier) )
+		QGraphicsView::mousePressEvent(event);
+		if (_scene->itemAt(mapToScene(event->pos()))) return;
+		if (not (event->modifiers() & Qt::ControlModifier))
 			clearSelections();
-		_selectionDragOrigin=translatedPoint;
+		_selectionDragOrigin=mapToScene(event->pos()).toPoint();
 		startDrag(SelectionDrag,0,0);
 		update();
 	}
@@ -709,63 +740,37 @@ public: // Event Handlers
 		{
 			QRect selectionBox (_selectionDragOrigin, _dragPoint);
 			for (unsigned i = _processings.size(); i--; )
-				if (selectionBox.contains(QRect(_processings[i]->pos(),_processings[i]->size())))
+				if (selectionBox.contains(QRect(_processings[i]->position(),_processings[i]->size())))
 					_processings[i]->select();
 		}
-		for (unsigned i = _processings.size(); i--; )
-			_processings[i]->mouseReleaseEvent(event);
+		QGraphicsView::mouseReleaseEvent(event);
+		QPointF scenePointF=mapToScene(event->pos());
+		ProcessingBox * processingBox=(ProcessingBox*)_scene->itemAt(scenePointF);
+		if(processingBox)
+			processingBox->endWireDrag(scenePointF.toPoint());
 		_dragStatus=NoDrag;
 		update();
 	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
-		QPoint translatedPoint = translatedPos(event);
-		for (unsigned i = _processings.size(); i--; )
-		{
-			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
-			_processings[i]->mouseDoubleClickEvent(event);
-			update();
-			return;
-		}
-		print();
+		if (_scene->itemAt(mapToScene(event->pos())))
+			QGraphicsView::mouseDoubleClickEvent(event);
+		else
+			print();
 	}
 
 	void contextMenuEvent(QContextMenuEvent * event)
 	{
-		QMenu menu(this);
-		for (unsigned i = _processings.size(); i--; )
+		if (_scene->itemAt(mapToScene(event->pos())))
 		{
-			ProcessingBox::Region region = _processings[i]->getRegion(translatedPos(event));
-			switch (region)
-			{
-				case ProcessingBox::inportsRegion:
-				case ProcessingBox::outportsRegion:
-				case ProcessingBox::incontrolsRegion:
-				case ProcessingBox::outcontrolsRegion:
-					connectionContextMenu(&menu, event, _processings[i], region);
-					menu.exec(event->globalPos());
-				return;
-
-				case ProcessingBox::nameRegion:
-				case ProcessingBox::bodyRegion:
-				case ProcessingBox::resizeHandleRegion:
-					if (not _processings[i]->isSelected())
-					{
-						std::cout << "updating selection on context menu" << std::endl;
-						if (! (event->modifiers() & Qt::ControlModifier) )
-							clearSelections();
-						_processings[i]->select();
-						update();
-					}
-					processingContextMenu(&menu, event, _processings[i]);
-					menu.exec(event->globalPos());
-				return;
-
-				default: continue;
-			}
+			QGraphicsView::contextMenuEvent(event);
 		}
-		canvasContextMenu(&menu, event);
-		menu.exec(event->globalPos());
+		else
+		{
+			QMenu menu(this);
+			canvasContextMenu(&menu, event);
+			menu.exec(event->globalPos());
+		}
 	}
 
 	void dragEnterEvent(QDragEnterEvent *event)
@@ -780,8 +785,9 @@ public: // Event Handlers
 	{
 		QString type =  event->mimeData()->text();
 		event->acceptProposedAction();
-		addProcessing(translatedPos(event), type);
+		addProcessing(mapToScene(event->pos()).toPoint(), type);
 	}
+
 	void wheelEvent(QWheelEvent * event)
 	{
 		const int deltaUnitsPerDegree = 8;
@@ -791,7 +797,7 @@ public: // Event Handlers
 	}
 	bool event(QEvent * event)
 	{
-		if (event->type()!=QEvent::WhatsThis) return QWidget::event(event);
+		if (event->type()!=QEvent::WhatsThis) return QGraphicsView::event(event);
 		QHelpEvent * helpEvent = (QHelpEvent *) event;
 		for (unsigned i = _processings.size(); i--; )
 		{
@@ -837,7 +843,7 @@ public: // Event Handlers
 						"</ul>\n"
 						));
 			}
-			return QWidget::event(event);
+			return QGraphicsView::event(event);
 		}
 		setWhatsThis(tr(
 			"<p>This is the 'network canvas'. "
@@ -845,15 +851,14 @@ public: // Event Handlers
 			"and connect them by dragging compatible connectors. "
 			"You may pan the canvas by dragging it with the control key pressed.</p>"
 			));
-		return QWidget::event(event);
+		return QGraphicsView::event(event);
 	}
-
+	
 protected:
 	std::vector<ProcessingBox *> _processings;
 	std::vector<PortWire *> _portWires;
 	std::vector<ControlWire *> _controlWires;
 	double _zoomFactor;
-	QRect _boundingBox;
 private:
 	bool _changed;
 protected:
@@ -890,6 +895,8 @@ protected:
 	QColor _colorPortWireOutline;
 	QColor _colorControlWire;
 	QColor _colorControlWireOutline;
+	QGraphicsScene * _scene;
+	unsigned long _maxZ;
 };
 
 
@@ -964,11 +971,6 @@ public:
 
 	virtual ~ClamNetworkCanvas();
 
-	void paintEvent(QPaintEvent * event)
-	{
-		QPainter painter(this);
-		paint(painter);
-	}
 public: // Actions
 
 	void addProcessing(QPoint point, QString type)
@@ -1261,6 +1263,8 @@ private:
 		_processings.back()->setProcessing(processing);
 		_processings.back()->move(point);
 		_processings.back()->resize(size);
+		_scene->addItem(_processings.back());
+		raise(_processings.back());
 	}
 protected:
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
@@ -1413,7 +1417,7 @@ public:
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
 			CLAM::BaseNetwork::Geometry processingGeometry;
-			QPoint position = _processings[i]->pos()-offsetPoint;
+			QPoint position = _processings[i]->position()-offsetPoint;
 			QSize size = _processings[i]->size();
 			const std::string name=_processings[i]->getName().toStdString();
 			processingGeometry.x=position.x();
@@ -1727,9 +1731,12 @@ private:
 	}
 
 
-	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region)
+	virtual void connectionContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region)
 	{
-		QPoint cursorPosition = translatedPos(event);
+		connectionContextMenu(menu, event->scenePos().toPoint(), processing, region);
+	}
+	virtual void connectionContextMenu(QMenu * menu, const QPoint& cursorPosition, ProcessingBox * processing, ProcessingBox::Region region)
+	{
 		menu->addAction(QIcon(":/icons/images/remove.png"), tr("Disconnect"),
 			this, SLOT(onDisconnect()))->setData(cursorPosition);
 		menu->addAction(QIcon(":/icons/images/editcopy.png"), tr("Copy connection name"),
@@ -1855,12 +1862,17 @@ private:
 			}
 		}
 	}
-	virtual void processingContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing)
+
+	virtual void processingContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing)
+	{
+		processingContextMenu(menu, event->scenePos().toPoint(), processing);
+	}
+	virtual void processingContextMenu(QMenu * menu, const QPoint& point, ProcessingBox * processing)
 	{
 		menu->addAction(QIcon(":/icons/images/configure.png"), tr("Configure"),
-			this, SLOT(onConfigure()))->setData(translatedPos(event));
+			this, SLOT(onConfigure()))->setData(point);
 		menu->addAction(QIcon(":/icons/images/editclear.png"), tr("Rename"),
-			this, SLOT(onRename()))->setData(translatedPos(event));
+			this, SLOT(onRename()))->setData(point);
 		menu->addAction(_deleteSelectedAction);
 		menu->addAction(_copySelectionAction);
 		menu->addAction(_cutSelectionAction);
@@ -1880,15 +1892,20 @@ private:
 			menu->addAction(clamProcessingIcon(className),"Open source with editor",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
 			//menu->addAction(clamProcessingIcon(className),"Recompile plugin");
 		}
-
 	}
+
 	virtual void canvasContextMenu(QMenu * menu, QContextMenuEvent * event)
 	{
-		_pasteSelectionAction->setData(translatedPos(event));
+		canvasContextMenu(menu, mapToScene(event->pos()).toPoint());
+	}
+	virtual void canvasContextMenu(QMenu * menu, const QPoint& point)
+	{
+		_pasteSelectionAction->setData(point);
 		menu->addAction(_pasteSelectionAction);
-		_newProcessingAction->setData(translatedPos(event));
+		_newProcessingAction->setData(point);
 		menu->addAction(_newProcessingAction);
 	}
+
 	virtual QIcon processingIcon(ProcessingBox * processingBox)
 	{
 		const char* className=((CLAM::Processing*)processingBox->model())->GetClassName();

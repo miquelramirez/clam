@@ -2,10 +2,11 @@
 #define ProcessingBox_hxx
 
 #include <QtGui/QWidget>
+#include <QtGui/QGraphicsItem>
 
 class NetworkCanvas;
 
-class ProcessingBox 
+class ProcessingBox : public QGraphicsItem
 {
 public:
 	enum
@@ -44,6 +45,9 @@ public:
 			unsigned nIncontrols, unsigned nOutcontrols);
 	virtual ~ProcessingBox();
 
+	QRectF boundingRect() const;
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
 	void setProcessing(void * model);
 	void * model() const { return _processing; }
 	void paintFromParent(QPainter & painter);
@@ -71,19 +75,24 @@ public:
 	QString getOutcontrolPrototyperName(const QPoint & point) const;
 	QString getConnectionPrototyperName(QString kind, QString connectionName) const;
 
-	void mousePressEvent(QMouseEvent * event);
-	void mouseMoveEvent(QMouseEvent * event);
-	void mouseReleaseEvent(QMouseEvent * event);
-	void mouseDoubleClickEvent(QMouseEvent * event);
+	void mousePressEvent(QGraphicsSceneMouseEvent * event);
+	void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+	void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+	void contextMenuEvent ( QGraphicsSceneContextMenuEvent * event ) ;
 
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);
 	void startMoving(const QPoint & initialGlobalPos);
-	QPoint pos() const { return _pos; }
+	void keepMoving(const QPoint & delta);
+	void doubleClicking(const QPoint & scenePoint);
+	QPoint position() const { return _pos; }
 	QSize size() const { return _size; }
 	void embed(QWidget * widget);
 	bool configure();
 	bool rename();
+	void hover(const QPoint & scenePoint);
+	void endWireDrag(const QPoint& scenePoint);
 
 	void raiseEmbeded() {if (_embeded) _embeded->raise();}
 
