@@ -51,8 +51,6 @@ class EnvironmentManager : public CLAM::Processing
 	struct Environment
 	{
 		std::string name;
-		float x0,y0,z0;
-		float x1,y1,z1;
 		std::string irWavfile;
 		bformatIR ir;
 	};
@@ -61,7 +59,7 @@ class EnvironmentManager : public CLAM::Processing
 
 	Config _config;
 
-	FloatOutControl _actualEnvironment;
+	FloatOutControl _currentEnvironment;
 	FloatInControl _xInControl;
 	FloatInControl _yInControl;
 	FloatInControl _zInControl;
@@ -75,7 +73,7 @@ class EnvironmentManager : public CLAM::Processing
 
 public:
 	EnvironmentManager(const Config& config = Config()) 
-		: _actualEnvironment ("Actual Environment",this)
+		: _currentEnvironment ("Current Environment Index",this)
 		, _xInControl("X in",this)
 		, _yInControl("Y in",this)
 		, _zInControl("Z in",this)
@@ -83,7 +81,7 @@ public:
 		, _responseSpectrumsX("ImpulseResponseX",this)
 		, _responseSpectrumsY("ImpulseResponseY",this)
 		, _responseSpectrumsZ("ImpulseResponseZ",this)
-		, _environmentName("Environment name",this)
+		, _environmentName("Current Environment Name",this)
 		, _inSync("Sync in",this)
 		, _scene(0)
 		
@@ -116,7 +114,7 @@ public:
 			_responseSpectrumsY.Produce();
 			_responseSpectrumsZ.GetData()= &_silenceIR;
 			_responseSpectrumsZ.Produce();
-			_actualEnvironment.SendControl(0);
+			_currentEnvironment.SendControl(0);
 			return true;
 		}
 
@@ -137,10 +135,11 @@ public:
 			_responseSpectrumsY.Produce();
 			_responseSpectrumsZ.GetData()= &(it->ir.irZ);
 			_responseSpectrumsZ.Produce();
-			_actualEnvironment.SendControl(environment);
+			_currentEnvironment.SendControl(environment);
 			return true;
 		}
 		CLAM_ASSERT(true,"Received an environment mesh without proper defined IR");
+		return false; //just to avoid compiler warning
 	}
 	const char* GetClassName() const
 	{
@@ -222,13 +221,7 @@ protected:
 			}
 			Environment environment;
 			environment.name=row[0];
-			environment.x0=atoi(row[1].c_str());
-			environment.y0=atoi(row[2].c_str());
-			environment.z0=atoi(row[3].c_str());
-			environment.x1=atoi(row[4].c_str());
-			environment.y1=atoi(row[5].c_str());
-			environment.z1=atoi(row[6].c_str());
-			environment.irWavfile=row[7];
+			environment.irWavfile=row[1];
 			_environments.push_back(environment);
 		}
 		std::string errorMsg;
