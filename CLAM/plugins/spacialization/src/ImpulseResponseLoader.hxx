@@ -96,7 +96,8 @@ public:
 		const unsigned sampleRate=44100;
 		for (unsigned nChannel=0; nChannel<_responseSpectrums.size();nChannel++)
 		{
-			if (!computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums[nChannel], _config.GetFrameSize(), errorMsg, nChannel, sampleRate) )
+			const bool & OK = computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums[nChannel], _config.GetFrameSize(), errorMsg, nChannel, sampleRate);
+			if (not OK)
 				return AddConfigErrorMessage(errorMsg);
 		}
 		return true;
