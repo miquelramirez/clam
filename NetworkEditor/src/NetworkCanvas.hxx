@@ -727,7 +727,7 @@ public: // Event Handlers
 	{
 		if (event->button()!=Qt::LeftButton) return;
 		QGraphicsView::mousePressEvent(event);
-		if (_scene->itemAt(mapToScene(event->pos()))) return;
+		if (itemAt(event->pos())) return;
 		if (not (event->modifiers() & Qt::ControlModifier))
 			clearSelections();
 		_selectionDragOrigin=mapToScene(event->pos()).toPoint();
