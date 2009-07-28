@@ -8,6 +8,7 @@
 #include <QtGui/QInputDialog>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtGui/QGraphicsSceneContextMenuEvent>
+#include <CLAM/ProcessingFactory.hxx> 
 
 std::string processingBoxRegionName(ProcessingBox::Region region)
 {
@@ -542,6 +543,7 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 			if (not _canvas->isOk(_processing)) 
 				_canvas->setToolTip(_canvas->errorMessage(_processing));
 			_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
+			setMetadataToolTip();
 			break;
 		}
 		case nameRegion:
@@ -549,10 +551,34 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 			if (not _canvas->isOk(_processing))
 				_canvas->setToolTip(_canvas->errorMessage(_processing));
 			_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
+			setMetadataToolTip();
 			break;
 		}
 		return;
 	}
+}
+void ProcessingBox::setMetadataToolTip()
+{
+	QString tooltipText=QString("name: ");
+	std::string key=((CLAM::Processing*)_processing)->GetClassName();
+	tooltipText+=QString(key.c_str());
+	tooltipText+=QString("\n");
+	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+	CLAM::ProcessingFactory::Pairs pairsFromKey=factory.GetPairsFromKey(key);
+	CLAM::ProcessingFactory::Pairs::const_iterator itPairs;
+	for(itPairs = pairsFromKey.begin();itPairs!=pairsFromKey.end();itPairs++)
+	{
+		std::string attribute = itPairs->attribute;
+		std::string value = itPairs->value;
+		if(attribute!="icon" && value!=key && value!="")
+		{
+			tooltipText+=QString(attribute.c_str());
+			tooltipText+=QString(": ");
+			tooltipText+=QString(value.c_str());
+			tooltipText+=QString("\n");
+		}
+	}
+	_canvas->setToolTip(tooltipText);
 }
 void ProcessingBox::doubleClicking(const QPoint & scenePoint)
 {
