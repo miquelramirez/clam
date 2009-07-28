@@ -92,6 +92,7 @@ public:
 	bool configure();
 	bool rename();
 	void hover(const QPoint & scenePoint);
+	void setMetadataToolTip();
 	void endWireDrag(const QPoint& scenePoint);
 
 	void raiseEmbeded() {if (_embeded) _embeded->raise();}
