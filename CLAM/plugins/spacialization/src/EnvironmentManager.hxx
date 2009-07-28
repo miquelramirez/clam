@@ -46,6 +46,12 @@ class EnvironmentManager : public CLAM::Processing
 		std::string name;
 		std::string irWavfile;
 		std::vector <ImpulseResponse> ir;
+		Environment() { }
+		Environment(unsigned nChannels)
+		{
+			for (unsigned i=0;i<nChannels;i++)
+				ir.push_back(ImpulseResponse());
+		}
 	};
 	std::vector<Environment> _environments;
 	ImpulseResponse _silenceIR;
@@ -222,11 +228,9 @@ protected:
 					<< ", not a float number at columns " << row.size() << ".";
 				return AddConfigErrorMessage(os.str());
 			}
-			Environment environment;
+			Environment environment(_outputPorts.size());
 			environment.name=row[0];
 			environment.irWavfile=row[1];
-			for (unsigned channel=0;channel<_outputPorts.size();channel++)
-				environment.ir.push_back(ImpulseResponse());
 			_environments.push_back(environment);
 		}
 		std::string errorMsg;
