@@ -79,12 +79,12 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader.ImpulseResponse</out>
+    <out>ImpulseResponseLoader.W</out>
     <in>ImpulseResponseInterpolator.Input1</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoaderEnd.ImpulseResponse</out>
+    <out>ImpulseResponseLoaderEnd.W</out>
     <in>ImpulseResponseInterpolator.Input2</in>
   </port_connection>
 

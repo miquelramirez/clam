@@ -1023,97 +1023,97 @@
   </port_connection>
 
   <port_connection>
-    <out>ir 0.ImpulseResponse</out>
+    <out>ir 0.W</out>
     <in>conv 0.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 108L.ImpulseResponse</out>
+    <out>ir 108L.W</out>
     <in>conv 108 to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 108R.ImpulseResponse</out>
+    <out>ir 108R.W</out>
     <in>conv 108 to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 144L.ImpulseResponse</out>
+    <out>ir 144L.W</out>
     <in>conv 144 to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 144R.ImpulseResponse</out>
+    <out>ir 144R.W</out>
     <in>conv 144 to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 180L.ImpulseResponse</out>
+    <out>ir 180L.W</out>
     <in>conv 180 to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 180R.ImpulseResponse</out>
+    <out>ir 180R.W</out>
     <in>conv 180 to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 216L.ImpulseResponse</out>
+    <out>ir 216L.W</out>
     <in>conv 216 to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 216R.ImpulseResponse</out>
+    <out>ir 216R.W</out>
     <in>conv 216 to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 252L.ImpulseResponse</out>
+    <out>ir 252L.W</out>
     <in>conv 252 to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 252R.ImpulseResponse</out>
+    <out>ir 252R.W</out>
     <in>conv 252 to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 288L.ImpulseResponse</out>
+    <out>ir 288L.W</out>
     <in>conv 288 to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 288R.ImpulseResponse</out>
+    <out>ir 288R.W</out>
     <in>conv 288 to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 324L.ImpulseResponse</out>
+    <out>ir 324L.W</out>
     <in>conv 324 to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 324R.ImpulseResponse</out>
+    <out>ir 324R.W</out>
     <in>conv 324 to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 36L.ImpulseResponse</out>
+    <out>ir 36L.W</out>
     <in>conv 36 to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 36R.ImpulseResponse</out>
+    <out>ir 36R.W</out>
     <in>conv 36 to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 72L.ImpulseResponse</out>
+    <out>ir 72L.W</out>
     <in>conv 72 to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ir 72R.ImpulseResponse</out>
+    <out>ir 72R.W</out>
     <in>conv 72 to R.ImpulseResponse</in>
   </port_connection>
 

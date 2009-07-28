@@ -804,22 +804,22 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader.ImpulseResponse</out>
+    <out>ImpulseResponseLoader.W</out>
     <in>LowLatencyConvolution_12.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader_1.ImpulseResponse</out>
+    <out>ImpulseResponseLoader_1.W</out>
     <in>LowLatencyConvolution_13.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader_2.ImpulseResponse</out>
+    <out>ImpulseResponseLoader_2.W</out>
     <in>LowLatencyConvolution_14.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader_3.ImpulseResponse</out>
+    <out>ImpulseResponseLoader_3.W</out>
     <in>LowLatencyConvolution_15.ImpulseResponse</in>
   </port_connection>
 

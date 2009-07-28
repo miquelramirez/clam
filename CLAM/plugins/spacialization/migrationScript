@@ -66,3 +66,4 @@ removeConfig Surround NChannels
 renameConnector AudioSource outport "AudioOut" 1
 renameConnector AudioSink inport "AudioIn" 1
 
+renameConnector ImpulseResponseLoader outport "ImpulseResponse" "W"

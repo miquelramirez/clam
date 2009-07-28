@@ -867,22 +867,22 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader W.ImpulseResponse</out>
+    <out>ImpulseResponseLoader W.W</out>
     <in>Convolution W.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader X.ImpulseResponse</out>
+    <out>ImpulseResponseLoader X.W</out>
     <in>Convolution X.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader Y.ImpulseResponse</out>
+    <out>ImpulseResponseLoader Y.W</out>
     <in>Convolution Y.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader Z.ImpulseResponse</out>
+    <out>ImpulseResponseLoader Z.W</out>
     <in>Convolution Z.ImpulseResponse</in>
   </port_connection>
 

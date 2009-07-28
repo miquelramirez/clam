@@ -191,32 +191,32 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader.ImpulseResponse</out>
+    <out>ImpulseResponseLoader.W</out>
     <in>ImpulseResponseInterpolator.Input1</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader1.ImpulseResponse</out>
+    <out>ImpulseResponseLoader1.W</out>
     <in>ImpulseResponseInterpolator_1.Input1</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader1End.ImpulseResponse</out>
+    <out>ImpulseResponseLoader1End.W</out>
     <in>ImpulseResponseInterpolator_1.Input2</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader2.ImpulseResponse</out>
+    <out>ImpulseResponseLoader2.W</out>
     <in>ImpulseResponseInterpolator_2.Input1</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader2End.ImpulseResponse</out>
+    <out>ImpulseResponseLoader2End.W</out>
     <in>ImpulseResponseInterpolator_2.Input2</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoaderEnd.ImpulseResponse</out>
+    <out>ImpulseResponseLoaderEnd.W</out>
     <in>ImpulseResponseInterpolator.Input2</in>
   </port_connection>
 
