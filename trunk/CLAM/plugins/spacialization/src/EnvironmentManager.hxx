@@ -41,18 +41,11 @@ class EnvironmentManager : public CLAM::Processing
 	};
 
 	typedef std::vector<std::string> Row;
-	struct bformatIR
-	{
-		ImpulseResponse irW;
-		ImpulseResponse irX;
-		ImpulseResponse irY;
-		ImpulseResponse irZ;
-	};
 	struct Environment
 	{
 		std::string name;
 		std::string irWavfile;
-		bformatIR ir;
+		std::vector <ImpulseResponse> ir;
 	};
 	std::vector<Environment> _environments;
 	ImpulseResponse _silenceIR;
@@ -63,13 +56,10 @@ class EnvironmentManager : public CLAM::Processing
 	FloatInControl _xInControl;
 	FloatInControl _yInControl;
 	FloatInControl _zInControl;
-	OutPort<ImpulseResponse*> _responseSpectrumsW;
-	OutPort<ImpulseResponse*> _responseSpectrumsX;
-	OutPort<ImpulseResponse*> _responseSpectrumsY;
-	OutPort<ImpulseResponse*> _responseSpectrumsZ;
 	TypedOutControl<std::string> _environmentName;
 	AudioInPort _inSync;
 	Scene * _scene;
+	std::vector< OutPort<ImpulseResponse*>* > _outputPorts;
 
 public:
 	EnvironmentManager(const Config& config = Config()) 
@@ -77,10 +67,6 @@ public:
 		, _xInControl("X in",this)
 		, _yInControl("Y in",this)
 		, _zInControl("Z in",this)
-		, _responseSpectrumsW("ImpulseResponseW",this)
-		, _responseSpectrumsX("ImpulseResponseX",this)
-		, _responseSpectrumsY("ImpulseResponseY",this)
-		, _responseSpectrumsZ("ImpulseResponseZ",this)
 		, _environmentName("Current Environment Name",this)
 		, _inSync("Sync in",this)
 		, _scene(0)
@@ -99,21 +85,18 @@ public:
 		x=_xInControl.GetLastValue();
 		y=_yInControl.GetLastValue();
 		z=_zInControl.GetLastValue();
-
 		Vertex position=Vertex(x,y,z);
+
 		const std::string environmentName=_scene->getCurrentEnvironment(position,true);
 		_environmentName.SendControl(environmentName);
 
 		if (environmentName=="")
 		{
-			_responseSpectrumsW.GetData()= &_silenceIR;
-			_responseSpectrumsW.Produce();
-			_responseSpectrumsX.GetData()= &_silenceIR;
-			_responseSpectrumsX.Produce();
-			_responseSpectrumsY.GetData()= &_silenceIR;
-			_responseSpectrumsY.Produce();
-			_responseSpectrumsZ.GetData()= &_silenceIR;
-			_responseSpectrumsZ.Produce();
+			for (unsigned channelNr=0;channelNr<_outputPorts.size();channelNr++)
+			{
+				_outputPorts[channelNr]->GetData() = &_silenceIR;
+				_outputPorts[channelNr]->Produce();
+			}
 			_currentEnvironment.SendControl(0);
 			return true;
 		}
@@ -127,14 +110,11 @@ public:
 				environment++;
 				continue;
 			}
-			_responseSpectrumsW.GetData()= &(it->ir.irW);
-			_responseSpectrumsW.Produce();
-			_responseSpectrumsX.GetData()= &(it->ir.irX);
-			_responseSpectrumsX.Produce();
-			_responseSpectrumsY.GetData()= &(it->ir.irY);
-			_responseSpectrumsY.Produce();
-			_responseSpectrumsZ.GetData()= &(it->ir.irZ);
-			_responseSpectrumsZ.Produce();
+			for (unsigned channelNr=0;channelNr<_outputPorts.size();channelNr++)
+			{
+				_outputPorts[channelNr]->GetData() = & ( it->ir[channelNr] );
+				_outputPorts[channelNr]->Produce();
+			}
 			_currentEnvironment.SendControl(environment);
 			return true;
 		}
@@ -148,23 +128,22 @@ public:
 
 	~EnvironmentManager()
 	{
+		for (unsigned port = 0; port < _outputPorts.size(); ++port)
+			delete _outputPorts[port];
 		if (_scene) delete _scene;
 	}
 
 protected:
-	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
+	Scene * createScene()
 	{
-		CopyAsConcreteConfig(_config, config);
-
 		std::ifstream modelcheck( _config.GetEnvironmentsGeometryFile().c_str() );
 		if ( not modelcheck.is_open() )
 		{
 			std::string err("Could not open the environments geometry definitions: "); 
 			err += _config.GetEnvironmentsGeometryFile();
 			AddConfigErrorMessage(err);
-			return false;
+			return 0;
 		}
-
 		Settings settings;
                 settings.repeatable = true; // TODO: It should be configurable
                 settings.extra_bound = 0.5;
@@ -178,12 +157,36 @@ protected:
                 settings.use_osc = false;
                 settings.use_dat = false;
                 settings.hoa_order = 0;
+		return new Scene(settings);
+	}
+
+	void createOutputPorts()
+	{
+		if (_outputPorts.size()!=0) return; //already created
+		_outputPorts.push_back(new OutPort<ImpulseResponse*>("W",this)); 
+		_outputPorts.push_back(new OutPort<ImpulseResponse*>("X",this)); 
+		_outputPorts.push_back(new OutPort<ImpulseResponse*>("Y",this)); 
+		_outputPorts.push_back(new OutPort<ImpulseResponse*>("Z",this)); 
+		for (unsigned channelNr=0;channelNr<_outputPorts.size();channelNr++)
+		{
+			_outputPorts[channelNr]->SetSize(1);
+			_outputPorts[channelNr]->SetHop(1);
+		}
+	}
+
+	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
+	{
+		CopyAsConcreteConfig(_config, config);
+
+		_inSync.SetSize(_config.GetFrameSize());
+		_inSync.SetHop(_config.GetFrameSize());
+		createOutputPorts();
 
 		if (_scene) delete _scene;
-		_scene= new Scene(settings);
+		_scene = createScene();
+		if (not _scene)	return false;
 
 		std::vector<std::string> meshes=_scene->getMeshesNames();
-
 
 		_environments.clear();
 		//Load the sequence
@@ -222,6 +225,8 @@ protected:
 			Environment environment;
 			environment.name=row[0];
 			environment.irWavfile=row[1];
+			for (unsigned channel=0;channel<_outputPorts.size();channel++)
+				environment.ir.push_back(ImpulseResponse());
 			_environments.push_back(environment);
 		}
 		std::string errorMsg;
@@ -235,19 +240,17 @@ protected:
 			for (itIRs=_environments.begin(); itIRs!=_environments.end(); itIRs++)
 			{
 				if (itIRs->name!=(*itMeshes)) continue;
-				if (!computeResponseSpectrums( itIRs->irWavfile, itIRs->ir.irW, _config.GetFrameSize(), errorMsg, 0, sampleRate) 
-					or !computeResponseSpectrums( itIRs->irWavfile, itIRs->ir.irX, _config.GetFrameSize(), errorMsg, 1, sampleRate)
-					or !computeResponseSpectrums( itIRs->irWavfile, itIRs->ir.irY, _config.GetFrameSize(), errorMsg, 2, sampleRate)
-					or !computeResponseSpectrums( itIRs->irWavfile, itIRs->ir.irZ, _config.GetFrameSize(), errorMsg, 3, sampleRate)	)
+				for (unsigned channelNr = 0; channelNr < itIRs->ir.size(); channelNr++)
 				{
-					AddConfigErrorMessage(errorMsg + " while using environment "+itIRs->name);
-					return false;
+					const bool OK = computeResponseSpectrums(itIRs->irWavfile, itIRs->ir[channelNr], _config.GetFrameSize(), errorMsg, channelNr, sampleRate);
+					if (!OK) return AddConfigErrorMessage(errorMsg + " while using environment "+itIRs->name);
 				}
 				definedEnvironment=true;
 			}
 			if (not definedEnvironment)
 				return AddConfigErrorMessage("Cannot found IR definition for mesh " + (*itMeshes));
 		}
+
 		// create a silence IR
 		std::vector<double> zerosBuffer;
 		for (unsigned i=0;i<_config.GetFrameSize();i++)
