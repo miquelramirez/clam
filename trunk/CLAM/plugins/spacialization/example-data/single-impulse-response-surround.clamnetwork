@@ -157,17 +157,17 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader P.ImpulseResponse</out>
+    <out>ImpulseResponseLoader P.W</out>
     <in>Convolution_P.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader vx.ImpulseResponse</out>
+    <out>ImpulseResponseLoader vx.W</out>
     <in>Convolution_Vx.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader vy.ImpulseResponse</out>
+    <out>ImpulseResponseLoader vy.W</out>
     <in>Convolution_Vy.ImpulseResponse</in>
   </port_connection>
 

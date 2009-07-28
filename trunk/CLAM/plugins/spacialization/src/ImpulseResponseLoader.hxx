@@ -82,14 +82,13 @@ public:
 		CopyAsConcreteConfig(_config, config);
 		const bool isBformat = (_config.HasIsBFormatFile() and _config.GetIsBFormatFile());
 		std::vector <std::string> portNames;
+		portNames.push_back("W");
 		if (isBformat)
 		{
-			portNames.push_back("W");
 			portNames.push_back("X");
 			portNames.push_back("Y");
 			portNames.push_back("Z");
 		}
-		else	portNames.push_back("ImpulseResponse");
 
 		createOutputs (portNames);
 		std::string errorMsg;

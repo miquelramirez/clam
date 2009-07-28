@@ -415,62 +415,62 @@
   </port_connection>
 
   <port_connection>
-    <out>IR0.ImpulseResponse</out>
+    <out>IR0.W</out>
     <in>Conv C.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR110.ImpulseResponse</out>
+    <out>IR110.W</out>
     <in>Conv SL to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR110.ImpulseResponse</out>
+    <out>IR110.W</out>
     <in>Conv SR to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR250.ImpulseResponse</out>
+    <out>IR250.W</out>
     <in>Conv SL to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR250.ImpulseResponse</out>
+    <out>IR250.W</out>
     <in>Conv SR to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR30.ImpulseResponse</out>
+    <out>IR30.W</out>
     <in>Conv L to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR30.ImpulseResponse</out>
+    <out>IR30.W</out>
     <in>Conv R to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR330.ImpulseResponse</out>
+    <out>IR330.W</out>
     <in>Conv L to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR330.ImpulseResponse</out>
+    <out>IR330.W</out>
     <in>Conv R to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader P.ImpulseResponse</out>
+    <out>ImpulseResponseLoader P.W</out>
     <in>Convolution_P.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader vx.ImpulseResponse</out>
+    <out>ImpulseResponseLoader vx.W</out>
     <in>Convolution_Vx.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader vy.ImpulseResponse</out>
+    <out>ImpulseResponseLoader vy.W</out>
     <in>Convolution_Vy.ImpulseResponse</in>
   </port_connection>
 

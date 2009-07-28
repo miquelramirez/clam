@@ -581,47 +581,47 @@
   </port_connection>
 
   <port_connection>
-    <out>IR0.ImpulseResponse</out>
+    <out>IR0.W</out>
     <in>Conv C.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR144.ImpulseResponse</out>
+    <out>IR144.W</out>
     <in>Conv SL to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR144.ImpulseResponse</out>
+    <out>IR144.W</out>
     <in>Conv SR to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR216.ImpulseResponse</out>
+    <out>IR216.W</out>
     <in>Conv SL to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR216.ImpulseResponse</out>
+    <out>IR216.W</out>
     <in>Conv SR to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR288.ImpulseResponse</out>
+    <out>IR288.W</out>
     <in>Conv L to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR288.ImpulseResponse</out>
+    <out>IR288.W</out>
     <in>Conv R to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR72.ImpulseResponse</out>
+    <out>IR72.W</out>
     <in>Conv L to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR72.ImpulseResponse</out>
+    <out>IR72.W</out>
     <in>Conv R to L.ImpulseResponse</in>
   </port_connection>
 

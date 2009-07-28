@@ -95,7 +95,7 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader.ImpulseResponse</out>
+    <out>ImpulseResponseLoader.W</out>
     <in>LowLatencyConvolution_0.ImpulseResponse</in>
   </port_connection>
 
