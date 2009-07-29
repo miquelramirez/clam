@@ -25,11 +25,12 @@ class EnvironmentManager : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 4, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 5, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, InFilename, EnvironmentImpulseResponsesFile);
 		DYN_ATTRIBUTE( 1, public, unsigned, FrameSize);
 		DYN_ATTRIBUTE( 2, public, unsigned, SampleRate);
 		DYN_ATTRIBUTE( 3, public, InFilename, EnvironmentsGeometryFile);
+		DYN_ATTRIBUTE( 4, public, InFilename, DefaultIR);
 	protected:
 		void DefaultInit()
 		{
@@ -37,6 +38,9 @@ class EnvironmentManager : public CLAM::Processing
 			UpdateData();
 			SetEnvironmentImpulseResponsesFile("");
 			SetFrameSize(512);
+			SetSampleRate(44100);
+			SetEnvironmentsGeometryFile("");
+			SetDefaultIR("");
 		};
 	};
 
@@ -47,14 +51,15 @@ class EnvironmentManager : public CLAM::Processing
 		std::string irWavfile;
 		std::vector <ImpulseResponse> ir;
 		Environment() { }
-		Environment(unsigned nChannels)
+		Environment(const std::string envName, const std::string envIrFile, const unsigned nChannels)
+		: 	name(envName)
+		,	irWavfile(envIrFile)
 		{
 			for (unsigned i=0;i<nChannels;i++)
 				ir.push_back(ImpulseResponse());
 		}
 	};
 	std::vector<Environment> _environments;
-	ImpulseResponse _silenceIR;
 
 	Config _config;
 
@@ -96,20 +101,9 @@ public:
 		const std::string environmentName=_scene->getCurrentEnvironment(position,true);
 		_environmentName.SendControl(environmentName);
 
-		if (environmentName=="")
-		{
-			for (unsigned channelNr=0;channelNr<_outputPorts.size();channelNr++)
-			{
-				_outputPorts[channelNr]->GetData() = &_silenceIR;
-				_outputPorts[channelNr]->Produce();
-			}
-			_currentEnvironment.SendControl(0);
-			return true;
-		}
-
-		unsigned environment=1;
+		unsigned environment=0;
 		std::vector<Environment>::iterator it;
-		for (it=_environments.begin();it!=_environments.end();it++)
+		for (it=_environments.begin(); it!=_environments.end();it++)
 		{
 			if (it->name!=environmentName) 
 			{
@@ -194,7 +188,6 @@ protected:
 
 		std::vector<std::string> meshes=_scene->getMeshesNames();
 
-		_environments.clear();
 		//Load the sequence
 		if (_config.GetEnvironmentImpulseResponsesFile()=="") 
 			return AddConfigErrorMessage("Not filename defined for IRs definitions");
@@ -203,6 +196,29 @@ protected:
 		std::ifstream file( _config.GetEnvironmentImpulseResponsesFile().c_str() );
 		if (not file)
 			return AddConfigErrorMessage("Unable to open the file "+_config.GetEnvironmentImpulseResponsesFile());
+
+		// create a default environment at the begining
+		std::string errorMsg;
+		const unsigned sampleRate=_config.GetSampleRate();
+
+		std::vector<double> zerosBuffer;
+		for (unsigned i=0;i<_config.GetFrameSize();i++)
+			zerosBuffer.push_back(0);
+
+		bool OK;
+		Environment defaultEnvironment("","",_outputPorts.size());
+		for (unsigned channelNr=0; channelNr<_outputPorts.size(); channelNr++)
+		{
+			if (_config.GetDefaultIR()=="") // use silence IR if there is no selected default IR wav file
+				OK = computeResponseSpectrums( zerosBuffer, defaultEnvironment.ir[channelNr], _config.GetFrameSize(), errorMsg, sampleRate );
+			else	// use IR wav file
+				OK = computeResponseSpectrums(_config.GetDefaultIR(), defaultEnvironment.ir[channelNr], _config.GetFrameSize(), errorMsg, channelNr, sampleRate);
+			if (!OK) return AddConfigErrorMessage(errorMsg + ". Cannot compute the default IR");
+		}
+
+		_environments.clear();
+		_environments.push_back(defaultEnvironment);
+
 		unsigned lineCount = 0;
 		while (file)
 		{
@@ -228,20 +244,17 @@ protected:
 					<< ", not a float number at columns " << row.size() << ".";
 				return AddConfigErrorMessage(os.str());
 			}
-			Environment environment(_outputPorts.size());
-			environment.name=row[0];
-			environment.irWavfile=row[1];
-			_environments.push_back(environment);
+			const std::string name=row[0];
+			const std::string irWavfile=row[1];
+			const unsigned nChannels=_outputPorts.size();
+			_environments.push_back(Environment(name,irWavfile,nChannels));
 		}
-		std::string errorMsg;
-		const unsigned sampleRate=_config.GetSampleRate();
-
 		std::vector<std::string>::const_iterator itMeshes;
 		for (itMeshes=meshes.begin();itMeshes!=meshes.end();itMeshes++)
 		{
-			std::vector<Environment>::iterator itIRs;
+			std::vector<Environment>::iterator itIRs=_environments.begin();
 			bool definedEnvironment=false;
-			for (itIRs=_environments.begin(); itIRs!=_environments.end(); itIRs++)
+			for (++itIRs; itIRs!=_environments.end(); itIRs++)
 			{
 				if (itIRs->name!=(*itMeshes)) continue;
 				for (unsigned channelNr = 0; channelNr < itIRs->ir.size(); channelNr++)
@@ -255,20 +268,7 @@ protected:
 				return AddConfigErrorMessage("Cannot found IR definition for mesh " + (*itMeshes));
 		}
 
-		// create a silence IR
-		std::vector<double> zerosBuffer;
-		for (unsigned i=0;i<_config.GetFrameSize();i++)
-		{
-			zerosBuffer.push_back(0);
-		}
-		if (!computeResponseSpectrums( zerosBuffer, _silenceIR, _config.GetFrameSize(), errorMsg, sampleRate ))
-		{
-			AddConfigErrorMessage(errorMsg + ". Cannot compute the silence IR");
-			return false;
-		}
-
 		return true;
-
 	}
 };
 
