@@ -174,6 +174,32 @@ protected:
 		}
 	}
 
+	const bool initEnvironments()
+	{
+		// create a default environment at the begining
+		std::string errorMsg;
+		const unsigned sampleRate=_config.GetSampleRate();
+
+		std::vector<double> zerosBuffer;
+		for (unsigned i=0;i<_config.GetFrameSize();i++)
+			zerosBuffer.push_back(0);
+
+		bool OK;
+		Environment defaultEnvironment("","",_outputPorts.size());
+		for (unsigned channelNr=0; channelNr<_outputPorts.size(); channelNr++)
+		{
+			if (_config.GetDefaultIR()=="") // use silence IR if there is no selected default IR wav file
+				OK = computeResponseSpectrums( zerosBuffer, defaultEnvironment.ir[channelNr], _config.GetFrameSize(), errorMsg, sampleRate );
+			else	// use IR wav file
+				OK = computeResponseSpectrums(_config.GetDefaultIR(), defaultEnvironment.ir[channelNr], _config.GetFrameSize(), errorMsg, channelNr, sampleRate);
+			if (!OK) return AddConfigErrorMessage(errorMsg + ". Cannot compute the default IR");
+		}
+
+		_environments.clear();
+		_environments.push_back(defaultEnvironment);
+		return true;
+	}
+
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
@@ -197,27 +223,7 @@ protected:
 		if (not file)
 			return AddConfigErrorMessage("Unable to open the file "+_config.GetEnvironmentImpulseResponsesFile());
 
-		// create a default environment at the begining
-		std::string errorMsg;
-		const unsigned sampleRate=_config.GetSampleRate();
-
-		std::vector<double> zerosBuffer;
-		for (unsigned i=0;i<_config.GetFrameSize();i++)
-			zerosBuffer.push_back(0);
-
-		bool OK;
-		Environment defaultEnvironment("","",_outputPorts.size());
-		for (unsigned channelNr=0; channelNr<_outputPorts.size(); channelNr++)
-		{
-			if (_config.GetDefaultIR()=="") // use silence IR if there is no selected default IR wav file
-				OK = computeResponseSpectrums( zerosBuffer, defaultEnvironment.ir[channelNr], _config.GetFrameSize(), errorMsg, sampleRate );
-			else	// use IR wav file
-				OK = computeResponseSpectrums(_config.GetDefaultIR(), defaultEnvironment.ir[channelNr], _config.GetFrameSize(), errorMsg, channelNr, sampleRate);
-			if (!OK) return AddConfigErrorMessage(errorMsg + ". Cannot compute the default IR");
-		}
-
-		_environments.clear();
-		_environments.push_back(defaultEnvironment);
+		if (!initEnvironments()) return false;
 
 		unsigned lineCount = 0;
 		while (file)
@@ -249,6 +255,10 @@ protected:
 			const unsigned nChannels=_outputPorts.size();
 			_environments.push_back(Environment(name,irWavfile,nChannels));
 		}
+
+		std::string errorMsg;
+		unsigned sampleRate=_config.GetSampleRate();
+
 		std::vector<std::string>::const_iterator itMeshes;
 		for (itMeshes=meshes.begin();itMeshes!=meshes.end();itMeshes++)
 		{
@@ -270,6 +280,8 @@ protected:
 
 		return true;
 	}
+
+
 };
 
 } //namespace
