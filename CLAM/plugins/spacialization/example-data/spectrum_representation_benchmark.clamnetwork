@@ -30,23 +30,15 @@
 
   <processing id="AudioSource_1" position="6,328" size="128,108" type="AudioSource" />
 
-  <processing id="AudioWindowing_0" position="149,259" size="149,58" type="AudioWindowing">
+  <processing id="AudioWindowing_0" position="149,259" size="149,58" type="AudioStream2Buffer">
     <HopSize>32768</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>65536</FFTSize>
-    <WindowSize>65537</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>65536</BufferSize>
+    </processing>
 
-  <processing id="AudioWindowing_1" position="149,327" size="149,58" type="AudioWindowing">
+  <processing id="AudioWindowing_1" position="149,327" size="149,58" type="AudioStream2Buffer">
     <HopSize>32768</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>65536</FFTSize>
-    <WindowSize>65537</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>65536</BufferSize>
+    </processing>
 
   <processing id="ComplexProduct_0" position="597,327" size="149,62" type="ComplexSpectrumProduct" />
 
@@ -118,7 +110,7 @@
 
   <port_connection>
     <out>AudioSource_0.1</out>
-    <in>AudioWindowing_0.Input</in>
+    <in>AudioWindowing_0.Audio stream</in>
   </port_connection>
 
   <port_connection>
@@ -133,16 +125,16 @@
 
   <port_connection>
     <out>AudioSource_1.1</out>
-    <in>AudioWindowing_1.Input</in>
+    <in>AudioWindowing_1.Audio stream</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing_0.Output</out>
+    <out>AudioWindowing_0.Audio buffer</out>
     <in>MyFFT_0.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing_1.Output</out>
+    <out>AudioWindowing_1.Audio buffer</out>
     <in>MyFFT_1.Audio Buffer</in>
   </port_connection>
 

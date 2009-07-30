@@ -1,13 +1,9 @@
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="AudioWindowing" position="281,89" size="136,59" type="AudioWindowing">
+  <processing id="AudioWindowing" position="281,89" size="136,59" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="Convolution_L1" position="355,336" size="131,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -131,7 +127,7 @@
   </processing>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>MyFFT.Audio Buffer</in>
   </port_connection>
 
@@ -227,7 +223,7 @@
 
   <port_connection>
     <out>Monoaural.1</out>
-    <in>AudioWindowing.Input</in>
+    <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>

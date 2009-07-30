@@ -20,14 +20,10 @@
 
   <processing id="AudioInput" position="55,57" size="128,108" type="AudioSource" />
 
-  <processing id="AudioWindowing" position="182,56" size="135,58" type="AudioWindowing">
+  <processing id="AudioWindowing" position="182,56" size="135,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="Cartesian2PolarControl" position="213,527" size="179,58" type="Cartesian2PolarControl" />
 
@@ -239,50 +235,30 @@
     <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
-  <processing id="win C" position="648,394" size="66,58" type="AudioWindowing">
+  <processing id="win C" position="648,394" size="66,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
-  <processing id="win L" position="650,447" size="64,58" type="AudioWindowing">
+  <processing id="win L" position="650,447" size="64,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
-  <processing id="win R" position="648,511" size="66,58" type="AudioWindowing">
+  <processing id="win R" position="648,511" size="66,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
-  <processing id="win SL" position="649,561" size="72,58" type="AudioWindowing">
+  <processing id="win SL" position="649,561" size="72,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
-  <processing id="win SR" position="650,605" size="74,58" type="AudioWindowing">
+  <processing id="win SR" position="650,605" size="74,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <port_connection>
     <out>2StreamR.Audio stream</out>
@@ -296,11 +272,11 @@
 
   <port_connection>
     <out>AudioInput.1</out>
-    <in>AudioWindowing.Input</in>
+    <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>MyFFT.Audio Buffer</in>
   </port_connection>
 
@@ -556,27 +532,27 @@
 
   <port_connection>
     <out>Surround.center</out>
-    <in>win C.Input</in>
+    <in>win C.Audio stream</in>
   </port_connection>
 
   <port_connection>
     <out>Surround.right</out>
-    <in>win R.Input</in>
+    <in>win R.Audio stream</in>
   </port_connection>
 
   <port_connection>
     <out>Surround.surroundRight</out>
-    <in>win SR.Input</in>
+    <in>win SR.Audio stream</in>
   </port_connection>
 
   <port_connection>
     <out>Surround.surroundLeft</out>
-    <in>win SL.Input</in>
+    <in>win SL.Audio stream</in>
   </port_connection>
 
   <port_connection>
     <out>Surround.left</out>
-    <in>win L.Input</in>
+    <in>win L.Audio stream</in>
   </port_connection>
 
   <port_connection>
@@ -595,27 +571,27 @@
   </port_connection>
 
   <port_connection>
-    <out>win C.Output</out>
+    <out>win C.Audio buffer</out>
     <in>FFT C.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>win L.Output</out>
+    <out>win L.Audio buffer</out>
     <in>FFT L.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>win R.Output</out>
+    <out>win R.Audio buffer</out>
     <in>FFT R.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>win SL.Output</out>
+    <out>win SL.Audio buffer</out>
     <in>FFT SL.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>win SR.Output</out>
+    <out>win SR.Audio buffer</out>
     <in>FFT SR.Audio Buffer</in>
   </port_connection>
 

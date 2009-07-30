@@ -66,4 +66,15 @@ removeConfig Surround NChannels
 renameConnector AudioSource outport "AudioOut" 1
 renameConnector AudioSink inport "AudioIn" 1
 
+# renamed the output port of the processing, according to the bformat capabilities:
 renameConnector ImpulseResponseLoader outport "ImpulseResponse" "W"
+
+# replacement of AudioWindowing by AudioStream2Buffer:
+renameClass AudioWindowing AudioStream2Buffer
+renameConnector AudioStream2Buffer outport 'Output' 'Audio buffer'
+renameConnector AudioStream2Buffer inport 'Input' 'Audio stream'
+removeConfig AudioStream2Buffer SamplingRate
+renameConfig AudioStream2Buffer FFTSize BufferSize
+removeConfig AudioStream2Buffer WindowSize
+removeConfig AudioStream2Buffer WindowType
+removeConfig AudioStream2Buffer DoHalfWindowShift

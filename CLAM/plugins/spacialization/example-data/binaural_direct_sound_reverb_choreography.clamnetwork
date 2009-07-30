@@ -130,14 +130,10 @@
     <NumberOfInPorts>1</NumberOfInPorts>
     </processing>
 
-  <processing id="AudioWindowing" position="204,686" size="127,58" type="AudioWindowing">
+  <processing id="AudioWindowing" position="204,686" size="127,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation" />
 
@@ -207,41 +203,25 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Framer W" position="1598,11" size="109,66" type="AudioWindowing">
+  <processing id="Framer W" position="1598,11" size="109,66" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
-  <processing id="Framer X" position="1653,144" size="109,66" type="AudioWindowing">
+  <processing id="Framer X" position="1653,144" size="109,66" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
-  <processing id="Framer Y" position="1638,447" size="109,66" type="AudioWindowing">
+  <processing id="Framer Y" position="1638,447" size="109,66" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
-  <processing id="Framer Z" position="1626,273" size="108,66" type="AudioWindowing">
+  <processing id="Framer Z" position="1626,273" size="108,66" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="GainW" position="1455,20" size="114,58" type="AudioAmplifier">
     <MaxGain>3</MaxGain>
@@ -583,7 +563,7 @@
 
   <port_connection>
     <out>AudioMixer.Output Audio</out>
-    <in>AudioWindowing.Input</in>
+    <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>
@@ -607,7 +587,7 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>MyFFT.Audio Buffer</in>
   </port_connection>
 
@@ -687,43 +667,43 @@
   </port_connection>
 
   <port_connection>
-    <out>Framer W.Output</out>
+    <out>Framer W.Audio buffer</out>
     <in>FFT W.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>Framer X.Output</out>
+    <out>Framer X.Audio buffer</out>
     <in>FFT X.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>Framer Y.Output</out>
+    <out>Framer Y.Audio buffer</out>
     <in>FFT Y.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>Framer Z.Output</out>
+    <out>Framer Z.Audio buffer</out>
     <in>FFT Z.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
     <out>GainW.Audio Output</out>
-    <in>Framer W.Input</in>
+    <in>Framer W.Audio stream</in>
   </port_connection>
 
   <port_connection>
     <out>GainX.Audio Output</out>
-    <in>Framer X.Input</in>
+    <in>Framer X.Audio stream</in>
   </port_connection>
 
   <port_connection>
     <out>GainY.Audio Output</out>
-    <in>Framer Y.Input</in>
+    <in>Framer Y.Audio stream</in>
   </port_connection>
 
   <port_connection>
     <out>GainZ.Audio Output</out>
-    <in>Framer Z.Input</in>
+    <in>Framer Z.Audio stream</in>
   </port_connection>
 
   <port_connection>
