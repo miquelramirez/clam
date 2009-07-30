@@ -106,14 +106,10 @@
     <NumberOfInPorts>1</NumberOfInPorts>
   </processing>
 
-  <processing id="AudioWindowing" position="204,686" size="127,58" type="AudioWindowing">
+  <processing id="AudioWindowing" position="204,686" size="127,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="BFormat2Sixteen" position="1711,511" size="128,270" type="BFormat2Sixteen" />
 
@@ -302,11 +298,11 @@
 
   <port_connection>
     <out>AudioMixer.Output Audio</out>
-    <in>AudioWindowing.Input</in>
+    <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>MyFFT.Audio Buffer</in>
   </port_connection>
 

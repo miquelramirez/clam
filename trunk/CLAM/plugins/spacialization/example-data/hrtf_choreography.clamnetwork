@@ -42,14 +42,10 @@
 
   <processing id="AudioSource" position="12,371" size="128,108" type="AudioSource" />
 
-  <processing id="AudioWindowing" position="161,392" size="127,58" type="AudioWindowing">
+  <processing id="AudioWindowing" position="161,392" size="127,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="Azimuth" position="172,294" size="162,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
@@ -151,7 +147,7 @@
 
   <port_connection>
     <out>AudioSource.1</out>
-    <in>AudioWindowing.Input</in>
+    <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>
@@ -160,7 +156,7 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>MyFFT.Audio Buffer</in>
   </port_connection>
 

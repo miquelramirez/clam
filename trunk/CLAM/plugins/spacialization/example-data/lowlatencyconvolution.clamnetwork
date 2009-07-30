@@ -17,14 +17,10 @@
 
   <processing id="AudioSource_0" position="13,20" size="141,108" type="AudioSource" />
 
-  <processing id="AudioWindowing_0" position="168,24" size="171,60" type="AudioWindowing">
+  <processing id="AudioWindowing_0" position="168,24" size="171,60" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="BufferOscilloscope_0" position="491,8" size="216,150" type="BufferOscilloscope" />
 
@@ -81,16 +77,16 @@
 
   <port_connection>
     <out>AudioSource_0.1</out>
-    <in>AudioWindowing_0.Input</in>
+    <in>AudioWindowing_0.Audio stream</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing_0.Output</out>
+    <out>AudioWindowing_0.Audio buffer</out>
     <in>MyFFT_0.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing_0.Output</out>
+    <out>AudioWindowing_0.Audio buffer</out>
     <in>BufferOscilloscope_0.Input</in>
   </port_connection>
 
