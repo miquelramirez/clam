@@ -543,15 +543,19 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 			if (not _canvas->isOk(_processing)) 
 				_canvas->setToolTip(_canvas->errorMessage(_processing));
 			_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
-			setMetadataToolTip();
 			break;
 		}
 		case nameRegion:
 		{
 			if (not _canvas->isOk(_processing))
+			{
 				_canvas->setToolTip(_canvas->errorMessage(_processing));
+			}
+			else
+			{
+				setMetadataToolTip();
+			}
 			_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
-			setMetadataToolTip();
 			break;
 		}
 		return;
