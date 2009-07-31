@@ -766,6 +766,7 @@
     <file>images/text_right.png</file>
     <file>images/text_left.png</file>
     <file>images/text_block.png</file>
+    <file>images/edit.png</file>
   </qresource>
   <qresource prefix="/interfaces" >
     <file>prototyper/DefaultInterface.ui</file>

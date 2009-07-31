@@ -155,6 +155,8 @@ public:
 		periodicPlayStatusUpdate(); // Should be directly called just once
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), _processingTreeDock, SLOT(setVisible(bool)));
+		connect(ui.action_Show_description_panel, SIGNAL(toggled(bool)), _descriptionPanel, SLOT(setVisible(bool)));
+
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
 		connect(_canvas, SIGNAL(openFileWithExternalApplicationRequest()), this, SLOT(openFileWithExternalApplicationFromProcessing()));
