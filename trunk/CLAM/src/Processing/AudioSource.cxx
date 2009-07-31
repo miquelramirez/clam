@@ -18,6 +18,8 @@ namespace
 	static FactoryRegistrator<ProcessingFactory, AudioSource> reg = metadata;
 }
 
+AudioSource::Config::~Config() { }
+
 bool AudioSource::Do()
 {
 	for (Ports::iterator it = _ports.begin(); it != _ports.end(); ++it)
