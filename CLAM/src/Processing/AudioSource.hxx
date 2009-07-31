@@ -37,6 +37,7 @@ namespace CLAM
 		{
 			DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
 			DYN_ATTRIBUTE( 0, public, int, NSources);
+			~Config();
 		protected:
 			void DefaultInit()
 			{
