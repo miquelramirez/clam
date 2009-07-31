@@ -5,7 +5,6 @@
 #include <CLAM/OutControl.hxx>
 #include <CLAM/TypedOutControl.hxx>
 #include <CLAM/InControl.hxx>
-#include <CLAM/AudioOutPort.hxx>
 #include <CLAM/AudioInPort.hxx>
 #include <CLAM/AudioMixer.hxx>
 #include <CLAM/Filename.hxx>
