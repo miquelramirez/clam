@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,460 +10,454 @@
     <height>508</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>CLAM Networ Editor</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="images.qrc" >
+  <property name="windowIcon">
+   <iconset resource="images.qrc">
     <normaloff>:/icons/images/NetworkEditor-icon.svg</normaloff>:/icons/images/NetworkEditor-icon.svg</iconset>
   </property>
-  <widget class="QWidget" name="centralwidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>69</y>
-     <width>802</width>
-     <height>416</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" >
-    <property name="spacing" >
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout">
+    <property name="spacing">
      <number>6</number>
     </property>
-    <property name="margin" >
+    <property name="margin">
      <number>9</number>
     </property>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar" >
-   <property name="geometry" >
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>30</height>
+     <height>25</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File" >
-    <property name="title" >
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
      <string>&amp;File</string>
     </property>
-    <widget class="QMenu" name="menuOpen_recent" >
-     <property name="title" >
+    <widget class="QMenu" name="menuOpen_recent">
+     <property name="title">
       <string>Open &amp;Recent</string>
      </property>
-     <property name="icon" >
-      <iconset resource="images.qrc" >
+     <property name="icon">
+      <iconset resource="images.qrc">
        <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
      </property>
-     <addaction name="separator" />
+     <addaction name="separator"/>
     </widget>
-    <addaction name="action_New" />
-    <addaction name="action_New_dummy" />
-    <addaction name="action_Open" />
-    <addaction name="menuOpen_recent" />
-    <addaction name="action_Open_example" />
-    <addaction name="action_Save" />
-    <addaction name="action_Save_as" />
-    <addaction name="separator" />
-    <addaction name="action_Print" />
-    <addaction name="separator" />
-    <addaction name="action_Quit" />
+    <addaction name="action_New"/>
+    <addaction name="action_New_dummy"/>
+    <addaction name="action_Open"/>
+    <addaction name="menuOpen_recent"/>
+    <addaction name="action_Open_example"/>
+    <addaction name="action_Save"/>
+    <addaction name="action_Save_as"/>
+    <addaction name="separator"/>
+    <addaction name="action_Print"/>
+    <addaction name="separator"/>
+    <addaction name="action_Quit"/>
    </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="action_Whats_this" />
-    <addaction name="action_Online_tutorial" />
-    <addaction name="action_About" />
+    <addaction name="action_Whats_this"/>
+    <addaction name="action_Online_tutorial"/>
+    <addaction name="action_About"/>
    </widget>
-   <widget class="QMenu" name="menu_View" >
-    <property name="title" >
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
      <string>&amp;View</string>
     </property>
-    <addaction name="action_Show_processing_toolbox" />
-    <addaction name="action_Default_zoom" />
-    <addaction name="action_Zoom_in" />
-    <addaction name="action_Zoom_out" />
-    <addaction name="action_White_colors_Option" />
+    <addaction name="action_Show_processing_toolbox"/>
+    <addaction name="action_Default_zoom"/>
+    <addaction name="action_Zoom_in"/>
+    <addaction name="action_Zoom_out"/>
+    <addaction name="action_White_colors_Option"/>
    </widget>
-   <widget class="QMenu" name="menu_Network" >
-    <property name="title" >
+   <widget class="QMenu" name="menu_Network">
+    <property name="title">
      <string>&amp;Network</string>
     </property>
-    <addaction name="action_Play" />
-    <addaction name="action_Pause" />
-    <addaction name="action_Stop" />
-    <addaction name="separator" />
-    <addaction name="action_CompileAsLadspaPlugin" />
+    <addaction name="action_Play"/>
+    <addaction name="action_Pause"/>
+    <addaction name="action_Stop"/>
+    <addaction name="separator"/>
+    <addaction name="action_CompileAsLadspaPlugin"/>
    </widget>
-   <widget class="QMenu" name="menu_Interface" >
-    <property name="title" >
+   <widget class="QMenu" name="menu_Interface">
+    <property name="title">
      <string>&amp;Interface</string>
     </property>
-    <widget class="QMenu" name="menuFaust" >
-     <property name="enabled" >
+    <widget class="QMenu" name="menuFaust">
+     <property name="enabled">
       <bool>false</bool>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Faust</string>
      </property>
-     <property name="icon" >
-      <iconset resource="images.qrc" >
+     <property name="icon">
+      <iconset resource="images.qrc">
        <normaloff>:/icons/images/faustlogo.svg</normaloff>:/icons/images/faustlogo.svg</iconset>
      </property>
-     <addaction name="action_Compile_Faust_Modules" />
-     <addaction name="action_Reload_Faust_Modules" />
-     <addaction name="action_Embed_SVG_Diagrams_Option" />
+     <addaction name="action_Compile_Faust_Modules"/>
+     <addaction name="action_Reload_Faust_Modules"/>
+     <addaction name="action_Embed_SVG_Diagrams_Option"/>
     </widget>
-    <addaction name="action_Edit_interface" />
-    <addaction name="action_Run_prototyper" />
-    <addaction name="separator" />
-    <addaction name="menuFaust" />
+    <addaction name="action_Edit_interface"/>
+    <addaction name="action_Run_prototyper"/>
+    <addaction name="separator"/>
+    <addaction name="menuFaust"/>
    </widget>
-   <addaction name="menu_File" />
-   <addaction name="menu_Network" />
-   <addaction name="menu_Interface" />
-   <addaction name="menu_View" />
-   <addaction name="menuHelp" />
+   <addaction name="menu_File"/>
+   <addaction name="menu_Network"/>
+   <addaction name="menu_Interface"/>
+   <addaction name="menu_View"/>
+   <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>485</y>
-     <width>802</width>
-     <height>23</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QToolBar" name="toolBar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>30</y>
-     <width>802</width>
-     <height>39</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
     <string>Main ToolBar</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="action_New" />
-   <addaction name="action_OpenToolbar" />
-   <addaction name="action_Save" />
-   <addaction name="action_Print" />
-   <addaction name="separator" />
-   <addaction name="action_Play" />
-   <addaction name="action_Pause" />
-   <addaction name="action_Stop" />
-   <addaction name="separator" />
-   <addaction name="action_Edit_interface" />
-   <addaction name="action_Run_prototyper" />
-   <addaction name="action_Compile_Faust_Modules" />
-   <addaction name="action_CompileAsLadspaPlugin" />
-   <addaction name="separator" />
-   <addaction name="action_Show_processing_toolbox" />
-   <addaction name="action_Zoom_in" />
-   <addaction name="action_Default_zoom" />
-   <addaction name="action_Zoom_out" />
-   <addaction name="separator" />
-   <addaction name="action_Online_tutorial" />
-   <addaction name="action_Whats_this" />
+   <addaction name="action_New"/>
+   <addaction name="action_OpenToolbar"/>
+   <addaction name="action_Save"/>
+   <addaction name="action_Print"/>
+   <addaction name="separator"/>
+   <addaction name="action_Play"/>
+   <addaction name="action_Pause"/>
+   <addaction name="action_Stop"/>
+   <addaction name="separator"/>
+   <addaction name="action_Edit_interface"/>
+   <addaction name="action_Run_prototyper"/>
+   <addaction name="action_Compile_Faust_Modules"/>
+   <addaction name="action_CompileAsLadspaPlugin"/>
+   <addaction name="separator"/>
+   <addaction name="action_Show_processing_toolbox"/>
+   <addaction name="action_Show_description_panel"/>
+   <addaction name="action_Zoom_in"/>
+   <addaction name="action_Default_zoom"/>
+   <addaction name="action_Zoom_out"/>
+   <addaction name="separator"/>
+   <addaction name="action_Online_tutorial"/>
+   <addaction name="action_Whats_this"/>
   </widget>
-  <action name="action_New" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_New">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/filenew.png</normaloff>:/icons/images/filenew.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;New</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>New</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="action_Open" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Open">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Open</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="action_Open_example" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Open_example">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Open e&amp;xample</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="action_Play" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Play">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/player_play.png</normaloff>:/icons/images/player_play.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Play</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Space</string>
    </property>
   </action>
-  <action name="action_Save" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Save">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/filesave.png</normaloff>:/icons/images/filesave.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Save</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="action_Stop" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Stop">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/player_stop.png</normaloff>:/icons/images/player_stop.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Stop</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Esc</string>
    </property>
   </action>
-  <action name="action_Save_as" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Save_as">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/filesaveas.png</normaloff>:/icons/images/filesaveas.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Save &amp;as</string>
    </property>
   </action>
-  <action name="action_Quit" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Quit">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/exit.png</normaloff>:/icons/images/exit.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Quit</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="action_About" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_About">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/NetworkEditor-icon.png</normaloff>:/icons/images/NetworkEditor-icon.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;About</string>
    </property>
   </action>
-  <action name="action_Show_processing_toolbox" >
-   <property name="checkable" >
+  <action name="action_Show_processing_toolbox">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/view_tree.png</normaloff>:/icons/images/view_tree.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Show &amp;processing toolbox</string>
    </property>
   </action>
-  <action name="action_Whats_this" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Whats_this">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/contexthelp.png</normaloff>:/icons/images/contexthelp.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;What's this</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="action_Online_tutorial" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Online_tutorial">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/help.png</normaloff>:/icons/images/help.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Online tutorial</string>
    </property>
   </action>
-  <action name="action_Run_prototyper" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Run_prototyper">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/exec.png</normaloff>:/icons/images/exec.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Run prototyper</string>
    </property>
   </action>
-  <action name="action_Print" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Print">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/fileprint.png</normaloff>:/icons/images/fileprint.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Print</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="action_Edit_interface" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Edit_interface">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/designer.png</normaloff>:/icons/images/designer.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Edit interface</string>
    </property>
   </action>
-  <action name="action_Zoom_in" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Zoom_in">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/viewmag+.png</normaloff>:/icons/images/viewmag+.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Zoom &amp;in</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>+</string>
    </property>
   </action>
-  <action name="action_Zoom_out" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Zoom_out">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/viewmag-.png</normaloff>:/icons/images/viewmag-.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Zoom &amp;out</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>-</string>
    </property>
   </action>
-  <action name="action_Default_zoom" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Default_zoom">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/viewmag1.png</normaloff>:/icons/images/viewmag1.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Default zoom</string>
    </property>
   </action>
-  <action name="action_New_dummy" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_New_dummy">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/filenew.png</normaloff>:/icons/images/filenew.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>New dummy</string>
    </property>
   </action>
-  <action name="action_OpenToolbar" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_OpenToolbar">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/fileopen_draggable.png</normaloff>:/icons/images/fileopen_draggable.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Open</string>
    </property>
   </action>
-  <action name="action_Compile_Faust_Modules" >
-   <property name="enabled" >
+  <action name="action_Compile_Faust_Modules">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/faust_compile.svg</normaloff>:/icons/images/faust_compile.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Recompile Faust modules</string>
    </property>
   </action>
-  <action name="action_Reload_Faust_Modules" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Reload_Faust_Modules">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/reload.svg</normaloff>:/icons/images/reload.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Re&amp;load Faust modules</string>
    </property>
   </action>
-  <action name="action_Embed_SVG_Diagrams_Option" >
-   <property name="checkable" >
+  <action name="action_Embed_SVG_Diagrams_Option">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Embed SVG diagrams on new processings</string>
    </property>
   </action>
-  <action name="action_CompileAsLadspaPlugin" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_CompileAsLadspaPlugin">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/compile_ladspa.svg</normaloff>:/icons/images/compile_ladspa.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Compile as &amp;Ladspa plugin</string>
    </property>
   </action>
-  <action name="action_White_colors_Option" >
-   <property name="checkable" >
+  <action name="action_White_colors_Option">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;White colors</string>
    </property>
   </action>
-  <action name="action_Pause" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >
+  <action name="action_Pause">
+   <property name="icon">
+    <iconset resource="images.qrc">
      <normaloff>:/icons/images/player_pause.png</normaloff>:/icons/images/player_pause.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Pause</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Space</string>
+   </property>
+  </action>
+  <action name="action_Show_description_panel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/images/edit.png</normaloff>:/icons/images/edit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show_description_panel</string>
+   </property>
+   <property name="toolTip">
+    <string>Show description panel</string>
    </property>
   </action>
  </widget>
  <resources>
-  <include location="images.qrc" />
+  <include location="images.qrc"/>
  </resources>
  <connections/>
 </ui>
