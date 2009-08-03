@@ -4,8 +4,8 @@
   <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans'; font-size:10pt;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
   <processing id="*-1" position="37,268" size="121,58" type="ControlScaler">
     <Amount>-1</Amount>
@@ -22,6 +22,8 @@ p, li { white-space: pre-wrap; }
   <processing id="-180" position="32,141" size="110,58" type="ControlSum">
     <RightTerm>-180</RightTerm>
   </processing>
+
+  <processing id="BFormatRotationZoom" position="53,514" size="195,94" type="BFormatRotationZoom"/>
 
   <processing id="Convolution W" position="669,-96" size="146,66" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -187,8 +189,6 @@ p, li { white-space: pre-wrap; }
     <NSources>1</NSources>
   </processing>
 
-  <processing id="bformat_rotation_zoom1" position="53,514" size="195,94" type="bformat_rotation_zoom1"/>
-
   <processing id="first 2 zero order gain" position="941,-136" size="194,95" type="OutControlSender">
     <Min>0</Min>
     <Default>1.12</Default>
@@ -205,6 +205,26 @@ p, li { white-space: pre-wrap; }
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
     <Mapping>Linear</Mapping>
   </processing>
+
+  <port_connection>
+    <out>BFormatRotationZoom.W</out>
+    <in>GainW.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormatRotationZoom.X</out>
+    <in>GainX.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormatRotationZoom.Y</out>
+    <in>GainY.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormatRotationZoom.Z</out>
+    <in>GainZ.Input Audio</in>
+  </port_connection>
 
   <port_connection>
     <out>Convolution W.Output</out>
@@ -363,57 +383,37 @@ p, li { white-space: pre-wrap; }
 
   <port_connection>
     <out>W.1</out>
-    <in>bformat_rotation_zoom1.1 Win</in>
+    <in>BFormatRotationZoom.W</in>
   </port_connection>
 
   <port_connection>
     <out>X.1</out>
-    <in>bformat_rotation_zoom1.2 Xin</in>
+    <in>BFormatRotationZoom.X</in>
   </port_connection>
 
   <port_connection>
     <out>Y.1</out>
-    <in>bformat_rotation_zoom1.3 Yin</in>
+    <in>BFormatRotationZoom.Y</in>
   </port_connection>
 
   <port_connection>
     <out>Z.1</out>
-    <in>bformat_rotation_zoom1.4 Zin</in>
-  </port_connection>
-
-  <port_connection>
-    <out>bformat_rotation_zoom1.1 Wout</out>
-    <in>GainW.Input Audio</in>
-  </port_connection>
-
-  <port_connection>
-    <out>bformat_rotation_zoom1.2 Xout</out>
-    <in>GainX.Input Audio</in>
-  </port_connection>
-
-  <port_connection>
-    <out>bformat_rotation_zoom1.3 Yout</out>
-    <in>GainY.Input Audio</in>
-  </port_connection>
-
-  <port_connection>
-    <out>bformat_rotation_zoom1.4 Zout</out>
-    <in>GainZ.Input Audio</in>
+    <in>BFormatRotationZoom.Z</in>
   </port_connection>
 
   <control_connection>
     <out>*-1.Control Out</out>
-    <in>bformat_rotation_zoom1.Azimuth</in>
+    <in>BFormatRotationZoom.azimuth</in>
   </control_connection>
 
   <control_connection>
     <out>*-1_1.Control Out</out>
-    <in>bformat_rotation_zoom1.Elevation</in>
+    <in>BFormatRotationZoom.elevation</in>
   </control_connection>
 
   <control_connection>
     <out>*-1_2.Control Out</out>
-    <in>bformat_rotation_zoom1.Roll</in>
+    <in>BFormatRotationZoom.roll</in>
   </control_connection>
 
   <control_connection>
@@ -453,17 +453,17 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>set0.out</out>
-    <in>bformat_rotation_zoom1.Roll</in>
+    <in>BFormatRotationZoom.roll</in>
   </control_connection>
 
   <control_connection>
     <out>set0.out</out>
-    <in>bformat_rotation_zoom1.Azimuth</in>
+    <in>BFormatRotationZoom.azimuth</in>
   </control_connection>
 
   <control_connection>
     <out>set0.out</out>
-    <in>bformat_rotation_zoom1.Elevation</in>
+    <in>BFormatRotationZoom.elevation</in>
   </control_connection>
 
 </network>
