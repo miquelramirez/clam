@@ -87,22 +87,22 @@
   <processing id="ImpulseResponseLoader W" position="233,-67" size="251,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ew.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoader X" position="182,80" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ex.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoader Y" position="175,376" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ey.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoader Z" position="171,192" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ez.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="Invert Y" position="671,360" size="96,66" type="ComplexSpectrumInverter" />
 

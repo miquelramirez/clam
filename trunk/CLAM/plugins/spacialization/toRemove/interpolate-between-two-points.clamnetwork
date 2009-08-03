@@ -30,12 +30,12 @@
   <processing id="ImpulseResponseLoader" position="17,127" size="187,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/p_emissor_4-1-1_receptor_4-2-1.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoaderEnd" position="-7,169" size="211,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/p_emissor_4-9-1_receptor_4-2-1.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="LowLatencyConvolution" position="500,139" size="184,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>

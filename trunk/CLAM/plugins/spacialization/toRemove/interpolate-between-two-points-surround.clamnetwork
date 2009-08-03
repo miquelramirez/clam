@@ -67,32 +67,32 @@
   <processing id="ImpulseResponseLoader" position="17,127" size="186,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/p_emissor_4-1-1_receptor_4-2-1.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoader1" position="13,217" size="194,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/vx_emissor_4-1-1_receptor_4-2-1.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoader1End" position="-12,259" size="218,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/vx_emissor_4-9-1_receptor_4-2-1.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoader2" position="14,308" size="194,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/vy_emissor_4-1-1_receptor_4-2-1.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoader2End" position="-11,349" size="218,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/vy_emissor_4-9-1_receptor_4-2-1.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoaderEnd" position="-7,169" size="210,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/p_emissor_4-9-1_receptor_4-2-1.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="InLanguage" position="67,29" size="128,108" type="AudioSource" />
 

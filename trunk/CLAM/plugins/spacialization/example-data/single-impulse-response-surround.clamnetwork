@@ -35,17 +35,17 @@
   <processing id="ImpulseResponseLoader P" position="81,145" size="198,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/p_emissor_0-0-0_receptor_0-9-0.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoader vx" position="76,209" size="202,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/vx_emissor_0-0-0_receptor_0-9-0.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseLoader vy" position="72,276" size="202,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>room1/vy_emissor_0-0-0_receptor_0-9-0.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="L" position="536,481" size="128,111" type="AudioSink" />
 
