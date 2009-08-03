@@ -37,7 +37,7 @@
   <processing id="ImpulseResponseLoader" position="18,181" size="186,58" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Carnel_3P.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="LowLatencyConvolution_0" position="227,165" size="224,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>

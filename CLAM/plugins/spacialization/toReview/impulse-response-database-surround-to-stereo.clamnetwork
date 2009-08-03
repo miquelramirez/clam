@@ -154,27 +154,27 @@
   <processing id="IR0" position="859,494" size="54,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e000a.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="IR144" position="907,470" size="69,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e145a.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="IR216" position="900,411" size="69,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e215a.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="IR288" position="905,319" size="69,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e290a.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="IR72" position="906,255" size="61,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e070a.wav</ImpulseResponse>
-  </processing>
+  <IsBFormatFile>0</IsBFormatFile></processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_P" position="28,281" size="265,65" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>

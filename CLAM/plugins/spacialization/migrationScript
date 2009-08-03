@@ -78,3 +78,5 @@ renameConfig AudioStream2Buffer FFTSize BufferSize
 removeConfig AudioStream2Buffer WindowSize
 removeConfig AudioStream2Buffer WindowType
 removeConfig AudioStream2Buffer DoHalfWindowShift
+
+addConfig ImpulseResponseloader IsBFormatFile 0
