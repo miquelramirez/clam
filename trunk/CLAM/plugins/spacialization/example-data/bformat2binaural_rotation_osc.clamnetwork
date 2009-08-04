@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
   <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
@@ -6,23 +7,11 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans'; font-size:10pt;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="*-1" position="37,268" size="121,58" type="ControlScaler">
-    <Amount>-1</Amount>
-  </processing>
-
-  <processing id="*-1_1" position="416,586" size="121,58" type="ControlScaler">
-    <Amount>-1</Amount>
-  </processing>
-
-  <processing id="*-1_2" position="618,560" size="121,58" type="ControlScaler">
-    <Amount>-1</Amount>
-  </processing>
-
   <processing id="-180" position="32,141" size="110,58" type="ControlSum">
     <RightTerm>-180</RightTerm>
   </processing>
 
-  <processing id="BFormatRotationZoom" position="53,514" size="195,94" type="BFormatRotationZoom" />
+  <processing id="BFormatRotationZoom" position="53,514" size="195,94" type="BFormatRotationZoom"/>
 
   <processing id="Convolution W" position="669,-96" size="146,66" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -119,24 +108,28 @@ p, li { white-space: pre-wrap; }
   <processing id="ImpulseResponseLoader W" position="404,-67" size="251,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ew.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
   <processing id="ImpulseResponseLoader X" position="353,80" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ex.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
   <processing id="ImpulseResponseLoader Y" position="346,376" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ey.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
   <processing id="ImpulseResponseLoader Z" position="342,192" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ez.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
-  <processing id="Invert Y" position="842,360" size="96,66" type="ComplexSpectrumInverter" />
+  <processing id="Invert Y" position="842,360" size="96,66" type="ComplexSpectrumInverter"/>
 
   <processing id="L" position="1308,159" size="128,111" type="AudioSink">
     <NSinks>1</NSinks>
@@ -164,13 +157,13 @@ p, li { white-space: pre-wrap; }
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Sum L" position="985,132" size="86,66" type="ComplexSpectrumSum" />
+  <processing id="Sum L" position="985,132" size="86,66" type="ComplexSpectrumSum"/>
 
-  <processing id="Sum R" position="965,286" size="89,66" type="ComplexSpectrumSum" />
+  <processing id="Sum R" position="965,286" size="89,66" type="ComplexSpectrumSum"/>
 
-  <processing id="Sum WXZ" position="856,-20" size="130,66" type="ComplexSpectrumSum" />
+  <processing id="Sum WXZ" position="856,-20" size="130,66" type="ComplexSpectrumSum"/>
 
-  <processing id="Sum XZ" position="797,119" size="99,66" type="ComplexSpectrumSum" />
+  <processing id="Sum XZ" position="797,119" size="99,66" type="ComplexSpectrumSum"/>
 
   <processing id="W" position="-118,-140" size="128,108" type="AudioSource">
     <NSources>1</NSources>
@@ -401,23 +394,8 @@ p, li { white-space: pre-wrap; }
   </port_connection>
 
   <control_connection>
-    <out>*-1.Control Out</out>
-    <in>BFormatRotationZoom.azimuth</in>
-  </control_connection>
-
-  <control_connection>
-    <out>*-1_1.Control Out</out>
-    <in>BFormatRotationZoom.elevation</in>
-  </control_connection>
-
-  <control_connection>
-    <out>*-1_2.Control Out</out>
-    <in>BFormatRotationZoom.roll</in>
-  </control_connection>
-
-  <control_connection>
     <out>-180.Sum</out>
-    <in>*-1.Control In</in>
+    <in>BFormatRotationZoom.azimuth</in>
   </control_connection>
 
   <control_connection>
@@ -427,12 +405,12 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>HeadTracking AER.1</out>
-    <in>*-1_1.Control In</in>
+    <in>BFormatRotationZoom.elevation</in>
   </control_connection>
 
   <control_connection>
     <out>HeadTracking AER.2</out>
-    <in>*-1_2.Control In</in>
+    <in>BFormatRotationZoom.roll</in>
   </control_connection>
 
   <control_connection>
