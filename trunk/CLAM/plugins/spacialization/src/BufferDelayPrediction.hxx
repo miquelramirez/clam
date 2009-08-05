@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2009 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -19,21 +19,27 @@
  *
  */
 
-#ifndef _AudioMixer_hxx__
-#define _AudioMixer_hxx__
+#ifndef BUFFERDELAYPREDICTION_INCLUDED
+#define BUFFERDELAYPREDICTION_INCLUDED
 
-#include "Processing.hxx"
-#include "AudioInPort.hxx"
-#include "Audio.hxx"
-#include "OutControl.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/OutControl.hxx>
+#include <CLAM/InControl.hxx>
+
+#include <CLAM/InPort.hxx>
+#include <CLAM/OutPort.hxx>
+#include <CLAM/AudioOutPort.hxx>
+#include <CLAM/Processing.hxx>
+#include <CLAM/AudioWindowingConfig.hxx>
+
 
 namespace CLAM
 {
 
-class MaxSampleConfig : public ProcessingConfig
+class BufferDelayPredictionConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (MaxSampleConfig , 2, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (BufferDelayPredictionConfig , 2, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, int, NumberOfInPorts);
 	DYN_ATTRIBUTE (1, public, CLAM::Array<TControlData>, DefaultOut);
 
@@ -48,35 +54,39 @@ protected:
 
 };
 
-class MaxSample: public Processing
+class BufferDelayPrediction: public Processing
 {
 private:
-	MaxSampleConfig   mConfig;
+	BufferDelayPredictionConfig   mConfig;
 
-	std::vector< AudioInPort* > mInputPorts;
-	std::vector< OutControl* > mOutputControls;
+	typedef InPort<Audio> AudioInBuffer;
+
+	std::vector<AudioInBuffer*> mInputBufs;
+	std::vector<OutControl*> mOutputControls;
+	std::vector<InControl*> mInputControls;
 	
 	void RemovePortsAndControls();
 	void CreatePortsAndControls();
 
 public:
-	bool ConcreteConfigure(const ProcessingConfig& c);
-	MaxSample();
-	virtual ~MaxSample()
+	BufferDelayPrediction();
+	virtual ~BufferDelayPrediction()
 	{
 		RemovePortsAndControls();
 	}
+
+	bool ConcreteConfigure(const ProcessingConfig& c);
 	bool ModifiesPortsAndControlsAtConfiguration()
 	{
 		return true;
 	}
 
-	const char * GetClassName() const {return "MaxSample";}
+	const char * GetClassName() const {return "BufferDelayPrediction";}
 	const ProcessingConfig &GetConfig() const { return mConfig;}
 	bool Do();
 };
 
 } // namespace CLAM
 
-#endif // __AudioMixer_hxx__
+#endif 
 
