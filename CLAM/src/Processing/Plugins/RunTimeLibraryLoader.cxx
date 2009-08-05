@@ -98,6 +98,15 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 			continue;
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
 		void * handle = FullyLoadLibrary(pluginFullFilename);
+
+		// TODO: throw exception and have catch in main()
+		if (handle == NULL)
+		{
+			std::cout << "Error loading: " << pluginFullFilename 
+					  << " reason: " << dlerror() 
+					  << std::endl;
+		}
+
 		SetupLibrary( handle, pluginFullFilename );
 	}
 	closedir(dir);
