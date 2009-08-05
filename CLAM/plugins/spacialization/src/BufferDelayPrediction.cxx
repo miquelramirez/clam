@@ -23,8 +23,8 @@
 #include <CLAM/ProcessingFactory.hxx>
 
 #include <algorithm>
-#include <cmath>
 #include <functional>
+#include <cmath>
 
 namespace CLAM
 {
@@ -123,8 +123,10 @@ bool BufferDelayPrediction::Do()
 		std::transform(first, last, first, divide<TData>(divider));
 
 		TData* max = std::max_element(first, last);
+		TData delay = *max;
 
-		mOutputControls[i]->SendControl(static_cast<TControlData>(*max));
+		//if (mConfig.GetQuality() < delay * 100)
+			mOutputControls[i]->SendControl(static_cast<TControlData>(delay));
 	}
 
 	for (unsigned int i = 0; i < numInPorts; ++i)

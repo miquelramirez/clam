@@ -26,6 +26,8 @@
 #include <CLAM/AudioWindowingConfig.hxx>
 #include <CLAM/OutControl.hxx>
 
+#include <functional>
+#include <algorithm>
 #include <numeric>
 #include <cmath>
 
@@ -52,9 +54,12 @@ public:
 	{
 		const Audio& in1 = _in1.GetData();
 		const unsigned size = in1.GetSize();
-		const TData* first = in1.GetBuffer().GetPtr();
-		const TData* last = first + size;
+		/*const*/ TData* first = in1.GetBuffer().GetPtr();
+		/*const*/ TData* last = first + size;
 
+		// in place transform
+		std::transform(first, last, first, first, std::multiplies<TData>());
+		
 		TData sum = std::accumulate(first, last, static_cast<TData>(0));
 		TData result = std::sqrt(std::pow(sum, 2));
 
