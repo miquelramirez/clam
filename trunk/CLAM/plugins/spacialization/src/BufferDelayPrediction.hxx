@@ -41,15 +41,15 @@ class BufferDelayPredictionConfig : public ProcessingConfig
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (BufferDelayPredictionConfig , 2, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, int, NumberOfInPorts);
-	DYN_ATTRIBUTE (1, public, CLAM::Array<TControlData>, DefaultOut);
+	DYN_ATTRIBUTE (1, public, int, Quality);
 
 protected:
 	void DefaultInit(void)
 	{
 		AddAll();
 		UpdateData();
-		unsigned int numberOfInPorts=1;
-		SetNumberOfInPorts(numberOfInPorts);
+		SetNumberOfInPorts(1);
+		SetQuality(40);
 	}
 
 };
