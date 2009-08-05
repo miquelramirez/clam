@@ -24,16 +24,16 @@
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
-#include <CLAM/ComplexSpectrum.hxx>
+#include "ComplexSpectrum.hxx"
 #include <algorithm>
 
 namespace CLAM
 {
 
 /**
- Processing that inverts the phase of a complex spectrum.
- @param[in] Input A ComplexSpectrum to be inverted.
- @param[out] Output An ComplexSpectrum which is the same in the input but with all the bins inverted in sign.
+ Processing that conjugates the complex spectrum.
+ @param[in] Input A ComplexSpectrum to be conjugated.
+ @param[out] Output An ComplexSpectrum which is the same in the input but with all the bins conjugated.
  @ingroup SpectralProcessingOperations
 */
 class ComplexConjugate : public Processing

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Fundació Barcelona Media Universitat Pompeu Fabra
+ * Copyright (c) 2007 Fundació Barcelona Media Universitat Pompeu Fabra
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,7 +18,7 @@
  *
  */
 
-#include "ComplexConjugate.hxx"
+#include "BufferSqrtSum.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
 namespace CLAM
@@ -27,14 +27,12 @@ namespace CLAM
 namespace
 {
 	static const char* metadata[] = {
-		"key", "ComplexConjugate",
+		"key", "BufferSqrtSum",
 		"category", "[plugin] New Spectral Processing",
-		"description", "ComplexConjugate",
+		"description", "BufferSqrtSum",
 		0
 	};
-	static FactoryRegistrator<ProcessingFactory, ComplexConjugate>
-	reg = metadata;
+	static FactoryRegistrator<ProcessingFactory, BufferSqrtSum> reg = metadata;
 }
 
 }
-
