@@ -103,7 +103,7 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 		if (handle == NULL)
 		{
 			std::cout << "Error loading: " << pluginFullFilename 
-					  << " reason: " << dlerror() 
+					  << " reason: " << LibraryLoadError()
 					  << std::endl;
 		}
 
