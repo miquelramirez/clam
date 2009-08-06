@@ -61,7 +61,7 @@ public:
 		std::transform(first, last, first, first, std::multiplies<TData>());
 		
 		TData sum = std::accumulate(first, last, static_cast<TData>(0));
-		TData result = std::sqrt(std::pow(sum, 2));
+		TData result = std::sqrt(sum);
 
 		_outputControl.SendControl(static_cast<TControlData>(result));
 
