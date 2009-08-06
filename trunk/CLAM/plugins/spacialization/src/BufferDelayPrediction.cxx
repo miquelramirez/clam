@@ -47,7 +47,8 @@ BufferDelayPrediction::BufferDelayPrediction()
 
 void BufferDelayPrediction::CreatePortsAndControls()
 {
-	unsigned portSize = BackendBufferSize();
+	unsigned portSize = mConfig.GetBufferSize();
+	//std::cout << "portsize=" << portSize << std::endl;
 	
 	for( int i = 0; i < mConfig.GetNumberOfInPorts(); ++i)
 	{
@@ -58,10 +59,11 @@ void BufferDelayPrediction::CreatePortsAndControls()
 		inBuf->SetHop( portSize );
 		mInputBufs.push_back( inBuf );
 		
-		mOutputControls.push_back( new OutControl("Value " + number.str(), this) );
+		mOutputControls.push_back( new OutControl("Predicted Delay " + number.str(), this) );
+		mOutputControls.push_back( new OutControl("Quality " + number.str(), this) );
 		
-		mInputControls.push_back( new InControl("Mix " + number.str(), this) );
-		mInputControls.push_back( new InControl("Uncompressed " + number.str(), this) );
+		mInputControls.push_back( new InControl("Mix RMS " + number.str(), this) );
+		mInputControls.push_back( new InControl("Uncompressed RMS " + number.str(), this) );
 	}
 }
 
@@ -97,12 +99,6 @@ bool BufferDelayPrediction::ConcreteConfigure(const ProcessingConfig& c)
 
 namespace {
 
-template<typename T> struct divide {
-	T const& t_;
-	divide(T const& t) : t_(t) {}
-    T const operator()(T const x) { return x / (t_ == 0 ? 1 : t_); }
-};
-
 } // anonymous
 
 bool BufferDelayPrediction::Do()
@@ -111,22 +107,30 @@ bool BufferDelayPrediction::Do()
 
 	for (unsigned int i = 0; i < numInPorts; ++i)
 	{
-		TControlData mix = mInputControls[i]->GetLastValue();
-		TControlData uncompressed = mInputControls[i+1]->GetLastValue();
+		TControlData mix_rms = mInputControls[i]->GetLastValue();
+		TControlData uncompressed_rms = mInputControls[i+1]->GetLastValue();
 
-		TControlData divider = std::sqrt(uncompressed * mix);
+		TControlData divider = uncompressed_rms * mix_rms;
 
 		TData* first = mInputBufs[i]->GetData().GetBuffer().GetPtr();
-		TData* last = first + mInputBufs[i]->GetData().GetSize();
+		unsigned buffer_size = mInputBufs[i]->GetData().GetSize();
+		TData* last = first + buffer_size;
 
-		// in place transform
-		std::transform(first, last, first, divide<TData>(divider));
+		TData* max_location_ptr = std::max_element(first, last);
+	    
+		TData max_location = buffer_size - (last - max_location_ptr);
 
-		TData* max = std::max_element(first, last);
-		TData delay = *max;
+		TData max_value = *max_location_ptr;
+		TData max_value_normalized = (max_value / divider) * 100;
 
-		//if (mConfig.GetQuality() < delay * 100)
-			mOutputControls[i]->SendControl(static_cast<TControlData>(delay));
+		TData predicted_delay = (buffer_size + 1) + 1 - max_location;
+		TData predicted_delay_in_seconds = predicted_delay / 48000.0;
+
+		//std::cout << "max_location=" << max_location << " max_value=" << max_value << std::endl; 
+
+		mOutputControls[i]->SendControl(static_cast<TControlData>(predicted_delay_in_seconds));
+		mOutputControls[i+1]->SendControl(static_cast<TControlData>(max_value_normalized));
+	
 	}
 
 	for (unsigned int i = 0; i < numInPorts; ++i)

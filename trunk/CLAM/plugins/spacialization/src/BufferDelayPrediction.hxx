@@ -39,9 +39,10 @@ namespace CLAM
 class BufferDelayPredictionConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (BufferDelayPredictionConfig , 2, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (BufferDelayPredictionConfig , 3, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, int, NumberOfInPorts);
 	DYN_ATTRIBUTE (1, public, int, Quality);
+	DYN_ATTRIBUTE (2, public, int, BufferSize);
 
 protected:
 	void DefaultInit(void)
@@ -50,6 +51,7 @@ protected:
 		UpdateData();
 		SetNumberOfInPorts(1);
 		SetQuality(40);
+		SetBufferSize(1024);
 	}
 
 };
