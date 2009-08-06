@@ -41,8 +41,10 @@ namespace
 }
 
 BufferDelayPrediction::BufferDelayPrediction()
+	: mSampleRate(48000.)
 {
 	Configure( mConfig );
+	mSampleRate = mConfig.GetSampleRate();
 }
 
 void BufferDelayPrediction::CreatePortsAndControls()
@@ -124,9 +126,12 @@ bool BufferDelayPrediction::Do()
 		TData max_value_normalized = (max_value / divider) * 100;
 
 		TData predicted_delay = (buffer_size + 1) + 1 - max_location;
-		TData predicted_delay_in_seconds = predicted_delay / 48000.0;
+		TData predicted_delay_in_seconds = predicted_delay / mSampleRate;
 
-		//std::cout << "max_location=" << max_location << " max_value=" << max_value << std::endl; 
+		std::cout << "max_location=" << max_location << " max_value=" << max_value 
+				  << " predicted_delay=" << predicted_delay << " in_seconds=" << predicted_delay_in_seconds
+				  << " max_value_normalized=" << max_value_normalized 
+				  << std::endl; 
 
 		mOutputControls[i]->SendControl(static_cast<TControlData>(predicted_delay_in_seconds));
 		mOutputControls[i+1]->SendControl(static_cast<TControlData>(max_value_normalized));
