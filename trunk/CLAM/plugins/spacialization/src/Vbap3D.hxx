@@ -64,6 +64,11 @@ private:
 	Config _config;
 	std::vector<Vector> _speakersPositions;
 	int _currentTriangle;
+
+
+//	std::vector <unsigned> _activeSpeakersIndex;
+	std::vector <float> _activeSpeakersLastGains;
+	std::vector <float> _activeSpeakersActualGains;
 	
 	static float deltaAngle() { return 0.01; }
 	static float deltaNumeric() { return 0.00001; } 
@@ -343,6 +348,13 @@ public:
 			return AddConfigErrorMessage(errorMessage);
 
 		_speakersPositions.clear();
+
+//		_activeSpeakersIndex.clear();
+		_activeSpeakersLastGains.clear();
+		_activeSpeakersActualGains.clear();
+		_activeSpeakersLastGains.resize(_layout.size(),0);
+		_activeSpeakersActualGains.resize(_layout.size(),0);
+
 		for (unsigned i=0; i<_layout.size(); i++)
 		{
 			const CLAM::Orientation & speaker=_layout.orientation(i);
@@ -499,25 +511,35 @@ public:
 		g1 = fabs(g1) * normalization;
 		g2 = fabs(g2) * normalization;
 		g3 = fabs(g3) * normalization;
+	
+		for (unsigned i=0; i<_outputs.size(); i++)
+		{
+			_activeSpeakersActualGains[i] = ( i==speaker1 ? g1 : (i==speaker2 ? g2 : (i==speaker3 ? g3 : 0. ) ) );
+		}
+	
 		// copy audio in->out
 		// TODO extract method
 		const CLAM::DataArray& w = _w.GetAudio().GetBuffer();
 		const CLAM::TData * in = w.GetPtr();
 		const unsigned size = w.Size();
+		const float sizeInverse=1./size;
 		for (unsigned i=0; i<_outputs.size(); i++)
 		{
-			float gainToApply = 0.;
-			if (i==speaker1) gainToApply = g1;
-			if (i==speaker2) gainToApply = g2;
-			if (i==speaker3) gainToApply = g3;
 			CLAM::TData * out =_outputs[i]->GetAudio().GetBuffer().GetPtr();
-			if (gainToApply>deltaAngle())
+			const float gainDifference=_activeSpeakersActualGains[i]-_activeSpeakersLastGains[i]; 
+
+			if (fabs(gainDifference)>deltaNumeric() or _activeSpeakersActualGains[i]>deltaAngle())
+			{
 				for (int sample=0; sample<size; sample++)
+				{
+					const float gainToApply = _activeSpeakersLastGains[i] + gainDifference * (sample*sizeInverse);
 					out[sample] = in[sample]*gainToApply;
+				}
+			}
 			else
 				for (int sample=0; sample<size; sample++)
 					out[sample] = 0.;
-			
+			_activeSpeakersLastGains[i]=_activeSpeakersActualGains[i];
 			_outputs[i]->Produce();
 		}
 		_w.Consume();
