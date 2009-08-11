@@ -95,8 +95,6 @@ public:
 	void setMetadataToolTip();
 	void endWireDrag(const QPoint& scenePoint);
 
-	void raiseEmbeded() {if (_embeded) _embeded->raise();}
-
 	bool isSelected() { return _selected; }
 	void select() { _selected=true; }
 	void deselect() { _selected=false; }

@@ -10,7 +10,7 @@
 #include <QtGui/QGraphicsSceneContextMenuEvent>
 #include <CLAM/ProcessingFactory.hxx> 
 
-std::string processingBoxRegionName(ProcessingBox::Region region)
+static std::string processingBoxRegionName(ProcessingBox::Region region)
 {
 	switch(region)
 	{
@@ -342,7 +342,6 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 	Region region = getRegion(scenePoint);
 	if (region==noRegion) return;
 	_canvas->raise(this);
-	// Head
 	if (region==nameRegion)
 	{
 		if (event->modifiers() & Qt::ControlModifier )

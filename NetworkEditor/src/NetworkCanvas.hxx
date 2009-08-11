@@ -82,16 +82,16 @@ public:
 		setAlignment(Qt::AlignLeft | Qt::AlignTop);
 		setRenderHint(QPainter::Antialiasing);
 		setTransformationAnchor ( QGraphicsView::NoAnchor );
-		viewport ()->setStyleSheet("background-color: transparent;");
+		viewport()->setStyleSheet("background-color: transparent;");
 		
-		setGreenColorsForBoxes();
-
 		setMouseTracking(true);
 		setAcceptDrops(true);
 		setMinimumSize(200,100);
 		resize(600,300);
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
+
+		setGreenColorsForBoxes();
 
 		_deleteSelectedAction = new QAction(QIcon(":/icons/images/editdelete.png"),tr("Delete"), this);
 		_deleteSelectedAction->setShortcut(QKeySequence(tr("Del")));
@@ -129,7 +129,6 @@ public:
 	}
 	void raise(ProcessingBox * toRaise)
 	{
-		toRaise->raiseEmbeded();
 		toRaise->setZValue(++_maxZ);
 	}
 	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
