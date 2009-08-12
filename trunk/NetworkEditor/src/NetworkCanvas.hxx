@@ -129,6 +129,7 @@ public:
 	}
 	void raise(ProcessingBox * toRaise)
 	{
+		toRaise->raiseEmbededWidget();
 		toRaise->setZValue(++_maxZ);
 	}
 	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
@@ -535,14 +536,21 @@ public:
 				_zoomFactor/=1.0625;
 		resetTransform();
 		scale(_zoomFactor,_zoomFactor);
-		
+		updateEmbededWidgets();
 		update();
 	}
 	void resetZoom()
 	{
 		resetTransform();
 		_zoomFactor=1.;
+		updateEmbededWidgets();
 		update();
+	}
+	void updateEmbededWidgets()
+	{
+		// Change the position just to trigger the updateEmbededGeometry of each processing box
+		for (unsigned i=0; i<_processings.size(); i++)
+			_processings[i]->move(_processings[i]->position());
 	}
 	const QPixmap getPixmapOfCanvas(Qt::TransformationMode mode = Qt::FastTransformation)
 	{
@@ -806,7 +814,11 @@ public: // Event Handlers
 		event->acceptProposedAction();
 		addProcessing(mapToScene(event->pos()).toPoint(), type);
 	}
-
+	void scrollContentsBy( int dx, int dy )
+	{
+		QGraphicsView::scrollContentsBy(dx,dy);
+		updateEmbededWidgets();
+	}
 	void wheelEvent(QWheelEvent * event)
 	{
 		const int deltaUnitsPerDegree = 8;

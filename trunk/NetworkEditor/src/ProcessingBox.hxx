@@ -95,6 +95,7 @@ public:
 	void hover(const QPoint & scenePoint);
 	void setMetadataToolTip();
 	void endWireDrag(const QPoint& scenePoint);
+	void raiseEmbededWidget() { if (_embeded) _embeded->raise(); }
 
 	bool isSelected() { return _selected; }
 	void select() { _selected=true; }
