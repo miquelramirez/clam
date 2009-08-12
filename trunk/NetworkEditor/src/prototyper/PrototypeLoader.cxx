@@ -467,11 +467,10 @@ void PrototypeLoader::ConnectWithNetwork()
 	ConnectWidgetsUsingControlBounds();
 	ConnectWidgetsWithBooleanControls();
 	ConnectWidgetsWithAudioFileReaders();
+	ConnectWidgetsWithProgressControls();
 
 	for (Binders::iterator it=binders().begin(); it!=binders().end(); it++)
 		(*it)->bindWidgets(_network, _interface);
-
-	ConnectWidgetsWithProgressControls();
 
 	_playButton = _interface->findChild<QPushButton*>("PlayButton");
 	_pauseButton = _interface->findChild<QPushButton*>("PauseButton");
