@@ -535,6 +535,7 @@ public:
 				_zoomFactor/=1.0625;
 		resetTransform();
 		scale(_zoomFactor,_zoomFactor);
+		
 		update();
 	}
 	void resetZoom()
@@ -721,7 +722,8 @@ public: // Event Handlers
 
 		setToolTip(0);
 		setStatusTip(0);
-		
+
+		// TODO: This is so ugly, turn it state based
 		if(cursor().shape()!=Qt::ClosedHandCursor)
 			setCursor(Qt::ArrowCursor);
 

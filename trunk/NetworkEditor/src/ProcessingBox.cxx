@@ -369,7 +369,11 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 	QPoint scenePoint = event->scenePos().toPoint();
 	Region region = getRegion(scenePoint);
 	std::cout << "PB::mouseMove " << _name.toStdString() << " " << processingBoxRegionName(region) << " " << processingBoxAction(_actionMode) << std::endl;
-	if (region==noRegion) return;
+	if (region==noRegion)
+	{
+		event->ignore(); // Let other children to take it
+		return;
+	}
 	_canvas->raise(this);
 	if (region==nameRegion)
 	{
