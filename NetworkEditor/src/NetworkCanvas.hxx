@@ -370,7 +370,9 @@ public: // Actions
 	}
 	void startMovingSelected(const QPoint& point)
 	{
+		_dragStatus = MoveDrag;
 		setCursor(Qt::ClosedHandCursor);
+		//setCursor(Qt::SizeAllCursor);
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
 			if (!_processings[i]->isSelected()) continue;
@@ -385,7 +387,13 @@ public: // Actions
 			if (!_processings[i]->isSelected()) continue;
 			_processings[i]->keepMoving(delta);
 		}
-		//setCursor(Qt::SizeAllCursor);
+	}
+	void stopMoving()
+	{
+		_dragStatus = NoDrag;
+		setCursor(Qt::ArrowCursor);
+		for (unsigned i=0; i<_processings.size(); i++)
+			_processings[i]->stopMoving();
 	}
 	/**
 	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
@@ -708,6 +716,7 @@ public: // Event Handlers
 
 	void mouseMoveEvent(QMouseEvent * event)
 	{
+		std::cout << "NC::mouseMove" << std::endl;
 		_dragPoint = mapToScene(event->pos()).toPoint();
 
 		setToolTip(0);
@@ -721,9 +730,11 @@ public: // Event Handlers
 			_processings[i]->hover(mapToScene(event->pos()).toPoint());
 		_tooltipPos=_dragPoint;
 		update();
+		std::cout << "NC::mouseMove done" << std::endl;
 	}
 	void mousePressEvent(QMouseEvent * event)
 	{
+		std::cout << "NC::mousePress" << std::endl;
 		if (event->button()!=Qt::LeftButton) return;
 		QGraphicsView::mousePressEvent(event);
 		if (itemAt(event->pos())) return;
@@ -732,15 +743,21 @@ public: // Event Handlers
 		_selectionDragOrigin=mapToScene(event->pos()).toPoint();
 		startDrag(SelectionDrag,0,0);
 		update();
+		std::cout << "NC::mousePress done" << std::endl;
 	}
 	void mouseReleaseEvent(QMouseEvent * event)
 	{
+		std::cout << "NC::mouseRelease" << std::endl;
 		if (_dragStatus == SelectionDrag)
 		{
 			QRect selectionBox (_selectionDragOrigin, _dragPoint);
 			for (unsigned i = _processings.size(); i--; )
 				if (selectionBox.contains(QRect(_processings[i]->position(),_processings[i]->size())))
 					_processings[i]->select();
+		}
+		if (_dragStatus == MoveDrag)
+		{
+			stopMoving();
 		}
 		QGraphicsView::mouseReleaseEvent(event);
 		QPointF scenePointF=mapToScene(event->pos());
@@ -749,6 +766,7 @@ public: // Event Handlers
 			processingBox->endWireDrag(scenePointF.toPoint());
 		_dragStatus=NoDrag;
 		update();
+		std::cout << "NC::mouseRelease done" << std::endl;
 	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{

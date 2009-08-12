@@ -26,6 +26,33 @@ static std::string processingBoxRegionName(ProcessingBox::Region region)
 	}
 }
 
+static std::string processingBoxAction(ProcessingBox::ActionMode action)
+{
+	switch(action)
+	{
+		case ProcessingBox::NoAction:        return "NoAction";
+		case ProcessingBox::Resizing:        return "Resizing";
+		case ProcessingBox::Moving:        return "Moving";
+		default:                               return "Which drag??";
+	}
+}
+
+static std::string networkCanvasDragMode(NetworkCanvas::DragStatus dragMode)
+{
+	switch(dragMode)
+	{
+		case NetworkCanvas::NoDrag:        return "NoDrag";
+		case NetworkCanvas::MoveDrag:        return "MoveDrag";
+		case NetworkCanvas::ResizeDrag:    return "ResizeDrag";
+		case NetworkCanvas::SelectionDrag:    return "SelectionDrag";
+		case NetworkCanvas::InportDrag:     return "InportDrag";
+		case NetworkCanvas::OutportDrag:    return "OutportDrag";
+		case NetworkCanvas::IncontrolDrag:  return "IncontrolDrag";
+		case NetworkCanvas::OutcontrolDrag: return "OutcontrolDrag";
+		default:                               return "Which drag??";
+	}
+}
+
 ProcessingBox::~ProcessingBox()
 {
 	if (_embeded) delete _embeded;
@@ -81,7 +108,6 @@ void ProcessingBox::updateEmbededWidget()
 
 void ProcessingBox::paintFromParent(QPainter & painter)
 {
-	updateEmbededWidget();
 	painter.save();
 	painter.translate(_pos);
 	paintBox(painter);
@@ -109,10 +135,12 @@ void ProcessingBox::refreshConnectors()
 void ProcessingBox::resize(const QSize & size)
 {
 	_size=size.expandedTo(_minimumSize);
+	updateEmbededWidget();
 }
 void ProcessingBox::move(const QPoint & point)
 {
 	_pos=point;
+	updateEmbededWidget();
 }
 
 void ProcessingBox::setName(const QString & newName)
@@ -340,6 +368,7 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
 	QPoint scenePoint = event->scenePos().toPoint();
 	Region region = getRegion(scenePoint);
+	std::cout << "PB::mouseMove " << _name.toStdString() << " " << processingBoxRegionName(region) << " " << processingBoxAction(_actionMode) << std::endl;
 	if (region==noRegion) return;
 	_canvas->raise(this);
 	if (region==nameRegion)
@@ -406,6 +435,7 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 }
 void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
+	std::cout << "PB::mouseMove " << _name.toStdString() << std::endl;
 	QPoint scenePoint = event->scenePos().toPoint();
 
 	if (_actionMode==Moving)
@@ -432,6 +462,7 @@ void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 }
 void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
+	std::cout << "PB::mouseRelease " << _name.toStdString() << std::endl;
 	if (_actionMode==Moving or _actionMode==Resizing)
 	{
 		_canvas->setCursor(Qt::ArrowCursor);
@@ -440,6 +471,7 @@ void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 }
 void ProcessingBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
+	std::cout << "PB::mouseDoubleClick " << _name.toStdString() << std::endl;
 	QPoint point = event->scenePos().toPoint();
 	doubleClicking(point);
 }
@@ -448,6 +480,7 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 	QMenu menu(_canvas);
 	QPoint scenePoint = event->scenePos().toPoint();
 	Region region = getRegion(scenePoint);
+	std::cout << "PB::contextMenu " << _name.toStdString() << " " << processingBoxRegionName(region) <<  std::endl;
 
 	switch (region)
 	{
@@ -484,16 +517,18 @@ void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
 void ProcessingBox::keepMoving(const QPoint & delta)
 {
 	if (_actionMode==Moving)
-	{
 		move(originalPosition + delta);
-	}
+}
+void ProcessingBox::stopMoving()
+{
+	if (_actionMode==Moving)
+		_actionMode = NoAction;
 }
 void ProcessingBox::hover(const QPoint & scenePoint)
 {
 	_highLightRegion=noRegion;
 	Region region = getRegion(scenePoint);
 	if (region==noRegion) return;
-	
 	switch (region)
 	{	
 		case noRegion:
@@ -562,7 +597,7 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 }
 void ProcessingBox::setMetadataToolTip()
 {
-	QString tooltipText=QString("name: ");
+	QString tooltipText=QString("Type: ");
 	std::string key=((CLAM::Processing*)_processing)->GetClassName();
 	tooltipText+=QString(key.c_str());
 	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();

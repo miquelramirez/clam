@@ -85,6 +85,7 @@ public:
 	void resize(const QSize & newSize);
 	void startMoving(const QPoint & initialGlobalPos);
 	void keepMoving(const QPoint & delta);
+	void stopMoving();
 	void doubleClicking(const QPoint & scenePoint);
 	QPoint position() const { return _pos; }
 	QSize size() const { return _size; }
