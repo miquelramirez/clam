@@ -200,11 +200,10 @@ def scanFiles(pattern, paths) :
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
-options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', '/bad/path'))
+options = Variables('options.cache', ARGUMENTS)
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 if sys.platform=='linux2' :
-	options.Add(BoolOption('crossmingw', 'Activates the MinGW Windows crosscompiling mode', 'no'))
-
+	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 env = Environment(ENV=os.environ, options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
