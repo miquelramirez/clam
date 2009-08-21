@@ -1,0 +1,578 @@
+<ui version="4.0" >
+ <class>TemplateGeneratorWindow</class>
+ <widget class="QMainWindow" name="TemplateGeneratorWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>783</width>
+    <height>555</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>MainWindow</string>
+  </property>
+  <property name="locale" >
+   <locale country="UnitedStates" language="English" />
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <layout class="QVBoxLayout" >
+    <item>
+     <layout class="QVBoxLayout" >
+      <property name="leftMargin" >
+       <number>5</number>
+      </property>
+      <property name="rightMargin" >
+       <number>5</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="sizeConstraint" >
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="sizeConstraint" >
+           <enum>QLayout::SetDefaultConstraint</enum>
+          </property>
+          <property name="leftMargin" >
+           <number>5</number>
+          </property>
+          <property name="rightMargin" >
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="clamLogo" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>200</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>200</width>
+              <height>150</height>
+             </size>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="text" >
+             <string>clam logo</string>
+            </property>
+            <property name="scaledContents" >
+             <bool>true</bool>
+            </property>
+            <property name="textInteractionFlags" >
+             <set>Qt::NoTextInteraction</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="spacing" >
+           <number>0</number>
+          </property>
+          <property name="sizeConstraint" >
+           <enum>QLayout::SetMinimumSize</enum>
+          </property>
+          <property name="leftMargin" >
+           <number>10</number>
+          </property>
+          <property name="rightMargin" >
+           <number>5</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout" >
+            <property name="topMargin" >
+             <number>5</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>5</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_2" >
+              <property name="text" >
+               <string>Name:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_PluginName" />
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2" >
+            <property name="topMargin" >
+             <number>5</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>5</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_3" >
+              <property name="text" >
+               <string>Base class:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_BaseClass" >
+              <property name="text" >
+               <string>Processing</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_17" >
+            <property name="topMargin" >
+             <number>5</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>5</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_6" >
+              <property name="text" >
+               <string>Copyright:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_Copyright" />
+            </item>
+            <item>
+             <widget class="QLabel" name="label_7" >
+              <property name="text" >
+               <string>License:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_License" >
+              <item>
+               <property name="text" >
+                <string>GPL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>GPL3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>none</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_8" >
+              <property name="text" >
+               <string>Year:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_Year" >
+              <property name="text" >
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout" >
+        <property name="spacing" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>5</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>5</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_4" >
+          <property name="font" >
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text" >
+           <string>Ports</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableWidget_Ports" >
+          <property name="minimumSize" >
+           <size>
+            <width>0</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="frameShadow" >
+           <enum>QFrame::Raised</enum>
+          </property>
+          <property name="verticalScrollBarPolicy" >
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy" >
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="autoScroll" >
+           <bool>false</bool>
+          </property>
+          <column>
+           <property name="text" >
+            <string>In/Out</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Name</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4" >
+          <property name="topMargin" >
+           <number>5</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>5</number>
+          </property>
+          <item>
+           <spacer name="horizontalSpacer" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Ports_Plus" >
+            <property name="font" >
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Ctrl+P</string>
+            </property>
+            <property name="text" >
+             <string>+</string>
+            </property>
+            <property name="shortcut" >
+             <string>Ctrl+P</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Ports_Minus" >
+            <property name="font" >
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Ctrl+[</string>
+            </property>
+            <property name="text" >
+             <string>-</string>
+            </property>
+            <property name="shortcut" >
+             <string>Ctrl+[</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2" >
+        <property name="topMargin" >
+         <number>5</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>5</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_5" >
+          <property name="font" >
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text" >
+           <string>Float Controls</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableWidget_Controls" >
+          <property name="minimumSize" >
+           <size>
+            <width>0</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="font" >
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="toolTip" >
+           <string>Ctrl+P</string>
+          </property>
+          <column>
+           <property name="text" >
+            <string>In/Out</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Min</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Max</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Name</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_13" >
+          <property name="topMargin" >
+           <number>5</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>5</number>
+          </property>
+          <item>
+           <spacer name="horizontalSpacer_2" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_TypedSwitch" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="toolTip" >
+             <string>Switchs between Typed and Float Controls (Ctrl+T, Ctrl+F)</string>
+            </property>
+            <property name="text" >
+             <string>Typed</string>
+            </property>
+            <property name="shortcut" >
+             <string>Ctrl+F, Ctrl+T</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Controls_Plus" >
+            <property name="font" >
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Ctrl+C</string>
+            </property>
+            <property name="text" >
+             <string>+</string>
+            </property>
+            <property name="shortcut" >
+             <string>Ctrl+C</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Controls_Minus" >
+            <property name="font" >
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Ctrl+V</string>
+            </property>
+            <property name="text" >
+             <string>-</string>
+            </property>
+            <property name="shortcut" >
+             <string>Ctrl+V</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_10" >
+      <item>
+       <spacer name="horizontalSpacer_5" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Minimum</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_Generate" >
+        <property name="toolTip" >
+         <string>Ctrl+G</string>
+        </property>
+        <property name="text" >
+         <string>Generate</string>
+        </property>
+        <property name="shortcut" >
+         <string>Ctrl+G</string>
+        </property>
+        <property name="autoDefault" >
+         <bool>true</bool>
+        </property>
+        <property name="default" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_Exit" >
+        <property name="toolTip" >
+         <string>Ctrl+X</string>
+        </property>
+        <property name="text" >
+         <string>Exit</string>
+        </property>
+        <property name="shortcut" >
+         <string>Ctrl+X</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Minimum</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar" >
+   <property name="sizeGripEnabled" >
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_Exit</sender>
+   <signal>clicked()</signal>
+   <receiver>TemplateGeneratorWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>585</x>
+     <y>777</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>391</x>
+     <y>416</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
