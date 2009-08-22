@@ -228,9 +228,10 @@ if crosscompiling :
 	clam_env.Tool('crossmingw',toolpath=['scons/sconstools'])
 
 if clam_env['distcc_hosts'] :
-	clam_env['CXX'] = 'distcc g++'
+	clam_env['CXX'] = 'distcc '+clam_env['CXX']
 	clam_env['ENV']['DISTCC_HOSTS'] = clam_env['distcc_hosts']
 	SetOption('num_jobs', len( clam_env['distcc_hosts'].split() ))
+
 
 sys.path.append('scons/sconstools')
 import versionInfo
