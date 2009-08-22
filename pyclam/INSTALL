@@ -1,6 +1,6 @@
 == Instructions ==
 
-Note: By now only tested in linux, but all the tools are cross-platform and should also work in mac and windows in a similar way.
+Note: This is still experimental. By now only tested in linux, but all the tools are cross-platform and should also work in mac and windows in a similar way.
 
 === Tools (assuming a working clam dev environment) ===
 # Install Boost.Python. At debian based distros packages named libboost-python-dev and libboost-python1.34.1
@@ -26,7 +26,7 @@ Note: By now only tested in linux, but all the tools are cross-platform and shou
 
 After those steps you should get the clam.so ready to use.
 
-WARNING: At the moment it has been tested sucesfully with a gcc-4.2 version. You could experience some problems with gcc-4.3. Seem there is a problem parsing unistd.h (see the error when 'gccxml /usr/include/unistd.h').
+WARNING: At the moment it has been tested sucesfully in ubuntu hardy with a gcc-4.2 version. You could experience some problems with gcc-4.3. Seems there is a problem parsing unistd.h (see or try the error when 'gccxml /usr/include/unistd.h'). With ubuntu jaunty, which has gcc-4.3 as default, may you have to force the use of gcc-4.2 and apply the patch 'jaunty.patch' which forces the py++ script to use gccxml v4.2 and use indexing suite version 1 instead of 2.
 
 === Use ===
 * Put the clam.so file in a visible place for your scripts (PYTHONPATH or the directory where your scripts are placed).
