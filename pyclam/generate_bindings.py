@@ -125,13 +125,16 @@ clam_modules = [ 'clam_core', 'clam_audioio', 'clam_processing' ]
 cflags_list = os.popen( 'PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config --cflags-only-other %s'%(clam_prefix," ".join(clam_modules))  ).read()[:-1].split(' ')
 define_list = [ item[2:] for item in cflags_list if item[:2]=='-D' ]
 
+flags_list = ""
+
 # Creating an instance of class that will help you to expose your declarations
 mb = module_builder.module_builder_t (
-	file_list,
+	files = file_list,
 	working_directory = r".",
 	include_paths = clam_include_path,
 	define_symbols = define_list,
 	indexing_suite_version = 2,
+	cflags = flags_list,
 )
 
 mem_funs = mb.calldefs()
