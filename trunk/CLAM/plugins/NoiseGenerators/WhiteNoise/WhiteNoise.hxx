@@ -42,15 +42,29 @@ namespace CLAM {
 		/** Ports **/
 		AudioOutPort mOutput;
 
+		/** Controls **/
+		FloatInControl mMean;
+		FloatInControl mStd; // standard deviation
+
 		//TODO: add a gaussian white noise implementation
 		//TODO: add a configuration parameter to choose between uniform and gaussian noise
 
 	public:
 		WhiteNoise(const Config & config=Config())
 			:
-			mOutput("mOutput", this)
+			mOutput("mOutput", this),
+			mMean("Noise Mean", this),
+			mStd("Noise Standard Deviation", this)
 		{
 			Configure( config );
+
+			mMean.SetBounds(-1,1);
+			mMean.SetDefaultValue(0.0);
+			mMean.DoControl(0.0);
+
+			mStd.SetBounds(0,1);
+			mStd.SetDefaultValue(1.0);
+			mStd.DoControl(1.0);
 
 			/* initialize random seed: */
 			srand( time(NULL) );
@@ -73,10 +87,16 @@ namespace CLAM {
 
 			DataArray& buf = out.GetBuffer();
 
+			TData mean = mMean.GetLastValue();
+			TData std = mStd.GetLastValue();
 			for (int i=0;i<size;i++) 
 			{
 				//Uniform noise
 				buf[i] = 2.*rand()/RAND_MAX - 1.;
+
+				//Scaling to meet required noise parameters
+				buf[i] *= std;
+				buf[i] += mean;
 			}
 			return true;
 		}
