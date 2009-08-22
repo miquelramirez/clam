@@ -15,6 +15,8 @@ avoid_configure_option=ARGUMENTS.get('force_avoid_configure',0)
 needs_configure = ('configure' in COMMAND_LINE_TARGETS) or not os.path.exists(options_filename) or len(ARGUMENTS)>0
 avoid_configure = '--help' in COMMAND_LINE_TARGETS or avoid_configure_option=='1' or avoid_configure_option=='yes' or '-c' in ARGUMENTS
 
+python_version = "python%s.%s" % ( sys.version_info[0], sys.version_info[1] )
+
 if needs_configure and not avoid_configure :
 	print 'Configure phase...'
 	opts.Update(env)
@@ -22,8 +24,13 @@ if needs_configure and not avoid_configure :
 	print "Finished. Invoke 'scons' now."
 	Exit(0)
 
+try:
+	env['CXX'] = env['ENV']['CC']
+except KeyError:
+	pass
+
 if env['distcc_hosts'] :
-	env['CXX'] = 'distcc g++'
+	env['CXX'] = 'distcc '+env['CXX']
 	env['ENV']['DISTCC_HOSTS'] = env['distcc_hosts']
 	SetOption('num_jobs', len(env['distcc_hosts'].split()) )
 
@@ -48,7 +55,7 @@ sourcePaths = [
 	os.path.join('src','manual'),
 ]
 extraPaths = []
-extraPaths += ['/usr/include/python2.5','/usr/include/']
+extraPaths += ['/usr/include/%s'%python_version,'/usr/include/']
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
@@ -57,7 +64,7 @@ includePaths = sourcePaths + extraPaths
 env.Append(CPPPATH=includePaths)
 
 env.Append( LIBS=['boost_python'] )
-env.Append( LIBPATH=['/usr/lib/python2.5/config'] )
+env.Append( LIBPATH=['/usr/lib/%s/config'%python_version] )
 
 if env['debug']:
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
