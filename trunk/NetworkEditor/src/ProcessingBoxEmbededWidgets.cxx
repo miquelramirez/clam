@@ -32,6 +32,8 @@
 #include "MelCepstrumViewMonitor.hxx"
 #include "VectorView.hxx"
 #include "VectorViewMonitor.hxx"
+#include "HistogramView.hxx"
+#include "HistogramViewMonitor.hxx"
 #include "SegmentationView.hxx"
 #include "SegmentationViewMonitor.hxx"
 #include "MIDIPianoWidget.hxx"
@@ -135,6 +137,9 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 
 	if (className=="VectorView")
 		return new CLAM::VM::VectorView(this, dynamic_cast<VectorViewMonitor*>(processing));
+
+	if (className=="HistogramView")
+		return new CLAM::VM::HistogramView(this, dynamic_cast<HistogramViewMonitor*>(processing));
 
 	if (className=="SegmentationView")
 		return new SegmentationView(this, dynamic_cast<SegmentationViewMonitor*>(processing));
