@@ -1,0 +1,7 @@
+== Description ==
+
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install
