@@ -52,13 +52,14 @@ private:
 		const CLAM::Audio &audio = FreezeAndGetData();
 		const CLAM::Array<CLAM::TData> &inb = audio.GetBuffer();
 		_size = inb.Size();
-// 		if (_size==0) return 0;
+ 		if (_size==0) return 0;
 
 		for (int i=0; i<audio.GetSize(); i++ )
 		{
+			CLAM_ASSERT(fabs(inb[i])<=1., "Input audio is out of range (-1..1)");
+
 			//index calculation by integer division
 			unsigned int index = (inb[i]+1)*32768/(65536/_bins); // if bins=512 and maxValue=65536 => max index 65536/128 = 512 (number of bins)
-printf("index: %i\n");
 			_data[ index ]++;
 		}
 
@@ -82,7 +83,7 @@ printf("index: %i\n");
 	}
 private:
 	unsigned _size;
-	unsigned _bins; //fixed number of bins. TODO: Add this as a configuration option.
+	const unsigned _bins; //fixed number of bins. TODO: Add this as a configuration option.
 	std::vector<CLAM::TData> _data; ///< Data of the histogram
 };
 
