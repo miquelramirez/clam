@@ -31,7 +31,7 @@ namespace CLAM {
 
 	/**	\brief Clipping
 	*
-	*	Clips the input signal to -1..1 range
+	*	Clips the input signal to -1..1 range or whatever input control says
 	*/
 	class Clipping: public Processing
 	{	
@@ -66,17 +66,14 @@ namespace CLAM {
 		bool Do()
 		{
 			bool result = Do( mInput.GetAudio(), mOutput.GetAudio() );
-
 			mInput.Consume(); 
 			mOutput.Produce();
-
 			return result;
 		}
 	
 		bool Do(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();
-
 			const DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 

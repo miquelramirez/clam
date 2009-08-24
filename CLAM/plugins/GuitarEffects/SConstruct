@@ -9,6 +9,8 @@ libPaths = [
 	('audioswitch', 'AudioSwitch'),
 	('automaticgaincontrol', 'AutomaticGainControl'),
 	('timedelay', 'TimeDelay'),
+	('audionormalization', 'AudioNormalization'),
+	('clipping', 'Clipping'),
 ]
 
 def scanFiles(pattern, paths) :
