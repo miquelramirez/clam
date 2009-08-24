@@ -52,7 +52,7 @@ namespace CLAM {
 			mInput("Input", this),
 			mOutput("Output", this),
 			mAudioNormalizationValue("AudioNormalization Value", this),
-			_max(0.)
+			_max(1.)
 		{
 			Configure( config );
 
