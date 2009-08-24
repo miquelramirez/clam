@@ -73,7 +73,7 @@ namespace CLAM{
 			const DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
-			TData mean=0;
+			TData mean=0.;
 			for (int i=0;i<size;i++)
 			{
 				mean += inb[i];
