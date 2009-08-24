@@ -35,4 +35,10 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, WhiteNoise> reg = metadata;
 }
 
+	void WhiteNoiseConfig::DefaultInit( )
+	{
+		AddAll();
+		UpdateData();
+		SetDistributionType(EDistributionType::eUniform);
+	}
 }
