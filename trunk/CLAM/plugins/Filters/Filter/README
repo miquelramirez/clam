@@ -1,0 +1,10 @@
+== Description ==
+
+Direct form implementation of the linear, time-invariant difference equation:
+
+\sum_{k=0}^{N} a_{k+1} y[n-k] = \sum_{k=0}^{M} b_{k+1} x[n-k]
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install
