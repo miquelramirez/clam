@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Hernan Ordiales
+ * 
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,7 +18,7 @@
  *
  */
 
-#include "Filter.hxx"
+#include "FilterByCoefExample.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
 namespace CLAM
@@ -27,19 +27,12 @@ namespace CLAM
 namespace Hidden
 {
 	static const char * metadata[] = {
-		"key", "Filter",
+		"key", "FilterByCoefExample",
 		"category", "[plugin] Filters",
-		"description", "Filter",
+		"description", "FilterByCoefExample",
 		0
 	};
-	static FactoryRegistrator<ProcessingFactory, Filter> reg = metadata;
+	static FactoryRegistrator<ProcessingFactory, FilterByCoefExample> reg = metadata;
 }
 
-	void FilterConfig::DefaultInit( )
-	{
-		AddAll();
-		UpdateData();
-		SetAmountOfInputCoefficients(1);
-		SetAmountOfOutputCoefficients(1);
-	}
 }

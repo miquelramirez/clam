@@ -1,0 +1,12 @@
+== Description ==
+
+Example of a FIR band pass filter defined by direct form coefficients.
+
+Order = 10
+Coefficients:
+0.0555,    0.0933,   -0.1187,   -0.2476,    0.0628,    0.3265,    0.0628,   -0.2476,   -0.1187,	0.0933,    0.0555
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install

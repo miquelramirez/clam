@@ -102,20 +102,23 @@ namespace CLAM {
 
 			unsigned x_k = mConfig.GetAmountOfInputCoefficients();
 			unsigned y_k = mConfig.GetAmountOfOutputCoefficients();
-
+			TData a0 = mA[0].GetLastValue();
 			for (int i=0;i<size;i++) 
 			{
 				x.push_front(inb[i]);
 				x.pop_back();
 
+				outb[i] = 0.;
+
 				//FIR
-				for (unsigned k=0;k<x_k;k++)
-					outb[i] += mB[k].GetLastValue()*x[k];
+ 				for (unsigned k=0;k<x_k;k++)
+ 					outb[i] += mB[k].GetLastValue()*x[k];
 			
 				//IIR
-				for (unsigned k=1;k<y_k;k++)
-					outb[i] -= mA[k].GetLastValue()*y[k];
-				outb[i] *= 1./mA[0].GetLastValue();
+  				for (unsigned k=1;k<y_k;k++)
+  					outb[i] -= mA[k].GetLastValue()*y[k];
+ 				outb[i] /= a0;
+
 
 				y.push_front(outb[i]);
 				y.pop_back();
