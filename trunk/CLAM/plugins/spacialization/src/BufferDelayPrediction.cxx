@@ -49,23 +49,23 @@ BufferDelayPrediction::BufferDelayPrediction()
 
 void BufferDelayPrediction::CreatePortsAndControls()
 {
-	unsigned portSize = mConfig.GetBufferSize();
-	//std::cout << "portsize=" << portSize << std::endl;
+	//unsigned bufferSize = mConfig.GetBufferSize();
+	//std::cout << "buffersize=" << bufferSize << std::endl;
 	
 	for( int i = 0; i < mConfig.GetNumberOfInPorts(); ++i)
 	{
 		std::stringstream number("");
 		number << i;
 		AudioInBuffer* inBuf = new AudioInBuffer( "Input " + number.str(), this );
-		inBuf->SetSize( portSize );
-		inBuf->SetHop( portSize );
+		//inBuf->SetSize( bufferSize );
+		//inBuf->SetHop( bufferSize );
 		mInputBufs.push_back( inBuf );
+				
+		mInputControls.push_back( new InControl("Mix RMS " + number.str(), this) );
+		mInputControls.push_back( new InControl("Uncompressed RMS " + number.str(), this) );
 		
 		mOutputControls.push_back( new OutControl("Predicted Delay " + number.str(), this) );
 		mOutputControls.push_back( new OutControl("Quality " + number.str(), this) );
-		
-		mInputControls.push_back( new InControl("Mix RMS " + number.str(), this) );
-		mInputControls.push_back( new InControl("Uncompressed RMS " + number.str(), this) );
 	}
 }
 
@@ -98,10 +98,6 @@ bool BufferDelayPrediction::ConcreteConfigure(const ProcessingConfig& c)
 	CreatePortsAndControls();
 	return true;
 }
-
-namespace {
-
-} // anonymous
 
 bool BufferDelayPrediction::Do()
 {
