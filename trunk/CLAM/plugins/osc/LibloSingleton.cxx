@@ -32,8 +32,7 @@ const bool CLAM::LibloSingleton::IsPathRegistered(const unsigned int & port, con
 		std::list<OSCInstance>::const_iterator it;
 		for (it=_OSCInstances.begin();it!=_OSCInstances.end();it++)
 		{
-			OSCInstance instance=(*it);
-			if (instance.port==port and instance.path==path and instance.typespec==typespec)
+			if (it->port==port and it->path==path and it->typespec==typespec )
 				return true;
 		}
 		return false;
@@ -44,8 +43,7 @@ bool CLAM::LibloSingleton::RemoveRegisteredPath(const unsigned int & port, const
 		std::list<OSCInstance>::iterator it;
 		for (it=_OSCInstances.begin();it!=_OSCInstances.end();it++)
 		{
-			OSCInstance instance=(*it);
-			if (instance.port==port and instance.path==path and instance.typespec==typespec)
+			if (it->port==port and it->path==path and it->typespec==typespec)
 			{
 				lo_server_thread_del_method(GetServerThread(port),path.c_str(),typespec.c_str()); //delete it
 				_OSCInstances.erase(it);
