@@ -5,6 +5,7 @@
 #include <QtGui/QGraphicsItem>
 
 class NetworkCanvas;
+class QGraphicsProxyWidget;
 
 class ProcessingBox : public QGraphicsItem
 {
@@ -111,6 +112,7 @@ private:
 	NetworkCanvas * _canvas;
 	void * _processing; ///< Data model associated to the box
 	QWidget * _embeded; ///< Embeded widget displayed within the box
+	QGraphicsProxyWidget * _embededProxy; ///< Proxy to the embeded widget displayed within the box
 	QString _name;
 	bool _selected; ///< Whether the widget is selected or not
 	unsigned _nInports;
