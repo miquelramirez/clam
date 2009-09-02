@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans'; font-size:10pt;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="320,803" size="274,59" type="AbsoluteCoordinates2RelativeAngles"/>
+
+  <processing id="AudioBuffer2Stream" position="1026,1000" size="165,59" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioBuffer2Stream_1" position="1026,1095" size="180,59" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioBuffer2Stream_2" position="1029,1046" size="180,59" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioBuffer2Stream_3" position="1024,1139" size="180,59" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioMixer" position="272,1243" size="107,62" type="AudioMixer">
+    <NumberOfInPorts>1</NumberOfInPorts>
+    <DefaultGains size="1">1</DefaultGains>
+  </processing>
+
+  <processing id="AudioStream2Buffer" position="348,1329" size="165,58" type="AudioStream2Buffer">
+    <HopSize>512</HopSize>
+    <BufferSize>1024</BufferSize>
+  </processing>
+
+  <processing id="Azimuth" position="120,222" size="113,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>360</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="Binaural_Output" position="1647,839" size="139,111" type="AudioSink">
+    <NSinks>2</NSinks>
+  </processing>
+
+  <processing id="ControlPrinter" position="147,1164" size="148,87" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="ControlPrinter_1" position="333,1165" size="148,87" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="ControlPrinter_2" position="-19,876" size="163,139" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>3</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="Distance" position="221,223" size="113,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>1000</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>meters</UnitName>
+  </processing>
+
+  <processing id="Elevation" position="333,222" size="113,58" type="ControlSource">
+    <MinValue>-89.99</MinValue>
+    <MaxValue>89.99</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="ExponentForDistance" position="449,224" size="152,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>2</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>u</UnitName>
+  </processing>
+
+  <processing id="GainBecauseOfDistance" position="424,912" size="191,59" type="GainBecauseOfDistance">
+    <DistanceExponent>1.5</DistanceExponent>
+    <MinimumDistance>1</MinimumDistance>
+    <DistanceThreshold>0</DistanceThreshold>
+  </processing>
+
+  <processing id="HRTFDatabaseFetcher2" position="167,1026" size="184,94" type="HRTFDatabaseFetcher">
+    <FrameSize>512</FrameSize>
+    <HrtfDatabase>/home/natanael.olaiz/acustica/HRTFs/ircam1017L.hrtfs</HrtfDatabase>
+  </processing>
+
+  <processing id="IRSwappingDelay" position="386,998" size="148,62" type="IRSwappingDelay"/>
+
+  <processing id="IRSwappingDelay_1" position="383,1094" size="163,62" type="IRSwappingDelay"/>
+
+  <processing id="Init as 0" position="289,429" size="185,78" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>0</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Listener_Azimuth" position="1177,367" size="129,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>360</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="Listener_Elevation" position="1291,367" size="136,58" type="ControlSource">
+    <MinValue>-89.99</MinValue>
+    <MaxValue>89.99</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="Listener_Roll" position="1415,366" size="133,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>360</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>meters</UnitName>
+  </processing>
+
+  <processing id="LowLatencyConvolution" position="697,983" size="189,62" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="LowLatencyConvolution_1" position="691,1112" size="204,62" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="LowLatencyConvolution_2" position="688,1048" size="204,62" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="LowLatencyConvolution_3" position="688,1164" size="204,62" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="MyFFT" position="500,1276" size="75,59" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT" position="924,996" size="79,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_1" position="922,1093" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_2" position="921,1044" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_3" position="922,1144" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Spherical2CartesianControl" position="356,324" size="211,58" type="Spherical2CartesianControl"/>
+
+  <processing id="XFadeAndSwitch" position="717,872" size="141,94" type="XFadeAndSwitch"/>
+
+  <processing id="XFadeAndSwitch_1" position="713,1235" size="156,94" type="XFadeAndSwitch"/>
+
+  <processing id="mono_mic" position="-128,1201" size="128,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="output gain because of distance" position="668,786" size="242,87" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <port_connection>
+    <out>AudioBuffer2Stream.Audio stream</out>
+    <in>XFadeAndSwitch.Audio1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBuffer2Stream_1.Audio stream</out>
+    <in>XFadeAndSwitch_1.Audio1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBuffer2Stream_2.Audio stream</out>
+    <in>XFadeAndSwitch.Audio2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBuffer2Stream_3.Audio stream</out>
+    <in>XFadeAndSwitch_1.Audio2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioMixer.Output Audio</out>
+    <in>AudioStream2Buffer.Audio stream</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioStream2Buffer.Audio buffer</out>
+    <in>MyFFT.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>HRTFDatabaseFetcher2.ImpulseResponseL</out>
+    <in>IRSwappingDelay.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>HRTFDatabaseFetcher2.ImpulseResponseR</out>
+    <in>IRSwappingDelay_1.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay.Current IR</out>
+    <in>XFadeAndSwitch.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay.Current IR</out>
+    <in>LowLatencyConvolution.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay.Previous IR</out>
+    <in>XFadeAndSwitch.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay.Previous IR</out>
+    <in>LowLatencyConvolution_2.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_1.Current IR</out>
+    <in>LowLatencyConvolution_1.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_1.Current IR</out>
+    <in>XFadeAndSwitch_1.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_1.Previous IR</out>
+    <in>LowLatencyConvolution_3.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_1.Previous IR</out>
+    <in>XFadeAndSwitch_1.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution.Output</out>
+    <in>MyIFFT.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_1.Output</out>
+    <in>MyIFFT_1.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_2.Output</out>
+    <in>MyIFFT_2.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_3.Output</out>
+    <in>MyIFFT_3.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_2.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_3.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT.Audio Buffer</out>
+    <in>AudioBuffer2Stream.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_1.Audio Buffer</out>
+    <in>AudioBuffer2Stream_1.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_2.Audio Buffer</out>
+    <in>AudioBuffer2Stream_2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_3.Audio Buffer</out>
+    <in>AudioBuffer2Stream_3.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch.CrossFadedBuffer</out>
+    <in>Binaural_Output.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch_1.CrossFadedBuffer</out>
+    <in>Binaural_Output.2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>mono_mic.1</out>
+    <in>AudioMixer.Input 0</in>
+  </port_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
+    <in>HRTFDatabaseFetcher2.azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
+    <in>ControlPrinter_2.ControlPrinter_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
+    <in>HRTFDatabaseFetcher2.elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
+    <in>ControlPrinter_2.ControlPrinter_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>AbsoluteCoordinates2RelativeAngles.distance</out>
+    <in>GainBecauseOfDistance.input distance</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Azimuth.output</out>
+    <in>Spherical2CartesianControl.azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Distance.output</out>
+    <in>Spherical2CartesianControl.module</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Elevation.output</out>
+    <in>Spherical2CartesianControl.elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ExponentForDistance.output</out>
+    <in>output gain because of distance.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>GainBecauseOfDistance.calculated output gain</out>
+    <in>output gain because of distance.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>GainBecauseOfDistance.calculated output gain</out>
+    <in>AudioMixer.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>HRTFDatabaseFetcher2.chosen elevation</out>
+    <in>ControlPrinter.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>HRTFDatabaseFetcher2.chosen azimuth</out>
+    <in>ControlPrinter_1.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Init as 0.out</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Init as 0.out</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Init as 0.out</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Init as 0.out</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Init as 0.out</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Init as 0.out</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Init as 0.out</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Init as 0.out</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Init as 0.out</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Listener_Azimuth.output</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Listener_Elevation.output</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Listener_Roll.output</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Spherical2CartesianControl.x</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Spherical2CartesianControl.y</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Spherical2CartesianControl.z</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Z</in>
+  </control_connection>
+
+</network>
