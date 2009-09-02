@@ -128,6 +128,7 @@ void CLAM::VM::BarGraph::paintEvent(QPaintEvent * event)
 	float maxBarSize = height()-2*margin;
 	float zeroPos = margin + maxBarSize*maxValue/(maxValue-minValue);
 	QPainter painter(this);
+	painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 	if (barWidth<margin+5)
 	{
 		QPolygonF polygon;

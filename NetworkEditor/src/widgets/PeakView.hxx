@@ -47,12 +47,13 @@ public:
 		//std::cout << min << ":" << max << std::endl;
 		QVector<QPointF> lines;
 		QPainter painter(this);
+		painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
+		const double spectralRange = 11025;
 		painter.setPen(QPen(_pointColor,4));
-		
 		for (int i=0; i<size; i++)
 			// TODO: Take the scaling from the datasource
-			painter.drawPoint(QPointF(freq[i]*width()/11050+2, mag[i]*height()/min));
-		painter.scale(width()/11025.,height()/min);
+			painter.drawPoint(QPointF(freq[i]*width()/spectralRange, mag[i]*height()/min));
+		painter.scale(width()/spectralRange,height()/min);
 		painter.translate(10,0);
 		painter.drawLines(lines);
 		painter.setPen(QColor(0x77,0x77,0x77,0x77));
