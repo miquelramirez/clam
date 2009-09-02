@@ -1,9 +1,8 @@
 
 #include <CLAM/LadspaNetworkExporter.hxx>
 #include <CLAM/LadspaLibrary.hxx>
-
-
-CLAM_EXTERNAL_FILE_DATA(mono2binaural_osc_embededNetwork,"../example-data/mono2binaural_osc.clamnetwork")
+//CLAM_EXTERNAL_FILE_DATA(mono2binaural_osc_embededNetwork,"../example-data/mono2binaural_osc.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(mono2binaural_osc_embededNetwork,"../example-data/mono2binaural_controls2.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat2binaural_rotation_osc_embededNetwork,"../example-data/bformat2binaural_rotation_osc.clamnetwork")
 
 CLAM_EXTERNAL_FILE_DATA(mono2bformat_embededNetwork,"../example-data/mono2bformat_nofaders.clamnetwork")
@@ -74,9 +73,8 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"bformat2binaural_rotation_osc", "BFormat to binaural (HRTF) with headtracking",
 			"BarcelonaMedia-Audio", "GNU GPL");
 	static CLAM::LadspaNetworkExporter n204(library, mono2binaural_osc_embededNetwork, 204,
-			"mono2binaural_osc", "Mono to Binaural (HRTF) with headtracking",
+			"id_mono2binaural_headtracking", "Mono2Binaural_headtracking",
 			"BarcelonaMedia-Audio", "GNU GPL");
-
 /*
 	static CLAM::LadspaNetworkExporter n107(library, dummyControls_embededNetwork, 107,
 			"dummy_controls", "Dummy controls for azimuth - elevation",
