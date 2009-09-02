@@ -23,6 +23,7 @@
 #include "ProcessingBox.hxx"
 #include "Wires.hxx"
 #include <vector>
+#include <typeinfo>
 #include <algorithm>
 #include <CLAM/Assert.hxx>
 #include <CLAM/XMLStorage.hxx>
@@ -129,6 +130,10 @@ public:
 	}
 	void raise(ProcessingBox * toRaise)
 	{
+		std::vector<ProcessingBox*>::iterator search = std::find(_processings.begin(), _processings.end(), toRaise);
+		if (search==_processings.end()) return;
+		_processings.erase(search);
+		_processings.push_back(toRaise);
 		toRaise->raiseEmbededWidget();
 		toRaise->setZValue(++_maxZ);
 	}
@@ -211,6 +216,7 @@ protected:
 	{
 		viewport()->resize(event->size());
 		QGraphicsView::resizeEvent(event);
+		updateEmbededWidgets();
 	}
 	void recomputeSceneRect()
 	{
@@ -744,10 +750,11 @@ public: // Event Handlers
 	}
 	void mousePressEvent(QMouseEvent * event)
 	{
-		std::cout << "NC::mousePress" << std::endl;
 		if (event->button()!=Qt::LeftButton) return;
+		std::cout << "NC::mousePress" << std::endl;
 		QGraphicsView::mousePressEvent(event);
-		if (itemAt(event->pos())) return;
+		if (event->isAccepted()) return;
+		std::cout << "NC::mousePress background" << std::endl;
 		if (not (event->modifiers() & Qt::ControlModifier))
 			clearSelections();
 		_selectionDragOrigin=mapToScene(event->pos()).toPoint();
@@ -788,16 +795,11 @@ public: // Event Handlers
 
 	void contextMenuEvent(QContextMenuEvent * event)
 	{
-		if (_scene->itemAt(mapToScene(event->pos())))
-		{
-			QGraphicsView::contextMenuEvent(event);
-		}
-		else
-		{
-			QMenu menu(this);
-			canvasContextMenu(&menu, event);
-			menu.exec(event->globalPos());
-		}
+		QGraphicsView::contextMenuEvent(event);
+		if (event->isAccepted()) return;
+		QMenu menu(this);
+		canvasContextMenu(&menu, event);
+		menu.exec(event->globalPos());
 	}
 
 	void dragEnterEvent(QDragEnterEvent *event)
@@ -828,6 +830,7 @@ public: // Event Handlers
 	}
 	bool event(QEvent * event)
 	{
+		std::cout << "Event: " << typeid(*event).name() << std::endl;
 		if (event->type()!=QEvent::WhatsThis) return QGraphicsView::event(event);
 		QHelpEvent * helpEvent = (QHelpEvent *) event;
 		for (unsigned i = _processings.size(); i--; )

@@ -8,6 +8,7 @@
 #include <QtGui/QInputDialog>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtGui/QGraphicsSceneContextMenuEvent>
+#include <QtGui/QGraphicsProxyWidget>
 #include <CLAM/ProcessingFactory.hxx> 
 
 static std::string processingBoxRegionName(ProcessingBox::Region region)
@@ -55,7 +56,7 @@ static std::string networkCanvasDragMode(NetworkCanvas::DragStatus dragMode)
 
 ProcessingBox::~ProcessingBox()
 {
-	if (_embeded) delete _embeded;
+	embed(0);
 }
 
 ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
@@ -64,6 +65,7 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	: _canvas(parent)
 	, _processing(0)
 	, _embeded(0)
+	, _embededProxy(0)
 	, _name(name)
 	, _selected(false)
 	, _nInports(nInports)
@@ -88,11 +90,26 @@ void ProcessingBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
 void ProcessingBox::embed(QWidget * widget)
 {
-	if (_embeded) delete _embeded;
+	if (_embededProxy) delete _embededProxy;
+	else if (_embeded) delete _embeded;
 	_embeded = widget;
+	_embededProxy = 0;
 	if (!_embeded) return;
-	_embeded->setParent(_canvas);
-	_embeded->show();
+
+	if (true or _embeded->testAttribute(Qt::WA_PaintOnScreen))
+	{
+		// OpenGl or similar, cannot be proxied at least as Qt 4.5
+		std::cout <<  "OpenGL: " << typeid(*_embeded).name() << std::endl;
+		_embeded->setParent(_canvas);
+		_embeded->show();
+	}
+	else
+	{
+		std::cout <<  "Proxied: " << typeid(*_embeded).name() << std::endl;
+		_embeded->setParent(0);
+		_embededProxy = new QGraphicsProxyWidget(this);
+		_embededProxy->setWidget(_embeded);
+	}
 }
 
 void ProcessingBox::updateEmbededWidget()
@@ -102,8 +119,18 @@ void ProcessingBox::updateEmbededWidget()
 			controlOffset, portOffset + textHeight,
    			_size.width()-2*controlOffset, _size.height()-textHeight-2*portOffset);
 	embedZone.translate(_pos);
-	embedZone = _canvas->translatedRect(embedZone);
-	_embeded->setGeometry(embedZone);
+	if (_embededProxy)
+	{
+		_embededProxy->setGeometry(embedZone);
+		_embeded->setAutoFillBackground(false);
+//		_embeded->setStyleSheet("background-color: transparent;");
+		return;
+	}
+	else
+	{
+		embedZone = _canvas->translatedRect(embedZone);
+		_embeded->setGeometry(embedZone);
+	}
 }
 
 void ProcessingBox::paintFromParent(QPainter & painter)
@@ -485,19 +512,17 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 	QPoint scenePoint = event->scenePos().toPoint();
 	Region region = getRegion(scenePoint);
 	std::cout << "PB::contextMenu " << _name.toStdString() << " " << processingBoxRegionName(region) <<  std::endl;
-
 	switch (region)
 	{
-		case ProcessingBox::inportsRegion:
-		case ProcessingBox::outportsRegion:
-		case ProcessingBox::incontrolsRegion:
-		case ProcessingBox::outcontrolsRegion:
+		case inportsRegion:
+		case outportsRegion:
+		case incontrolsRegion:
+		case outcontrolsRegion:
 			_canvas->connectionContextMenu(&menu, event, this, region);
-			menu.exec(event->screenPos());
-			return;
-		case ProcessingBox::nameRegion:
-		case ProcessingBox::bodyRegion:
-		case ProcessingBox::resizeHandleRegion:
+			break;
+		case nameRegion:
+		case bodyRegion:
+		case resizeHandleRegion:
 			if (not isSelected())
 			{
 				std::cout << "updating selection on context menu" << std::endl;
@@ -507,9 +532,12 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 				update();
 			}
 			_canvas->processingContextMenu(&menu, event, this);
-			menu.exec(event->screenPos());
-		default:return;
+			break;
+		default:
+			event->ignore();
+			return;
 	}
+	menu.exec(event->screenPos());
 }
 
 void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
