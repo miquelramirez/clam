@@ -112,6 +112,7 @@ void CLAM::VM::ChordRanking::paintEvent(QPaintEvent * event)
 	std::sort(indexes.begin(), indexes.end(), IndirectSorter(_data));
 
 	QPainter painter(this);
+	painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 	unsigned barSize = painter.fontMetrics().height();
 	const unsigned margin=2;
 	unsigned barOffset = barSize+margin;

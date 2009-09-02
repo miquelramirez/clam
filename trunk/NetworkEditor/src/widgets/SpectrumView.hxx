@@ -40,6 +40,7 @@ public:
 		int size = _dataSource->nBins();
 
 		QPainter painter(this);
+		painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 //		painter.setRenderHint(QPainter::Antialiasing);
 		painter.scale(width(),height()/7.0);
 		painter.setPen(_lineColor);
