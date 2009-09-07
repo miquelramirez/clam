@@ -101,40 +101,45 @@ bool BufferDelayPrediction::ConcreteConfigure(const ProcessingConfig& c)
 
 bool BufferDelayPrediction::Do()
 {
-	unsigned int numInPorts = mConfig.GetNumberOfInPorts();
+	unsigned numInPorts = mConfig.GetNumberOfInPorts();
 
-	for (unsigned int i = 0; i < numInPorts; ++i)
+	for (unsigned i = 0; i < numInPorts; ++i)
 	{
-		TControlData mix_rms = mInputControls[i]->GetLastValue();
-		TControlData uncompressed_rms = mInputControls[i+1]->GetLastValue();
-
-		TControlData divider = uncompressed_rms * mix_rms;
-
+		// c= (the fft/complexconjugate buffer produced by the clamnetwork)
 		TData* first = mInputBufs[i]->GetData().GetBuffer().GetPtr();
 		unsigned buffer_size = mInputBufs[i]->GetData().GetSize();
 		TData* last = first + buffer_size;
 
+		// c/= sqrt 
+		TControlData mix_rms = mInputControls[i]->GetLastValue();
+		TControlData uncompressed_rms = mInputControls[i+1]->GetLastValue();
+
+		TData buffer_sqrt_sum(uncompressed_rms * mix_rms);
+		if (buffer_sqrt_sum == 0) buffer_sqrt_sum = 1;
+
+		std::transform(first, last, &buffer_sqrt_sum, first, std::divides<TData>());
+
+		// cmax=
 		TData* max_location_ptr = std::max_element(first, last);
-	    
 		TData max_location = buffer_size - (last - max_location_ptr);
 
 		TData max_value = *max_location_ptr;
-		TData max_value_normalized = (max_value / divider) * 100;
+		TData max_value_normalized = (max_value / buffer_sqrt_sum) * 100;
 
-		TData predicted_delay = (buffer_size + 1) + 1 - max_location;
+		// delayPrediction=
+		TData predicted_delay = (buffer_size + 1) - max_location;
 		TData predicted_delay_in_seconds = predicted_delay / mSampleRate;
 
-		std::cout << "max_location=" << max_location << " max_value=" << max_value 
-				  << " predicted_delay=" << predicted_delay << " in_seconds=" << predicted_delay_in_seconds
-				  << " max_value_normalized=" << max_value_normalized 
-				  << std::endl; 
+		//std::cout << "max_location=" << max_location << " max_value=" << max_value 
+		//		  << " predicted_delay=" << predicted_delay << " in_seconds=" << predicted_delay_in_seconds
+		//		  << " max_value_normalized=" << max_value_normalized 
+		//		  << std::endl; 
 
 		mOutputControls[i]->SendControl(static_cast<TControlData>(predicted_delay_in_seconds));
 		mOutputControls[i+1]->SendControl(static_cast<TControlData>(max_value_normalized));
-	
 	}
 
-	for (unsigned int i = 0; i < numInPorts; ++i)
+	for (unsigned i = 0; i < numInPorts; ++i)
 		mInputBufs[i]->Consume();
 
 	return true;
