@@ -33,8 +33,8 @@ static std::string processingBoxAction(ProcessingBox::ActionMode action)
 	{
 		case ProcessingBox::NoAction:        return "NoAction";
 		case ProcessingBox::Resizing:        return "Resizing";
-		case ProcessingBox::Moving:        return "Moving";
-		default:                               return "Which drag??";
+		case ProcessingBox::Moving:          return "Moving";
+		default:                             return "Which drag??";
 	}
 }
 
@@ -99,13 +99,13 @@ void ProcessingBox::embed(QWidget * widget)
 	if (true or _embeded->testAttribute(Qt::WA_PaintOnScreen))
 	{
 		// OpenGl or similar, cannot be proxied at least as Qt 4.5
-		std::cout <<  "OpenGL: " << typeid(*_embeded).name() << std::endl;
+		//std::cout <<  "OpenGL: " << typeid(*_embeded).name() << std::endl;
 		_embeded->setParent(_canvas);
 		_embeded->show();
 	}
 	else
 	{
-		std::cout <<  "Proxied: " << typeid(*_embeded).name() << std::endl;
+		//std::cout <<  "Proxied: " << typeid(*_embeded).name() << std::endl;
 		_embeded->setParent(0);
 		_embededProxy = new QGraphicsProxyWidget(this);
 		_embededProxy->setWidget(_embeded);
@@ -395,7 +395,7 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
 	QPoint scenePoint = event->scenePos().toPoint();
 	Region region = getRegion(scenePoint);
-	std::cout << "PB::mouseMove " << _name.toStdString() << " " << processingBoxRegionName(region) << " " << processingBoxAction(_actionMode) << std::endl;
+	//std::cout << "PB::mouseMove " << _name.toStdString() << " " << processingBoxRegionName(region) << " " << processingBoxAction(_actionMode) << std::endl;
 	if (region==noRegion)
 	{
 		event->ignore(); // Let other children to take it
@@ -466,7 +466,7 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 }
 void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-	std::cout << "PB::mouseMove " << _name.toStdString() << std::endl;
+	//std::cout << "PB::mouseMove " << _name.toStdString() << std::endl;
 	QPoint scenePoint = event->scenePos().toPoint();
 
 	if (_actionMode==Moving)
@@ -493,7 +493,7 @@ void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 }
 void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-	std::cout << "PB::mouseRelease " << _name.toStdString() << std::endl;
+	//std::cout << "PB::mouseRelease " << _name.toStdString() << std::endl;
 	if (_actionMode==Moving or _actionMode==Resizing)
 	{
 		_canvas->setCursor(Qt::ArrowCursor);
@@ -502,7 +502,7 @@ void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 }
 void ProcessingBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
-	std::cout << "PB::mouseDoubleClick " << _name.toStdString() << std::endl;
+	//std::cout << "PB::mouseDoubleClick " << _name.toStdString() << std::endl;
 	QPoint point = event->scenePos().toPoint();
 	doubleClicking(point);
 }
@@ -511,7 +511,7 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 	QMenu menu(_canvas);
 	QPoint scenePoint = event->scenePos().toPoint();
 	Region region = getRegion(scenePoint);
-	std::cout << "PB::contextMenu " << _name.toStdString() << " " << processingBoxRegionName(region) <<  std::endl;
+	//std::cout << "PB::contextMenu " << _name.toStdString() << " " << processingBoxRegionName(region) <<  std::endl;
 	switch (region)
 	{
 		case inportsRegion:
@@ -525,7 +525,7 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 		case resizeHandleRegion:
 			if (not isSelected())
 			{
-				std::cout << "updating selection on context menu" << std::endl;
+				//std::cout << "updating selection on context menu" << std::endl;
 				if (! (event->modifiers() & Qt::ControlModifier) )
 					_canvas->clearSelections();
 				select();
