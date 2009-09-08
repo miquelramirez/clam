@@ -22,6 +22,7 @@
 #include <QtCore/QTextStream>
 #include "ProcessingBox.hxx"
 #include "Wires.hxx"
+#include "TextBox.hxx"
 #include <vector>
 #include <typeinfo>
 #include <algorithm>
@@ -34,6 +35,7 @@
 #include <QtGui/QResizeEvent>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtGui/QPainter>
+#include <QtGui/QPlainTextEdit>
 
 class NetworkCanvas : public QGraphicsView
 {
@@ -97,7 +99,7 @@ public:
 		_deleteSelectedAction = new QAction(QIcon(":/icons/images/editdelete.png"),tr("Delete"), this);
 		_deleteSelectedAction->setShortcut(QKeySequence(tr("Del")));
 		addAction(_deleteSelectedAction);
-		connect(_deleteSelectedAction, SIGNAL(triggered()), this, SLOT(removeSelectedProcessings()));
+		connect(_deleteSelectedAction, SIGNAL(triggered()), this, SLOT(removeSelection()));
 
 		_selectAllAction = new QAction(tr("Select all"), this);
 		_selectAllAction->setShortcut(QKeySequence(tr("Ctrl+A")));
@@ -109,7 +111,7 @@ public:
 		addAction(_clearSelectionAction);
 		connect(_clearSelectionAction, SIGNAL(triggered()), this, SLOT(onClearSelections()));
 	}
-	
+
 	void setGreenColorsForBoxes()
 	{
 		_colorBoxFrameText = QColor(0xff,0xff,0xff);
@@ -151,6 +153,9 @@ public:
 		for (unsigned i = 0; i<_processings.size(); i++)
 			delete _processings[i];
 		_processings.clear();
+		for (unsigned i = 0; i<_textBoxes.size(); i++)
+			delete _textBoxes[i];
+		_textBoxes.clear();
 		update();
 		_maxZ=0;
 	}
@@ -369,11 +374,15 @@ public: // Actions
 		setCursor(Qt::ArrowCursor);
 		for (unsigned i=0; i<_processings.size(); i++)
 			_processings[i]->deselect();
+		for (unsigned i=0; i<_textBoxes.size(); i++)
+			_textBoxes[i]->deselect();
 	}
 	void selectAll()
 	{
 		for (unsigned i=0; i<_processings.size(); i++)
 			_processings[i]->select();
+		for (unsigned i=0; i<_textBoxes.size(); i++)
+			_textBoxes[i]->select();
 	}
 	void startMovingSelected(const QPoint& point)
 	{
@@ -385,6 +394,11 @@ public: // Actions
 			if (!_processings[i]->isSelected()) continue;
 			_processings[i]->startMoving(point);
 		}
+		for (unsigned i=0; i<_textBoxes.size(); i++)
+		{
+			if (!_textBoxes[i]->isSelected()) continue;
+			_textBoxes[i]->startMoving(point);
+		}
 	}
 	void keepMovingSelected(const QPoint& delta)
 	{
@@ -394,6 +408,12 @@ public: // Actions
 			if (!_processings[i]->isSelected()) continue;
 			_processings[i]->keepMoving(delta);
 		}
+		for (unsigned i=0; i<_textBoxes.size(); i++)
+		{
+			if (!_textBoxes[i]->isSelected()) continue;
+			_textBoxes[i]->keepMoving(delta);
+		}
+		
 	}
 	void stopMoving()
 	{
@@ -479,13 +499,20 @@ private slots:
 		selectAll();
 		update();
 	}
-	void removeSelectedProcessings()
+	void removeSelection()
 	{
-		std::vector<ProcessingBox *> toRemove;
+		std::vector<ProcessingBox *> toRemoveP;
 		for (unsigned i=0; i<_processings.size(); i++)
-			if (_processings[i]->isSelected()) toRemove.push_back(_processings[i]) ;
-		for (unsigned i=0; i<toRemove.size(); i++)
-			removeProcessing( toRemove[i] );
+			if (_processings[i]->isSelected()) toRemoveP.push_back(_processings[i]) ;
+		for (unsigned i=0; i<toRemoveP.size(); i++)
+			removeProcessing( toRemoveP[i] );
+
+		std::vector<TextBox *> toRemoveT;
+		for (unsigned i=0; i<_textBoxes.size(); i++)
+			if (_textBoxes[i]->isSelected()) toRemoveT.push_back(_textBoxes[i]) ;
+		for (unsigned i=0; i<toRemoveT.size(); i++)
+			removeTextBox( toRemoveT[i] );
+
 		update();
 	}
 public:
@@ -531,6 +558,12 @@ public:
 		}
 		delete processing;
 		_processings.erase(std::find(_processings.begin(), _processings.end(), processing));
+	}
+	void removeTextBox(TextBox * textBox)
+	{
+		delete textBox;
+		_textBoxes.erase(std::find(_textBoxes.begin(), _textBoxes.end(), textBox));
+		markAsChanged();
 	}
 	void zoom(int steps)
 	{
@@ -672,6 +705,7 @@ public:
 	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
+	virtual void editingTextBox(TextBox * textbox, const QPoint& point=QPoint(0,0)) = 0;
 	virtual bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
 	virtual bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
 	virtual bool networkAddPortConnection(const QString & outlet, const QString & inlet) = 0;
@@ -731,7 +765,7 @@ public: // Event Handlers
 
 	void mouseMoveEvent(QMouseEvent * event)
 	{
-		std::cout << "NC::mouseMove" << std::endl;
+		//std::cout << "NC::mouseMove" << std::endl;
 		_dragPoint = mapToScene(event->pos()).toPoint();
 
 		setToolTip(0);
@@ -746,31 +780,34 @@ public: // Event Handlers
 			_processings[i]->hover(mapToScene(event->pos()).toPoint());
 		_tooltipPos=_dragPoint;
 		update();
-		std::cout << "NC::mouseMove done" << std::endl;
+		//std::cout << "NC::mouseMove done" << std::endl;
 	}
 	void mousePressEvent(QMouseEvent * event)
 	{
 		if (event->button()!=Qt::LeftButton) return;
-		std::cout << "NC::mousePress" << std::endl;
+		//std::cout << "NC::mousePress" << std::endl;
 		QGraphicsView::mousePressEvent(event);
 		if (event->isAccepted()) return;
-		std::cout << "NC::mousePress background" << std::endl;
+		//std::cout << "NC::mousePress background" << std::endl;
 		if (not (event->modifiers() & Qt::ControlModifier))
 			clearSelections();
 		_selectionDragOrigin=mapToScene(event->pos()).toPoint();
 		startDrag(SelectionDrag,0,0);
 		update();
-		std::cout << "NC::mousePress done" << std::endl;
+		//std::cout << "NC::mousePress done" << std::endl;
 	}
 	void mouseReleaseEvent(QMouseEvent * event)
 	{
-		std::cout << "NC::mouseRelease" << std::endl;
+		//std::cout << "NC::mouseRelease" << std::endl;
 		if (_dragStatus == SelectionDrag)
 		{
 			QRect selectionBox (_selectionDragOrigin, _dragPoint);
 			for (unsigned i = _processings.size(); i--; )
 				if (selectionBox.contains(QRect(_processings[i]->position(),_processings[i]->size())))
 					_processings[i]->select();
+			for (unsigned i = _textBoxes.size(); i--; )
+				if (selectionBox.contains(QRect(_textBoxes[i]->pos().toPoint(), _textBoxes[i]->boundingRect().size().toSize())))
+					_textBoxes[i]->select();
 		}
 		if (_dragStatus == MoveDrag)
 		{
@@ -783,7 +820,7 @@ public: // Event Handlers
 			processingBox->endWireDrag(scenePointF.toPoint());
 		_dragStatus=NoDrag;
 		update();
-		std::cout << "NC::mouseRelease done" << std::endl;
+		//std::cout << "NC::mouseRelease done" << std::endl;
 	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
@@ -830,7 +867,7 @@ public: // Event Handlers
 	}
 	bool event(QEvent * event)
 	{
-		std::cout << "Event: " << typeid(*event).name() << std::endl;
+		//std::cout << "Event: " << typeid(*event).name() << std::endl;
 		if (event->type()!=QEvent::WhatsThis) return QGraphicsView::event(event);
 		QHelpEvent * helpEvent = (QHelpEvent *) event;
 		for (unsigned i = _processings.size(); i--; )
@@ -889,6 +926,7 @@ public: // Event Handlers
 	}
 	
 protected:
+	std::vector<TextBox *> _textBoxes;
 	std::vector<ProcessingBox *> _processings;
 	std::vector<PortWire *> _portWires;
 	std::vector<ControlWire *> _controlWires;
@@ -968,6 +1006,11 @@ public:
 		_newProcessingAction->setShortcut(QKeySequence(tr("Ctrl+Space")));
 		addAction(_newProcessingAction);
 		connect(_newProcessingAction, SIGNAL(triggered()), this, SLOT(onNewProcessing()));
+
+		_newTextBoxAction = new QAction(tr("&New Text Box"), this);
+		_newTextBoxAction->setShortcut(QKeySequence(tr("Ctrl+t")));
+		addAction(_newTextBoxAction);
+		connect(_newTextBoxAction, SIGNAL(triggered()), this, SLOT(onNewTextBox()));
 
 		_copySelectionAction = new QAction(QIcon(":/icons/images/editcopy.png"), tr("&Copy"), this);
 		_copySelectionAction->setShortcut(QKeySequence(tr("Ctrl+C")));
@@ -1737,6 +1780,41 @@ private slots:
 		}
 		addProcessing(point, type);
 	}
+	void editingTextBox(TextBox * textbox, const QPoint& point=QPoint(0,0))
+	{
+		QDialog dialog;
+		dialog.setWindowTitle(tr("Adding text box."));
+		QVBoxLayout * layout = new QVBoxLayout(&dialog);
+
+		QPlainTextEdit * plainText = new QPlainTextEdit(&dialog);
+		layout->addWidget(plainText);
+
+		if(textbox) plainText->setPlainText(textbox->toPlainText());
+
+		QDialogButtonBox * buttons = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+		connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
+		connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
+		layout->addWidget(buttons);
+		int result = dialog.exec();
+		this->activateWindow();
+		if (result==QDialog::Rejected) return;
+		
+		if(!textbox)
+		{
+			textbox = new TextBox(this);
+			_scene->addItem(textbox);
+			textbox->setPos(point);
+			_textBoxes.push_back(textbox);
+		}
+		textbox->setText(plainText->toPlainText());
+		markAsChanged();
+	}
+	void onNewTextBox()
+	{
+		TextBox * textbox = 0;
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		editingTextBox(textbox, point);
+	}
 
 	void onOpenFileWithExternalApplication()
 	{
@@ -1938,6 +2016,8 @@ private:
 		menu->addAction(_pasteSelectionAction);
 		_newProcessingAction->setData(point);
 		menu->addAction(_newProcessingAction);
+		_newTextBoxAction->setData(point);
+		menu->addAction(_newTextBoxAction);
 	}
 
 	virtual QIcon processingIcon(ProcessingBox * processingBox)
@@ -1955,6 +2035,7 @@ private:
 	}
 
 protected:
+	QAction * _newTextBoxAction;
 	QAction * _newProcessingAction;
 	QAction * _copySelectionAction;
 	QAction * _cutSelectionAction;
