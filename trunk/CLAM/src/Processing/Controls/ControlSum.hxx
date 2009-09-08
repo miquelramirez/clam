@@ -56,6 +56,8 @@ class ControlSum : public Processing
 		ControlSum();
 		ControlSum( const ControlSumConfig& cfg );
 
+		void InControlCallback(const TControlData & value);
+
 		bool ConcreteConfigure( const ProcessingConfig& cfg ); 
 
 		const ProcessingConfig& GetConfig() const { return mConfig; }

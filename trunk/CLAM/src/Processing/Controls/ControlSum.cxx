@@ -22,8 +22,8 @@ void ControlSumConfig::DefaultInit()
 }
 
 ControlSum::ControlSum()
-	: mInOperator1( "Operator 1", this )
-	, mInOperator2( "Operator 2", this )
+	: mInOperator1( "Operator 1", this , &ControlSum::InControlCallback )
+	, mInOperator2( "Operator 2", this , &ControlSum::InControlCallback )
 	, mOutControl( "Sum", this )
 {
 	Configure( mConfig );	
@@ -44,11 +44,15 @@ bool ControlSum::ConcreteConfigure( const ProcessingConfig& cfg )
 	return true; 		
 }
 
-bool ControlSum::Do()
+void ControlSum::InControlCallback(const TControlData & value)
 {
 	TControlData op1 = mInOperator1.GetLastValue();
 	TControlData op2 = mInOperator2.GetLastValue();
 	mOutControl.SendControl(op1+op2);
+}
+
+bool ControlSum::Do()
+{
 	return true;
 }
 }
