@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <functional>
 #include <cmath>
+#include <iterator>
 
 namespace CLAM
 {
@@ -99,6 +100,30 @@ bool BufferDelayPrediction::ConcreteConfigure(const ProcessingConfig& c)
 	return true;
 }
 
+namespace {
+
+// std::transform operates on 2 ranges, not a range and a value
+void normalize(TData* first, TData* last, TData div)
+{
+	for (; first != last; ++first)
+		*first = *first / (div == 0 ? 1 : div);
+}
+
+// if we need the above generalized
+template<typename InputIterator1, typename InputIterator2, typename Value, 
+		 typename OutputIterator, typename BinaryOperation>
+OutputIterator
+_transform(InputIterator1 first1, InputIterator1 last1, Value value, 
+		  OutputIterator result, BinaryOperation binary_op)
+{
+	for (; first1 != last1; ++first1, ++result)
+		result = binary_op(*first1, value);
+	return result;
+}
+
+
+}
+
 bool BufferDelayPrediction::Do()
 {
 	unsigned numInPorts = mConfig.GetNumberOfInPorts();
@@ -115,9 +140,7 @@ bool BufferDelayPrediction::Do()
 		TControlData uncompressed_rms = mInputControls[i+1]->GetLastValue();
 
 		TData buffer_sqrt_sum(uncompressed_rms * mix_rms);
-		if (buffer_sqrt_sum == 0) buffer_sqrt_sum = 1;
-
-		std::transform(first, last, &buffer_sqrt_sum, first, std::divides<TData>());
+		normalize(first, last, buffer_sqrt_sum);
 
 		// cmax=
 		TData* max_location_ptr = std::max_element(first, last);
@@ -127,15 +150,22 @@ bool BufferDelayPrediction::Do()
 		TData max_value_normalized = (max_value / buffer_sqrt_sum) * 100;
 
 		// delayPrediction=
-		TData predicted_delay = (buffer_size + 1) - max_location;
+		TData predicted_delay = (buffer_size  /*+ 1*/) - max_location;
 		TData predicted_delay_in_seconds = predicted_delay / mSampleRate;
 
 		//std::cout << "max_location=" << max_location << " max_value=" << max_value 
 		//		  << " predicted_delay=" << predicted_delay << " in_seconds=" << predicted_delay_in_seconds
 		//		  << " max_value_normalized=" << max_value_normalized 
+		//		  << " buffer_sqrt_sum=" << buffer_sqrt_sum 
+		//		  << " mix_rms=" << mix_rms 
+		//		  << " uncompressed_rms=" << uncompressed_rms 
+		//		  //<< " buffer="
 		//		  << std::endl; 
 
-		mOutputControls[i]->SendControl(static_cast<TControlData>(predicted_delay_in_seconds));
+		//std::copy(first, last, std::ostream_iterator<TData>(std::cout, " "));
+		//std::cout << std::endl;
+
+		mOutputControls[i]->SendControl(static_cast<TControlData>(predicted_delay));
 		mOutputControls[i+1]->SendControl(static_cast<TControlData>(max_value_normalized));
 	}
 
