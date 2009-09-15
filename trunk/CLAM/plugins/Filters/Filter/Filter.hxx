@@ -116,7 +116,7 @@ namespace CLAM {
 			
 				//IIR
   				for (unsigned k=1;k<y_k;k++)
-  					outb[i] -= mA[k].GetLastValue()*y[k];
+  					outb[i] -= mA[k].GetLastValue()*y[k-1];
  				outb[i] /= a0;
 
 
