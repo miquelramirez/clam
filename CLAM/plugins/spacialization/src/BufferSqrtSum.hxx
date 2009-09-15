@@ -28,6 +28,7 @@
 
 #include <functional>
 #include <algorithm>
+#include <iterator>
 #include <numeric>
 #include <cmath>
 
@@ -62,6 +63,10 @@ public:
 		
 		TData sum = std::accumulate(first, last, static_cast<TData>(0));
 		TData result = std::sqrt(sum);
+		
+		//std::cout << "buffer=" << std::endl;
+		//std::copy(first, last, std::ostream_iterator<TData>(std::cout, " "));
+		//std::cout << std::endl;
 
 		_outputControl.SendControl(static_cast<TControlData>(result));
 

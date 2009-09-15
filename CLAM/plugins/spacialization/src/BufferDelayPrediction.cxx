@@ -43,6 +43,7 @@ namespace
 
 BufferDelayPrediction::BufferDelayPrediction()
 	: mSampleRate(48000.)
+	, mBufferNr(0)
 {
 	Configure( mConfig );
 	mSampleRate = mConfig.GetSampleRate();
@@ -100,77 +101,77 @@ bool BufferDelayPrediction::ConcreteConfigure(const ProcessingConfig& c)
 	return true;
 }
 
-namespace {
-
-// std::transform operates on 2 ranges, not a range and a value
-void normalize(TData* first, TData* last, TData div)
-{
-	for (; first != last; ++first)
-		*first = *first / (div == 0 ? 1 : div);
-}
-
-// if we need the above generalized
-template<typename InputIterator1, typename InputIterator2, typename Value, 
-		 typename OutputIterator, typename BinaryOperation>
-OutputIterator
-_transform(InputIterator1 first1, InputIterator1 last1, Value value, 
-		  OutputIterator result, BinaryOperation binary_op)
-{
-	for (; first1 != last1; ++first1, ++result)
-		result = binary_op(*first1, value);
-	return result;
-}
-
-
-}
-
 bool BufferDelayPrediction::Do()
 {
 	unsigned numInPorts = mConfig.GetNumberOfInPorts();
 
 	for (unsigned i = 0; i < numInPorts; ++i)
 	{
-		// c= (the fft/complexconjugate buffer produced by the clamnetwork)
-		TData* first = mInputBufs[i]->GetData().GetBuffer().GetPtr();
 		unsigned buffer_size = mInputBufs[i]->GetData().GetSize();
+		std::vector<TData> out(buffer_size);
+		
+		TData* first = mInputBufs[i]->GetData().GetBuffer().GetPtr();
+		
+		std::copy(first, first + buffer_size, out.begin());
+
+		// c= (the fft/complexconjugate buffer produced by the clamnetwork)
+		first = &out[0];
 		TData* last = first + buffer_size;
 
-		// c/= sqrt 
+		// c/= sqrt (dont need to normalize the whole buffer)
 		TControlData mix_rms = mInputControls[i]->GetLastValue();
 		TControlData uncompressed_rms = mInputControls[i+1]->GetLastValue();
 
 		TData buffer_sqrt_sum(uncompressed_rms * mix_rms);
-		normalize(first, last, buffer_sqrt_sum);
 
 		// cmax=
 		TData* max_location_ptr = std::max_element(first, last);
 		TData max_location = buffer_size - (last - max_location_ptr);
-
 		TData max_value = *max_location_ptr;
-		TData max_value_normalized = (max_value / buffer_sqrt_sum) * 100;
+
+		// just divide the one max to get a normalized one 
+		TData max_value_normalized = 
+			(max_value / (buffer_sqrt_sum == 0 ? 1 : buffer_sqrt_sum)) * 100;
+		TData quality = round(max_value_normalized * 10); // why * 10 ??
 
 		// delayPrediction=
 		TData predicted_delay = (buffer_size  /*+ 1*/) - max_location;
-		TData predicted_delay_in_seconds = predicted_delay / mSampleRate;
 
-		//std::cout << "max_location=" << max_location << " max_value=" << max_value 
-		//		  << " predicted_delay=" << predicted_delay << " in_seconds=" << predicted_delay_in_seconds
-		//		  << " max_value_normalized=" << max_value_normalized 
-		//		  << " buffer_sqrt_sum=" << buffer_sqrt_sum 
-		//		  << " mix_rms=" << mix_rms 
-		//		  << " uncompressed_rms=" << uncompressed_rms 
-		//		  //<< " buffer="
-		//		  << std::endl; 
+		if (predicted_delay == buffer_size)
+			predicted_delay = 0;
+
+		TData predicted_delay_in_msec = (predicted_delay / mSampleRate);
+
+		std::cout << "max_location=" << max_location 
+				  << " max_value=" << max_value 
+				  << " max_value_normalized=" << max_value_normalized 
+				  << " predicted_delay=" << predicted_delay 
+				  << " in_msec=" << predicted_delay_in_msec
+				  << " quality=" << quality 
+				  << " mix_rms=" << mix_rms 
+				  << " uncompressed_rms=" << uncompressed_rms 
+				  << " buffer_sqrt_sum=" << buffer_sqrt_sum 
+				  << " buffer_size=" << buffer_size
+				  << " buffer_nr=" << mBufferNr
+				  //<< " max=" << out[1012]
+				  << " buffer="
+				  << std::endl; 
 
 		//std::copy(first, last, std::ostream_iterator<TData>(std::cout, " "));
 		//std::cout << std::endl;
+	
+		if (quality > mConfig.GetQualityThreshold())
+		{
+			mOutputControls[i]->SendControl(static_cast<TControlData>(predicted_delay));
+			mOutputControls[i+1]->SendControl(static_cast<TControlData>(quality));
+		}
 
-		mOutputControls[i]->SendControl(static_cast<TControlData>(predicted_delay));
-		mOutputControls[i+1]->SendControl(static_cast<TControlData>(max_value_normalized));
 	}
 
 	for (unsigned i = 0; i < numInPorts; ++i)
 		mInputBufs[i]->Consume();
+
+	++mBufferNr;
 
 	return true;
 }

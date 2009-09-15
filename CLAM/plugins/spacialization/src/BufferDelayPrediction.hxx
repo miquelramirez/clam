@@ -41,7 +41,7 @@ class BufferDelayPredictionConfig : public ProcessingConfig
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (BufferDelayPredictionConfig , 3, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, int, NumberOfInPorts);
-	DYN_ATTRIBUTE (1, public, int, Quality);
+	DYN_ATTRIBUTE (1, public, int, QualityThreshold);
 	DYN_ATTRIBUTE (2, public, int, SampleRate);
 	//DYN_ATTRIBUTE (2, public, int, BufferSize);
 
@@ -51,7 +51,7 @@ protected:
 		AddAll();
 		UpdateData();
 		SetNumberOfInPorts(1);
-		SetQuality(40);
+		SetQualityThreshold(90);
 		SetSampleRate(48000.0);
 		//SetBufferSize(1024);
 	}
@@ -63,6 +63,7 @@ class BufferDelayPrediction: public Processing
 private:
 	BufferDelayPredictionConfig mConfig;
 	float mSampleRate;
+	int mBufferNr; // debug only
 
 	typedef InPort<Audio> AudioInBuffer;
 
