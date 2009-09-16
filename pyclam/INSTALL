@@ -3,6 +3,19 @@
 Note: This is still experimental. By now only tested in linux, but all the tools are cross-platform and should also work in mac and windows in a similar way.
 
 === Tools (assuming a working clam dev environment) ===
+
+Ubuntu hardy (simplest way):
+* Install from standard repos: libboost-python-dev and libboost-python1.34.1
+* This bunch of packages:
+gccxml 0.9: http://ftp.zcu.cz/pub/linux/debian/pool/main/g/gccxml/gccxml_0.9.0+cvs20080525-1_i386.deb
+pygccxml: http://ppa.launchpad.net/eudoxos/ppa/ubuntu/pool/main/p/pygccxml/python-pygccxml_1.0.0-2_i386.deb
+libboost-python-indexing-suite-v2: http://ppa.launchpad.net/eudoxos/ppa/ubuntu/pool/main/p/py++/libboost-python-indexing-v2_1.0.0-2_i386.deb
+py++: http://ppa.launchpad.net/eudoxos/ppa/ubuntu/pool/main/p/py++/python-py++_1.0.0-2_all.deb
+
+
+
+
+Detailed explanation / manual procedure (old):
 # Install Boost.Python. At debian based distros packages named libboost-python-dev and libboost-python1.34.1
 # Download and install[1] Py++ (no package available, at least at standard ubuntu repos[2])
   Download Py++-0.9.5.zip from https://sourceforge.net/project/showfiles.php?group_id=118209&package_id=157697
