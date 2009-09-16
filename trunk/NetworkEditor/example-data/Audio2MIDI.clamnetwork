@@ -135,16 +135,4 @@ p, li { white-space: pre-wrap; }
     <in>MIDISink.MIDI Message In</in>
   </control_connection>
 
-  <information>
-    <x>176</x>
-    <y>310</y>
-    <text>este es un texto de prueba</text>
-  </information>
-
-  <information>
-    <x>291</x>
-    <y>29</y>
-    <text>hola mundo!</text>
-  </information>
-
 </network>
