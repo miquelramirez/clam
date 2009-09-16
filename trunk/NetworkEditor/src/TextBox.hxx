@@ -5,6 +5,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsTextItem>
 #include <QGraphicsSceneMouseEvent>
+#include <CLAM/BaseNetwork.hxx>
 
 class NetworkCanvas;
 
@@ -21,6 +22,7 @@ class TextBox : public QGraphicsTextItem
 	QPoint _originalPosition;
 	bool _selected;
 	NetworkCanvas * _canvas;
+	CLAM::InformationText * _informationText;
 
 public:
 	TextBox(NetworkCanvas * canvas=0);
@@ -33,6 +35,8 @@ public:
 	void keepMoving(const QPoint & delta);
 	void move(const QPoint & point);
 
+ 	void setInformationText(CLAM::InformationText * informationText);
+	CLAM::InformationText * getInformationText();
 	void startMoving(const QPoint& scenePoint);
 	void setText(const QString& text);
 

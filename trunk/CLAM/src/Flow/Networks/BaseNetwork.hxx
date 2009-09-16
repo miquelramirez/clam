@@ -40,6 +40,16 @@
 
 namespace CLAM
 {
+
+typedef struct sInformationText{
+
+	int x;
+	int y;
+	Text text;
+	sInformationText():x(0), y(0), text(""){}
+
+} InformationText;
+
 // abstract clase of a base Network
 class BaseNetwork : public Component
 {
@@ -54,6 +64,8 @@ public:
 
 	typedef std::vector<ControlSource*> ControlSources;
 	typedef std::vector<ControlSink*> ControlSinks;
+
+	typedef std::vector<InformationText*> InformationTexts;
 
 	typedef struct { int x, y, width, height; } Geometry;
 	typedef struct { Processing* processing; Geometry geometry; } ProcessingAndGeometry;
@@ -102,6 +114,15 @@ public:
 	virtual bool DisconnectPorts( const std::string &, const std::string & ) = 0;
 	virtual bool DisconnectControls( const std::string &, const std::string & ) = 0;
 
+	// accessors to text boxes
+	virtual void addInformationText(InformationText * informationText) = 0;
+	virtual void removeInformationText(InformationText * informationText) = 0;
+
+	virtual InformationTexts::iterator BeginInformationTexts() = 0;
+	virtual InformationTexts::iterator EndInformationTexts() = 0;
+	virtual InformationTexts::const_iterator BeginInformationTexts() const = 0;
+	virtual InformationTexts::const_iterator EndInformationTexts() const = 0;
+	
 	/**
 	 * Returns an string the full name of the unconnected inports.
 	 * Don't rely on the format because is subject to change.
@@ -185,5 +206,6 @@ protected:
 	//virtual const ConnectionsList GetControlsConnections()=0;
 	//virtual void RefreshConnections() =0;
 };
+
 }
 #endif
