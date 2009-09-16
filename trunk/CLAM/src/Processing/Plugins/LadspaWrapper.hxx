@@ -27,7 +27,7 @@ private:
 	std::string _libraryFileName;
 
 	std::vector< AudioInPort* > _inputPorts;
-	std::vector< AudioOutPort* > outputPorts;
+	std::vector< AudioOutPort* > _outputPorts;
 
 	std::vector< FloatInControl* > _inputControls;
 	std::vector< FloatOutControl* > _outputControls;
