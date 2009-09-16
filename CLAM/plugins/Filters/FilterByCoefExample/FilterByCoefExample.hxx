@@ -54,12 +54,12 @@ namespace CLAM {
 		{
 			Configure( config );
 
-			unsigned N = 10; //filter order
+			unsigned N = 11; //filter order + 1
 			FilterConfig cfg;
 			cfg.SetAmountOfInputCoefficients(N);
 			mFilter.Configure( cfg );
 
-			//FIR band pass filter coefficients. Order 10.
+			//FIR band pass filter coefficients. Order 10. 11 coefficients.
 			TData b_k[] = {
 					0.0555,    0.0933,   -0.1187,   -0.2476,    0.0628,    0.3265,    0.0628,   -0.2476,   -0.1187,\
 					0.0933,    0.0555\
