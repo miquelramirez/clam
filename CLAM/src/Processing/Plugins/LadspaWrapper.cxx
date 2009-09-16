@@ -83,9 +83,11 @@ bool LadspaWrapper::Do()
 		SendFloatToOutControl(*this, i, _outputControlValues[i]);
 
 	for(unsigned int i=0;i<_inputPorts.size();i++)
+	{
 		 _inputPorts[i]->Consume();
-	for(unsigned int i=0;i<outputPorts.size();i++)
-		outputPorts[i]->Produce();
+	}
+	for(unsigned int i=0;i<_outputPorts.size();i++)
+		_outputPorts[i]->Produce();
 	return true;
 }
 bool LadspaWrapper::LoadLibraryFunction(const std::string& libraryFileName, unsigned index, const std::string& factoryKey)
@@ -119,9 +121,9 @@ void LadspaWrapper::RemovePortsAndControls()
 	_inputPorts.clear();
 
 	std::vector< AudioOutPort* >::iterator itOutPort;
-	for(itOutPort=outputPorts.begin(); itOutPort!=outputPorts.end(); itOutPort++)
+	for(itOutPort=_outputPorts.begin(); itOutPort!=_outputPorts.end(); itOutPort++)
 		delete *itOutPort;
-	outputPorts.clear();
+	_outputPorts.clear();
 
 	std::vector< FloatInControl* >::iterator itInControl;
 	for(itInControl=_inputControls.begin(); itInControl!=_inputControls.end(); itInControl++)
@@ -159,7 +161,7 @@ void LadspaWrapper::ConfigurePortsAndControls()
 		{
 			AudioOutPort * port = new AudioOutPort(_descriptor->PortNames[i],this );
 			port->SetSize( _bufferSize );
-			outputPorts.push_back(port);
+			_outputPorts.push_back(port);
 		}
 
 		// in control
@@ -223,7 +225,7 @@ void LadspaWrapper::DoUpdatePortsPointers()
 			if (LADSPA_IS_PORT_INPUT(portDescriptor)) 
 				_descriptor->connect_port(_instance, i, _inputPorts[inPortIndex++]->GetAudio().GetBuffer().GetPtr());
 			else
-				_descriptor->connect_port(_instance, i, outputPorts[outPortIndex++]->GetAudio().GetBuffer().GetPtr());
+				_descriptor->connect_port(_instance, i, _outputPorts[outPortIndex++]->GetAudio().GetBuffer().GetPtr());
 		}
 	}
 
