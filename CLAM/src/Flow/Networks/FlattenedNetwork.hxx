@@ -131,6 +131,15 @@ public:
 	ProcessingsMap::const_iterator BeginProcessings() const;
 	ProcessingsMap::const_iterator EndProcessings() const;
 
+	// accessors to txt boxes
+	void addInformationText(InformationText * informationText);
+	void removeInformationText(InformationText * informationText);
+
+	InformationTexts::iterator BeginInformationTexts();
+	InformationTexts::iterator EndInformationTexts();
+	InformationTexts::const_iterator BeginInformationTexts() const;
+	InformationTexts::const_iterator EndInformationTexts() const;
+
 	InPortBase & GetInPortByCompleteName( const std::string& ) const;
 	OutPortBase & GetOutPortByCompleteName( const std::string& ) const;
 	InControlBase & GetInControlByCompleteName( const std::string& ) const;
@@ -191,6 +200,7 @@ private:
 	ProcessingsMap _processings;
 	FlowControl* _flowControl;
 	NetworkPlayer* _player;
+	InformationTexts informationTexts;
 
 	// attributes for canvas copy & paste
 	mutable NamesSet _selectedProcessings;

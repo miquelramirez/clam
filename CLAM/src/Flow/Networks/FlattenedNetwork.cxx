@@ -26,6 +26,7 @@
 #include <algorithm>
 #include "ProcessingDefinitionAdapter.hxx"
 #include "ConnectionDefinitionAdapter.hxx"
+#include "InformationTextAdapter.hxx"
 #include "ProcessingFactory.hxx"
 #include "XmlStorageErr.hxx"
 #ifdef USE_LADSPA //TODO alway include it. move conditional code in LFactory.hxx
@@ -153,6 +154,15 @@ namespace CLAM
 				}
 			}
 		}
+
+		InformationTexts::const_iterator ibIt;
+		for(ibIt=BeginInformationTexts();ibIt!=EndInformationTexts();ibIt++)
+		{
+			InformationTextAdapter infoTextDefinition((*ibIt)->x, (*ibIt)->y, (*ibIt)->text);
+			XMLComponentAdapter xmlAdapter(infoTextDefinition, "information", true);
+			storage.Store(xmlAdapter);
+		}
+
 		_selectedProcessings.clear();
 		_processingsGeometries.clear();
 	}
@@ -236,6 +246,21 @@ namespace CLAM
 			if (not ConnectControls( fullOut, fullIn ))
 				throw XmlStorageErr(std::string("Unable to connect controls '")+fullOut+"->"+fullIn+".");
 		}
+
+		while(1)
+		{
+			InformationTextAdapter infoTextDefinition;
+			XMLComponentAdapter xmlAdapter(infoTextDefinition, "information", true);
+			if (not storage.Load(xmlAdapter)) break;
+			
+			InformationText *myInformationText=new InformationText();
+			myInformationText->x=infoTextDefinition.GetCoordX();
+			myInformationText->y=infoTextDefinition.GetCoordY();
+			myInformationText->text=infoTextDefinition.GetText();			
+
+			informationTexts.push_back(myInformationText);
+		}
+
 		_setPasteMode=false;
 //		OrderSinksAndSources(_processingsGeometries);
 	}
@@ -768,6 +793,44 @@ namespace CLAM
 	{
 		return _processings.end();
 	}
+
+	// accessors to text boxes
+
+	void FlattenedNetwork::addInformationText(InformationText * informationText)
+	{
+		informationTexts.push_back(informationText);
+	}
+
+	void FlattenedNetwork::removeInformationText(InformationText * informationText)
+	{
+		InformationTexts::iterator it = find(BeginInformationTexts(), EndInformationTexts(), informationText);
+	
+		if(it!=EndInformationTexts())
+			informationTexts.erase(it);
+		else
+			std::cerr << "Warning: Information Text Box does not exist.";
+	}
+
+	FlattenedNetwork::InformationTexts::iterator FlattenedNetwork::BeginInformationTexts()
+	{
+		return informationTexts.begin();
+	}
+	
+	FlattenedNetwork::InformationTexts::iterator FlattenedNetwork::EndInformationTexts()
+	{
+		return informationTexts.end();
+	}
+	
+	FlattenedNetwork::InformationTexts::const_iterator FlattenedNetwork::BeginInformationTexts() const
+	{
+		return informationTexts.begin();
+	}
+	
+	FlattenedNetwork::InformationTexts::const_iterator FlattenedNetwork::EndInformationTexts() const
+	{
+		return informationTexts.end();
+	}
+
 
 	FlattenedNetwork::NamesList  FlattenedNetwork::GetInPortsConnectedTo( const std::string & producer ) const
 	{		

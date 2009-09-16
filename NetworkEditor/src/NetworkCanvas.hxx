@@ -154,7 +154,10 @@ public:
 			delete _processings[i];
 		_processings.clear();
 		for (unsigned i = 0; i<_textBoxes.size(); i++)
+		{
+			networkRemoveTextBox(_textBoxes[i]->getInformationText());
 			delete _textBoxes[i];
+		}
 		_textBoxes.clear();
 		update();
 		_maxZ=0;
@@ -561,6 +564,7 @@ public:
 	}
 	void removeTextBox(TextBox * textBox)
 	{
+		networkRemoveTextBox(textBox->getInformationText());
 		delete textBox;
 		_textBoxes.erase(std::find(_textBoxes.begin(), _textBoxes.end(), textBox));
 		markAsChanged();
@@ -704,6 +708,7 @@ protected:
 public:
 	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
+	virtual void networkRemoveTextBox(CLAM::InformationText * textBox) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
 	virtual void editingTextBox(TextBox * textbox, const QPoint& point=QPoint(0,0)) = 0;
 	virtual bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
@@ -1387,6 +1392,11 @@ protected:
 		if (networkIsDummy()) return;
 		_network->RemoveProcessing(name);
 	}
+	virtual void networkRemoveTextBox(CLAM::InformationText * textBox)
+	{
+		if (networkIsDummy()) return;
+		_network->removeInformationText(textBox);
+	}
 
 public:
 	bool networkIsDummy() const
@@ -1405,6 +1415,15 @@ public:
 			const std::string & name = it->first;
 			CLAM::Processing * processing = it->second;
 			addProcessingBox( name.c_str(),  processing );
+		}
+		
+		CLAM::BaseNetwork::InformationTexts::iterator it2;
+		for (it2=_network->BeginInformationTexts(); it2!=_network->EndInformationTexts(); it2++)
+		{
+			TextBox *textBox=new TextBox(this);
+			_scene->addItem(textBox);
+			textBox->setInformationText(*it2);
+			_textBoxes.push_back(textBox);
 		}
 		refreshWires();
 	}
@@ -1799,14 +1818,22 @@ private slots:
 		this->activateWindow();
 		if (result==QDialog::Rejected) return;
 		
-		if(!textbox)
+		if(textbox==0) // new text box
 		{
+			CLAM::InformationText * informationText= new CLAM::InformationText();
+			informationText->x=point.x();
+			informationText->y=point.y();
+			informationText->text=plainText->toPlainText().toStdString();
+			_network->addInformationText(informationText);
 			textbox = new TextBox(this);
 			_scene->addItem(textbox);
-			textbox->setPos(point);
+			textbox->setInformationText(informationText);
 			_textBoxes.push_back(textbox);
 		}
-		textbox->setText(plainText->toPlainText());
+		else
+		{
+			textbox->setText(plainText->toPlainText());
+		}
 		markAsChanged();
 	}
 	void onNewTextBox()
