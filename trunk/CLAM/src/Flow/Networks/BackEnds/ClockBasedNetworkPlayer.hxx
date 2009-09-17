@@ -16,10 +16,6 @@ public:
 
 };
 
-static void foo()
-{
-	static ClockBasedNetworkPlayer foo;
-}
 } // namespace CLAM
 #endif
 
