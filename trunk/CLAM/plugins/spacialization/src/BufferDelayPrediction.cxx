@@ -122,7 +122,7 @@ bool BufferDelayPrediction::Do()
 		TControlData mix_rms = mInputControls[i]->GetLastValue();
 		TControlData uncompressed_rms = mInputControls[i+1]->GetLastValue();
 
-		TData buffer_sqrt_sum(uncompressed_rms * mix_rms);
+		TData buffer_sqrt_sum = uncompressed_rms * mix_rms;
 
 		// cmax=
 		TData* max_location_ptr = std::max_element(first, last);
@@ -141,7 +141,7 @@ bool BufferDelayPrediction::Do()
 			predicted_delay = 0;
 
 		TData predicted_delay_in_msec = (predicted_delay / mSampleRate);
-
+/*
 		std::cout << "max_location=" << max_location 
 				  << " max_value=" << max_value 
 				  << " max_value_normalized=" << max_value_normalized 
@@ -159,7 +159,7 @@ bool BufferDelayPrediction::Do()
 
 		//std::copy(first, last, std::ostream_iterator<TData>(std::cout, " "));
 		//std::cout << std::endl;
-	
+*/	
 		if (quality > mConfig.GetQualityThreshold())
 		{
 			mOutputControls[i]->SendControl(static_cast<TControlData>(predicted_delay));
