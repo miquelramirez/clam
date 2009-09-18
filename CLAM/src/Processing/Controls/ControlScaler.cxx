@@ -22,16 +22,16 @@ void ControlScalerConfig::DefaultInit()
 }
 
 ControlScaler::ControlScaler()
-	: mInControl( "Control In", this )
-	, mGainControl( "Gain Amount", this )
+	: mInControl( "Control In", this , &ControlScaler::InControlCallback )
+	, mGainControl( "Gain Amount", this , &ControlScaler::InControlCallback )
 	, mOutControl( "Control Out", this )
 {
 	Configure( mConfig );	
 }
 
 ControlScaler::ControlScaler( const ControlScalerConfig& cfg ) 
-	: mInControl( "Control In", this )
-	, mGainControl( "Gain Amount", this )
+	: mInControl( "Control In", this , &ControlScaler::InControlCallback )
+	, mGainControl( "Gain Amount", this , &ControlScaler::InControlCallback )
 	, mOutControl( "Control Out", this )
 { 
 	Configure( cfg );
@@ -43,12 +43,14 @@ bool ControlScaler::ConcreteConfigure( const ProcessingConfig& cfg )
 	mGainControl.DoControl(mConfig.GetAmount());
 	return true; 		
 }
-
-bool ControlScaler::Do()
+void ControlScaler::InControlCallback(const TControlData & value)
 {
 	TControlData in = mInControl.GetLastValue();
 	TControlData gain = mGainControl.GetLastValue();
 	mOutControl.SendControl(in * gain);
+}
+bool ControlScaler::Do()
+{
 	return true;
 }
 }
