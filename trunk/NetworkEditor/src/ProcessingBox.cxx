@@ -83,6 +83,14 @@ QRectF ProcessingBox::boundingRect() const
 {	
 	return QRectF(_pos.x(), _pos.y(), _size.width(), _size.height());
 }
+
+QPainterPath ProcessingBox::shape() const
+{
+	QPainterPath path;
+	path.addRect(boundingRect());
+	return path;
+}
+
 void ProcessingBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	paintFromParent(*painter);
