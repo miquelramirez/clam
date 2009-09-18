@@ -30,8 +30,8 @@ ControlSum::ControlSum()
 }
 
 ControlSum::ControlSum( const ControlSumConfig& cfg ) 
-	: mInOperator1( "Operator 1", this )
-	, mInOperator2( "Operator 2", this )
+	: mInOperator1( "Operator 1", this , &ControlSum::InControlCallback )
+	, mInOperator2( "Operator 2", this , &ControlSum::InControlCallback )
 	, mOutControl( "Sum", this )
 { 
 	Configure( cfg );

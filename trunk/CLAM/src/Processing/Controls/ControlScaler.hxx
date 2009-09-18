@@ -47,6 +47,7 @@ class ControlScaler : public Processing
 	FloatInControl mInControl;
 	FloatInControl mGainControl;
 	FloatOutControl mOutControl;
+	void InControlCallback(const TControlData & value);
 
 	public:
 

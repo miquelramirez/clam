@@ -47,16 +47,14 @@ class ControlSum : public Processing
 	FloatInControl mInOperator1;
 	FloatInControl mInOperator2;
 	FloatOutControl mOutControl;
+	void InControlCallback(const TControlData & value);
 
 	public:
 
 		const char *GetClassName() const { return "ControlSum"; }
 
-
 		ControlSum();
 		ControlSum( const ControlSumConfig& cfg );
-
-		void InControlCallback(const TControlData & value);
 
 		bool ConcreteConfigure( const ProcessingConfig& cfg ); 
 
