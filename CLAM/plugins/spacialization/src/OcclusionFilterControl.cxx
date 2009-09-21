@@ -28,3 +28,4 @@ static const char * metadata[] = {
 	};
 
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::OcclusionFilterControl> registratorOcclusionFilterControl(metadata);
+

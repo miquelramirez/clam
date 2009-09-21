@@ -80,3 +80,5 @@ removeConfig AudioStream2Buffer WindowType
 removeConfig AudioStream2Buffer DoHalfWindowShift
 
 addConfig ImpulseResponseloader IsBFormatFile 0
+
+addConfig OcclusionFilterControl GeometryFile ""
