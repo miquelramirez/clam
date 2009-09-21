@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
   <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
@@ -6,7 +7,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'DejaVu Sans'; font-size:10pt;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="AbsoluteCoordinates2RelativeAngles" position="569,136" size="267,59" type="AbsoluteCoordinates2RelativeAngles" />
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="569,136" size="267,59" type="AbsoluteCoordinates2RelativeAngles"/>
 
   <processing id="AudioAmplifier" position="4,445" size="126,59" type="AudioAmplifier">
     <MaxGain>1</MaxGain>
@@ -74,31 +75,19 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="MonoAudioFileReader" position="-387,438" size="169,59" type="MonoAudioFileReader">
-    <SourceFile />
+    <SourceFile></SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
 
-  <processing id="OcclusionFilterControl" position="711,660" size="171,59" type="OcclusionFilterControl">
+  <processing id="OcclusionFilterControl" position="711,660" size="178,59" type="OcclusionFilterControl">
     <DistanceExponent>1</DistanceExponent>
     <MinimumDistance>1</MinimumDistance>
     <DistanceThreshold>0</DistanceThreshold>
     <FadeInMs>300</FadeInMs>
     <MinCutoffFrequency>350</MinCutoffFrequency>
     <OcclusionGainFactor>0.5</OcclusionGainFactor>
-  <GeometryFile /></processing>
-
-  <processing id="RoomImpulseResponseSimulator" position="-148,87" size="243,94" type="RoomImpulseResponseSimulator">
-    <FrameSize>512</FrameSize>
-    <Model3DFile>entorns/salo_simplificat.dat</Model3DFile>
-    <GridDivisions>500</GridDivisions>
-    <NRays>1</NRays>
-    <NRebounds>1</NRebounds>
-    <IrLength>0.3</IrLength>
-    <Order>0</Order>
-    <ExtraOptions />
-    <SeparateDirectSoundAndReverb>1</SeparateDirectSoundAndReverb>
-    <SupressInitialDelay>0</SupressInitialDelay>
+    <GeometryFile>entorns/salo_simplificat.dat</GeometryFile>
   </processing>
 
   <processing id="Seek in-Control" position="-484,227" size="181,76" type="OutControlSender">
@@ -110,7 +99,7 @@ p, li { white-space: pre-wrap; }
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="Spherical2CartesianControl" position="552,443" size="208,59" type="Spherical2CartesianControl" />
+  <processing id="Spherical2CartesianControl" position="552,443" size="208,59" type="Spherical2CartesianControl"/>
 
   <processing id="amp" position="238,438" size="114,59" type="AudioAmplifier">
     <MaxGain>1</MaxGain>
@@ -169,7 +158,7 @@ p, li { white-space: pre-wrap; }
     <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
-  <processing id="lpf0" position="102,584" size="57,59" type="lpf0" />
+  <processing id="lpf0" position="102,584" size="57,59" type="lpf0"/>
 
   <processing id="source_xyz" position="759,22" size="126,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/source/source/xyz</OscPath>
@@ -208,7 +197,7 @@ p, li { white-space: pre-wrap; }
 
   <port_connection>
     <out>MonoAudioFileReader.Samples Read</out>
-    <in>RoomImpulseResponseSimulator.synchronization</in>
+    <in>OcclusionFilterControl.Sync in</in>
   </port_connection>
 
   <port_connection>
@@ -363,7 +352,7 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>listener_xyz.0</out>
-    <in>RoomImpulseResponseSimulator.listener X</in>
+    <in>OcclusionFilterControl.Listener X</in>
   </control_connection>
 
   <control_connection>
@@ -378,7 +367,7 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>listener_xyz.1</out>
-    <in>RoomImpulseResponseSimulator.listener Y</in>
+    <in>OcclusionFilterControl.Listener Y</in>
   </control_connection>
 
   <control_connection>
@@ -393,7 +382,7 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>listener_xyz.2</out>
-    <in>RoomImpulseResponseSimulator.listener Z</in>
+    <in>OcclusionFilterControl.Listener Z</in>
   </control_connection>
 
   <control_connection>
@@ -438,7 +427,7 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>source_xyz.0</out>
-    <in>RoomImpulseResponseSimulator.source X</in>
+    <in>OcclusionFilterControl.Source X</in>
   </control_connection>
 
   <control_connection>
@@ -453,7 +442,7 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>source_xyz.1</out>
-    <in>RoomImpulseResponseSimulator.source Y</in>
+    <in>OcclusionFilterControl.Source Y</in>
   </control_connection>
 
   <control_connection>
@@ -468,7 +457,7 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>source_xyz.2</out>
-    <in>RoomImpulseResponseSimulator.source Z</in>
+    <in>OcclusionFilterControl.Source Z</in>
   </control_connection>
 
 </network>
