@@ -141,14 +141,14 @@ public:
 
 		const Vector direction = Vector( sourceX-listenerX, sourceY-listenerY, sourceZ-listenerZ );
 		const Vertex origin = Vertex( listenerX, listenerY, listenerZ );
+		double distance=std::sqrt( std::pow(direction.x(),2) + std::pow(direction.y(),2) + std::pow(direction.z(),2) );
 		const bool ignoreNormalsDirection=true;
 
-		const std::string occlusionMeshName=_scene->getNearestIntersectionFaceMeshName (origin, ignoreNormalsDirection, direction);
+		const std::string occlusionMeshName=_scene->getNearestIntersectionFaceMeshName (origin, ignoreNormalsDirection, direction, distance);
 		const bool isCurrentlyOccluded = (occlusionMeshName!="");
-		double distance=std::sqrt( std::pow(direction.x(),2) + std::pow(direction.y(),2) + std::pow(direction.z(),2) );
-		double exponent=_exponent.GetLastValue();
-		double minimumDistance=_exponent.GetLastValue();
-		double distanceThreshold=_distanceThreshold.GetLastValue();
+		double exponent = _exponent.GetLastValue();
+		double minimumDistance = _exponent.GetLastValue();
+		double distanceThreshold = _distanceThreshold.GetLastValue();
 		double gain=0;
 
 		if (minimumDistance==0)
