@@ -151,11 +151,14 @@ public:
 	{
 		clearWires();
 		for (unsigned i = 0; i<_processings.size(); i++)
-			delete _processings[i];
+		{
+ 			_scene->removeItem(_processings[i]);
+ 			delete _processings[i];
+		}
 		_processings.clear();
 		for (unsigned i = 0; i<_textBoxes.size(); i++)
 		{
-			networkRemoveTextBox(_textBoxes[i]->getInformationText());
+ 			_scene->removeItem(_textBoxes[i]);
 			delete _textBoxes[i];
 		}
 		_textBoxes.clear();
@@ -386,44 +389,6 @@ public: // Actions
 			_processings[i]->select();
 		for (unsigned i=0; i<_textBoxes.size(); i++)
 			_textBoxes[i]->select();
-	}
-	void startMovingSelected(const QPoint& point)
-	{
-		_dragStatus = MoveDrag;
-		setCursor(Qt::ClosedHandCursor);
-		//setCursor(Qt::SizeAllCursor);
-		for (unsigned i=0; i<_processings.size(); i++)
-		{
-			if (!_processings[i]->isSelected()) continue;
-			_processings[i]->startMoving(point);
-		}
-		for (unsigned i=0; i<_textBoxes.size(); i++)
-		{
-			if (!_textBoxes[i]->isSelected()) continue;
-			_textBoxes[i]->startMoving(point);
-		}
-	}
-	void keepMovingSelected(const QPoint& delta)
-	{
-		setCursor(Qt::ClosedHandCursor);
-		for (unsigned i=0; i<_processings.size(); i++)
-		{
-			if (!_processings[i]->isSelected()) continue;
-			_processings[i]->keepMoving(delta);
-		}
-		for (unsigned i=0; i<_textBoxes.size(); i++)
-		{
-			if (!_textBoxes[i]->isSelected()) continue;
-			_textBoxes[i]->keepMoving(delta);
-		}
-		
-	}
-	void stopMoving()
-	{
-		_dragStatus = NoDrag;
-		setCursor(Qt::ArrowCursor);
-		for (unsigned i=0; i<_processings.size(); i++)
-			_processings[i]->stopMoving();
 	}
 	/**
 	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
@@ -813,10 +778,6 @@ public: // Event Handlers
 			for (unsigned i = _textBoxes.size(); i--; )
 				if (selectionBox.contains(QRect(_textBoxes[i]->pos().toPoint(), _textBoxes[i]->boundingRect().size().toSize())))
 					_textBoxes[i]->select();
-		}
-		if (_dragStatus == MoveDrag)
-		{
-			stopMoving();
 		}
 		QGraphicsView::mouseReleaseEvent(event);
 		QPointF scenePointF=mapToScene(event->pos());
@@ -1392,10 +1353,10 @@ protected:
 		if (networkIsDummy()) return;
 		_network->RemoveProcessing(name);
 	}
-	virtual void networkRemoveTextBox(CLAM::InformationText * textBox)
+	virtual void networkRemoveTextBox(CLAM::InformationText * informationText)
 	{
 		if (networkIsDummy()) return;
-		_network->removeInformationText(textBox);
+		_network->removeInformationText(informationText);
 	}
 
 public:

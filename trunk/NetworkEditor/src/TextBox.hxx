@@ -18,31 +18,23 @@ class TextBox : public QGraphicsTextItem
 		margin = 5,
 	};
 
-	QPoint _dragOrigin;
-	QPoint _originalPosition;
-	bool _selected;
 	NetworkCanvas * _canvas;
 	CLAM::InformationText * _informationText;
 
 public:
 	TextBox(NetworkCanvas * canvas=0);
+	~TextBox();
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-	void mousePressEvent(QGraphicsSceneMouseEvent * event);
-	void mouseMoveEvent (QGraphicsSceneMouseEvent * event);
-	void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-	void keepMoving(const QPoint & delta);
 	void move(const QPoint & point);
 
  	void setInformationText(CLAM::InformationText * informationText);
 	CLAM::InformationText * getInformationText();
-	void startMoving(const QPoint& scenePoint);
 	void setText(const QString& text);
 
-	bool isSelected() { return _selected; }
-	void select() { _selected=true; }
-	void deselect() { _selected=false; }
+	void select()     { setSelected(true); }
+	void deselect()   { setSelected(false);}
 };
 
 #endif

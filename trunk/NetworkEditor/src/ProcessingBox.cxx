@@ -34,6 +34,7 @@ static std::string processingBoxAction(ProcessingBox::ActionMode action)
 		case ProcessingBox::NoAction:        return "NoAction";
 		case ProcessingBox::Resizing:        return "Resizing";
 		case ProcessingBox::Moving:          return "Moving";
+		case ProcessingBox::Linking:          return "Linking";
 		default:                             return "Which drag??";
 	}
 }
@@ -42,15 +43,15 @@ static std::string networkCanvasDragMode(NetworkCanvas::DragStatus dragMode)
 {
 	switch(dragMode)
 	{
-		case NetworkCanvas::NoDrag:        return "NoDrag";
-		case NetworkCanvas::MoveDrag:        return "MoveDrag";
-		case NetworkCanvas::ResizeDrag:    return "ResizeDrag";
-		case NetworkCanvas::SelectionDrag:    return "SelectionDrag";
+		case NetworkCanvas::NoDrag:         return "NoDrag";
+		case NetworkCanvas::MoveDrag:       return "MoveDrag";
+		case NetworkCanvas::ResizeDrag:     return "ResizeDrag";
+		case NetworkCanvas::SelectionDrag:  return "SelectionDrag";
 		case NetworkCanvas::InportDrag:     return "InportDrag";
 		case NetworkCanvas::OutportDrag:    return "OutportDrag";
 		case NetworkCanvas::IncontrolDrag:  return "IncontrolDrag";
 		case NetworkCanvas::OutcontrolDrag: return "OutcontrolDrag";
-		default:                               return "Which drag??";
+		default:                            return "Which drag??";
 	}
 }
 
@@ -67,7 +68,6 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, _embeded(0)
 	, _embededProxy(0)
 	, _name(name)
-	, _selected(false)
 	, _nInports(nInports)
 	, _nOutports(nOutports)
 	, _nIncontrols(nIncontrols)
@@ -75,13 +75,15 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, _actionMode(NoAction)
 	, _highLightRegion(noRegion)
 {
+	setFlag(QGraphicsItem::ItemIsMovable,true);
+	setFlag(QGraphicsItem::ItemIsSelectable, true);
 	setName(name);
 	recomputeMinimumSizes();
 }
 
 QRectF ProcessingBox::boundingRect() const
 {	
-	return QRectF(_pos.x(), _pos.y(), _size.width(), _size.height());
+	return QRectF(0, 0, _size.width(), _size.height());
 }
 
 QPainterPath ProcessingBox::shape() const
@@ -126,7 +128,7 @@ void ProcessingBox::updateEmbededWidget()
 	QRect embedZone(
 			controlOffset, portOffset + textHeight,
    			_size.width()-2*controlOffset, _size.height()-textHeight-2*portOffset);
-	embedZone.translate(_pos);
+	embedZone.translate(pos().toPoint());
 	if (_embededProxy)
 	{
 		_embededProxy->setGeometry(embedZone);
@@ -144,7 +146,6 @@ void ProcessingBox::updateEmbededWidget()
 void ProcessingBox::paintFromParent(QPainter & painter)
 {
 	painter.save();
-	painter.translate(_pos);
 	paintBox(painter);
 	painter.restore();
 }
@@ -174,7 +175,7 @@ void ProcessingBox::resize(const QSize & size)
 }
 void ProcessingBox::move(const QPoint & point)
 {
-	_pos=point;
+	setPos(QPointF(point));
 	updateEmbededWidget();
 }
 
@@ -288,7 +289,7 @@ void ProcessingBox::paintBox(QPainter & painter)
 	painter.drawText(QRect(controlOffset, portOffset,
 			_size.width()-2*controlOffset, textHeight), _name);
 	//Selection
-	if (_selected)
+	if (isSelected())
 	{
 		painter.setBrush( _canvas->palette().highlight() );
 		painter.drawRect(0, 0, margin, margin);
@@ -296,6 +297,7 @@ void ProcessingBox::paintBox(QPainter & painter)
 		painter.drawRect(_size.width(), 0,  -margin, margin);
 		painter.drawRect(_size.width(), _size.height(), -margin, -margin);
 	}
+	updateEmbededWidget();
 }
 
 void ProcessingBox::drawConnector(QPainter & painter, Region region, unsigned index)
@@ -329,8 +331,8 @@ void ProcessingBox::drawConnector(QPainter & painter, Region region, unsigned in
 
 ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 {
-	int x = point.x()-_pos.x();
-	int y = point.y()-_pos.y();
+	int x = point.x()-pos().toPoint().x();
+	int y = point.y()-pos().toPoint().y();
 	if (x<0)
 		return noRegion;
 	if (x>_size.width())
@@ -370,156 +372,206 @@ ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 		return resizeHandleRegion;
 	return bodyRegion;
 }
+ProcessingBox::Region ProcessingBox::getItemRegion(const QPoint & point) const
+{
+	int x = point.x();
+	int y = point.y();
+
+	if (x<0)              return noRegion;
+	if (x>_size.width())  return noRegion;
+	if (y<0)              return noRegion;
+	if (y>_size.height()) return noRegion;
+
+	if (x<portWidth)
+	{
+		if (y<portOffset)                     return noRegion;
+		if (y>=portOffset+_nInports*portStep) return noRegion;
+		return inportsRegion;
+	}
+	if (x>_size.width()-portWidth)
+	{
+		if (y<portOffset)                      return noRegion;
+		if (y>=portOffset+_nOutports*portStep) return noRegion;
+		return outportsRegion;
+	}
+	if (y>=0 && y<controlHeight)
+	{
+		if (x<controlOffset)                           return noRegion;
+		if (x>=controlOffset+_nIncontrols*controlStep) return noRegion;
+		return incontrolsRegion;
+	}
+	if (y<=_size.height() && y>_size.height()-controlHeight)
+	{
+		if (x<controlOffset)                            return noRegion;
+		if (x>=controlOffset+_nOutcontrols*controlStep) return noRegion;
+		return outcontrolsRegion;
+	}
+	if (y<textHeight+portOffset)
+		return nameRegion;
+	if (x>_size.width()-controlOffset && y>_size.height()-portOffset)
+		return resizeHandleRegion;
+	
+	return bodyRegion;
+}
 
 int ProcessingBox::portIndexByYPos(const QPoint & point) const
 {
-	int y = point.y()-_pos.y();
+	int y = point.y()-pos().toPoint().y();
 	return (y-portOffset)/portStep;
 }
 int ProcessingBox::controlIndexByXPos(const QPoint & point) const
 {
-	int x = point.x()-_pos.x();
+	int x = point.x()-pos().toPoint().x();
+	return (x-controlOffset)/controlStep;
+}
+int ProcessingBox::portIndexByItemYPos(const QPoint & point) const
+{
+	int y = point.y();
+	return (y-portOffset)/portStep;
+}
+int ProcessingBox::controlIndexByItemXPos(const QPoint & point) const
+{
+	int x = point.x();
 	return (x-controlOffset)/controlStep;
 }
 // returns the inport connect point in parent coords
 QPoint ProcessingBox::getInportPos(unsigned i) const
 {
-	return _pos + QPoint( 0, portOffset+i*portStep + portHeight/2  );
+	return pos().toPoint() + QPoint( 0, portOffset+i*portStep + portHeight/2  );
 }
 QPoint ProcessingBox::getOutportPos(unsigned i) const
 {
-	return _pos + QPoint( _size.width(), portOffset+i*portStep + portHeight/2  );
+	return pos().toPoint() + QPoint( _size.width(), portOffset+i*portStep + portHeight/2  );
 }
 QPoint ProcessingBox::getIncontrolPos(unsigned i) const
 {
-	return _pos + QPoint( controlOffset+i*controlStep + controlWidth/2, 0 );
+	return pos().toPoint() + QPoint( controlOffset+i*controlStep + controlWidth/2, 0 );
 }
 QPoint ProcessingBox::getOutcontrolPos(unsigned i) const
 {
-	return _pos + QPoint( controlOffset+i*controlStep + controlWidth/2, _size.height()  );
+	return pos().toPoint() + QPoint( controlOffset+i*controlStep + controlWidth/2, _size.height()  );
 }
 
 void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
-{
-	QPoint scenePoint = event->scenePos().toPoint();
-	Region region = getRegion(scenePoint);
-	//std::cout << "PB::mouseMove " << _name.toStdString() << " " << processingBoxRegionName(region) << " " << processingBoxAction(_actionMode) << std::endl;
+{	
+	QPoint point=event->pos().toPoint();
+	Region region = getItemRegion(point);
 	if (region==noRegion)
 	{
 		event->ignore(); // Let other children to take it
 		return;
 	}
+	_actionMode = NoAction;
 	_canvas->raise(this);
-	if (region==nameRegion)
+	// move actions
+	if (region==nameRegion or region==bodyRegion)
 	{
-		if (event->modifiers() & Qt::ControlModifier )
-		{
-			_selected=!_selected;
-			if (!_selected) return;
-		}
-		if (!_selected)
+		if (region==bodyRegion and !event->modifiers() & Qt::ControlModifier)
 		{
 			_canvas->clearSelections();
-			_selected=true;
+			select();
 		}
-		_canvas->startMovingSelected(scenePoint);
+		QGraphicsItem::mousePressEvent(event);
 		return;
 	}
-	if (region==bodyRegion)
-	{
-		if (event->modifiers() & Qt::ControlModifier )
-		{
-			_selected=!_selected;
-		}
-		else
-		{
-			_canvas->clearSelections();
-			_selected=true;
-		}
-		return;
-	}
+	// resize action
 	if (region==resizeHandleRegion)
 	{
-		_actionMode = Resizing;
+		_canvas->clearSelections();
+		select();
+		_actionMode  = Resizing;
 		originalSize = _size;
-		dragOrigin=scenePoint;
+		dragOrigin   = point;
 		_canvas->setCursor(Qt::SizeFDiagCursor);
 		return;
 	}
 	// connection actions
+	_actionMode=Linking;
 	if (region==inportsRegion)
 	{
-		int index = portIndexByYPos(scenePoint);
+		int index = portIndexByItemYPos(point);
 		_canvas->startDrag(NetworkCanvas::InportDrag, this, index);
 		return;
 	}
 	if (region==outportsRegion)
 	{
-		int index = portIndexByYPos(scenePoint);
+		int index = portIndexByItemYPos(point);
 		_canvas->startDrag(NetworkCanvas::OutportDrag, this, index);
 		return;
 	}
 	if (region==incontrolsRegion)
 	{
-		int index = controlIndexByXPos(scenePoint);
+		int index = controlIndexByItemXPos(point);
 		_canvas->startDrag(NetworkCanvas::IncontrolDrag, this, index);
 		return;
 	}
 	if (region==outcontrolsRegion)
 	{
-		int index = controlIndexByXPos(scenePoint);
+		int index = controlIndexByItemXPos(point);
 		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
 		return;
 	}
 }
 void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-	//std::cout << "PB::mouseMove " << _name.toStdString() << std::endl;
-	QPoint scenePoint = event->scenePos().toPoint();
-
-	if (_actionMode==Moving)
+	if (_actionMode==Linking)
 	{
-		if(!_selected)
-		{
-			_canvas->clearSelections();
-			return;
-		}
-		QPoint delta = scenePoint - dragOrigin;
-		_canvas->keepMovingSelected(delta);
 		return;
 	}
 	if (_actionMode==Resizing)
 	{
+		QPoint point = event->pos().toPoint();
 		_canvas->setCursor(Qt::SizeFDiagCursor);
-		QPoint dragDelta = scenePoint - dragOrigin;
+		QPoint dragDelta = point - dragOrigin;
 		resize(QSize(
 			originalSize.width() + dragDelta.x(),
 			originalSize.height() + dragDelta.y()
 			));
 		return;
 	}
+	QGraphicsItem::mouseMoveEvent(event);
 }
 void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-	//std::cout << "PB::mouseRelease " << _name.toStdString() << std::endl;
-	if (_actionMode==Moving or _actionMode==Resizing)
-	{
-		_canvas->setCursor(Qt::ArrowCursor);
-		_actionMode = NoAction;
-	}
+	QGraphicsItem::mouseReleaseEvent(event);
 }
 void ProcessingBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
-	//std::cout << "PB::mouseDoubleClick " << _name.toStdString() << std::endl;
-	QPoint point = event->scenePos().toPoint();
-	doubleClicking(point);
+	QPoint point=event->pos().toPoint();
+	QPoint scenePoint=event->scenePos().toPoint();
+	Region region = getItemRegion(point);
+
+	if (region==nameRegion) 
+	{
+		rename();
+	}
+	if (region==incontrolsRegion)
+	{
+		_canvas->addControlSenderProcessing(this, scenePoint);
+	}
+	if (region==outcontrolsRegion)
+	{
+		_canvas->addControlPrinterProcessing(this, scenePoint);
+	}
+	if (region==inportsRegion)
+	{
+		int index = portIndexByItemYPos(point);
+		if (((CLAM::Processing*)_processing)->GetInPort(index).GetTypeId()==typeid(CLAM::TData))
+			_canvas->addLinkedProcessingSender(this,scenePoint,"AudioSource");
+	}
+	if (region==outportsRegion)
+	{
+		int index = portIndexByItemYPos(point);
+		if (((CLAM::Processing*)_processing)->GetOutPort(index).GetTypeId()==typeid(CLAM::TData))
+			_canvas->addLinkedProcessingReceiver(this,scenePoint,"AudioSink");
+	}
+	QGraphicsItem::mouseDoubleClickEvent(event);
 }
 void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 {
 	QMenu menu(_canvas);
-	QPoint scenePoint = event->scenePos().toPoint();
-	Region region = getRegion(scenePoint);
-	//std::cout << "PB::contextMenu " << _name.toStdString() << " " << processingBoxRegionName(region) <<  std::endl;
+	QPoint point = event->pos().toPoint();
+	Region region = getItemRegion(point);
 	switch (region)
 	{
 		case inportsRegion:
@@ -533,7 +585,6 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 		case resizeHandleRegion:
 			if (not isSelected())
 			{
-				//std::cout << "updating selection on context menu" << std::endl;
 				if (! (event->modifiers() & Qt::ControlModifier) )
 					_canvas->clearSelections();
 				select();
@@ -548,22 +599,6 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 	menu.exec(event->screenPos());
 }
 
-void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
-{
-	_actionMode = Moving;
-	originalPosition = _pos;
-	dragOrigin = initialGlobalPos;
-}
-void ProcessingBox::keepMoving(const QPoint & delta)
-{
-	if (_actionMode==Moving)
-		move(originalPosition + delta);
-}
-void ProcessingBox::stopMoving()
-{
-	if (_actionMode==Moving)
-		_actionMode = NoAction;
-}
 void ProcessingBox::hover(const QPoint & scenePoint)
 {
 	_highLightRegion=noRegion;
@@ -656,31 +691,6 @@ void ProcessingBox::setMetadataToolTip()
 		}
 	}
 	_canvas->setToolTip(tooltipText);
-}
-void ProcessingBox::doubleClicking(const QPoint & scenePoint)
-{
-	Region region = getRegion(scenePoint);
-	if (region==nameRegion) rename();
-	if (region==incontrolsRegion)
-	{
-		_canvas->addControlSenderProcessing(this, scenePoint);
-	}
-	if (region==outcontrolsRegion)
-	{
-		_canvas->addControlPrinterProcessing(this, scenePoint);
-	}
-	if (region==inportsRegion)
-	{
-		int index = portIndexByYPos(scenePoint);
-		if (((CLAM::Processing*)_processing)->GetInPort(index).GetTypeId()==typeid(CLAM::TData))
-			_canvas->addLinkedProcessingSender(this,scenePoint,"AudioSource");
-	}
-	if (region==outportsRegion)
-	{
-		int index = portIndexByYPos(scenePoint);
-		if (((CLAM::Processing*)_processing)->GetOutPort(index).GetTypeId()==typeid(CLAM::TData))
-			_canvas->addLinkedProcessingReceiver(this,scenePoint,"AudioSink");
-	}
 }
 void ProcessingBox::endWireDrag(const QPoint& scenePoint)
 {

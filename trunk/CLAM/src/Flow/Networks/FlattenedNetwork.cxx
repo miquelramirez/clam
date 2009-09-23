@@ -258,7 +258,7 @@ namespace CLAM
 			myInformationText->y=infoTextDefinition.GetCoordY();
 			myInformationText->text=infoTextDefinition.GetText();			
 
-			informationTexts.push_back(myInformationText);
+			_informationTexts.push_back(myInformationText);
 		}
 
 		_setPasteMode=false;
@@ -773,6 +773,11 @@ namespace CLAM
 			//std::cerr << "REMOVING <"<<_processings.begin()->first<<">"<<std::endl;
 			RemoveProcessing( _processings.begin()->first );
 		}
+		for(int i=0;i<_informationTexts.size();i++)
+		{
+			removeInformationText(_informationTexts[i]);
+		}
+		_informationTexts.clear();
 	}
 
 	FlattenedNetwork::ProcessingsMap::iterator FlattenedNetwork::BeginProcessings()
@@ -798,7 +803,7 @@ namespace CLAM
 
 	void FlattenedNetwork::addInformationText(InformationText * informationText)
 	{
-		informationTexts.push_back(informationText);
+		_informationTexts.push_back(informationText);
 	}
 
 	void FlattenedNetwork::removeInformationText(InformationText * informationText)
@@ -806,29 +811,29 @@ namespace CLAM
 		InformationTexts::iterator it = find(BeginInformationTexts(), EndInformationTexts(), informationText);
 	
 		if(it!=EndInformationTexts())
-			informationTexts.erase(it);
+			_informationTexts.erase(it);
 		else
 			std::cerr << "Warning: Information Text Box does not exist.";
 	}
 
 	FlattenedNetwork::InformationTexts::iterator FlattenedNetwork::BeginInformationTexts()
 	{
-		return informationTexts.begin();
+		return _informationTexts.begin();
 	}
 	
 	FlattenedNetwork::InformationTexts::iterator FlattenedNetwork::EndInformationTexts()
 	{
-		return informationTexts.end();
+		return _informationTexts.end();
 	}
 	
 	FlattenedNetwork::InformationTexts::const_iterator FlattenedNetwork::BeginInformationTexts() const
 	{
-		return informationTexts.begin();
+		return _informationTexts.begin();
 	}
 	
 	FlattenedNetwork::InformationTexts::const_iterator FlattenedNetwork::EndInformationTexts() const
 	{
-		return informationTexts.end();
+		return _informationTexts.end();
 	}
 
 
