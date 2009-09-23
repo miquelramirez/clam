@@ -200,7 +200,7 @@ private:
 	ProcessingsMap _processings;
 	FlowControl* _flowControl;
 	NetworkPlayer* _player;
-	InformationTexts informationTexts;
+	InformationTexts _informationTexts;
 
 	// attributes for canvas copy & paste
 	mutable NamesSet _selectedProcessings;

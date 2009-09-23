@@ -5,17 +5,25 @@
 #include <QPainter>
 #include <QStyleOption>
 
-TextBox::TextBox(NetworkCanvas * canvas):_selected(false)
-					, _informationText(0)
+#include <iostream>
+
+TextBox::TextBox(NetworkCanvas * canvas):_informationText(0)
 {
+	setFlag(QGraphicsItem::ItemIsMovable,true);
+	setFlag(QGraphicsItem::ItemIsSelectable, true);
 	_canvas=canvas;
+}
+
+TextBox::~TextBox()
+{
+	_informationText=0;
 }
 
 void TextBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	QGraphicsTextItem::paint(painter, option, widget);
 
-	if (_selected)
+	if (isSelected())
 	{
 		QRectF rect=QGraphicsTextItem::boundingRect();
 		painter->setPen(_canvas->colorBoxFrameText());
@@ -27,49 +35,10 @@ void TextBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 	}
 }
 
-void TextBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
-{
-	QPoint scenePoint = event->scenePos().toPoint();
-
-	if (event->modifiers() & Qt::ControlModifier )
-	{
-		_selected=!_selected;
-		if (!_selected) return;
-	}
-	if (!_selected)
-	{
-		_canvas->clearSelections();
-		_selected=true;
-	}
-	_canvas->startMovingSelected(scenePoint);
-}
-
-void TextBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
-{
-
-}
-
 void TextBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
 	_canvas->editingTextBox(this);
-}
-
-void TextBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
-{
-	if(!_selected)
-	{
-		_canvas->clearSelections();
-		return;
-	}
-
-	QPoint scenePoint = event->scenePos().toPoint();
-	QPoint _dragDelta = scenePoint - _dragOrigin;
-	_canvas->keepMovingSelected(_dragDelta);
-}
-
-void TextBox::keepMoving(const QPoint & delta)
-{
-	move(_originalPosition + delta);
+	QGraphicsTextItem::mouseDoubleClickEvent(event);
 }
 
 void TextBox::setInformationText(CLAM::InformationText * informationText)
@@ -92,12 +61,6 @@ void TextBox::move(const QPoint & point)
 		_informationText->x=point.x();
 		_informationText->y=point.y();
 	}
-}
-
-void TextBox::startMoving(const QPoint& scenePoint)
-{
-	_originalPosition = pos().toPoint();
-	_dragOrigin = scenePoint;
 }
 
 void TextBox::setText(const QString& text)

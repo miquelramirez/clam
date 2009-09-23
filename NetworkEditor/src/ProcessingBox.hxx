@@ -39,7 +39,8 @@ public:
 	{
 		NoAction,
 		Resizing,
-		Moving
+		Moving,
+		Linking
 	};
 	ProcessingBox(NetworkCanvas * parent, const QString & name,
 		   	unsigned nInports, unsigned nOutports,
@@ -55,9 +56,12 @@ public:
 	void paintFromParent(QPainter & painter);
 	// Returns the region at a parent pos
 	Region getRegion(const QPoint & point) const;
+	Region getItemRegion(const QPoint & point) const;
 	// Returns the connector index given a parent pos
 	int portIndexByYPos(const QPoint & point) const;
 	int controlIndexByXPos(const QPoint & point) const;
+	int portIndexByItemYPos(const QPoint & point) const;
+	int controlIndexByItemXPos(const QPoint & point) const;
 	// Returns the inport connect point in parent coords
 	QPoint getInportPos(unsigned i) const;
 	QPoint getOutportPos(unsigned i) const;
@@ -85,11 +89,7 @@ public:
 
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);
-	void startMoving(const QPoint & initialGlobalPos);
-	void keepMoving(const QPoint & delta);
-	void stopMoving();
-	void doubleClicking(const QPoint & scenePoint);
-	QPoint position() const { return _pos; }
+	QPoint position() const { return pos().toPoint(); }
 	QSize size() const { return _size; }
 	void embed(QWidget * widget);
 	bool configure();
@@ -99,9 +99,9 @@ public:
 	void endWireDrag(const QPoint& scenePoint);
 	void raiseEmbededWidget() { if (_embeded) _embeded->raise(); }
 
-	bool isSelected() { return _selected; }
-	void select() { _selected=true; }
-	void deselect() { _selected=false; }
+	void select()     { setSelected(true); }
+	void deselect()   { setSelected(false); }
+
 private:
 	void setName(const QString & newName);
 	void recomputeMinimumSizes();
@@ -115,7 +115,6 @@ private:
 	QWidget * _embeded; ///< Embeded widget displayed within the box
 	QGraphicsProxyWidget * _embededProxy; ///< Proxy to the embeded widget displayed within the box
 	QString _name;
-	bool _selected; ///< Whether the widget is selected or not
 	unsigned _nInports;
 	unsigned _nOutports;
 	unsigned _nIncontrols;
@@ -125,7 +124,6 @@ private:
 	QPoint originalPosition;
 	QSize originalSize;
 	int textHeight;
-	QPoint _pos;
 	QSize _size;
 	QSize _minimumSize;
 	Region _highLightRegion;
