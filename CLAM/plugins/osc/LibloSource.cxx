@@ -1,4 +1,7 @@
+
 #include "LibloSource.hxx"
+
+#include <cstdio>
 #include <CLAM/ProcessingFactory.hxx>
 
 static const char * metadata[] = {

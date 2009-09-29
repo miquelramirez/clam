@@ -4,6 +4,7 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/InControl.hxx>
 #include <string>
+#include <cstdio>
 #include <cmath>
 #include "lo/lo.h"
 #undef GetClassName
