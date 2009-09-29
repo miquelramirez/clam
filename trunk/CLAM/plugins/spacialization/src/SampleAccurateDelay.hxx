@@ -58,7 +58,7 @@ class SampleAccurateDelay : public Processing
 	InPort<Audio> _in1;
 	OutPort<Audio> _out1;
 	
-	InControl _delayVarying;
+	InControl _delayControl;
 	
 	SampleAccurateDelayConfig _config;
 	
@@ -77,9 +77,9 @@ class SampleAccurateDelay : public Processing
 
 	TData delayline(TData x)
 	{
-		TData y=0.;
-//		A[(int)wptr++] = x; //TODO find the right way
-//		y = A[(int)rptr++];
+		TData y;
+		*wptr++ = x; 
+		y = *rptr++;
 		if (wptr-&A[0] >= N) { wptr -= N; }
 		if (rptr-&A[0] >= N) { rptr -= N; }
 		return y;
@@ -90,7 +90,7 @@ public:
 	SampleAccurateDelay() 
 		: _in1("InputBuffer", this)
 		, _out1("OutputBuffer", this)
-		, _delayVarying("VaryingDelay", this)
+		, _delayControl("VaryingDelay", this)
 	{
 		Configure( _config );
 		N = _config.GetMaxDelayInSamples();
@@ -104,7 +104,9 @@ public:
 
 	bool Do()
 	{
-		setdelay(4800);
+		
+		TControlData delay = _delayControl.GetLastValue();
+		setdelay(static_cast<int>(delay));
 		
 		// copy into output
 		const CLAM::Audio& in = _in1.GetData();
