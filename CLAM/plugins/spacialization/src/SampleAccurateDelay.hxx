@@ -77,9 +77,9 @@ class SampleAccurateDelay : public Processing
 
 	TData delayline(TData x)
 	{
-		TData y;
-		A[(int)wptr++] = x; 
-		y = A[(int)rptr++];
+		TData y=0.;
+//		A[(int)wptr++] = x; //TODO find the right way
+//		y = A[(int)rptr++];
 		if (wptr-&A[0] >= N) { wptr -= N; }
 		if (rptr-&A[0] >= N) { rptr -= N; }
 		return y;
