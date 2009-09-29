@@ -1,7 +1,8 @@
 #ifndef LibloSingleton_hxx
 #define LibloSingleton_hxx
 
-#include <string>
+//#include <string>
+#include <cstdio>
 #include <cmath>
 #include <algorithm>
 #include <map>
