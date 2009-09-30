@@ -53,6 +53,10 @@ protected:
 	CLAM::FloatInControl _minimumDistance;
 	CLAM::FloatInControl _distanceThreshold;
 
+	CLAM::FloatInControl _fadeInMsControl;
+	CLAM::FloatInControl _minCutoffFrequencyControl;
+	CLAM::FloatInControl _occlusionGainFactorControl;
+
 	AudioInPort _inSync;
 
 	CLAM::FloatOutControl _gainOutControl;
@@ -106,6 +110,9 @@ public:
 		, _exponent ("inverse exponent to calculate gain",this, &OcclusionFilterControl::InControlCallback)
 		, _minimumDistance ("minimum distance",this, &OcclusionFilterControl::InControlCallback)
 		, _distanceThreshold ("distance threshold (maximum distance of hearing sound)",this, &OcclusionFilterControl::InControlCallback)
+		, _fadeInMsControl (1, "Fade time for the occlusions (in miliseconds)", this, &OcclusionFilterControl::InConfigControlCallback )
+		, _minCutoffFrequencyControl (2, "Minimum cutoff frequency for the LP filter", this, &OcclusionFilterControl::InConfigControlCallback )
+		, _occlusionGainFactorControl (3, "Occlusion gain factor", this, &OcclusionFilterControl::InConfigControlCallback )
 		, _inSync("Sync in",this)
 		, _gainOutControl ("calculated output gain",this)
 		, _cutoffFrequencyOutControl("LP cutoff frequency",this)
@@ -128,6 +135,15 @@ public:
 	}
 
 
+	void InConfigControlCallback (unsigned controlId, const TControlData & value)
+	{
+		if (controlId==1)
+			_framesForFade=float(_fadeInMsControl.GetLastValue()*0.001) / (float(BackendBufferSize())/float(BackendSampleRate()));
+		if (controlId==2)
+			_minCutoffFrequency = _minCutoffFrequencyControl.GetLastValue();
+		if (controlId==3)
+			_minOcclusionFactor = _occlusionGainFactorControl.GetLastValue();
+	}
 	void InControlCallback (const TControlData & value)
 	{
 		if (not _scene) 
@@ -206,7 +222,6 @@ public:
 //		}
 		_gainOutControl.SendControl(gain);
 		_cutoffFrequencyOutControl.SendControl(cutoffFrequency);
-
 	}
 
 
