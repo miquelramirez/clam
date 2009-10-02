@@ -4,7 +4,8 @@
 // TODO: make them configuration parameters
 #define DefaultOcclusionFadeTime 300
 #define DefaultOcclusionMinCutoffFrequency 350
-#define DefaultOcclusionGainFactor 0.5
+#define DefaultOcclusionGainFactor 0.2
+#define DefaultGeneralAmbienceGain 0.5
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/OutControl.hxx>
@@ -57,13 +58,15 @@ class EnvironmentManager : public CLAM::Processing
 		float occlusionFadeInMs;
 		float occlusionMinCutoffFrequency;
 		float occlusionGainFactor;
+		float generalAmbienceGain;
 		Environment() { }
-		Environment(const std::string envName, const std::string envIrFile, const unsigned nChannels, const float fadeInMs, const float minCutoffFrequency, const float gainFactor)
+		Environment(const std::string envName, const std::string envIrFile, const unsigned nChannels, const float fadeInMs, const float minCutoffFrequency, const float gainFactor, const float ambienceGain)
 		: 	name(envName)
 		,	irWavfile(envIrFile)
 		,	occlusionFadeInMs(fadeInMs)
 		,	occlusionMinCutoffFrequency(minCutoffFrequency)
 		,	occlusionGainFactor(gainFactor)
+		,	generalAmbienceGain(ambienceGain)
 		{
 			for (unsigned i=0;i<nChannels;i++)
 				ir.push_back(ImpulseResponse());
@@ -82,6 +85,8 @@ class EnvironmentManager : public CLAM::Processing
 	FloatOutControl _occlusionFadeInMsOutControl;
 	FloatOutControl _occlusionMinCutoffFrequencyOutControl;
 	FloatOutControl _occlusionGainFactorOutControl;
+	FloatOutControl _generalAmbienceGainOutControl;
+	
 
 	AudioInPort _inSync;
 	Scene * _scene;
@@ -97,6 +102,7 @@ public:
 		, _occlusionFadeInMsOutControl("Fade in miliseconds for occlusions",this)
 		, _occlusionMinCutoffFrequencyOutControl("Minimum cutoff frequency for occlusions LP filter",this)
 		, _occlusionGainFactorOutControl("Gain factor for occlusions",this)
+		, _generalAmbienceGainOutControl("Gain for general ambience",this)
 		, _inSync("Sync in",this)
 		, _scene(0)
 		
@@ -134,6 +140,10 @@ public:
 				_outputPorts[channelNr]->Produce();
 			}
 			_currentEnvironment.SendControl(environment);
+			_occlusionFadeInMsOutControl.SendControl(it->occlusionFadeInMs);
+			_occlusionMinCutoffFrequencyOutControl.SendControl(it->occlusionMinCutoffFrequency);
+			_occlusionGainFactorOutControl.SendControl(it->occlusionGainFactor);
+			_generalAmbienceGainOutControl.SendControl(it->generalAmbienceGain);
 			return true;
 		}
 		CLAM_ASSERT(true,"Received an environment mesh without proper defined IR");
@@ -205,7 +215,7 @@ protected:
 		bool OK;
 
 
-		Environment defaultEnvironment("","",_outputPorts.size(),DefaultOcclusionFadeTime,DefaultOcclusionMinCutoffFrequency,DefaultOcclusionGainFactor);
+		Environment defaultEnvironment("","",_outputPorts.size(),DefaultOcclusionFadeTime,DefaultOcclusionMinCutoffFrequency,DefaultOcclusionGainFactor,DefaultGeneralAmbienceGain);
 		for (unsigned channelNr=0; channelNr<_outputPorts.size(); channelNr++)
 		{
 			if (_config.GetDefaultIR()=="") // use silence IR if there is no selected default IR wav file
@@ -275,8 +285,9 @@ protected:
 			const float occlusionFadeInMs=atof(row[2].c_str());
 			const float occlusionMinCutoffFrequency=atof(row[3].c_str());
 			const float occlusionGainFactor=atof(row[4].c_str());
+			const float ambienceGain=atof(row[5].c_str());
 			const unsigned nChannels=_outputPorts.size();
-			_environments.push_back(Environment(name,irWavfile,nChannels,occlusionFadeInMs,occlusionMinCutoffFrequency,occlusionGainFactor));
+			_environments.push_back(Environment(name,irWavfile,nChannels,occlusionFadeInMs,occlusionMinCutoffFrequency,occlusionGainFactor,ambienceGain));
 		}
 
 		std::string errorMsg;
