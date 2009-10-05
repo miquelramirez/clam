@@ -4,7 +4,6 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/TypedOutControl.hxx>
 #include <CLAM/OutControl.hxx>
-#include <CLAM/ControlArray.hxx>
 #include <CLAM/Enum.hxx>
 #include <string>
 #include <cmath>
@@ -46,7 +45,6 @@ protected:
 
 class MultiLibloSource : public CLAM::Processing
 {
-	typedef ControlArray<TypedOutControl <std::string> > OutTypedControlArray;
 	typedef MultiLibloSourceConfig Config;
 
 public:
