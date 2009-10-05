@@ -71,15 +71,40 @@ public:
 		return true;
 	}
 
+	void FloatInControlCallback (const TControlData & value)
+	{
+		SendOSCMessage();
+	}
+			
+	void StringInControlCallback (const std::string & value)
+	{
+		SendOSCMessage();
+	}
+	void DoubleInControlCallback (const double & value)
+	{
+		SendOSCMessage();
+	}
+	void IntInControlCallback (const int & value)
+	{
+		SendOSCMessage();
+	}
 
-	void InControlCallback(const TControlData & value)
+	void SendOSCMessage()
 	{
 		lo_message message=lo_message_new();
 		for (unsigned i=0;i<_config.GetOSCTypeSpec().size();i++)
 		{
 			std::string typespec;
 			typespec=_config.GetOSCTypeSpec()[i];
-			lo_message_add(message,typespec.c_str(),dynamic_cast<FloatInControl *>(_inControls[i])->GetLastValue());
+
+			if (typespec=="s")
+				lo_message_add(message,typespec.c_str(),dynamic_cast<TypedInControl<std::string> *> (_inControls[i])->GetLastValue().c_str());
+			if (typespec=="f")
+				lo_message_add(message,typespec.c_str(),dynamic_cast<FloatInControl *>(_inControls[i])->GetLastValue());
+			if (typespec=="d")
+				lo_message_add(message,typespec.c_str(),dynamic_cast<TypedInControl<double> *> (_inControls[i])->GetLastValue());
+			if (typespec=="i" or typespec=="h")
+				lo_message_add(message,typespec.c_str(),dynamic_cast<TypedInControl<int> *> (_inControls[i])->GetLastValue());
 		}
 		if (lo_send_message(_oscPort,_config.GetOscPath().c_str(),message) == -1)
 		{
@@ -138,32 +163,17 @@ protected:
 
 	InControlBase * createControl(const std::string & type, const std::string & name)
 	{
-/*		if (type=="s")
-			return new TypedInControl<std::string> (name, this, &LibloSink::InControlCallback);*/
+		if (type=="s")
+			return new TypedInControl<std::string> (name, this, &LibloSink::StringInControlCallback);
 		if (type=="f")
-			return new FloatInControl (name, this, &LibloSink::InControlCallback);
-/*		if (type=="d")
-			return new TypedInControl<double> (name, this, &LibloSink::InControlCallback);
+			return new FloatInControl (name, this, &LibloSink::FloatInControlCallback);
+		if (type=="d")
+			return new TypedInControl<double> (name, this, &LibloSink::DoubleInControlCallback);
 		if (type=="i" or type=="h")
-			return new TypedInControl<int> (name,this, &LibloSink::InControlCallback);*/
+			return new TypedInControl<int> (name,this, &LibloSink::IntInControlCallback);
 		// TODO: Decide whether ASSERTing (contract) or throw (control) 
 		return 0;
 	}
-
-/*	static void sendControl(OutControlBase * control, lo_arg * valueToSend)
-	{
-		const std::string typeName=control->GetTypeId().name();
-		if (typeName=="Ss")
-			dynamic_cast<TypedOutControl<std::string> *> (control)->SendControl(&(valueToSend->s));
-		if(typeName=="f")
-			dynamic_cast<FloatOutControl *>(control)->SendControl(valueToSend->f);
-		if(typeName=="d")
-			dynamic_cast<TypedOutControl<double> *> (control)->SendControl(valueToSend->f32);
-		if(typeName=="i")
-			dynamic_cast<TypedOutControl<int> *> (control)->SendControl(valueToSend->i);
-		return;
-	}
-*/
 
 	const unsigned int GetInputsNumber() const
 	{
