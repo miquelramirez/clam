@@ -74,14 +74,18 @@ public:
 
 	void InControlCallback(const TControlData & value)
 	{
-
-		float a=dynamic_cast<FloatInControl *>(_inControls[0])->GetLastValue();
-		float b=dynamic_cast<FloatInControl *>(_inControls[1])->GetLastValue();
-		float c=dynamic_cast<FloatInControl *>(_inControls[2])->GetLastValue();
-		if (lo_send(_oscPort, _config.GetOscPath().c_str(), "fff", a,b,c) == -1) 
+		lo_message message=lo_message_new();
+		for (unsigned i=0;i<_config.GetOSCTypeSpec().size();i++)
+		{
+			std::string typespec;
+			typespec=_config.GetOSCTypeSpec()[i];
+			lo_message_add(message,typespec.c_str(),dynamic_cast<FloatInControl *>(_inControls[i])->GetLastValue());
+		}
+		if (lo_send_message(_oscPort,_config.GetOscPath().c_str(),message) == -1)
 		{
 			printf("OSC error %d: %s\n", lo_address_errno(_oscPort), lo_address_errstr(_oscPort));
 		}
+
 	}
 
 	const char* GetClassName() const
