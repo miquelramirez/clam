@@ -99,13 +99,15 @@ public:
 			typespec=_config.GetOSCTypeSpec()[i];
 
 			if (typespec=="s")
-				lo_message_add(message,typespec.c_str(),dynamic_cast<TypedInControl<std::string> *> (_inControls[i])->GetLastValue().c_str());
+				lo_message_add_string(message,dynamic_cast<TypedInControl<std::string> *> (_inControls[i])->GetLastValue().c_str());
 			if (typespec=="f")
-				lo_message_add(message,typespec.c_str(),dynamic_cast<FloatInControl *>(_inControls[i])->GetLastValue());
+				lo_message_add_float(message,dynamic_cast<FloatInControl *>(_inControls[i])->GetLastValue());
 			if (typespec=="d")
-				lo_message_add(message,typespec.c_str(),dynamic_cast<TypedInControl<double> *> (_inControls[i])->GetLastValue());
-			if (typespec=="i" or typespec=="h")
-				lo_message_add(message,typespec.c_str(),dynamic_cast<TypedInControl<int> *> (_inControls[i])->GetLastValue());
+				lo_message_add_double(message,dynamic_cast<TypedInControl<double> *> (_inControls[i])->GetLastValue());
+			if (typespec=="i")
+				lo_message_add_int32(message,dynamic_cast<TypedInControl<int> *> (_inControls[i])->GetLastValue());
+			if (typespec=="h")
+				lo_message_add_int64(message,dynamic_cast<TypedInControl<long int> *> (_inControls[i])->GetLastValue());
 		}
 		if (lo_send_message(_oscPort,_config.GetOscPath().c_str(),message) == -1)
 		{
@@ -178,8 +180,10 @@ protected:
 			return new FloatInControl (name, this, &LibloSink::FloatInControlCallback);
 		if (type=="d")
 			return new TypedInControl<double> (name, this, &LibloSink::DoubleInControlCallback);
-		if (type=="i" or type=="h")
+		if (type=="i" )
 			return new TypedInControl<int> (name,this, &LibloSink::IntInControlCallback);
+		if (type=="h")
+			return new TypedInControl<long int> (name,this, &LibloSink::IntInControlCallback);
 		// TODO: Decide whether ASSERTing (contract) or throw (control) 
 		return 0;
 	}
