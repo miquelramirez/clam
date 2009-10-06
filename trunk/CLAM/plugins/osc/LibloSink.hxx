@@ -147,6 +147,14 @@ protected:
 			_inControls.push_back(createControl(type,controlName.str()));
 		}
 
+		unsigned int port = _config.GetServerPort();
+		/* not defined port */
+		if (port==0)
+		{
+			AddConfigErrorMessage("No port defined");
+			return false;
+		}
+
 		return true; // Configuration ok
 	}
 
