@@ -90,7 +90,7 @@ public:
 				case 's':
 					lo_message_add_string(message,dynamic_cast<TypedInControl<std::string> *> (_inControls[i])->GetLastValue().c_str());
 				case 'f':
-					lo_message_add_float(message,dynamic_cast<FloatInControl *>(_inControls[i])->GetLastValue());
+					lo_message_add_float(message,dynamic_cast<TypedInControl<float>*>(_inControls[i])->GetLastValue());
 				case 'd':
 					lo_message_add_double(message,dynamic_cast<TypedInControl<double> *> (_inControls[i])->GetLastValue());
 				case 'i':
@@ -169,7 +169,7 @@ protected:
 			case 's':
 				return new TypedInControl<std::string> (name, this, &LibloSink::InControlCallback<const std::string>);
 			case 'f':
-				return new FloatInControl (name, this, &LibloSink::InControlCallback<const float>);
+				return new TypedInControl<float> (name, this, &LibloSink::InControlCallback<const float>);
 			case 'd':
 				return new TypedInControl<double> (name, this, &LibloSink::InControlCallback<const double>);
 			case 'i':
