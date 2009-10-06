@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cmath>
 #include "lo/lo.h"
+#include "lo/lo_lowlevel.h"
 #undef GetClassName
 
 
