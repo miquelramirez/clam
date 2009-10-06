@@ -7,3 +7,7 @@ addConfig MultiLibloSource MultiCastIP '224.0.0.1'
 addConfig SpatDIFSourceReceiver EnableMulticast 0
 addConfig SpatDIFSourceReceiver MultiCastIP '224.0.0.1'
 renameConnectorRegExp MultiLibloSource outcontrol ^.*_([0-9]+)$ \\1
+addConfig LibloSink ServerPort 7000
+addConfig LibloSink OSCTypeSpec 'fff'
+addConfig LibloSink IPAddress '127.0.0.1'
+
