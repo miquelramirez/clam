@@ -72,20 +72,9 @@ public:
 		return true;
 	}
 
-	void FloatInControlCallback (const TControlData & value)
-	{
-		SendOSCMessage();
-	}
-			
-	void StringInControlCallback (const std::string & value)
-	{
-		SendOSCMessage();
-	}
-	void DoubleInControlCallback (const double & value)
-	{
-		SendOSCMessage();
-	}
-	void IntInControlCallback (const int & value)
+
+	template <typename T> 
+	void InControlCallback (T & value)
 	{
 		SendOSCMessage();
 	}
@@ -175,15 +164,15 @@ protected:
 	InControlBase * createControl(const std::string & type, const std::string & name)
 	{
 		if (type=="s")
-			return new TypedInControl<std::string> (name, this, &LibloSink::StringInControlCallback);
+			return new TypedInControl<std::string> (name, this, &LibloSink::InControlCallback<const std::string>);
 		if (type=="f")
-			return new FloatInControl (name, this, &LibloSink::FloatInControlCallback);
+			return new FloatInControl (name, this, &LibloSink::InControlCallback<const float>);
 		if (type=="d")
-			return new TypedInControl<double> (name, this, &LibloSink::DoubleInControlCallback);
+			return new TypedInControl<double> (name, this, &LibloSink::InControlCallback<const double>);
 		if (type=="i" )
-			return new TypedInControl<int> (name,this, &LibloSink::IntInControlCallback);
+			return new TypedInControl<int> (name,this, &LibloSink::InControlCallback<const int>);
 		if (type=="h")
-			return new TypedInControl<long int> (name,this, &LibloSink::IntInControlCallback);
+			return new TypedInControl<long int> (name,this, &LibloSink::InControlCallback<const long int>);
 		// TODO: Decide whether ASSERTing (contract) or throw (control) 
 		return 0;
 	}
