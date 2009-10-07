@@ -48,12 +48,11 @@ class AudioBuffer2Stream : public Processing
 {
 	// TODO: Use that configuration instead AudioWindowingConfig
 	/// The configuration for that
-	class FutureConfig : public ProcessingConfig
+	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( FutureConfig, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, unsigned, HopSize);
-		// TODO: Rename FFTSize to WindowSize
-		DYN_ATTRIBUTE( 1, public, unsigned, FFTSize);
+		DYN_ATTRIBUTE( 1, public, unsigned, BufferSize);
     	protected:
 		/// Booo
 		void DefaultInit()
@@ -61,14 +60,14 @@ class AudioBuffer2Stream : public Processing
 			AddAll();
 			UpdateData();
 			SetHopSize(512);
-			SetFFTSize(1024);
+			SetBufferSize(1024);
 		}
 	};
-	typedef AudioWindowingConfig Config;
+
 	InPort<Audio> _in;
 	AudioOutPort _out;
 	unsigned _hopSize;
-	unsigned _windowSize;
+	unsigned _bufferSize;
 	Config _config;
 public:
 	const char* GetClassName() const { return "AudioBuffer2Stream"; }
@@ -83,8 +82,8 @@ private:
 	{
 		CopyAsConcreteConfig(_config, c);
 		_hopSize = _config.GetHopSize();
-		_windowSize = _config.GetFFTSize();
-		_out.SetSize( _windowSize );
+		_bufferSize = _config.GetBufferSize();
+		_out.SetSize( _bufferSize );
 		_out.SetHop( _hopSize );
 		return true;
 	}
@@ -93,15 +92,15 @@ public:
 	bool Do()
 	{
 		const Audio& in = _in.GetData();
-		CLAM_ASSERT(_windowSize==in.GetSize(),
+		CLAM_ASSERT(_bufferSize==in.GetSize(),
 			"AudioBuffer2Stream: Input does not provide the configured window size"); 
 		Audio& out = _out.GetAudio();
 		const TData* inpointer = in.GetBuffer().GetPtr();
 		TData* outpointer = out.GetBuffer().GetPtr();
 		// Zero fill the new incomming hopSize
-		std::fill(outpointer+_windowSize-_hopSize, outpointer+_windowSize, 0.0);
+		std::fill(outpointer+_bufferSize-_hopSize, outpointer+_bufferSize, 0.0);
 		// Add the input on the full window
-		std::transform(inpointer, inpointer+_windowSize, outpointer, outpointer, std::plus<TData>());
+		std::transform(inpointer, inpointer+_bufferSize, outpointer, outpointer, std::plus<TData>());
 		
 		// Tell the ports this is done
 		_in.Consume();

@@ -8,14 +8,10 @@
 
   <processing id="AudioSource_0" position="4,244" size="128,108" type="AudioSource" />
 
-  <processing id="AudioWindowing_0" position="148,251" size="149,58" type="AudioWindowing">
+  <processing id="AudioWindowing_0" position="148,251" size="149,58" type="AudioStream2Buffer">
     <HopSize>262144</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>524288</FFTSize>
-    <WindowSize>262145</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>524288</BufferSize>
+    </processing>
 
   <processing id="Complex2MagPhaseSpectrum_0" position="419,244" size="233,58" type="Complex2MagPhaseSpectrum" />
 
@@ -65,11 +61,11 @@
 
   <port_connection>
     <out>AudioSource_0.1</out>
-    <in>AudioWindowing_0.Input</in>
+    <in>AudioWindowing_0.Audio stream</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing_0.Output</out>
+    <out>AudioWindowing_0.Audio buffer</out>
     <in>MyFFT_0.Audio Buffer</in>
   </port_connection>
 

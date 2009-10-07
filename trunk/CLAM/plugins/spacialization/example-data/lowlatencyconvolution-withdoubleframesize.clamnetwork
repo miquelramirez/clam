@@ -2,12 +2,8 @@
 
   <processing id="AudioBuffer2Stream_0" position="195,318" size="197,60" type="AudioBuffer2Stream">
     <HopSize>1024</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>2048</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>2048</BufferSize>
+    </processing>
 
   <processing id="AudioMixer_0" position="415,323" size="132,60" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
