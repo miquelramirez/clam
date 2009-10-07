@@ -89,14 +89,19 @@ public:
 			{
 				case 's':
 					lo_message_add_string(message,dynamic_cast<TypedInControl<std::string> *> (_inControls[i])->GetLastValue().c_str());
+					break;
 				case 'f':
 					lo_message_add_float(message,dynamic_cast<TypedInControl<float>*>(_inControls[i])->GetLastValue());
+					break;
 				case 'd':
 					lo_message_add_double(message,dynamic_cast<TypedInControl<double> *> (_inControls[i])->GetLastValue());
+					break;
 				case 'i':
 					lo_message_add_int32(message,dynamic_cast<TypedInControl<int> *> (_inControls[i])->GetLastValue());
+					break;
 				case 'h':
 					lo_message_add_int64(message,dynamic_cast<TypedInControl<long int> *> (_inControls[i])->GetLastValue());
+					break;
 			}
 		}
 		if (lo_send_message(_oscPort,_config.GetOscPath().c_str(),message) == -1)
