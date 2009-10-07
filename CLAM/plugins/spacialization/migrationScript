@@ -82,3 +82,10 @@ removeConfig AudioStream2Buffer DoHalfWindowShift
 addConfig ImpulseResponseloader IsBFormatFile 0
 
 addConfig OcclusionFilterControl GeometryFile ""
+
+removeConfig AudioBuffer2Stream SamplingRate
+renameConfig AudioBuffer2Stream FFTSize BufferSize
+removeConfig AudioBuffer2Stream WindowSize
+removeConfig AudioBuffer2Stream WindowType
+removeConfig AudioBuffer2Stream DoHalfWindowShift
+

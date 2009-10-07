@@ -4,39 +4,23 @@
 
   <processing id="AudioBuffer2Stream_L1" position="757,163" size="165,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="AudioBuffer2Stream_L2" position="760,209" size="165,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="AudioBuffer2Stream_R1" position="757,258" size="167,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="AudioBuffer2Stream_R2" position="755,302" size="167,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="AudioSink_L" position="585,48" size="128,111" type="AudioSink" />
 

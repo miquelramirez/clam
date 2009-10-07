@@ -2,25 +2,17 @@
 
   <processing id="AudioBuffer2Stream" position="266,283" size="159,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="AudioSink" position="497,282" size="128,111" type="AudioSink" />
 
   <processing id="AudioSource" position="57,32" size="128,108" type="AudioSource" />
 
-  <processing id="AudioWindowing" position="227,34" size="140,58" type="AudioWindowing">
+  <processing id="AudioWindowing" position="227,34" size="140,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="ImpulseResponseInterpolator" position="232,150" size="235,62" type="ImpulseResponseInterpolator">
     <FrameSize>512</FrameSize>
@@ -65,11 +57,11 @@
 
   <port_connection>
     <out>AudioSource.1</out>
-    <in>AudioWindowing.Input</in>
+    <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>MyFFT.Audio Buffer</in>
   </port_connection>
 

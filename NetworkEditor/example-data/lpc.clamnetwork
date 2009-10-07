@@ -2,14 +2,10 @@
 
   <processing id="AudioSource_0" position="-33,39" size="165,108" type="AudioSource" />
 
-  <processing id="AudioWindowing" position="130,63" size="182,64" type="AudioWindowing">
+  <processing id="AudioWindowing" position="130,63" size="182,64" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="CepstralTransform_0" position="444,117" size="216,64" type="CepstralTransform">
     <NumMelCoefficients>20</NumMelCoefficients>
@@ -75,7 +71,7 @@
 
   <port_connection>
     <out>AudioSource_0.1</out>
-    <in>AudioWindowing.Input</in>
+    <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>
@@ -94,12 +90,12 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>LPC AutoCorrelation.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>Windowed Audio.Input</in>
   </port_connection>
 

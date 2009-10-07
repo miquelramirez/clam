@@ -2,39 +2,23 @@
 
   <processing id="AudioBuffer2Stream" position="838,147" size="159,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="AudioBuffer2Stream_1" position="835,218" size="173,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="AudioBuffer2Stream_2" position="852,276" size="173,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
-  <processing id="AudioWindowing" position="227,34" size="140,58" type="AudioWindowing">
+  <processing id="AudioWindowing" position="227,34" size="140,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="C" position="501,478" size="128,111" type="AudioSink" />
 
@@ -171,7 +155,7 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>MyFFT.Audio Buffer</in>
   </port_connection>
 
@@ -222,7 +206,7 @@
 
   <port_connection>
     <out>InLanguage.1</out>
-    <in>AudioWindowing.Input</in>
+    <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>

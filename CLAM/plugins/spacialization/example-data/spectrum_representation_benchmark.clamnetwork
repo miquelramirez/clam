@@ -2,21 +2,13 @@
 
   <processing id="AudioBuffer2Stream_0" position="1019,255" size="173,58" type="AudioBuffer2Stream">
     <HopSize>32768</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>65536</FFTSize>
-    <WindowSize>65537</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>65536</BufferSize>
+    </processing>
 
   <processing id="AudioBuffer2Stream_1" position="1020,324" size="173,58" type="AudioBuffer2Stream">
     <HopSize>32768</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>65536</FFTSize>
-    <WindowSize>65537</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>65536</BufferSize>
+    </processing>
 
   <processing id="AudioMixer_0" position="712,414" size="115,62" type="AudioMixer">
     <NumberOfInPorts>2</NumberOfInPorts>

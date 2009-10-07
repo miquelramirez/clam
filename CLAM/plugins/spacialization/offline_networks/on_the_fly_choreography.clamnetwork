@@ -6,14 +6,10 @@
     <NumberOfInPorts>1</NumberOfInPorts>
     </processing>
 
-  <processing id="AudioWindowing" position="322,680" size="143,59" type="AudioWindowing">
+  <processing id="AudioWindowing" position="322,680" size="143,59" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="BFormatRotation" position="743,752" size="143,78" type="BFormatRotation" />
 
@@ -148,75 +144,43 @@
 
   <processing id="toStream P" position="809,181" size="106,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>48000</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="toStream P 2" position="808,223" size="118,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>48000</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="toStream Vx" position="809,286" size="115,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>48000</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="toStream Vx 2" position="811,331" size="127,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>48000</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="toStream Vy" position="817,388" size="115,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>48000</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="toStream Vy 2" position="814,434" size="127,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>48000</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="toStream Vz" position="832,496" size="114,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>48000</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="toStream Vz 2" position="831,542" size="128,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <SamplingRate>48000</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <port_connection>
     <out>AudioInput.1</out>
@@ -235,11 +199,11 @@
 
   <port_connection>
     <out>AudioMixer.Output Audio</out>
-    <in>AudioWindowing.Input</in>
+    <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioWindowing.Output</out>
+    <out>AudioWindowing.Audio buffer</out>
     <in>MyFFT.Audio Buffer</in>
   </port_connection>
 

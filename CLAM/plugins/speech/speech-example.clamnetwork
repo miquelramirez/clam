@@ -2,14 +2,10 @@
 
   <processing id="AudioSink_0" position="465,66" size="128,111" type="AudioSink" />
 
-  <processing id="AudioWindowing_0" position="-24,73" size="141,58" type="AudioWindowing">
+  <processing id="AudioWindowing_0" position="-24,73" size="141,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
-    <SamplingRate>8000</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
+    <BufferSize>1024</BufferSize>
+    </processing>
 
   <processing id="FormantExtractor_0" position="-24,144" size="141,58" type="FormantExtractor" />
 
@@ -105,7 +101,7 @@
   </processing>
 
   <port_connection>
-    <out>AudioWindowing_0.Output</out>
+    <out>AudioWindowing_0.Audio buffer</out>
     <in>FormantExtractor_0.AudioIn</in>
   </port_connection>
 
@@ -121,7 +117,7 @@
 
   <port_connection>
     <out>MonoAudioFileReader_0.Samples Read</out>
-    <in>AudioWindowing_0.Input</in>
+    <in>AudioWindowing_0.Audio stream</in>
   </port_connection>
 
   <port_connection>
