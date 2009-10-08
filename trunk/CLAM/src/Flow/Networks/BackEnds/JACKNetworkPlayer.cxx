@@ -58,6 +58,14 @@ std::string JACKNetworkPlayer::NonWorkingReason()
 
 void JACKNetworkPlayer::InitClient()
 {
+	unsigned jackClientNameMaxSize=jack_client_name_size();
+	if (jackClientNameMaxSize<=_jackClientName.size()) // the = is because the 0 of the c string...
+	{
+		std::cerr << "JACK WARNING: jack client name \"" << _jackClientName 
+			<<"\" truncated to " << jackClientNameMaxSize << " characters"<<std::endl;
+		_jackClientName.resize(jackClientNameMaxSize-1);
+	}
+		
 	CLAM_ASSERT(not _jackClient, "JACKNetworkPlayer: Initializing a client without closing the previous one");
 	jack_status_t jackStatus;
 	_jackClient = jack_client_open ( _jackClientName.c_str(), JackNullOption, &jackStatus );
