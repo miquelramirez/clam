@@ -88,7 +88,7 @@ def wavsExport(scene):
 		buffer+=WavLineTemplate % vars()
 	return buffer	
 
-def geometryExport(scene,typeOfGeometry='geometry'):
+def geometryExport(scene,typeOfGeometry='geometry',skipOthersGeometries=False):
 	buffer=_geometryHeader
 	actors=[]
 	actors=Acoustic.getActors()
@@ -96,6 +96,9 @@ def geometryExport(scene,typeOfGeometry='geometry'):
 #	for object in scene.objects:
 #	print "---------- acoustic objects: %s" % list(Acoustic.getAcousticObjects(scene))
 	for object in Acoustic.getAcousticObjects(scene):
+		if skipOthersGeometries and Acoustic.getObjectSoundTypeGameProperty(object) != typeOfGeometry:
+			continue
+
 		impedance=None
 		diffusion=None
 		materialName=""
