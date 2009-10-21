@@ -13,7 +13,7 @@ sys.path.append( "%s/clam/CLAM/plugins/spacialization/blender" % os.getenv("HOME
 import Acoustic
 import exporter
 
-ListOfGeometriesToExport=[]
+ListOfGeometriesToExport=['geometry','occlusion_geometry','environment_geometry'] # as the default selection is to export all kind of geometries
 FilenameToExport="geometry.data"
 
 # buttons callbacks functions:
