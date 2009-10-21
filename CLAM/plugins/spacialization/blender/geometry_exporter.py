@@ -37,7 +37,7 @@ def callbackExportButton(event,value):
 	scene=Blender.Scene.GetCurrent()
 	buffer=""
 	for typeOfGeometry in ListOfGeometriesToExport:
-		buffer+="# exported %s geometries\n" % typeOfGeometry
+		buffer+="# exported \'%s\' \n" % typeOfGeometry
 		buffer+=exporter.geometryExport(scene,typeOfGeometry,True)
 #	print buffer
 	global FilenameToExport
