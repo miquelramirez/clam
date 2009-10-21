@@ -88,7 +88,7 @@ def wavsExport(scene):
 		buffer+=WavLineTemplate % vars()
 	return buffer	
 
-def geometryExport(scene):
+def geometryExport(scene,typeOfGeometry='geometry'):
 	buffer=_geometryHeader
 	actors=[]
 	actors=Acoustic.getActors()
@@ -110,8 +110,8 @@ def geometryExport(scene):
 		materials=Acoustic.getObjectMaterials(object)
 		if (materials==None or materials==[]): 
 			print "\tdoesn't contains acoustic materials,",
-			if Acoustic.getObjectSoundTypeGameProperty(object)!='geometry':
-				print 'no game object property "sound_type"=="geometry", skipping...'
+			if Acoustic.getObjectSoundTypeGameProperty(object) != typeOfGeometry:
+				print 'no game object property "sound_type"=="%s", skipping...' % typeOfGeometry
 				continue #if doesnt have any acoustic (by name) material, doesnt export
 			print 'WARNING: setting material as "%s", with default acoustic properties (impedance: %s, diff.: %s)' % (_defaultMaterialName,str(_defaultImpedance),str(_defaultDiffusion))
 			impedance=_defaultImpedance
