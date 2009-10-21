@@ -123,7 +123,7 @@ def getAcousticObjects(scene=Blender.Scene.GetCurrent()):
 		allTheObjects=[object]
 		allTheObjects+=[dupObject for dupObject,dupMatrix in object.DupObjects] #this is for dupliframe objects (like linked ones...)
 		for individualObject in allTheObjects:
-			if (getObjectMaterials(individualObject,scene)!=None or getObjectSoundTypeGameProperty(individualObject).find('geometry') != -1):
+			if (getObjectMaterials(individualObject,scene)!=None or str(getObjectSoundTypeGameProperty(individualObject)).find('geometry') != -1):
 				objects.append(individualObject)
 	return objects
 	
