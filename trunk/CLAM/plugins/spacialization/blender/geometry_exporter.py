@@ -48,6 +48,7 @@ def callbackExportButton(event,value):
 	
 
 def callbackChangeFilename(event,value):
+	global FilenameToExport
 #	print "callbackChangeFilename!"
 #	print "event: %s - value: %s" % ( str(event),str(value) )
 	FilenameToExport=str(value)
@@ -61,6 +62,7 @@ xLayoutMarks = { 'labels': 0 , 'sublabels': 120, 'setters': 260, 'buttons': 120}
 
 # specific layouts makers:
 def layoutListeners(listeners,label="listeners",offset=(0,0)):
+	global FilenameToExport
 	xPosition=offset[0]+xLayoutMarks['sublabels']
 	yPosition=offset[1]
 	Blender.Draw.Label(label,xPosition-60,yPosition-5,120,30)
