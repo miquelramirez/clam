@@ -36,7 +36,7 @@ class ClamNetwork() :
 		self.processings = self.document.findall("processing")
 		self.connections = dict(
 			incontrol = self.document.findall("control_connection/in"),
-			outcontrol = self.document.findall("control_connection/out"),
+			outcontrol =  self.document.findall("control_connection/out"),
 			inport = self.document.findall("port_connection/in"),
 			outport = self.document.findall("port_connection/out"),
 			)
@@ -134,6 +134,34 @@ class ClamNetwork() :
 			connection.text = ".".join([processing, newName])
 			self._log("Updating %s: %s.%s -> %s.%s" %(
 				connectorKind, processing, connector, processing, newName))
+	
+	def removeAllOutPortConnections(self, processingName):
+		network = self.document.getroot()
+		connections = network.findall('port_connection')
+		for connection in connections:
+			m = re.search(processingName, "%s" % connection.find('out').text)
+			if m:
+				network.remove(connection)
+				self._log("Removed %s from %s" %(m.group(0), 'port_connection'))
+	
+	def _findIndex(self, processingName):
+		children = self.document.getroot().getchildren()
+		for i, child in enumerate(children):
+			if child.tag == processingName:
+				return i
+		return 0
+		
+	def connectPorts(self, fromProcessing, fromNr, toProcessing, toNr):
+		index = self._findIndex('port_connection')
+				
+		network = self.document.getroot()
+		port_connection = ElementTree.Element('port_connection')
+		out = ElementTree.SubElement(port_connection, "out")
+		out.text = "%s.%s" % (fromProcessing, fromNr)
+		in_ = ElementTree.SubElement(port_connection, "in")
+		in_.text = "%s.%s" % (toProcessing, toNr)
+		
+		network.insert(index, port_connection)
 
 	def renameConfig(self, processingType, oldName, newName) :
 		"""Change the name of a config parameter"""
@@ -235,7 +263,12 @@ def test() :
 		'addConfig AudioMixer NInputs 96',
 		'removeConfig AudioMixer FrameSize',
 		'upgrade 1.4',
+		
+		#'removeAllOutPortConnections Vbap3D'
+		#'connectPorts Vbap3D 01 AudioSink 1'
 	]
+	
+
 	for command in commandFileContent :
 		network.runCommand(command)
 	try:
