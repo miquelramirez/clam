@@ -27,8 +27,8 @@ class HoaEncoderBuffer : public CLAM::Processing
 {
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 
-	CLAM::InPort<CLAM::Audio> _input;	// entrada con Buffer
-	OutPorts _outputs;
+	CLAM::InPort<CLAM::Audio> _input;	// input with Buffer
+	OutPorts _outputs;			// output with stream
 
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
@@ -68,7 +68,7 @@ public:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		const unsigned buffersize = BackendBufferSize();
+		const unsigned buffersize = 512; //BackendBufferSize();
 		unsigned order = _config.GetOrder();
 		if (order>3) return AddConfigErrorMessage(
 			"Ambisonics orders beyond 3rd are not supported");
@@ -101,21 +101,14 @@ public:
 	{
 		CLAM::Orientation incidence(_azimuth.GetLastValue(), _elevation.GetLastValue());
 
-		const CLAM::DataArray& input = _input.GetData().GetBuffer();	// con entrada buffer
-		
-		//std::cout << ">> size input: " << input.Size() << std::endl;
-
+		const CLAM::DataArray& input = _input.GetData().GetBuffer();
 		CLAM::SphericalHarmonicsDefinition *sh = CLAM::Orientation::sphericalHarmonics();
 
 		for (unsigned i=0; i<_outputs.size(); i++)
 		{
 			double gainToApply = incidence.sphericalHarmonic(sh[i]);
 			if (_config.GetUseFuMa()) gainToApply *= sh[i].weightFuMa;
-
 			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
-			
-			//std::cout << "\t>> size output: " << out.Size() << std::endl;
-
 			for (int sample=0; sample<input.Size(); sample++)
 				out[sample] = input[sample]*gainToApply;
 			_outputs[i]->Produce();
