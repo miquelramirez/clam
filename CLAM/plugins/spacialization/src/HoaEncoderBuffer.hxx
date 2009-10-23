@@ -1,7 +1,7 @@
 #ifndef HoaEncoderBuffer_hxx
 #define HoaEncoderBuffer_hxx
 #include <CLAM/InPort.hxx>
-#include <CLAM/AudioOutPort.hxx>
+#include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
 #include <CLAM/InControl.hxx>
@@ -25,7 +25,7 @@
 
 class HoaEncoderBuffer : public CLAM::Processing
 {
-	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
+	typedef std::vector<CLAM::OutPort<CLAM::Audio>*> OutPorts;
 
 	CLAM::InPort<CLAM::Audio> _input;	// input with Buffer
 	OutPorts _outputs;			// output with stream
@@ -68,7 +68,6 @@ public:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		const unsigned buffersize = 512; //BackendBufferSize();
 		unsigned order = _config.GetOrder();
 		if (order>3) return AddConfigErrorMessage(
 			"Ambisonics orders beyond 3rd are not supported");
@@ -78,9 +77,9 @@ public:
 		{
 			if (sh[i].order > order) break;
 			if (i<_outputs.size()) continue;
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( sh[i].name, this);
-			port->SetSize( buffersize );
-			port->SetHop( buffersize );
+			CLAM::OutPort<CLAM::Audio> * port = new CLAM::OutPort<CLAM::Audio>( sh[i].name, this);
+			port->SetSize(1);
+			port->SetHop(1);
 			_outputs.push_back( port );
 		}
 		unsigned actualSize=i;
@@ -108,7 +107,9 @@ public:
 		{
 			double gainToApply = incidence.sphericalHarmonic(sh[i]);
 			if (_config.GetUseFuMa()) gainToApply *= sh[i].weightFuMa;
-			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
+			CLAM::Audio & audioOut = _outputs[i]->GetData();
+			audioOut.SetSize(input.Size());
+			CLAM::DataArray& out =audioOut.GetBuffer();
 			for (int sample=0; sample<input.Size(); sample++)
 				out[sample] = input[sample]*gainToApply;
 			_outputs[i]->Produce();
