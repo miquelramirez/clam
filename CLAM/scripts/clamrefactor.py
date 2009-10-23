@@ -135,24 +135,46 @@ class ClamNetwork() :
 			self._log("Updating %s: %s.%s -> %s.%s" %(
 				connectorKind, processing, connector, processing, newName))
 	
+	def _removeConnections(self, processingName):
+		connections = dict(outport=[],)
+		for connection in self.connections['outport']:
+			if connection.text.split('.')[0] != processingName:
+				connections['outport'].append(processingName)
+		self.connections['outport'] = connections['outport']
+	
+	def _addConnections(self, fromProcessing, fromNr):
+		out = ElementTree.Element('out')
+		out.text = "%s.%s" % (fromProcessing, fromNr)
+		self.connections['outport'] .append(out)
+
+	def _findIndex(self, processingName):
+		children = self.document.getroot().getchildren()
+		
+		for i, child in enumerate(children):
+			if child.tag == processingName: # find first
+				for child in children[i:]: # loop from there
+					if child.tag != processingName:
+						break
+					i = i+1
+				return i
+		
+		# insert after last processing
+		return len(self.document.findall('processing'))
+
 	def removeAllOutPortConnections(self, processingName):
+		self._removeConnections(processingName) # keep internal data structure intact
 		network = self.document.getroot()
 		connections = network.findall('port_connection')
 		for connection in connections:
 			m = re.search(processingName, "%s" % connection.find('out').text)
 			if m:
 				network.remove(connection)
-				self._log("Removed %s from %s" %(m.group(0), 'port_connection'))
-	
-	def _findIndex(self, processingName):
-		children = self.document.getroot().getchildren()
-		for i, child in enumerate(children):
-			if child.tag == processingName:
-				return i
-		return 0
-		
+				self._log("Removed %s from %s" %(m.group(0), 'port_connection'))	
+			
 	def connectPorts(self, fromProcessing, fromNr, toProcessing, toNr):
-		index = self._findIndex('port_connection')
+		self._addConnections(fromProcessing, fromNr) # keep internal data structure intact
+		
+		index = self._findIndex('port_connection') 
 				
 		network = self.document.getroot()
 		port_connection = ElementTree.Element('port_connection')
@@ -162,6 +184,8 @@ class ClamNetwork() :
 		in_.text = "%s.%s" % (toProcessing, toNr)
 		
 		network.insert(index, port_connection)
+		self._log("Added %s.%s -> %s.%s in %s" %(fromProcessing, fromNr, \
+			toProcessing, toNr, 'port_connection'))	
 
 	def renameConfig(self, processingType, oldName, newName) :
 		"""Change the name of a config parameter"""
@@ -226,6 +250,7 @@ class ClamNetwork() :
 					processing.get("id"), name))
 
 	def moveConfig(self, processingType, name, beforeTag=None) :
+		raise "Not implemented!!!!"
 		if self._versionNotApplies() : return
 		for processing in self._processingsOfType(processingType) :
 			for param in processing.findall(name) :
