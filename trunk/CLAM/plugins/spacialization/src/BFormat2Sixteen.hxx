@@ -14,7 +14,7 @@
  @param[in] W [Port] W to be reproduced at the sweet-spot
  @param[in] X [Port] X ambisonics component
  @param[in] Y [Port] Y ambisonics component
- @param[out] "out AAA" [Ports] Audio signals to be emitted by the speaker at AAA. Here AAA is the angle in degrees for each one of the speakers.
+ @param[out] "AAA" [Ports] Audio signals to be emitted by the speaker at AAA. Here AAA is the position of the speaker.
  @bug It should take W,X,Y,Z instead pressure and velocity according to conventions
  @todo Review the rotation direction with the conventions.
  @ingroup SpatialAudio
@@ -112,7 +112,6 @@ public:
 			_cosAzimuths.push_back( std::cos( M_PI*speaker[i].azimuth/180 ) );
 			_sinElevations.push_back( std::sin( M_PI*speaker[i].elevation/180 ) );
 			_cosElevations.push_back( std::cos( M_PI*speaker[i].elevation/180 ) );
-
 		}
 		_nChannels=_outputs.size();
 		
