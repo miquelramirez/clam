@@ -41,9 +41,10 @@ void usage(const std::string & program)
 {
 	std::cout 
 		<< " Usage: " << program
-		<< " <networkfile> [-b <backend>] [--help]\n"
+		<< " <networkfile> [-b <backend>] [-p] [--help]\n"
 		<< "Options:\n"
 		<< " -b <backend>   The backend can be JACK, PortAudio or Auto.\n"
+		<< " -p             Play the network inmediately using the network name for client name.\n"
 		<< " --help         This help.\n"
 		<< std::endl;
 }
@@ -61,6 +62,9 @@ int main( int argc, char ** argv )
 
 	QString networkFile = "";
 	QString backendName = "Auto";
+	std::string clientName  = "CLAM network player";
+
+	bool startInPlay=false;
 
 	enum { none, backend } optionArgument = none;
 	int argument=0;
@@ -83,6 +87,20 @@ int main( int argc, char ** argv )
 			if (arg=="-b")
 			{
 				optionArgument=backend;
+				continue;
+			}
+			if (arg=="-p")
+			{
+				if (networkFile=="")
+				{
+					std::cerr<<"Can't start in play without define a network file"<<std::endl;
+					return -1;
+				}
+				QString undottedName = networkFile;
+				undottedName= undottedName.mid(undottedName.lastIndexOf("/")+1, -1);
+				undottedName.truncate(undottedName.indexOf("."));
+				clientName=undottedName.toLocal8Bit().constData();
+				startInPlay=true;
 				continue;
 			}
 			std::cerr << "Invalid option '" << arg << "'." << std::endl;
@@ -118,8 +136,15 @@ int main( int argc, char ** argv )
 	MainWindow w;
 	w.show();
 
+	w.setClientName(clientName);
 	w.setBackend(backendName);
-	if (networkFile!="") w.load(networkFile);
+	if (networkFile!="")
+	{
+		w.load(networkFile);
+		if (startInPlay) w.on_action_Play_triggered();
+			
+	}
+		
 	else w.clear();
 
 	return app.exec();

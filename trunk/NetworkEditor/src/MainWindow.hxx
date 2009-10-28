@@ -83,6 +83,7 @@ public:
 
 	MainWindow()
 		: _networkPlayer(0)
+		, _clientName("CLAM network player")
 	{
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
@@ -274,6 +275,11 @@ public:
 		updateCaption();
 	}
 
+	void setClientName(const std::string & clientName)
+	{
+		_clientName=clientName;
+	}
+
 	void setBackend(QString &backend)
 	{
 		QString backendLogo = ":/icons/images/editdelete.png"; // TODO: Change this icon
@@ -283,7 +289,7 @@ public:
 #ifdef USE_JACK
 		if (backend=="JACK" || backend=="Auto")
 		{
-			CLAM::JACKNetworkPlayer *jackPlayer = new CLAM::JACKNetworkPlayer();
+			CLAM::JACKNetworkPlayer *jackPlayer = new CLAM::JACKNetworkPlayer(_clientName);
 			if ( jackPlayer->IsWorking() )
 			{
 				backend = "JACK";
@@ -572,6 +578,7 @@ private:
 	QDialog * _aboutDialog;
 	CLAM::Network _network;
 	CLAM::NetworkPlayer * _networkPlayer;
+	std::string _clientName;
 	QString _networkFile;
 	QLabel * _backendLabel;
 	PlaybackIndicator * _playingLabel;
