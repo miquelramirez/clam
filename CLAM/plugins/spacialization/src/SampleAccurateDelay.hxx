@@ -38,15 +38,17 @@ namespace CLAM
 class SampleAccurateDelayConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (SampleAccurateDelayConfig , 1, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (SampleAccurateDelayConfig , 2, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, int, MaxDelayInSamples);
+	DYN_ATTRIBUTE (1, public, int, SampleRate);
 
 protected:
 	void DefaultInit(void)
 	{
 		AddAll();
 		UpdateData();
-		SetMaxDelayInSamples(48000);
+		SetMaxDelayInSamples(65536);
+		SetSampleRate(48000);
 	}
 };
 
@@ -62,51 +64,65 @@ class SampleAccurateDelay : public Processing
 	
 	SampleAccurateDelayConfig _config;
 	
-	// http://ccrma.stanford.edu/~jos/pasp/Variable_Delay_Lines.html#sec:dllvar
-	std::vector<TData> A;
-	signed N;
-	TData *rptr; // read ptr
-	TData *wptr; // write ptr
-
-	TData setdelay(int M) 
+	typedef std::vector<TData> buffer_t;
+	buffer_t delay_buffer_;
+	
+	unsigned sample_rate_, delay_in_samples_, delay_buffer_size_, read_index, write_index;
+	
+	void setdelay(float delay_in_sec) 
 	{
-		rptr = wptr - M;
-		while (rptr < &A[0]) { rptr += N; }
-		return 0;
+		unsigned delay_in_samples = delay_in_sec * sample_rate_;
+		
+		/*std::cout << "delay_in_samples=" << delay_in_samples
+				<< " delay_in_sec=" << delay_in_sec
+				<< " delay_buffer_size=" << delay_buffer_size_
+				<< " write_index=" << write_index 
+				<< " read_index=" << read_index 
+				;*/
+		
+		if (delay_in_samples_ > delay_buffer_size_) 
+			return;
+		
+		read_index = (write_index - delay_in_samples) % delay_buffer_size_;
+
+		/*std::cout << " read_index=" << read_index
+				<< std::endl;*/
+		
+		return;
 	}
-
+	
 	TData delayline(TData x)
-	{
-		TData y;
-		*wptr++ = x; 
-		y = *rptr++;
-		if (wptr-&A[0] >= N) { wptr -= N; }
-		if (rptr-&A[0] >= N) { rptr -= N; }
+	{	
+		delay_buffer_[write_index] = x;
+		TData y = delay_buffer_[read_index];
+		
+		read_index = (read_index+1)%delay_buffer_size_;
+		write_index = (write_index+1)%delay_buffer_size_;
+		
 		return y;
 	}
-
+	
 public:
 	const char* GetClassName() const { return "SampleAccurateDelay"; }
 	SampleAccurateDelay() 
 		: _in1("InputBuffer", this)
 		, _out1("OutputBuffer", this)
 		, _delayControl("VaryingDelay", this)
+		, delay_in_samples_(0.)
 	{
 		Configure( _config );
-		N = _config.GetMaxDelayInSamples();
-		A.resize(N);
-
-		rptr = &A[0]; // read ptr
-		wptr = &A[0]; // write ptr
-
-		std::fill(A.begin(), A.end(), 0.);
+		delay_buffer_.resize(_config.GetMaxDelayInSamples());
+		sample_rate_ = _config.GetSampleRate();
+		
+		read_index = write_index = delay_buffer_size_ = delay_buffer_.size(); 
+		
+		std::fill(delay_buffer_.begin(), delay_buffer_.end(), 0.);
 	}
 
 	bool Do()
 	{
-		
 		TControlData delay = _delayControl.GetLastValue();
-		setdelay(static_cast<int>(delay));
+		setdelay(delay);
 		
 		// copy into output
 		const CLAM::Audio& in = _in1.GetData();
@@ -117,9 +133,9 @@ public:
 		out.SetSize(size);
 		TData* outpointer = out.GetBuffer().GetPtr();
 		
-		for (unsigned i = 0; i < size; ++i)
+		for (unsigned i = 0; i < size; ++i) 
 			outpointer[i] = delayline(inpointer[i]);
-
+		
 		// Tell the ports this is done
 		_in1.Consume();
 		_out1.Produce();
