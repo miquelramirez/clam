@@ -13,6 +13,7 @@
 
 // Jack
 #include <jack/jack.h>
+#include <jack/transport.h> //hack by AkhIL
 
 // C standard
 #include <stdio.h>
@@ -211,6 +212,11 @@ static PyObject* IsOutput;
 static PyObject* IsTerminal;
 static PyObject* IsPhysical;
 static PyObject* CanMonitor;
+// hacked by AkhIL begin
+static PyObject* TransportStopped;
+static PyObject* TransportRolling;
+static PyObject* TransportStarting;
+// hacked by AkhIL end
 
 // Attempt to connect to the Jack server
 static PyObject* attach(PyObject* self, PyObject* args)
@@ -665,6 +671,91 @@ static PyObject* check_events(PyObject* self, PyObject *args)
     return d;
 }
 
+// hack by AkhIL begin
+static PyObject* get_frame_time(PyObject* self, PyObject* args)
+{
+    int frt;
+
+    if(pjc == NULL) {
+        PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
+        return NULL;
+    }
+    
+    frt = jack_frame_time(pjc);
+    return Py_BuildValue("i", frt);
+}
+static PyObject* get_current_transport_frame(PyObject* self, PyObject* args)
+{
+    int ftr;
+
+    if(pjc == NULL) {
+        PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
+        return NULL;
+    }
+    
+    ftr = jack_get_current_transport_frame(pjc);
+    return Py_BuildValue("i", ftr);
+}
+static PyObject* transport_locate (PyObject* self, PyObject* args)
+{
+    //jack_position_t pos;
+    //jack_transport_state_t transport_state;
+    jack_nframes_t newfr;
+
+    //int newfr;
+
+    if (! PyArg_ParseTuple(args, "i", &newfr))
+        return NULL;
+
+    if(pjc == NULL) {
+        PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
+        return NULL;
+    }
+
+    jack_transport_locate (pjc,newfr);
+    //transport_state = jack_transport_query (pjc, &pos);
+    //pos.frame = newfr;
+
+    return Py_None;
+}
+static PyObject* get_transport_state (PyObject* self, PyObject* args)
+{
+    //int state;
+
+    if(pjc == NULL) {
+        PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
+        return NULL;
+    }
+    
+    jack_transport_state_t transport_state;
+    transport_state = jack_transport_query (pjc, NULL);
+
+    return Py_BuildValue("i", transport_state);
+}
+static PyObject* transport_stop (PyObject* self, PyObject* args)
+{
+    if(pjc == NULL) {
+        PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
+        return NULL;
+    }
+
+    jack_transport_stop (pjc);
+
+    return Py_None;
+}
+static PyObject* transport_start (PyObject* self, PyObject* args)
+{
+    if(pjc == NULL) {
+        PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
+        return NULL;
+    }
+
+    jack_transport_start (pjc);
+
+    return Py_None;
+}
+// hack by AkhIL end
+
 
 // Python Module definition ---------------------------------------------------
 
@@ -683,6 +774,14 @@ static PyMethodDef pyjack_methods[] = {
   {"get_buffer_size",    get_buffer_size,         METH_VARARGS, "get_buffer_size():\n  Get the buffer size currently in use"},
   {"get_sample_rate",    get_sample_rate,         METH_VARARGS, "get_sample_rate():\n  Get the sample rate currently in use"},
   {"check_events",       check_events,            METH_VARARGS, "check_events():\n  Check for event notifications"},
+// hack by AkhIL begin
+  {"get_frame_time",	 get_frame_time,          METH_VARARGS, "get_frame_time():\n  Get current frame time"},
+  {"get_current_transport_frame", get_current_transport_frame,  METH_VARARGS, "get_current_transport_frame():\n  Get current transport frame"},
+  {"transport_locate",   transport_locate,	  METH_VARARGS, "transport_locate(frame):\n  Set current transport frame"},
+  {"get_transport_state", get_transport_state,    METH_VARARGS, "get_transport_state():\n  Get current transport state"},
+  {"transport_stop",	transport_stop,		  METH_VARARGS, "transport_stop():\n  Stopping transport"},
+  {"transport_start",	transport_start,		  METH_VARARGS, "transport_start():\n  Starting transport"},
+// hack by AkhIL end
   {NULL, NULL}
 };
  
@@ -708,6 +807,11 @@ initjack(void)
   IsTerminal = Py_BuildValue("i", JackPortIsTerminal);
   IsPhysical = Py_BuildValue("i", JackPortIsPhysical);
   CanMonitor = Py_BuildValue("i", JackPortCanMonitor);
+// hacked by AkhIL begin
+  TransportStopped = Py_BuildValue("i", JackTransportStopped);
+  TransportRolling = Py_BuildValue("i", JackTransportRolling);
+  TransportStarting = Py_BuildValue("i", JackTransportStarting);
+// hacked by AkhIL end
   
   PyDict_SetItemString(d, "Error", JackError);
   PyDict_SetItemString(d, "NotConnectedError", JackNotConnectedError);
@@ -719,6 +823,11 @@ initjack(void)
   PyDict_SetItemString(d, "IsTerminal", IsTerminal);
   PyDict_SetItemString(d, "IsPhysical", IsPhysical);
   PyDict_SetItemString(d, "CanMonitor", CanMonitor);
+// hacked by AkhIL begin
+  PyDict_SetItemString(d, "TransportStopped", TransportStopped);
+  PyDict_SetItemString(d, "TransportRolling", TransportRolling);
+  PyDict_SetItemString(d, "TransportStarting", TransportStarting);
+// hacked by AkhIL end
   
   // Enable Numeric module
   import_array();

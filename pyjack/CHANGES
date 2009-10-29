@@ -1,5 +1,17 @@
 CHANGES
 
+- Patched to add jack transport support (patch: http://sourceforge.net/tracker/index.php?func=detail&aid=1871688&group_id=207557&atid=1002156):
+	adds methods:
+		- get_frame_time()
+		- get_current_transport_frame()
+		- transport_locate(frame)
+		- get_transport_state()
+		- transport_stop()
+		- transport_start()
+	and values:
+		- TransportStopped
+		- TransportRolling
+		- TransportStarting
 
 - Replaced jack_client_new (deprecated) by jack_client_open in jack_attach
 - Rev 13561 (29 Oct 2009) : Commited pyjack-0.1 taken from sourceforge into acustica repository for later modifications

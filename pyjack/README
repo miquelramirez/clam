@@ -1,5 +1,7 @@
 PyJack version 0.1
 Copyright 2003, Andrew W. Schmeder <andy@a2hd.com>
+Transport support by Il'dar Akhmetgaleev in Jan 14 2008
+	(http://akhil.nm.ru) <akhilman at gmail dot com>
 
 This is open source software released under the GPL license.
 The full text of this license is found in the file 'LICENSE',
