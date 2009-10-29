@@ -225,8 +225,10 @@ static PyObject* attach(PyObject* self, PyObject* args)
     if (! PyArg_ParseTuple(args, "s", &cname))
         return NULL;
         
-    pjc = jack_client_new(cname);
+    jack_status_t status;
+    pjc = jack_client_open(cname, JackNoStartServer, &status);
     if(pjc == NULL) {
+        //TODO check status
         PyErr_SetString(JackNotConnectedError, "Failed to connect to Jack audio server.");
         return NULL;
     }
