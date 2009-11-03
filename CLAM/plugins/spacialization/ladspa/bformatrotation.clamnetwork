@@ -10,7 +10,7 @@ p, li { white-space: pre-wrap; }
   <processing id="0" position="186,344" size="214,141" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>4</NumberOfInputs>
-    <GuiOnly>0</GuiOnly>
+    <GuiOnly>1</GuiOnly>
   </processing>
 
   <processing id="BFormatRotationZoom" position="228,161" size="162,94" type="BFormatRotationZoom"/>
