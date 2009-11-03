@@ -1,8 +1,11 @@
 
 #include <CLAM/LadspaNetworkExporter.hxx>
 #include <CLAM/LadspaLibrary.hxx>
-//CLAM_EXTERNAL_FILE_DATA(mono2binaural_osc_embededNetwork,"../example-data/mono2binaural_osc.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(mono2binaural_osc_embededNetwork,"../example-data/mono2binaural_controls2.clamnetwork")
+
+
+CLAM_EXTERNAL_FILE_DATA(bformatrotation_osc_embededNetwork,"bformatrotation.clamnetwork")
+
+CLAM_EXTERNAL_FILE_DATA(mono2binaural_osc_embededNetwork,"../example-data/mono2binaural_osc.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat2binaural_rotation_osc_embededNetwork,"../example-data/bformat2binaural_rotation_osc.clamnetwork")
 
 CLAM_EXTERNAL_FILE_DATA(mono2bformat_embededNetwork,"../example-data/mono2bformat_nofaders.clamnetwork")
@@ -47,7 +50,13 @@ CLAM_EXTERNAL_FILE_DATA(vbap22,"vbap22.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(decoded_bformat15,"decoded_bformat15.clamnetwork")
 
 #include <iostream>
-
+/*
+Numbering:
+100-110 misc
+10XX vbap XX channels
+20XX bformat XX channels
+30XX hoa? testing
+*/
 extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 {
 	static CLAM::LadspaLibrary library;
@@ -65,15 +74,21 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 	static CLAM::LadspaNetworkExporter n103(library, bformat2binaural_embededNetwork, 103,
 			"bformat2binaural", "BFormat to binaural (HRTF)",
 			"BarcelonaMedia-Audio", "GNU GPL");
+
+
+	static CLAM::LadspaNetworkExporter n110(library, bformatrotation_osc_embededNetwork, 110,
+			"bformat_rotation_zoom", "BFormat rotation and zoom (osc controls)",
+			"BarcelonaMedia-Audio", "GNU GPL");
+
+/*
 	static CLAM::LadspaNetworkExporter n104(library, mono2binaural_embededNetwork, 104,
 			"mono2binaural", "Mono to binaural (HRTF)",
 			"BarcelonaMedia-Audio", "GNU GPL");
-/*
 	static CLAM::LadspaNetworkExporter n203(library, bformat2binaural_rotation_osc_embededNetwork, 203,
 			"bformat2binaural_rotation_osc", "BFormat to binaural (HRTF) with headtracking",
 			"BarcelonaMedia-Audio", "GNU GPL");
 	static CLAM::LadspaNetworkExporter n204(library, mono2binaural_osc_embededNetwork, 204,
-			"id_mono2binaural_headtracking", "Mono2Binaural_headtracking",
+			"mono2binaural_osc", "Mono to Binaural (HRTF) with headtracking",
 			"BarcelonaMedia-Audio", "GNU GPL");
 */
 /*
