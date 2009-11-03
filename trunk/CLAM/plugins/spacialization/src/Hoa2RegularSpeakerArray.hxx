@@ -6,6 +6,7 @@
 #include <CLAM/Audio.hxx>
 #include <CLAM/InControl.hxx>
 #include <CLAM/Filename.hxx>
+#include <CLAM/Enum.hxx>
 #include "Orientation.hxx"
 #include "SpeakerLayout.hxx"
 #include <cmath>
@@ -17,7 +18,8 @@
  @param Order [Config] The order of ambisonics that it will be fed with.
  @param SpeakerLayout [Config] A file containing the target speaker layout.
  @param[out] XX [Port] Ambisonics component were XX is one of W,X,Y,Z,R,S,T,U,V,K,L,M,N,O,P,Q.
- @param[out] AAA [Ports] Audio signals to be emitted by the speaker AAA. Here AAA is the label in the layout file.
+ @param[out] AAA [Ports] Audio signals to be emitted by the speaker AAA. \
+   Here AAA is the label in the layout file or 01, 02... if IgnoreLabels is set (the default)
  @see SpeakerLayout for a description of the file format.
  @todo Make the order configurable
  @todo Make the decoding configurable
@@ -27,12 +29,35 @@
 class Hoa2RegularSpeakerArray : public CLAM::Processing
 { 
 public:
+	class DecodingCriteria : public CLAM::Enum
+	{
+	public:
+		DecodingCriteria() : CLAM::Enum(ValueTable(), eInPhase2D) {}
+		DecodingCriteria(tValue v) : CLAM::Enum(ValueTable(), v) {}
+		DecodingCriteria(const std::string & s) : CLAM::Enum(ValueTable(), s) {}
+		virtual CLAM::Component * Species() const {return new DecodingCriteria; }
+		typedef enum {
+			eInPhase2D=0,
+			eInPhase3D=1,
+		} tEnum;
+		static tEnumValue * ValueTable()
+		{
+			static tEnumValue sValueTable[] =
+			{
+				{eInPhase2D,"In-phase 2D"},
+				{eInPhase3D,"In-phase 3D"},
+				{0,NULL}
+			};
+			return sValueTable;
+		}
+	};
 	class Config : public CLAM::ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 4, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, unsigned, Order);
 		DYN_ATTRIBUTE( 1, public, CLAM::InFilename, SpeakerLayout);
 		DYN_ATTRIBUTE( 2, public, bool, IgnoreLabels);
+		DYN_ATTRIBUTE( 3, public, DecodingCriteria, DecodingCriteria);
 	protected:
 		void DefaultInit()
 		{
@@ -40,7 +65,7 @@ public:
 			UpdateData();
 			SetOrder(1);
 			SetIgnoreLabels(true);
-		};
+		}
 	};
 private:
 	SpeakerLayout _layout;
@@ -67,6 +92,12 @@ public:
 		CopyAsConcreteConfig(_config, config);
 		unsigned buffersize = BackendBufferSize();
 		unsigned order = _config.GetOrder();
+		if (not _config.HasDecodingCriteria())
+		{
+			_config.AddDecodingCriteria();
+			_config.UpdateData();
+			_config.SetDecodingCriteria(DecodingCriteria::eInPhase2D);
+		}
 		bool errorHappened = false;
 		if (order>3)
 		{
@@ -195,23 +226,37 @@ private:
 	}
 	void ComputeDecoding(unsigned order)
 	{
+		DecodingCriteria criteria = _config.GetDecodingCriteria();
+		double (*decodingFunction)(unsigned, unsigned) = 
+			(criteria==DecodingCriteria::eInPhase2D ? &inphaseDecoding2D :
+			(criteria==DecodingCriteria::eInPhase3D ? &inphaseDecoding3D :
+			/* default */ &inphaseDecoding2D ));
+			
 		for (unsigned i=0; i<=order; i++)
-			_decoding[i] = inphaseDecoding(order, i);
+			_decoding[i] = decodingFunction(order, i);
 		for (unsigned i=order+1; i<4; i++)
 			_decoding[i] = 0;
 	}
-	double inphaseDecoding(unsigned maxOrder, unsigned order)
+	static double inphaseDecoding2D(unsigned maxOrder, unsigned order)
 	{
 		/*
 			1..n * 1..n / (1..n-l) / (1..n+l) = n-l+1..n / n+1..n+l
 		*/
 		double g = 1;
-		for (unsigned i=maxOrder-order+1; i<=maxOrder; i++)
-			g *= i;
-		for (unsigned i=maxOrder+1; i<=maxOrder+order; i++)
-			g /= i;
+		for (unsigned i=maxOrder-order+1; i<=maxOrder; i++) g *= i;
+		for (unsigned i=maxOrder+1; i<=maxOrder+order; i++) g /= i;
 		if (order) g *= 2;
 //		std::cout << "Inphase decoding " << maxOrder << "," << order << " " << g << std::endl;
+		return g;
+	}
+	static double inphaseDecoding3D(unsigned maxOrder, unsigned order)
+	{
+		double g=1;
+		// TODO: Optimize to two productories as 2D decoding but be careful with spacial cases
+		for (unsigned i=1; i<=maxOrder; i++) g*=i;
+		for (unsigned i=1; i<=maxOrder+1; i++) g*=i;
+		for (unsigned i=1; i<=maxOrder+order+1; i++) g/=i;
+		for (unsigned i=1; i<=maxOrder-order; i++) g/=i;
 		return g;
 	}
  
