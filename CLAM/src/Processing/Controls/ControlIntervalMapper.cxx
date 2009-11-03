@@ -1,4 +1,23 @@
-#include "ControlSum.hxx"
+/*
+ * Copyright (c) 2009 Fundacio Barcelona Media Universitat Pompeu Fabra.
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+#include "ControlIntervalMapper.hxx"
 #include "ProcessingFactory.hxx"
 
 namespace CLAM
@@ -6,52 +25,65 @@ namespace CLAM
 namespace Hidden
 {
 	static const char * metadata[] = {
-		"key", "ControlSum",
+		"key", "ControlIntervalMapper",
 		"category", "Controls",
-		"description", "ControlSum",
+		"description", "Receives a control and maps it using two intervals, the interval of the incoming value and the interval of the new value",
 		0
 	};
-	static FactoryRegistrator<ProcessingFactory, ControlSum> reg = metadata;
+	static FactoryRegistrator<ProcessingFactory, ControlIntervalMapper> reg = metadata;
 }
 
-void ControlSumConfig::DefaultInit()
+void ControlIntervalMapperConfig::DefaultInit()
 {
 	AddAll();
 	UpdateData();
-	SetRightTerm( 0.0 );
+	SetInputMin( 0.0 );
+	SetInputMax( 1.0 );
+	SetOutputMin( 0.0 );
+	SetOutputMax( 1.0 );
 }
 
-ControlSum::ControlSum()
-	: mInOperator1( "Operator 1", this , &ControlSum::InControlCallback )
-	, mInOperator2( "Operator 2", this , &ControlSum::InControlCallback )
-	, mOutControl( "Sum", this )
+ControlIntervalMapper::ControlIntervalMapper()
+	: _inControl( "input_control", this , &ControlIntervalMapper::InControlCallback )
+	, _outControl( "mapped_control", this )
+	, _min(0.)
+	, _max(1.)
+	, _newmin(0.)
+	, _newmax(1.)
 {
-	Configure( mConfig );	
+	Configure( _config );	
 }
 
-ControlSum::ControlSum( const ControlSumConfig& cfg ) 
-	: mInOperator1( "Operator 1", this , &ControlSum::InControlCallback )
-	, mInOperator2( "Operator 2", this , &ControlSum::InControlCallback )
-	, mOutControl( "Sum", this )
+ControlIntervalMapper::ControlIntervalMapper( const ControlIntervalMapperConfig& cfg ) 
+	: _inControl( "input_control", this , &ControlIntervalMapper::InControlCallback )
+	, _outControl( "mapped_control", this )
+	, _min(0.)
+	, _max(1.)
+	, _newmin(0.)
+	, _newmax(1.)
 { 
 	Configure( cfg );
 }
 
-bool ControlSum::ConcreteConfigure( const ProcessingConfig& cfg )
+bool ControlIntervalMapper::ConcreteConfigure( const ProcessingConfig& cfg )
 {
-	CopyAsConcreteConfig( mConfig, cfg );
-	mInOperator2.DoControl(mConfig.GetRightTerm());
+	CopyAsConcreteConfig( _config, cfg );
+	_min = _config.GetInputMin();
+	_max = _config.GetInputMax();
+	_newmin = _config.GetOutputMin();
+	_newmax = _config.GetOutputMax();
+	_inControl.SetBounds(_min,_max);
 	return true; 		
 }
 
-void ControlSum::InControlCallback(const TControlData & value)
+void ControlIntervalMapper::InControlCallback(const TControlData & value)
 {
-	TControlData op1 = mInOperator1.GetLastValue();
-	TControlData op2 = mInOperator2.GetLastValue();
-	mOutControl.SendControl(op1+op2);
+	TControlData newval = (( value - _min) / (_max - _min)) * 
+		( _newmax - _newmin) + _newmin;
+	_outControl.SendControl( newval );
 }
 
-bool ControlSum::Do()
+bool ControlIntervalMapper::Do()
 {
 	return true;
 }

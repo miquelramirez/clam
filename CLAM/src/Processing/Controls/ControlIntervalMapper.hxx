@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
+ * Copyright (c) 2009 Fundacio Barcelona Media Universitat Pompeu Fabra.
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,8 +18,8 @@
  *
  */
 
-#ifndef _ControlSum_
-#define _ControlSum_
+#ifndef _ControlIntervalMapper_
+#define _ControlIntervalMapper_
 
 #include "DataTypes.hxx"
 #include "Processing.hxx"
@@ -31,34 +30,41 @@
 namespace CLAM
 {
 
-class ControlSumConfig : public ProcessingConfig
+class ControlIntervalMapperConfig : public ProcessingConfig
 {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ControlSumConfig, 1, ProcessingConfig);
-		DYN_ATTRIBUTE ( 0, public, TData, RightTerm);
+		DYNAMIC_TYPE_USING_INTERFACE (ControlIntervalMapperConfig, 4, ProcessingConfig);
+		DYN_ATTRIBUTE ( 0, public, float, InputMin);
+		DYN_ATTRIBUTE ( 1, public, float, InputMax);
+		DYN_ATTRIBUTE ( 2, public, float, OutputMin);
+		DYN_ATTRIBUTE ( 3, public, float, OutputMax);
 
 	private:
 		void DefaultInit();
 };
 
-class ControlSum : public Processing
+class ControlIntervalMapper : public Processing
 {
-	ControlSumConfig mConfig;
-	FloatInControl mInOperator1;
-	FloatInControl mInOperator2;
-	FloatOutControl mOutControl;
+	ControlIntervalMapperConfig _config;
+	FloatInControl _inControl;
+	FloatOutControl _outControl;
+	float _min;
+	float _max;
+	float _newmin;
+	float _newmax;
+
 	void InControlCallback(const TControlData & value);
 
 	public:
 
-		const char *GetClassName() const { return "ControlSum"; }
+		const char *GetClassName() const { return "ControlIntervalMapper"; }
 
-		ControlSum();
-		ControlSum( const ControlSumConfig& cfg );
+		ControlIntervalMapper();
+		ControlIntervalMapper( const ControlIntervalMapperConfig& cfg );
 
 		bool ConcreteConfigure( const ProcessingConfig& cfg ); 
 
-		const ProcessingConfig& GetConfig() const { return mConfig; }
+		const ProcessingConfig& GetConfig() const { return _config; }
 
 		bool Do();
 };
