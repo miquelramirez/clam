@@ -10,17 +10,10 @@ p, li { white-space: pre-wrap; }
   <processing id="0" position="186,344" size="214,141" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>4</NumberOfInputs>
-    <GuiOnly>1</GuiOnly>
+    <GuiOnly>0</GuiOnly>
   </processing>
 
   <processing id="BFormatRotationZoom" position="228,161" size="162,94" type="BFormatRotationZoom"/>
-
-  <processing id="ControlIntervalMapper" position="349,81" size="160,55" type="ControlIntervalMapper">
-    <InputMin>10</InputMin>
-    <InputMax>180</InputMax>
-    <OutputMin>4</OutputMin>
-    <OutputMax>0.25</OutputMax>
-  </processing>
 
   <processing id="MultiLibloSource" position="220,17" size="125,55" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/listener0/ypr</OscPath>
@@ -31,7 +24,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="MultiLibloSource_1" position="334,2" size="138,55" type="MultiLibloSource">
-    <OscPath>/SpatDIF/listener/listener0/fov</OscPath>
+    <OscPath>/SpatDIF/listener/listener0/dominance</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>f</OSCTypeSpec>
     <EnableMulticast>0</EnableMulticast>
@@ -111,16 +104,6 @@ p, li { white-space: pre-wrap; }
   </port_connection>
 
   <control_connection>
-    <out>ControlIntervalMapper.mapped_control</out>
-    <in>BFormatRotationZoom.dominance</in>
-  </control_connection>
-
-  <control_connection>
-    <out>ControlIntervalMapper.mapped_control</out>
-    <in>0.ControlPrinter_3</in>
-  </control_connection>
-
-  <control_connection>
     <out>MultiLibloSource.0</out>
     <in>BFormatRotationZoom.azimuth</in>
   </control_connection>
@@ -152,7 +135,12 @@ p, li { white-space: pre-wrap; }
 
   <control_connection>
     <out>MultiLibloSource_1.0</out>
-    <in>ControlIntervalMapper.input_control</in>
+    <in>BFormatRotationZoom.dominance</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSource_1.0</out>
+    <in>0.ControlPrinter_3</in>
   </control_connection>
 
 </network>
