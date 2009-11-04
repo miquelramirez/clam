@@ -12,6 +12,14 @@
 #	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
 #endif
 
+#ifdef _MSC_VER
+#define WINDOWS_MEAN_AND_LEAN
+#include <windows.h>
+#define sleep(n) Sleep(1000*(n))
+#else
+#include <unistd.h>
+#endif
+
 int usage(const std::string & program)
 {
 		std::cout << " Usage: " << program
@@ -105,7 +113,8 @@ int main( int argc, char *argv[] )
 	{
 		std::cout << QObject::tr("Non interface mode set. Press Ctrl-C to end.").toLocal8Bit().constData() << std::endl;
 		prototype.Start();
-		while (true) ; // Until Ctrl-C
+		while (true) 
+			sleep(1); // Until Ctrl-C
 	}
 	if (! prototype.LoadInterface( uiFile.c_str() ) ) return -1;
 	prototype.Show();
