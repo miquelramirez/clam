@@ -4,4 +4,12 @@ https://sourceforge.net/projects/py-jack/
 
 The reason why we have commit it here is that we want to maintain a set of patches. Hopefully they will eventually be integrated with the original project.
 
+For local install
+python setup.py install --home=~/local
+export PYTHONPATH=~/local/lib/python"
+
+
 The clam team
+
+
+
