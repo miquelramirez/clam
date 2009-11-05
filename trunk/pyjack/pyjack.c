@@ -61,7 +61,7 @@ void pyjack_init() {
     input_pipe[0] = 0;
     input_pipe[1] = 0;
     output_pipe[0] = 0;
-    output_pipe[0] = 0;
+    output_pipe[1] = 0;
     
     // Initialize unamed, raw datagram-type sockets...
     if (socketpair(PF_UNIX, SOCK_DGRAM, 0, input_pipe) == -1) {
@@ -428,13 +428,12 @@ static PyObject* get_connections(PyObject* self, PyObject* args)
     return plist;
 }
 
+
 // connect_port
 static PyObject* port_connect(PyObject* self, PyObject* args)
 {
     char* src_name;
     char* dst_name;
-    jack_port_t* src;
-    jack_port_t* dst;
     
     if(pjc == NULL) {
         PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
@@ -444,19 +443,24 @@ static PyObject* port_connect(PyObject* self, PyObject* args)
     if (! PyArg_ParseTuple(args, "ss", &src_name, &dst_name))
         return NULL;
 
+    jack_port_t * src = jack_port_by_name(pjc, src_name);
+    if (!src) {
+        PyErr_SetString(JackUsageError, "Non existing source port.");
+	return NULL;
+        }
+    jack_port_t * dst = jack_port_by_name(pjc, dst_name);
+    if (!dst) {
+        PyErr_SetString(JackUsageError, "Non existing destination port.");
+	return NULL;
+        }
     if(! active) {
-        src = jack_port_by_name(pjc, src_name);
-        dst = jack_port_by_name(pjc, dst_name);
         if(jack_port_is_mine(pjc, src) || jack_port_is_mine(pjc, dst)) {
-            PyErr_SetString(JackNotConnectedError, "Jack client must be activated to connect own ports.");
-            free(src);
-            free(dst);
+            PyErr_SetString(JackUsageError, "Jack client must be activated to connect own ports.");
             return NULL;
         }
-        free(src);
-        free(dst);
     }
     
+printf("connecting: %s -> %s\n", src_name, dst_name);
     if(jack_connect(pjc, src_name, dst_name) != 0) {
         PyErr_SetString(JackError, "Failed to connect ports.");
         return NULL;
@@ -841,5 +845,5 @@ initjack(void)
   return;
  
 fail:
-  Py_FatalError("Failed to initialize module pyjackc");
+  Py_FatalError("Failed to initialize module pyjack");
 }
