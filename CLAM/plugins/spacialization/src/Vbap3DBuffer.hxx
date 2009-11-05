@@ -1,7 +1,7 @@
 #ifndef Vbap3DBuffer_hxx
 #define Vbap3DBuffer_hxx
-#include <CLAM/AudioInPort.hxx>
-#include <CLAM/AudioOutPort.hxx>
+#include <CLAM/InPort.hxx>
+#include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
 #include <CLAM/InControl.hxx>
@@ -56,8 +56,10 @@ private:
 	typedef std::vector<unsigned> Triangle;
 
 	SpeakerLayout _layout;
-	CLAM::AudioInPort _w;
-	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
+	CLAM::InPort<CLAM::Audio> _w;
+	//typedef std::vector<CLAM::AudioOutPort*> OutPorts;
+	typedef std::vector<CLAM::OutPort<CLAM::Audio>*> OutPorts;
+
 	OutPorts _outputs;
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
@@ -367,7 +369,7 @@ public:
 		}
 
 		const unsigned buffersize = BackendBufferSize();
-		ResizePortsToLayout(buffersize);
+		ResizePortsToLayout();
 
 		if (not _config.HasSpeakerLayout() or _config.GetTriangulation() == "")
 		{
@@ -381,8 +383,8 @@ public:
 
 		_elevation.DoControl(0.);
 		_azimuth.DoControl(0.);
-		_w.SetSize(buffersize);
-		_w.SetHop(buffersize);
+		_w.SetSize(1);
+		_w.SetHop(1);
 		return true;
 	}
 	
@@ -519,13 +521,18 @@ public:
 	
 		// copy audio in->out
 		// TODO extract method
-		const CLAM::DataArray& w = _w.GetAudio().GetBuffer();
+		const CLAM::DataArray& w = _w.GetData().GetBuffer();
 		const CLAM::TData * in = w.GetPtr();
 		const unsigned size = w.Size();
 		const float sizeInverse=1./size;
 		for (unsigned i=0; i<_outputs.size(); i++)
 		{
-			CLAM::TData * out =_outputs[i]->GetAudio().GetBuffer().GetPtr();
+			// CLAM::TData * out =_outputs[i]->GetAudio().GetBuffer().GetPtr();
+			CLAM::Audio & audioOut = _outputs[i]->GetData();
+			audioOut.SetSize(size);
+
+			CLAM::TData * out = audioOut.GetBuffer().GetPtr();
+
 			const float gainDifference=_activeSpeakersActualGains[i]-_activeSpeakersLastGains[i]; 
 
 			if (fabs(gainDifference)>deltaNumeric() or _activeSpeakersActualGains[i]>deltaAngle())
@@ -540,13 +547,14 @@ public:
 				for (int sample=0; sample<size; sample++)
 					out[sample] = 0.;
 			_activeSpeakersLastGains[i]=_activeSpeakersActualGains[i];
+			
 			_outputs[i]->Produce();
 		}
 		_w.Consume();
 		return true;
 	}
 private:
-	void ResizePortsToLayout(unsigned buffersize)
+	void ResizePortsToLayout()
 	{
 		// Set up the outputs according to the layout
 		unsigned speakerToUpdate = firstDirtySpeaker();
@@ -554,8 +562,8 @@ private:
 		for (unsigned speaker=0; speaker<speakerToUpdate; speaker++)
 		{
 			// Update the size and hop just in case
-			_outputs[speaker]->SetSize( buffersize );
-			_outputs[speaker]->SetHop( buffersize );
+			_outputs[speaker]->SetSize( 1 );
+			_outputs[speaker]->SetHop( 1 );
 		}
 		for (unsigned speaker=speakerToUpdate ; speaker<_outputs.size(); speaker++)
 			delete _outputs[speaker];
@@ -563,9 +571,9 @@ private:
 		// adding new speakers
 		for (unsigned speaker=speakerToUpdate; speaker<_layout.size(); speaker++)
 		{
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( portName(speaker), this);
-			port->SetSize( buffersize );
-			port->SetHop( buffersize );
+			CLAM::OutPort<CLAM::Audio> * port = new CLAM::OutPort<CLAM::Audio>( portName(speaker), this);
+			port->SetSize( 1 );
+			port->SetHop( 1 );
 			_outputs.push_back( port );
 		}
 	}

@@ -28,7 +28,7 @@ class HoaEncoderBuffer : public CLAM::Processing
 	typedef std::vector<CLAM::OutPort<CLAM::Audio>*> OutPorts;
 
 	CLAM::InPort<CLAM::Audio> _input;	// input with Buffer
-	OutPorts _outputs;			// output with stream
+	OutPorts _outputs;			// output with Buffer
 
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
