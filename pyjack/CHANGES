@@ -14,4 +14,4 @@ CHANGES
 		- TransportStarting
 
 - Replaced jack_client_new (deprecated) by jack_client_open in jack_attach
-- Rev 13561 (29 Oct 2009) : Commited pyjack-0.1 taken from sourceforge into acustica repository for later modifications
+- Rev 13561 (29 Oct 2009) : Commited pyjack-0.1 taken from sourceforge and added into the clam repository for later modifications
