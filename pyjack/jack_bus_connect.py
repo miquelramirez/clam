@@ -35,7 +35,7 @@ def _ports_of_client(client) :
 	return [port for port in ports if _client_from_port(port) == client]
 
 def connect(source, target) :
-	os.system('jack_connect %s %s' % (source, target))
+	jack.connect(source,target)
 	time.sleep( connect_wait_time )
 
 def _init() :
