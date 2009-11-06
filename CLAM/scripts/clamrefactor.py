@@ -139,7 +139,8 @@ class ClamNetwork() :
 		connections = dict(outport=[],)
 		for connection in self.connections['outport']:
 			if connection.text.split('.')[0] != processingName:
-				connections['outport'].append(processingName)
+				print connection.text
+				connections['outport'].append(connection)
 		self.connections['outport'] = connections['outport']
 	
 	def _addConnections(self, fromProcessing, fromNr):
@@ -159,34 +160,52 @@ class ClamNetwork() :
 				return i
 		
 		# insert after last processing
-		return len(self.document.findall('processing'))
+		return len(self.document.findall('processing'))+1
 
-	def removeAllOutPortConnections(self, processingName):
+	def removeOutConnections(self, connectionType, processingName):
 		self._removeConnections(processingName) # keep internal data structure intact
 		network = self.document.getroot()
-		connections = network.findall('port_connection')
+		connections = network.findall(connectionType)
 		for connection in connections:
 			m = re.search(processingName, "%s" % connection.find('out').text)
 			if m:
 				network.remove(connection)
-				self._log("Removed %s from %s" %(m.group(0), 'port_connection'))	
+				self._log("Removed %s from %s" %(m.group(0), connectionType))	
 			
-	def connectPorts(self, fromProcessing, fromNr, toProcessing, toNr):
+	def  addConnection(self, connectionType, fromProcessing, fromNr, toProcessing, toNr):
 		self._addConnections(fromProcessing, fromNr) # keep internal data structure intact
 		
-		index = self._findIndex('port_connection') 
+		index = self._findIndex(connectionType)
 				
 		network = self.document.getroot()
-		port_connection = ElementTree.Element('port_connection')
-		out = ElementTree.SubElement(port_connection, "out")
+		connection = ElementTree.Element(connectionType)
+		out = ElementTree.SubElement(connection, "out")
 		out.text = "%s.%s" % (fromProcessing, fromNr)
-		in_ = ElementTree.SubElement(port_connection, "in")
+		in_ = ElementTree.SubElement(connection, "in")
 		in_.text = "%s.%s" % (toProcessing, toNr)
 		
-		network.insert(index, port_connection)
+		network.insert(index, connection)
 		self._log("Added %s.%s -> %s.%s in %s" %(fromProcessing, fromNr, \
-			toProcessing, toNr, 'port_connection'))	
-
+			toProcessing, toNr, connectionType))	
+	
+	def duplicateProcessing(self, processingId, processingIdnew, xOffset, yOffset):
+		processing = self._processingOfId(processingId) 	
+		newProcessing = processing.makeelement(processing.tag,processing.attrib)
+		newProcessing.attrib['id']=processingIdnew
+		x, y = eval(newProcessing.attrib['position'])
+		newProcessing.attrib['position'] = '%s, %s' % (x+xOffset, y+yOffset)
+		
+		for element in processing.getchildren():
+			newProcessing.append(element)
+		
+		index = self._findIndex(processingId) 
+		network = self.document.getroot()
+		network.insert(index, newProcessing)
+		
+		# keep internal data structure intact
+		self.processings.append(newProcessing)
+		self._log("Duplicated %s as %s" %(processingId, processingIdnew))
+		
 	def renameConfig(self, processingType, oldName, newName) :
 		"""Change the name of a config parameter"""
 		if self._versionNotApplies() : return
@@ -288,9 +307,10 @@ def test() :
 		'addConfig AudioMixer NInputs 96',
 		'removeConfig AudioMixer FrameSize',
 		'upgrade 1.4',
-		
-		#'removeAllOutPortConnections Vbap3D'
-		#'connectPorts Vbap3D 01 AudioSink 1'
+				
+		#'removeOutConnections Vbap3D'
+		#'addConnection Vbap3D 01 AudioSink 1'
+		#'duplicateProcessing AudioMixer AudioMixerCopy_1 0 100',
 	]
 	
 
