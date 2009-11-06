@@ -18,11 +18,11 @@
  *
  */
 
-#ifndef SAMPLEACCURATEBUFFERDELAY_INCLUDED
-#define SAMPLEACCURATEBUFFERDELAY_INCLUDED
+#ifndef SAMPLEACCURATESTREAMDELAY_INCLUDED
+#define SAMPLEACCURATESTREAMDELAY_INCLUDED
 
-#include <CLAM/InPort.hxx>
-#include <CLAM/OutPort.hxx>
+#include <CLAM/AudioInPort.hxx>
+#include <CLAM/AudioOutPort.hxx>
 #include "SampleAccurateDelay.hxx"
 
 namespace CLAM
@@ -31,31 +31,31 @@ namespace CLAM
 /**
  *
  */
-class SampleAccurateBufferDelay : public SampleAccurateDelay
+class SampleAccurateStreamDelay : public SampleAccurateDelay
 {
-	InPort<Audio> _in1;
-	OutPort<Audio> _out1;
+	AudioInPort _in1;
+	AudioOutPort _out1;
 
 public:
-	SampleAccurateBufferDelay(const Config& config = Config()) 
-		: _in1("InputBuffer", this)
-		, _out1("OutputBuffer", this)
+	SampleAccurateStreamDelay(const Config& config = Config()) 
+		: _in1("InputStream", this)
+		, _out1("OutputStream", this)
 	{
 		Configure( config );
 	}
 	
-	const char* GetClassName() const { return "SampleAccurateBufferDelay"; }
+	const char* GetClassName() const { return "SampleAccurateStreamDelay"; }
 	
 	bool Do()
 	{
 		TControlData delay = _delayControl.GetLastValue();
 		setDelay(delay);
 		
-		const CLAM::Audio& in = _in1.GetData();
+		const CLAM::Audio& in = _in1.GetAudio();
 		const TData* inpointer = in.GetBuffer().GetPtr();		
 		unsigned size = in.GetSize();
 		
-		CLAM::Audio& out = _out1.GetData();
+		CLAM::Audio& out = _out1.GetAudio();
 		out.SetSize(size);
 		TData* outpointer = out.GetBuffer().GetPtr();
 		
