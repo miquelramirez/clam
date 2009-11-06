@@ -9,7 +9,7 @@
 
 // Python includes
 #include "Python.h"
-#include "Numeric/arrayobject.h"
+#include "numpy/arrayobject.h"
 
 // Jack
 #include <jack/jack.h>
@@ -163,7 +163,6 @@ int pyjack_process(jack_nframes_t n, void* arg) {
     } else {
         //printf("not enough data; skipping output\n");
     }
-
     return 0;
 }
 
@@ -446,12 +445,12 @@ static PyObject* port_connect(PyObject* self, PyObject* args)
     jack_port_t * src = jack_port_by_name(pjc, src_name);
     if (!src) {
         PyErr_SetString(JackUsageError, "Non existing source port.");
-	return NULL;
+        return NULL;
         }
     jack_port_t * dst = jack_port_by_name(pjc, dst_name);
     if (!dst) {
         PyErr_SetString(JackUsageError, "Non existing destination port.");
-	return NULL;
+        return NULL;
         }
     if(! active) {
         if(jack_port_is_mine(pjc, src) || jack_port_is_mine(pjc, dst)) {
@@ -460,7 +459,6 @@ static PyObject* port_connect(PyObject* self, PyObject* args)
         }
     }
     
-printf("connecting: %s -> %s\n", src_name, dst_name);
     if(jack_connect(pjc, src_name, dst_name) != 0) {
         PyErr_SetString(JackError, "Failed to connect ports.");
         return NULL;
@@ -572,7 +570,7 @@ static PyObject* deactivate(PyObject* self, PyObject* args)
   */
 static PyObject* process(PyObject* self, PyObject *args)
 {
-    int i, j, c, r;
+    int j, c, r;
     PyArrayObject *input_array;
     PyArrayObject *output_array;
     
@@ -612,7 +610,6 @@ static PyObject* process(PyObject* self, PyObject *args)
     // If we are out of sync, there might be bad data in the buffer
     // So we have to throw that away first...
     
-    i = 1;
     r = read(input_pipe[0], input_buffer_1, input_buffer_size);
     
     // Copy data into array...
@@ -620,13 +617,13 @@ static PyObject* process(PyObject* self, PyObject *args)
         for(j = 0; j < buffer_size; j++) {
             memcpy(
                 input_array->data + (c*input_array->strides[0] + j*input_array->strides[1]), 
-                &input_buffer_1[j + (c*buffer_size)], 
+                input_buffer_1 + j + (c*buffer_size), 
                 sizeof(float)
             );
         }
     }
     
-    if(! iosync) {
+    if(0 && ! iosync) {
         PyErr_SetString(JackInputSyncError, "Input data stream is not synchronized.");
         return NULL;
     }
@@ -640,6 +637,7 @@ static PyObject* process(PyObject* self, PyObject *args)
             );
         }
     }
+
     // Send... raise an exception if the output data stream is full.
     r = write(output_pipe[1], output_buffer_1, output_buffer_size);
     if(r != output_buffer_size) {
