@@ -458,8 +458,8 @@ static PyObject* port_connect(PyObject* self, PyObject* args)
             return NULL;
         }
     }
-    
-    if(jack_connect(pjc, src_name, dst_name) != 0) {
+    int error = jack_connect(pjc, src_name, dst_name);
+    if (error !=0 && error != EEXIST) {
         PyErr_SetString(JackError, "Failed to connect ports.");
         return NULL;
     }
@@ -482,9 +482,22 @@ static PyObject* port_disconnect(PyObject* self, PyObject* args)
     if (! PyArg_ParseTuple(args, "ss", &src_name, &dst_name))
         return NULL;
     
-    if(jack_disconnect(pjc, src_name, dst_name) != 0) {
-        PyErr_SetString(JackError, "Failed to connect ports.");
+    jack_port_t * src = jack_port_by_name(pjc, src_name);
+    if (!src) {
+        PyErr_SetString(JackUsageError, "Non existing source port.");
         return NULL;
+        }
+    jack_port_t * dst = jack_port_by_name(pjc, dst_name);
+    if (!dst) {
+        PyErr_SetString(JackUsageError, "Non existing destination port.");
+        return NULL;
+        }
+
+    if(jack_port_connected_to(src, dst_name)) {
+        if(jack_disconnect(pjc, src_name, dst_name) != 0) {
+            PyErr_SetString(JackError, "Failed to connect ports.");
+            return NULL;
+        }
     }
     
     Py_INCREF(Py_None);
