@@ -25,12 +25,14 @@ bool AudioSourceBuffer::Do()
 	for (Ports::iterator it = _ports.begin(); it != _ports.end(); ++it)
 	{
 		Port& port = (*it);
-		AudioOutPort* out = port.mPort;
+		OutPort<Audio>* out = port.mPort;
 
-		CLAM::Audio& so=out->GetAudio();
+		CLAM::Audio& so=out->GetData();
 		CLAM_DEBUG_ASSERT(!port.mFloatBuffer || !port.mDoubleBuffer, "AudioSourceBuffer: Just one buffer should be set");
 		CLAM_DEBUG_ASSERT(port.mFloatBuffer || port.mDoubleBuffer, "AudioSourceBuffer: No external buffer set");
 		CLAM_DEBUG_ASSERT(port.mBufferSize>0, "AudioSourceBuffer: internal buffer size must be greater than 0");
+		
+		so.GetBuffer().SetSize(port.mBufferSize);
 		CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
 
 		if (port.mFloatBuffer)
@@ -52,8 +54,8 @@ void AudioSourceBuffer::SetExternalBuffer(const float* buf, unsigned nframes, un
 {
 	CLAM_ASSERT(index < _ports.size(), "AudioOutPort index out of range");
 	Port& port = _ports[index];
-	port.mPort->SetSize(nframes);
-	port.mPort->SetHop(nframes);
+	port.mPort->SetSize(1);
+	port.mPort->SetHop(1);
 	port.mFloatBuffer = buf;
 	port.mBufferSize = nframes;
 	port.mDoubleBuffer = 0;
@@ -63,8 +65,8 @@ void AudioSourceBuffer::SetExternalBuffer(const double* buf, unsigned nframes, u
 {
 	CLAM_ASSERT(index < _ports.size(), "AudioOutPort index out of range");
 	Port& port = _ports[index];
-	port.mPort->SetSize(nframes);
-	port.mPort->SetHop(nframes);
+	port.mPort->SetSize(1);
+	port.mPort->SetHop(1);
 	port.mDoubleBuffer = buf;
 	port.mBufferSize = nframes;
 	port.mFloatBuffer = 0;

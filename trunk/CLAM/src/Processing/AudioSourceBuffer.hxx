@@ -2,7 +2,8 @@
 #define AudioSourceBuffer_hxx
 
 #include "Processing.hxx"
-#include "AudioOutPort.hxx"
+#include "OutPort.hxx"
+#include "Audio.hxx"
 
 #include <sstream>
 
@@ -17,14 +18,15 @@ namespace CLAM
 			const float* mFloatBuffer;
 			const double* mDoubleBuffer;
 			unsigned mBufferSize;
-			AudioOutPort* mPort;
+			//AudioOutPort* mPort;
+			OutPort<Audio>* mPort;
 
 			Port() 
 			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(0) 
 			{
 			}
 
-			explicit Port(AudioOutPort* p) 
+			explicit Port(OutPort<Audio>* p) 
 			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(p) 
 			{
 			}
@@ -82,8 +84,8 @@ namespace CLAM
 			{
 				CLAM_ASSERT(index < _ports.size(), "AudioOutPort index out of range");
 				Port& port = _ports[index];
-				port.mPort->SetSize(val);
-				port.mPort->SetHop(val);
+				port.mPort->SetSize(1);
+				port.mPort->SetHop(1);
 			}
 
 			void SetExternalBuffer(const float* buf, unsigned nframes, unsigned index);
@@ -124,7 +126,7 @@ namespace CLAM
 				_ports.resize(sources);
 
 				for (unsigned port = oldSize; port < sources; ++port)
-					_ports[port] = Port(new AudioOutPort(Portname(port), this));
+					_ports[port] = Port(new OutPort<Audio>(Portname(port), this));
 			}
 
 			std::string const Portname(unsigned port) const
