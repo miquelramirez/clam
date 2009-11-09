@@ -578,6 +578,15 @@ static PyObject* deactivate(PyObject* self, PyObject* args)
     return Py_None;
 }
 
+static PyObject * get_client_name(PyObject* self, PyObject* args)
+{
+    if(pjc == NULL) {
+        PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
+        return NULL;
+    }
+    return Py_BuildValue("s", jack_get_client_name(pjc));
+}
+
 /** Commit a chunk of audio for the outgoing stream, if any.
   * Return the next chunk of audio from the incoming stream, if any
   */
@@ -782,6 +791,7 @@ static PyMethodDef pyjack_methods[] = {
   {"connect",            port_connect,            METH_VARARGS, "connect(source, destination):\n  Connect two ports, given by name"},
   {"disconnect",         port_disconnect,         METH_VARARGS, "disconnect(source, destination):\n  Disconnect two ports, given by name"},
   {"process",            process,                 METH_VARARGS, "process(output_array, input_array):\n  Exchange I/O data with RT Jack thread"},
+  {"get_client_name",    get_client_name,         METH_VARARGS, "client_name():\n  Returns the actual name of the client"},
   {"register_port",      register_port,           METH_VARARGS, "register_port(name, flags):\n  Register a new port for this client"},
   {"get_ports",          get_ports,               METH_VARARGS, "get_ports():\n  Get a list of all ports in the Jack graph"},
   {"get_port_flags",     get_port_flags,          METH_VARARGS, "get_port_flags():\n  Return flags of a port (flags are bits in an integer)"},

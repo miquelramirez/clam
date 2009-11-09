@@ -1,5 +1,6 @@
 CHANGES
 
+- Added a get_client_name function
 - Fixed SEGFAULT when connecting unexisting ports in deactivated state
 - Fixed memory corruption (free of not owned memory) when connecting ports in deactivated state
 - Fix: output_pipe[0] was not initialized
