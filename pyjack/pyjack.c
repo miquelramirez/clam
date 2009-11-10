@@ -58,11 +58,7 @@ typedef struct {
 pyjack_client_t global_client;
 
 pyjack_client_t * self_or_global_client(PyObject * self) {
-    if (!self) {
-        puts("self_or_global_client: global");
-        return & global_client;
-    }
-    puts("self_or_global_client: self");
+    if (!self) return & global_client;
     return (pyjack_client_t*) self;
 }
 
@@ -300,10 +296,11 @@ static PyObject* register_port(PyObject* self, PyObject* args)
 {
     pyjack_client_t * client = self_or_global_client(self);
 
-    jack_port_t* jp;
     int flags;
     char* pname;
-
+    if (! PyArg_ParseTuple(args, "si", &pname, &flags))
+        return NULL;
+        
     if(client->pjc == NULL) {
         PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
         return NULL;
@@ -319,11 +316,7 @@ static PyObject* register_port(PyObject* self, PyObject* args)
         return NULL;
     }
     
-    if (! PyArg_ParseTuple(args, "si", &pname, &flags))
-        return NULL;
-        
-    jp = jack_port_register(client->pjc, pname, JACK_DEFAULT_AUDIO_TYPE, flags, 0);
-
+    jack_port_t* jp = jack_port_register(client->pjc, pname, JACK_DEFAULT_AUDIO_TYPE, flags, 0);
     if(jp == NULL) {
         PyErr_SetString(JackError, "Failed to create port.");
         return NULL;
@@ -698,13 +691,12 @@ static PyObject* process(PyObject* self, PyObject *args)
 // Return event status numbers...
 static PyObject* check_events(PyObject* self, PyObject *args)
 {
+    pyjack_client_t * client = self_or_global_client(self);
+
     PyObject* d;
     d = PyDict_New();
-    if(d == NULL) {
-        return NULL;
-    }
+    if(d == NULL) return NULL;
     
-    pyjack_client_t * client = self_or_global_client(self);
     PyDict_SetItemString(d, "graph_ordering", Py_BuildValue("i", client->event_graph_ordering));
     PyDict_SetItemString(d, "port_registration", Py_BuildValue("i", client->event_port_registration));
     PyDict_SetItemString(d, "shutdown", Py_BuildValue("i", client->event_shutdown));
