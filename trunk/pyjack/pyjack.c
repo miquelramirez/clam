@@ -227,18 +227,6 @@ static PyObject* JackUsageError;
 static PyObject* JackInputSyncError;
 static PyObject* JackOutputSyncError;
 
-// Jack flags
-static PyObject* IsInput;
-static PyObject* IsOutput;
-static PyObject* IsTerminal;
-static PyObject* IsPhysical;
-static PyObject* CanMonitor;
-// hacked by AkhIL begin
-static PyObject* TransportStopped;
-static PyObject* TransportRolling;
-static PyObject* TransportStarting;
-// hacked by AkhIL end
-
 // Attempt to connect to the Jack server
 static PyObject* attach(PyObject* self, PyObject* args)
 {
@@ -859,38 +847,29 @@ initjack(void)
   d = PyModule_GetDict(m);
   if (d == NULL)
     goto fail;
- 
+
+// Jack errors 
   JackError = PyErr_NewException("jack.Error", NULL, NULL);
   JackNotConnectedError = PyErr_NewException("jack.NotConnectedError", NULL, NULL);
   JackUsageError = PyErr_NewException("jack.UsageError", NULL, NULL);
   JackInputSyncError = PyErr_NewException("jack.InputSyncError", NULL, NULL);
   JackOutputSyncError = PyErr_NewException("jack.OutputSyncError", NULL, NULL);
-  IsInput = Py_BuildValue("i", JackPortIsInput);
-  IsOutput = Py_BuildValue("i", JackPortIsOutput);
-  IsTerminal = Py_BuildValue("i", JackPortIsTerminal);
-  IsPhysical = Py_BuildValue("i", JackPortIsPhysical);
-  CanMonitor = Py_BuildValue("i", JackPortCanMonitor);
-// hacked by AkhIL begin
-  TransportStopped = Py_BuildValue("i", JackTransportStopped);
-  TransportRolling = Py_BuildValue("i", JackTransportRolling);
-  TransportStarting = Py_BuildValue("i", JackTransportStarting);
-// hacked by AkhIL end
-
   
   PyDict_SetItemString(d, "Error", JackError);
   PyDict_SetItemString(d, "NotConnectedError", JackNotConnectedError);
   PyDict_SetItemString(d, "UsageError", JackUsageError);
   PyDict_SetItemString(d, "InputSyncError", JackInputSyncError);
   PyDict_SetItemString(d, "OutputSyncError", JackOutputSyncError);
-  PyDict_SetItemString(d, "IsInput", IsInput);
-  PyDict_SetItemString(d, "IsOutput", IsOutput);
-  PyDict_SetItemString(d, "IsTerminal", IsTerminal);
-  PyDict_SetItemString(d, "IsPhysical", IsPhysical);
-  PyDict_SetItemString(d, "CanMonitor", CanMonitor);
+// Jack flags
+  PyDict_SetItemString(d, "IsInput", Py_BuildValue("i", JackPortIsInput));
+  PyDict_SetItemString(d, "IsOutput", Py_BuildValue("i", JackPortIsOutput));
+  PyDict_SetItemString(d, "IsTerminal", Py_BuildValue("i", JackPortIsTerminal));
+  PyDict_SetItemString(d, "IsPhysical", Py_BuildValue("i", JackPortIsPhysical));
+  PyDict_SetItemString(d, "CanMonitor", Py_BuildValue("i", JackPortCanMonitor));
 // hacked by AkhIL begin
-  PyDict_SetItemString(d, "TransportStopped", TransportStopped);
-  PyDict_SetItemString(d, "TransportRolling", TransportRolling);
-  PyDict_SetItemString(d, "TransportStarting", TransportStarting);
+  PyDict_SetItemString(d, "TransportStopped", Py_BuildValue("i", JackTransportStopped));
+  PyDict_SetItemString(d, "TransportRolling", Py_BuildValue("i", JackTransportRolling));
+  PyDict_SetItemString(d, "TransportStarting", Py_BuildValue("i", JackTransportStarting));
 // hacked by AkhIL end
   
   // Enable Numeric module
