@@ -29,6 +29,7 @@
 #define PYJACK_MAX_PORTS 256
 
 typedef struct {
+    PyObject_HEAD
     jack_client_t* pjc;                             // Client handle
     int            buffer_size;                     // Buffer size
     int            num_inputs;                      // Number of input ports registered
@@ -805,7 +806,6 @@ static PyObject* transport_start (PyObject* self, PyObject* args)
 
 
 
-
 // Python Module definition ---------------------------------------------------
 
 static PyMethodDef pyjack_methods[] = {
@@ -834,12 +834,100 @@ static PyMethodDef pyjack_methods[] = {
 // hack by AkhIL end
   {NULL, NULL}
 };
+
+static PyObject *
+Client_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+    pyjack_client_t *self = (pyjack_client_t *)type->tp_alloc(type, 0);
+    if (self == NULL) return NULL;
+
+    pyjack_init(self);
+
+    return (PyObject *)self;
+fail:
+    Py_DECREF(self);
+    return NULL;
+}
+
+static int
+Client_init(pyjack_client_t *self, PyObject *args, PyObject *kwds)
+{
+//    char * client_name = 0;
+//    if (! PyArg_ParseTuple(args, "s", &client_name))
+//        return -1;
+
+    if (!attach(self, args)) return -1;
+
+    // TODO: whatever
+
+    return 0;
+}
+
+static void
+Client_dealloc(pyjack_client_t* self)
+{
+    self->ob_type->tp_free((PyObject*)self);
+}
+
+
+static PyTypeObject pyjack_ClientType = {
+    PyObject_HEAD_INIT(NULL)
+    /*ob_size*/             0, 
+    /*tp_name*/             "jack.Client",
+    /*tp_basicsize*/        sizeof(pyjack_client_t),
+    /*tp_itemsize*/         0,
+    /*tp_dealloc*/          (destructor)Client_dealloc,
+    /*tp_print*/            0,
+    /*tp_getattr*/          0,
+    /*tp_setattr*/          0,
+    /*tp_compare*/          0,
+    /*tp_repr*/             0,
+    /*tp_as_number*/        0,
+    /*tp_as_sequence*/      0,
+    /*tp_as_mapping*/       0,
+    /*tp_hash */            0,
+    /*tp_call*/             0,
+    /*tp_str*/              0,
+    /*tp_getattro*/         0,
+    /*tp_setattro*/         0,
+    /*tp_as_buffer*/        0,
+    /*tp_flags*/            Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+    /* tp_doc */            "JACK client object.\n"
+                            "Instatiate a jack.Client to interact with a jack server.\n"
+                            ,
+    /* tp_traverse */       0,
+    /* tp_clear */          0,
+    /* tp_richcompare */    0,
+    /* tp_weaklistoffset */ 0,
+    /* tp_iter */           0,
+    /* tp_iternext */       0,
+    /* tp_methods */        pyjack_methods,
+    /* tp_members */        0,
+    /* tp_getset */         0,
+    /* tp_base */           0,
+    /* tp_dict */           0,
+    /* tp_descr_get */      0,
+    /* tp_descr_set */      0,
+    /* tp_dictoffset */     0,
+    /* tp_init */           (initproc)Client_init,
+    /* tp_alloc */          0,
+    /* tp_new */            Client_new,
+};
+
+
+
  
-DL_EXPORT(void)
+#ifndef PyMODINIT_FUNC  /* declarations for DLL import/export */
+#define PyMODINIT_FUNC void
+#endif
+PyMODINIT_FUNC
 initjack(void)
 {
   PyObject *m, *d;
   
+  pyjack_ClientType.tp_new = PyType_GenericNew;
+  if (PyType_Ready(&pyjack_ClientType) < 0)
+    return;
   m = Py_InitModule3("jack", pyjack_methods,
 	"This module provides bindings to manage clients for the Jack Audio Connection Kit architecture");
   if (m == NULL)
@@ -847,6 +935,10 @@ initjack(void)
   d = PyModule_GetDict(m);
   if (d == NULL)
     goto fail;
+
+  Py_INCREF(&pyjack_ClientType);
+  PyModule_AddObject(m, "Client", (PyObject *)&pyjack_ClientType);
+
 
 // Jack errors 
   JackError = PyErr_NewException("jack.Error", NULL, NULL);
