@@ -257,17 +257,17 @@ static PyObject* attach(PyObject* self, PyObject* args)
     }
 
     if(jack_set_sample_rate_callback(client->pjc, pyjack_sample_rate_changed, client) != 0) {
-        PyErr_SetString(JackError, "Failed to set jack process callback.");
+        PyErr_SetString(JackError, "Failed to set jack sample rate callback.");
         return NULL;
     }
 
     if(jack_set_graph_order_callback(client->pjc, pyjack_graph_order, client) != 0) {
-        PyErr_SetString(JackError, "Failed to set jack process callback.");
+        PyErr_SetString(JackError, "Failed to set jack graph order callback.");
         return NULL;
     }
 
     if(jack_set_port_registration_callback(client->pjc, pyjack_port_registration, client) != 0) {
-        PyErr_SetString(JackError, "Failed to set jack process callback.");
+        PyErr_SetString(JackError, "Failed to set jack port registration callback.");
         return NULL;
     }
     
@@ -314,7 +314,7 @@ static PyObject* register_port(PyObject* self, PyObject* args)
     }
     
     if(client->num_inputs >= PYJACK_MAX_PORTS) {
-        PyErr_SetString(JackUsageError, "Cannot create more than 256 ports.  Sorry.");
+        PyErr_SetString(JackUsageError, "Cannot create more than 256 ports. Sorry.");
         return NULL;
     }
     
