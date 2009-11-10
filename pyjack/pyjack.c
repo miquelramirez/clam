@@ -28,7 +28,7 @@
 
 #define PYJACK_MAX_PORTS 256
 
-struct pyjack_client_t {
+typedef struct {
     jack_client_t* pjc;                             // Client handle
     int            buffer_size;                     // Buffer size
     int            num_inputs;                      // Number of input ports registered
@@ -52,9 +52,9 @@ struct pyjack_client_t {
     int            event_shutdown;                  // true when the jack server is shutdown
     int            event_hangup;                    // true when client got hangup signal
     int            active;                          // indicates if the client is currently process-enabled
-};
+} pyjack_client_t;
 
-struct pyjack_client_t global_client;
+pyjack_client_t global_client;
 
 
 
@@ -108,31 +108,31 @@ void pyjack_final() {
 }
 
 // (Re)initialize socketpair buffers
-void init_pipe_buffers() {
+void init_pipe_buffers(pyjack_client_t  * client) {
     // allocate buffers for send and recv
-    if(global_client.input_buffer_size != global_client.num_inputs * global_client.buffer_size * sizeof(float)) {
-        global_client.input_buffer_size = global_client.num_inputs * global_client.buffer_size * sizeof(float);
-        global_client.input_buffer_0 = realloc(global_client.input_buffer_0, global_client.input_buffer_size);
-        global_client.input_buffer_1 = realloc(global_client.input_buffer_1, global_client.input_buffer_size);
+    if(global_client.input_buffer_size != client->num_inputs * client->buffer_size * sizeof(float)) {
+        client->input_buffer_size = client->num_inputs * client->buffer_size * sizeof(float);
+        client->input_buffer_0 = realloc(client->input_buffer_0, client->input_buffer_size);
+        client->input_buffer_1 = realloc(client->input_buffer_1, client->input_buffer_size);
         //printf("Input buffer size %d bytes\n", input_buffer_size);
     }
-    if(global_client.output_buffer_size != global_client.num_outputs * global_client.buffer_size * sizeof(float)) {
-        global_client.output_buffer_size = global_client.num_outputs * global_client.buffer_size * sizeof(float);
-        global_client.output_buffer_0 = realloc(global_client.output_buffer_0, global_client.output_buffer_size);
-        global_client.output_buffer_1 = realloc(global_client.output_buffer_1, global_client.output_buffer_size);
+    if(client->output_buffer_size != client->num_outputs * client->buffer_size * sizeof(float)) {
+        client->output_buffer_size = client->num_outputs * client->buffer_size * sizeof(float);
+        client->output_buffer_0 = realloc(client->output_buffer_0, client->output_buffer_size);
+        client->output_buffer_1 = realloc(client->output_buffer_1, client->output_buffer_size);
         //printf("Output buffer size %d bytes\n", output_buffer_size);
     }
     
     // set socket buffers to same size as snd/rcv buffers
-    setsockopt(global_client.input_pipe[0], SOL_SOCKET, SO_RCVBUF, &global_client.input_buffer_size, sizeof(int));
-    setsockopt(global_client.input_pipe[0], SOL_SOCKET, SO_SNDBUF, &global_client.input_buffer_size, sizeof(int));
-    setsockopt(global_client.input_pipe[1], SOL_SOCKET, SO_RCVBUF, &global_client.input_buffer_size, sizeof(int));
-    setsockopt(global_client.input_pipe[1], SOL_SOCKET, SO_SNDBUF, &global_client.input_buffer_size, sizeof(int));
+    setsockopt(client->input_pipe[0], SOL_SOCKET, SO_RCVBUF, &client->input_buffer_size, sizeof(int));
+    setsockopt(client->input_pipe[0], SOL_SOCKET, SO_SNDBUF, &client->input_buffer_size, sizeof(int));
+    setsockopt(client->input_pipe[1], SOL_SOCKET, SO_RCVBUF, &client->input_buffer_size, sizeof(int));
+    setsockopt(client->input_pipe[1], SOL_SOCKET, SO_SNDBUF, &client->input_buffer_size, sizeof(int));
     
-    setsockopt(global_client.output_pipe[0], SOL_SOCKET, SO_RCVBUF, &global_client.output_buffer_size, sizeof(int));
-    setsockopt(global_client.output_pipe[0], SOL_SOCKET, SO_SNDBUF, &global_client.output_buffer_size, sizeof(int));
-    setsockopt(global_client.output_pipe[1], SOL_SOCKET, SO_RCVBUF, &global_client.output_buffer_size, sizeof(int));
-    setsockopt(global_client.output_pipe[1], SOL_SOCKET, SO_SNDBUF, &global_client.output_buffer_size, sizeof(int));
+    setsockopt(client->output_pipe[0], SOL_SOCKET, SO_RCVBUF, &client->output_buffer_size, sizeof(int));
+    setsockopt(client->output_pipe[0], SOL_SOCKET, SO_SNDBUF, &client->output_buffer_size, sizeof(int));
+    setsockopt(client->output_pipe[1], SOL_SOCKET, SO_RCVBUF, &client->output_buffer_size, sizeof(int));
+    setsockopt(client->output_pipe[1], SOL_SOCKET, SO_SNDBUF, &client->output_buffer_size, sizeof(int));
 }
 
 
@@ -332,7 +332,7 @@ static PyObject* register_port(PyObject* self, PyObject* args)
         global_client.num_outputs++;
     }
         
-    init_pipe_buffers();
+    init_pipe_buffers(&global_client);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -789,6 +789,8 @@ static PyObject* transport_start (PyObject* self, PyObject* args)
 // hack by AkhIL end
 
 
+
+
 // Python Module definition ---------------------------------------------------
 
 static PyMethodDef pyjack_methods[] = {
@@ -823,13 +825,14 @@ initjack(void)
 {
   PyObject *m, *d;
   
-  m = Py_InitModule("jack", pyjack_methods);
+  m = Py_InitModule3("jack", pyjack_methods,
+	"This module provides bindings to manage clients for the Jack Audio Connection Kit architecture");
   if (m == NULL)
     goto fail;
   d = PyModule_GetDict(m);
   if (d == NULL)
     goto fail;
-  
+ 
   JackError = PyErr_NewException("jack.Error", NULL, NULL);
   JackNotConnectedError = PyErr_NewException("jack.NotConnectedError", NULL, NULL);
   JackUsageError = PyErr_NewException("jack.UsageError", NULL, NULL);
@@ -845,6 +848,7 @@ initjack(void)
   TransportRolling = Py_BuildValue("i", JackTransportRolling);
   TransportStarting = Py_BuildValue("i", JackTransportStarting);
 // hacked by AkhIL end
+
   
   PyDict_SetItemString(d, "Error", JackError);
   PyDict_SetItemString(d, "NotConnectedError", JackNotConnectedError);
