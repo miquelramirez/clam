@@ -836,29 +836,19 @@ Client_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     pyjack_init(self);
 
     return (PyObject *)self;
-fail:
-    Py_DECREF(self);
-    return NULL;
 }
 
 static int
-Client_init(pyjack_client_t *self, PyObject *args, PyObject *kwds)
+Client_init(PyObject *self, PyObject *args, PyObject *kwds)
 {
-//    char * client_name = 0;
-//    if (! PyArg_ParseTuple(args, "s", &client_name))
-//        return -1;
-
     if (!attach(self, args)) return -1;
-
-    // TODO: whatever
-
     return 0;
 }
 
 static void
-Client_dealloc(pyjack_client_t* self)
+Client_dealloc(PyObject* self)
 {
-    self->ob_type->tp_free((PyObject*)self);
+    self->ob_type->tp_free(self);
 }
 
 
@@ -868,7 +858,7 @@ static PyTypeObject pyjack_ClientType = {
     /*tp_name*/             "jack.Client",
     /*tp_basicsize*/        sizeof(pyjack_client_t),
     /*tp_itemsize*/         0,
-    /*tp_dealloc*/          (destructor)Client_dealloc,
+    /*tp_dealloc*/          Client_dealloc,
     /*tp_print*/            0,
     /*tp_getattr*/          0,
     /*tp_setattr*/          0,
@@ -901,7 +891,7 @@ static PyTypeObject pyjack_ClientType = {
     /* tp_descr_get */      0,
     /* tp_descr_set */      0,
     /* tp_dictoffset */     0,
-    /* tp_init */           (initproc)Client_init,
+    /* tp_init */           Client_init,
     /* tp_alloc */          0,
     /* tp_new */            Client_new,
 };
