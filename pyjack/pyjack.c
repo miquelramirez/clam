@@ -29,29 +29,29 @@
 #define PYJACK_MAX_PORTS 256
 
 struct pyjack_client_t {
-  jack_client_t* pjc;                             // Client handle
-  int            buffer_size;                     // Buffer size
-  int            num_inputs;                      // Number of input ports registered
-  int            num_outputs;                     // Number of output ports registered
-  jack_port_t*   input_ports[PYJACK_MAX_PORTS];   // Input ports
-  jack_port_t*   output_ports[PYJACK_MAX_PORTS];  // Output ports
-  fd_set         input_rfd;                       // fdlist for select
-  fd_set         output_rfd;                      // fdlist for select
-  int            input_pipe[2];                   // socket pair for input port data
-  int            output_pipe[2];                  // socket pair for output port data
-  float*         input_buffer_0;                  // buffer used to transmit audio via slink...
-  float*         output_buffer_0;                 // buffer used to send audio via slink...
-  float*         input_buffer_1;                  // buffer used to transmit audio via slink...
-  float*         output_buffer_1;                 // buffer used to send audio via slink...
-  int            input_buffer_size;               // buffer_size * num_inputs * sizeof(sample_t)
-  int            output_buffer_size;              // buffer_size * num_outputs * sizeof(sample_t)
-  int            iosync;                          // true when the python side synchronizing properly...
-  int            event_graph_ordering;            // true when a graph ordering event has occured
-  int            event_port_registration;         // true when a port registration event has occured
-  int            event_sample_rate;               // true when a sample rate change has occured
-  int            event_shutdown;                  // true when the jack server is shutdown
-  int            event_hangup;                    // true when client got hangup signal
-  int            active;                          // indicates if the client is currently process-enabled
+    jack_client_t* pjc;                             // Client handle
+    int            buffer_size;                     // Buffer size
+    int            num_inputs;                      // Number of input ports registered
+    int            num_outputs;                     // Number of output ports registered
+    jack_port_t*   input_ports[PYJACK_MAX_PORTS];   // Input ports
+    jack_port_t*   output_ports[PYJACK_MAX_PORTS];  // Output ports
+    fd_set         input_rfd;                       // fdlist for select
+    fd_set         output_rfd;                      // fdlist for select
+    int            input_pipe[2];                   // socket pair for input port data
+    int            output_pipe[2];                  // socket pair for output port data
+    float*         input_buffer_0;                  // buffer used to transmit audio via slink...
+    float*         output_buffer_0;                 // buffer used to send audio via slink...
+    float*         input_buffer_1;                  // buffer used to transmit audio via slink...
+    float*         output_buffer_1;                 // buffer used to send audio via slink...
+    int            input_buffer_size;               // buffer_size * num_inputs * sizeof(sample_t)
+    int            output_buffer_size;              // buffer_size * num_outputs * sizeof(sample_t)
+    int            iosync;                          // true when the python side synchronizing properly...
+    int            event_graph_ordering;            // true when a graph ordering event has occured
+    int            event_port_registration;         // true when a port registration event has occured
+    int            event_sample_rate;               // true when a sample rate change has occured
+    int            event_shutdown;                  // true when the jack server is shutdown
+    int            event_hangup;                    // true when client got hangup signal
+    int            active;                          // indicates if the client is currently process-enabled
 };
 
 struct pyjack_client_t global_client;
