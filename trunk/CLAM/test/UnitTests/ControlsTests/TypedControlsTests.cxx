@@ -47,8 +47,10 @@ class TypedControlsTest : public CppUnit::TestFixture, public BaseLoggable, publ
 	// testing InControl Callbacks
 	CPPUNIT_TEST( testInControlWithCallback_DoControl_ChangesInternalState );
 	CPPUNIT_TEST( testLinkAndSendWithInControl_CallbackMethodGetsCalled );
+	CPPUNIT_TEST( testLinkAndSendWithInControl_CopyCallbackMethodGetsCalled );
 	CPPUNIT_TEST( testControlHandlerId_WritesToLog );
 	CPPUNIT_TEST( testLinkAndSendWithInControl_CallbackWithIdMethodGetsCalled );
+	CPPUNIT_TEST( testLinkAndSendWithInControl_CopyCallbackWithIdMethodGetsCalled );
 	
 	// *ControlRegistry Tests
 	CPPUNIT_TEST( testInControlRegistry_ProcessingInterface_Register_ChangesInternalState );
@@ -190,109 +192,137 @@ public:
 		CPPUNIT_ASSERT_EQUAL(false, out.IsLinkable(in));
 	}
 
-		void testIsLinkable_withSameControls()
-		{
-			CLAM::TypedInControl<float> concreteIn("Concrete In");
-			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::InControlBase & in = concreteIn;
-			CLAM::OutControlBase & out = concreteOut;
-			CPPUNIT_ASSERT_EQUAL(true, out.IsLinkable(in));
-		}
+	void testIsLinkable_withSameControls()
+	{
+		CLAM::TypedInControl<float> concreteIn("Concrete In");
+		CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+		CLAM::InControlBase & in = concreteIn;
+		CLAM::OutControlBase & out = concreteOut;
+		CPPUNIT_ASSERT_EQUAL(true, out.IsLinkable(in));
+	}
 
-		void testAddLink_withDifferentControls()
-		{
-			CLAM::TypedInControl<float> concreteIn("Concrete In");
-			CLAM::TypedOutControl<int> concreteOut("Concrete Out");
-			CLAM::InControlBase & in = concreteIn;
-			CLAM::OutControlBase & out = concreteOut;
-			try {
-				out.AddLink(in);
-				CPPUNIT_FAIL("assertion failed expected, but nothing happened");
-			} catch(CLAM::ErrAssertionFailed& )	{}
-		}
-
-		void testAddLink_withSameControls()
-		{
-			CLAM::TypedInControl<float> concreteIn("Concrete In");
-			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::InControlBase & in = concreteIn;
-			CLAM::OutControlBase & out = concreteOut;
+	void testAddLink_withDifferentControls()
+	{
+		CLAM::TypedInControl<float> concreteIn("Concrete In");
+		CLAM::TypedOutControl<int> concreteOut("Concrete Out");
+		CLAM::InControlBase & in = concreteIn;
+		CLAM::OutControlBase & out = concreteOut;
+		try {
 			out.AddLink(in);
-			CPPUNIT_ASSERT_EQUAL(true, concreteOut.IsConnectedTo(concreteIn));
-		}
-		
-		void testIsConnected_WithOutControl_AfterConnection_withFloat()
-		{
-			CLAM::TypedInControl<float> concreteIn("Concrete In");
-			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::InControlBase & in = concreteIn;
-			CLAM::OutControlBase & out = concreteOut;
-			out.AddLink(in);
-			CPPUNIT_ASSERT_EQUAL(true, out.IsConnected());
-		}
+			CPPUNIT_FAIL("assertion failed expected, but nothing happened");
+		} catch(CLAM::ErrAssertionFailed& )	{}
+	}
 
-		void testIsConnected_WithOutControl_WithNoConnection_withFloat()
-		{
-			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::OutControlBase & out = concreteOut;
-			CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
-		}
+	void testAddLink_withSameControls()
+	{
+		CLAM::TypedInControl<float> concreteIn("Concrete In");
+		CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+		CLAM::InControlBase & in = concreteIn;
+		CLAM::OutControlBase & out = concreteOut;
+		out.AddLink(in);
+		CPPUNIT_ASSERT_EQUAL(true, concreteOut.IsConnectedTo(concreteIn));
+	}
+	
+	void testIsConnected_WithOutControl_AfterConnection_withFloat()
+	{
+		CLAM::TypedInControl<float> concreteIn("Concrete In");
+		CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+		CLAM::InControlBase & in = concreteIn;
+		CLAM::OutControlBase & out = concreteOut;
+		out.AddLink(in);
+		CPPUNIT_ASSERT_EQUAL(true, out.IsConnected());
+	}
 
-		void testIsConnectedTo_WithOutControl_WhenControlsAreConnected_withFloat()
-		{
-			CLAM::TypedInControl<float> concreteIn("Concrete In");
-			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::InControlBase & in = concreteIn;
-			CLAM::OutControlBase & out = concreteOut;
-			out.AddLink(in);
-			CPPUNIT_ASSERT_EQUAL(true, out.IsConnectedTo(in));
-		}
-		
-		void testIsConnectedTo_WithOutControl_WhenControlsAreNotConnected_withFloat()
-		{
-			CLAM::TypedInControl<float> concreteIn("Concrete In");
-			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::InControlBase & in = concreteIn;
-			CLAM::OutControlBase & out = concreteOut;
-			CPPUNIT_ASSERT_EQUAL(false, out.IsConnectedTo(in));
-		}
-		
-		// testing CascadingTypedInControl
-		void testInControlWithCallback_DoControl_ChangesInternalState()
-		{
-			CLAM::TypedInControl<int> 
-				in("in", this, &TypedControlsTest::ControlHandler);
-			in.DoControl(1);
-			CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValue() );
-		}
-		// helper method used for handling incoming control
-		void ControlHandler(int val) {
-			ToLog() << "ControlHandler called with: " << val;
-		}
+	void testIsConnected_WithOutControl_WithNoConnection_withFloat()
+	{
+		CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+		CLAM::OutControlBase & out = concreteOut;
+		CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
+	}
 
-		void testLinkAndSendWithInControl_CallbackMethodGetsCalled()
-		{
-			CLAM::TypedInControl<int> 
-				in("in", this, &TypedControlsTest::ControlHandler);
-			in.DoControl(1);
-			CPPUNIT_ASSERT_EQUAL( std::string("ControlHandler called with: 1"), GetLog() );
-		}
+	void testIsConnectedTo_WithOutControl_WhenControlsAreConnected_withFloat()
+	{
+		CLAM::TypedInControl<float> concreteIn("Concrete In");
+		CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+		CLAM::InControlBase & in = concreteIn;
+		CLAM::OutControlBase & out = concreteOut;
+		out.AddLink(in);
+		CPPUNIT_ASSERT_EQUAL(true, out.IsConnectedTo(in));
+	}
+	
+	void testIsConnectedTo_WithOutControl_WhenControlsAreNotConnected_withFloat()
+	{
+		CLAM::TypedInControl<float> concreteIn("Concrete In");
+		CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+		CLAM::InControlBase & in = concreteIn;
+		CLAM::OutControlBase & out = concreteOut;
+		CPPUNIT_ASSERT_EQUAL(false, out.IsConnectedTo(in));
+	}
+	
+	// testing CascadingTypedInControl
+	void testInControlWithCallback_DoControl_ChangesInternalState()
+	{
+		CLAM::TypedInControl<int> 
+			in("in", this, &TypedControlsTest::ControlHandler);
+		in.DoControl(1);
+		CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValue() );
+	}
+	// helper method used for handling incoming control
+	void ControlHandler(const int & val) {
+		ToLog() << "ControlHandler called with: " << val;
+	}
 
-		// helper method for handling incoming control plus incontrol ID
-		void ControlHandlerId(unsigned id, int val) {
-			ToLog() << "ControlHandler called with id : " << id << " and value : " << val;
-		}
-		void testControlHandlerId_WritesToLog()
-		{
-			ControlHandlerId(0, 1);
-			CPPUNIT_ASSERT_EQUAL( std::string("ControlHandler called with id : 0 and value : 1"), GetLog() );
-		}
+	void ControlCopyHandler(int val) {
+		ToLog() << "ControlHandler called with: " << val;
+	}
+
+	void testLinkAndSendWithInControl_CallbackMethodGetsCalled()
+	{
+		CLAM::TypedInControl<int> 
+			in("in", this, &TypedControlsTest::ControlHandler);
+		in.DoControl(1);
+		CPPUNIT_ASSERT_EQUAL( std::string("ControlHandler called with: 1"), GetLog() );
+	}
+
+	void testLinkAndSendWithInControl_CopyCallbackMethodGetsCalled()
+	{
+		CLAM::TypedInControl<int> 
+			in("in", this, &TypedControlsTest::ControlCopyHandler);
+		in.DoControl(1);
+		CPPUNIT_ASSERT_EQUAL( std::string("ControlHandler called with: 1"), GetLog() );
+	}
+
+	// helper method for handling incoming control plus incontrol ID
+	void ControlHandlerId(unsigned id, const int & val) {
+		ToLog() << "ControlHandler called with id : " << id << " and value : " << val;
+	}
+	void ControlCopyHandlerId(unsigned id, int val) {
+		ToLog() << "ControlHandler called with id : " << id << " and value : " << val;
+	}
+	void testControlHandlerId_WritesToLog()
+	{
+		ControlHandlerId(0, 1);
+		CPPUNIT_ASSERT_EQUAL( std::string("ControlHandler called with id : 0 and value : 1"), GetLog() );
+	}
 
 	void testLinkAndSendWithInControl_CallbackWithIdMethodGetsCalled()
 	{
 		const unsigned controlId=2;
 		CLAM::TypedInControl<int> 
 			in( controlId, "in", this, &TypedControlsTest::ControlHandlerId );
+
+		in.DoControl( 1 );
+		CPPUNIT_ASSERT_EQUAL( 
+			GetLog(), 
+			std::string("ControlHandler called with id : 2 and value : 1") );
+			// note that controlId == 2
+	}
+	
+	void testLinkAndSendWithInControl_CopyCallbackWithIdMethodGetsCalled()
+	{
+		const unsigned controlId=2;
+		CLAM::TypedInControl<int> 
+			in( controlId, "in", this, &TypedControlsTest::ControlCopyHandlerId );
 
 		in.DoControl( 1 );
 		CPPUNIT_ASSERT_EQUAL( 

@@ -61,24 +61,24 @@ public:
 
 	bool Do() { return true; }
 
-	void DoCallback(MIDI::Message inMessage)
+	void DoCallback(const MIDI::Message & inMessage)
 	{
-		inMessage = mInputMIDIMessage.GetLastValue();
-
-		mOutputMIDIMessage.SendControl(inMessage); //delivers the same input message to the output
+		MIDI::Message message = inMessage;
+		
+		mOutputMIDIMessage.SendControl(message); //delivers the same input message to the output
 
 		MIDI::Message voidMessage;
-		if (inMessage==voidMessage) return;
+		if (message==voidMessage) return;
 
-		if (inMessage[1]>=21 && inMessage[1]<=108)
+		if (message[1]>=21 && message[1]<=108)
 		{
-			if (inMessage[0]==144) //note on
+			if (message[0]==144) //note on
 			{
-				_notes[(inMessage[1]-21)%12]=true;
+				_notes[(message[1]-21)%12]=true;
 			}
-			else if (inMessage[0]==128) //note off
+			else if (message[0]==128) //note off
 			{
-				_notes[(inMessage[1]-21)%12]=false;
+				_notes[(message[1]-21)%12]=false;
 			}
 		}
 	};
