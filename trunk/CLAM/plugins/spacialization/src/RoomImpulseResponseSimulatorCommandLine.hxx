@@ -126,12 +126,12 @@ private:
 	OutPort< ImpulseResponse* > _XImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _YImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _ZImpulseResponseOutPort;
-	InControl _sourceX;
-	InControl _sourceY;
-	InControl _sourceZ;
-	InControl _listenerX;
-	InControl _listenerY;
-	InControl _listenerZ;
+	FloatInControl _sourceX;
+	FloatInControl _sourceY;
+	FloatInControl _sourceZ;
+	FloatInControl _listenerX;
+	FloatInControl _listenerY;
+	FloatInControl _listenerZ;
 	BFormatIR _impulseResponses[nCachedIRs];
 	BFormatIR  * _current;
 	BFormatIR  * _previous;
@@ -198,7 +198,7 @@ public:
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 
-	static unsigned map(InControl & control, unsigned limit)
+	static unsigned map(FloatInControl & control, unsigned limit)
 	{
 		unsigned result = unsigned(std::floor(control.GetLastValue()*limit));
 		return result < limit? result : limit-1;

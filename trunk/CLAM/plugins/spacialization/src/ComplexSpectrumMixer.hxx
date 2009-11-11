@@ -47,8 +47,8 @@ class ComplexSpectrumMixer : public Processing
 	InPort<ComplexSpectrum> _term1;
 	InPort<ComplexSpectrum> _term2;
 	OutPort<ComplexSpectrum> _sum;
-	InControl _gain1;
-	InControl _gain2;
+	FloatInControl _gain1;
+	FloatInControl _gain2;
 public:
 	const char* GetClassName() const { return "ComplexSpectrumMixer"; }
 	ComplexSpectrumMixer(const Config& config = Config()) 

@@ -63,11 +63,11 @@ void BufferDelayPrediction::CreatePortsAndControls()
 		//inBuf->SetHop( bufferSize );
 		mInputBufs.push_back( inBuf );
 				
-		mInputControls.push_back( new InControl("Mix RMS " + number.str(), this) );
-		mInputControls.push_back( new InControl("Uncompressed RMS " + number.str(), this) );
+		mInputControls.push_back( new FloatInControl("Mix RMS " + number.str(), this) );
+		mInputControls.push_back( new FloatInControl("Uncompressed RMS " + number.str(), this) );
 		
-		mOutputControls.push_back( new OutControl("Predicted Delay " + number.str(), this) );
-		mOutputControls.push_back( new OutControl("Quality " + number.str(), this) );
+		mOutputControls.push_back( new FloatOutControl("Predicted Delay " + number.str(), this) );
+		mOutputControls.push_back( new FloatOutControl("Quality " + number.str(), this) );
 	}
 }
 
@@ -78,12 +78,12 @@ void BufferDelayPrediction::RemovePortsAndControls()
 		delete *itInBuf;
 	mInputBufs.clear();
 
-	std::vector< OutControl* >::iterator itOutControl;
+	std::vector< FloatOutControl* >::iterator itOutControl;
 	for(itOutControl=mOutputControls.begin(); itOutControl!=mOutputControls.end(); itOutControl++)
 		delete *itOutControl;
 	mOutputControls.clear();
 	
-	std::vector< InControl* >::iterator itInControl;
+	std::vector< FloatInControl* >::iterator itInControl;
 	for(itInControl=mInputControls.begin(); itInControl!=mInputControls.end(); itInControl++)
 		delete *itInControl;
 	mInputControls.clear();

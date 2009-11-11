@@ -24,8 +24,8 @@ class Vbap3D_OneSpeaker : public CLAM::Processing
 	CLAM::AudioInPort _w;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 	OutPorts _outputs;
-	CLAM::InControl _azimuth;
-	CLAM::InControl _elevation;
+	CLAM::FloatInControl _azimuth;
+	CLAM::FloatInControl _elevation;
 	unsigned _lower;
 	std::vector<double> _elevations;
 	std::vector<double> _azimuths;

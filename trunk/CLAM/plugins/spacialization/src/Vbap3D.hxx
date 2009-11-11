@@ -59,8 +59,8 @@ private:
 	CLAM::AudioInPort _w;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 	OutPorts _outputs;
-	CLAM::InControl _azimuth;
-	CLAM::InControl _elevation;
+	CLAM::FloatInControl _azimuth;
+	CLAM::FloatInControl _elevation;
 	Config _config;
 	std::vector<Vector> _speakersPositions;
 	int _currentTriangle;

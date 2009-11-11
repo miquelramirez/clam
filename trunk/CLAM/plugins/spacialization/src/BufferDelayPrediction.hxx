@@ -68,8 +68,8 @@ private:
 	typedef InPort<Audio> AudioInBuffer;
 
 	std::vector<AudioInBuffer*> mInputBufs;
-	std::vector<OutControl*> mOutputControls;
-	std::vector<InControl*> mInputControls;
+	std::vector<FloatOutControl*> mOutputControls;
+	std::vector<FloatInControl*> mInputControls;
 	
 	void RemovePortsAndControls();
 	void CreatePortsAndControls();

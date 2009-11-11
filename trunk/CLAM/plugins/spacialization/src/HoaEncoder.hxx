@@ -28,8 +28,8 @@ class HoaEncoder : public CLAM::Processing
 	CLAM::AudioInPort _input;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 	OutPorts _outputs;
-	CLAM::InControl _azimuth;
-	CLAM::InControl _elevation;
+	CLAM::FloatInControl _azimuth;
+	CLAM::FloatInControl _elevation;
 
 public:
 	class Config : public CLAM::ProcessingConfig
