@@ -23,12 +23,23 @@
 #include "OutControl.hxx"
 #include "Processing.hxx"
 
+//TODO: review this include!!!!
+#include "MIDIMessage.hxx"
+
 namespace CLAM 
 {
 
-InControl::~InControl() 
+ToRemoveInControl::~ToRemoveInControl() 
 {
 		delete _callback;
+}
+
+template<>
+const std::string TypedInControl<MIDI::Message>::GetLastValueAsString() // TODO: Use plugins as soon we start to use non streamable types
+{
+// 	TODO: move MIDI::Message as streameable type?. Warning: TypeInfo<TypedControlData>::StorableAsLeaf affects DynamicTypes Store/Load
+	StaticTrue staticTrue;
+	return GetLastValueAsString(&staticTrue);
 }
 
 }; // namespace CLAM
