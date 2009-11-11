@@ -164,7 +164,7 @@ void init_pipe_buffers(pyjack_client_t  * client) {
         client->output_buffer_1 = realloc(client->output_buffer_1, new_output_size);
         //printf("Output buffer size %d bytes\n", output_buffer_size);
     }
-    
+ 
     // set socket buffers to same size as snd/rcv buffers
     setsockopt(client->input_pipe[R], SOL_SOCKET, SO_RCVBUF, &client->input_buffer_size, sizeof(int));
     setsockopt(client->input_pipe[R], SOL_SOCKET, SO_SNDBUF, &client->input_buffer_size, sizeof(int));
@@ -183,28 +183,32 @@ int pyjack_process(jack_nframes_t n, void* arg) {
 
     pyjack_client_t * client = (pyjack_client_t*) arg;
     int i, r;
-    
+   
     // Send input data to python side (non-blocking!)
-    for(i = 0; i < client->num_inputs; i++) {
-        memcpy(
-            &client->input_buffer_0[client->buffer_size * i], 
-            jack_port_get_buffer(client->input_ports[i], n), 
-            (client->buffer_size * sizeof(float))
-        );
-    }
-    
-    r = write(client->input_pipe[W], client->input_buffer_0, client->input_buffer_size);
-    
-    if(r < 0) {
-        client->iosync = 0;
-    } else if(r == client->input_buffer_size) {
-        client->iosync = 1;
+    if (client->num_inputs) { 
+        for(i = 0; i < client->num_inputs; i++) {
+            memcpy(
+                &client->input_buffer_0[client->buffer_size * i], 
+                jack_port_get_buffer(client->input_ports[i], n), 
+                (client->buffer_size * sizeof(float))
+            );
+        }
+        r = write(client->input_pipe[W], client->input_buffer_0, client->input_buffer_size);
+        
+        if(r < 0) {
+            client->iosync = 0;
+        } else if(r == client->input_buffer_size) {
+            client->iosync = 1;
+        }
     }
     
     // Read data from python side (non-blocking!)
-    r = read(client->output_pipe[R], client->output_buffer_0, client->output_buffer_size);
-
-    if(r == client->buffer_size * sizeof(float) * client->num_outputs) {
+    if (client->num_outputs) {
+        r = read(client->output_pipe[R], client->output_buffer_0, client->output_buffer_size);
+        if(r != client->buffer_size * sizeof(float) * client->num_outputs) {
+            //printf("not enough data; skipping output\n");
+            return 0;
+        }
         for(i = 0; i < client->num_outputs; i++) {
             memcpy(
                 jack_port_get_buffer(client->output_ports[i], client->buffer_size), 
@@ -212,9 +216,8 @@ int pyjack_process(jack_nframes_t n, void* arg) {
                 client->buffer_size * sizeof(float)
             );
         }
-    } else {
-        //printf("not enough data; skipping output\n");
     }
+
     return 0;
 }
 
@@ -685,40 +688,42 @@ static PyObject* process(PyObject* self, PyObject *args)
     // Get input data
     // If we are out of sync, there might be bad data in the buffer
     // So we have to throw that away first...
-    
-    r = read(client->input_pipe[R], client->input_buffer_1, client->input_buffer_size);
-    
-    // Copy data into array...
-    for(c = 0; c < client->num_inputs; c++) {
-        for(j = 0; j < client->buffer_size; j++) {
-            memcpy(
-                input_array->data + (c*input_array->strides[0] + j*input_array->strides[1]), 
-                client->input_buffer_1 + j + (c*client->buffer_size), 
-                sizeof(float)
-            );
+    if (client->input_buffer_size) {
+        r = read(client->input_pipe[R], client->input_buffer_1, client->input_buffer_size);
+        
+        // Copy data into array...
+        for(c = 0; c < client->num_inputs; c++) {
+            for(j = 0; j < client->buffer_size; j++) {
+                memcpy(
+                    input_array->data + (c*input_array->strides[0] + j*input_array->strides[1]), 
+                    client->input_buffer_1 + j + (c*client->buffer_size), 
+                    sizeof(float)
+                );
+            }
+        }
+        
+        if(0 && ! client->iosync) {
+            PyErr_SetString(JackInputSyncError, "Input data stream is not synchronized.");
+            return NULL;
         }
     }
-    
-    if(0 && ! client->iosync) {
-        PyErr_SetString(JackInputSyncError, "Input data stream is not synchronized.");
-        return NULL;
-    }
-    
-    // Copy output data into output buffer...
-    for(c = 0; c < client->num_outputs; c++) {
-        for(j = 0; j < client->buffer_size; j++) {
-            memcpy(&client->output_buffer_1[j + (c*client->buffer_size)],
-                   output_array->data + c*output_array->strides[0] + j*output_array->strides[1],
-                   sizeof(float)
-            );
+    if (client->output_buffer_size) {
+        // Copy output data into output buffer...
+        for(c = 0; c < client->num_outputs; c++) {
+            for(j = 0; j < client->buffer_size; j++) {
+                memcpy(&client->output_buffer_1[j + (c*client->buffer_size)],
+                       output_array->data + c*output_array->strides[0] + j*output_array->strides[1],
+                       sizeof(float)
+                );
+            }
         }
-    }
-
-    // Send... raise an exception if the output data stream is full.
-    r = write(client->output_pipe[W], client->output_buffer_1, client->output_buffer_size);
-    if(r != client->output_buffer_size) {
-        PyErr_SetString(JackOutputSyncError, "Failed to write output data.");
-        return NULL;
+    
+        // Send... raise an exception if the output data stream is full.
+        r = write(client->output_pipe[W], client->output_buffer_1, client->output_buffer_size);
+        if(r != client->output_buffer_size) {
+            PyErr_SetString(JackOutputSyncError, "Failed to write output data.");
+            return NULL;
+        }
     }
 
     // Okay...    
