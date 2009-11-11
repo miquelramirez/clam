@@ -12,7 +12,9 @@ namespace CLAM {
 	class MTCReceiver : public CLAM::Processing
 	{ 
 		/** Controls **/
-		OutControl _millisecondsOut;
+
+		//TODO: TypedOutControl<long>
+		FloatOutControl _millisecondsOut;
 		
 		RtMidiIn *_MIDIin;
 		int _mtcFrameIndex;
