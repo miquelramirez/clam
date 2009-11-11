@@ -25,7 +25,7 @@ import jack
 run_client_wait_time = 0.1
 connect_wait_time = 0.01
 
-client = None
+monitor_client = None
 
 # private interface:
 
@@ -33,31 +33,32 @@ def _client_from_port(client) :
 	return client.split(':')[0]
 
 def _ports_of_client(client) :
-	ports = client.get_ports()
+	ports = monitor_client.get_ports()
 	return [port for port in ports if _client_from_port(port) == client]
 
 def connect(source, target) :
-	client.connect(source,target)
+	monitor_client.connect(source,target)
 	time.sleep( connect_wait_time )
 
 def _init() :
 	try :
-		client = jack.Client('jack_bus_connect')
+		global monitor_client
+		monitor_client = jack.Client('jack_bus_connect')
 	except jack.NotConnectedError:
 		print "jackd not running"
 		sys.exit()
 def _exit() :
-	client.detach()
+	monitor_client.detach()
 	
 # public interface :
 
 def outports(client) : #TODO assert is string
 	client_ports = _ports_of_client(client)
-	return [port for port in client_ports if client.get_port_flags(port) & jack.IsOutput ]
+	return [port for port in client_ports if monitor_client.get_port_flags(port) & jack.IsOutput ]
 
 def inports(client) :
 	client_ports = _ports_of_client(client)
-	return [port for port in client_ports if client.get_port_flags(port) & jack.IsInput ]
+	return [port for port in client_ports if monitor_client.get_port_flags(port) & jack.IsInput ]
 
 def bus_connect(source, target) :
 	"""
@@ -73,7 +74,7 @@ def bus_connect(source, target) :
 		connect(sources[i], targets[i])
 
 def clients() :
-	ports = client.get_ports()
+	ports = monitor_client.get_ports()
 	l = [] 
 	l += set( [_client_from_port(port) for port in ports] )
 	return l
@@ -126,7 +127,7 @@ elif __name__ == 'jack_bus_connect' :
 	
 '''
 not used:
-	client.check_events() #TODO what this does?
-	client.activate()
-	client.deactivate()
+	monitor_client.check_events() #TODO what this does?
+	monitor_client.activate()
+	monitor_client.deactivate()
 '''
