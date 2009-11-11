@@ -299,8 +299,8 @@ private:
 			CLAM::InControlPublisher inControlPublisher;
 
 			DummyProcessing()
-				: outControlPublisher( "PublisherTestOut", this ),
-				inControlPublisher( "PublisherTestIn", this )
+				: outControlPublisher( "PublisherTestOut", this )
+				, inControlPublisher( "PublisherTestIn", this )
 			 {}
 
 			const char* GetClassName() const { return "dummy processing"; }
