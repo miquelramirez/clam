@@ -8,42 +8,42 @@
 // Extract common interface from InControlPublisher, InControl and create a common base class
 namespace CLAM
 {
-    class InControlPublisher : public FloatInControl
+class InControlPublisher : public FloatInControl
+{
+	FloatInControl* mPublished; //TODO should be a list, in the future
+
+public:
+	InControlPublisher() 
+		: FloatInControl( "InControlPublisher", 0 ) 
 	{
-		FloatInControl* mPublished; //TODO should be a list, in the future
+		mPublished=NULL;
+	} 
 
-		public:
-			InControlPublisher() 
-				: FloatInControl( "InControlPublisher", 0 ) 
-			{
-				mPublished=NULL;
-			} 
+	InControlPublisher( const std::string& name, Processing* father )
+		: FloatInControl( name, father ) 
+	{
+		mPublished=NULL;
+	}
 
-			InControlPublisher( const std::string& name, Processing* father )
-				: FloatInControl( name, father ) 
-			{
-				mPublished=NULL;
-			}
+	void PublishInControl( FloatInControl& in )
+	{
+		mPublished = &in;
+	}
+	void DoControl(const TControlData & val)
+	{
+		if(mPublished)
+			mPublished->DoControl(val);
+		else
+			FloatInControl::DoControl(val);
+	}
+	const TControlData& GetLastValue() const 
+	{ 
+		if(mPublished)
+			return mPublished->GetLastValue();
+		return mLastValue; 
+	}
 
-			void PublishInControl( FloatInControl& in )
-			{
-				mPublished = &in;
-			}
-			void DoControl(TControlData val)
-			{
-				if(mPublished)
-					mPublished->DoControl(val);
-				else
-					FloatInControl::DoControl(val);
-			}
-			const TControlData& GetLastValue() const 
-			{ 
-				if(mPublished)
-					return mPublished->GetLastValue();
-				return mLastValue; 
-			}
-
-	};
+};
 
 } // namespace CLAM
 
