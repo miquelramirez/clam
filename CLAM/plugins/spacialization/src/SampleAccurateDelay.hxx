@@ -69,7 +69,7 @@ private:
 	DelayBuffer _crossFadeBuffer;
 
 protected:
-	InControl _delayControl;
+	FloatInControl _delayControl;
 	
 	void setDelay(float delaySamples) 
 	{

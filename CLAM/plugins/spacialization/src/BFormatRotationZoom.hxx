@@ -43,10 +43,10 @@ public:
 	CLAM::AudioOutPort _Xout;
 	CLAM::AudioOutPort _Yout;
 	CLAM::AudioOutPort _Zout;
-	CLAM::InControl _azimuth;
-	CLAM::InControl _elevation;
-	CLAM::InControl _roll;
-	CLAM::InControl _dominance;
+	CLAM::FloatInControl _azimuth;
+	CLAM::FloatInControl _elevation;
+	CLAM::FloatInControl _roll;
+	CLAM::FloatInControl _dominance;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 
 	BFormatRotationZoom(const Config& config = Config()) 

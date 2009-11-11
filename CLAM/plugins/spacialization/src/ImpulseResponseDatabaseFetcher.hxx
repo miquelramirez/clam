@@ -68,10 +68,10 @@ private:
 	Config _config;
 	OutPort< ImpulseResponse* > _impulseResponse;
 	OutPort< ImpulseResponse* > _previousImpulseResponse;
-	InControl _emitterX;
-	InControl _emitterY;
-	InControl _receiverX;
-	InControl _receiverY;
+	FloatInControl _emitterX;
+	FloatInControl _emitterY;
+	FloatInControl _receiverX;
+	FloatInControl _receiverY;
 	ImpulseResponseDatabase _database;
 	ImpulseResponse * _previous;
 	int _numberOfConfigureCalls;
@@ -112,7 +112,7 @@ public:
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 
-	static unsigned map(InControl & control, unsigned limit)
+	static unsigned map(FloatInControl & control, unsigned limit)
 	{
 		unsigned result = unsigned(std::floor(control.GetLastValue()*limit));
 		return result < limit? result : limit-1;

@@ -30,8 +30,8 @@ class HoaEncoderBuffer : public CLAM::Processing
 	CLAM::InPort<CLAM::Audio> _input;	// input with Buffer
 	OutPorts _outputs;			// output with Buffer
 
-	CLAM::InControl _azimuth;
-	CLAM::InControl _elevation;
+	CLAM::FloatInControl _azimuth;
+	CLAM::FloatInControl _elevation;
 
 public:
 	class Config : public CLAM::ProcessingConfig

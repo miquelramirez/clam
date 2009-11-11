@@ -40,7 +40,7 @@ namespace CLAM
 class BufferSqrtSum : public Processing
 {
 	InPort<Audio> _in1;
-	OutControl _outputControl;
+	FloatOutControl _outputControl;
 
 public:
 	const char* GetClassName() const { return "BufferSqrtSum"; }

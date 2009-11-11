@@ -71,7 +71,7 @@ class IncoherenceCompensator : public Processing
 	};
 
 	OutPort<ComplexSpectrum> mOutComplex;
-	InControl mDeviation;
+	FloatInControl mDeviation;
 	MagPhaseSpectrum mSpectrum;
 	ComplexSpectrum mComplexSpectrum;
 	Config mConfig;

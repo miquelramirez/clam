@@ -69,7 +69,7 @@ public:
 		};
 	};
 private:
-	InControl _position;
+	FloatInControl _position;
 	double _lastPosition;
 	InPort< std::vector<ComplexSpectrum>* > _input1;
 	InPort< std::vector<ComplexSpectrum>* > _input2;

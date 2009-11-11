@@ -34,7 +34,7 @@ class VectorBasedArrayPanning : public CLAM::Processing
 	CLAM::AudioOutPort _right;
 	CLAM::AudioOutPort _surroundLeft;
 	CLAM::AudioOutPort _surroundRight;
-	CLAM::InControl _beta;
+	CLAM::FloatInControl _beta;
 	unsigned _lower;
 public:
 	const char* GetClassName() const { return "VectorBasedArrayPanning"; }
