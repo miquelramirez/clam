@@ -22,62 +22,12 @@
 #ifndef _OutControl_
 #define _OutControl_
 
-#include "InControl.hxx"
-#include <list>
-#include <string>
-#include "Assert.hxx"
-#include "OutControlBase.hxx"
-
-namespace CLAM
-{
-
-class Processing;
-
-//free method to link two Processing
-//	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
-//				  Processing* inProc, std::string inControl);
-
-/**
-* \brief Processing out control class.
-*
-* Controls are limited to emit and receive TControlData (float) numbers. 
-* Though extensible typed connections are future planned development: @see TypedOutControl
-*/
-class OutControlToRemove : public OutControlBase
-{
-//Constructor/Destructor
-public:
-	/**
-	* Constructor of the OutControlToRemove.
-	* \param name The name of the control 
-	* \param parent Optional. The processing object that owns the control object.
-	*/
-	OutControlToRemove(const std::string& name, Processing* parent=0);	
-	
-	
-//Methods
-public:
-	virtual bool IsLinkable(const InControlBase& in);
-	virtual const std::type_info & GetTypeId() const 
-	{
-		return typeid(TControlData);
-	};
-	void SendControl(TControlData val);
-
-};
-
-//REFACTORING Typed Controls
-typedef TypedOutControl<float> FloatOutControl;
-
-}; // namespace CLAM
-
-
-
 #include <string>
 #include <list>
 #include <typeinfo>
 #include "Assert.hxx"
 #include "TypedInControl.hxx"
+#include "OutControlBase.hxx"
 
 namespace CLAM {
 	class Processing;
@@ -128,6 +78,8 @@ namespace CLAM {
 		return typeid(TypedControlData) == in.GetTypeId();
 		
 	}
+
+	typedef TypedOutControl<float> FloatOutControl;
 
 } // END NAMESPACE CLAM
 

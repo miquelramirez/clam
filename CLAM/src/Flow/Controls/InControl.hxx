@@ -22,137 +22,13 @@
 #ifndef _InControl_
 #define _InControl_
 
-#include <sstream>
-#include <string>
-#include <list>
-#include "InControlBase.hxx"
-
-namespace CLAM {
-
-// Forward Declaration:
-class Processing;
-class OutControl;
-
-/**
-* Processing in control class for floats.
-* Controls are limited to emmit and receive TControlData (float) numbers. 
-*/
-class ToRemoveInControl : public InControlBase
-{
-private:
-	class Callback
-	{
-		public:
-			virtual ~Callback() {}
-			virtual void DoControl(const TControlData & val) =0;
-	};
-	class NullCallback : public Callback
-	{
-		public:
-			virtual void DoControl(const TControlData & val) {}
-	};
-	template <typename ProcessingType, typename ValueParameterType>
-	class MethodCallback : public Callback
-	{
-	protected:
-		ProcessingType * _processing;
-		void (ProcessingType::*_method)(ValueParameterType);
-	public:
-		MethodCallback(ProcessingType * processing, void (ProcessingType::*method)(ValueParameterType) )
-			: _processing(processing)
-			, _method(method)
-		{
-		}
-		virtual void DoControl(const TControlData & value)
-		{
-			(_processing->*_method)(value);
-		}
-	};
-	template <typename ProcessingType, typename ValueParameterType>
-	class MethodCallbackWithId : public Callback
-	{
-		ProcessingType * _processing;
-		void (ProcessingType::*_method)(unsigned, ValueParameterType);
-		unsigned _id;
-	public:
-		MethodCallbackWithId(ProcessingType * processing, void (ProcessingType::*method)(unsigned,ValueParameterType), unsigned id )
-			: _processing(processing)
-			, _method(method)
-			, _id(id)
-		{
-		}
-		virtual void DoControl(const TControlData & value)
-		{
-			(_processing->*_method)(_id, value);
-		}
-	};
-
-	Callback * _callback;
-// Attributes:
-protected:
-	TControlData mLastValue; 
-
-public:
-//Constructor/Destructor
-	ToRemoveInControl(const std::string &name, Processing* parent=0)
-		: InControlBase(name, parent)
-		, _callback(new NullCallback)
-	{
-	}
-	template <typename ProcessingType, typename ParameterType>
-	ToRemoveInControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(ParameterType))
-		: InControlBase(name,proc)
-		, _callback(new MethodCallback<ProcessingType,ParameterType>(proc, callback))
-	{
-	}
-	template <typename ProcessingType, typename ParameterType>
-	ToRemoveInControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, ParameterType))
-		: InControlBase(name,proc)
-		, _callback(new MethodCallbackWithId<ProcessingType,ParameterType>(proc, callback, id))
-	{
-	}
-	virtual ~ToRemoveInControl();
-	const std::type_info & GetTypeId() const
-	{
-		return typeid(TControlData);
-	}
-// Methods:
-public:
-	/**
-	 * Stores the incoming control value. It can be retrieved
-	 * using \c GetLastValue
-	 */
-	virtual void DoControl(TControlData val) 
-	{
-		mLastValue = val;
-		_hasBeenRead=false;
-		_callback->DoControl(val);
-	}
-	/// Returns the last TControlData (float) received event
-	const TControlData& GetLastValue() const 
-	{
-		_hasBeenRead=true;
-		return mLastValue;
-	}
-
-	const std::string GetLastValueAsString() // TODO: remove duplicated code on TypedInControl (Natanael)
-	{
-		std::ostringstream valueStream;
-		valueStream << GetLastValue();
-		return valueStream.str();
-	}
-
-};
-
-} // namespace CLAM
-
-
 #include <string>
 #include <list>
 #include <typeinfo>
-#include <CLAM/TypeInfo.hxx>
-#include <CLAM/OutControlBase.hxx>
 #include <sstream>
+#include "TypeInfo.hxx"
+#include "InControlBase.hxx"
+#include "OutControlBase.hxx"
 
 namespace CLAM {
 	class Processing;
@@ -161,6 +37,11 @@ namespace CLAM {
 	template<class TypedControlData>
 	class TypedOutControl;
 
+	/**
+	* An InControl receives values of the template type in an asyncronous pace.
+	* A processing method can be set as callback to respond to incoming events.
+	* You can also consult GetLastValue to get the last received value.
+	*/
 	template<class TypedControlData>
 	class TypedInControl : public InControlBase
 	{
@@ -254,29 +135,34 @@ namespace CLAM {
 		TypedControlData mLastValue;
 		
 	public:
+		/// Constructor to use when no callback is used
 		TypedInControl(const std::string &name = "unnamed in control", Processing * proc = 0)
 			: InControlBase(name,proc)
 			, _callback(new NullCallback)
 		{
 		}
+		/// Constructor to use a callback by const reference
 		template <typename ProcessingType, typename ParameterType>
 		TypedInControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(const ParameterType&))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallback<ProcessingType,ParameterType>(proc, callback))
 		{
 		}
+		/// Constructor to use a callback by const reference plus a port id to distinguish different caller controls in a single serving callback
 		template <typename ProcessingType, typename ParameterType>
 		TypedInControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, const ParameterType&))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallbackWithId<ProcessingType,ParameterType>(proc, callback, id))
 		{
 		}
+		/// Constructor to use a callback by copy
 		template <typename ProcessingType, typename ParameterType>
 		TypedInControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(ParameterType))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallbackByCopy<ProcessingType,ParameterType>(proc, callback))
 		{
 		}
+		/// Constructor to use a callback by copy plus a port id to distinguish different caller controls in a single serving callback
 		template <typename ProcessingType, typename ParameterType>
 		TypedInControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, ParameterType))
 			: InControlBase(name,proc)
@@ -289,18 +175,31 @@ namespace CLAM {
 		{
 			delete _callback;
 		}
-
+		/// Method used to set the last received value. 
+		/// This method triggers the associated callback if any.
+		/// This is often called by the connected OutControls but 
+		/// it can be also used directly when needed.
 		virtual void DoControl(const TypedControlData& val) 
 		{
 			mLastValue = val;
 			_hasBeenRead=false;
 			_callback->DoControl(val);
 		};
+		/// Returns the last received value
 		const TypedControlData& GetLastValue() const 
 		{
 			_hasBeenRead=true;
 			return mLastValue; 
 		};
+		/// Convenience method to get the string representation of the last value.
+		/// This just works if the token is storable as XML leaf, if not a "Not printable"
+		/// string is given.
+		const std::string GetLastValueAsString() // TODO: Use plugins as soon we start to use non streamable types
+		{
+			return GetLastValueAsString((TokenIsStorableAsLeaf*)0);
+		}
+		// For the typed linking check
+		virtual const std::type_info& GetTypeId() const { return typeid(TypedControlData); };
 	private:
 		std::string GetLastValueAsString(StaticFalse* /*isStreamable*/) const
 		{
@@ -313,13 +212,6 @@ namespace CLAM {
 			valueStream << GetLastValue();
 			return valueStream.str();
 		}
-	public:
-		const std::string GetLastValueAsString() // TODO: Use plugins as soon we start to use non streamable types
-		{
-			return GetLastValueAsString((TokenIsStorableAsLeaf*)0);
-		}
-		// For the typed linking check
-		virtual const std::type_info& GetTypeId() const { return typeid(TypedControlData); };
 	};
 	
 // REFACTORING typed connections

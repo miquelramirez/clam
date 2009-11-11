@@ -29,11 +29,6 @@
 namespace CLAM 
 {
 
-ToRemoveInControl::~ToRemoveInControl() 
-{
-		delete _callback;
-}
-
 template<>
 const std::string TypedInControl<MIDI::Message>::GetLastValueAsString() // TODO: Use plugins as soon we start to use non streamable types
 {

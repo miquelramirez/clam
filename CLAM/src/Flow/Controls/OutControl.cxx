@@ -20,33 +20,5 @@
  */
 
 #include "OutControl.hxx"
-#include "InControl.hxx"
-#include "Processing.hxx"
 
-namespace CLAM {
-
-// Creation/Destruction
-
-OutControlToRemove::OutControlToRemove(const std::string& name, Processing* parent)
-	: OutControlBase(name, parent)
-{
-}
-bool OutControlToRemove::IsLinkable(const InControlBase& in)
-{
-	return typeid(TControlData) == in.GetTypeId();
-
-}
-		
-void OutControlToRemove::SendControl(TControlData val)
-{
-	Peers::iterator it;
-	for (it=mLinks.begin(); it!=mLinks.end(); it++) 
-	{
-		((FloatInControl*)(*it))->DoControl(val);
-	}
-}
-
-
-
-}; //namespace CLAM
 
