@@ -44,8 +44,9 @@
 namespace CLAM
 {
 
-	void SynthesizeToSpeakers(SDIFDatabase& sdifDatabase, SinusoidalSynthesis& synthesis, 
-								ContinuousExcitationControlSource* aControlScore, MonoAudioFileWriter* audioWriter)
+	void SynthesizeToSpeakers(
+		SDIFDatabase& sdifDatabase, SinusoidalSynthesis& synthesis, 
+		ContinuousExcitationControlSource* aControlScore, MonoAudioFileWriter* audioWriter)
 	{
         if (audioWriter == NULL)
             std::cout << "Playing audio to speakers." << std::endl;
