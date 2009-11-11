@@ -59,7 +59,7 @@ namespace CLAM{
 		AudioOutPort mOutputAudio;
 
 		/** Controls **/
-		InControl mOutputReference;
+		FloatInControl mOutputReference;
 
 		TData gain;
 		TData mStep; ///< adaptation step
