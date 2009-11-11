@@ -45,91 +45,8 @@ namespace CLAM {
 	template<class TypedControlData>
 	class TypedInControl : public InControlBase
 	{
+		class Callback;
 	private:
-		typedef typename TypeInfo<TypedControlData>::StorableAsLeaf TokenIsStorableAsLeaf;
-		class Callback
-		{
-			public:
-				virtual ~Callback() {}
-				virtual void DoControl(const TypedControlData & val) =0;
-		};
-		class NullCallback : public Callback
-		{
-			public:
-				virtual void DoControl(const TypedControlData & val) {}
-		};
-		template <typename ProcessingType, typename ValueParameterType>
-		class MethodCallback : public Callback
-		{
-		protected:
-			ProcessingType * _processing;
-			void (ProcessingType::*_method)(const ValueParameterType& );
-		public:
-			MethodCallback(ProcessingType * processing, void (ProcessingType::*method)(const ValueParameterType &) )
-				: _processing(processing)
-				, _method(method)
-			{
-			}
-			virtual void DoControl(const TypedControlData & value)
-			{
-				(_processing->*_method)(value);
-			}
-		};
-		template <typename ProcessingType, typename ValueParameterType>
-		class MethodCallbackWithId : public Callback
-		{
-			ProcessingType * _processing;
-			void (ProcessingType::*_method)(unsigned, const ValueParameterType &);
-			unsigned _id;
-		public:
-			MethodCallbackWithId(ProcessingType * processing, void (ProcessingType::*method)(unsigned,const ValueParameterType &), unsigned id )
-				: _processing(processing)
-				, _method(method)
-				, _id(id)
-			{
-			}
-			virtual void DoControl(const TypedControlData & value)
-			{
-				(_processing->*_method)(_id, value);
-			}
-		};
-
-		template <typename ProcessingType, typename ValueParameterType>
-		class MethodCallbackByCopy : public Callback
-		{
-		protected:
-			ProcessingType * _processing;
-			void (ProcessingType::*_method)(ValueParameterType);
-		public:
-			MethodCallbackByCopy(ProcessingType * processing, void (ProcessingType::*method)(ValueParameterType) )
-				: _processing(processing)
-				, _method(method)
-			{
-			}
-			virtual void DoControl(const TypedControlData & value)
-			{
-				(_processing->*_method)(value);
-			}
-		};
-		template <typename ProcessingType, typename ValueParameterType>
-		class MethodCallbackByCopyWithId : public Callback
-		{
-			ProcessingType * _processing;
-			void (ProcessingType::*_method)(unsigned, ValueParameterType);
-			unsigned _id;
-		public:
-			MethodCallbackByCopyWithId(ProcessingType * processing, void (ProcessingType::*method)(unsigned,ValueParameterType), unsigned id )
-				: _processing(processing)
-				, _method(method)
-				, _id(id)
-			{
-			}
-			virtual void DoControl(const TypedControlData & value)
-			{
-				(_processing->*_method)(_id, value);
-			}
-		};
-
 		Callback * _callback;
 	protected:
 		TypedControlData mLastValue;
@@ -175,16 +92,18 @@ namespace CLAM {
 		{
 			delete _callback;
 		}
-		/// Method used to set the last received value. 
-		/// This method triggers the associated callback if any.
-		/// This is often called by the connected OutControls but 
-		/// it can be also used directly when needed.
+
+		/// The control receives a value when this method gets called.
+		/// Associated callback if any, gets triggered on result.
+		/// Connected OutControl may trigger it but it also may be
+		/// called directly, for example to set the initial value.
 		virtual void DoControl(const TypedControlData& val) 
 		{
 			mLastValue = val;
 			_hasBeenRead=false;
 			_callback->DoControl(val);
 		};
+
 		/// Returns the last received value
 		virtual const TypedControlData& GetLastValue() const 
 		{
@@ -212,9 +131,116 @@ namespace CLAM {
 			valueStream << GetLastValue();
 			return valueStream.str();
 		}
+
+	private:
+		// Callback wrappers
+
+		/// Base control callback wrapper. It defines the interface for callback wrappers.
+		typedef typename TypeInfo<TypedControlData>::StorableAsLeaf TokenIsStorableAsLeaf;
+		class Callback
+		{
+			public:
+				virtual ~Callback() {}
+				virtual void DoControl(const TypedControlData & val) =0;
+		};
+
+		/// Null control callback wrapper. Just do nothing.
+		class NullCallback : public Callback
+		{
+			public:
+				virtual void DoControl(const TypedControlData & val) {}
+		};
+
+		/// Processing method callback wrapper.
+		/// Calls a processing method that receives the value as const reference.
+		template <typename ProcessingType, typename ValueParameterType>
+		class MethodCallback : public Callback
+		{
+		protected:
+			ProcessingType * _processing;
+			void (ProcessingType::*_method)(const ValueParameterType& );
+		public:
+			MethodCallback(ProcessingType * processing, void (ProcessingType::*method)(const ValueParameterType &) )
+				: _processing(processing)
+				, _method(method)
+			{
+			}
+			virtual void DoControl(const TypedControlData & value)
+			{
+				(_processing->*_method)(value);
+			}
+		};
+
+		/// Processing method callback wrapper with control id.
+		/// Calls a processing method that receives the value as const reference.
+		/// The id enables reusing the same callback for different controls, 
+		/// but still knowing the originating control.
+		template <typename ProcessingType, typename ValueParameterType>
+		class MethodCallbackWithId : public Callback
+		{
+			ProcessingType * _processing;
+			void (ProcessingType::*_method)(unsigned, const ValueParameterType &);
+			unsigned _id;
+		public:
+			MethodCallbackWithId(ProcessingType * processing, void (ProcessingType::*method)(unsigned,const ValueParameterType &), unsigned id )
+				: _processing(processing)
+				, _method(method)
+				, _id(id)
+			{
+			}
+			virtual void DoControl(const TypedControlData & value)
+			{
+				(_processing->*_method)(_id, value);
+			}
+		};
+
+		/// Processing method callback wrapper by copy.
+		/// Calls a processing method that receives the control value by copy.
+		/// To use with basic (cheap copy) objects (ints, bools, floats...)
+		template <typename ProcessingType, typename ValueParameterType>
+		class MethodCallbackByCopy : public Callback
+		{
+		protected:
+			ProcessingType * _processing;
+			void (ProcessingType::*_method)(ValueParameterType);
+		public:
+			MethodCallbackByCopy(ProcessingType * processing, void (ProcessingType::*method)(ValueParameterType) )
+				: _processing(processing)
+				, _method(method)
+			{
+			}
+			virtual void DoControl(const TypedControlData & value)
+			{
+				(_processing->*_method)(value);
+			}
+		};
+
+		/// Processing method callback wrapper by copy with control id.
+		/// Calls a processing method that receives the control value by copy.
+		/// To use with basic (cheap copy) objects (ints, bools, floats...)
+		/// The id enables reusing the same callback for different controls, 
+		/// but still knowing the originating control.
+		template <typename ProcessingType, typename ValueParameterType>
+		class MethodCallbackByCopyWithId : public Callback
+		{
+			ProcessingType * _processing;
+			void (ProcessingType::*_method)(unsigned, ValueParameterType);
+			unsigned _id;
+		public:
+			MethodCallbackByCopyWithId(ProcessingType * processing, void (ProcessingType::*method)(unsigned,ValueParameterType), unsigned id )
+				: _processing(processing)
+				, _method(method)
+				, _id(id)
+			{
+			}
+			virtual void DoControl(const TypedControlData & value)
+			{
+				(_processing->*_method)(_id, value);
+			}
+		};
 	};
 	
-// REFACTORING typed connections
+/// Alias provided by convenience to ease the transitions to typed controls
 typedef TypedInControl<float> FloatInControl;
 
 	
