@@ -171,7 +171,7 @@ namespace CLAM {
 		}
 
 
-		~TypedInControl()
+		virtual ~TypedInControl()
 		{
 			delete _callback;
 		}
@@ -186,7 +186,7 @@ namespace CLAM {
 			_callback->DoControl(val);
 		};
 		/// Returns the last received value
-		const TypedControlData& GetLastValue() const 
+		virtual const TypedControlData& GetLastValue() const 
 		{
 			_hasBeenRead=true;
 			return mLastValue; 
