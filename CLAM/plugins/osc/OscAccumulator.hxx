@@ -29,8 +29,8 @@ class OscAccumulator : public CLAM::Processing
 	Config _config;
 	
 	struct Accumulate {
-		InControl* incontrol;
-		OutControl* outcontrol;
+		FloatInControl* incontrol;
+		FloatOutControl* outcontrol;
 		TControlData last_value;
 		TControlData total;
 	};
@@ -48,8 +48,8 @@ public:
 			std::stringstream number("");
 			number << i;
 			Accumulate acc= {
-				new InControl("Input " + number.str(), this),
-				new OutControl("Output " + number.str(), this),
+				new FloatInControl("Input " + number.str(), this),
+				new FloatOutControl("Output " + number.str(), this),
 				0, 0};
 			_accumulates.push_back(acc);
 		}

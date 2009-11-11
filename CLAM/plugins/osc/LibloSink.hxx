@@ -73,7 +73,7 @@ public:
 
 
 	template <typename T> 
-	void InControlCallback (T & value)
+	void InControlCallback (const T & value)
 	{
 		SendOSCMessage();
 	}
@@ -172,15 +172,15 @@ protected:
 		switch (type.c_str()[0])
 		{
 			case 's':
-				return new TypedInControl<std::string> (name, this, &LibloSink::InControlCallback<const std::string>);
+				return new TypedInControl<std::string> (name, this, &LibloSink::InControlCallback<std::string>);
 			case 'f':
-				return new TypedInControl<float> (name, this, &LibloSink::InControlCallback<const float>);
+				return new TypedInControl<float> (name, this, &LibloSink::InControlCallback<float>);
 			case 'd':
-				return new TypedInControl<double> (name, this, &LibloSink::InControlCallback<const double>);
+				return new TypedInControl<double> (name, this, &LibloSink::InControlCallback<double>);
 			case 'i':
-				return new TypedInControl<int> (name,this, &LibloSink::InControlCallback<const int>);
+				return new TypedInControl<int> (name,this, &LibloSink::InControlCallback<int>);
 			case 'h':
-				return new TypedInControl<long int> (name,this, &LibloSink::InControlCallback<const long int>);
+				return new TypedInControl<long int> (name,this, &LibloSink::InControlCallback<long int>);
 			default:
 				return 0;
 				// TODO: Decide whether ASSERTing (contract) or throw (control) 

@@ -173,7 +173,7 @@ private:
 
 	void testInControl_GetName_ChangesInteralState()
 	{
-		CLAM::InControl in("in name");
+		CLAM::FloatInControl in("in name");
 		CPPUNIT_ASSERT_EQUAL(std::string("in name"), in.GetName() );
 	}
 	void testOutControl_GetName_ChangesInteralState()

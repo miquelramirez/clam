@@ -27,17 +27,17 @@ namespace CLAM {
 
 // Creation/Destruction
 
-OutControl::OutControl(const std::string& name, Processing* parent)
+OutControlToRemove::OutControlToRemove(const std::string& name, Processing* parent)
 	: OutControlBase(name, parent)
 {
 }
-bool OutControl::IsLinkable(const InControlBase& in)
+bool OutControlToRemove::IsLinkable(const InControlBase& in)
 {
 	return typeid(TControlData) == in.GetTypeId();
 
 }
 		
-void OutControl::SendControl(TControlData val)
+void OutControlToRemove::SendControl(TControlData val)
 {
 	Peers::iterator it;
 	for (it=mLinks.begin(); it!=mLinks.end(); it++) 
