@@ -37,9 +37,9 @@ namespace CLAM {
 		{
 		protected:
 			ProcessingType * _processing;
-			void (ProcessingType::*_method)(ValueParameterType);
+			void (ProcessingType::*_method)(const ValueParameterType& );
 		public:
-			MethodCallback(ProcessingType * processing, void (ProcessingType::*method)(ValueParameterType) )
+			MethodCallback(ProcessingType * processing, void (ProcessingType::*method)(const ValueParameterType &) )
 				: _processing(processing)
 				, _method(method)
 			{
@@ -53,10 +53,46 @@ namespace CLAM {
 		class MethodCallbackWithId : public Callback
 		{
 			ProcessingType * _processing;
+			void (ProcessingType::*_method)(unsigned, const ValueParameterType &);
+			unsigned _id;
+		public:
+			MethodCallbackWithId(ProcessingType * processing, void (ProcessingType::*method)(unsigned,const ValueParameterType &), unsigned id )
+				: _processing(processing)
+				, _method(method)
+				, _id(id)
+			{
+			}
+			virtual void DoControl(const TypedControlData & value)
+			{
+				(_processing->*_method)(_id, value);
+			}
+		};
+
+		template <typename ProcessingType, typename ValueParameterType>
+		class MethodCallbackByCopy : public Callback
+		{
+		protected:
+			ProcessingType * _processing;
+			void (ProcessingType::*_method)(ValueParameterType);
+		public:
+			MethodCallbackByCopy(ProcessingType * processing, void (ProcessingType::*method)(ValueParameterType) )
+				: _processing(processing)
+				, _method(method)
+			{
+			}
+			virtual void DoControl(const TypedControlData & value)
+			{
+				(_processing->*_method)(value);
+			}
+		};
+		template <typename ProcessingType, typename ValueParameterType>
+		class MethodCallbackByCopyWithId : public Callback
+		{
+			ProcessingType * _processing;
 			void (ProcessingType::*_method)(unsigned, ValueParameterType);
 			unsigned _id;
 		public:
-			MethodCallbackWithId(ProcessingType * processing, void (ProcessingType::*method)(unsigned,ValueParameterType), unsigned id )
+			MethodCallbackByCopyWithId(ProcessingType * processing, void (ProcessingType::*method)(unsigned,ValueParameterType), unsigned id )
 				: _processing(processing)
 				, _method(method)
 				, _id(id)
@@ -79,17 +115,31 @@ namespace CLAM {
 		{
 		}
 		template <typename ProcessingType, typename ParameterType>
-		TypedInControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(ParameterType))
+		TypedInControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(const ParameterType&))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallback<ProcessingType,ParameterType>(proc, callback))
 		{
 		}
 		template <typename ProcessingType, typename ParameterType>
-		TypedInControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, ParameterType))
+		TypedInControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, const ParameterType&))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallbackWithId<ProcessingType,ParameterType>(proc, callback, id))
 		{
 		}
+		template <typename ProcessingType, typename ParameterType>
+		TypedInControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(ParameterType))
+			: InControlBase(name,proc)
+			, _callback(new MethodCallbackByCopy<ProcessingType,ParameterType>(proc, callback))
+		{
+		}
+		template <typename ProcessingType, typename ParameterType>
+		TypedInControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, ParameterType))
+			: InControlBase(name,proc)
+			, _callback(new MethodCallbackByCopyWithId<ProcessingType,ParameterType>(proc, callback, id))
+		{
+		}
+
+
 		~TypedInControl()
 		{
 			delete _callback;
