@@ -24,10 +24,23 @@
 #include <fcntl.h>
 #include <signal.h>
 
+/*
+TODO's:
+- dettach on client on __del__
+- free buffers
+- close sockets
+- hangup callback
+- user python callbacks for non-rt events
+- make global client a python object
+- eventually deprecate the global client api
+- remove the attach and detach methods
+*/
+
 // Global shared data for jack
 
 #define PYJACK_MAX_PORTS 256
-
+#define W 0
+#define R 1
 typedef struct {
     PyObject_HEAD
     jack_client_t* pjc;                             // Client handle
@@ -69,10 +82,10 @@ void pyjack_init(pyjack_client_t * client) {
     client->iosync = 0;
     client->num_inputs = 0;
     client->num_outputs = 0;
-    client->input_pipe[0] = 0;
-    client->input_pipe[1] = 0;
-    client->output_pipe[0] = 0;
-    client->output_pipe[1] = 0;
+    client->input_pipe[R] = 0;
+    client->input_pipe[W] = 0;
+    client->output_pipe[R] = 0;
+    client->output_pipe[W] = 0;
     
     // Initialize unamed, raw datagram-type sockets...
     if (socketpair(PF_UNIX, SOCK_DGRAM, 0, client->input_pipe) == -1) {
@@ -82,16 +95,16 @@ void pyjack_init(pyjack_client_t * client) {
         printf("ERROR: Failed to create socketpair output_pipe!!\n");
     }
 
-    // Convention is that pipe[1] is the "write" end of the pipe, which is always non-blocking.
-    fcntl(client->input_pipe[1], F_SETFL, O_NONBLOCK);
-    fcntl(client->output_pipe[1], F_SETFL, O_NONBLOCK);
-    fcntl(client->output_pipe[0], F_SETFL, O_NONBLOCK);
+    // Convention is that pipe[W=1] is the "write" end of the pipe, which is always non-blocking.
+    fcntl(client->input_pipe[W], F_SETFL, O_NONBLOCK);
+    fcntl(client->output_pipe[W], F_SETFL, O_NONBLOCK);
+    fcntl(client->output_pipe[R], F_SETFL, O_NONBLOCK);
     
-    // The read end, pipe[0], is blocking, but we use a select() call to make sure that data is really there.
+    // The read end, pipe[R=0], is blocking, but we use a select() call to make sure that data is really there.
     FD_ZERO(&client->input_rfd);
     FD_ZERO(&client->output_rfd);
-    FD_SET(client->input_pipe[0], &client->input_rfd);
-    FD_SET(client->output_pipe[0], &client->output_rfd);
+    FD_SET(client->input_pipe[R], &client->input_rfd);
+    FD_SET(client->output_pipe[R], &client->output_rfd);
     
     // Init buffers to null...
     client->input_buffer_size = 0;
@@ -102,41 +115,66 @@ void pyjack_init(pyjack_client_t * client) {
     client->output_buffer_1 = NULL;
 }
 
+static void free_and_reset(float ** pointer)
+{
+    if (!*pointer) return;
+    free(*pointer);
+    *pointer=0;
+}
+
+static void close_and_reset(int * fd)
+{
+    if (!*fd) return;
+    close(*fd);
+    *fd=0;
+}
+
 // Finalize global data
 void pyjack_final(pyjack_client_t * client) {
     client->pjc = NULL;
     // Free buffers...
-    // Close socket...
     client->num_inputs = 0;
     client->num_outputs = 0;
+    client->buffer_size = 0;
+    free_and_reset(&client->input_buffer_0);
+    free_and_reset(&client->input_buffer_1);
+    free_and_reset(&client->output_buffer_0);
+    free_and_reset(&client->output_buffer_1);
+    // Close socket...
+    close_and_reset(&client->input_pipe[R]);
+    close_and_reset(&client->input_pipe[W]);
+    close_and_reset(&client->output_pipe[R]);
+    close_and_reset(&client->output_pipe[W]);
 }
 
 // (Re)initialize socketpair buffers
 void init_pipe_buffers(pyjack_client_t  * client) {
     // allocate buffers for send and recv
-    if(client->input_buffer_size != client->num_inputs * client->buffer_size * sizeof(float)) {
-        client->input_buffer_size = client->num_inputs * client->buffer_size * sizeof(float);
-        client->input_buffer_0 = realloc(client->input_buffer_0, client->input_buffer_size);
-        client->input_buffer_1 = realloc(client->input_buffer_1, client->input_buffer_size);
+    unsigned new_input_size = client->num_inputs * client->buffer_size * sizeof(float);
+    if(client->input_buffer_size != new_input_size) {
+        client->input_buffer_size = new_input_size;
+        client->input_buffer_0 = realloc(client->input_buffer_0, new_input_size);
+        client->input_buffer_1 = realloc(client->input_buffer_1, new_input_size);
         //printf("Input buffer size %d bytes\n", input_buffer_size);
     }
-    if(client->output_buffer_size != client->num_outputs * client->buffer_size * sizeof(float)) {
-        client->output_buffer_size = client->num_outputs * client->buffer_size * sizeof(float);
-        client->output_buffer_0 = realloc(client->output_buffer_0, client->output_buffer_size);
-        client->output_buffer_1 = realloc(client->output_buffer_1, client->output_buffer_size);
+    unsigned new_output_size = client->num_outputs * client->buffer_size * sizeof(float);
+    if(client->output_buffer_size != new_output_size) {
+        client->output_buffer_size = new_output_size;
+        client->output_buffer_0 = realloc(client->output_buffer_0, new_output_size);
+        client->output_buffer_1 = realloc(client->output_buffer_1, new_output_size);
         //printf("Output buffer size %d bytes\n", output_buffer_size);
     }
     
     // set socket buffers to same size as snd/rcv buffers
-    setsockopt(client->input_pipe[0], SOL_SOCKET, SO_RCVBUF, &client->input_buffer_size, sizeof(int));
-    setsockopt(client->input_pipe[0], SOL_SOCKET, SO_SNDBUF, &client->input_buffer_size, sizeof(int));
-    setsockopt(client->input_pipe[1], SOL_SOCKET, SO_RCVBUF, &client->input_buffer_size, sizeof(int));
-    setsockopt(client->input_pipe[1], SOL_SOCKET, SO_SNDBUF, &client->input_buffer_size, sizeof(int));
+    setsockopt(client->input_pipe[R], SOL_SOCKET, SO_RCVBUF, &client->input_buffer_size, sizeof(int));
+    setsockopt(client->input_pipe[R], SOL_SOCKET, SO_SNDBUF, &client->input_buffer_size, sizeof(int));
+    setsockopt(client->input_pipe[W], SOL_SOCKET, SO_RCVBUF, &client->input_buffer_size, sizeof(int));
+    setsockopt(client->input_pipe[W], SOL_SOCKET, SO_SNDBUF, &client->input_buffer_size, sizeof(int));
     
-    setsockopt(client->output_pipe[0], SOL_SOCKET, SO_RCVBUF, &client->output_buffer_size, sizeof(int));
-    setsockopt(client->output_pipe[0], SOL_SOCKET, SO_SNDBUF, &client->output_buffer_size, sizeof(int));
-    setsockopt(client->output_pipe[1], SOL_SOCKET, SO_RCVBUF, &client->output_buffer_size, sizeof(int));
-    setsockopt(client->output_pipe[1], SOL_SOCKET, SO_SNDBUF, &client->output_buffer_size, sizeof(int));
+    setsockopt(client->output_pipe[R], SOL_SOCKET, SO_RCVBUF, &client->output_buffer_size, sizeof(int));
+    setsockopt(client->output_pipe[R], SOL_SOCKET, SO_SNDBUF, &client->output_buffer_size, sizeof(int));
+    setsockopt(client->output_pipe[W], SOL_SOCKET, SO_RCVBUF, &client->output_buffer_size, sizeof(int));
+    setsockopt(client->output_pipe[W], SOL_SOCKET, SO_SNDBUF, &client->output_buffer_size, sizeof(int));
 }
 
 
@@ -155,7 +193,7 @@ int pyjack_process(jack_nframes_t n, void* arg) {
         );
     }
     
-    r = write(client->input_pipe[1], client->input_buffer_0, client->input_buffer_size);
+    r = write(client->input_pipe[W], client->input_buffer_0, client->input_buffer_size);
     
     if(r < 0) {
         client->iosync = 0;
@@ -164,7 +202,7 @@ int pyjack_process(jack_nframes_t n, void* arg) {
     }
     
     // Read data from python side (non-blocking!)
-    r = read(client->output_pipe[0], client->output_buffer_0, client->output_buffer_size);
+    r = read(client->output_pipe[R], client->output_buffer_0, client->output_buffer_size);
 
     if(r == client->buffer_size * sizeof(float) * client->num_outputs) {
         for(i = 0; i < client->num_outputs; i++) {
@@ -209,7 +247,7 @@ void pyjack_shutdown(void * arg) {
 }
 
 // SIGHUP handler
-void pyjack_hangup(void) {
+void pyjack_hangup(int sginal) {
     // TODO: what to do with non global clients
     global_client.event_hangup = 1;
     global_client.pjc = NULL;
@@ -648,7 +686,7 @@ static PyObject* process(PyObject* self, PyObject *args)
     // If we are out of sync, there might be bad data in the buffer
     // So we have to throw that away first...
     
-    r = read(client->input_pipe[0], client->input_buffer_1, client->input_buffer_size);
+    r = read(client->input_pipe[R], client->input_buffer_1, client->input_buffer_size);
     
     // Copy data into array...
     for(c = 0; c < client->num_inputs; c++) {
@@ -677,7 +715,7 @@ static PyObject* process(PyObject* self, PyObject *args)
     }
 
     // Send... raise an exception if the output data stream is full.
-    r = write(client->output_pipe[1], client->output_buffer_1, client->output_buffer_size);
+    r = write(client->output_pipe[W], client->output_buffer_1, client->output_buffer_size);
     if(r != client->output_buffer_size) {
         PyErr_SetString(JackOutputSyncError, "Failed to write output data.");
         return NULL;
@@ -848,6 +886,8 @@ Client_init(PyObject *self, PyObject *args, PyObject *kwds)
 static void
 Client_dealloc(PyObject* self)
 {
+puts("pyjack: dealloc");
+    detach(self, Py_None);
     self->ob_type->tp_free(self);
 }
 
