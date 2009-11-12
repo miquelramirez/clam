@@ -331,6 +331,60 @@ static PyObject* detach(PyObject* self, PyObject* args)
     return Py_None;
 }
 
+static PyObject* unregister_port(PyObject* self, PyObject* args)
+{
+    pyjack_client_t * client = self_or_global_client(self);
+    char* port_name;
+    if (! PyArg_ParseTuple(args, "s", &port_name))
+        return NULL;
+
+    if(client->pjc == NULL) {
+        PyErr_SetString(JackNotConnectedError, "Jack connection has not yet been established.");
+        return NULL;
+    }
+
+    if(client->active) {
+        PyErr_SetString(JackUsageError, "Cannot add ports while client is active.");
+        return NULL;
+    }
+
+    int i = 0;
+    for (i=0;i<client->num_inputs;i++) {
+        if (strcmp(jack_port_short_name(client->input_ports[i]))) continue;
+        int error = jack_port_unregister(client->pjc, client->input_port[i]);
+        if (error) {
+            PyErr_SetString(JackError, "Unable to unregister input port.");
+            return NULL;
+        }
+        client->num_inputs--;
+        for (;i<client->num_inputs;i++) {
+            client->input_ports[i] = client->input_ports[i+1];
+        }
+        init_pipe_buffers(client);
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    for (i=0;i<client->num_outputs;i++) {
+        if (strcmp(jack_port_short_name(client->output_ports[i]))) continue;
+        int error = jack_port_unregister(client->pjc, client->output_port[i]);
+        if (error) {
+            PyErr_SetString(JackError, "Unable to unregister output port.");
+            return NULL;
+        }
+        client->num_outputs--;
+        for (;i<client->num_outputs;i++) {
+            client->output_ports[i] = client->output_ports[i+1];
+        }
+        init_pipe_buffers(client);
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    PyErr_SetString(JackUsageError, "Port not found.");
+    return NULL;
+}
+
+
 // Create a new port for this client
 // Unregistration of ports is not supported; you must disconnect, reconnect, re-reg all ports instead.
 static PyObject* register_port(PyObject* self, PyObject* args)
@@ -853,6 +907,7 @@ static PyMethodDef pyjack_methods[] = {
   {"process",            process,                 METH_VARARGS, "process(output_array, input_array):\n  Exchange I/O data with RT Jack thread"},
   {"get_client_name",    get_client_name,         METH_VARARGS, "client_name():\n  Returns the actual name of the client"},
   {"register_port",      register_port,           METH_VARARGS, "register_port(name, flags):\n  Register a new port for this client"},
+  {"unregister_port",    unregister_port,         METH_VARARGS, "unregister_port(name):\n  Unregister an existing port for this client"},
   {"get_ports",          get_ports,               METH_VARARGS, "get_ports():\n  Get a list of all ports in the Jack graph"},
   {"get_port_flags",     get_port_flags,          METH_VARARGS, "get_port_flags():\n  Return flags of a port (flags are bits in an integer)"},
   {"get_connections",    get_connections,         METH_VARARGS, "get_connections():\n  Get a list of all ports connected to a port"},
