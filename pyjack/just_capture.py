@@ -33,8 +33,7 @@ print "Buffer Size:", N, "Sample Rate:", Sr
 sec = 3.0
 
 capture = numpy.zeros((2,int(Sr*sec)), 'f')
-input = numpy.zeros((2,N), 'f')
-output = numpy.zeros((2,N), 'f')
+dummy = numpy.zeros((2,0), 'f')
 
 #time.sleep(1)
 
@@ -43,7 +42,7 @@ print "Capturing audio..."
 i = 0
 while i < capture.shape[1] - N:
     try:
-        jack.process(output, capture[:,i:i+N])
+        jack.process(dummy, capture[:,i:i+N])
         i += N
     except jack.InputSyncError:
         print "Input Sync"
@@ -55,10 +54,22 @@ while i < capture.shape[1] - N:
 
 print "Playing back..."
 
+jack.deactivate()
+
+jack.unregister_port("in_1")
+jack.unregister_port("in_2")
+jack.register_port("out_1", jack.IsOutput)
+jack.register_port("out_2", jack.IsOutput)
+
+jack.activate()
+
+jack.connect(myname+":out_1", "system:playback_1")
+jack.connect(myname+":out_2", "system:playback_2")
+
 i = 0
 while i < capture.shape[1] - N:
     try:
-        jack.process(capture[:,i:i+N], input)
+        jack.process(capture[:,i:i+N], dummy)
         i += N
     except jack.InputSyncError:
         print "Input Sync"
