@@ -350,8 +350,8 @@ static PyObject* unregister_port(PyObject* self, PyObject* args)
 
     int i = 0;
     for (i=0;i<client->num_inputs;i++) {
-        if (strcmp(jack_port_short_name(client->input_ports[i]))) continue;
-        int error = jack_port_unregister(client->pjc, client->input_port[i]);
+        if (strcmp(port_name, jack_port_short_name(client->input_ports[i]))) continue;
+        int error = jack_port_unregister(client->pjc, client->input_ports[i]);
         if (error) {
             PyErr_SetString(JackError, "Unable to unregister input port.");
             return NULL;
@@ -366,8 +366,8 @@ static PyObject* unregister_port(PyObject* self, PyObject* args)
     }
 
     for (i=0;i<client->num_outputs;i++) {
-        if (strcmp(jack_port_short_name(client->output_ports[i]))) continue;
-        int error = jack_port_unregister(client->pjc, client->output_port[i]);
+        if (strcmp(port_name, jack_port_short_name(client->output_ports[i]))) continue;
+        int error = jack_port_unregister(client->pjc, client->output_ports[i]);
         if (error) {
             PyErr_SetString(JackError, "Unable to unregister output port.");
             return NULL;
