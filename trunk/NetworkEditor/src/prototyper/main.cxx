@@ -12,7 +12,7 @@
 #	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
 #endif
 
-#ifdef _MSC_VER
+#ifdef WIN32
 #define WINDOWS_MEAN_AND_LEAN
 #include <windows.h>
 #define sleep(n) Sleep(1000*(n))
