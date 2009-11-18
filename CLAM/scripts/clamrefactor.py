@@ -139,7 +139,6 @@ class ClamNetwork() :
 		connections = dict(outport=[],)
 		for connection in self.connections['outport']:
 			if connection.text.split('.')[0] != processingName:
-				print connection.text
 				connections['outport'].append(connection)
 		self.connections['outport'] = connections['outport']
 	
