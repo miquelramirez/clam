@@ -18,10 +18,12 @@ ASSUMPTIONS
 - python module gives ports in the right order
 - python module doesn't introduce any overhead (why a client is needed?)
 '''
-import sys, time, os
+import sys, time, os, subprocess
 import jack
 
-# Prototyper needs at least 1 sec
+# 
+max_tries_in_seconds = 5.
+
 run_client_wait_time = 0.1
 connect_wait_time = 0.01
 
@@ -34,9 +36,10 @@ def _client_from_port(client) :
 
 def _ports_of_client(client) :
 	ports = monitor_client.get_ports()
-	return [port for port in ports if _client_from_port(port) == client]
+	return [port for port in ports if _client_from_port(port) == client ]
 
 def connect(source, target) :
+	print(source, target) 
 	monitor_client.connect(source,target)
 	time.sleep( connect_wait_time )
 
@@ -47,6 +50,7 @@ def _init() :
 	except jack.NotConnectedError:
 		print "jackd not running"
 		sys.exit()
+
 def _exit() :
 	monitor_client.detach()
 	
@@ -60,18 +64,26 @@ def inports(client) :
 	client_ports = _ports_of_client(client)
 	return [port for port in client_ports if monitor_client.get_port_flags(port) & jack.IsInput ]
 
-def bus_connect(source, target) :
+def bus_connect(source, target, wait=max_tries_in_seconds) :
 	"""
-	Connects two lists of ports. The arguments can be a list or a string. If the latter, all the available ports of the client will be used.
+	Connects two lists of ports. The arguments can be a list or a string. 
+	If the latter, all the available ports of the client will be used.
 	"""
 	sources = source if type(source) == type([]) else outports(source)
 	targets = target if type(target) == type([]) else inports(target)
 	num_connections = min(len(sources), len(targets))
-#	print 'Doing %i connections. Client "%s" has %i out ports and "%s" has %i in ports' % (num_connections, _client_from_port(sources[0]), len(sources), _client_from_port(targets[0]), len(targets))
-	print 'Doing %i connections. Client has %i out ports and target has %i in ports' % (num_connections, len(sources), len(targets))
+
+#	print 'Doing %i connections. Client "%s" has %i out ports and "%s" has %i in ports' % \
+#		(num_connections, _client_from_port(sources[0]), len(sources), _client_from_port(targets[0]), len(targets))
+	print 'Doing %i connections. Client has %i out ports and target has %i in ports' \
+		% (num_connections, len(sources), len(targets))
+	
+	tries=0
+	max_tries = float(wait) / run_client_wait_time
 	for i in xrange(num_connections) :
-		print 'connect', sources[i], targets[i]
-		connect(sources[i], targets[i])
+		while len(monitor_client.get_connections(sources[i])) == 0 and tries < max_tries:
+			connect(sources[i], targets[i])
+			tries += 1
 
 def clients() :
 	ports = monitor_client.get_ports()
@@ -82,18 +94,25 @@ def clients() :
 def get_added_client(old_clients, new_clients) :
 	l = []
 	l += set(new_clients) - set(old_clients)
-	if len(l) != 1 :
-		print 'WARNING expected strictly one added jack client, found', len(l)
+	if len(l) == 0 :
 		return ""
-	print l
+	if len(l) > 1 :
+		print 'WARNING: found more than one added client. Found ', len(l)
 	return l[0]
 
-def run_jack_client(cmd, wait=run_client_wait_time) :
+def run_jack_client(cmd, wait=max_tries_in_seconds) :
 	previous_clients = clients()
-	os.system( cmd+'&' )
-	time.sleep( wait )
-	current_clients = clients()
-	return get_added_client(previous_clients, current_clients)
+	pid = subprocess.Popen(cmd.split(' '), stdout=subprocess.PIPE, env=os.environ)
+	new_client = ""
+	tries=0
+	max_tries = float(wait) / run_client_wait_time
+	while new_client == "" and tries < max_tries:
+		time.sleep(run_client_wait_time * wait)
+		new_client = get_added_client(previous_clients, clients())
+		tries += 1
+	if new_client == "" :
+		print "ERROR: a new client didn't show up in jackd after trying %s times." % max_tries
+	return new_client, pid
 
 def kill_jack_client(cmd) :
 	program = cmd.split()[0]
@@ -101,7 +120,6 @@ def kill_jack_client(cmd) :
 
 
 def main() :
-
 	metro = 'jack_metro -b 60'
 	c1 = run_jack_client(metro)
 	c2 = run_jack_client(metro)
