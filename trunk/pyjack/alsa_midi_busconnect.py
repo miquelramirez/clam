@@ -22,7 +22,11 @@ def _getClients(typeOfClient):
 
 def _getClientPorts(name,typeOfClient):
 	listOfClients=_getClients(typeOfClient)
-	index=[client['clientName'] for client in listOfClients].index(name)
+	try:
+		index=[client['clientName'] for client in listOfClients].index(name)
+	except:
+		print "WARNING: trying to get ports of client %s, which doesn't exist. Returning an empty list." % name
+		return []
 	if index == -1:
 		return None
 	client=listOfClients[index]
