@@ -66,4 +66,5 @@ def main():
 	print getClientOutputPorts("Midi Through")
 	bus_connect("Midi Through","Midi Through")
 
-main()
+if __name__ == '__main__':
+	main()
