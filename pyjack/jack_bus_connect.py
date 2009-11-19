@@ -38,9 +38,20 @@ def _ports_of_client(client) :
 	ports = monitor_client.get_ports()
 	return [port for port in ports if _client_from_port(port) == client ]
 
+def _get_ports_as_list(source, target):
+	sources = source if type(source) == type([]) else outports(source)
+	targets = target if type(target) == type([]) else inports(target)
+	num_connections = min(len(sources), len(targets))
+	return sources, targets, num_connections
+
 def connect(source, target) :
-	print(source, target) 
+	#print(source, target) 
 	monitor_client.connect(source,target)
+	time.sleep( connect_wait_time )
+
+def disconnect(source, target) :
+	#print(source, target) 
+	monitor_client.disconnect(source,target)
 	time.sleep( connect_wait_time )
 
 def _init() :
@@ -64,14 +75,13 @@ def inports(client) :
 	client_ports = _ports_of_client(client)
 	return [port for port in client_ports if monitor_client.get_port_flags(port) & jack.IsInput ]
 
+
 def bus_connect(source, target, wait=max_tries_in_seconds) :
 	"""
 	Connects two lists of ports. The arguments can be a list or a string. 
 	If the latter, all the available ports of the client will be used.
 	"""
-	sources = source if type(source) == type([]) else outports(source)
-	targets = target if type(target) == type([]) else inports(target)
-	num_connections = min(len(sources), len(targets))
+	sources, targets, num_connections = _get_ports_as_list(source, target)
 
 #	print 'Doing %i connections. Client "%s" has %i out ports and "%s" has %i in ports' % \
 #		(num_connections, _client_from_port(sources[0]), len(sources), _client_from_port(targets[0]), len(targets))
@@ -84,6 +94,15 @@ def bus_connect(source, target, wait=max_tries_in_seconds) :
 		while len(monitor_client.get_connections(sources[i])) == 0 and tries < max_tries:
 			connect(sources[i], targets[i])
 			tries += 1
+
+def bus_disconnect(source, target) :
+	sources, targets, num_connections = _get_ports_as_list(source, target)
+
+	print 'Doing %i disconnects. Client has %i out ports and target has %i in ports' \
+		% (num_connections, len(sources), len(targets))
+	
+	for i in xrange(num_connections) :
+			disconnect(sources[i], targets[i])
 
 def clients() :
 	ports = monitor_client.get_ports()
@@ -125,13 +144,20 @@ def main() :
 	c2 = run_jack_client(metro)
 	c3 = run_jack_client(metro)
 
-	bus_connect(c1, 'system')
-	bus_connect('system', 'system')
-
 	bus_connect( outports('system')[:-1] , inports('system')[-2:] )
 	bus_connect( c2 , inports('system')[-3:] )
-
 	time.sleep(4)
+
+	# disconnect test: first existing, then again which should not give an error
+	bus_disconnect( outports('system')[:-1] , inports('system')[-2:] )
+	time.sleep(.1)
+	bus_disconnect( outports('system')[:-1] , inports('system')[-2:] )
+
+	try:
+		disconnect('system:capture_1','blah:playback_1')
+	except Exception,e:
+		print 'Expected: ', e
+		
 	kill_jack_client(metro) #TODO right way
 
 print "name:", __name__

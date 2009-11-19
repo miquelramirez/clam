@@ -575,6 +575,21 @@ static PyObject* port_connect(PyObject* self, PyObject* args)
     return Py_None;
 }
 
+static int jack_port_connected_to_extern(const pyjack_client_t * client, 
+																					const jack_port_t * src, 
+																					const char* dst_name)
+{
+		// finds connections of src, then checks if dst is in there
+		const char ** existing_connections = jack_port_get_all_connections(client->pjc, src);
+		if (existing_connections) {
+				int i; // non C99 nonsense
+				for (i = 0; existing_connections[i]; i++) {
+						return strcmp(existing_connections[i], dst_name) == 0;
+				}
+		}
+		return 0;
+}
+
 // disconnect_port
 static PyObject* port_disconnect(PyObject* self, PyObject* args)
 {
@@ -589,24 +604,25 @@ static PyObject* port_disconnect(PyObject* self, PyObject* args)
 
     if (! PyArg_ParseTuple(args, "ss", &src_name, &dst_name))
         return NULL;
-    
+
     jack_port_t * src = jack_port_by_name(client->pjc, src_name);
     if (!src) {
         PyErr_SetString(JackUsageError, "Non existing source port.");
         return NULL;
-        }
+    }
+
     jack_port_t * dst = jack_port_by_name(client->pjc, dst_name);
     if (!dst) {
         PyErr_SetString(JackUsageError, "Non existing destination port.");
         return NULL;
-        }
-
-    if(jack_port_connected_to(src, dst_name)) {
-        if(jack_disconnect(client->pjc, src_name, dst_name) != 0) {
-            PyErr_SetString(JackError, "Failed to connect ports.");
-            return NULL;
-        }
     }
+
+		if(jack_port_connected_to_extern(client, src, dst_name)) {
+				if (jack_disconnect(client->pjc, src_name, dst_name))	{
+						PyErr_SetString(JackError, "Failed to disconnect ports.");
+						return NULL;
+				}
+		}
     
     Py_INCREF(Py_None);
     return Py_None;
