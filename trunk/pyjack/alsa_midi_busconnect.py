@@ -40,31 +40,30 @@ def getClientInputPorts(name):
 def getClientOutputPorts(name):
 	return _getClientPorts(name,"o")
 
+def connect(source,target):
+	os.system("aconnect %s %s" % (source,target))
+
 def bus_connect(source, target):
 	"""
 	Connects two lists of ports. The arguments can be a list or a string. If the latter, all the available ports of the client will be used.
 	"""
-"""	if type(source) == type([]):
-		sources=source
-	else:
-		["%i:%i" % (tempSource["clientNumber"],tempSource["ports"]) getOutputClients() (source)
-	targets = target if type(target) == type([]) else inports(target)
+	sources = source if type(source) == type([]) else getClientInputPorts(source)
+	targets = target if type(target) == type([]) else getClientOutputPorts(target)
 	num_connections = min(len(sources), len(targets))
-#	print 'Doing %i connections. Client "%s" has %i out ports and "%s" has %i in ports' % (num_connections, _client_from_port(sources[0]), len(sources), _client_from_port(targets[0]), len(targets))
 	print 'Doing %i connections. Client has %i out ports and target has %i in ports' % (num_connections, len(sources), len(targets))
 	for i in xrange(num_connections) :
 		print 'connect', sources[i], targets[i]
 		connect(sources[i], targets[i])
-"""
 
 def main():
 	print "input clients: "
 	print getInputClients()
 	print "output ones: "
 	print getOutputClients()
-	print "ardour inputs:"
-	print getClientInputPorts("ardour")
-	print "ardour outputs:"
-	print getClientOutputPorts("ardour")
+	print "Midi Through:"
+	print getClientInputPorts("Midi Through")
+	print "Midi Through outputs:"
+	print getClientOutputPorts("Midi Through")
+	bus_connect("Midi Through","Midi Through")
 
 main()
