@@ -68,7 +68,8 @@ namespace CLAM {
 		
 		for (it=mLinks.begin(); it!=mLinks.end(); it++) 
 		{
-			((dynamic_cast<TypedInControl<TypedControlData>*>(*it)))->DoControl(val);
+			TypedInControl<TypedControlData>* control = static_cast<TypedInControl<TypedControlData>*>(*it);
+			control->DoControl(val);
 		}
 	}
 
