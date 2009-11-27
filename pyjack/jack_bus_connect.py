@@ -42,15 +42,15 @@ def _get_ports_as_list(source, target):
 	sources = source if type(source) == type([]) else outports(source)
 	targets = target if type(target) == type([]) else inports(target)
 	num_connections = min(len(sources), len(targets))
-	return sources, targets, num_connections
+	if len(sources) > 0: source = _client_from_port(sources[0])
+	if len(targets) > 0: target = _client_from_port(targets[0])
+	return source, sources, target, targets, num_connections
 
 def connect(source, target) :
-	#print(source, target) 
 	monitor_client.connect(source,target)
 	time.sleep( connect_wait_time )
 
 def disconnect(source, target) :
-	#print(source, target) 
 	monitor_client.disconnect(source,target)
 	time.sleep( connect_wait_time )
 
@@ -81,12 +81,9 @@ def bus_connect(source, target, wait=max_tries_in_seconds) :
 	Connects two lists of ports. The arguments can be a list or a string. 
 	If the latter, all the available ports of the client will be used.
 	"""
-	sources, targets, num_connections = _get_ports_as_list(source, target)
-
-#	print 'Doing %i connections. Client "%s" has %i out ports and "%s" has %i in ports' % \
-#		(num_connections, _client_from_port(sources[0]), len(sources), _client_from_port(targets[0]), len(targets))
-	print 'Doing %i connections. Client has %i out ports and target has %i in ports' \
-		% (num_connections, len(sources), len(targets))
+	source, sources, target, targets, num_connections = _get_ports_as_list(source, target)
+	print 'Doing %i connections. Client "%s" has %i out ports and "%s" has %i in ports' % \
+		(num_connections,source,len(sources),target,len(targets))
 	
 	tries=0
 	max_tries = float(wait) / run_client_wait_time
@@ -94,15 +91,16 @@ def bus_connect(source, target, wait=max_tries_in_seconds) :
 		while len(monitor_client.get_connections(sources[i])) == 0 and tries < max_tries:
 			connect(sources[i], targets[i])
 			tries += 1
+	return num_connections
 
 def bus_disconnect(source, target) :
-	sources, targets, num_connections = _get_ports_as_list(source, target)
+	source, sources, target, targets, num_connections = _get_ports_as_list(source, target)
+	print 'Doing %i disconnections. Client "%s" has %i out ports and "%s" has %i in ports' % \
+		(num_connections,source,len(sources),target,len(targets))
 
-	print 'Doing %i disconnects. Client has %i out ports and target has %i in ports' \
-		% (num_connections, len(sources), len(targets))
-	
 	for i in xrange(num_connections) :
 			disconnect(sources[i], targets[i])
+	return num_connections
 
 def clients() :
 	ports = monitor_client.get_ports()
@@ -114,6 +112,7 @@ def get_added_client(old_clients, new_clients) :
 	l = []
 	l += set(new_clients) - set(old_clients)
 	if len(l) == 0 :
+		print 'WARNING: no added client found!'
 		return ""
 	if len(l) > 1 :
 		print 'WARNING: found more than one added client. Found ', len(l)
