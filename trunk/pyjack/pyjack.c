@@ -86,7 +86,7 @@ void pyjack_init(pyjack_client_t * client) {
     client->input_pipe[W] = 0;
     client->output_pipe[R] = 0;
     client->output_pipe[W] = 0;
-    
+
     // Initialize unamed, raw datagram-type sockets...
     if (socketpair(PF_UNIX, SOCK_DGRAM, 0, client->input_pipe) == -1) {
         printf("ERROR: Failed to create socketpair input_pipe!!\n");
@@ -193,6 +193,7 @@ int pyjack_process(jack_nframes_t n, void* arg) {
                 (client->buffer_size * sizeof(float))
             );
         }
+
         r = write(client->input_pipe[W], client->input_buffer_0, client->input_buffer_size);
         
         if(r < 0) {
@@ -576,18 +577,18 @@ static PyObject* port_connect(PyObject* self, PyObject* args)
 }
 
 static int jack_port_connected_to_extern(const pyjack_client_t * client, 
-																					const jack_port_t * src, 
-																					const char* dst_name)
+                                         const jack_port_t * src, 
+                                         const char* dst_name)
 {
-		// finds connections of src, then checks if dst is in there
-		const char ** existing_connections = jack_port_get_all_connections(client->pjc, src);
-		if (existing_connections) {
-				int i; // non C99 nonsense
-				for (i = 0; existing_connections[i]; i++) {
-						return strcmp(existing_connections[i], dst_name) == 0;
-				}
-		}
-		return 0;
+    // finds connections of src, then checks if dst is in there
+    const char ** existing_connections = jack_port_get_all_connections(client->pjc, src);
+    if (existing_connections) {
+    	  int i; // non C99 nonsense
+        for (i = 0; existing_connections[i]; i++) {
+	          return strcmp(existing_connections[i], dst_name) == 0;
+	      }
+    }
+    return 0;
 }
 
 // disconnect_port
@@ -755,10 +756,12 @@ static PyObject* process(PyObject* self, PyObject *args)
         return NULL;
     }
 
+
     // Get input data
     // If we are out of sync, there might be bad data in the buffer
     // So we have to throw that away first...
     if (client->input_buffer_size) {
+		
         r = read(client->input_pipe[R], client->input_buffer_1, client->input_buffer_size);
         
         // Copy data into array...
@@ -777,6 +780,7 @@ static PyObject* process(PyObject* self, PyObject *args)
             return NULL;
         }
     }
+
     if (client->output_buffer_size) {
         // Copy output data into output buffer...
         for(c = 0; c < client->num_outputs; c++) {
@@ -790,6 +794,7 @@ static PyObject* process(PyObject* self, PyObject *args)
     
         // Send... raise an exception if the output data stream is full.
         r = write(client->output_pipe[W], client->output_buffer_1, client->output_buffer_size);
+
         if(r != client->output_buffer_size) {
             PyErr_SetString(JackOutputSyncError, "Failed to write output data.");
             return NULL;
@@ -954,9 +959,10 @@ Client_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 
 static int
 Client_init(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    if (!attach(self, args)) return -1;
-    return 0;
+{	
+		int status = 0;
+    if (!attach(self, args)) status = -1;
+    return status;
 }
 
 static void
@@ -1023,7 +1029,6 @@ initjack(void)
 {
   PyObject *m, *d;
   
-  pyjack_ClientType.tp_new = PyType_GenericNew;
   if (PyType_Ready(&pyjack_ClientType) < 0)
     return;
   m = Py_InitModule3("jack", pyjack_methods,
@@ -1036,7 +1041,6 @@ initjack(void)
 
   Py_INCREF(&pyjack_ClientType);
   PyModule_AddObject(m, "Client", (PyObject *)&pyjack_ClientType);
-
 
 // Jack errors 
   JackError = PyErr_NewException("jack.Error", NULL, NULL);
