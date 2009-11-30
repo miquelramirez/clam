@@ -272,6 +272,7 @@ def generate(env):
 		QT4_UISUFFIX = '.ui',
 		QT4_UICDECLPREFIX = 'ui_',
 		QT4_UICDECLSUFFIX = '.h',
+		QT4_MOCINCPREFIX = '-I'
 		QT4_MOCHPREFIX = 'moc_',
 		QT4_MOCHSUFFIX = '$CXXFILESUFFIX',
 		QT4_MOCCXXPREFIX = '',
@@ -280,7 +281,7 @@ def generate(env):
 		QT4_QRCCXXSUFFIX = '$CXXFILESUFFIX',
 		QT4_QRCCXXPREFIX = 'qrc_',
 		QT4_MOCCPPPATH = [],
-		QT4_MOCINCFLAGS = '$( ${_concat(INCPREFIX, QT4_MOCCPPPATH, INCSUFFIX, __env__, RDirs)} $)',
+		QT4_MOCINCFLAGS = '$( ${_concat(QT4_MOCINCPREFIX, QT4_MOCCPPPATH, INCSUFFIX, __env__, RDirs)} $)',
 
 		# Commands for the qt support ...
 		QT4_UICCOM = '$QT4_UIC $QT4_UICFLAGS -o $TARGET $SOURCE',
