@@ -112,7 +112,6 @@ def get_added_client(old_clients, new_clients) :
 	l = []
 	l += set(new_clients) - set(old_clients)
 	if len(l) == 0 :
-		print 'WARNING: no added client found!'
 		return ""
 	if len(l) > 1 :
 		print 'WARNING: found more than one added client. Found ', len(l)
@@ -127,6 +126,7 @@ def run_jack_client(cmd, wait=max_tries_in_seconds) :
 	while new_client == "" and tries < max_tries:
 		time.sleep(run_client_wait_time * wait)
 		new_client = get_added_client(previous_clients, clients())
+		print "X",
 		tries += 1
 	if new_client == "" :
 		print "ERROR: a new client didn't show up in jackd after trying %s times." % max_tries
