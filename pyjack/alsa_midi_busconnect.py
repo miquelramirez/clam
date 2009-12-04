@@ -58,6 +58,7 @@ def bus_connect(source, target):
 	for i in xrange(num_connections) :
 		print 'connect', sources[i], targets[i]
 		connect(sources[i], targets[i])
+	return num_connections != 0
 
 def main():
 	print "input clients: "
