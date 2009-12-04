@@ -99,8 +99,8 @@ void PANetworkPlayer::Start()
 
 	CacheSourcesAndSinks();
 
-	int nInChannels = GetSize<Network::AudioSources>(_audioSources);
-	int nOutChannels = GetSize<Network::AudioSinks>(_audioSinks);
+	int nInChannels = GetSize<Network::AudioSources>(_audioSources) + GetSizeSourceBuffer(_audioSourcesBuffer);
+	int nOutChannels = GetSize<Network::AudioSinks>(_audioSinks) + GetSizeSinkBuffer(_audioSinksBuffer);
 
 	PaHostApiTypeId apiTryList[] = {
 		paDirectSound,
@@ -292,6 +292,15 @@ void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 		for (unsigned port = 0; port < ports_size; ++port) 
 			_audioSources[i]->SetExternalBuffer(input[buffer++], nframes, port);
 	}
+
+	AudioSourceBuffer* audioSourceBuffer;
+	for(unsigned i = 0; i < _audioSourcesBuffer.size(); ++i)
+	{
+		audioSourceBuffer = (AudioSourceBuffer*)_audioSourcesBuffer[i];
+		unsigned ports_size = audioSourceBuffer->GetPorts().size();
+		for (unsigned port = 0; port < ports_size; ++port) 
+			audioSourceBuffer->SetExternalBuffer(input[buffer++], nframes, port);
+	}
 }
 
 void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
@@ -302,6 +311,15 @@ void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 		unsigned ports_size = _audioSinks[i]->GetPorts().size();
 		for (unsigned port = 0; port < ports_size; ++port) 
 			_audioSinks[i]->SetExternalBuffer(output[buffer++], nframes, port);
+	}
+
+	AudioSinkBuffer* audioSinkBuffer;
+	for(unsigned i = 0; i < _audioSinksBuffer.size(); ++i)
+	{
+		audioSinkBuffer = (AudioSinkBuffer*)_audioSinksBuffer[i];
+		unsigned ports_size = audioSinkBuffer->GetPorts().size();
+		for (unsigned port = 0; port < ports_size; ++port) 
+			audioSinkBuffer->SetExternalBuffer(output[buffer++], nframes, port);
 	}
 }
 

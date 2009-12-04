@@ -299,6 +299,33 @@ namespace CLAM
 		return nullGeometry;
 	}
 
+	const Network::Processings FlattenedNetwork::getOrderedProcessings(const std::string & type, bool horizontalOrder) const
+	{
+		std::list <ProcessingAndGeometry> processingsAndGeometries;
+		Processings orderedProcessings;
+		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
+		{
+			Processing * proc = it->second;
+			const std::string className = proc->GetClassName();
+			if (className!=type)
+				continue;
+			ProcessingAndGeometry item;
+			item.processing = proc;
+			item.geometry = findProcessingGeometry(proc);
+			processingsAndGeometries.push_back(item);
+			processingsAndGeometries.sort(horizontalOrder?compareGeometriesUpperXThan:compareGeometriesUpperYThan);
+		}
+
+		for (std::list<ProcessingAndGeometry>::const_iterator it=processingsAndGeometries.begin();
+			it!=processingsAndGeometries.end();it++)
+		{
+			orderedProcessings.push_back( it->processing );
+		}
+
+		return orderedProcessings;
+	}
+
+
 	const Network::AudioSinks FlattenedNetwork::getOrderedSinks() const
 	{
 		std::list <ProcessingAndGeometry> sinksAndGeometries;
@@ -330,7 +357,6 @@ namespace CLAM
 	const Network::AudioSources FlattenedNetwork::getOrderedSources() const
 	{
 		std::list <ProcessingAndGeometry> sourcesAndGeometries;
-		AudioSources orderedSources;
 		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
 		{
 			Processing * proc = it->second;
@@ -344,7 +370,7 @@ namespace CLAM
 			sourcesAndGeometries.push_back(item);
 			sourcesAndGeometries.sort(compareGeometriesUpperYThan);
 		}
-
+		AudioSources orderedSources;
 		for (std::list<ProcessingAndGeometry>::const_iterator it=sourcesAndGeometries.begin();
 			it!=sourcesAndGeometries.end();it++)
 		{
