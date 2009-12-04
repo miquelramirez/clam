@@ -90,6 +90,7 @@ public:
 
 	//! audio sources and sinks and control sources and sinks  order 
 	const Geometry findProcessingGeometry(Processing* ) const;
+	const Processings getOrderedProcessings(const std::string & type, bool horizontalOrder) const;
 	const AudioSinks getOrderedSinks() const;
 	const AudioSources getOrderedSources() const;
 	const ControlSinks getOrderedControlSinks() const;

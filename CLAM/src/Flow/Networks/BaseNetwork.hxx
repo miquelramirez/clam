@@ -28,6 +28,8 @@
 #include "OutControl.hxx"
 #include "AudioSink.hxx"
 #include "AudioSource.hxx"
+#include "AudioSinkBuffer.hxx"
+#include "AudioSourceBuffer.hxx"
 #include "ControlSink.hxx"
 #include "ControlSource.hxx"
 #include <string>
@@ -59,8 +61,12 @@ public:
 	typedef std::map <std::string, Processing* > ProcessingsMap;
 	typedef std::list<InPortBase *> InPortsList;
 
+	typedef std::vector<Processing*> Processings;
+
 	typedef std::vector<AudioSource*> AudioSources;
 	typedef std::vector<AudioSink*> AudioSinks;
+	typedef std::vector<AudioSourceBuffer*> AudioSourcesBuffer;
+	typedef std::vector<AudioSinkBuffer*> AudioSinksBuffer;
 
 	typedef std::vector<ControlSource*> ControlSources;
 	typedef std::vector<ControlSink*> ControlSinks;

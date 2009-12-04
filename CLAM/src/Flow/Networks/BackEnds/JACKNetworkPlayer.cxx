@@ -122,6 +122,29 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 			audioSource->SetFrameAndHopSize(_jackBufferSize, port);
 		}
 	}
+
+	for(unsigned i = 0; i < _audioSourcesBuffer.size(); ++i)
+	{
+		AudioSourceBuffer* audioSourceBuffer = (AudioSourceBuffer*)_audioSourcesBuffer[i];
+		std::string processingName = net.GetNetworkId(audioSourceBuffer);
+
+		const AudioSourceBuffer::Ports & ports = audioSourceBuffer->GetPorts();
+		for(unsigned port = 0; port < ports.size(); ++port)
+		{
+			JackPort jp;
+			std::stringstream portName;
+			if (ports.size() == 1)
+				 portName << processingName;
+			else
+				 portName << processingName << "_" << ports[port].mPort->GetName();
+
+			jp.jackPort = jack_port_register(_jackClient, portName.str().c_str(), 
+											   JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0); 
+			_sourceJackPorts.push_back(jp);
+
+			audioSourceBuffer->SetFrameAndHopSize(_jackBufferSize, port);
+		}
+	}
 }
 
 void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
@@ -151,6 +174,29 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 			audioSink->SetFrameAndHopSize(_jackBufferSize, port);
 		}
 	}
+
+	for(unsigned i = 0; i < _audioSinksBuffer.size(); ++i)
+	{
+		AudioSinkBuffer* audioSinkBuffer = (AudioSinkBuffer*)_audioSinksBuffer[i];
+		std::string processingName = net.GetNetworkId(audioSinkBuffer);
+
+		const AudioSinkBuffer::Ports & ports = audioSinkBuffer->GetPorts();
+		for(unsigned port = 0; port < ports.size(); ++port)
+		{
+			JackPort jp;
+			std::stringstream portName;
+			if (ports.size() == 1)
+				 portName << processingName;
+			else
+				 portName << processingName << "_" << ports[port].mPort->GetName();
+
+			jp.jackPort=jack_port_register(_jackClient, portName.str().c_str(),
+											  JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+			_sinkJackPorts.push_back(jp);
+
+			audioSinkBuffer->SetFrameAndHopSize(_jackBufferSize, port);
+		}
+	}
 }
 
 void JACKNetworkPlayer::UnRegisterPorts()
@@ -178,7 +224,8 @@ void JACKNetworkPlayer::UnRegisterPorts()
     
 void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes)
 {
-	for (unsigned buffer = 0, i = 0; i < _audioSources.size(); ++i)
+	unsigned buffer = 0;
+	for (unsigned i = 0; i < _audioSources.size(); ++i)
 	{
 		unsigned port_size = _audioSources[i]->GetPorts().size();
 		for(unsigned port = 0; port < port_size; ++port)
@@ -191,11 +238,28 @@ void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes
 			_audioSources[i]->SetExternalBuffer(jackInBuffer, nframes, port);
 		}	
 	}
+	
+	for (unsigned i = 0; i < _audioSourcesBuffer.size(); ++i)
+	{
+		AudioSourceBuffer* audioSourcesBuffer = (AudioSourceBuffer*)_audioSourcesBuffer[i];
+
+		unsigned port_size = audioSourcesBuffer->GetPorts().size();
+		for(unsigned port = 0; port < port_size; ++port)
+		{
+			//Retrieve JACK buffer location
+			jack_default_audio_sample_t *jackInBuffer = 
+				(jack_default_audio_sample_t*) jack_port_get_buffer(_sourceJackPorts[buffer++].jackPort, nframes);
+
+			//Tell the AudioSource where to look for data in its Do()
+			audioSourcesBuffer->SetExternalBuffer(jackInBuffer, nframes, port);
+		}	
+	}
 }
 
 void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 {
-	for (unsigned buffer = 0, i = 0; i < _audioSinks.size(); ++i)
+	unsigned buffer = 0;
+	for (unsigned i = 0; i < _audioSinks.size(); ++i)
 	{
 		unsigned port_size = _audioSinks[i]->GetPorts().size();
 		for(unsigned port = 0; port < port_size; ++port)
@@ -206,6 +270,22 @@ void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 
 			//Tell the AudioSource where to copy data consumed in its Do()
 			_audioSinks[i]->SetExternalBuffer(jackOutBuffer, nframes, port);	
+		}
+	}
+
+	for (unsigned i = 0; i < _audioSinksBuffer.size(); ++i)
+	{
+		AudioSinkBuffer* audioSinkBuffer = (AudioSinkBuffer*)_audioSinksBuffer[i];
+
+		unsigned port_size = audioSinkBuffer->GetPorts().size();
+		for(unsigned port = 0; port < port_size; ++port)
+		{
+			//Retrieve JACK buffer location
+			jack_default_audio_sample_t* jackOutBuffer = 
+				(jack_default_audio_sample_t*) jack_port_get_buffer(_sinkJackPorts[buffer++].jackPort, nframes);
+
+			//Tell the AudioSource where to copy data consumed in its Do()
+			audioSinkBuffer->SetExternalBuffer(jackOutBuffer, nframes, port);	
 		}
 	}
 }

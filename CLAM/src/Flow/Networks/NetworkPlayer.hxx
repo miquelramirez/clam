@@ -39,6 +39,24 @@ template<typename Container> unsigned GetSize(Container const& t)
 	return nrOfPorts;
 }
 
+unsigned GetSizeSourceBuffer(const std::vector<Processing*>& t)
+{
+	unsigned nrOfPorts = 0;
+	
+	for (std::vector<Processing*>::const_iterator it = t.begin(); it != t.end(); ++it)
+		nrOfPorts += ((AudioSourceBuffer*)(*it))->GetPorts().size();
+	return nrOfPorts;
+}
+
+unsigned GetSizeSinkBuffer(const std::vector<Processing*>& t)
+{
+	unsigned nrOfPorts = 0;
+	for (std::vector<Processing*>::const_iterator it = t.begin(); it != t.end(); ++it)
+		nrOfPorts += ((AudioSinkBuffer*)(*it))->GetPorts().size();
+	return nrOfPorts;
+}
+
+
 } // namespace
 
 /**
@@ -57,6 +75,8 @@ protected:
 	Network::AudioSources _audioSources;
 	Network::AudioSinks _audioSinks;
 
+	Network::Processings _audioSourcesBuffer;
+	Network::Processings _audioSinksBuffer;	
 public:
 	NetworkPlayer()
 		: _network(NULL)
@@ -130,10 +150,22 @@ protected:
 		return GetNetwork().getOrderedSinks(); 
 	}
 
+	Network::Processings GetAudioSourcesBuffer() 
+	{	
+		return GetNetwork().getOrderedProcessings("AudioSourceBuffer", /*vertical order */ true);
+	}
+
+	Network::Processings GetAudioSinksBuffer() 
+	{ 
+		return GetNetwork().getOrderedProcessings("AudioSinkBuffer", /*vertical order */ false);
+	}
+
 	void CacheSourcesAndSinks()
 	{
 		_audioSources = GetAudioSources();
 		_audioSinks = GetAudioSinks();
+		_audioSourcesBuffer = GetAudioSourcesBuffer();
+		_audioSinksBuffer = GetAudioSinksBuffer();
 	}
 
 private:
