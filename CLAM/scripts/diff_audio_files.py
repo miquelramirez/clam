@@ -35,36 +35,38 @@ def diff_files(expected, result, diffbase) :
 	if not os.access(expected, os.R_OK):
 		print "Expected file not found: ", result
 		return "No expectation for the output. Check the results and accept them with the --accept option."
+	return diff_files_wav(expected, result, diffbase)
+
+def diff_files_wav(expected, result, diffbase) :
 	diffwav = diffbase+'.wav'
 	substractResult = silentrun('soxsucks --compare %f %s %s 2>&1 && echo OK '%(threshold_amplitude, expected, result))
-	if 'OK' not in substractResult :
-		substractResult= [line for line in substractResult.split("\n") if line.find("there is a different sample (")!=-1]
-		if substractResult==[]:
-			print "files substraction with sox failed. They might not be comparable: (different lenght or sample-rate: %s %s)" % (expected, result)
-			return "Non comparable waves (different lenght, channels or sample-rate)"
-		substractResult="".join(substractResult)
+	if 'OK' in substractResult : return None
+	substractResult= [line for line in substractResult.split("\n") if line.find("there is a different sample (")!=-1]
+	if substractResult==[]:
+		print "files substraction with sox failed. They might not be comparable: (different lenght or sample-rate: %s %s)" % (expected, result)
+		return "Non comparable waves (different lenght, channels or sample-rate)"
+	substractResult="".join(substractResult)
 # TODO: REFACTOR, and use wrapper python of soxsucks compare function!!
-		stringToSearch="amplitude diff: "
-		errorString=substractResult[substractResult.find(stringToSearch)+len(stringToSearch):].split(")")[0]
-		stringToSearch="on second "
-		timeErrorString=substractResult[substractResult.find(stringToSearch)+len(stringToSearch):].split("\n")[0]
-		stringToSearch="in the sample "
-		sampleString=substractResult[substractResult.find(stringToSearch)+len(stringToSearch):].split(",")[0]
-		silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 '%(expected, result, diffwav))
+	def extract(content, start, stop) :
+		return content[content.find(content)+len(content):].split(separator)[0]
+	errorString = extract(substractResult, "amplitude diff: ", ")" )
+	timeToErrorString = extract(substractResult, "on second ", "\n" )
+	sampleString = extract(substractResult, "in the sample ", "," )
+	silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 '%(expected, result, diffwav))
 #####
-		max_amplitude = abs(float(errorString))
-		if not numpy.isfinite(max_amplitude) :
-			print "One of the files contains infinite values or NaN's"
-			return "One of the files contains infinite values or NaN's"
-		if not max_amplitude : return None
-		max_dBs = 20*math.log10(max_amplitude)
-		if max_dBs > threshold_dBs :
-			silentrun('wav2png --input %s --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000'%(diffwav))
-			print "Files are different with threshold %f dB (amplitude: %f)" % (threshold_dBs, threshold_amplitude)
-			print "\tMax diff is %f dB (amplitude: %f)" % ( max_dBs, max_amplitude)
-			print "\tOn sample: %s" % sampleString
-			return "Differences of %s dB (threshold: %s dB) at %s seconds (sample %s)" % (
-				max_dBs, threshold_dBs, timeErrorString, sampleString)
+	max_amplitude = abs(float(errorString))
+	if not numpy.isfinite(max_amplitude) :
+		print "One of the files contains infinite values or NaN's"
+		return "One of the files contains infinite values or NaN's"
+	if not max_amplitude : return None
+	max_dBs = 20*math.log10(max_amplitude)
+	if max_dBs > threshold_dBs :
+		silentrun('wav2png --input %s --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000'%(diffwav))
+		print "Files are different with threshold %f dB (amplitude: %f)" % (threshold_dBs, threshold_amplitude)
+		print "\tMax diff is %f dB (amplitude: %f)" % ( max_dBs, max_amplitude)
+		print "\tOn sample: %s" % sampleString
+		return "Differences of %s dB (threshold: %s dB) at %s seconds (sample %s)" % (
+			max_dBs, threshold_dBs, timeErrorString, sampleString)
 	return None
 
 
