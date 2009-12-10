@@ -13,15 +13,15 @@ namespace CLAM
 
 bool OfflineNetworkPlayer::IsWorking()
 {
-	return (_outFileNames.size() != GetSize<Network::AudioSources>(GetAudioSources()) + GetSizeSourceBuffer(GetAudioSourcesBuffer()))
-		&& (_inFileNames.size() != GetSize<Network::AudioSinks>(GetAudioSinks()) + GetSizeSinkBuffer(GetAudioSinksBuffer()));
+	return (_outFileNames.size() != GetSize<Network::AudioSources>(GetAudioSources()) + GetSize<Network::AudioSourcesBuffer>(GetAudioSourcesBuffer()))
+		&& (_inFileNames.size() != GetSize<Network::AudioSinks>(GetAudioSinks()) + GetSize<Network::AudioSinksBuffer>(GetAudioSinksBuffer()));
 }
 
 std::string OfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
-	ss << GetSize<Network::AudioSources>(GetAudioSources()) + GetSizeSourceBuffer(GetAudioSourcesBuffer()) << " inputs and " 
-	   << GetSize<Network::AudioSinks>(GetAudioSinks()) + GetSizeSinkBuffer(GetAudioSinksBuffer()) << " outputs needed but just " 
+	ss << GetSize<Network::AudioSources>(GetAudioSources()) + GetSize<Network::AudioSourcesBuffer>(GetAudioSourcesBuffer()) << " inputs and " 
+	   << GetSize<Network::AudioSinks>(GetAudioSinks()) + GetSize<Network::AudioSinksBuffer>(GetAudioSinksBuffer()) << " outputs needed but just " 
 	   << _inFileNames.size() << " input files provided" 
 	   << _outFileNames.size() << " output files provided" 
 	   << std::ends;
@@ -66,13 +66,13 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 
 	/***********************************************************************************/
 
-	const Network::Processings & sourcesBuffer = GetAudioSourcesBuffer();
+	const Network::AudioSourcesBuffer & sourcesBuffer = GetAudioSourcesBuffer();
 
-	for (Network::Processings::const_iterator it = sourcesBuffer.begin(); it != sourcesBuffer.end(); ++it)
+	for (Network::AudioSourcesBuffer::const_iterator it = sourcesBuffer.begin(); it != sourcesBuffer.end(); ++it)
 	{
 		std::string processingName = net.GetNetworkId(*it);
 
-		const AudioSourceBuffer::Ports & ports = ((AudioSourceBuffer*)*it)->GetPorts();
+		const AudioSourceBuffer::Ports & ports = (*it)->GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 		{
 			std::stringstream portName;
@@ -129,13 +129,13 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 
 	/***********************************************************************************/
 
-	const Network::Processings & sinksBuffer = GetAudioSinksBuffer();
+	const Network::AudioSinksBuffer & sinksBuffer = GetAudioSinksBuffer();
 
-	for (Network::Processings::const_iterator it = sinksBuffer.begin(); it != sinksBuffer.end(); ++it)
+	for (Network::AudioSinksBuffer::const_iterator it = sinksBuffer.begin(); it != sinksBuffer.end(); ++it)
 	{
 		std::string processingName = net.GetNetworkId( *it );
 
-		const AudioSinkBuffer::Ports & ports = ((AudioSinkBuffer*)*it)->GetPorts();
+		const AudioSinkBuffer::Ports & ports = (*it)->GetPorts();
 		for(unsigned port = 0; port < ports.size(); ++port)
 		{
 			//Register port on the JACK server
@@ -199,7 +199,7 @@ void OfflineNetworkPlayer::Start()
 	}
 
 	// Check that the number of input channels matches the number of ports in the network	
-	CLAM_ASSERT(inputChannelsCount == GetSize<Network::AudioSources>(_audioSources) + GetSizeSourceBuffer(GetAudioSourcesBuffer()), 
+	CLAM_ASSERT(inputChannelsCount == GetSize<Network::AudioSources>(_audioSources) + GetSize<Network::AudioSourcesBuffer>(GetAudioSourcesBuffer()), 
 	 	"The number of input channels is different than the number of sourceports in the provided network.");
 
 	//Open the files and get the total number of channels
@@ -221,7 +221,7 @@ void OfflineNetworkPlayer::Start()
 	}
 
 	// Check that the number of output channels matches the of ports in the network	
-	CLAM_ASSERT(outputChannelsCount == GetSize<Network::AudioSinks>(_audioSinks) + GetSizeSinkBuffer(GetAudioSinksBuffer()),
+	CLAM_ASSERT(outputChannelsCount == GetSize<Network::AudioSinks>(_audioSinks) + GetSize<Network::AudioSinksBuffer>(GetAudioSinksBuffer()),
 	 	"The number of output channels is different than the number of sinkports in the provided network.");
 
 	std::cout << "Sources and Sinks list:" <<std::endl;

@@ -99,8 +99,8 @@ void PANetworkPlayer::Start()
 
 	CacheSourcesAndSinks();
 
-	int nInChannels = GetSize<Network::AudioSources>(_audioSources) + GetSizeSourceBuffer(_audioSourcesBuffer);
-	int nOutChannels = GetSize<Network::AudioSinks>(_audioSinks) + GetSizeSinkBuffer(_audioSinksBuffer);
+	int nInChannels = GetSize<Network::AudioSources>(_audioSources) + GetSize<Network::AudioSourcesBuffer>(_audioSourcesBuffer);
+	int nOutChannels = GetSize<Network::AudioSinks>(_audioSinks) + GetSize<Network::AudioSinksBuffer>(_audioSinksBuffer);
 
 	PaHostApiTypeId apiTryList[] = {
 		paDirectSound,

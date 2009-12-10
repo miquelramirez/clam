@@ -125,7 +125,7 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 
 	for(unsigned i = 0; i < _audioSourcesBuffer.size(); ++i)
 	{
-		AudioSourceBuffer* audioSourceBuffer = (AudioSourceBuffer*)_audioSourcesBuffer[i];
+		AudioSourceBuffer* audioSourceBuffer = _audioSourcesBuffer[i];
 		std::string processingName = net.GetNetworkId(audioSourceBuffer);
 
 		const AudioSourceBuffer::Ports & ports = audioSourceBuffer->GetPorts();
@@ -177,7 +177,7 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 
 	for(unsigned i = 0; i < _audioSinksBuffer.size(); ++i)
 	{
-		AudioSinkBuffer* audioSinkBuffer = (AudioSinkBuffer*)_audioSinksBuffer[i];
+		AudioSinkBuffer* audioSinkBuffer = _audioSinksBuffer[i];
 		std::string processingName = net.GetNetworkId(audioSinkBuffer);
 
 		const AudioSinkBuffer::Ports & ports = audioSinkBuffer->GetPorts();
@@ -241,7 +241,7 @@ void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes
 	
 	for (unsigned i = 0; i < _audioSourcesBuffer.size(); ++i)
 	{
-		AudioSourceBuffer* audioSourcesBuffer = (AudioSourceBuffer*)_audioSourcesBuffer[i];
+		AudioSourceBuffer* audioSourcesBuffer = _audioSourcesBuffer[i];
 
 		unsigned port_size = audioSourcesBuffer->GetPorts().size();
 		for(unsigned port = 0; port < port_size; ++port)
@@ -275,7 +275,7 @@ void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 
 	for (unsigned i = 0; i < _audioSinksBuffer.size(); ++i)
 	{
-		AudioSinkBuffer* audioSinkBuffer = (AudioSinkBuffer*)_audioSinksBuffer[i];
+		AudioSinkBuffer* audioSinkBuffer = _audioSinksBuffer[i];
 
 		unsigned port_size = audioSinkBuffer->GetPorts().size();
 		for(unsigned port = 0; port < port_size; ++port)
