@@ -20,6 +20,7 @@ from xml.etree import ElementTree, ElementPath
 import xml.dom
 import sys
 import re
+import copy
 
 class NotACommand(Exception) :
 	def __init__(self, command, available) :
@@ -195,7 +196,7 @@ class ClamNetwork() :
 		newProcessing.attrib['position'] = '%s, %s' % (x+xOffset, y+yOffset)
 		
 		for element in processing.getchildren():
-			newProcessing.append(element)
+			newProcessing.append(copy.copy(element))
 		
 		index = self._findIndex(processingId) 
 		network = self.document.getroot()
