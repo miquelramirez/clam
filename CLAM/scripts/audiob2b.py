@@ -18,7 +18,7 @@ def phase(msg) :
 	print '\033[33m== ', msg, '\033[0m'
 
 def die(message, errorcode=-1) :
-	print >> os.syserr, message
+	print >> sys.syserr, message
 	sys.exit(errorcode)
 
 
