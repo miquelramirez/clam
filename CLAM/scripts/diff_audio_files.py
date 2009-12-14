@@ -48,9 +48,9 @@ def diff_files_wav(expected, result, diffbase) :
 	substractResult="".join(substractResult)
 # TODO: REFACTOR, and use wrapper python of soxsucks compare function!!
 	def extract(content, start, stop) :
-		return content[content.find(content)+len(content):].split(separator)[0]
+		return content[content.find(start)+len(start):].split(stop)[0]
 	errorString = extract(substractResult, "amplitude diff: ", ")" )
-	timeToErrorString = extract(substractResult, "on second ", "\n" )
+	timeErrorString = extract(substractResult, "on second ", "\n" )
 	sampleString = extract(substractResult, "in the sample ", "," )
 	silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 '%(expected, result, diffwav))
 #####
