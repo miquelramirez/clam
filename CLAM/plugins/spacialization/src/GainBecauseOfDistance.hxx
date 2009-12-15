@@ -58,7 +58,7 @@ public:
 	{
 		double distance=_distance.GetLastValue();
 		double exponent=_exponent.GetLastValue();
-		double minimumDistance=_exponent.GetLastValue();
+		double minimumDistance=_minimumDistance.GetLastValue();
 		double distanceThreshold=_distanceThreshold.GetLastValue();
 		double gain=0;
 		if (minimumDistance==0)
