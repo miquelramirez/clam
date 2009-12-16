@@ -49,6 +49,8 @@ def _get_ports_as_list(source, target):
 def connect(source, target) :
 	monitor_client.connect(source,target)
 	time.sleep( connect_wait_time )
+	connected_in_ports = monitor_client.get_connections(source)
+	return target in connected_in_ports
 
 def disconnect(source, target) :
 	monitor_client.disconnect(source,target)
@@ -86,12 +88,16 @@ def bus_connect(source, target, wait=max_tries_in_seconds) :
 		(num_connections,source,len(sources),target,len(targets))
 	
 	tries=0
+	successful_connections=0
 	max_tries = float(wait) / run_client_wait_time
 	for i in xrange(num_connections) :
-		while len(monitor_client.get_connections(sources[i])) == 0 and tries < max_tries:
-			connect(sources[i], targets[i])
+		connected=False
+		while connected == False and tries < max_tries:
+			connected = connect(sources[i], targets[i])
 			tries += 1
-	return num_connections
+		if connected == True:
+			successful_connections+=1
+	return successful_connections 
 
 def bus_disconnect(source, target) :
 	source, sources, target, targets, num_connections = _get_ports_as_list(source, target)
