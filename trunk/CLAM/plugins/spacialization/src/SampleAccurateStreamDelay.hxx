@@ -33,13 +33,35 @@ namespace CLAM
  */
 class SampleAccurateStreamDelay : public SampleAccurateDelay
 {
-	AudioInPort _in1;
-	AudioOutPort _out1;
+	AudioInPort _in;
+	AudioOutPort _out;
 
 public:
+	bool ConcreteConfigure(const ProcessingConfig& c)
+	{
+		CopyAsConcreteConfig(_config, c);	
+		_sampleRate = _config.GetSampleRate();
+		
+		_crossFadeBuffer.resize(CROSSFADESIZE);
+		std::fill(_crossFadeBuffer.begin(), _crossFadeBuffer.end(), 0.);
+		
+		_delayBuffer.resize(_config.GetMaxDelayInSeconds() * _sampleRate);
+		_delayBufferSize = _delayBuffer.size(); 
+		_readIndex = _writeIndex = (_delayBufferSize-1); 
+		std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);
+		_delayControl.DoControl(0.);
+		const unsigned buffersize = BackendBufferSize();
+		_in.SetSize(buffersize);
+		_in.SetHop(buffersize);
+		_out.SetSize(buffersize);
+		_out.SetHop(buffersize);
+
+		
+		return true;
+	}
 	SampleAccurateStreamDelay(const Config& config = Config()) 
-		: _in1("InputStream", this)
-		, _out1("OutputStream", this)
+		: _in("InputStream", this)
+		, _out("OutputStream", this)
 	{
 		Configure( config );
 	}
@@ -51,19 +73,18 @@ public:
 		TControlData delay = _delayControl.GetLastValue();
 		setDelay(delay);
 		
-		const CLAM::Audio& in = _in1.GetAudio();
+		const CLAM::Audio& in = _in.GetAudio();
 		const TData* inpointer = in.GetBuffer().GetPtr();		
-		unsigned size = in.GetSize();
-		
-		CLAM::Audio& out = _out1.GetAudio();
-		out.SetSize(size);
+		CLAM::Audio& out = _out.GetAudio();
 		TData* outpointer = out.GetBuffer().GetPtr();
+
+		unsigned insize = in.GetSize();
 		
-		for (unsigned i = 0; i < size; ++i) 
+		for (unsigned i = 0; i < insize; ++i) 
 			outpointer[i] = delayLine(inpointer[i]);
 		
-		_in1.Consume();
-		_out1.Produce();
+		_in.Consume();
+		_out.Produce();
 		return true;
 	}
 };

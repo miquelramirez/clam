@@ -56,14 +56,14 @@ public:
 		}
 	};
 	
-private:	
+//private: //TODO debugging	
+protected:
 	Config _config;
-	
+	typedef long long unsigned Index;
 	typedef std::vector<TData> DelayBuffer;
 	DelayBuffer _delayBuffer;
 	
-	unsigned _sampleRate, _delayBufferSize, 
-			_readIndex, _writeIndex, _crossFadeIndex;
+	Index _sampleRate, _delayBufferSize, _readIndex, _writeIndex, _crossFadeIndex;
 	
 	enum { CROSSFADESIZE = 150 };
 	DelayBuffer _crossFadeBuffer;
@@ -73,12 +73,12 @@ protected:
 	
 	void setDelay(float delaySamples) 
 	{
-		unsigned delayInSamples = round(delaySamples);
+		Index delayInSamples = round(delaySamples);
 		
 		if (delayInSamples > _delayBufferSize) 
 			return;
 		
-		unsigned readIndex = (_writeIndex - delayInSamples) % _delayBufferSize ;
+		Index readIndex = (_writeIndex - delayInSamples) % _delayBufferSize ;
 
 		if (_readIndex % _delayBufferSize == readIndex)
 			return;
@@ -86,7 +86,7 @@ protected:
 		_readIndex = readIndex;		
 		_crossFadeIndex = CROSSFADESIZE;
 		
-		for (unsigned i = 0; i < CROSSFADESIZE; i++) 
+		for (Index i = 0; i < CROSSFADESIZE; i++) 
 			_crossFadeBuffer[i] = _delayBuffer[readIndex++ % _delayBufferSize] * (1./(CROSSFADESIZE-i));
 						
 		return;
@@ -94,11 +94,14 @@ protected:
 	
 	TData delayLine(TData x)
 	{	
-		_delayBuffer[_writeIndex++ % _delayBufferSize] = x;
-		TData y = _delayBuffer[_readIndex++ % _delayBufferSize];
-		
-		if (_crossFadeIndex > 0)  
-			y *= (1./_crossFadeIndex) + _crossFadeBuffer[--_crossFadeIndex];
+		Index writeindex = _writeIndex++ % _delayBufferSize;
+		Index readindex = _readIndex++ % _delayBufferSize;
+
+		_delayBuffer[writeindex] = x;
+		TData y = _delayBuffer[readindex];
+			
+//		if (_crossFadeIndex > 0)  
+//			y *= (1./_crossFadeIndex) + _crossFadeBuffer[--_crossFadeIndex];
 						
 		return y;
 	}
@@ -115,21 +118,6 @@ public:
 	
 	const char* GetClassName() const { return "SampleAccurateDelay"; }
 		
-	bool ConcreteConfigure(const ProcessingConfig& c)
-	{
-		CopyAsConcreteConfig(_config, c);	
-		_sampleRate = _config.GetSampleRate();
-		
-		_crossFadeBuffer.resize(CROSSFADESIZE);
-		std::fill(_crossFadeBuffer.begin(), _crossFadeBuffer.end(), 0.);
-		
-		_delayBuffer.resize(_config.GetMaxDelayInSeconds() * _sampleRate);
-		_delayBufferSize = _delayBuffer.size(); 
-		_readIndex = _writeIndex = (_delayBufferSize-1); 
-		std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);
-		
-		return true;
-	}
 	
 	const ProcessingConfig & GetConfig() const { return _config; }
 	
