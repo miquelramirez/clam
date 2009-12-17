@@ -141,7 +141,7 @@ public:
 				double sampleValue = 0;
 				for (unsigned component=0; component<nComponents; component++)
 					sampleValue += components[component][sample] * componentWeight[component];
-				speakerBuffer[sample] = sampleValue;
+				speakerBuffer[sample] = 2 * sampleValue; //The 2 factor makes the volume comparable to VBAP
 			}
 		}
 		for (unsigned speaker=0; speaker<nSpeakers; speaker++)
