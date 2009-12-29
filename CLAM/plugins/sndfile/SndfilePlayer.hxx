@@ -62,11 +62,9 @@ namespace CLAM
 		CLAM::FloatInControl _inControlLoop;
 		SndfileHandle* _infile;
 		Config _config;
-		unsigned _sampleSize;
 		unsigned _numChannels;
 		unsigned _numReadFrames;
 		unsigned _numTotalFrames;
-		std::vector<float> _buffer; 
 
 		pthread_t _threadId;
 		long _overruns;
@@ -333,9 +331,7 @@ namespace CLAM
 			_inControlLoop.DoControl(_config.GetLoop() ? 1 : 0);
 
 			_numChannels = fileChannels;
-			_sampleSize = _numChannels*sizeof(TData);
 			_config.SetSavedNumberOfChannels(_numChannels);
-			_buffer.resize(portSize*_numChannels);
 			_numTotalFrames = _infile->frames();
 			// The file has not size, perhaps that's because the file is empty
 			if (_numTotalFrames == 0) _numTotalFrames = 1;

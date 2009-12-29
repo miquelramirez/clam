@@ -57,10 +57,10 @@ public:
 	}
 	void writableRegion(BaseType *(&buffer), unsigned & len)
 	{
-		jack_ringbuffer_data_t writeSpace;
-		jack_ringbuffer_get_write_vector(_rb, &writeSpace);
-		buffer = (BaseType*) writeSpace.buf;
-		len = writeSpace.len/sizeof(BaseType);
+		jack_ringbuffer_data_t writeSpace[2];
+		jack_ringbuffer_get_write_vector(_rb, writeSpace);
+		buffer = (BaseType*) writeSpace[0].buf;
+		len = writeSpace[0].len/sizeof(BaseType);
 	}
 	unsigned readSpace()
 	{
