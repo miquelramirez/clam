@@ -45,7 +45,7 @@ bool AudioSourceBuffer::Do()
 			for (unsigned i=0; i<port.mBufferSize; i++)
 				audioBuffer[i] = port.mDoubleBuffer[i];
 
-		for (unsigned i=port.mBufferSize; i<out->GetSize(); i++)
+		for (int i=port.mBufferSize; i<out->GetSize(); i++)
 			audioBuffer[i] = 0.;
 		out->Produce();
 	}
