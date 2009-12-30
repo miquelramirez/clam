@@ -43,14 +43,13 @@
 namespace CLAM
 {
 
-typedef struct sInformationText{
-
+class InformationText
+{
+public:
 	int x;
 	int y;
 	Text text;
-	sInformationText():x(0), y(0), text(""){}
-
-} InformationText;
+};
 
 // abstract clase of a base Network
 class BaseNetwork : public Component
