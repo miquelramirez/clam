@@ -254,7 +254,7 @@ protected:
 	}
 	void drawTooltip(QPainter & painter)
 	{
-		if (_tooltipText.isNull()) return;
+		if (_tooltipText.isEmpty()) return;
 		QFontMetrics metrics(font());
 		int margin =3;
 		int cursorSize = 16;
@@ -701,14 +701,15 @@ public:
 	virtual QString outcontrolTooltip(void * processing, unsigned index) const = 0;
 	virtual bool isOk(void * processing)=0;
 	virtual QString errorMessage(void * processing)=0;
+	virtual QString infoMessage(void * processing)=0;
 	virtual QWidget * embededWidgetFor(void * processing) = 0;
 
 	// TODO: Are those generic enough to be virtual?
 	virtual bool editConfiguration(ProcessingBox * box) = 0;
 	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point ) = 0;
 	virtual void addControlPrinterProcessing( ProcessingBox * processing, QPoint point ) = 0;
-	virtual void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nInPort =0) =0;
-	virtual void addLinkedProcessingSender ( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nOutPort =0) =0;
+	virtual void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
+	virtual void addLinkedProcessingSender ( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
 
 	virtual void connectionContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
 	virtual void processingContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing) { }
@@ -1122,7 +1123,7 @@ public: // Actions
 		markAsChanged();
 	}
 	
-	void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nInPort=0 )
+	void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType)
 	{
 		if (networkIsDummy()) return;
 
@@ -1133,12 +1134,12 @@ public: // Actions
 		CLAM::Processing & portProcessing = _network->GetProcessing( processingId );
 		// add box to canvas and connect
 		addProcessingBox( processingId.c_str(), &portProcessing, point+QPoint(100,0));
-		addPortConnection(processing, portIndex, getBox(processingId.c_str()), nInPort);
+		addPortConnection(processing, portIndex, getBox(processingId.c_str()), 0);
 
 		markAsChanged();
 	}
 
-	void addLinkedProcessingSender( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nOutPort=0 )
+	void addLinkedProcessingSender( ProcessingBox * processing, QPoint point, const QString & processingType)
 	{
 		if (networkIsDummy()) return;
 
@@ -1149,7 +1150,7 @@ public: // Actions
 		CLAM::Processing & portProcessing = _network->GetProcessing( processingId );
 		// add box to canvas and connect
 		addProcessingBox( processingId.c_str(), &portProcessing, point+QPoint(-200,0));
-		addPortConnection(getBox(processingId.c_str()), nOutPort, processing, portIndex);
+		addPortConnection(getBox(processingId.c_str()), 0, processing, portIndex);
 		markAsChanged();
 	}
 
@@ -1256,6 +1257,26 @@ public: // Actions
 	{
 		if (!processing) return "";
 		return ((CLAM::Processing*)processing)->GetConfigErrorMessage().c_str();
+	}
+	virtual QString infoMessage(void * processing)
+	{
+		if (!processing) return "";
+		CLAM::Processing * proc = (CLAM::Processing*)processing;
+		std::string key= proc->GetClassName();
+		std::string info = "Type: "+key;
+		CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+		CLAM::ProcessingFactory::Pairs pairsFromKey=factory.GetPairsFromKey(key);
+		CLAM::ProcessingFactory::Pairs::const_iterator itPairs;
+		for(itPairs = pairsFromKey.begin();itPairs!=pairsFromKey.end();itPairs++)
+		{
+			std::string attribute = itPairs->attribute;
+			std::string value = itPairs->value;
+			if (attribute=="icon") continue;
+			if (attribute=="embedded_svg") continue;
+			if (value=="") continue;
+			info+="\n"+attribute+": "+value;
+		}
+		return info.c_str();
 	}
 	virtual bool networkRenameProcessing(QString oldName, QString newName)
 	{

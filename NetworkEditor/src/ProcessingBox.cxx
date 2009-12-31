@@ -9,7 +9,8 @@
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtGui/QGraphicsSceneContextMenuEvent>
 #include <QtGui/QGraphicsProxyWidget>
-#include <CLAM/ProcessingFactory.hxx> 
+
+// ANY CLAM DEPENDENCY ON THIS FILE SHOULD BE DELEGATED TO THE CANVAS
 
 static std::string processingBoxRegionName(ProcessingBox::Region region)
 {
@@ -556,6 +557,7 @@ void ProcessingBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 	if (region==inportsRegion)
 	{
 		int index = portIndexByItemYPos(point);
+//		_canvas->createDefaultConnectedAtInPort(_processing, index);
 		if (((CLAM::Processing*)_processing)->GetInPort(index).GetTypeId()==typeid(CLAM::TData))
 			_canvas->addLinkedProcessingSender(this,scenePoint,"AudioSource");
 	}
@@ -656,41 +658,15 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 		}
 		case nameRegion:
 		{
-			if (not _canvas->isOk(_processing))
-			{
-				_canvas->setToolTip(_canvas->errorMessage(_processing));
-			}
-			else
-			{
-				setMetadataToolTip();
-			}
+			QString tooltipText = _canvas->isOk(_processing)?
+					_canvas->infoMessage(_processing):
+					_canvas->errorMessage(_processing);
+			_canvas->setToolTip(tooltipText);
 			_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
 			break;
 		}
 		return;
 	}
-}
-void ProcessingBox::setMetadataToolTip()
-{
-	QString tooltipText=QString("Type: ");
-	std::string key=((CLAM::Processing*)_processing)->GetClassName();
-	tooltipText+=QString(key.c_str());
-	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-	CLAM::ProcessingFactory::Pairs pairsFromKey=factory.GetPairsFromKey(key);
-	CLAM::ProcessingFactory::Pairs::const_iterator itPairs;
-	for(itPairs = pairsFromKey.begin();itPairs!=pairsFromKey.end();itPairs++)
-	{
-		std::string attribute = itPairs->attribute;
-		std::string value = itPairs->value;
-		if(attribute!="icon" && value!=key && value!="")
-		{
-			tooltipText+=QString("\n");
-			tooltipText+=QString(attribute.c_str());
-			tooltipText+=QString(": ");
-			tooltipText+=QString(value.c_str());
-		}
-	}
-	_canvas->setToolTip(tooltipText);
 }
 void ProcessingBox::endWireDrag(const QPoint& scenePoint)
 {
