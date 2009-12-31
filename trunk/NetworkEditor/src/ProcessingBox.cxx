@@ -556,16 +556,11 @@ void ProcessingBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 	}
 	if (region==inportsRegion)
 	{
-		int index = portIndexByItemYPos(point);
-//		_canvas->createDefaultConnectedAtInPort(_processing, index);
-		if (((CLAM::Processing*)_processing)->GetInPort(index).GetTypeId()==typeid(CLAM::TData))
-			_canvas->addLinkedProcessingSender(this,scenePoint,"AudioSource");
+		_canvas->createAndLinkToInPort(this,scenePoint,"");
 	}
 	if (region==outportsRegion)
 	{
-		int index = portIndexByItemYPos(point);
-		if (((CLAM::Processing*)_processing)->GetOutPort(index).GetTypeId()==typeid(CLAM::TData))
-			_canvas->addLinkedProcessingReceiver(this,scenePoint,"AudioSink");
+		_canvas->createAndLinkToOutPort(this,scenePoint,"");
 	}
 	QGraphicsItem::mouseDoubleClickEvent(event);
 }
