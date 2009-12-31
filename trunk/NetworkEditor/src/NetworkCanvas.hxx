@@ -1549,7 +1549,7 @@ public:
 		_embedSVGDiagramsOption=state;
 	}
 
-	bool getEmbedSVGDiagramsOption()
+	bool embedSVGDiagramsOption()
 	{
 		return _embedSVGDiagramsOption;
 	}
