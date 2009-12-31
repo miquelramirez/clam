@@ -76,10 +76,10 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 		return new Vumeter( this, dynamic_cast<VumeterMonitor*>(processing) );
 
 	if (className=="Oscilloscope")
-		return new Oscilloscope( this, dynamic_cast<OscilloscopeMonitor*>(processing) );
+		return new Oscilloscope( 0, dynamic_cast<OscilloscopeMonitor*>(processing) );
 
 	if (className=="BufferOscilloscope")
-		return new BufferOscilloscope( this, dynamic_cast<BufferOscilloscopeMonitor*>(processing) );
+		return new BufferOscilloscope( 0, dynamic_cast<BufferOscilloscopeMonitor*>(processing) );
 
 	if (className=="SpectrumView")
 		return new SpectrumView(this, dynamic_cast<SpectrumViewMonitor*>(processing) );
