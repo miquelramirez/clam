@@ -39,7 +39,7 @@ void TextBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
 void TextBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
-	_canvas->editingTextBox(this);
+	_canvas->editTextBox(this);
 	QGraphicsTextItem::mouseDoubleClickEvent(event);
 }
 
