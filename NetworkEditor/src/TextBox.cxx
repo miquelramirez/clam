@@ -7,11 +7,13 @@
 
 #include <iostream>
 
-TextBox::TextBox(NetworkCanvas * canvas):_informationText(0)
+TextBox::TextBox(NetworkCanvas * canvas)
+	: _informationText(0)
 {
 	setFlag(QGraphicsItem::ItemIsMovable,true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
 	_canvas=canvas;
+//	setTextInteractionFlags(Qt::TextEditable);
 }
 
 TextBox::~TextBox()
