@@ -337,7 +337,7 @@ public:
 		QSettings settings;
 		settings.setValue("RecentFiles",_recentFiles);
 		settings.setValue("DockWindowsState", saveState());
-		settings.setValue("EmbedSVGDiagramsOption",_canvas->getEmbedSVGDiagramsOption());
+		settings.setValue("EmbedSVGDiagramsOption",_canvas->embedSVGDiagramsOption());
 		settings.setValue("WhiteColorsForBoxes",ui.action_White_colors_Option->isChecked());
 		event->accept();
 	}
