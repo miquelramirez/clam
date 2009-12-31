@@ -677,7 +677,8 @@ public:
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
 	virtual void networkRemoveTextBox(CLAM::InformationText * textBox) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
-	virtual void editingTextBox(TextBox * textbox, const QPoint& point=QPoint(0,0)) = 0;
+	virtual void addTextBox(const QPoint& point) = 0;
+	virtual bool editingTextBox(TextBox * textbox) = 0;
 	virtual bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
 	virtual bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
 	virtual bool networkAddPortConnection(const QString & outlet, const QString & inlet) = 0;
@@ -1763,7 +1764,7 @@ private slots:
 		}
 		addProcessing(point, type);
 	}
-	void editingTextBox(TextBox * textbox, const QPoint& point=QPoint(0,0))
+	void addTextBox(const QPoint& point)
 	{
 		QDialog dialog;
 		dialog.setWindowTitle(tr("Adding text box."));
@@ -1772,38 +1773,48 @@ private slots:
 		QPlainTextEdit * plainText = new QPlainTextEdit(&dialog);
 		layout->addWidget(plainText);
 
-		if(textbox) plainText->setPlainText(textbox->toPlainText());
+		QDialogButtonBox * buttons = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+		connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
+		connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
+		layout->addWidget(buttons);
+		int result = dialog.exec();
+		if (result==QDialog::Rejected) return;
+		
+		CLAM::InformationText * informationText= new CLAM::InformationText();
+		informationText->x=point.x();
+		informationText->y=point.y();
+		informationText->text=plainText->toPlainText().toStdString();
+		_network->addInformationText(informationText);
+		TextBox * textbox = new TextBox(this);
+		_scene->addItem(textbox);
+		textbox->setInformationText(informationText);
+		_textBoxes.push_back(textbox);
+		markAsChanged();
+	}
+	bool editingTextBox(TextBox * textbox)
+	{
+		QDialog dialog;
+		dialog.setWindowTitle(tr("Adding text box."));
+		QVBoxLayout * layout = new QVBoxLayout(&dialog);
+		QPlainTextEdit * plainText = new QPlainTextEdit(&dialog);
+		layout->addWidget(plainText);
+		plainText->setPlainText(textbox->toPlainText());
 
 		QDialogButtonBox * buttons = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
 		connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
 		connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
 		layout->addWidget(buttons);
 		int result = dialog.exec();
-		this->activateWindow();
-		if (result==QDialog::Rejected) return;
+		if (result==QDialog::Rejected) return false;
 		
-		if(textbox) // new text box
-		{
-			textbox->setText(plainText->toPlainText());
-			markAsChanged();
-			return;
-		}
-		CLAM::InformationText * informationText= new CLAM::InformationText();
-		informationText->x=point.x();
-		informationText->y=point.y();
-		informationText->text=plainText->toPlainText().toStdString();
-		_network->addInformationText(informationText);
-		textbox = new TextBox(this);
-		_scene->addItem(textbox);
-		textbox->setInformationText(informationText);
-		_textBoxes.push_back(textbox);
+		textbox->setText(plainText->toPlainText());
 		markAsChanged();
+		return true;
 	}
 	void onNewTextBox()
 	{
-		TextBox * textbox = 0;
 		QPoint point = ((QAction*)sender())->data().toPoint();
-		editingTextBox(textbox, point);
+		addTextBox(point);
 	}
 
 	void onOpenFileWithExternalApplication()
