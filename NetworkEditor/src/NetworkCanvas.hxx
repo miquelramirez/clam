@@ -708,8 +708,8 @@ public:
 	virtual bool editConfiguration(ProcessingBox * box) = 0;
 	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point ) = 0;
 	virtual void addControlPrinterProcessing( ProcessingBox * processing, QPoint point ) = 0;
-	virtual void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
-	virtual void addLinkedProcessingSender ( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
+	virtual void createAndLinkToOutPort( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
+	virtual void createAndLinkToInPort ( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
 
 	virtual void connectionContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
 	virtual void processingContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing) { }
@@ -1123,14 +1123,24 @@ public: // Actions
 		markAsChanged();
 	}
 	
-	void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType)
+	void createAndLinkToOutPort( ProcessingBox * processing, QPoint point, const QString & processingType)
 	{
 		if (networkIsDummy()) return;
 
+		std::string type = processingType.toStdString();
 		unsigned portIndex = processing->portIndexByYPos(point);
 		QString outPortName = processing->getOutportName(portIndex);
 
-		std::string processingId = _network->AddProcessing(processingType.toStdString() );
+		CLAM::Processing * model = (CLAM::Processing*)processing->model();
+		if (type.empty())
+		{
+			// Choose default if any
+			if (model->GetOutPort(portIndex).GetTypeId()==typeid(CLAM::TData))
+				type = "AudioSink";
+			else return;
+		}
+
+		std::string processingId = _network->AddProcessing(type);
 		CLAM::Processing & portProcessing = _network->GetProcessing( processingId );
 		// add box to canvas and connect
 		addProcessingBox( processingId.c_str(), &portProcessing, point+QPoint(100,0));
@@ -1139,14 +1149,23 @@ public: // Actions
 		markAsChanged();
 	}
 
-	void addLinkedProcessingSender( ProcessingBox * processing, QPoint point, const QString & processingType)
+	void createAndLinkToInPort( ProcessingBox * processing, QPoint point, const QString & processingType)
 	{
 		if (networkIsDummy()) return;
 
+		std::string type = processingType.toStdString();
 		unsigned portIndex = processing->portIndexByYPos(point);
 		QString inPortName = processing->getInportName(portIndex);
+		CLAM::Processing * model = (CLAM::Processing*)processing->model();
+		if (type.empty())
+		{
+			// Choose default if any
+			if (model->GetInPort(portIndex).GetTypeId()==typeid(CLAM::TData))
+				type = "AudioSource";
+			else return;
+		}
 
-		std::string processingId = _network->AddProcessing(processingType.toStdString() );
+		std::string processingId = _network->AddProcessing(type);
 		CLAM::Processing & portProcessing = _network->GetProcessing( processingId );
 		// add box to canvas and connect
 		addProcessingBox( processingId.c_str(), &portProcessing, point+QPoint(-200,0));
@@ -1664,10 +1683,10 @@ private slots:
 			switch(region)
 			{
 			case ProcessingBox::inportsRegion:
-				addLinkedProcessingSender(_processings[i], point, processingType);
+				createAndLinkToInPort(_processings[i], point, processingType);
 				break;
 			case ProcessingBox::outportsRegion:
-				addLinkedProcessingReceiver(_processings[i], point, processingType);
+				createAndLinkToOutPort(_processings[i], point, processingType);
 				break;
 			default:
 				continue; // Not a port connections region
