@@ -678,7 +678,7 @@ public:
 	virtual void networkRemoveTextBox(CLAM::InformationText * textBox) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
 	virtual void addTextBox(const QPoint& point) = 0;
-	virtual bool editingTextBox(TextBox * textbox) = 0;
+	virtual void editTextBox(TextBox * textbox) = 0;
 	virtual bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
 	virtual bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
 	virtual bool networkAddPortConnection(const QString & outlet, const QString & inlet) = 0;
@@ -1766,24 +1766,13 @@ private slots:
 	}
 	void addTextBox(const QPoint& point)
 	{
-		QDialog dialog;
-		dialog.setWindowTitle(tr("Adding text box."));
-		QVBoxLayout * layout = new QVBoxLayout(&dialog);
+		QString newText = askText(tr("New text box"));
+		if (newText.isNull()) return;
 
-		QPlainTextEdit * plainText = new QPlainTextEdit(&dialog);
-		layout->addWidget(plainText);
-
-		QDialogButtonBox * buttons = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
-		connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
-		connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
-		layout->addWidget(buttons);
-		int result = dialog.exec();
-		if (result==QDialog::Rejected) return;
-		
 		CLAM::InformationText * informationText= new CLAM::InformationText();
 		informationText->x=point.x();
 		informationText->y=point.y();
-		informationText->text=plainText->toPlainText().toStdString();
+		informationText->text=newText.toStdString();
 		_network->addInformationText(informationText);
 		TextBox * textbox = new TextBox(this);
 		_scene->addItem(textbox);
@@ -1791,25 +1780,29 @@ private slots:
 		_textBoxes.push_back(textbox);
 		markAsChanged();
 	}
-	bool editingTextBox(TextBox * textbox)
+	void editTextBox(TextBox * textbox)
+	{
+		QString newText = askText(tr("Editing text box"), textbox->toPlainText());
+		if (newText.isNull()) return;
+		textbox->setText(newText);
+		markAsChanged();
+	}
+	QString askText(const QString & title, const QString & initialValue="")
 	{
 		QDialog dialog;
-		dialog.setWindowTitle(tr("Adding text box."));
+		dialog.setWindowTitle(title);
 		QVBoxLayout * layout = new QVBoxLayout(&dialog);
-		QPlainTextEdit * plainText = new QPlainTextEdit(&dialog);
-		layout->addWidget(plainText);
-		plainText->setPlainText(textbox->toPlainText());
+		QPlainTextEdit * textEdit = new QPlainTextEdit(&dialog);
+		layout->addWidget(textEdit);
+		textEdit->setPlainText(initialValue);
 
 		QDialogButtonBox * buttons = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
 		connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
 		connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
 		layout->addWidget(buttons);
 		int result = dialog.exec();
-		if (result==QDialog::Rejected) return false;
-		
-		textbox->setText(plainText->toPlainText());
-		markAsChanged();
-		return true;
+		if (result==QDialog::Rejected) return QString(); // Null
+		return textEdit->toPlainText();
 	}
 	void onNewTextBox()
 	{
