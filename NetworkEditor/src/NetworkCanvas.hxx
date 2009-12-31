@@ -967,7 +967,6 @@ public:
 	ClamNetworkCanvas(QWidget * parent=0)
 		: NetworkCanvas(parent)
 		, _network(0)
-		, _fileNameToOpen(0)
 	{
 		setWindowState(windowState() ^ Qt::WindowFullScreen);
 
@@ -1291,22 +1290,6 @@ public: // Actions
 		return _network->RenameProcessing(oldName.toStdString(), newName.toStdString());
 	}
 
-
-signals:
-	void browseUrlRequest();
-public:
-	const QString getFileNameToOpenWithExternalApplication () const
-	{
-		QString copyFileNameToOpen = _fileNameToOpen;
-		_fileNameToOpen.clear();
-		return copyFileNameToOpen;
-		//return _fileNameToOpen;
-	}
-	void requestBrowseUrl(const QString & fileName)
-	{
-		_fileNameToOpen=fileName;
-		emit browseUrlRequest();
-	}
 
 private:
 	QColor getConnectorColorByType(const std::type_info & type) const
@@ -1799,22 +1782,21 @@ private slots:
 		this->activateWindow();
 		if (result==QDialog::Rejected) return;
 		
-		if(textbox==0) // new text box
-		{
-			CLAM::InformationText * informationText= new CLAM::InformationText();
-			informationText->x=point.x();
-			informationText->y=point.y();
-			informationText->text=plainText->toPlainText().toStdString();
-			_network->addInformationText(informationText);
-			textbox = new TextBox(this);
-			_scene->addItem(textbox);
-			textbox->setInformationText(informationText);
-			_textBoxes.push_back(textbox);
-		}
-		else
+		if(textbox) // new text box
 		{
 			textbox->setText(plainText->toPlainText());
+			markAsChanged();
+			return;
 		}
+		CLAM::InformationText * informationText= new CLAM::InformationText();
+		informationText->x=point.x();
+		informationText->y=point.y();
+		informationText->text=plainText->toPlainText().toStdString();
+		_network->addInformationText(informationText);
+		textbox = new TextBox(this);
+		_scene->addItem(textbox);
+		textbox->setInformationText(informationText);
+		_textBoxes.push_back(textbox);
 		markAsChanged();
 	}
 	void onNewTextBox()
@@ -1833,9 +1815,11 @@ private slots:
 	void onBrowseUrl()
 	{
 		const QString fileName = ((QAction*)sender())->data().toString();
-		requestBrowseUrl(fileName);
+		emit browseUrlRequest(fileName);
 	}
 
+signals:
+	void browseUrlRequest(const QString & fileName);
 
 private:
 	std::string outportTypeId(void * processing, unsigned index) const
