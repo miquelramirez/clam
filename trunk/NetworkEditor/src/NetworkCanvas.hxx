@@ -2047,7 +2047,6 @@ protected:
 	QAction * _pasteSelectionAction;
 private:
 	CLAM::BaseNetwork * _network;
-	mutable QString _fileNameToOpen;
 	bool _embedSVGDiagramsOption;
 };
 
