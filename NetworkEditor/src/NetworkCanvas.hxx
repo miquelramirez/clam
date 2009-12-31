@@ -1881,6 +1881,8 @@ private:
 			this, SLOT(onDisconnect()))->setData(cursorPosition);
 		menu->addAction(QIcon(":/icons/images/editcopy.png"), tr("Copy connection name"),
 			this, SLOT(onCopyConnection()))->setData(cursorPosition);
+
+		if (not processing->model()) return;
 		if (region==ProcessingBox::incontrolsRegion)
 		{
 			menu->addAction(QIcon(":/icons/images/hslider.png"), tr("Add slider"),
@@ -2017,19 +2019,29 @@ private:
 		menu->addAction(_copySelectionAction);
 		menu->addAction(_cutSelectionAction);
 
+		if (not processing->model()) return;
+
 		CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 		std::string className=((CLAM::Processing*)processing->model())->GetClassName();
 		if (factory.AttributeExists(className,"faust_diagram"))
 		{
 			QString fileName=QString(factory.GetValueFromAttribute(className,"faust_diagram").c_str());
 			menu->addSeparator();
-			//menu->addAction(clamProcessingIcon(className),"Open diagram with browser",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
-			menu->addAction(clamProcessingIcon(className),"Navigate Faust diagram",this,SLOT(onBrowseUrl()))->setData(fileName);
+			//menu->addAction(clamProcessingIcon(className),tr("Open diagram with browser"),this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
+			menu->addAction(
+				clamProcessingIcon(className),
+				tr("Navigate Faust diagram"),
+				this,SLOT(onBrowseUrl())
+				)->setData(fileName);
 		}
 		if (factory.AttributeExists(className,"faust_source_file"))
 		{
 			QString fileName=QString(factory.GetValueFromAttribute(className,"faust_source_file").c_str());
-			menu->addAction(clamProcessingIcon(className),"Open source with editor",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
+			menu->addAction(
+				clamProcessingIcon(className),
+				tr("Open source with editor"),
+				this,SLOT(onOpenFileWithExternalApplication())
+				)->setData(fileName);
 			//menu->addAction(clamProcessingIcon(className),"Recompile plugin");
 		}
 	}
@@ -2050,6 +2062,7 @@ private:
 
 	virtual QIcon processingIcon(ProcessingBox * processingBox)
 	{
+		if (not processingBox->model()) return  QIcon(":/icons/images/processing.svg");
 		const char* className=((CLAM::Processing*)processingBox->model())->GetClassName();
 		return clamProcessingIcon(className);
 	}
