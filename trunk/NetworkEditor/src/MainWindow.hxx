@@ -158,7 +158,7 @@ public:
 
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
-		connect(_canvas, SIGNAL(browseUrlRequest()),this,SLOT(browseUrlInternalFromProcessing()));
+		connect(_canvas, SIGNAL(browseUrlRequest(const QString&)),this,SLOT(browseUrlInternalFromProcessing(const QString &)));
 		connect(_textDescriptionEdit, SIGNAL(textChanged()), this, SLOT(updateNetworkDescription()));
 		updateCaption();
 
@@ -239,7 +239,7 @@ public:
 		_canvas->loadNetwork(&_network);
 		_canvas->loadGeometriesFromXML();
 
-		CLAM::FlattenedNetwork::ConnectionState connectionState = _network.GetConnectionReport();
+		CLAM::Network::ConnectionState connectionState = _network.GetConnectionReport();
 		if (connectionState.first)
 		{
 			QMessageBox::warning(this, tr("Old clamnetwork file detected"), 
@@ -355,18 +355,12 @@ public slots:
 		updatePlayStatusIndicator();
 	}
 
-	void openFileWithExternalApplicationFromProcessing()
-	{
-		QDesktopServices::openUrl(QUrl::fromLocalFile(_canvas->getFileNameToOpenWithExternalApplication()));
-	}
-
-	void browseUrlInternalFromProcessing()
+	void browseUrlInternalFromProcessing(const QString & fileName)
 	{
 #if QT_VERSION >= 0x040400
 		QDockWidget * browser=new QDockWidget(this);
 		QWebView * view=new QWebView(browser);
 		view->setContextMenuPolicy(Qt::NoContextMenu);
-		QString fileName=_canvas->getFileNameToOpenWithExternalApplication();
 		view->load(fileName);
 		browser->setObjectName(tr("Internal Browser"));
 		browser->setWidget(view);
