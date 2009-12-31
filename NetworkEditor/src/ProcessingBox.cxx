@@ -548,11 +548,11 @@ void ProcessingBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 	}
 	if (region==incontrolsRegion)
 	{
-		_canvas->addControlSenderProcessing(this, scenePoint);
+		_canvas->createAndLinkToInControl(this, scenePoint);
 	}
 	if (region==outcontrolsRegion)
 	{
-		_canvas->addControlPrinterProcessing(this, scenePoint);
+		_canvas->createAndLinkToOutControl(this, scenePoint);
 	}
 	if (region==inportsRegion)
 	{

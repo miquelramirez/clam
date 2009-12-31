@@ -36,6 +36,8 @@
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtGui/QPainter>
 #include <QtGui/QPlainTextEdit>
+#include <QtGui/QDesktopServices>
+#include <QtCore/QUrl>
 
 class NetworkCanvas : public QGraphicsView
 {
@@ -706,8 +708,8 @@ public:
 
 	// TODO: Are those generic enough to be virtual?
 	virtual bool editConfiguration(ProcessingBox * box) = 0;
-	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point ) = 0;
-	virtual void addControlPrinterProcessing( ProcessingBox * processing, QPoint point ) = 0;
+	virtual void createAndLinkToInControl( ProcessingBox * processing, QPoint point ) = 0;
+	virtual void createAndLinkToOutControl( ProcessingBox * processing, QPoint point ) = 0;
 	virtual void createAndLinkToOutPort( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
 	virtual void createAndLinkToInPort ( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
 
@@ -999,20 +1001,6 @@ public:
 		return *_network;
 	}
 
-	void example1()
-	{
-		_processings.push_back(new ProcessingBox(this, "Processing1", 2, 2, 2, 3));
-		_processings.push_back(new ProcessingBox(this, "Processing2", 4, 5, 1, 2));
-		_processings.push_back(new ProcessingBox(this, "Processing3", 2, 0, 2, 0));
-		_processings[0]->move(QPoint(300,200));
-		_processings[1]->move(QPoint(200,10));
-		_processings[2]->move(QPoint(100,200));
-		addPortWire(_processings[0],1, _processings[1],3);
-		addPortWire(_processings[1],1, _processings[0],1);
-		addControlWire(_processings[1],1, _processings[0],1);
-		addControlWire(_processings[1],1, _processings[2],1);
-	}
-
 	virtual ~ClamNetworkCanvas();
 
 public: // Actions
@@ -1069,7 +1057,7 @@ public: // Actions
 		return inControl.UpperBound();
 	}
 
-	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point )
+	virtual void createAndLinkToInControl( ProcessingBox * processing, QPoint point )
 	{
 		if (networkIsDummy()) return;
 
@@ -1102,7 +1090,7 @@ public: // Actions
 		markAsChanged();
 	}
 
-	virtual void addControlPrinterProcessing( ProcessingBox * processing, QPoint point )
+	virtual void createAndLinkToOutControl( ProcessingBox * processing, QPoint point )
 	{
 		if (networkIsDummy()) return;
 
@@ -1305,15 +1293,8 @@ public: // Actions
 
 
 signals:
-	void openFileWithExternalApplicationRequest();
 	void browseUrlRequest();
 public:
-	void requestOpenFileWithExternalApplication (const QString & fileName )
-	{
-		_fileNameToOpen.clear();
-		_fileNameToOpen=fileName;
-		emit openFileWithExternalApplicationRequest();
-	}
 	const QString getFileNameToOpenWithExternalApplication () const
 	{
 		QString copyFileNameToOpen = _fileNameToOpen;
@@ -1323,7 +1304,6 @@ public:
 	}
 	void requestBrowseUrl(const QString & fileName)
 	{
-		_fileNameToOpen.clear();
 		_fileNameToOpen=fileName;
 		emit browseUrlRequest();
 	}
@@ -1654,7 +1634,7 @@ private slots:
 			if (region==ProcessingBox::noRegion) continue;
 			if (region!=ProcessingBox::incontrolsRegion) return;
 
-			addControlSenderProcessing(_processings[i], point);
+			createAndLinkToInControl(_processings[i], point);
 			return;
 		}
 	}
@@ -1668,7 +1648,7 @@ private slots:
 			if (region==ProcessingBox::noRegion) continue;
 			if (region!=ProcessingBox::outcontrolsRegion) return;
 
-			addControlPrinterProcessing(_processings[i], point);
+			createAndLinkToOutControl(_processings[i], point);
 			return;
 		}
 	}
@@ -1847,7 +1827,7 @@ private slots:
 	void onOpenFileWithExternalApplication()
 	{
 		const QString fileName = ((QAction*)sender())->data().toString();
-		requestOpenFileWithExternalApplication(fileName);
+		QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
 	}
 
 	void onBrowseUrl()
