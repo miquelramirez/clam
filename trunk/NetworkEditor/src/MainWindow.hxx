@@ -28,9 +28,7 @@
 #endif
 #include <QtSvg/QSvgWidget>
 #include <QtCore/QProcess>
-#if QT_VERSION >= 0x040200
-	#include <QtGui/QDesktopServices>
-#endif
+#include <QtGui/QDesktopServices>
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -160,7 +158,6 @@ public:
 
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
-		connect(_canvas, SIGNAL(openFileWithExternalApplicationRequest()), this, SLOT(openFileWithExternalApplicationFromProcessing()));
 		connect(_canvas, SIGNAL(browseUrlRequest()),this,SLOT(browseUrlInternalFromProcessing()));
 		connect(_textDescriptionEdit, SIGNAL(textChanged()), this, SLOT(updateNetworkDescription()));
 		updateCaption();
