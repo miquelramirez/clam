@@ -1,5 +1,5 @@
 #include "uic_MainWindow.hxx"
-#include "NetworkCanvas.hxx"
+#include "ClamNetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollArea>
