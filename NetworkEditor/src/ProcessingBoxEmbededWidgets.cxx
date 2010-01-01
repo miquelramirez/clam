@@ -1,5 +1,5 @@
 #include "ProcessingBox.hxx"
-#include "NetworkCanvas.hxx"
+#include "ClamNetworkCanvas.hxx"
 
 //TODO move this group to a factory
 #include "Vumeter.hxx"

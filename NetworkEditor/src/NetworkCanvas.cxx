@@ -1,6 +1,6 @@
 #include "NetworkCanvas.hxx"
 
-ClamNetworkCanvas::~ClamNetworkCanvas()
+NetworkCanvas::~NetworkCanvas()
 {
 	clear();
 }
