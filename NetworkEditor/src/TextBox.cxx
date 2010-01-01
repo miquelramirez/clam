@@ -8,17 +8,18 @@
 #include <iostream>
 
 TextBox::TextBox(NetworkCanvas * canvas)
-	: _informationText(0)
+	: _modelText(0)
 {
 	setFlag(QGraphicsItem::ItemIsMovable,true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
+	setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 	_canvas=canvas;
 //	setTextInteractionFlags(Qt::TextEditable);
 }
 
 TextBox::~TextBox()
 {
-	_informationText=0;
+	_modelText=0;
 }
 
 void TextBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -43,34 +44,30 @@ void TextBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 	QGraphicsTextItem::mouseDoubleClickEvent(event);
 }
 
-void TextBox::setInformationText(CLAM::InformationText * informationText)
+void TextBox::setInformationText(void * informationText)
 {
-	_informationText=informationText;
-	setText(QString::fromLocal8Bit(_informationText->text.c_str()));
-	setPos(QPoint(_informationText->x, _informationText->y));
+	_modelText=informationText;
 }
 
-CLAM::InformationText * TextBox::getInformationText()
+void * TextBox::getInformationText()
 {
-	return _informationText;
+	return _modelText;
 }
 
-void TextBox::move(const QPoint & point)
+QVariant TextBox::itemChange(GraphicsItemChange change, const QVariant & value)
 {
-	setPos(point);
-	if(_informationText!=0)
+	if (change==ItemPositionHasChanged)
 	{
-		_informationText->x=point.x();
-		_informationText->y=point.y();
+		QPointF newPos = value.toPointF();
+		_canvas->networkUpdateTextBox(_modelText, toPlainText(), pos());
 	}
+	return QGraphicsTextItem::itemChange(change, value);
 }
 
 void TextBox::setText(const QString& text)
 {
 	setPlainText (text);
 	adjustSize();
-	if(_informationText!=0)
-	{
-		_informationText->text=text.toStdString();
-	}
+	_canvas->networkUpdateTextBox(_modelText, toPlainText(), pos());
 }
+

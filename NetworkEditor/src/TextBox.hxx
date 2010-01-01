@@ -5,7 +5,6 @@
 #include <QGraphicsItem>
 #include <QGraphicsTextItem>
 #include <QGraphicsSceneMouseEvent>
-#include <CLAM/BaseNetwork.hxx>
 
 class NetworkCanvas;
 
@@ -19,22 +18,20 @@ class TextBox : public QGraphicsTextItem
 	};
 
 	NetworkCanvas * _canvas;
-	CLAM::InformationText * _informationText;
+	void * _modelText;
 
 public:
 	TextBox(NetworkCanvas * canvas=0);
 	~TextBox();
 
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-	void move(const QPoint & point);
-
- 	void setInformationText(CLAM::InformationText * informationText);
-	CLAM::InformationText * getInformationText();
+ 	void setInformationText(void * informationText);
+	void * getInformationText();
 	void setText(const QString& text);
 
-	void select()     { setSelected(true); }
-	void deselect()   { setSelected(false);}
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+protected:
+	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+	QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 };
 
 #endif
