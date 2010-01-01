@@ -383,14 +383,14 @@ public: // Actions
 		for (unsigned i=0; i<_processings.size(); i++)
 			_processings[i]->deselect();
 		for (unsigned i=0; i<_textBoxes.size(); i++)
-			_textBoxes[i]->deselect();
+			_textBoxes[i]->setSelected(false);
 	}
 	void selectAll()
 	{
 		for (unsigned i=0; i<_processings.size(); i++)
 			_processings[i]->select();
 		for (unsigned i=0; i<_textBoxes.size(); i++)
-			_textBoxes[i]->select();
+			_textBoxes[i]->setSelected(false);
 	}
 	/**
 	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
@@ -675,10 +675,11 @@ protected:
 public:
 	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
-	virtual void networkRemoveTextBox(CLAM::InformationText * textBox) = 0;
+	virtual void networkRemoveTextBox(void * textBox) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
 	virtual void addTextBox(const QPoint& point) = 0;
 	virtual void editTextBox(TextBox * textbox) = 0;
+	virtual void networkUpdateTextBox(void * modelText, const QString & text, const QPointF & pos) = 0;
 	virtual bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
 	virtual bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
 	virtual bool networkAddPortConnection(const QString & outlet, const QString & inlet) = 0;
@@ -781,7 +782,7 @@ public: // Event Handlers
 					_processings[i]->select();
 			for (unsigned i = _textBoxes.size(); i--; )
 				if (selectionBox.contains(QRect(_textBoxes[i]->pos().toPoint(), _textBoxes[i]->boundingRect().size().toSize())))
-					_textBoxes[i]->select();
+					_textBoxes[i]->setSelected(false);
 		}
 		QGraphicsView::mouseReleaseEvent(event);
 		QPointF scenePointF=mapToScene(event->pos());
@@ -1357,10 +1358,10 @@ protected:
 		if (networkIsDummy()) return;
 		_network->RemoveProcessing(name);
 	}
-	virtual void networkRemoveTextBox(CLAM::InformationText * informationText)
+	virtual void networkRemoveTextBox(void * informationText)
 	{
 		if (networkIsDummy()) return;
-		_network->removeInformationText(informationText);
+		_network->removeInformationText((CLAM::InformationText*) informationText);
 	}
 
 public:
@@ -1374,20 +1375,21 @@ public:
 		_network = network;
 		clearChanges();
 		if (networkIsDummy()) return;
-		CLAM::BaseNetwork::ProcessingsMap::const_iterator it;
-		for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
+		typedef CLAM::BaseNetwork::ProcessingsMap::const_iterator ProcIterator;
+		for (ProcIterator it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
 		{
 			const std::string & name = it->first;
 			CLAM::Processing * processing = it->second;
 			addProcessingBox( name.c_str(),  processing );
 		}
-		
-		CLAM::BaseNetwork::InformationTexts::iterator it2;
-		for (it2=_network->BeginInformationTexts(); it2!=_network->EndInformationTexts(); it2++)
+		typedef CLAM::BaseNetwork::InformationTexts::iterator TextIterator;
+		for (TextIterator it=_network->BeginInformationTexts(); it!=_network->EndInformationTexts(); it++)
 		{
 			TextBox *textBox=new TextBox(this);
+			textBox->setText(QString::fromLocal8Bit((*it)->text.c_str()));
+			textBox->setPos(QPoint((*it)->x, (*it)->y));
+			textBox->setInformationText(*it); // TODO: Too sensible to the order
 			_scene->addItem(textBox);
-			textBox->setInformationText(*it2);
 			_textBoxes.push_back(textBox);
 		}
 		refreshWires();
@@ -1764,19 +1766,25 @@ private slots:
 		}
 		addProcessing(point, type);
 	}
+	void onNewTextBox()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		addTextBox(point);
+	}
+
 	void addTextBox(const QPoint& point)
 	{
 		QString newText = askText(tr("New text box"));
 		if (newText.isNull()) return;
 
 		CLAM::InformationText * informationText= new CLAM::InformationText();
-		informationText->x=point.x();
-		informationText->y=point.y();
-		informationText->text=newText.toStdString();
 		_network->addInformationText(informationText);
+
 		TextBox * textbox = new TextBox(this);
-		_scene->addItem(textbox);
 		textbox->setInformationText(informationText);
+		textbox->setText(newText);
+		textbox->setPos(point);
+		_scene->addItem(textbox);
 		_textBoxes.push_back(textbox);
 		markAsChanged();
 	}
@@ -1804,12 +1812,14 @@ private slots:
 		if (result==QDialog::Rejected) return QString(); // Null
 		return textEdit->toPlainText();
 	}
-	void onNewTextBox()
+	virtual void networkUpdateTextBox(void * modelText, const QString & text, const QPointF & pos)
 	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		addTextBox(point);
+		if (not modelText) return;
+		CLAM::InformationText * clamText = (CLAM::InformationText *) modelText;
+		clamText->text=text.toStdString();
+		clamText->x=pos.x();
+		clamText->y=pos.y();
 	}
-
 	void onOpenFileWithExternalApplication()
 	{
 		const QString fileName = ((QAction*)sender())->data().toString();
