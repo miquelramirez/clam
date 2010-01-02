@@ -33,6 +33,7 @@ public:
 		outcontrolsRegion,
 		nameRegion,
 		resizeHandleRegion,
+		iconRegion,
 		bodyRegion
 	};
 	enum ActionMode

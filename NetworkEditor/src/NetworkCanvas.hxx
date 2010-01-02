@@ -976,23 +976,25 @@ public: // Event Handlers
 			case ProcessingBox::resizeHandleRegion:
 			case ProcessingBox::nameRegion:
 			case ProcessingBox::bodyRegion:
+			case ProcessingBox::iconRegion:
 				setWhatsThis(tr(
-						"<p>\n"
-						"This is a Processing, which encapsulates a processing algorithm.\n"
-						"Round connectors are ports, which consumes and produces data; "
-						"inlets on the left and outlets on the right.\n"
-						"Square connectors are controls which communicate events; "
-						"inlets on the top and outlets on the bottom.\n"
-						"</p>\n"
-						"<p>Available actions</p>"
-						"<ul>\n"
-						"<li>Right click over the body or over the connectors for context actions.</li>\n"
-						"<li>Drag connectors to connect to a complementary one.</li>\n"
-						"<li>Double click the name to rename.</li>\n"
-						"<li>Drag the name to move the processing box.</li>\n"
-						"<li>Drag the handle on the bottom right to resize the processing box.</li>\n"
-						"</ul>\n"
-						));
+					"<p>\n"
+					"This is a Processing, which encapsulates a processing algorithm.\n"
+					"Round connectors are ports, which consumes and produces data; "
+					"inlets on the left and outlets on the right.\n"
+					"Square connectors are controls which communicate events; "
+					"inlets on the top and outlets on the bottom.\n"
+					"</p>\n"
+					"<p>Available actions</p>"
+					"<ul>\n"
+					"<li>Right click over the body or over the connectors for context actions.</li>\n"
+					"<li>Drag connectors to connect to a complementary one.</li>\n"
+					"<li>Double click the name to rename.</li>\n"
+					"<li>Drag the name to move the processing box.</li>\n"
+					"<li>Drag the handle on the bottom right to resize the processing box.</li>\n"
+					"<li>Double click on the icon to configure it.</li>\n"
+					"</ul>\n"
+					));
 			}
 			return QGraphicsView::event(event);
 		}

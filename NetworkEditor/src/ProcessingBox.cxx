@@ -18,6 +18,7 @@ static std::string processingBoxRegionName(ProcessingBox::Region region)
 	switch(region)
 	{
 		case ProcessingBox::nameRegion:        return "nameRegion";
+		case ProcessingBox::iconRegion:        return "iconRegion";
 		case ProcessingBox::bodyRegion:        return "bodyRegion";
 		case ProcessingBox::resizeHandleRegion:return "resizeHandleRegion";
 		case ProcessingBox::inportsRegion:     return "inportsRegion";
@@ -33,11 +34,11 @@ static std::string processingBoxAction(ProcessingBox::ActionMode action)
 {
 	switch(action)
 	{
-		case ProcessingBox::NoAction:        return "NoAction";
-		case ProcessingBox::Resizing:        return "Resizing";
-		case ProcessingBox::Moving:          return "Moving";
-		case ProcessingBox::Linking:          return "Linking";
-		default:                             return "Which drag??";
+		case ProcessingBox::NoAction: return "NoAction";
+		case ProcessingBox::Resizing: return "Resizing";
+		case ProcessingBox::Moving:   return "Moving";
+		case ProcessingBox::Linking:  return "Linking";
+		default:                      return "Which drag??";
 	}
 }
 
@@ -336,49 +337,11 @@ void ProcessingBox::drawConnector(QPainter & painter, Region region, unsigned in
 	}
 }
 
-ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
+ProcessingBox::Region ProcessingBox::getRegion(const QPoint & scenePoint) const
 {
-	int x = point.x()-pos().toPoint().x();
-	int y = point.y()-pos().toPoint().y();
-	if (x<0)
-		return noRegion;
-	if (x>_size.width())
-		return noRegion;
-	if (y<0)
-		return noRegion;
-	if (y>_size.height())
-		return noRegion;
-
-	if (x<portWidth)
-	{
-		if (y<portOffset) return noRegion;
-		if (y>=portOffset+_nInports*portStep) return noRegion;
-		return inportsRegion;
-	}
-	if (x>_size.width()-portWidth)
-	{
-		if (y<portOffset) return noRegion;
-		if (y>=portOffset+_nOutports*portStep) return noRegion;
-		return outportsRegion;
-	}
-	if (y>=0 && y<controlHeight)
-	{
-		if (x<controlOffset) return noRegion;
-		if (x>=controlOffset+_nIncontrols*controlStep) return noRegion;
-		return incontrolsRegion;
-	}
-	if (y<=_size.height() && y>_size.height()-controlHeight)
-	{
-		if (x<controlOffset) return noRegion;
-		if (x>=controlOffset+_nOutcontrols*controlStep) return noRegion;
-		return outcontrolsRegion;
-	}
-	if (y<textHeight+portOffset)
-		return nameRegion;
-	if (x>_size.width()-controlOffset && y>_size.height()-portOffset)
-		return resizeHandleRegion;
-	return bodyRegion;
+	return getItemRegion((scenePoint-pos()).toPoint());
 }
+
 ProcessingBox::Region ProcessingBox::getItemRegion(const QPoint & point) const
 {
 	int x = point.x();
@@ -414,7 +377,10 @@ ProcessingBox::Region ProcessingBox::getItemRegion(const QPoint & point) const
 		return outcontrolsRegion;
 	}
 	if (y<textHeight+portOffset)
+	{
+		if (x<controlOffset+textHeight) return iconRegion;
 		return nameRegion;
+	}
 	if (x>_size.width()-controlOffset && y>_size.height()-portOffset)
 		return resizeHandleRegion;
 	
@@ -552,6 +518,10 @@ void ProcessingBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 	{
 		rename();
 	}
+	if (region==iconRegion)
+	{
+		configure();
+	}
 	if (region==incontrolsRegion)
 	{
 		_canvas->createAndLinkToInControl(this, scenePoint);
@@ -651,20 +621,27 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 			_canvas->setStatusTip(QObject::tr("Drag: resize"));
 			break;
 		}
+		case iconRegion:
+		{
+			_canvas->setToolTip(_canvas->infoMessage(_processing));
+			_canvas->setStatusTip(QObject::tr(
+				"Double click: configure. Left click: Processing menu"));
+			break;
+		}
 		case bodyRegion:
 		{
 			if (not _canvas->isOk(_processing)) 
 				_canvas->setToolTip(_canvas->errorMessage(_processing));
-			_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
+			_canvas->setStatusTip(QObject::tr(
+				"Double click: configure. Left click: Processing menu"));
 			break;
 		}
 		case nameRegion:
 		{
-			QString tooltipText = _canvas->isOk(_processing)?
-					_canvas->infoMessage(_processing):
-					_canvas->errorMessage(_processing);
-			_canvas->setToolTip(tooltipText);
-			_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
+			if (not _canvas->isOk(_processing)) 
+				_canvas->setToolTip(_canvas->errorMessage(_processing));
+			_canvas->setStatusTip(QObject::tr(
+				"Drag: move. Double click: rename. Left click: Processing menu"));
 			break;
 		}
 		return;
