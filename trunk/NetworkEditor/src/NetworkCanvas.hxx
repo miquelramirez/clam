@@ -492,47 +492,6 @@ private slots:
 
 		update();
 	}
-protected slots:
-	void onConfigure()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		ProcessingBox * processing = processingUnder(point);
-		if (not processing) return;
-		if (not processing->configure()) return;
-		markAsChanged();
-	}
-	void onRename()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		ProcessingBox * processing = processingUnder(point);
-		if (!processing) return;
-		if (!processing->rename()) return;
-		markAsChanged();
-	}
-	void onDisconnect()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		ProcessingBox * processing = processingUnder(point);
-		if (not processing) return;
-		ProcessingBox::Region region = processing->getRegion(point);
-		switch (region)
-		{
-			case ProcessingBox::inportsRegion:
-				disconnectInport(processing, processing->portIndexByYPos(point));
-			break;
-			case ProcessingBox::outportsRegion:
-				disconnectOutport(processing, processing->portIndexByYPos(point));
-			break;
-			case ProcessingBox::incontrolsRegion:
-				disconnectIncontrol(processing, processing->controlIndexByXPos(point));
-			break;
-			case ProcessingBox::outcontrolsRegion:
-				disconnectOutcontrol(processing, processing->controlIndexByXPos(point));
-			break;
-			default:
-				CLAM_WARNING(false, "Not a port to disconnect.");
-		}
-	}
 public:
 	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
 	{
@@ -751,6 +710,46 @@ protected slots:
 		QString type = askProcessingType();
 		if (type.isEmpty()) return;
 		addProcessing(point, type);
+	}
+	void onConfigure()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		ProcessingBox * processing = processingUnder(point);
+		if (not processing) return;
+		if (not processing->configure()) return;
+		markAsChanged();
+	}
+	void onRename()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		ProcessingBox * processing = processingUnder(point);
+		if (!processing) return;
+		if (!processing->rename()) return;
+		markAsChanged();
+	}
+	void onDisconnect()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		ProcessingBox * processing = processingUnder(point);
+		if (not processing) return;
+		ProcessingBox::Region region = processing->getRegion(point);
+		switch (region)
+		{
+			case ProcessingBox::inportsRegion:
+				disconnectInport(processing, processing->portIndexByYPos(point));
+			break;
+			case ProcessingBox::outportsRegion:
+				disconnectOutport(processing, processing->portIndexByYPos(point));
+			break;
+			case ProcessingBox::incontrolsRegion:
+				disconnectIncontrol(processing, processing->controlIndexByXPos(point));
+			break;
+			case ProcessingBox::outcontrolsRegion:
+				disconnectOutcontrol(processing, processing->controlIndexByXPos(point));
+			break;
+			default:
+				CLAM_WARNING(false, "Not a port to disconnect.");
+		}
 	}
 
 public:
