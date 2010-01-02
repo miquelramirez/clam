@@ -544,31 +544,27 @@ private slots:
 	void onCopyConnection()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
-		for (unsigned i = _processings.size(); i--; )
+		ProcessingBox * processing = processingUnder(point);
+		ProcessingBox::Region region = processing->getRegion(point);
+		QString toCopy;
+		switch (region)
 		{
-			ProcessingBox::Region region = _processings[i]->getRegion(point);
-			if (region==ProcessingBox::noRegion) continue;
-			QString toCopy;
-			switch (region)
-			{
-				case ProcessingBox::outportsRegion: 
-					toCopy = _processings[i]->getOutportPrototyperName(point);
-					break;
-				case ProcessingBox::inportsRegion: 
-					toCopy = _processings[i]->getInportPrototyperName(point);
-					break;
-				case ProcessingBox::incontrolsRegion: 
-					toCopy = _processings[i]->getIncontrolPrototyperName(point);
-					break;
-				case ProcessingBox::outcontrolsRegion: 
-					toCopy = _processings[i]->getOutcontrolPrototyperName(point);
-					break;
-				default:
-					return; // Matches a region but not a connector one
-			}
-			QApplication::clipboard()->setText(toCopy);
-			return;
+			case ProcessingBox::outportsRegion: 
+				toCopy = processing->getOutportPrototyperName(point);
+				break;
+			case ProcessingBox::inportsRegion: 
+				toCopy = processing->getInportPrototyperName(point);
+				break;
+			case ProcessingBox::incontrolsRegion: 
+				toCopy = processing->getIncontrolPrototyperName(point);
+				break;
+			case ProcessingBox::outcontrolsRegion: 
+				toCopy = processing->getOutcontrolPrototyperName(point);
+				break;
+			default:
+				return; // Matches a region but not a connector one, weird
 		}
+		QApplication::clipboard()->setText(toCopy);
 	}
 
 	void onCopyProcessingsToClipboard(bool cut=false)
@@ -634,50 +630,37 @@ private slots:
 	void onAddSlider()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
-		for (unsigned i = _processings.size(); i--; )
-		{
-			ProcessingBox::Region region = _processings[i]->getRegion(point);
-			if (region==ProcessingBox::noRegion) continue;
-			if (region!=ProcessingBox::incontrolsRegion) return;
-
-			createAndLinkToInControl(_processings[i], point);
-			return;
-		}
+		ProcessingBox * processing = processingUnder(point);
+		ProcessingBox::Region region = processing->getRegion(point);
+		if (region!=ProcessingBox::incontrolsRegion) return;
+		createAndLinkToInControl(processing, point);
 	}
 
 	void onAddControlPrinter()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
-		for (unsigned i = _processings.size(); i--; )
-		{
-			ProcessingBox::Region region = _processings[i]->getRegion(point);
-			if (region==ProcessingBox::noRegion) continue;
-			if (region!=ProcessingBox::outcontrolsRegion) return;
-
-			createAndLinkToOutControl(_processings[i], point);
-			return;
-		}
+		ProcessingBox * processing = processingUnder(point);
+		ProcessingBox::Region region = processing->getRegion(point);
+		if (region!=ProcessingBox::outcontrolsRegion) return;
+		createAndLinkToOutControl(processing, point);
 	}
 
 	void onAddLinkedProcessing()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
 		QString processingType = ((QAction*)sender())->text();
-		for (unsigned i = _processings.size();i--;)
+		ProcessingBox * processing = processingUnder(point);
+		ProcessingBox::Region region = processing->getRegion(point);
+		switch (region)
 		{
-			ProcessingBox::Region region = _processings[i]->getRegion(point);
-			switch(region)
-			{
 			case ProcessingBox::inportsRegion:
-				createAndLinkToInPort(_processings[i], point, processingType);
+				createAndLinkToInPort(processing, point, processingType);
 				break;
 			case ProcessingBox::outportsRegion:
-				createAndLinkToOutPort(_processings[i], point, processingType);
+				createAndLinkToOutPort(processing, point, processingType);
 				break;
 			default:
-				continue; // Not a port connections region
-			}
-			return;
+				;
 		}
 	}
 
