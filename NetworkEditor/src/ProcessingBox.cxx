@@ -202,7 +202,7 @@ void ProcessingBox::recomputeMinimumSizes()
 	if (minimumHeight<outportsHeight) minimumHeight = outportsHeight;
 	minimumHeight += 2*portOffset;
 
-	int minimumWidth = metrics.width(_name);
+	int minimumWidth = metrics.width(_name) + textHeight + margin;
 	if (_embeded && minimumWidth<_embeded->minimumWidth())
 		minimumWidth = _embeded->minimumWidth();
 	if (_embeded && minimumWidth<_embeded->minimumSizeHint().width())
@@ -252,7 +252,13 @@ void ProcessingBox::paintBox(QPainter & painter)
 	painter.drawRect(controlOffset, portOffset+textHeight, _size.width()-2*controlOffset, _size.height()-textHeight-2*portOffset);
 	painter.setBrush(_canvas->colorResizeHandle());
 	painter.drawRect(_size.width()-controlOffset, _size.height()-portOffset, margin, margin);
-		
+	QRect iconRect(
+		portOffset, controlOffset-margin, 
+		textHeight, textHeight);
+	painter.drawRect(iconRect);
+	QIcon processingIcon = _canvas->processingIcon(this);
+	processingIcon.paint(&painter, iconRect);
+
 	// Ports
 	painter.setPen(_canvas->colorPortOutline());
 	for (unsigned i = 0; i<_nInports; i++)
@@ -288,7 +294,7 @@ void ProcessingBox::paintBox(QPainter & painter)
 
 	// Text
 	painter.setPen(_canvas->colorBoxFrameText());
-	painter.drawText(QRect(controlOffset, portOffset,
+	painter.drawText(QRect(controlOffset+textHeight, portOffset,
 			_size.width()-2*controlOffset, textHeight), _name);
 	//Selection
 	if (isSelected())
@@ -570,13 +576,14 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 	QMenu menu(_canvas);
 	QPoint point = event->pos().toPoint();
 	Region region = getItemRegion(point);
+	QPoint scenePos = event->scenePos().toPoint();
 	switch (region)
 	{
 		case inportsRegion:
 		case outportsRegion:
 		case incontrolsRegion:
 		case outcontrolsRegion:
-			_canvas->connectionContextMenu(&menu, event, this, region);
+			_canvas->connectionContextMenu(&menu, scenePos, this, region);
 			break;
 		case nameRegion:
 		case bodyRegion:
@@ -588,7 +595,7 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 				select();
 				update();
 			}
-			_canvas->processingContextMenu(&menu, event, this);
+			_canvas->processingContextMenu(&menu, scenePos, this);
 			break;
 		default:
 			event->ignore();
