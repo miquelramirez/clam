@@ -626,44 +626,6 @@ private slots:
 		loadGeometriesFromXML(point);
 	}
 
-
-	void onAddSlider()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		ProcessingBox * processing = processingUnder(point);
-		ProcessingBox::Region region = processing->getRegion(point);
-		if (region!=ProcessingBox::incontrolsRegion) return;
-		createAndLinkToInControl(processing, point);
-	}
-
-	void onAddControlPrinter()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		ProcessingBox * processing = processingUnder(point);
-		ProcessingBox::Region region = processing->getRegion(point);
-		if (region!=ProcessingBox::outcontrolsRegion) return;
-		createAndLinkToOutControl(processing, point);
-	}
-
-	void onAddLinkedProcessing()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		QString processingType = ((QAction*)sender())->text();
-		ProcessingBox * processing = processingUnder(point);
-		ProcessingBox::Region region = processing->getRegion(point);
-		switch (region)
-		{
-			case ProcessingBox::inportsRegion:
-				createAndLinkToInPort(processing, point, processingType);
-				break;
-			case ProcessingBox::outportsRegion:
-				createAndLinkToOutPort(processing, point, processingType);
-				break;
-			default:
-				;
-		}
-	}
-
 	void onProcessingsConnectTo()
 	{
 		QMap<QString, QVariant> receiveMap=((QAction*)sender())->data().toMap();
@@ -800,12 +762,12 @@ private:
 		if (region==ProcessingBox::incontrolsRegion)
 		{
 			menu->addAction(QIcon(":/icons/images/hslider.png"), tr("Add slider"),
-				this, SLOT(onAddSlider()))->setData(cursorPosition);
+				this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
 		}
 		if (region==ProcessingBox::outcontrolsRegion)
 		{
 			menu->addAction(QIcon(":/icons/images/processing.png"), tr("Add control printer"),
-				this, SLOT(onAddControlPrinter()))->setData(cursorPosition);
+				this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
 		}
 		if (region==ProcessingBox::outportsRegion)
 		{

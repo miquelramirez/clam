@@ -751,6 +751,31 @@ protected slots:
 				CLAM_WARNING(false, "Not a port to disconnect.");
 		}
 	}
+	void onAddLinkedProcessing()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		QString processingType = ((QAction*)sender())->text();
+		ProcessingBox * processing = processingUnder(point);
+		ProcessingBox::Region region = processing->getRegion(point);
+		switch (region)
+		{
+			case ProcessingBox::outcontrolsRegion:
+				createAndLinkToOutControl(processing, point);
+				break;
+			case ProcessingBox::incontrolsRegion:
+				createAndLinkToInControl(processing, point);
+				break;
+			case ProcessingBox::inportsRegion:
+				createAndLinkToInPort(processing, point, processingType);
+				break;
+			case ProcessingBox::outportsRegion:
+				createAndLinkToOutPort(processing, point, processingType);
+				break;
+			default:
+				;
+		}
+	}
+
 
 public:
 	virtual void * networkProcessing(const QString & name)=0; // Returns the named module
