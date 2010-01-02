@@ -409,7 +409,7 @@ public:
 			textBox->setText(QString::fromLocal8Bit((*it)->text.c_str()));
 			textBox->setPos(QPoint((*it)->x, (*it)->y));
 			textBox->setInformationText(*it); // TODO: Too sensible to the order
-			_scene->addItem(textBox);
+			scene()->addItem(textBox);
 			_textBoxes.push_back(textBox);
 		}
 		refreshWires();
@@ -741,7 +741,7 @@ private slots:
 		textbox->setInformationText(informationText);
 		textbox->setText(newText);
 		textbox->setPos(point);
-		_scene->addItem(textbox);
+		scene()->addItem(textbox);
 		_textBoxes.push_back(textbox);
 		markAsChanged();
 	}

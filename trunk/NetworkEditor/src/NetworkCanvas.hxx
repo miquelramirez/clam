@@ -55,8 +55,8 @@ public:
 	};
 	NetworkCanvas(QWidget * parent=0)
 		: QGraphicsView(parent)
-		, _zoomFactor(1.)
 		, _changed(false)
+		, _zoomFactor(1.)
 		, _dragStatus(NoDrag)
 		, _dragProcessing(0)
 		, _dragConnection(0)
@@ -981,14 +981,13 @@ public: // Event Handlers
 	}
 	
 protected:
-	std::vector<TextBox *> _textBoxes;
 	std::vector<ProcessingBox *> _processings;
 	std::vector<PortWire *> _portWires;
 	std::vector<ControlWire *> _controlWires;
-	double _zoomFactor;
+	std::vector<TextBox *> _textBoxes;
 private:
 	bool _changed;
-protected:
+	double _zoomFactor;
 	DragStatus _dragStatus;
 	ProcessingBox * _dragProcessing;
 	unsigned _dragConnection;
@@ -996,9 +995,6 @@ protected:
 	QPoint _selectionDragOrigin;
 	QPoint _tooltipPos;
 	QString _tooltipText;
-	QAction * _deleteSelectedAction;
-	QAction * _selectAllAction;
-	QAction * _clearSelectionAction;
 	QColor _colorBoxFrameText;
 	QColor _colorBoxFrameOutline;
 	QColor _colorBoxFrame;
@@ -1024,6 +1020,10 @@ protected:
 	QColor _colorControlWireOutline;
 	QGraphicsScene * _scene;
 	unsigned long _maxZ;
+protected:
+	QAction * _deleteSelectedAction;
+	QAction * _selectAllAction;
+	QAction * _clearSelectionAction;
 };
 
 
