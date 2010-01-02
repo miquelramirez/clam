@@ -502,7 +502,7 @@ public:
 	}
 	void removeProcessing(ProcessingBox * processing)
 	{
-		networkRemoveProcessing(processing->getName().toStdString());
+		networkRemoveProcessing(processing->getName());
 		markAsChanged();
 		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
 			   	it<_controlWires.end(); )
@@ -671,12 +671,46 @@ protected:
 				boundingBox = boundingBox.unite(QRect(_processings[i]->position(),_processings[i]->size()));
 		return boundingBox;
 	}
+protected:
+	void addProcessing(QPoint point, QString type)
+	{
+		QString name = networkAddProcessing(type);
+		if (name.isEmpty())
+		{
+			QMessageBox::critical(this, tr("Error creating a processing"),
+				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(type));
+			return;
+		}
+		addProcessingBox(name, networkProcessing(name), point);
+		markAsChanged();
+	}
+	void addProcessingBox(const QString & name, void * processing, QPoint point=QPoint(), QSize size=QSize())
+	{
+		if (!processing)
+			_processings.push_back(new ProcessingBox(this, name, 1, 1, 0, 0));
+		else
+			_processings.push_back(new ProcessingBox(this, name, 0, 0, 0, 0));
+		_processings.back()->setProcessing(processing);
+		_processings.back()->move(point);
+		_processings.back()->resize(size);
+		_scene->addItem(_processings.back());
+		raise(_processings.back());
+	}
+protected slots:
+	void onNewProcessing()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		QString type = askProcessingType();
+		if (type.isEmpty()) return;
+		addProcessing(point, type);
+	}
 
 public:
+	virtual void * networkProcessing(const QString & name)=0; // Returns the named module
+	virtual QString networkAddProcessing(const QString & type)=0; // creates a module, returns name
 	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
-	virtual void networkRemoveProcessing(const std::string & name) = 0;
+	virtual void networkRemoveProcessing(const QString & name) = 0;
 	virtual void networkRemoveTextBox(void * textBox) = 0;
-	virtual void addProcessing(QPoint point, QString type) = 0;
 	virtual void addTextBox(const QPoint& point) = 0;
 	virtual void editTextBox(TextBox * textbox) = 0;
 	virtual void networkUpdateTextBox(void * modelText, const QString & text, const QPointF & pos) = 0;
@@ -687,6 +721,7 @@ public:
 	virtual bool networkRemovePortConnection(const QString & outlet, const QString & inlet) = 0;
 	virtual bool networkRemoveControlConnection(const QString & outlet, const QString & inlet) = 0;
 
+	virtual QIcon processingIcon(ProcessingBox * processingBox) =0;
 	virtual unsigned nInports(void * processing) = 0;
 	virtual unsigned nOutports(void * processing) = 0;
 	virtual unsigned nIncontrols(void * processing) = 0;
@@ -707,6 +742,7 @@ public:
 	virtual QString errorMessage(void * processing)=0;
 	virtual QString infoMessage(void * processing)=0;
 	virtual QWidget * embededWidgetFor(void * processing) = 0;
+	virtual QString askProcessingType()=0;
 
 	// TODO: Are those generic enough to be virtual?
 	virtual bool editConfiguration(ProcessingBox * box) = 0;
@@ -715,9 +751,9 @@ public:
 	virtual void createAndLinkToOutPort( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
 	virtual void createAndLinkToInPort ( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
 
-	virtual void connectionContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
-	virtual void processingContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing) { }
-	virtual void canvasContextMenu(QMenu * menu, QContextMenuEvent * event) { }
+	virtual void connectionContextMenu(QMenu * menu, const QPoint & pos, ProcessingBox * processing, ProcessingBox::Region region) { }
+	virtual void processingContextMenu(QMenu * menu, const QPoint & pos, ProcessingBox * processing) { }
+	virtual void canvasContextMenu(QMenu * menu, const QPoint & pos) { }
 
 signals:
 	void changed();
@@ -806,7 +842,7 @@ public: // Event Handlers
 		QGraphicsView::contextMenuEvent(event);
 		if (event->isAccepted()) return;
 		QMenu menu(this);
-		canvasContextMenu(&menu, event);
+		canvasContextMenu(&menu, mapToScene(event->pos()).toPoint());
 		menu.exec(event->globalPos());
 	}
 

@@ -4,7 +4,7 @@
 
 #include <typeinfo>
 #include <CLAM/XMLStorage.hxx>
-#include <CLAM/BaseNetwork.hxx>
+#include <CLAM/Network.hxx>
 #include <CLAM/ProcessingDataPlugin.hxx>
 #include <CLAM/ProcessingFactory.hxx>
 #include "OutControlSender.hxx"
@@ -47,34 +47,12 @@ public:
 		addAction(_pasteSelectionAction);
 		connect(_pasteSelectionAction, SIGNAL(triggered()), this, SLOT (onPasteProcessingsFromClipboard()));
 	}
-	CLAM::BaseNetwork & network()
+	CLAM::Network & network()
 	{
 		return *_network;
 	}
 
 public: // Actions
-
-	void addProcessing(QPoint point, QString type)
-	{
-		if (networkIsDummy())
-		{
-			addProcessingBox(type, 0, point);
-			markAsChanged();
-			return;
-		}
-		try
-		{
-			std::string name = _network->AddProcessing(type.toStdString());
-			CLAM::Processing & processing = _network->GetProcessing(name);
-			addProcessingBox(name.c_str(), &processing, point);
-			markAsChanged();
-		}
-		catch (CLAM::Err & e)
-		{
-			QMessageBox::critical(this, tr("Error creating a processing"),
-				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(type));
-		}
-	}
 	bool editConfiguration(ProcessingBox * box)
 	{
 		CLAM::Processing * processing = (CLAM::Processing *) box->model();
@@ -104,6 +82,25 @@ public: // Actions
 	{
 		CLAM::InControlBase& inControl = processing->GetInControl(index);
 		return inControl.UpperBound();
+	}
+
+	virtual void * networkProcessing(const QString & name)
+	{
+		if (networkIsDummy()) return 0;
+		return &_network->GetProcessing(name.toStdString());
+	}
+
+	virtual QString networkAddProcessing(const QString & type)
+	{
+		if (networkIsDummy()) return type;
+		try
+		{
+			return _network->AddProcessing(type.toStdString()).c_str();
+		}
+		catch (CLAM::Err & e)
+		{
+			return "";
+		}
 	}
 
 	virtual void createAndLinkToInControl( ProcessingBox * processing, QPoint point )
@@ -350,18 +347,6 @@ private:
 		return colorPort();
 	}
 
-	void addProcessingBox(const QString & name, CLAM::Processing * processing, QPoint point=QPoint(), QSize size=QSize())
-	{
-		if (!processing)
-			_processings.push_back(new ProcessingBox(this, name, 1, 1, 0, 0));
-		else
-			_processings.push_back(new ProcessingBox(this, name, 0, 0, 0, 0));
-		_processings.back()->setProcessing(processing);
-		_processings.back()->move(point);
-		_processings.back()->resize(size);
-		_scene->addItem(_processings.back());
-		raise(_processings.back());
-	}
 protected:
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -401,10 +386,10 @@ protected:
 		if (networkIsDummy()) return true;
 		return _network->DisconnectControls(outlet.toStdString(), inlet.toStdString());
 	}
-	virtual void networkRemoveProcessing(const std::string & name)
+	virtual void networkRemoveProcessing(const QString & name)
 	{
 		if (networkIsDummy()) return;
-		_network->RemoveProcessing(name);
+		_network->RemoveProcessing(name.toStdString());
 	}
 	virtual void networkRemoveTextBox(void * informationText)
 	{
@@ -417,20 +402,20 @@ public:
 	{
 		return _network == 0;
 	}
-	void loadNetwork(CLAM::BaseNetwork * network)
+	void loadNetwork(CLAM::Network * network)
 	{
 		clear();
 		_network = network;
 		clearChanges();
 		if (networkIsDummy()) return;
-		typedef CLAM::BaseNetwork::ProcessingsMap::const_iterator ProcIterator;
+		typedef CLAM::Network::ProcessingsMap::const_iterator ProcIterator;
 		for (ProcIterator it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
 		{
 			const std::string & name = it->first;
 			CLAM::Processing * processing = it->second;
 			addProcessingBox( name.c_str(),  processing );
 		}
-		typedef CLAM::BaseNetwork::InformationTexts::iterator TextIterator;
+		typedef CLAM::Network::InformationTexts::iterator TextIterator;
 		for (TextIterator it=_network->BeginInformationTexts(); it!=_network->EndInformationTexts(); it++)
 		{
 			TextBox *textBox=new TextBox(this);
@@ -447,7 +432,7 @@ public:
 	void reloadNetwork(bool selectAllNew=false)
 	{
 		if (networkIsDummy()) return;
-		CLAM::BaseNetwork::ProcessingsMap::const_iterator it;
+		CLAM::Network::ProcessingsMap::const_iterator it;
 		for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
 		{
 			const std::string & name = it->first;
@@ -474,8 +459,8 @@ public:
 			{
 				CLAM::OutPortBase & outPort = producer.GetOutPort(op);
 				std::string completeOutName = producerName + "." + outPort.GetName();
-				CLAM::BaseNetwork::NamesList connected = _network->GetInPortsConnectedTo( completeOutName );
-				CLAM::BaseNetwork::NamesList::iterator inName;
+				CLAM::Network::NamesList connected = _network->GetInPortsConnectedTo( completeOutName );
+				CLAM::Network::NamesList::iterator inName;
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
@@ -499,8 +484,8 @@ public:
 			{
 				CLAM::OutControlBase & outControl = producer.GetOutControl(op);
 				std::string completeOutName = producerName + "." + outControl.GetName();
-				CLAM::BaseNetwork::NamesList connected = _network->GetInControlsConnectedTo( completeOutName );
-				CLAM::BaseNetwork::NamesList::iterator inName;
+				CLAM::Network::NamesList connected = _network->GetInControlsConnectedTo( completeOutName );
+				CLAM::Network::NamesList::iterator inName;
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
@@ -524,10 +509,10 @@ public:
 
 	bool updateGeometriesOnXML(QPoint offsetPoint=QPoint(0,0))
 	{
-		CLAM::BaseNetwork::ProcessingsGeometriesMap processingsGeometriesMap;
+		CLAM::Network::ProcessingsGeometriesMap processingsGeometriesMap;
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
-			CLAM::BaseNetwork::Geometry processingGeometry;
+			CLAM::Network::Geometry processingGeometry;
 			QPoint position = _processings[i]->position()-offsetPoint;
 			QSize size = _processings[i]->size();
 			const std::string name=_processings[i]->getName().toStdString();
@@ -535,20 +520,20 @@ public:
 			processingGeometry.y=position.y();
 			processingGeometry.width=size.width();
 			processingGeometry.height=size.height();
-			processingsGeometriesMap.insert(CLAM::BaseNetwork::ProcessingsGeometriesMap::value_type(name,processingGeometry));
+			processingsGeometriesMap.insert(CLAM::Network::ProcessingsGeometriesMap::value_type(name,processingGeometry));
 		}
 		return (_network->SetProcessingsGeometries(processingsGeometriesMap));
 	}
 	bool loadGeometriesFromXML(QPoint offsetPoint = QPoint(0,0))
 	{
-		const CLAM::BaseNetwork::ProcessingsGeometriesMap & processingsGeometriesMap=_network->GetAndClearGeometries();
+		const CLAM::Network::ProcessingsGeometriesMap & processingsGeometriesMap=_network->GetAndClearGeometries();
 		if (processingsGeometriesMap.empty())
 			return 0;
-		CLAM::BaseNetwork::ProcessingsGeometriesMap::const_iterator it;
+		CLAM::Network::ProcessingsGeometriesMap::const_iterator it;
 		for(it=processingsGeometriesMap.begin();it!=processingsGeometriesMap.end();it++)
 		{
 			QString name=QString(it->first.c_str());
-			const CLAM::BaseNetwork::Geometry & geometry=it->second;
+			const CLAM::Network::Geometry & geometry=it->second;
 			QPoint position=offsetPoint+QPoint(geometry.x,geometry.y);
 			QSize size=QSize(geometry.width,geometry.height);
 			ProcessingBox * box=getBox(name);
@@ -602,7 +587,7 @@ private slots:
 	void onCopyProcessingsToClipboard(bool cut=false)
 	{
 		std::ostringstream streamXMLBuffer;
-		CLAM::BaseNetwork::NamesList processingsNamesList;
+		CLAM::Network::NamesList processingsNamesList;
 		// Copy selected processings on networkToCopy
 		for (unsigned i=0; i<_processings.size();i++)
 		{
@@ -619,7 +604,7 @@ private slots:
 		QApplication::clipboard()->setText(QString(streamXMLBuffer.str().c_str()));
 		if (!cut) return;
 
-		CLAM::BaseNetwork::NamesList::iterator cuttedNamesIterator;
+		CLAM::Network::NamesList::iterator cuttedNamesIterator;
 		for(cuttedNamesIterator=processingsNamesList.begin();
 			cuttedNamesIterator!=processingsNamesList.end();
 			cuttedNamesIterator++)
@@ -777,42 +762,32 @@ private slots:
 			return;
 		}
 	}
-	void onNewProcessing()
+	virtual QString askProcessingType()
 	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		QString type;
 		if (!_network)
-		{
-			type = QInputDialog::getText(this, "Type", "Type", QLineEdit::Normal, "A Processing");
-			if (type.isNull()) return;
-		}
-		else
-		{
-			QStringList completionList;
-			typedef CLAM::ProcessingFactory::Keys FactoryKeys;
-			FactoryKeys keys = CLAM::ProcessingFactory::GetInstance().GetKeys();
-			for (FactoryKeys::const_iterator it=keys.begin(); it!=keys.end(); it++)
-				completionList << QString::fromStdString(*it);
-			QDialog dialog;
-			dialog.setWindowTitle(tr("Adding a new processing"));
-			QVBoxLayout * layout = new QVBoxLayout(&dialog);
-			QLineEdit * lineEdit = new QLineEdit(&dialog);
-			layout->addWidget(new QLabel(tr("Type"), &dialog));
-			QCompleter *completer = new QCompleter(completionList, &dialog);
-			completer->setCaseSensitivity(Qt::CaseInsensitive);
-			lineEdit->setCompleter(completer);
-			layout->addWidget(lineEdit);
-			QDialogButtonBox * buttons = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
-			connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
-			connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
-			layout->addWidget(buttons);
-			int result = dialog.exec();
-			this->activateWindow();
-			if (result==QDialog::Rejected) return;
-			type = lineEdit->text();
-			if (type.isEmpty()) return;
-		}
-		addProcessing(point, type);
+			return QInputDialog::getText(
+				this, tr("Type"), tr("Type"), QLineEdit::Normal, tr("A Processing"));
+
+		QStringList completionList;
+		typedef CLAM::ProcessingFactory::Keys FactoryKeys;
+		FactoryKeys keys = CLAM::ProcessingFactory::GetInstance().GetKeys();
+		for (FactoryKeys::const_iterator it=keys.begin(); it!=keys.end(); it++)
+			completionList << QString::fromStdString(*it);
+		QDialog dialog;
+		dialog.setWindowTitle(tr("Adding a new processing"));
+		QVBoxLayout * layout = new QVBoxLayout(&dialog);
+		QLineEdit * lineEdit = new QLineEdit(&dialog);
+		layout->addWidget(new QLabel(tr("Type"), &dialog));
+		QCompleter *completer = new QCompleter(completionList, &dialog);
+		completer->setCaseSensitivity(Qt::CaseInsensitive);
+		lineEdit->setCompleter(completer);
+		layout->addWidget(lineEdit);
+		QDialogButtonBox * buttons = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+		connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
+		connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
+		layout->addWidget(buttons);
+		if (dialog.exec()==QDialog::Rejected) return QString();
+		return lineEdit->text();
 	}
 	void onNewTextBox()
 	{
@@ -897,10 +872,6 @@ private:
 	}
 
 
-	virtual void connectionContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region)
-	{
-		connectionContextMenu(menu, event->scenePos().toPoint(), processing, region);
-	}
 	virtual void connectionContextMenu(QMenu * menu, const QPoint& cursorPosition, ProcessingBox * processing, ProcessingBox::Region region)
 	{
 		menu->addAction(QIcon(":/icons/images/remove.png"), tr("Disconnect"),
@@ -1031,10 +1002,6 @@ private:
 		}
 	}
 
-	virtual void processingContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing)
-	{
-		processingContextMenu(menu, event->scenePos().toPoint(), processing);
-	}
 	virtual void processingContextMenu(QMenu * menu, const QPoint& point, ProcessingBox * processing)
 	{
 		menu->addAction(QIcon(":/icons/images/configure.png"), tr("Configure"),
@@ -1072,10 +1039,6 @@ private:
 		}
 	}
 
-	virtual void canvasContextMenu(QMenu * menu, QContextMenuEvent * event)
-	{
-		canvasContextMenu(menu, mapToScene(event->pos()).toPoint());
-	}
 	virtual void canvasContextMenu(QMenu * menu, const QPoint& point)
 	{
 		_pasteSelectionAction->setData(point);
@@ -1088,7 +1051,7 @@ private:
 
 	virtual QIcon processingIcon(ProcessingBox * processingBox)
 	{
-		if (not processingBox->model()) return  QIcon(":/icons/images/processing.svg");
+		if (not processingBox->model()) return  QIcon(":/icons/images/processing.png");
 		const char* className=((CLAM::Processing*)processingBox->model())->GetClassName();
 		return clamProcessingIcon(className);
 	}
@@ -1096,7 +1059,8 @@ private:
 	QIcon clamProcessingIcon(const std::string & className)
 	{
 		CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-		if (not factory.AttributeExists(className,"icon")) return QIcon();
+		if (not factory.AttributeExists(className,"icon"))
+			return  QIcon(":/icons/images/processing.png");
 		std::string iconPath=factory.GetValueFromAttribute(className,"icon");
 		return QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()));
 	}
@@ -1108,7 +1072,7 @@ protected:
 	QAction * _cutSelectionAction;
 	QAction * _pasteSelectionAction;
 private:
-	CLAM::BaseNetwork * _network;
+	CLAM::Network * _network;
 	bool _embedSVGDiagramsOption;
 };
 
