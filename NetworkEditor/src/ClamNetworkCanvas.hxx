@@ -65,23 +65,9 @@ public: // Actions
 		}
 		network().ConfigureProcessing( box->getName().toStdString(), *config);	
 		box->setProcessing(processing);
+		refreshWires();
 		delete config;
 		return true;
-	}
-	float incontrolDefaultValue(CLAM::Processing * processing, unsigned index) const //TODO remove
-	{
-		CLAM::InControlBase& inControl = processing->GetInControl(index);
-		return inControl.DefaultValue();
-	}
-	float incontrolLowerBound(CLAM::Processing * processing, unsigned index) const
-	{
-		CLAM::InControlBase& inControl = processing->GetInControl(index);
-		return inControl.LowerBound();
-	}
-	float incontrolUpperBound(CLAM::Processing * processing, unsigned index) const
-	{
-		CLAM::InControlBase& inControl = processing->GetInControl(index);
-		return inControl.UpperBound();
 	}
 
 	virtual void * networkProcessing(const QString & name)
@@ -110,9 +96,10 @@ public: // Actions
 		unsigned controlIndex = processing->controlIndexByXPos(point);
 		QString inControlName = processing->getIncontrolName(controlIndex);
 		CLAM::Processing * model = (CLAM::Processing*) processing->model();
-		float defaultValue = incontrolDefaultValue(model,controlIndex);
-		float lower = incontrolLowerBound(model,controlIndex);
-		float upper = incontrolUpperBound(model,controlIndex);
+		CLAM::InControlBase& inControl = model->GetInControl(controlIndex);
+		float defaultValue = inControl.DefaultValue();
+		float lower = inControl.LowerBound();
+		float upper = inControl.UpperBound();
 
 		std::string controlSenderName  =  inControlName.toStdString();
 		// add control-sender processing to network
@@ -153,7 +140,6 @@ public: // Actions
 		// add box to canvas and connect
 		addProcessingBox( controlPrinterName.c_str(), &controlPrinter, point+QPoint(0,100));
 		addControlConnection( processing, controlIndex, getBox(controlPrinterName.c_str()), 0 );
-
 		markAsChanged();
 	}
 	
@@ -179,7 +165,6 @@ public: // Actions
 		// add box to canvas and connect
 		addProcessingBox( processingId.c_str(), &portProcessing, point+QPoint(100,0));
 		addPortConnection(processing, portIndex, getBox(processingId.c_str()), 0);
-
 		markAsChanged();
 	}
 
@@ -297,7 +282,9 @@ public: // Actions
 		CLAM::InControlBase& inControl = ((CLAM::Processing*)processing)->GetInControl(index);
 		// TODO: Bound info composing should be moved to the connector
 		QString boundInfo = inControl.IsBounded() ? 
-			QString("\n(bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
+			QString("\n(bounds: [%1, %2] )")
+				.arg(inControl.LowerBound())
+				.arg(inControl.UpperBound()) :
 			"\n(not bounded)";
 		return connectorTooltip(inControl) + boundInfo;
 	}
@@ -448,7 +435,9 @@ public:
 
 	void refreshWires()
 	{
+		if (not _network) return;
 		clearWires();
+		typedef CLAM::Network::NamesList Names;
 		// TODO: Refactor this code please!!!
 		for (unsigned p = 0; p<_processings.size(); p++)
 		{
@@ -459,9 +448,8 @@ public:
 			{
 				CLAM::OutPortBase & outPort = producer.GetOutPort(op);
 				std::string completeOutName = producerName + "." + outPort.GetName();
-				CLAM::Network::NamesList connected = _network->GetInPortsConnectedTo( completeOutName );
-				CLAM::Network::NamesList::iterator inName;
-				for(inName=connected.begin(); inName!=connected.end(); inName++)
+				Names connected = _network->GetInPortsConnectedTo( completeOutName );
+				for(Names::iterator inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
 					ProcessingBox * consumerBox = getBox(consumerName.c_str());
@@ -484,9 +472,8 @@ public:
 			{
 				CLAM::OutControlBase & outControl = producer.GetOutControl(op);
 				std::string completeOutName = producerName + "." + outControl.GetName();
-				CLAM::Network::NamesList connected = _network->GetInControlsConnectedTo( completeOutName );
-				CLAM::Network::NamesList::iterator inName;
-				for(inName=connected.begin(); inName!=connected.end(); inName++)
+				Names connected = _network->GetInControlsConnectedTo( completeOutName );
+				for(Names::iterator inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
 					ProcessingBox * consumerBox = getBox(consumerName.c_str());
@@ -709,59 +696,6 @@ private slots:
 		update();
 	}
 
-	void onConfigure()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		for (unsigned i = _processings.size(); i--; )
-		{
-			ProcessingBox::Region region = _processings[i]->getRegion(point);
-			if (region==ProcessingBox::noRegion) continue;
-			if ( !_processings[i]->configure()) return;
-			if (_network) refreshWires();
-			markAsChanged();
-			return;
-		}
-	}
-	void onRename()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		for (unsigned i = _processings.size(); i--; )
-		{
-			ProcessingBox::Region region = _processings[i]->getRegion(point);
-			if (region==ProcessingBox::noRegion) continue;
-			if ( !_processings[i]->rename()) return;
-			markAsChanged();
-			return;
-		}
-	}
-	void onDisconnect()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		for (unsigned i = _processings.size(); i--; )
-		{
-			ProcessingBox::Region region = _processings[i]->getRegion(point);
-			switch (region)
-			{
-				case ProcessingBox::noRegion: 
-					continue;
-				case ProcessingBox::inportsRegion:
-					disconnectInport(_processings[i], _processings[i]->portIndexByYPos(point));
-				break;
-				case ProcessingBox::outportsRegion:
-					disconnectOutport(_processings[i], _processings[i]->portIndexByYPos(point));
-				break;
-				case ProcessingBox::incontrolsRegion:
-					disconnectIncontrol(_processings[i], _processings[i]->controlIndexByXPos(point));
-				break;
-				case ProcessingBox::outcontrolsRegion:
-					disconnectOutcontrol(_processings[i], _processings[i]->controlIndexByXPos(point));
-				break;
-				default:
-					CLAM_ASSERT(false, "Not a port to disconnect.");
-			}
-			return;
-		}
-	}
 	virtual QString askProcessingType()
 	{
 		if (!_network)

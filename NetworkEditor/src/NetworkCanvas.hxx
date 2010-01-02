@@ -320,6 +320,18 @@ public: // Helpers
 		return QRect(topLeft, bottomRight);
 	}
 protected:
+	/// Returns the processing under a given (scene) point.
+	/// If more than one are available returns the top most one.
+	ProcessingBox * processingUnder(const QPoint & point)
+	{
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(point);
+			if (region==ProcessingBox::noRegion) continue;
+			return _processings[i];
+		}
+		return 0;
+	}
 	/// Given a connector region it return the complementary one.
 	/// Returns noRegion if the region is not a connector region.
 	ProcessingBox::Region peerRegion(ProcessingBox::Region region)
@@ -401,25 +413,20 @@ public: // Actions
 		switch (_dragStatus) 
 		{
 			case InportDrag:
-			{
 				addPortConnection(processing, connection, _dragProcessing, _dragConnection);
-			} break;
+				break;
 			case OutportDrag:
-			{
 				addPortConnection(_dragProcessing, _dragConnection, processing, connection);
-			} break;
+				break;
 			case IncontrolDrag:
-			{
 				addControlConnection(processing, connection, _dragProcessing, _dragConnection);
-			} break;
+				break;
 			case OutcontrolDrag:
-			{
 				addControlConnection(_dragProcessing, _dragConnection, processing, connection);
-			} break;
+				break;
 			default:
-			{
 				CLAM_ASSERT(false, "Ending a wire drag but not in wire drag status");
-			} return;
+				return;
 		}
 	}
 public slots:
@@ -484,6 +491,47 @@ private slots:
 			removeTextBox( toRemoveT[i] );
 
 		update();
+	}
+protected slots:
+	void onConfigure()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		ProcessingBox * processing = processingUnder(point);
+		if (not processing) return;
+		if (not processing->configure()) return;
+		markAsChanged();
+	}
+	void onRename()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		ProcessingBox * processing = processingUnder(point);
+		if (!processing) return;
+		if (!processing->rename()) return;
+		markAsChanged();
+	}
+	void onDisconnect()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		ProcessingBox * processing = processingUnder(point);
+		if (not processing) return;
+		ProcessingBox::Region region = processing->getRegion(point);
+		switch (region)
+		{
+			case ProcessingBox::inportsRegion:
+				disconnectInport(processing, processing->portIndexByYPos(point));
+			break;
+			case ProcessingBox::outportsRegion:
+				disconnectOutport(processing, processing->portIndexByYPos(point));
+			break;
+			case ProcessingBox::incontrolsRegion:
+				disconnectIncontrol(processing, processing->controlIndexByXPos(point));
+			break;
+			case ProcessingBox::outcontrolsRegion:
+				disconnectOutcontrol(processing, processing->controlIndexByXPos(point));
+			break;
+			default:
+				CLAM_WARNING(false, "Not a port to disconnect.");
+		}
 	}
 public:
 	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
@@ -722,6 +770,7 @@ public:
 	virtual bool networkRemoveControlConnection(const QString & outlet, const QString & inlet) = 0;
 
 	virtual QIcon processingIcon(ProcessingBox * processingBox) =0;
+	virtual void refreshWires() = 0;
 	virtual unsigned nInports(void * processing) = 0;
 	virtual unsigned nOutports(void * processing) = 0;
 	virtual unsigned nIncontrols(void * processing) = 0;
