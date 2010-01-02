@@ -255,7 +255,6 @@ void ProcessingBox::paintBox(QPainter & painter)
 	QRect iconRect(
 		portOffset, controlOffset-margin, 
 		textHeight, textHeight);
-	painter.drawRect(iconRect);
 	QIcon processingIcon = _canvas->processingIcon(this);
 	processingIcon.paint(&painter, iconRect);
 
