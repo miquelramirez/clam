@@ -432,7 +432,6 @@ public:
 		}
 		refreshWires();
 	}
-
 	void refreshWires()
 	{
 		if (not _network) return;

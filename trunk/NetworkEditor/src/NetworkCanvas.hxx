@@ -794,7 +794,6 @@ public:
 	virtual bool networkRemoveControlConnection(const QString & outlet, const QString & inlet) = 0;
 
 	virtual QIcon processingIcon(ProcessingBox * processingBox) =0;
-	virtual void refreshWires() = 0;
 	virtual unsigned nInports(void * processing) = 0;
 	virtual unsigned nOutports(void * processing) = 0;
 	virtual unsigned nIncontrols(void * processing) = 0;
