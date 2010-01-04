@@ -100,8 +100,7 @@ protected:
 		_delayBuffer[writeindex] = x;
 		TData y = _delayBuffer[readindex];
 			
-//		if (_crossFadeIndex > 0)  
-//			y *= (1./_crossFadeIndex) + _crossFadeBuffer[--_crossFadeIndex];
+		if (_crossFadeIndex > 0)  y *= (1./_crossFadeIndex) + _crossFadeBuffer[--_crossFadeIndex];
 						
 		return y;
 	}

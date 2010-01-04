@@ -43,17 +43,12 @@ public:
 
 private:
 
-	struct Vector
-	{
-		float x;
-		float y;
-		float z;
-	};
 
 	float _lastAzimuth;
 	float _lastElevation;
 
 	typedef std::vector<unsigned> Triangle;
+	typedef CLAM::Vector3D Vector3D;
 
 	SpeakerLayout _layout;
 	CLAM::AudioInPort _w;
@@ -62,7 +57,7 @@ private:
 	CLAM::FloatInControl _azimuth;
 	CLAM::FloatInControl _elevation;
 	Config _config;
-	std::vector<Vector> _speakersPositions;
+	std::vector<Vector3D> _speakersPositions;
 	int _currentTriangle;
 
 
@@ -73,62 +68,14 @@ private:
 	static float deltaAngle() { return 0.01; }
 	static float deltaNumeric() { return 0.00001; } 
 
-	static Vector vectorialProduct(const Vector& v1, const Vector& v2)
-	{
-		Vector result = {
-			v1.y * v2.z - v1.z * v2.y ,
-			v1.z * v2.x - v1.x * v2.z ,
-			v1.x * v2.y - v1.y * v2.x ,
-			};
-		return result;
-	}
-	static Vector product(const float& factor, const Vector& v)
-	{
-		Vector result = { factor * v.x, factor * v.y, factor * v.z };
-		return result;
-	}
-
-	static float escalarProduct(const Vector& v1, const Vector& v2)
-	{
-		return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
-	}
-	static Vector substract(const Vector& v1, const Vector& v2)
-	{
-		Vector result = {
-			v1.x - v2.x ,
-			v1.y - v2.y ,
-			v1.z - v2.z ,
-			};
-		return result;
-	}
-	static float mod(const Vector& v)
-	{
-		return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
-	}
-	static float angle(const Vector& v1, const Vector& v2)
-	{
-		float divisor = mod(v1)*mod(v2);
-		CLAM_ASSERT( divisor > deltaNumeric(), "Cannot compute an angle of a zero vector"); 
-		float arg =  escalarProduct(v1,v2) / (mod(v1)*mod(v2));
-		if (arg <-1 or arg >1) return arg < 0 ? M_PI : 0;
-		return acos( arg );
-	}
-	static void print(const Vector& v, std::string name="")
-	{
-		std::cout << name << " (" << v.x << ", " << v.y << ", " << v.z << ")" << std::endl;
-	}
-	static float rad( float deg )
-	{
-		return deg / 180 * M_PI;
-	}
 
 	class Triangulation
 	{
 		std::vector<Triangle> _triangles;
-		std::vector<Vector> _normals;
+		std::vector<Vector3D> _normals;
 		std::vector<float> _orthogonalProjection;
 		const SpeakerLayout & _layout;
-		const std::vector<Vector> & _speakersPositions;
+		const std::vector<Vector3D> & _speakersPositions;
 		bool error(std::string & errorMsg, const std::string & message)
 		{
 			errorMsg += message;
@@ -136,7 +83,7 @@ private:
 			return false;
 		}
 	public:
-		Triangulation(const SpeakerLayout & layout, const std::vector<Vector> & speakerPositions)
+		Triangulation(const SpeakerLayout & layout, const std::vector<Vector3D> & speakerPositions)
 			: _layout(layout)
 			, _speakersPositions(speakerPositions)
 		{
@@ -149,7 +96,7 @@ private:
 			t[1]=v2;
 			t[2]=v3;
 			_triangles.push_back(t);
-			Vector normal = vectorialProduct( 
+			Vector3D normal = vectorialProduct( 
 				substract(_speakersPositions[v1], _speakersPositions[v2]),  
 				substract(_speakersPositions[v1], _speakersPositions[v3])
 				);
@@ -194,7 +141,7 @@ private:
 		}
 		unsigned size() const { return _triangles.size(); }
 		const Triangle & triangle(unsigned index) const { return _triangles[index]; }
-		const Vector & normal(unsigned index) const { return _normals[index]; }
+		const Vector3D & normal(unsigned index) const { return _normals[index]; }
 		float orthoProjection(unsigned index) const { return _orthogonalProjection[index]; }
 	};
 
@@ -358,7 +305,7 @@ public:
 		for (unsigned i=0; i<_layout.size(); i++)
 		{
 			const CLAM::Orientation & speaker=_layout.orientation(i);
-			Vector r = {
+			Vector3D r = {
 				speaker.ce * speaker.ca,
 				speaker.ce * speaker.sa,
 				speaker.se,
@@ -390,7 +337,7 @@ public:
 	int findTriangle(float azimuth, float elevation) const
 	{
 		// find triangle testing them all
-		Vector r_source = {
+		Vector3D r_source = {
 			cos(elevation) * cos(azimuth),
 			cos(elevation) * sin(azimuth),
 			sin(elevation),
@@ -415,10 +362,10 @@ public:
 			if (t < 0.) continue; // opposite direction
 			if (t > 1.+deltaNumeric()) continue; // TODOC: what does it means
 //std::cout << "--> Ok intersection line < 1" << std::endl;
-			Vector intersection = product(t, r_source);
-			Vector v1 = substract( _speakersPositions[triangle[0]], intersection);
-			Vector v2 = substract( _speakersPositions[triangle[1]], intersection);
-			Vector v3 = substract( _speakersPositions[triangle[2]], intersection);
+			Vector3D intersection = product(t, r_source);
+			Vector3D v1 = substract( _speakersPositions[triangle[0]], intersection);
+			Vector3D v2 = substract( _speakersPositions[triangle[1]], intersection);
+			Vector3D v3 = substract( _speakersPositions[triangle[2]], intersection);
 			// If intersection is too close to one of the vertex, consider this triangle
 //std::cout << "product of modules " <<  (mod(v1)*mod(v2)*mod(v3) < deltaNumeric()) << std::endl;
 			if (mod(v1)*mod(v2)*mod(v3) < deltaNumeric())
@@ -450,8 +397,8 @@ public:
 		}
 
 
-		const float as = rad( azimuthDegrees );
-		const float es = rad( elevationDegrees );
+		const float as = CLAM::rad( azimuthDegrees );
+		const float es = CLAM::rad( elevationDegrees );
 		int newTriangle = findTriangle(as, es);
 		CLAM_ASSERT(newTriangle > -1, "Vbap3D: findTriangle() found no triangle for the given angle!");
 		if (newTriangle==-1) newTriangle = 0;
