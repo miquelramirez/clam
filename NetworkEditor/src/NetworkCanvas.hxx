@@ -60,6 +60,7 @@ public:
 		, _dragStatus(NoDrag)
 		, _dragProcessing(0)
 		, _dragConnection(0)
+		, _dragBusMode(false)
 		, _colorBoxErrorFrame     (0xff,0x00,0x00,0xa0)
 		, _colorBoxErrorBody      (0xff,0x00,0x00,0xa0)
 		, _colorPortOutline       (0x53,0x30,0x42)
@@ -287,11 +288,23 @@ protected:
 	void drawForeground ( QPainter * painter, const QRectF & rect )
 	{
 		if (_dragStatus==InportDrag)
-			PortWire::draw(*painter, _dragPoint, _dragProcessing->getInportPos(_dragConnection));
+		{
+			unsigned n = _dragBusMode ? nInports(_dragProcessing->model())-_dragConnection : 1;
+			for (unsigned i=0; i<n; i++)
+				PortWire::draw(*painter, _dragPoint+QPoint(0,i*ProcessingBox::portStep), _dragProcessing->getInportPos(_dragConnection+i));
+		}
 		if (_dragStatus==OutportDrag)
-			PortWire::draw(*painter, _dragProcessing->getOutportPos(_dragConnection), _dragPoint);
+		{
+			unsigned n = _dragBusMode ? nOutports(_dragProcessing->model())-_dragConnection : 1;
+			for (unsigned i=0; i<n; i++)
+				PortWire::draw(*painter, _dragProcessing->getOutportPos(_dragConnection+i), _dragPoint+QPoint(0,i*ProcessingBox::portStep));
+		}
 		if (_dragStatus==IncontrolDrag)
-			ControlWire::draw(*painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnection));
+		{
+			unsigned n = _dragBusMode ? nIncontrols(_dragProcessing->model())-_dragConnection : 1;
+			for (unsigned i=0; i<n; i++)
+				ControlWire::draw(*painter, _dragPoint+QPoint(i*ProcessingBox::controlStep,0), _dragProcessing->getIncontrolPos(_dragConnection+i));
+		}
 		if (_dragStatus==OutcontrolDrag)
 			ControlWire::draw(*painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
 
@@ -404,25 +417,57 @@ public: // Actions
 		for (unsigned i=0; i<_textBoxes.size(); i++)
 			_textBoxes[i]->setSelected(false);
 	}
+	void setBusDragging(bool isSet)
+	{
+		std::cout << (isSet?"Bus":"Single") << std::endl;
+		_dragBusMode=isSet;
+	}
 	/**
 	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
 	 * @pre The processing box has checked that connection is the proper one for the canvas _dragStatus.
 	 */
 	void endWireDrag(ProcessingBox * processing, int connection)
 	{
+		ProcessingBox * from, * to;
+		int fromConnection, toConnection;
+		unsigned n=1;
+		switch (_dragStatus)
+		{
+			case InportDrag:
+			case IncontrolDrag:
+				from = processing;
+				to = _dragProcessing;
+				fromConnection = connection;
+				toConnection = _dragConnection;
+				break;
+			case OutportDrag:
+			case OutcontrolDrag:
+				from = _dragProcessing;
+				to = processing;
+				fromConnection = _dragConnection;
+				toConnection = connection;
+				break;
+			default:
+				CLAM_ASSERT(false, "Ending a wire drag but not in wire drag status");
+				return;
+		}
 		switch (_dragStatus) 
 		{
 			case InportDrag:
-				addPortConnection(processing, connection, _dragProcessing, _dragConnection);
-				break;
 			case OutportDrag:
-				addPortConnection(_dragProcessing, _dragConnection, processing, connection);
-				break;
-			case IncontrolDrag:
-				addControlConnection(processing, connection, _dragProcessing, _dragConnection);
+				if (_dragBusMode) n = std::min(
+					nInports(to->model())-toConnection,
+					nOutports(from->model())-fromConnection);
+				for (unsigned i=0; i<n; i++)
+					addPortConnection(from, fromConnection+i, to, toConnection+i);
 				break;
 			case OutcontrolDrag:
-				addControlConnection(_dragProcessing, _dragConnection, processing, connection);
+			case IncontrolDrag:
+				if (_dragBusMode) n = std::min(
+					nIncontrols(to->model())-toConnection,
+					nOutcontrols(from->model())-fromConnection);
+				for (unsigned i=0; i<n; i++)
+					addControlConnection(from, fromConnection+i, to, toConnection+i);
 				break;
 			default:
 				CLAM_ASSERT(false, "Ending a wire drag but not in wire drag status");
@@ -498,6 +543,7 @@ public:
 		_dragStatus=status;
 		_dragProcessing=processing;
 		_dragConnection=connection;
+		_dragBusMode = false;
 	}
 	DragStatus dragStatus() const
 	{
@@ -1021,6 +1067,7 @@ private:
 	QPoint _selectionDragOrigin;
 	QPoint _tooltipPos;
 	QString _tooltipText;
+	bool _dragBusMode;
 	QColor _colorBoxFrameText;
 	QColor _colorBoxFrameOutline;
 	QColor _colorBoxFrame;
