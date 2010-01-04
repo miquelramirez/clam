@@ -568,30 +568,32 @@ private slots:
 
 	void onCopyProcessingsToClipboard(bool cut=false)
 	{
-		std::ostringstream streamXMLBuffer;
-		CLAM::Network::NamesList processingsNamesList;
+		typedef CLAM::Network::NamesList Names;
+		Names processingNames;
 		// Copy selected processings on networkToCopy
 		for (unsigned i=0; i<_processings.size();i++)
 		{
 			if (!_processings[i]->isSelected())
 				continue;
 			const std::string name=(_processings[i]->getName()).toStdString();
-			processingsNamesList.push_back(name);
+			processingNames.push_back(name);
 		}
-		if (_network->UpdateSelections(processingsNamesList))
+
+		if (_network->UpdateSelections(processingNames))
 			return;
+
+		std::ostringstream streamXMLBuffer;
 		updateGeometriesOnXML(getSelectionBoundingRect().topLeft());
 		CLAM::XmlStorage::Dump(*_network,"network",streamXMLBuffer);
-
 		QApplication::clipboard()->setText(QString(streamXMLBuffer.str().c_str()));
-		if (!cut) return;
 
-		CLAM::Network::NamesList::iterator cuttedNamesIterator;
-		for(cuttedNamesIterator=processingsNamesList.begin();
-			cuttedNamesIterator!=processingsNamesList.end();
-			cuttedNamesIterator++)
+		if (not cut) return;
+
+		for(Names::iterator it = processingNames.begin();
+			it!=processingNames.end();
+			it++)
 		{
-			removeProcessing(getBox(QString((*cuttedNamesIterator).c_str())));
+			removeProcessing(getBox( it->c_str() ));
 		}
 	}
 
