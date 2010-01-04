@@ -12,8 +12,10 @@ TextBox::TextBox(NetworkCanvas * canvas)
 {
 	setFlag(QGraphicsItem::ItemIsMovable,true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
-//TODO: David, this flag doesn't exists in Qt 4.5 !? (http://doc.trolltech.com/4.5/qgraphicsitem.html#GraphicsItemFlag-enum)
-//	setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+#if QT_VERSION >= 0x040600
+	// This flag doesn't exists in Qt 4.5 but it is needed to be set in Qt 4.6 and above
+	setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+#endif
 	_canvas=canvas;
 //	setTextInteractionFlags(Qt::TextEditable);
 }
@@ -26,7 +28,6 @@ TextBox::~TextBox()
 void TextBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	QGraphicsTextItem::paint(painter, option, widget);
-
 	if (isSelected())
 	{
 		QRectF rect=QGraphicsTextItem::boundingRect();
