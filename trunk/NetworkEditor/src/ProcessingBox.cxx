@@ -428,6 +428,7 @@ QPoint ProcessingBox::getOutcontrolPos(unsigned i) const
 void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {	
 	QPoint point=event->pos().toPoint();
+	bool controlPressed = event->modifiers() & Qt::ControlModifier;
 	Region region = getItemRegion(point);
 	if (region==noRegion)
 	{
@@ -464,24 +465,28 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 	{
 		int index = portIndexByItemYPos(point);
 		_canvas->startDrag(NetworkCanvas::InportDrag, this, index);
+		_canvas->setBusDragging(controlPressed);
 		return;
 	}
 	if (region==outportsRegion)
 	{
 		int index = portIndexByItemYPos(point);
 		_canvas->startDrag(NetworkCanvas::OutportDrag, this, index);
+		_canvas->setBusDragging(controlPressed);
 		return;
 	}
 	if (region==incontrolsRegion)
 	{
 		int index = controlIndexByItemXPos(point);
 		_canvas->startDrag(NetworkCanvas::IncontrolDrag, this, index);
+		_canvas->setBusDragging(controlPressed);
 		return;
 	}
 	if (region==outcontrolsRegion)
 	{
 		int index = controlIndexByItemXPos(point);
 		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
+		_canvas->setBusDragging(controlPressed);
 		return;
 	}
 }
@@ -489,6 +494,8 @@ void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
 	if (_actionMode==Linking)
 	{
+		bool busDragging = event->modifiers() & Qt::ControlModifier;
+		_canvas->setBusDragging(busDragging);
 		return;
 	}
 	if (_actionMode==Resizing)
