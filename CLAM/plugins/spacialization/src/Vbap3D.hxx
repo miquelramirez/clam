@@ -304,12 +304,7 @@ public:
 
 		for (unsigned i=0; i<_layout.size(); i++)
 		{
-			const CLAM::Orientation & speaker=_layout.orientation(i);
-			Vector3D r = {
-				speaker.ce * speaker.ca,
-				speaker.ce * speaker.sa,
-				speaker.se,
-				};
+			Vector3D r = _layout.orientation(i).toCartesian();
 			_speakersPositions.push_back(r);
 		}
 

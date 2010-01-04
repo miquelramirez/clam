@@ -10,6 +10,14 @@
 namespace CLAM
 {
 
+// Basic vector
+struct Vector3D
+{
+	float x;
+	float y;
+	float z;
+};
+
 struct SphericalHarmonicsDefinition
 {
 	const char * name;
@@ -180,6 +188,11 @@ public:
 			<< orientation.elevation
 			;
 	}
+	Vector3D toCartesian() const
+	{
+		Vector3D result = { ce * ca, ce * sa, se };
+		return result;
+	}
 
 private:
 	double module(double input, double factor)
@@ -198,13 +211,6 @@ private:
 	}
 };
 
-// Basic vector arithmetic
-struct Vector3D
-{
-	float x;
-	float y;
-	float z;
-};
 
 static Vector3D vectorialProduct(const Vector3D& v1, const Vector3D& v2)
 {
