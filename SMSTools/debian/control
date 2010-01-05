@@ -5,7 +5,7 @@ Maintainer: CLAM Team <developers@clam-project.org>
 Uploaders: David García Garzón <dgarcia_debian@iua.upf.edu>
 Homepage: http://clam-project.org
 Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, libqt3-headers, libqt3-mt-dev, docbook-to-man, imagemagick
-Standards-Version: 3.8.0
+Standards-Version: 3.8.3
 
 Package: clam-smstools
 Architecture: any
