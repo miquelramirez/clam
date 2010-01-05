@@ -80,6 +80,7 @@ public:
 		, _colorControlWireOutline(0x20,0x50,0x52)
 		, _scene(0)
 		, _maxZ(0)
+		, _enabledViableConnectionMenu(false)
 	{
 		_scene=new QGraphicsScene(this);
 		_scene->setItemIndexMethod(QGraphicsScene::BspTreeIndex);
@@ -419,7 +420,6 @@ public: // Actions
 	}
 	void setBusDragging(bool isSet)
 	{
-		std::cout << (isSet?"Bus":"Single") << std::endl;
 		_dragBusMode=isSet;
 	}
 	/**
@@ -869,10 +869,97 @@ public:
 	virtual void createAndLinkToOutPort( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
 	virtual void createAndLinkToInPort ( ProcessingBox * processing, QPoint point, const QString & processingType) =0;
 
-	virtual void connectionContextMenu(QMenu * menu, const QPoint & pos, ProcessingBox * processing, ProcessingBox::Region region) { }
+	virtual void networkConnectionContextMenu(QMenu * menu, const QPoint & pos, ProcessingBox * processing, ProcessingBox::Region region) { }
 	virtual void processingContextMenu(QMenu * menu, const QPoint & pos, ProcessingBox * processing) { }
 	virtual void canvasContextMenu(QMenu * menu, const QPoint & pos) { }
 
+	void connectionContextMenu(QMenu * menu, const QPoint & cursorPosition, ProcessingBox * processing, ProcessingBox::Region region)
+	{
+		menu->addAction(QIcon(":/icons/images/remove.png"), tr("Disconnect"),
+			this, SLOT(onDisconnect()))->setData(cursorPosition);
+		networkConnectionContextMenu(menu, cursorPosition, processing, region);
+		menu->addSeparator();
+		connectionPopulateConnectToMenu(menu, cursorPosition, processing, region);
+	}
+
+	void connectionPopulateConnectToMenu(QMenu * menu, const QPoint& cursorPosition, ProcessingBox * processing, ProcessingBox::Region region)
+	{
+		if (not _enabledViableConnectionMenu) return;
+
+		bool isPortConnection = region == ProcessingBox::outportsRegion || region == ProcessingBox::inportsRegion;
+		bool selfIsInput = region == ProcessingBox::incontrolsRegion || region == ProcessingBox::inportsRegion;
+
+		// Self reference connector
+		ProcessingBox * selfProcessing = processing; // Just an alias to be symmetric to 'peer'
+		unsigned selfConnection = isPortConnection ?
+				selfProcessing->portIndexByYPos(cursorPosition):
+				selfProcessing->controlIndexByXPos(cursorPosition);
+
+		// Peer: To be given values along the bucle
+		ProcessingBox * peerProcessing;
+		unsigned peerConnection;
+
+		// Choosing in/out in respect of self/peer
+		ProcessingBox ** inProcessing  = selfIsInput? &selfProcessing : &peerProcessing;
+		ProcessingBox ** outProcessing = selfIsInput? &peerProcessing : &selfProcessing;
+		unsigned * inlet  = selfIsInput ? &selfConnection : &peerConnection;
+		unsigned * outlet = selfIsInput ? &peerConnection : &selfConnection;
+		
+		for (unsigned i = 0; i<_processings.size(); i++ )
+		{
+			peerProcessing =_processings[i];
+			if (peerProcessing==selfProcessing) continue; // TODO: Loops not allowed by now
+
+			typedef QMap<QString, QVariant> ConnectionMap;
+			QList<ConnectionMap> listConnectionsMap;
+			unsigned nPeerConnectors = nConnectors(peerProcessing->model(), peerRegion(region));
+			for (peerConnection=0; peerConnection<nPeerConnectors; peerConnection++)
+			{
+				// Filter out incompatible connections
+				if (isPortConnection and not canConnectPorts(*outProcessing, *outlet, *inProcessing, *inlet))
+					continue;
+				if (not isPortConnection and not canConnectControls(*outProcessing, *outlet, *inProcessing, *inlet))
+					continue;
+
+				QString peerConnectionName=connectorName(peerProcessing->model(), peerRegion(region), peerConnection);
+				ConnectionMap connectionMap;
+				connectionMap["outprocessing"]=(*outProcessing)->getName();	// QString
+				connectionMap["inprocessing"]=(*inProcessing)->getName();	// QString
+				connectionMap["outlet"]=*outlet;			//unsigned
+				connectionMap["inlet"]=*inlet;			//unsigned
+				connectionMap["isPort"]=isPortConnection;			//bool
+				connectionMap["connectionName"]=peerConnectionName;		//QString
+				listConnectionsMap.push_back(connectionMap);
+			}
+
+			if (listConnectionsMap.empty())
+				continue; // no compatible connections, skip
+			QIcon icon = processingIcon(peerProcessing);
+			if (listConnectionsMap.size()==1) // one compatible connection
+			{
+				ConnectionMap connectionMap = listConnectionsMap.front();
+				QString connectionName=connectionMap["connectionName"].toString();
+				menu->addAction(icon,
+					tr("Connect to %1.%2")
+						.arg(peerProcessing->getName())
+						.arg(connectionName),
+					this, SLOT(onProcessingsConnectTo()))->setData(connectionMap);
+				continue;
+			}
+			//more than one compatible connection:
+			QMenu * submenu=menu->addMenu(icon,
+				tr("Connect to %1").arg(peerProcessing->getName()));
+			QList<ConnectionMap>::const_iterator itConnectionsMaps=listConnectionsMap.constBegin();
+			while (itConnectionsMaps!=listConnectionsMap.constEnd())
+			{
+				ConnectionMap connectionMap= *itConnectionsMaps;
+				QString connectionName=connectionMap["connectionName"].toString();
+				submenu->addAction(connectionName,
+					this, SLOT(onProcessingsConnectTo()))->setData(connectionMap);
+				itConnectionsMaps++;
+			}
+		}
+	}
 signals:
 	void changed();
 public:
@@ -1094,6 +1181,7 @@ private:
 	QGraphicsScene * _scene;
 	unsigned long _maxZ;
 protected:
+	bool _enabledViableConnectionMenu;
 	QAction * _deleteSelectedAction;
 	QAction * _selectAllAction;
 	QAction * _clearSelectionAction;
