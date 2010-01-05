@@ -5,7 +5,7 @@ Maintainer: CLAM Team <developers@clam-project.org>
 Uploaders: David García Garzón <dgarcia_debian@iua.upf.edu>
 Homepage: http://clam-project.org
 Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, liblo0-dev
-Standards-Version: 3.8.0
+Standards-Version: 3.8.3
 
 Package: libclam-plugins
 Architecture: any
