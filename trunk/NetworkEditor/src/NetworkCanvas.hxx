@@ -307,7 +307,11 @@ protected:
 				ControlWire::draw(*painter, _dragPoint+QPoint(i*ProcessingBox::controlStep,0), _dragProcessing->getIncontrolPos(_dragConnection+i));
 		}
 		if (_dragStatus==OutcontrolDrag)
-			ControlWire::draw(*painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
+		{
+			unsigned n = _dragBusMode ? nOutcontrols(_dragProcessing->model())-_dragConnection : 1;
+			for (unsigned i=0; i<n; i++)
+				ControlWire::draw(*painter, _dragProcessing->getOutcontrolPos(_dragConnection+i), _dragPoint+QPoint(i*ProcessingBox::controlStep,0));
+		}
 
 		drawSelectBox(*painter);
 		drawTooltip(*painter);
