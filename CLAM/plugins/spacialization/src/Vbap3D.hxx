@@ -101,7 +101,7 @@ private:
 				substract(_speakersPositions[v1], _speakersPositions[v3])
 				);
 			_normals.push_back(normal);
-			_orthogonalProjection.push_back(escalarProduct(normal,_speakersPositions[v3]));
+			_orthogonalProjection.push_back(scalarProduct(normal,_speakersPositions[v3]));
 		}
 		bool load(const std::string & path, std::string & errorMsg)
 		{
@@ -344,7 +344,7 @@ public:
 //print(_triangulation.normal(i), "normal");
 
 			const Triangle & triangle = _triangulation.triangle(i);
-			const float divisor = escalarProduct(_triangulation.normal(i), r_source);
+			const float divisor = scalarProduct(_triangulation.normal(i), r_source);
 //print(_speakersPositions[triangle[0]], "speak 0");
 //print(_speakersPositions[triangle[1]], "speak 1");
 //print(_speakersPositions[triangle[2]], "speak 2");
@@ -357,7 +357,7 @@ public:
 			if (t < 0.) continue; // opposite direction
 			if (t > 1.+deltaNumeric()) continue; // TODOC: what does it means
 //std::cout << "--> Ok intersection line < 1" << std::endl;
-			Vector3D intersection = product(t, r_source);
+			Vector3D intersection = vectorByScalar(t, r_source);
 			Vector3D v1 = substract( _speakersPositions[triangle[0]], intersection);
 			Vector3D v2 = substract( _speakersPositions[triangle[1]], intersection);
 			Vector3D v3 = substract( _speakersPositions[triangle[2]], intersection);
