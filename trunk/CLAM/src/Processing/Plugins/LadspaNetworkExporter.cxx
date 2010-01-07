@@ -282,7 +282,13 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		
 		rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
 		rangehints[currentport].UpperBound=(LADSPA_Data)conf.GetMaxValue();
-		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE);
+
+		unsigned defaultHintValue=LADSPA_HINT_DEFAULT_MIDDLE;
+		// specific cases when the default value is equal to one of the bounds:
+		if (conf.GetDefaultValue() == conf.GetMinValue() ) defaultHintValue=LADSPA_HINT_DEFAULT_MINIMUM;
+		if (conf.GetDefaultValue() == conf.GetMaxValue() ) defaultHintValue=LADSPA_HINT_DEFAULT_MAXIMUM;
+
+		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | defaultHintValue);
 		currentport++;
 	}
 	
