@@ -46,6 +46,12 @@ bool ControlSource::Do( const float value )
 bool ControlSource::ConcreteConfigure(const ProcessingConfig &c)
 {
 	CopyAsConcreteConfig(mConf,c);
+	if (not mConf.HasDefaultValue())
+	{
+		mConf.AddDefaultValue();
+		mConf.UpdateData();
+		mConf.SetDefaultValue(mConf.GetMinValue());
+	}
 	return true;
 }
 
