@@ -83,9 +83,9 @@ int main( int argc, char *argv[] )
 
 	std::string networkFile = argv[1];
 	CLAM::Network net;
- 	CLAM::XMLStorage::Restore(net, networkFile);
 	CLAM::OfflineNetworkPlayer * player =  new CLAM::OfflineNetworkPlayer;
 	net.SetPlayer( player ); // network owns the player memory	
+ 	CLAM::XMLStorage::Restore(net, networkFile);
 
 	if (argc==2)
 	{	std::cout << "Sources and Sinks list:\n" << player->SourcesAndSinksToString() << std::endl;
