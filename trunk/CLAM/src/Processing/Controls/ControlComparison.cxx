@@ -1,6 +1,6 @@
 #include "ControlComparison.hxx"
 #include "ProcessingFactory.hxx"
-
+#include "math.h"
 namespace CLAM
 {
 namespace Hidden
@@ -19,6 +19,7 @@ void ControlComparisonConfig::DefaultInit()
 	AddAll();
 	UpdateData();
 	SetRightTerm( 0.0 );
+	SetConvertOps2IntegersFirst(false);
 }
 
 ControlComparison::ControlComparison()
@@ -50,7 +51,9 @@ void ControlComparison::InControlCallback(const TControlData & value)
 {
 	TControlData op1 = _inOperator1.GetLastValue();
 	TControlData op2 = _inOperator2.GetLastValue();
-	bool equal = (op1 == op2);
+	bool equal = (op1 == op2);  
+	if (mConfig.GetConvertOps2IntegersFirst())
+		equal = (round(op1) == round(op2));
 	_outControlBool.SendControl(equal);
 	_outControlFloat.SendControl(equal ? 1 : 0 );
 }
