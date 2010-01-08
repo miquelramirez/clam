@@ -112,7 +112,7 @@ public:
 	//! methods used to create processings and get them
 	Processing& GetProcessing( const std::string & name ) const;
 	//! add method using a pointer to a new processing
-	void AddProcessing( const std::string &, Processing* );
+	void AddProcessing( const std::string & name, Processing* processing, const ProcessingConfig * config=0 );
 	//! add method using a key to get the new processing from factory
 	void AddProcessing( const std::string & name, const std::string & key );
 	std::string AddProcessing( const std::string& key );

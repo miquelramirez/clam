@@ -30,11 +30,13 @@
 namespace CLAM
 {
 class Processing;
+class ProcessingConfig;
 
 class ProcessingDefinitionAdapter : public Component
 {
 private:
 	Processing * mAdaptee;
+	ProcessingConfig * mConfiguration;
 	Text mName;
 	Text mPosition;
 	Text mSize;
@@ -46,6 +48,7 @@ public:
 	const std::string & GetName() const {return mName;}
 	const std::string & GetPosition() const {return mPosition;}
 	const std::string & GetSize() const {return mSize;}
+	const ProcessingConfig * GetConfiguration() const {return mConfiguration;}
 
 public:
 	//* Returns the class name

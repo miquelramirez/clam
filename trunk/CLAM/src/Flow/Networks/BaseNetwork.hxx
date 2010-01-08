@@ -137,7 +137,7 @@ public:
 	virtual bool HasProcessing( const std::string & name ) const = 0;
 	virtual Processing& GetProcessing( const std::string & name ) const = 0;
 	//! add method using a pointer to a new processing
-	virtual void AddProcessing( const std::string &, Processing* ) = 0;
+	virtual void AddProcessing( const std::string & name, Processing* processing, const ProcessingConfig *config=0 ) = 0;
 	//! add method using a key to get the new processing from factory
 	virtual void AddProcessing( const std::string & name, const std::string & key ) = 0;
 	virtual std::string AddProcessing( const std::string& key ) = 0;
