@@ -35,9 +35,9 @@ namespace CLAM
 class ControlComparisonConfig : public ProcessingConfig
 {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ControlComparisonConfig, 1, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (ControlComparisonConfig, 2, ProcessingConfig);
 		DYN_ATTRIBUTE ( 0, public, TData, RightTerm);
-
+		DYN_ATTRIBUTE ( 1, public, bool, ConvertOps2IntegersFirst );
 	private:
 		void DefaultInit();
 };
