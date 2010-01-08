@@ -57,13 +57,22 @@ public:
 		: Wire(source, outlet, target, inlet)
 	{
 	}
+	bool highlighted() const
+	{
+		if (_source->isOutPortHighlighted(_outlet)) return true;
+		if (_target->isInPortHighlighted(_inlet)) return true;
+		return false;
+	}
 	void draw(QPainter & painter)
 	{
 		QPoint source = _source->getOutportPos(_outlet);
 		QPoint target = _target->getInportPos(_inlet);
-		draw(painter, source, target);
+		if (highlighted())
+			draw(painter, source, target, Qt::yellow);
+		else
+			draw(painter, source, target);
 	}
-	static void draw(QPainter & painter, QPoint source, QPoint target)
+	static void draw(QPainter & painter, QPoint source, QPoint target, QColor fillingColor=QColor(0xbb,0x99,0x44))
 	{
 		int tanSize = tangentSize(target.x()-source.x(), target.y()-source.y());
 
@@ -75,7 +84,7 @@ public:
 		path.moveTo(source);
 		path.cubicTo(source.x()+tanSize, tangentY, target.x()-tanSize, target.y(), target.x(), target.y());
 		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 6));
-		painter.strokePath(path, QPen(QBrush(QColor(0xbb,0x99,0x44)), 4));
+		painter.strokePath(path, QPen(QBrush(fillingColor), 4));
 	}
 	QString getTargetId()
 	{
@@ -104,13 +113,22 @@ public:
 		: Wire(source, outlet, target, inlet)
 	{
 	}
+	bool highlighted() const
+	{
+		if (_source->isOutControlHighlighted(_outlet)) return true;
+		if (_target->isInControlHighlighted(_outlet)) return true;
+		return false;
+	}
 	void draw(QPainter & painter)
 	{
 		QPoint source = _source->getOutcontrolPos(_outlet);
 		QPoint target = _target->getIncontrolPos(_inlet);
-		draw(painter, source, target);
+		if (highlighted())
+			draw(painter, source, target, Qt::yellow);
+		else
+			draw(painter, source, target);
 	}
-	static void draw(QPainter & painter, QPoint source, QPoint target)
+	static void draw(QPainter & painter, QPoint source, QPoint target, const QColor & fillingColor=QColor(0x4b,0x99,0xb4))
 	{
 		int tanSize = tangentSize(target.y()-source.y(), target.x()-source.x());
 
@@ -122,7 +140,7 @@ public:
 		path.moveTo(source);
 		path.cubicTo(tangentX, source.y()+tanSize, target.x(), target.y()-tanSize, target.x(), target.y());
 		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 4));
-		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 2));
+		painter.strokePath(path, QPen(QBrush(fillingColor), 2));
 	}
 	QString getTargetId()
 	{

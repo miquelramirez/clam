@@ -337,6 +337,26 @@ void ProcessingBox::drawConnector(QPainter & painter, Region region, unsigned in
 	}
 }
 
+bool ProcessingBox::isInPortHighlighted(unsigned index) const
+{
+	return _highLightRegion == inportsRegion and _highLightConnection == index;
+}
+
+bool ProcessingBox::isOutPortHighlighted(unsigned index) const
+{
+	return _highLightRegion == outportsRegion and _highLightConnection == index;
+}
+
+bool ProcessingBox::isInControlHighlighted(unsigned index) const
+{
+	return _highLightRegion == incontrolsRegion and _highLightConnection == index;
+}
+
+bool ProcessingBox::isOutControlHighlighted(unsigned index) const
+{
+	return _highLightRegion == outcontrolsRegion and _highLightConnection == index;
+}
+
 ProcessingBox::Region ProcessingBox::getRegion(const QPoint & scenePoint) const
 {
 	return getItemRegion((scenePoint-pos()).toPoint());
