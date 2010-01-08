@@ -68,6 +68,11 @@ public:
 	QPoint getOutportPos(unsigned i) const;
 	QPoint getIncontrolPos(unsigned i) const;
 	QPoint getOutcontrolPos(unsigned i) const;
+	// Returns whether the port is highlighted
+	bool isInPortHighlighted(unsigned index) const;
+	bool isOutPortHighlighted(unsigned index) const;
+	bool isInControlHighlighted(unsigned index) const;
+	bool isOutControlHighlighted(unsigned index) const;
 	// Returns the processing box name
 	QString getName() const;
 	// Get the full connector name
