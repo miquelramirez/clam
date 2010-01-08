@@ -193,7 +193,7 @@ namespace CLAM
 				finalName = GetUnusedName(definitionName, true);
 				namesMap.insert(std::make_pair(definitionName,finalName));
 			}
-			AddProcessing(finalName, processing); 
+			AddProcessing(finalName, processing, procDefinition.GetConfiguration());
 			// if exists canvas geometries, restore them
 			if (procDefinition.GetPosition()!="" && procDefinition.GetSize()!="")
 			{
@@ -583,15 +583,14 @@ namespace CLAM
 		return *it->second;
 	}
 
-	void Network::AddProcessing( const std::string & name, Processing* proc)
+	void Network::AddProcessing( const std::string & name, Processing* proc, const ProcessingConfig * config)
 	{
 		if (!IsStopped()) Stop();
 
 		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
 		proc->SetNetworkBackLink((CLAM::Network*)this);
-		proc->Configure(proc->GetConfig()); //TODO inefficient. but solves the problem 
-		// of some processings needing the network for configuring its ports.
+		proc->Configure(config ? *config : proc->GetConfig());
 		_flowControl->ProcessingAddedToNetwork(*proc);
 	}
 
@@ -855,7 +854,7 @@ namespace CLAM
 			//std::cerr << "REMOVING <"<<_processings.begin()->first<<">"<<std::endl;
 			RemoveProcessing( _processings.begin()->first );
 		}
-		for(int i=0;i<_informationTexts.size();i++)
+		for(unsigned i=0;i<_informationTexts.size();i++)
 		{
 			removeInformationText(_informationTexts[i]);
 		}

@@ -31,12 +31,17 @@
 namespace CLAM
 {
 	ProcessingDefinitionAdapter::ProcessingDefinitionAdapter( Processing * adaptee, const std::string & name, const std::string & position, const std::string & size )
-		:  mAdaptee(adaptee), mName(name), mPosition(position), mSize(size)
+		: mAdaptee(adaptee)
+		, mConfiguration(0)
+		, mName(name)
+		, mPosition(position)
+		, mSize(size)
 	{
 	}
 
 	ProcessingDefinitionAdapter::~ProcessingDefinitionAdapter()
 	{
+		if (mConfiguration) delete mConfiguration;
 	}
 
 	void ProcessingDefinitionAdapter::StoreOn (Storage & store) const
@@ -91,10 +96,8 @@ namespace CLAM
 		Component * cfg = mAdaptee->GetConfig().DeepCopy();
 		XMLComponentAdapter configAdapter( *cfg );
 		store.Load(configAdapter);
-		ProcessingConfig * config = dynamic_cast<ProcessingConfig *>(cfg);
-		CLAM_ASSERT(config, "Retrieved config fails to cast as a ProcessingConfig");
-		mAdaptee->Configure(*config);
-		delete cfg;
+		mConfiguration = dynamic_cast<ProcessingConfig *>(cfg);
+		CLAM_ASSERT(mConfiguration, "Retrieved config fails to cast as a ProcessingConfig");
 	}
 } // namespace CLAM
 
