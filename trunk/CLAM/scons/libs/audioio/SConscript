@@ -7,14 +7,14 @@ env=audioio_env
 moduleDependencies = ['core','processing']
 
 folders = [
-	'src/Processing/AudioFileIO',
+	'src/audiofileio/processings',
+	'src/audiofileio/codecs',
 	'src/Processing/MIDIIO',
 	'src/Processing/AudioIO',
 	'src/Tools/MIDIIO',
 	'src/Tools/MIDIIO/File',
 	'src/Tools/MIDIIO/TextFile',
 	'src/Tools/AudioIO',
-	'src/Tools/AudioFileIO',
 	'src/Flow/Networks/BackEnds',
 	'src/System/Application',
 	]
