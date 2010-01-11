@@ -334,10 +334,10 @@ clam_ringbuffer_get_write_vector (const clam_ringbuffer_t * rb,
 	vec[1].buf = rb->buf;
 
 	if (w<r) {
-		vec[0].len = r -1 - w;
+		vec[0].len = r-w-1;
 		vec[1].len = 0;
 	} else if (r==0) {
-		vec[0].len = r + rb->size -1 - w;
+		vec[0].len = rb->size -w -1;
 		vec[1].len = 0;
 	} else {
 		/* Two part vector: the rest of the buffer after the current write
