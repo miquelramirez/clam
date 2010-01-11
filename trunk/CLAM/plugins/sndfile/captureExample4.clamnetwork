@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'FreeSans'; font-size:11pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="Amplitude" position="66,48" size="182,79" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="AudioSink" position="318,12" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="Oscilloscope" position="226,256" size="150,143" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_1" position="243,53" size="146,129" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_2" position="377,266" size="148,111" type="Oscilloscope"/>
+
+  <processing id="Pitch_1" position="50,-5" size="206,79" type="OutControlSender">
+    <Min>0</Min>
+    <Default>440</Default>
+    <Max>1000</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Pitch_2" position="14,257" size="206,79" type="OutControlSender">
+    <Min>0</Min>
+    <Default>440</Default>
+    <Max>1000</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="SimpleOscillator" position="28,210" size="152,58" type="SimpleOscillator">
+    <Frequency>440</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="SndfileWriter" position="281,180" size="130,94" type="SndfileWriter">
+    <TargetFile>output4.wav</TargetFile>
+    <Format>Wav Integer 16 bit</Format>
+    <SampleRate>44100</SampleRate>
+    <NumberChannels>4</NumberChannels>
+    <BufferSize>16384</BufferSize>
+  </processing>
+
+  <processing id="SquareWave" position="45,141" size="130,58" type="SquareWave">
+    <Frequency>440</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="SquareWave_1" position="67,349" size="144,58" type="SquareWave">
+    <Frequency>440</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <port_connection>
+    <out>SimpleOscillator.Audio Output</out>
+    <in>SndfileWriter.in2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator.Audio Output</out>
+    <in>Oscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator.Audio Output</out>
+    <in>SndfileWriter.in4</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SquareWave.Audio Output</out>
+    <in>SndfileWriter.in1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SquareWave.Audio Output</out>
+    <in>Oscilloscope_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SquareWave.Audio Output</out>
+    <in>AudioSink.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SquareWave_1.Audio Output</out>
+    <in>SndfileWriter.in3</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SquareWave_1.Audio Output</out>
+    <in>Oscilloscope_2.Input</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Amplitude.out</out>
+    <in>SimpleOscillator.Amplitude</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Amplitude.out</out>
+    <in>SquareWave.Amplitude</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Amplitude.out</out>
+    <in>SquareWave_1.Amplitude</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch_1.out</out>
+    <in>SquareWave.Pitch</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch_1.out</out>
+    <in>SimpleOscillator.Pitch</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch_2.out</out>
+    <in>SquareWave_1.Pitch</in>
+  </control_connection>
+
+</network>
