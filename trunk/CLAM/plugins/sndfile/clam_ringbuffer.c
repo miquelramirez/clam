@@ -325,7 +325,6 @@ void
 clam_ringbuffer_get_write_vector (const clam_ringbuffer_t * rb,
 				  clam_ringbuffer_data_t * vec)
 {
-	size_t free_cnt;
 	size_t w, r;
 
 	w = rb->write_ptr;
@@ -335,12 +334,10 @@ clam_ringbuffer_get_write_vector (const clam_ringbuffer_t * rb,
 	vec[1].buf = rb->buf;
 
 	if (w<r) {
-		free_cnt = r - 1;
-		vec[0].len = free_cnt - w;
+		vec[0].len = r -1 - w;
 		vec[1].len = 0;
 	} else if (r<=1) {
-		free_cnt = r + rb->size - 1;
-		vec[0].len = free_cnt - w;
+		vec[0].len = r + rb->size -1 - w;
 		vec[1].len = 0;
 	} else {
 		/* Two part vector: the rest of the buffer after the current write
