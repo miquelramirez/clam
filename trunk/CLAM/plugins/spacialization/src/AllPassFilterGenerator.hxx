@@ -26,7 +26,9 @@
 #include <CLAM/Processing.hxx>
 #include "ComplexSpectrum.hxx"
 #include "LoadImpulseResponse.hxx"
+#include "MyIFFT.hxx"
 #include <CLAM/AudioInFilename.hxx>
+#include <cstdlib>
 
 namespace CLAM
 {
@@ -46,18 +48,20 @@ class AllPassFilterGenerator : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 4, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, unsigned, FrameSize);
-		DYN_ATTRIBUTE( 1, public, unsigned, NFrames);
-		DYN_ATTRIBUTE( 2, public, unsigned, Channels);
+		DYN_ATTRIBUTE( 1, public, unsigned, FilterSize);
+		DYN_ATTRIBUTE( 2, public, unsigned, MaxFilterSize);
+		DYN_ATTRIBUTE( 3, public, unsigned, NChannels);
 
 	protected:
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
-			SetNFrames(4);
 			SetFrameSize(512);
+			SetFilterSize(256);
+			SetMaxFilterSize(4096);
 		};
 	};
 
@@ -75,32 +79,54 @@ public:
 	}
 	~AllPassFilterGenerator()
 	{
-		for (unsigned port = 0; port < _impulseResponseOutputsPorts.size(); ++port)
-			delete _impulseResponseOutputsPorts[port];
+		ResizePorts(0);
 	}
-	void fillRandomPhaseSpectrum(ComplexSpectrum & spectrum)
+	void FillRandomPhaseSpectrum(ComplexSpectrum & spectrum)
 	{
+		spectrum.spectralRange = 22050;
 		spectrum.bins[0] = 1.;
-		spectrum.bins[spectrum.size()-1]=1.;
-		for (unsigned i=1; i<spectrum.nBins-1; i++)
+		spectrum.bins[spectrum.bins.size()-1]=1.;
+		for (unsigned i=1; i<spectrum.bins.size()-1; i++)
 		{
 			float phase = 2*M_PI*std::rand()/RAND_MAX;
 			spectrum.bins[i] = std::complex<float>(std::cos(phase), std::sin(phase));
 		}
+	}
+	bool FillData(ImpulseResponse & ir)
+	{
+		OutPort<ComplexSpectrum> feder;
+		MyIFFT::Config config;
+		config.SetAudioSize(_config.GetFilterSize());
+		MyIFFT ifft(config);
+		// TODO: Check config error
+		CLAM::InPort<Audio> fetcher;
+		ifft.GetOutPort(0).ConnectToIn(fetcher);
+		feder.ConnectToIn(ifft.GetInPort(0));
+		// TODO: connnection could cascar
+
+		ifft.Start();
+		ComplexSpectrum & spectrum = feder.GetData();
+		spectrum.bins.resize(_config.GetFilterSize()/2+1);
+		FillRandomPhaseSpectrum(spectrum);
+		feder.Produce();
 		
+		ifft.Do();
+		ifft.Stop();
+		const CLAM::Audio & outputAudio = fetcher.GetData();
+		TData * buffer = outputAudio.GetBuffer().GetPtr();
+		std::vector<double> audio(buffer, buffer+outputAudio.GetSize());
+		std::string errmsg;
+		bool ok = computeResponseSpectrums(audio, ir, _config.GetFrameSize(), 
+			errmsg, 44100, 0);
+		return ok;
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		const bool isBformat = (_config.HasIsBFormatFile() and _config.GetIsBFormatFile());
-		createOutputs();
-		std::string errorMsg;
-		const unsigned sampleRate=44100;
-		for (unsigned nChannel=0; nChannel<_responseSpectrums.size();nChannel++)
+		ResizePorts(_config.GetNChannels());
+		for (unsigned channel=0; channel<_responseSpectrums.size(); channel++)
 		{
-			const bool & OK = computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums[nChannel], _config.GetFrameSize(), errorMsg, nChannel, sampleRate);
-			if (not OK)
-				return AddConfigErrorMessage(errorMsg);
+			FillData(_responseSpectrums[channel]);
 		}
 		return true;
 	}
@@ -120,34 +146,19 @@ public:
 		return true;
 	}
 
-	void ResizePortsToLayout(unsigned buffersize)
+	void ResizePorts(unsigned nChannels)
 	{
-		// Set up the outputs according to the layout
-		unsigned speakerToUpdate = 0;
-		// delete existing speakers from the first one with different name
-		for (unsigned speaker=0 ; speaker<_outputs.size(); speaker++)
-			delete _impulseResponseOutputsPorts[speaker];
-		_responseSpectrums.clear();
-		_impulseResponseOutputsPorts.clear();
-		// adding new speakers
-		for (unsigned speaker=speakerToUpdate; speaker<_layout.size(); speaker++)
-		{
-			_impulseResponseOutputsPorts.push_back(new OutPort<ImpulseResponse*>((*it),this)); 
-			_responseSpectrums.push_back(ImpulseResponse());
-		}
-	}
-	void createOutputs(const std::vector<std::string> & portNames)
-	{
-		
 		for (unsigned port = 0; port < _impulseResponseOutputsPorts.size(); ++port)
 			delete _impulseResponseOutputsPorts[port];
-		_impulseResponseOutputsPorts.clear();
 		_responseSpectrums.clear();
-		std::vector<std::string>::const_iterator it;
-		for (it=portNames.begin();it!=portNames.end();it++)
+		_impulseResponseOutputsPorts.clear();
+		_responseSpectrums.resize(nChannels);
+		// adding new speakers
+		for (unsigned speaker=0; speaker<nChannels; speaker++)
 		{
-			_impulseResponseOutputsPorts.push_back(new OutPort<ImpulseResponse*>((*it),this)); 
-			_responseSpectrums.push_back(ImpulseResponse());
+			std::ostringstream os;
+			os << speaker+1;
+			_impulseResponseOutputsPorts.push_back(new OutPort<ImpulseResponse*>(os.str(),this)); 
 		}
 	}
 };
