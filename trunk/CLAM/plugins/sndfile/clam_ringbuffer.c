@@ -20,7 +20,7 @@
   This is safe for the case of one read thread and one write thread.
 */
 
-//#include <config.h>
+/*#include <config.h>*/
 
 #include <stdlib.h>
 #include <string.h>
@@ -35,7 +35,6 @@
 clam_ringbuffer_t *
 clam_ringbuffer_create (size_t sz)
 {
-	int power_of_two;
 	clam_ringbuffer_t *rb;
 	
 	if ((rb = malloc (sizeof (clam_ringbuffer_t))) == NULL) {

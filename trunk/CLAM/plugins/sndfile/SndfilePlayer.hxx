@@ -50,7 +50,7 @@ namespace CLAM
 				AddAll();
 				UpdateData();
 				SetSavedNumberOfChannels(0);
-			};
+			}
 		};
 
 	private:
