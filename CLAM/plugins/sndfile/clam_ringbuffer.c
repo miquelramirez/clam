@@ -151,7 +151,6 @@ clam_ringbuffer_read (clam_ringbuffer_t * rb, char *dest, size_t cnt)
 	size_t cnt2;
 	size_t to_read;
 	size_t n1, n2;
-	size_t new_read_ptr;
 
 	if ((free_cnt = clam_ringbuffer_read_space (rb)) == 0) {
 		return 0;
@@ -205,14 +204,14 @@ clam_ringbuffer_peek (clam_ringbuffer_t * rb, char *dest, size_t cnt)
 
 	if (cnt2 > rb->size) {
 		n1 = rb->size - tmp_read_ptr;
-		n2 = cnt2 & rb->size_mask;
+		n2 = cnt2 - rb->size;
 	} else {
 		n1 = to_read;
 		n2 = 0;
 	}
 
 	memcpy (dest, &(rb->buf[tmp_read_ptr]), n1);
-	tmp_read_ptr = (tmp_read_ptr + n1) & rb->size_mask;
+	tmp_read_ptr = cycle(tmp_read_ptr + n1, rb->size);
 
 	if (n2) {
 		memcpy (dest + n1, &(rb->buf[tmp_read_ptr]), n2);
