@@ -51,7 +51,9 @@ namespace CLAM {
 	{
 		InPort<ComplexSpectrum> mInput;
 		OutPort<Audio> mOutput;
+	public:
 		typedef IFFTConfig Config;
+	private:
 		Config mConfig;
 		unsigned mSize;
 
