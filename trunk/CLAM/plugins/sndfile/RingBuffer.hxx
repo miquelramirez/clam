@@ -28,7 +28,8 @@
 #include <CLAM/Audio.hxx>
 #include <sndfile.hh>
 #include <pthread.h>
-#include <jack/ringbuffer.h>
+//#include <jack/ringbuffer.h>
+#include "clam_ringbuffer.h"
 #include "WorkerSemaphore.hxx"
 
 namespace CLAM
@@ -41,45 +42,45 @@ public:
 	RingBuffer(unsigned size)
 		: _overruns(0)
 	{
-		_rb = jack_ringbuffer_create(sizeof(BaseType)*size);
+		_rb = clam_ringbuffer_create(sizeof(BaseType)*size);
 		memset(_rb->buf, 0, _rb->size);
 	}
 	~RingBuffer()
 	{
-		jack_ringbuffer_free (_rb);
+		clam_ringbuffer_free (_rb);
 	}
 	bool read(BaseType * buffer, unsigned n)
 	{
 		unsigned nBytes = n * sizeof(BaseType);
-		if (jack_ringbuffer_read_space(_rb) < nBytes) return false;
-		jack_ringbuffer_read(_rb, (char*)buffer, nBytes);
+		if (clam_ringbuffer_read_space(_rb) < nBytes) return false;
+		clam_ringbuffer_read(_rb, (char*)buffer, nBytes);
 		return true;
 	}
 	void writableRegion(BaseType *(&buffer), unsigned & len)
 	{
-		jack_ringbuffer_data_t writeSpace[2];
-		jack_ringbuffer_get_write_vector(_rb, writeSpace);
+		clam_ringbuffer_data_t writeSpace[2];
+		clam_ringbuffer_get_write_vector(_rb, writeSpace);
 		buffer = (BaseType*) writeSpace[0].buf;
 		len = writeSpace[0].len/sizeof(BaseType);
 	}
 	unsigned readSpace()
 	{
-		return jack_ringbuffer_read_space(_rb)/sizeof(BaseType);
+		return clam_ringbuffer_read_space(_rb)/sizeof(BaseType);
 	}
 	void advanceWrite(unsigned n)
 	{
-		jack_ringbuffer_write_advance(_rb, n*sizeof(BaseType));
+		clam_ringbuffer_write_advance(_rb, n*sizeof(BaseType));
 	}
 	void write(BaseType* buffer, unsigned n)
 	{
 		unsigned nBytes = n * sizeof(BaseType);
 		unsigned actualWriten = 
-			jack_ringbuffer_write(_rb, (char*) buffer, nBytes);
+			clam_ringbuffer_write(_rb, (char*) buffer, nBytes);
 		if (actualWriten<nBytes) _overruns++;
 	}
 	bool hadOverRuns() { return _overruns>0; }
 private:
-	jack_ringbuffer_t * _rb;
+	clam_ringbuffer_t * _rb;
 	unsigned _overruns;
 };
 
