@@ -20,25 +20,25 @@
   This is safe for the case of one read thread and one write thread.
 */
 
-#include <config.h>
+//#include <config.h>
 
 #include <stdlib.h>
 #include <string.h>
 #ifdef USE_MLOCK
 #include <sys/mman.h>
 #endif /* USE_MLOCK */
-#include <jack/ringbuffer.h>
+#include "clam_ringbuffer.h"
 
 /* Create a new ringbuffer to hold at least `sz' bytes of data. The
    actual buffer size is rounded up to the next power of two.  */
 
-jack_ringbuffer_t *
-jack_ringbuffer_create (size_t sz)
+clam_ringbuffer_t *
+clam_ringbuffer_create (size_t sz)
 {
 	int power_of_two;
-	jack_ringbuffer_t *rb;
+	clam_ringbuffer_t *rb;
 	
-	if ((rb = malloc (sizeof (jack_ringbuffer_t))) == NULL) {
+	if ((rb = malloc (sizeof (clam_ringbuffer_t))) == NULL) {
 		return NULL;
 	}
 	
@@ -61,7 +61,7 @@ jack_ringbuffer_create (size_t sz)
 /* Free all data associated with the ringbuffer `rb'. */
 
 void
-jack_ringbuffer_free (jack_ringbuffer_t * rb)
+clam_ringbuffer_free (clam_ringbuffer_t * rb)
 {
 #ifdef USE_MLOCK
 	if (rb->mlocked) {
@@ -75,7 +75,7 @@ jack_ringbuffer_free (jack_ringbuffer_t * rb)
 /* Lock the data block of `rb' using the system call 'mlock'.  */
 
 int
-jack_ringbuffer_mlock (jack_ringbuffer_t * rb)
+clam_ringbuffer_mlock (clam_ringbuffer_t * rb)
 {
 #ifdef USE_MLOCK
 	if (mlock (rb->buf, rb->size)) {
@@ -90,7 +90,7 @@ jack_ringbuffer_mlock (jack_ringbuffer_t * rb)
    safe. */
 
 void
-jack_ringbuffer_reset (jack_ringbuffer_t * rb)
+clam_ringbuffer_reset (clam_ringbuffer_t * rb)
 {
 	rb->read_ptr = 0;
 	rb->write_ptr = 0;
@@ -101,7 +101,7 @@ jack_ringbuffer_reset (jack_ringbuffer_t * rb)
    pointer.  */
 
 size_t
-jack_ringbuffer_read_space (const jack_ringbuffer_t * rb)
+clam_ringbuffer_read_space (const clam_ringbuffer_t * rb)
 {
 	size_t w, r;
 	
@@ -120,7 +120,7 @@ jack_ringbuffer_read_space (const jack_ringbuffer_t * rb)
    pointer.  */
 
 size_t
-jack_ringbuffer_write_space (const jack_ringbuffer_t * rb)
+clam_ringbuffer_write_space (const clam_ringbuffer_t * rb)
 {
 	size_t w, r;
 
@@ -140,14 +140,14 @@ jack_ringbuffer_write_space (const jack_ringbuffer_t * rb)
    `dest'.  Returns the actual number of bytes copied. */
 
 size_t
-jack_ringbuffer_read (jack_ringbuffer_t * rb, char *dest, size_t cnt)
+clam_ringbuffer_read (clam_ringbuffer_t * rb, char *dest, size_t cnt)
 {
 	size_t free_cnt;
 	size_t cnt2;
 	size_t to_read;
 	size_t n1, n2;
 
-	if ((free_cnt = jack_ringbuffer_read_space (rb)) == 0) {
+	if ((free_cnt = clam_ringbuffer_read_space (rb)) == 0) {
 		return 0;
 	}
 
@@ -179,7 +179,7 @@ jack_ringbuffer_read (jack_ringbuffer_t * rb, char *dest, size_t cnt)
    copied. */
 
 size_t
-jack_ringbuffer_peek (jack_ringbuffer_t * rb, char *dest, size_t cnt)
+clam_ringbuffer_peek (clam_ringbuffer_t * rb, char *dest, size_t cnt)
 {
 	size_t free_cnt;
 	size_t cnt2;
@@ -189,7 +189,7 @@ jack_ringbuffer_peek (jack_ringbuffer_t * rb, char *dest, size_t cnt)
 
 	tmp_read_ptr = rb->read_ptr;
 
-	if ((free_cnt = jack_ringbuffer_read_space (rb)) == 0) {
+	if ((free_cnt = clam_ringbuffer_read_space (rb)) == 0) {
 		return 0;
 	}
 
@@ -220,14 +220,14 @@ jack_ringbuffer_peek (jack_ringbuffer_t * rb, char *dest, size_t cnt)
    `src'.  Returns the actual number of bytes copied. */
 
 size_t
-jack_ringbuffer_write (jack_ringbuffer_t * rb, const char *src, size_t cnt)
+clam_ringbuffer_write (clam_ringbuffer_t * rb, const char *src, size_t cnt)
 {
 	size_t free_cnt;
 	size_t cnt2;
 	size_t to_write;
 	size_t n1, n2;
 
-	if ((free_cnt = jack_ringbuffer_write_space (rb)) == 0) {
+	if ((free_cnt = clam_ringbuffer_write_space (rb)) == 0) {
 		return 0;
 	}
 
@@ -257,7 +257,7 @@ jack_ringbuffer_write (jack_ringbuffer_t * rb, const char *src, size_t cnt)
 /* Advance the read pointer `cnt' places. */
 
 void
-jack_ringbuffer_read_advance (jack_ringbuffer_t * rb, size_t cnt)
+clam_ringbuffer_read_advance (clam_ringbuffer_t * rb, size_t cnt)
 {
 	size_t tmp = (rb->read_ptr + cnt) & rb->size_mask;
 	rb->read_ptr = tmp;
@@ -266,7 +266,7 @@ jack_ringbuffer_read_advance (jack_ringbuffer_t * rb, size_t cnt)
 /* Advance the write pointer `cnt' places. */
 
 void
-jack_ringbuffer_write_advance (jack_ringbuffer_t * rb, size_t cnt)
+clam_ringbuffer_write_advance (clam_ringbuffer_t * rb, size_t cnt)
 {
 	size_t tmp = (rb->write_ptr + cnt) & rb->size_mask;
 	rb->write_ptr = tmp;
@@ -278,8 +278,8 @@ jack_ringbuffer_write_advance (jack_ringbuffer_t * rb, size_t cnt)
    length.  */
 
 void
-jack_ringbuffer_get_read_vector (const jack_ringbuffer_t * rb,
-				 jack_ringbuffer_data_t * vec)
+clam_ringbuffer_get_read_vector (const clam_ringbuffer_t * rb,
+				 clam_ringbuffer_data_t * vec)
 {
 	size_t free_cnt;
 	size_t cnt2;
@@ -322,8 +322,8 @@ jack_ringbuffer_get_read_vector (const jack_ringbuffer_t * rb,
    length.  */
 
 void
-jack_ringbuffer_get_write_vector (const jack_ringbuffer_t * rb,
-				  jack_ringbuffer_data_t * vec)
+clam_ringbuffer_get_write_vector (const clam_ringbuffer_t * rb,
+				  clam_ringbuffer_data_t * vec)
 {
 	size_t free_cnt;
 	size_t cnt2;
