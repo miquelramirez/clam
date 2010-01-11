@@ -134,6 +134,13 @@ clam_ringbuffer_write_space (const clam_ringbuffer_t * rb)
 	}
 }
 
+static inline size_t cycle(size_t value, size_t max)
+{
+	/* just supports one buffer size, more would require looping */
+	if (value<max) return value;
+	return value-max;
+}
+
 /* The copying data reader.  Copy at most `cnt' bytes from `rb' to
    `dest'.  Returns the actual number of bytes copied. */
 
@@ -144,6 +151,7 @@ clam_ringbuffer_read (clam_ringbuffer_t * rb, char *dest, size_t cnt)
 	size_t cnt2;
 	size_t to_read;
 	size_t n1, n2;
+	size_t new_read_ptr;
 
 	if ((free_cnt = clam_ringbuffer_read_space (rb)) == 0) {
 		return 0;
@@ -155,18 +163,18 @@ clam_ringbuffer_read (clam_ringbuffer_t * rb, char *dest, size_t cnt)
 
 	if (cnt2 > rb->size) {
 		n1 = rb->size - rb->read_ptr;
-		n2 = cnt2 & rb->size_mask;
+		n2 = cnt2 - rb->size;
 	} else {
 		n1 = to_read;
 		n2 = 0;
 	}
 
 	memcpy (dest, &(rb->buf[rb->read_ptr]), n1);
-	rb->read_ptr = (rb->read_ptr + n1) & rb->size_mask;
+	rb->read_ptr = cycle(rb->read_ptr + n1, rb->size);
 
 	if (n2) {
 		memcpy (dest + n1, &(rb->buf[rb->read_ptr]), n2);
-		rb->read_ptr = (rb->read_ptr + n2) & rb->size_mask;
+		rb->read_ptr = cycle(rb->read_ptr + n2, rb->size);
 	}
 
 	return to_read;
