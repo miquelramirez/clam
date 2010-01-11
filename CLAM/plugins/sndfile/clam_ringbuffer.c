@@ -108,10 +108,10 @@ clam_ringbuffer_read_space (const clam_ringbuffer_t * rb)
 	w = rb->write_ptr;
 	r = rb->read_ptr;
 	
-	if (w > r) {
+	if (w >= r) {
 		return w - r;
 	} else {
-		return (w - r + rb->size) & rb->size_mask;
+		return w - r + rb->size;
 	}
 }
 
@@ -127,12 +127,10 @@ clam_ringbuffer_write_space (const clam_ringbuffer_t * rb)
 	w = rb->write_ptr;
 	r = rb->read_ptr;
 
-	if (w > r) {
-		return ((r - w + rb->size) & rb->size_mask) - 1;
-	} else if (w < r) {
-		return (r - w) - 1;
+	if (w >= r) {
+		return r - w + rb->size - 1;
 	} else {
-		return rb->size - 1;
+		return (r - w) - 1;
 	}
 }
 
