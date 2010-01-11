@@ -38,6 +38,7 @@ env.EnableClamModules([
 
 sourcePaths = recursiveDirs(".")
 sources = scanFiles('*.cxx', sourcePaths)
+sources += scanFiles('*.c', sourcePaths)
 sources = dict.fromkeys(sources).keys()
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
