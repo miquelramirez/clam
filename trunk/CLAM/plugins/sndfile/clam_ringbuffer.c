@@ -336,9 +336,6 @@ clam_ringbuffer_get_write_vector (const clam_ringbuffer_t * rb,
 	if (w<r) {
 		vec[0].len = r -1 - w;
 		vec[1].len = 0;
-	} else if (r==1) {
-		vec[0].len = rb->size - w;
-		vec[1].len = 0;
 	} else if (r==0) {
 		vec[0].len = r + rb->size -1 - w;
 		vec[1].len = 0;
