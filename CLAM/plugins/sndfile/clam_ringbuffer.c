@@ -42,11 +42,7 @@ clam_ringbuffer_create (size_t sz)
 		return NULL;
 	}
 	
-	for (power_of_two = 1; 1 << power_of_two < sz; power_of_two++);
-	
-	rb->size = 1 << power_of_two;
-	rb->size_mask = rb->size;
-	rb->size_mask -= 1;
+	rb->size = sz;
 	rb->write_ptr = 0;
 	rb->read_ptr = 0;
 	if ((rb->buf = malloc (rb->size)) == NULL) {
