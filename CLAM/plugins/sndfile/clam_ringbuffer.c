@@ -288,12 +288,12 @@ clam_ringbuffer_get_read_vector (const clam_ringbuffer_t * rb,
 	r = rb->read_ptr;
 
 	if (w >= r) {
-		free_cnt = w - r;
+		free_cnt = w;
 	} else {
-		free_cnt = w - r + rb->size;
+		free_cnt = w + rb->size;
 	}
 
-	if (r+free_cnt > rb->size) {
+	if (free_cnt > rb->size) {
 
 		/* Two part vector: the rest of the buffer after the current write
 		   ptr, plus some from the start of the buffer. */
@@ -301,14 +301,14 @@ clam_ringbuffer_get_read_vector (const clam_ringbuffer_t * rb,
 		vec[0].buf = &(rb->buf[r]);
 		vec[0].len = rb->size - r;
 		vec[1].buf = rb->buf;
-		vec[1].len = r+free_cnt - rb->size;
+		vec[1].len = free_cnt - rb->size;
 
 	} else {
 
 		/* Single part vector: just the rest of the buffer */
 
 		vec[0].buf = &(rb->buf[r]);
-		vec[0].len = free_cnt;
+		vec[0].len = free_cnt-r;
 		vec[1].len = 0;
 	}
 }
