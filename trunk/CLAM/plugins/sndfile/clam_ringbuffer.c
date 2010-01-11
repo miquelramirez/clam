@@ -242,18 +242,18 @@ clam_ringbuffer_write (clam_ringbuffer_t * rb, const char *src, size_t cnt)
 
 	if (cnt2 > rb->size) {
 		n1 = rb->size - rb->write_ptr;
-		n2 = cnt2 & rb->size_mask;
+		n2 = cnt2 - rb->size;
 	} else {
 		n1 = to_write;
 		n2 = 0;
 	}
 
 	memcpy (&(rb->buf[rb->write_ptr]), src, n1);
-	rb->write_ptr = (rb->write_ptr + n1) & rb->size_mask;
+	rb->write_ptr = cycle(rb->write_ptr + n1, rb->size);
 
 	if (n2) {
 		memcpy (&(rb->buf[rb->write_ptr]), src + n1, n2);
-		rb->write_ptr = (rb->write_ptr + n2) & rb->size_mask;
+		rb->write_ptr = cycle(rb->write_ptr + n2, rb->size);
 	}
 
 	return to_write;
@@ -264,7 +264,7 @@ clam_ringbuffer_write (clam_ringbuffer_t * rb, const char *src, size_t cnt)
 void
 clam_ringbuffer_read_advance (clam_ringbuffer_t * rb, size_t cnt)
 {
-	size_t tmp = (rb->read_ptr + cnt) & rb->size_mask;
+	size_t tmp = cycle(rb->read_ptr + cnt, rb->size);
 	rb->read_ptr = tmp;
 }
 
@@ -273,7 +273,7 @@ clam_ringbuffer_read_advance (clam_ringbuffer_t * rb, size_t cnt)
 void
 clam_ringbuffer_write_advance (clam_ringbuffer_t * rb, size_t cnt)
 {
-	size_t tmp = (rb->write_ptr + cnt) & rb->size_mask;
+	size_t tmp = cycle(rb->write_ptr + cnt, rb->size);
 	rb->write_ptr = tmp;
 }
 
