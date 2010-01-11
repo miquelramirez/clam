@@ -337,12 +337,10 @@ clam_ringbuffer_get_write_vector (const clam_ringbuffer_t * rb,
 	w = rb->write_ptr;
 	r = rb->read_ptr;
 
-	if (w > r) {
-		free_cnt = ((r - w + rb->size) & rb->size_mask) - 1;
-	} else if (w < r) {
-		free_cnt = (r - w) - 1;
+	if (w >= r) {
+		free_cnt = (r - w + rb->size)  - 1;
 	} else {
-		free_cnt = rb->size - 1;
+		free_cnt = (r - w) - 1;
 	}
 
 	cnt2 = w + free_cnt;
@@ -355,7 +353,7 @@ clam_ringbuffer_get_write_vector (const clam_ringbuffer_t * rb,
 		vec[0].buf = &(rb->buf[w]);
 		vec[0].len = rb->size - w;
 		vec[1].buf = rb->buf;
-		vec[1].len = cnt2 & rb->size_mask;
+		vec[1].len = cnt2 - rb->size;
 	} else {
 		vec[0].buf = &(rb->buf[w]);
 		vec[0].len = free_cnt;
