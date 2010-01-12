@@ -102,6 +102,7 @@ public:
 	bool IsPaused() const { return _status==Paused; }
 	bool IsStopped() const { return _status==Stopped; }
 	bool IsPlaying() const { return _status==Playing; }
+	virtual bool IsRealTime() const = 0;
 
 	virtual unsigned BackendBufferSize()
 	{

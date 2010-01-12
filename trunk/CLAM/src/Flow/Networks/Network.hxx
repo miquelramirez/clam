@@ -64,6 +64,7 @@ public:
 	bool IsStopped() const;
 	bool IsPlaying() const;
 	bool IsPaused() const;
+	bool IsRealTime() const;
 	void Start();
 	void Stop();
 	void Pause();

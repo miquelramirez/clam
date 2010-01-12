@@ -26,6 +26,7 @@ public:
 	// base class (virtual) interface:
 	bool IsWorking();
 	std::string NonWorkingReason();
+	virtual bool IsRealTime() const { return false; }
 	virtual void Start();
 	virtual void Stop();
 

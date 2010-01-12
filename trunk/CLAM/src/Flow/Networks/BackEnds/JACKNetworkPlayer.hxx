@@ -58,6 +58,9 @@ public:
 
 	void InitClient();
 	bool IsWorking();
+
+	virtual bool IsRealTime() const { return true; }
+
 	std::string NonWorkingReason();
 	
 	//JACK sever (un)registration methods

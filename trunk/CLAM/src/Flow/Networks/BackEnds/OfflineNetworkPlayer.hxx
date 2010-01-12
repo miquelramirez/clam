@@ -37,6 +37,7 @@ public:
 	// base class (virtual) interface:
 	bool IsWorking();
 	std::string NonWorkingReason();
+	virtual bool IsRealTime() const { return false; }
 	
 	typedef std::vector<SndfileHandle*> SndFileHandles;
 	std::string listOfSourcesSinksAndFiles(const SndFileHandles & infiles, 

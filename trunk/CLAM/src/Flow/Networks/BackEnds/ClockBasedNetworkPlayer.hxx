@@ -14,6 +14,7 @@ public:
 		std::cout << "helloworld" << std::endl;
 	}
 
+	virtual bool IsRealTime() const { return true; }
 };
 
 } // namespace CLAM
