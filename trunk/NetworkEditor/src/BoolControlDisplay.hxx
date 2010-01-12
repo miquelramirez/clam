@@ -20,6 +20,8 @@ protected:
 private:
 	CLAM::Processing *_processing;
 	std::vector<QLabel *> _labels;
+	QPixmap _ledOn;
+	QPixmap _ledOff;
 };
 
 #endif //BoolControlDisplay_hxx
