@@ -20,6 +20,7 @@
 #define SndfilePlayer_hxx
 
 #include <CLAM/Processing.hxx>
+#include <CLAM/Network.hxx>
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
@@ -27,8 +28,6 @@
 #include <CLAM/AudioInFilename.hxx> 
 #include <CLAM/Audio.hxx>
 #include <sndfile.hh>
-#include <pthread.h>
-#include <jack/ringbuffer.h>
 #include "WorkerSemaphore.hxx"
 #include "RingBuffer.hxx"
 
@@ -62,6 +61,7 @@ namespace CLAM
 		CLAM::FloatInControl _inControlLoop;
 		SndfileHandle* _infile;
 		Config _config;
+		bool _lockFreeMode;
 		unsigned _numChannels;
 		unsigned _numReadFrames;
 		unsigned _numTotalFrames;
@@ -86,6 +86,7 @@ namespace CLAM
 			, _inControlPause("Pause in-Control",this)
 			, _inControlLoop("Loop in-Control",this)
 			, _infile(0)
+			, _lockFreeMode(false)
 			, _numChannels(0)
 			, _numReadFrames(0)
 			, _numTotalFrames(0)
@@ -121,8 +122,17 @@ namespace CLAM
 	private:
 		void ReadBufferAndWriteToPorts()
 		{
+
+			if (not _lockFreeMode)
+			{
+				TakeABufferFromDisk();
+			}
+
 			const unsigned nFrames = _outports[0]->GetAudio().GetBuffer().Size();
 			const unsigned nItems = nFrames*_numChannels;
+
+
+
 
 			CLAM::TData* channels[_numChannels];
 			for (unsigned channel=0; channel<_numChannels; channel++)
@@ -154,7 +164,8 @@ namespace CLAM
 				if (seekPosition<=1) 
 					_outControlSeek.SendControl(seekPosition);
 			}
-			_diskSemaphore.signalWorkToDo();
+			if (_lockFreeMode)
+				_diskSemaphore.signalWorkToDo();
 		}
 		void WriteSilenceToPorts(unsigned offset=0)
 		{
@@ -242,7 +253,7 @@ namespace CLAM
 		bool ConcreteStart()
 		{
 			CLAM_ASSERT(_infile, "SndfilePlayer::ConcreteStart() should have _infile with value.");
-
+			_lockFreeMode = _network->IsRealTime();
 			//initial configuration for the controls.
 			_inControlSeek.SetBounds(0,1);
 			_inControlSeek.DoControl(0.);
@@ -255,14 +266,18 @@ namespace CLAM
 			_ringBuffer = new RingBuffer<TData>(_numChannels*nFrames*_ringBufferSize);
 			_positionsBuffer = new RingBuffer<unsigned>(_ringBufferSize);
 			_infile->seek(0,SEEK_SET);
-			pthread_create(&_threadId, NULL, DiskThreadCallback, this);
+			if (_lockFreeMode)
+				pthread_create(&_threadId, NULL, DiskThreadCallback, this);
 			return true; 
 		}
 		bool ConcreteStop()
 		{
 			_isStopped = true;
-			_diskSemaphore.signalWorkToDo();
-			pthread_join (_threadId, NULL);
+			if (_lockFreeMode)
+			{
+				_diskSemaphore.signalWorkToDo();
+				pthread_join (_threadId, NULL);
+			}
 			if (_infile) delete _infile;
 			_infile = new SndfileHandle(_config.GetSourceFile().c_str(), SFM_READ);
 
@@ -280,7 +295,6 @@ namespace CLAM
 		bool ConcreteConfigure(const ProcessingConfig & config)
 		{
 			CopyAsConcreteConfig(_config, config);
-			unsigned portSize = BackendBufferSize();
 			std::string nameOutPort = "out";
 			if (_outports.empty())
 			{
