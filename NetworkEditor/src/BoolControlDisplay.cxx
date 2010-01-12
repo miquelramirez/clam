@@ -6,6 +6,8 @@
 
 BoolControlDisplay::BoolControlDisplay(CLAM::Processing * processing)
 	: _processing(processing)
+	, _ledOn(":/icons/images/ledon1.png")
+	, _ledOff(":/icons/images/ledoff1.png")
 {
 	QHBoxLayout *layout = new QHBoxLayout();
 	setLayout(layout);
@@ -33,9 +35,11 @@ void BoolControlDisplay::timerEvent(QTimerEvent *event)
 
 	for (int i = 0; i < nLabels; i++)
 	{
-		CLAM::InControlBase & control = _processing->GetInControl(i);
-		const std::string value=control.GetLastValueAsString();
-		_labels[i]->setText(value.c_str());
+		CLAM::TypedInControl<bool> * boolControl = 
+			dynamic_cast<CLAM::TypedInControl<bool> * >(&_processing->GetInControl(i));
+		if (not boolControl) continue;
+		bool value=boolControl->GetLastValue();
+		_labels[i]->setPixmap(value?_ledOn:_ledOff);
 	}
 }
 
