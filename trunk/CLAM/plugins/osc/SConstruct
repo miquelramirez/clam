@@ -30,11 +30,13 @@ env.EnableClamModules([
 	] , CLAMInstallDir)
 
 sources = glob.glob('*.cxx')
+sources += glob.glob('../sndfile/*.c') #TODO: remove? ATM needed to compile the sampler
 main = "linkchecking.cxx"
 sources.remove( main )
 extraPaths = [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+	'../sndfile', #TODO: remove? ATM needed to compile the sampler
 ]
 env.Append(CPPPATH=extraPaths)
 
