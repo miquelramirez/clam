@@ -1,0 +1,1 @@
+Setting (by hand) a configuration parameter that is a bool as a string ("false" or "true"), should make an assert, but instead makes the parser hangs, and consume more and more memory
