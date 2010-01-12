@@ -28,6 +28,7 @@
 #include "LoadImpulseResponse.hxx"
 #include "MyIFFT.hxx"
 #include <CLAM/AudioInFilename.hxx>
+#include <CLAM/CLAM_Math.hxx>
 #include <cstdlib>
 
 namespace CLAM
@@ -59,7 +60,7 @@ public:
 		{
 			AddAll();
 			UpdateData();
-			SetFrameSize(512);
+			SetFrameSize(1024);
 			SetFilterSize(256);
 			SetMaxFilterSize(4096);
 		};
@@ -70,10 +71,14 @@ private:
 	typedef std::vector<ComplexSpectrum> ImpulseResponse;
 	std::vector<ImpulseResponse> _responseSpectrums;
 	std::vector< OutPort<ImpulseResponse*> *> _impulseResponseOutputsPorts;
+	FloatInControl _filterSize;
+	unsigned _currentFilterSize;
 
 public:
 	const char* GetClassName() const { return "AllPassFilterGenerator"; }
 	AllPassFilterGenerator(const Config& config = Config()) 
+		: _filterSize("FilterSize", this)
+		, _currentFilterSize(0)
 	{
 		Configure( config );
 	}
@@ -94,72 +99,88 @@ public:
 	}
 	bool FillData(ImpulseResponse & ir)
 	{
-		OutPort<ComplexSpectrum> feder;
+		unsigned filterSize = std::min(std::max(_currentFilterSize&~1, 2u), _config.GetMaxFilterSize());
+		std::cout << filterSize << std::endl;
+		OutPort<ComplexSpectrum> feeder;
 		MyIFFT::Config config;
-		config.SetAudioSize(_config.GetFilterSize());
+		config.SetAudioSize(filterSize);
 		MyIFFT ifft(config);
+		if (not ifft.IsConfigured()) return AddConfigErrorMessage(ifft.GetConfigErrorMessage());
 		// TODO: Check config error
 		CLAM::InPort<Audio> fetcher;
 		ifft.GetOutPort(0).ConnectToIn(fetcher);
-		feder.ConnectToIn(ifft.GetInPort(0));
+		feeder.ConnectToIn(ifft.GetInPort(0));
 		// TODO: connnection could cascar
 
 		ifft.Start();
-		ComplexSpectrum & spectrum = feder.GetData();
-		spectrum.bins.resize(_config.GetFilterSize()/2+1);
+		ComplexSpectrum & spectrum = feeder.GetData();
+		spectrum.bins.resize(filterSize/2+1);
 		FillRandomPhaseSpectrum(spectrum);
-		feder.Produce();
-		
+		feeder.Produce();
 		ifft.Do();
 		ifft.Stop();
 		const CLAM::Audio & outputAudio = fetcher.GetData();
 		TData * buffer = outputAudio.GetBuffer().GetPtr();
 		std::vector<double> audio(buffer, buffer+outputAudio.GetSize());
+		audio.resize(_config.GetMaxFilterSize());
 		std::string errmsg;
-		bool ok = computeResponseSpectrums(audio, ir, _config.GetFrameSize(), 
-			errmsg, 44100, 0);
-		return ok;
+		if (not computeResponseSpectrums(audio, ir, _config.GetFrameSize(), errmsg, 44100, 0))
+			return AddConfigErrorMessage(errmsg);
+		return true;
+	}
+	bool FillData()
+	{
+		for (unsigned channel=0; channel<_responseSpectrums.size(); channel++)
+			if (not FillData(_responseSpectrums[channel])) return false;
+		return true;
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
 		ResizePorts(_config.GetNChannels());
-		for (unsigned channel=0; channel<_responseSpectrums.size(); channel++)
-		{
-			FillData(_responseSpectrums[channel]);
-		}
-		return true;
+		_currentFilterSize = _config.GetFilterSize();
+		_filterSize.DoControl(_currentFilterSize);
+		return FillData();
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 
 	bool Do()
 	{
-		std::vector< OutPort<ImpulseResponse*> *>::iterator it;
-		unsigned i=0;
-
-		for (it=_impulseResponseOutputsPorts.begin(); it!=_impulseResponseOutputsPorts.end();it++)
+		unsigned oldSize = _currentFilterSize;
+		_currentFilterSize = Round(_filterSize.GetLastValue());
+		if (_currentFilterSize != oldSize)
 		{
-			(*it)->GetData()= &_responseSpectrums[i];
-			(*it)->Produce();
-			i++;
+			if (not FillData())
+			{
+				std::cout << "Running error: " << GetConfigErrorMessage() << std::endl;
+			}
+		}
+		for (unsigned i=0; i<_impulseResponseOutputsPorts.size(); i++)
+		{
+			CLAM::OutPort<ImpulseResponse*> & ir = *_impulseResponseOutputsPorts[i];
+			ir.GetData()= &_responseSpectrums[i];
+			ir.Produce();
 		}
 		return true;
 	}
 
 	void ResizePorts(unsigned nChannels)
 	{
-		for (unsigned port = 0; port < _impulseResponseOutputsPorts.size(); ++port)
+		unsigned oldNChannels = _impulseResponseOutputsPorts.size();
+		// Delete if less
+		for (unsigned port = oldNChannels; port < oldNChannels; port++)
 			delete _impulseResponseOutputsPorts[port];
-		_responseSpectrums.clear();
-		_impulseResponseOutputsPorts.clear();
-		_responseSpectrums.resize(nChannels);
-		// adding new speakers
-		for (unsigned speaker=0; speaker<nChannels; speaker++)
+		// Resize the container vector
+		_impulseResponseOutputsPorts.resize(nChannels);
+		// Add missing
+		for (unsigned speaker=oldNChannels; speaker<nChannels; speaker++)
 		{
 			std::ostringstream os;
 			os << speaker+1;
-			_impulseResponseOutputsPorts.push_back(new OutPort<ImpulseResponse*>(os.str(),this)); 
+			_impulseResponseOutputsPorts[speaker] = new OutPort<ImpulseResponse*>(os.str(),this);
 		}
+		// Set the proper number of responses
+		_responseSpectrums.resize(nChannels);
 	}
 };
 
