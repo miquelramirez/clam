@@ -29,6 +29,16 @@
 #endif /* USE_MLOCK */
 #include "clam_ringbuffer.h"
 
+
+/* Helper method to cycle the value on a range */
+static inline size_t cycle(size_t value, size_t max)
+{
+	/* just supports one buffer size, more would require looping */
+	if (value<max) return value;
+	return value-max;
+}
+
+
 /* Create a new ringbuffer to hold at least `sz' bytes of data. The
    actual buffer size is rounded up to the next power of two.  */
 
@@ -127,13 +137,6 @@ clam_ringbuffer_write_space (const clam_ringbuffer_t * rb)
 	} else {
 		return (r - w) - 1;
 	}
-}
-
-static inline size_t cycle(size_t value, size_t max)
-{
-	/* just supports one buffer size, more would require looping */
-	if (value<max) return value;
-	return value-max;
 }
 
 /* The copying data reader.  Copy at most `cnt' bytes from `rb' to
@@ -281,7 +284,6 @@ void
 clam_ringbuffer_get_read_vector (const clam_ringbuffer_t * rb,
 				 clam_ringbuffer_data_t * vec)
 {
-	size_t free_cnt;
 	size_t w, r;
 
 	w = rb->write_ptr;
@@ -290,23 +292,14 @@ clam_ringbuffer_get_read_vector (const clam_ringbuffer_t * rb,
 	vec[0].buf = &(rb->buf[r]);
 	vec[1].buf = rb->buf;
 
-	if (w >= r) {
-		free_cnt = 0;
-	} else {
-		free_cnt = rb->size;
-	}
-
-	if (free_cnt + w > rb->size) {
-
+	if (w<r) {
 		/* Two part vector: the rest of the buffer after the current write
 		   ptr, plus some from the start of the buffer. */
 		vec[0].len = rb->size - r;
-		vec[1].len = free_cnt + w - rb->size;
-
+		vec[1].len = w;
 	} else {
 		/* Single part vector: just the rest of the buffer */
-
-		vec[0].len = free_cnt +w-r;
+		vec[0].len = w-r;
 		vec[1].len = 0;
 	}
 }
@@ -338,9 +331,11 @@ clam_ringbuffer_get_write_vector (const clam_ringbuffer_t * rb,
 		vec[1].len = r;
 	}
 
+	/* substract one to the full size */
 	if (vec[1].len) {
 		vec[1].len--;
 	} else if (vec[0].len) {
 		 vec[0].len--;
 	}
 }
+
