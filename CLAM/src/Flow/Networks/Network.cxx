@@ -804,6 +804,13 @@ namespace CLAM
 		return _player->IsPaused();
 	}
 
+	bool Network::IsRealTime() const
+	{
+		if (! _player)
+			return false;
+		return _player->IsRealTime();
+	}
+
 	void Network::Start()
 	{
 		ProcessingsMap::iterator it;

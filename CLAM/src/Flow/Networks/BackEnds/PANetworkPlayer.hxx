@@ -51,6 +51,7 @@ public:
 	// base class (virtual) interface:
 	bool IsWorking();
 	std::string NonWorkingReason();
+	virtual bool IsRealTime() const { return true; }
 	virtual void Start();
 	virtual void Stop();
 
