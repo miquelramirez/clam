@@ -7,19 +7,53 @@
 
 class BoolControlPrinter : public CLAM::Processing
 {
+public:
+	class Config : public CLAM::ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (Config, 1, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, unsigned, NInputs );
+		void DefaultInit(void)
+		{
+			AddAll();
+			UpdateData();
+			SetNInputs(1);
+		}
+	};
+private:
 	typedef CLAM::TypedInControl<bool> BoolControl;
 	typedef std::vector<BoolControl*> BoolControls;
 	BoolControls _inputs;
+	Config _config;
 public:
-	BoolControlPrinter()
+	BoolControlPrinter(const Config & c=Config())
 	{
-		for (unsigned i=0; i<8; i++)
+		Configure(c);
+	}
+	const CLAM::ProcessingConfig & GetConfig() const { return _config; }
+	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
+	{
+		CopyAsConcreteConfig(_config, config);
+		if (not _config.HasNInputs())
+		{
+			_config.AddNInputs();
+			_config.UpdateData();
+			_config.SetNInputs(1);
+		}
+		unsigned nInputs = _config.GetNInputs();
+		unsigned previousSize = _inputs.size();
+		for (unsigned i=nInputs; i<previousSize; i++)
+			delete _inputs[i];
+		_inputs.resize(nInputs);
+		for (unsigned i=previousSize; i<nInputs; i++)
 		{
 			std::ostringstream os;
-			os << i;
-			_inputs.push_back(new BoolControl(os.str(),this));
-			_inputs.back()->DoControl(0);
+			os << i+1;
+			_inputs[i]= new BoolControl(i,os.str(),this,&BoolControlPrinter::ControlCallback);
 		}
+		for (unsigned i=0; i<nInputs; i++)
+			_inputs[i]->DoControl(0);
+		return true;
 	}
 	~BoolControlPrinter()
 	{
@@ -27,6 +61,9 @@ public:
 			delete _inputs[i];
 	}
 	const char * GetClassName() const { return "BoolControlPrinter"; }
+	void ControlCallback(unsigned i, const bool & value)
+	{
+	}
 	bool Do()
 	{
 		return true;
