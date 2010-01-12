@@ -695,6 +695,8 @@
     <file>pkwidgets/wideMixerSlider_127.png</file>
   </qresource>
   <qresource prefix="/icons" >
+    <file>images/ledon1.png</file>
+    <file>images/ledoff1.png</file>
     <file>images/GeneLogo.png</file>
     <file>images/compile_ladspa.svg</file>
     <file>images/NetworkEditor-icon.png</file>
