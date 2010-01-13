@@ -28,12 +28,13 @@ bool AudioSinkBuffer::Do()
 		InPort<Audio>* in = port.mPort;
 
 		const CLAM::Audio& so=in->GetData();
+		
 		CLAM_DEBUG_ASSERT(port.mFloatBuffer, "No float buffer");
 		CLAM_DEBUG_ASSERT(!port.mDoubleBuffer, "There should not be double buffer");
-		CLAM_DEBUG_ASSERT(port.mBufferSize>0, "internal buffer size must be greater than 0");
+		CLAM_DEBUG_ASSERT(so.GetSize()>0, "internal buffer size must be greater than 0");
 		const CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
 
-		for (unsigned i=0; i<port.mBufferSize; i++)
+		for (unsigned i=0; i<so.GetSize(); i++)
 			port.mFloatBuffer[i] = audioBuffer[i];
 
 		in->Consume();

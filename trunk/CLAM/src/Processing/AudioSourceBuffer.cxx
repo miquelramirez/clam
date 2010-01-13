@@ -32,9 +32,7 @@ bool AudioSourceBuffer::Do()
 		CLAM_DEBUG_ASSERT(port.mFloatBuffer || port.mDoubleBuffer, "AudioSourceBuffer: No external buffer set");
 		CLAM_DEBUG_ASSERT(port.mBufferSize>0, "AudioSourceBuffer: internal buffer size must be greater than 0");
 		
-		
-		so.GetBuffer().Resize(port.mBufferSize);
-		so.GetBuffer().SetSize(port.mBufferSize);
+		so.SetSize(port.mBufferSize);
 		
 		CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
 
@@ -47,6 +45,7 @@ bool AudioSourceBuffer::Do()
 
 		for (int i=port.mBufferSize; i<out->GetSize(); i++)
 			audioBuffer[i] = 0.;
+
 		out->Produce();
 	}
 	return true;

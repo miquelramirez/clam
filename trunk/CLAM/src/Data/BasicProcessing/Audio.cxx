@@ -67,9 +67,13 @@ void Audio::SetSize(int s)
 	CLAM_ASSERT(HasBuffer(), "Audio::SetSize(int) needs a buffer (HasBuffer()==1)");
 	CLAM_ASSERT(s>=0,"Audio::SetSize(): Negative size specified");
 
-	int oldSize=GetSize();
+	int oldSize=GetBuffer().AllocatedSize();
 	if (s==oldSize) return;
-
+	if (s <oldSize)
+	{
+		GetBuffer().SetSize(s);
+		return;
+	}
 	GetBuffer().Resize(s);
 	GetBuffer().SetSize(s);
 	if(s>oldSize)
