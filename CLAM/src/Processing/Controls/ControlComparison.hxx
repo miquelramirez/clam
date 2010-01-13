@@ -27,6 +27,7 @@
 #include "ProcessingConfig.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
+#include "TypedInControl.hxx"
 #include "TypedOutControl.hxx"
 
 namespace CLAM
@@ -49,7 +50,9 @@ class ControlComparison : public Processing
 	FloatInControl _inOperator2;
 	TypedOutControl<bool> _outControlBool;
 	FloatOutControl _outControlFloat;
-	void InControlCallback(const TControlData & value);
+	bool _firstValueReceived;
+
+	void InControlCallback(unsigned controlId, const TControlData & value);
 
 	public:
 
