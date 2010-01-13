@@ -193,7 +193,8 @@ namespace CLAM
 			_ringBuffer = new RingBuffer<TData>(_ringBufferSize*_numChannels);
 			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
 			_diskSemaphore = new WorkerSemaphore;
-			_outfile->setString(SF_STR_SOFTWARE, "CLAM");
+			// TODO: the next line is commented to make the generated wavs compatible with octave wavread function, that ATM doesn't like tags in wavs :-/
+//			_outfile->setString(SF_STR_SOFTWARE, "CLAM"); 
 
 			// check if the file is open
 			if(!*_outfile)
