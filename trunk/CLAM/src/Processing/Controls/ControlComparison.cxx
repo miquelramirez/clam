@@ -23,19 +23,21 @@ void ControlComparisonConfig::DefaultInit()
 }
 
 ControlComparison::ControlComparison()
-	: _inOperator1( "Operator 1", this , &ControlComparison::InControlCallback )
-	, _inOperator2( "Operator 2", this , &ControlComparison::InControlCallback )
+	: _inOperator1(1, "Operator 1", this , &ControlComparison::InControlCallback )
+	, _inOperator2(2, "Operator 2", this , &ControlComparison::InControlCallback )
 	, _outControlBool( "Result of comparison (bool)", this )
 	, _outControlFloat( "Result of comparison (float)", this )
+	, _firstValueReceived(false)
 {
 	Configure( mConfig );	
 }
 
 ControlComparison::ControlComparison( const ControlComparisonConfig& cfg ) 
-	: _inOperator1( "Operator 1", this , &ControlComparison::InControlCallback )
-	, _inOperator2( "Operator 2", this , &ControlComparison::InControlCallback )
+	: _inOperator1(1, "Operator 1", this , &ControlComparison::InControlCallback )
+	, _inOperator2(2, "Operator 2", this , &ControlComparison::InControlCallback )
 	, _outControlBool( "Result of comparison (bool)", this )
 	, _outControlFloat( "Result of comparison (float)", this )
+	, _firstValueReceived(false)
 { 
 	Configure( cfg );
 }
@@ -47,8 +49,14 @@ bool ControlComparison::ConcreteConfigure( const ProcessingConfig& cfg )
 	return true; 		
 }
 
-void ControlComparison::InControlCallback(const TControlData & value)
+void ControlComparison::InControlCallback(unsigned controlId, const TControlData & value)
 {
+
+	if (controlId==1)
+		_firstValueReceived=true;
+	else if (controlId==2)
+		if (not _firstValueReceived) return;
+
 	TControlData op1 = _inOperator1.GetLastValue();
 	TControlData op2 = _inOperator2.GetLastValue();
 	bool equal = (op1 == op2);  
