@@ -4,8 +4,8 @@
 -45   45 Base Front Left
 -45  -45 Base Front Right
   0    0 Front Horizontal
-  0   40 Front Left Horizontal
-  0  -40 Front Right Horizontal
+  0   30 Front Left Horizontal
+  0  -30 Front Right Horizontal
   0  130 Rear Left Horizontal
   0 -130 Rear Right Horizontal
  55  135 Top Back Left
