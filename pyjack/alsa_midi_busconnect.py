@@ -33,16 +33,16 @@ def _getClientPorts(name,typeOfClient):
 	return [ "%s:%i" % (client["clientNumber"],client["ports"].index(port)) for port in client["ports"] ]
 
 def getInputClients():
-	return _getClients("i")
+	return _getClients("o")
 	
 def getOutputClients():
-	return _getClients("o")
+	return _getClients("i")
 
 def getClientInputPorts(name):
-	return _getClientPorts(name,"i")
+	return _getClientPorts(name,"o")
 
 def getClientOutputPorts(name):
-	return _getClientPorts(name,"o")
+	return _getClientPorts(name,"i")
 
 def connect(source,target):
 	os.system("aconnect %s %s" % (source,target))
