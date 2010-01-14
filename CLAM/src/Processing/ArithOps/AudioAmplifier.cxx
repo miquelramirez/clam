@@ -42,43 +42,27 @@ namespace Hidden
 		UpdateData();
 		SetMaxGain(1.);
 		SetPortsNumber(1);
+		SetInitGain(1.);
 	}
 
-	void AudioAmplifier::CreatePorts()
+	void AudioAmplifier::ResizePorts(unsigned newSize)
 	{
-		unsigned portsNumber=1;
-		if (mConfig.HasPortsNumber())
-			portsNumber=mConfig.GetPortsNumber();
-		for( unsigned i=0; i<portsNumber; i++ )
+		unsigned oldSize = _inputs.size();
+		CLAM_ASSERT(_inputs.size()==_outputs.size(),
+			"AudioAmplifier had different number of inputs and outputs");
+		for (unsigned i = newSize; i<oldSize; i++)
 		{
-			std::ostringstream number("");
-			if (i>0)
-				number << " "<< i;
-			AudioInPort * inPort = new AudioInPort( "Input Audio" + number.str(), this );
-			mInputPorts.push_back( inPort );
-			AudioOutPort * outPort = new AudioOutPort ( "Audio Output" + number.str(), this);
-			mOutputPorts.push_back(outPort);
+			delete _inputs[i];
+			delete _outputs[i];
+		}
+		_inputs.resize(newSize);
+		_outputs.resize(newSize);
+		for (unsigned i = oldSize; i<newSize; i++)
+		{
+			std::ostringstream number;
+			if (i>0) number << " " << i;
+			_inputs[i] = new AudioInPort("Input Audio" + number.str(), this );
+			_outputs[i] = new AudioOutPort ( "Audio Output" + number.str(), this);
 		}
 	}
-
-	void AudioAmplifier::RemovePorts()
-	{
-		std::vector< AudioInPort* >::iterator itInPort;
-		for(itInPort=mInputPorts.begin(); itInPort!=mInputPorts.end(); itInPort++)
-			delete *itInPort;
-		mInputPorts.clear();
-		
-		std::vector<AudioOutPort*>::iterator itOutPort;
-		for(itOutPort=mOutputPorts.begin(); itOutPort!=mOutputPorts.end(); itOutPort++)
-			delete *itOutPort;
-		mOutputPorts.clear();
-
-		GetInPorts().Clear();
-		GetOutPorts().Clear();
-	}
-
-
-
-
-
 }

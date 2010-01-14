@@ -60,53 +60,51 @@ namespace CLAM{
 		const char *GetClassName() const { return "AudioAmplifier"; }
 		
 		/** Ports **/
-		std::vector<AudioInPort*> mInputPorts;
-		std::vector<AudioOutPort*> mOutputPorts;
+		std::vector<AudioInPort*> _inputs;
+		std::vector<AudioOutPort*> _outputs;
 
 		/** Controls **/
-		FloatInControl mInputControl; ///< gain control
+		FloatInControl _gainControl; ///< gain control
 
 	public:
-		AudioAmplifier() :
-			mInputControl("Gain", this)
+		AudioAmplifier(const ProcessingConfig & config=Config())
+			: _gainControl("Gain", this)
 		{
-			Configure( mConfig );
+			Configure(config);
 		}
 
  		~AudioAmplifier()
 		{
-			RemovePorts();
+			ResizePorts(0);
 		}
 
 		bool Do()
 		{
-
-
 			bool result=true;
-			unsigned i;
-			for (i=0; i<mInputPorts.size(); i++)
+			TData gain = _gainControl.GetLastValue();
+			for (unsigned i=0; i<_inputs.size(); i++)
 			{
-				result&=Do( mInputPorts[i]->GetAudio(), mOutputPorts[i]->GetAudio() );
-				mInputPorts[i]->Consume(); 
-				mOutputPorts[i]->Produce();
+				result &= Do( _inputs[i]->GetAudio(), _outputs[i]->GetAudio(), gain );
+				_inputs[i]->Consume(); 
+				_outputs[i]->Produce();
 			}
-
+			_previousGain = gain;
 			return result;
 		}
 	
-		bool Do(const Audio& in, Audio& out)
+		bool Do(const Audio& in, Audio& out, float gain)
 		{
 			int size = in.GetSize();
-
-			TData gain = mInputControl.GetLastValue();
 			const TData * inb = in.GetBuffer().GetPtr();
 			TData * outb = out.GetBuffer().GetPtr();
+			TData gainDelta=(gain-_previousGain)/size;
+			TData rampedGain = _previousGain;
 
 			for (int i=0;i<size;i++) 
 			{
-				outb[i] = inb[i]*gain;
+				outb[i] = inb[i]*rampedGain;
+				rampedGain+=gainDelta;
 			}
-
 			return true;
 		}
 
@@ -114,28 +112,24 @@ namespace CLAM{
 
 
 	protected:
-
-		const ProcessingConfig& GetConfig() const {	return mConfig; }
-
+		const ProcessingConfig& GetConfig() const { return _config; }
 		bool ConcreteConfigure(const ProcessingConfig& config) {
 
-			CopyAsConcreteConfig( mConfig, config );
-			RemovePorts();
-			double max_gain = mConfig.GetMaxGain();
-			double init_gain = mConfig.HasInitGain() ? mConfig.GetInitGain() : 1. ;
-			mInputControl.SetBounds(0.,max_gain);
-			mInputControl.SetDefaultValue(init_gain);
-			mInputControl.DoControl(init_gain);
-			CreatePorts();
+			CopyAsConcreteConfig( _config, config );
+			double max_gain = _config.GetMaxGain();
+			double init_gain = _config.HasInitGain() ? _config.GetInitGain() : 1. ;
+			_gainControl.SetBounds(0.,max_gain);
+			_gainControl.SetDefaultValue(init_gain);
+			_gainControl.DoControl(init_gain);
+			_previousGain = init_gain;
+			ResizePorts(_config.HasPortsNumber()?_config.GetPortsNumber():1);
 			return true;
 		}
-		void CreatePorts();
-		void RemovePorts();
-
 	private:
+		void ResizePorts(unsigned newSize);
 
-		/** Configuration **/
-		Config mConfig;
+		Config _config;
+		TData _previousGain;
 	};	
 	
 };//namespace CLAM
