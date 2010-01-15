@@ -3,13 +3,10 @@
 
 #include <Processing.hxx>
 
-namespace CLAMDraft
+namespace CLAM
 {
-
-		using CLAM::Processing;
-		using CLAM::ProcessingConfig;
-		using CLAM::InControlTmpl;
-		using CLAM::TControlData;
+namespace Test
+{
 
 		class SimpleProcessingConfig : public ProcessingConfig
 		{
@@ -42,7 +39,7 @@ namespace CLAMDraft
 						return "CLAMDraft::SimpleProcessing";
 				}
 
-				InControlTmpl<SimpleProcessing>& GetControl()
+				FloatInControl& GetControl()
 				{
 						return mInControl;
 				}
@@ -58,11 +55,12 @@ namespace CLAMDraft
 		private:
 
 				SimpleProcessingConfig            mConfig;
-				InControlTmpl<SimpleProcessing>   mInControl;
+				FloatInControl   mInControl;
 				
 		};
 
 
+}
 }
 
 #endif // SimpleProcessing.hxx
