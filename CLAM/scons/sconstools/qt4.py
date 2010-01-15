@@ -249,15 +249,12 @@ def generate(env):
 	env.Replace(
 		QTDIR  = _detect(env),
 		QT4_BINPATH = os.path.join('$QTDIR', 'bin'),
-		QT4_CPPPATH = os.path.join('$QTDIR', 'include'),
-		QT4_LIBPATH = os.path.join('$QTDIR', 'lib'),
 		# TODO: This is not reliable to QTDIR value changes but needed in order to support '-qt4' variants
 		QT4_MOC = locateQt4Command(env,'moc', env['QTDIR']),
 		QT4_UIC = locateQt4Command(env,'uic', env['QTDIR']),
 		QT4_RCC = locateQt4Command(env,'rcc', env['QTDIR']),
 		QT4_LUPDATE = locateQt4Command(env,'lupdate', env['QTDIR']),
 		QT4_LRELEASE = locateQt4Command(env,'lrelease', env['QTDIR']),
-		QT4_LIB = '', # KLUDGE to avoid linking qt3 library
 
 		QT4_AUTOSCAN = 1, # Should the qt tool try to figure out, which sources are to be moc'ed?
 
@@ -382,10 +379,7 @@ def generate(env):
 	env.AppendUnique(PROGEMITTER =[AutomocStatic],
 					 SHLIBEMITTER=[AutomocShared],
 					 LIBEMITTER  =[AutomocStatic],
-					 # Of course, we need to link against the qt libraries
-#					 CPPPATH=["$QT4_CPPPATH"],
-					 LIBPATH=["$QT4_LIBPATH"],
-					 LIBS=['$QT4_LIB'])
+					)
 
 	# TODO: Does dbusxml2cpp need an adapter
 	env.AddMethod(enable_modules, "EnableQt4Modules")
@@ -398,14 +392,15 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		'QtGui',
 		'QtOpenGL',
 		'Qt3Support',
-		'QtAssistant',
+		'QtAssistant', # deprecated
+		'QtAssistantClient',
 		'QtScript',
 		'QtDBus',
 		'QtSql',
+		'QtSvg',
 		# The next modules have not been tested yet so, please
 		# maybe they require additional work on non Linux platforms
 		'QtNetwork',
-		'QtSvg',
 		'QtTest',
 		'QtXml',
 		'QtXmlPatterns',
@@ -415,6 +410,8 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		'QtWebKit',
 		'QtHelp',
 		'QtScript',
+		'QtScriptTools',
+		'QtMultimedia',
 		]
 	pclessModules = [
 # in qt <= 4.3 designer and designerComponents are pcless, on qt4.4 they are not, so removed.	
