@@ -2,7 +2,7 @@
 #define MIDINote2Freq_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/TypedInControl.hxx>
+#include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/MIDIMessage.hxx>
 #include <bitset>
@@ -28,7 +28,7 @@ namespace CLAM {
 	class MIDINote2Freq : public CLAM::Processing
 	{ 
 	protected:
-		TypedInControl<MIDI::Message> mMIDIMessage;
+		InControl<MIDI::Message> mMIDIMessage;
 
 		FloatOutControl mFreq;
 		FloatOutControl	mAmplitude;

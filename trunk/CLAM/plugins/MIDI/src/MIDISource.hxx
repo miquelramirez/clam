@@ -2,7 +2,7 @@
 #define MIDISource_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/TypedOutControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/MIDIMessage.hxx>
 
 #include "../RtMidi.hxx"
@@ -12,7 +12,7 @@ namespace CLAM {
 	class MIDISource : public CLAM::Processing
 	{ 
 		/** Controls **/
-		TypedOutControl<MIDI::Message> mMIDIMessage;
+		OutControl<MIDI::Message> mMIDIMessage;
 		
 		RtMidiIn *mMIDIin;
 

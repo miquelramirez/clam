@@ -2,7 +2,7 @@
 #define Control2MIDIController_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/TypedOutControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/MIDIMessage.hxx>
 
 #include "../RtMidi.hxx"
@@ -34,11 +34,11 @@ namespace CLAM {
 	{ 
 	protected:
 		/** Controls **/
-//		TypedInControl <float> _InControlValue; //TODO: WHY THIS GetLastValue() DOESN'T WORK IN THIS WAY?????
+//		InControl <float> _InControlValue; //TODO: WHY THIS GetLastValue() DOESN'T WORK IN THIS WAY?????
 		FloatInControl _InControlValue;
-//		TypedInControl <unsigned int> _InControlChannelNumber;
-//		TypedInControl <unsigned int> _InControlControllerNumber;
-		TypedOutControl<MIDI::Message> _MIDIMessage;
+//		InControl <unsigned int> _InControlChannelNumber;
+//		InControl <unsigned int> _InControlControllerNumber;
+		OutControl<MIDI::Message> _MIDIMessage;
 
 		Control2MIDIControllerConfig _config;
 

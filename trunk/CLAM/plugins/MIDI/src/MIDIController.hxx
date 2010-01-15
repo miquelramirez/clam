@@ -2,7 +2,7 @@
 #define MIDIController_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/TypedInControl.hxx>
+#include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/MIDIMessage.hxx>
 #include <bitset>
@@ -36,7 +36,7 @@ namespace CLAM {
 	class MIDIController : public CLAM::Processing
 	{ 
 	protected:
-		TypedInControl<MIDI::Message> _MIDIMessage;
+		InControl<MIDI::Message> _MIDIMessage;
 
 		FloatOutControl _MIDIControlValue;
 
