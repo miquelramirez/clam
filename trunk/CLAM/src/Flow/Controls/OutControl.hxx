@@ -26,7 +26,7 @@
 #include <list>
 #include <typeinfo>
 #include "Assert.hxx"
-#include "TypedInControl.hxx"
+#include "InControl.hxx"
 #include "OutControlBase.hxx"
 
 namespace CLAM {
@@ -36,51 +36,51 @@ namespace CLAM {
 	* \brief Processing typed out control template class.
 	*
 	*/
-	template<class TypedControlData>
-	class TypedOutControl : public OutControlBase
+	template<class ControlDataType>
+	class OutControl : public OutControlBase
 	{
 		// This is required to solve the parsing problem with iterators.
-		typedef TypedInControl<TypedControlData> PeerTypedInControl;
-		typedef std::list< PeerTypedInControl * > ProperTypedInControlList;
+		typedef InControl<ControlDataType> PeerInControl;
+		typedef std::list< PeerInControl * > ProperInControlList;
 
 
 	public:
-		TypedOutControl(const std::string &name = "unnamed typed in control", Processing * proc = 0);
+		OutControl(const std::string &name = "unnamed typed in control", Processing * proc = 0);
 
-		void SendControl(const TypedControlData& val);
+		void SendControl(const ControlDataType& val);
 		bool IsLinkable(const InControlBase& in);
 		virtual const std::type_info & GetTypeId() const 
 		{
-			return typeid(TypedControlData);
+			return typeid(ControlDataType);
 		};
 	};
 	
-	template<class TypedControlData>
-	TypedOutControl<TypedControlData>::TypedOutControl(const std::string &name, Processing * proc)
+	template<class ControlDataType>
+	OutControl<ControlDataType>::OutControl(const std::string &name, Processing * proc)
 		: OutControlBase(name,proc)
 	{
 	}
 
-	template<class TypedControlData>
-	void TypedOutControl<TypedControlData>::SendControl(const TypedControlData& val)
+	template<class ControlDataType>
+	void OutControl<ControlDataType>::SendControl(const ControlDataType& val)
 	{
 		typename std::list< InControlBase * >::iterator it;
 		
 		for (it=mLinks.begin(); it!=mLinks.end(); it++) 
 		{
-			TypedInControl<TypedControlData>* control = static_cast<TypedInControl<TypedControlData>*>(*it);
+			InControl<ControlDataType>* control = static_cast<InControl<ControlDataType>*>(*it);
 			control->DoControl(val);
 		}
 	}
 
-	template<class TypedControlData>
-	bool TypedOutControl<TypedControlData>::IsLinkable(const InControlBase& in)
+	template<class ControlDataType>
+	bool OutControl<ControlDataType>::IsLinkable(const InControlBase& in)
 	{
-		return typeid(TypedControlData) == in.GetTypeId();
+		return typeid(ControlDataType) == in.GetTypeId();
 		
 	}
 
-	typedef TypedOutControl<float> FloatOutControl;
+	typedef OutControl<float> FloatOutControl;
 
 } // END NAMESPACE CLAM
 
