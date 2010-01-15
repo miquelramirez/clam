@@ -7,8 +7,8 @@
 
 class ControlGate : public CLAM::Processing
 {
-	CLAM::TypedInControl<float> _input;
-	CLAM::TypedOutControl<bool> _output;
+	CLAM::InControl<float> _input;
+	CLAM::OutControl<bool> _output;
 	unsigned _count;
 public:
 	class Config : public CLAM::ProcessingConfig

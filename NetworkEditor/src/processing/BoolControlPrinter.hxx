@@ -21,7 +21,7 @@ public:
 		}
 	};
 private:
-	typedef CLAM::TypedInControl<bool> BoolControl;
+	typedef CLAM::InControl<bool> BoolControl;
 	typedef std::vector<BoolControl*> BoolControls;
 	BoolControls _inputs;
 	Config _config;
@@ -41,24 +41,14 @@ public:
 			_config.SetNInputs(1);
 		}
 		unsigned nInputs = _config.GetNInputs();
-		unsigned previousSize = _inputs.size();
-		for (unsigned i=nInputs; i<previousSize; i++)
-			delete _inputs[i];
-		_inputs.resize(nInputs);
-		for (unsigned i=previousSize; i<nInputs; i++)
-		{
-			std::ostringstream os;
-			os << i+1;
-			_inputs[i]= new BoolControl(i,os.str(),this,&BoolControlPrinter::ControlCallback);
-		}
+		ResizeControls(nInputs);
 		for (unsigned i=0; i<nInputs; i++)
 			_inputs[i]->DoControl(0);
 		return true;
 	}
 	~BoolControlPrinter()
 	{
-		for (unsigned i=0; i<_inputs.size(); i++)
-			delete _inputs[i];
+		ResizeControls(0);
 	}
 	const char * GetClassName() const { return "BoolControlPrinter"; }
 	void ControlCallback(unsigned i, const bool & value)
@@ -67,6 +57,20 @@ public:
 	bool Do()
 	{
 		return true;
+	}
+private:
+	void ResizeControls(unsigned newSize)
+	{
+		unsigned previousSize = _inputs.size();
+		for (unsigned i=newSize; i<previousSize; i++)
+			delete _inputs[i];
+		_inputs.resize(newSize);
+		for (unsigned i=previousSize; i<newSize; i++)
+		{
+			std::ostringstream os;
+			os << i+1;
+			_inputs[i]= new BoolControl(i,os.str(),this,&BoolControlPrinter::ControlCallback);
+		}
 	}
 };
 
