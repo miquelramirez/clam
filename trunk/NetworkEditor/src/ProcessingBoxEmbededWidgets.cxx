@@ -41,6 +41,7 @@
 #include "ControlSenderWidget.hxx"
 #include "ControlSurfaceWidget.hxx"
 #include "BoolControlDisplay.hxx"
+#include "BoolControlSenderWidget.hxx"
 #include "ProgressControlWidget.hxx"
 
 
@@ -69,6 +70,9 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 
 	if (className=="BoolControlPrinter")
 		return new BoolControlDisplay(processing);
+
+	if (className=="BoolControlSender")
+		return new BoolControlSenderWidget(processing);
 
 	if (className=="ControlPiano")
 		return new CLAM::MIDIPianoWidget(processing);

@@ -7,7 +7,7 @@
 
 class BinaryCounter : public CLAM::Processing
 {
-	typedef CLAM::TypedOutControl<bool> BoolControl;
+	typedef CLAM::OutControl<bool> BoolControl;
 	typedef std::vector<BoolControl*> BoolControls;
 	BoolControls _outputs;
 	unsigned _count;

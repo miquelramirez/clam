@@ -1,5 +1,4 @@
 #include "BoolControlDisplay.hxx"
-//#include "BoolControlPrinter.hxx"
 #include <CLAM/InControlBase.hxx>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
@@ -35,8 +34,8 @@ void BoolControlDisplay::timerEvent(QTimerEvent *event)
 
 	for (int i = 0; i < nLabels; i++)
 	{
-		CLAM::TypedInControl<bool> * boolControl = 
-			dynamic_cast<CLAM::TypedInControl<bool> * >(&_processing->GetInControl(i));
+		CLAM::InControl<bool> * boolControl = 
+			dynamic_cast<CLAM::InControl<bool> * >(&_processing->GetInControl(i));
 		if (not boolControl) continue;
 		bool value=boolControl->GetLastValue();
 		_labels[i]->setPixmap(value?_ledOn:_ledOff);
