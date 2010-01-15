@@ -51,8 +51,8 @@ def bus_connect(source, target):
 	"""
 	Connects two lists of ports. The arguments can be a list or a string. If the latter, all the available ports of the client will be used.
 	"""
-	sources = source if type(source) == type([]) else getClientInputPorts(source)
-	targets = target if type(target) == type([]) else getClientOutputPorts(target)
+	sources = source if type(source) == type([]) else getClientOutputPorts(source)
+	targets = target if type(target) == type([]) else getClientInputPorts(target)
 	num_connections = min(len(sources), len(targets))
 	print 'Doing %i connections. Client has %i out ports and target has %i in ports' % (num_connections, len(sources), len(targets))
 	for i in xrange(num_connections) :
