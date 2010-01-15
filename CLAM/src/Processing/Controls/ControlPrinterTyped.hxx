@@ -29,7 +29,6 @@
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
 #include "ControlArray.hxx"
-#include "TypedInControl.hxx"
 #include "InControl.hxx"
 
 namespace CLAM
