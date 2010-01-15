@@ -2,9 +2,8 @@
 #define LibloSink_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/TypedInControl.hxx>
-#include <CLAM/TypeInfo.hxx>
 #include <CLAM/InControl.hxx>
+#include <CLAM/TypeInfo.hxx>
 #include <string>
 #include <algorithm>
 #include <cstdio>
@@ -88,19 +87,19 @@ public:
 			switch (typespec.c_str()[0])
 			{
 				case 's':
-					lo_message_add_string(message,dynamic_cast<TypedInControl<std::string> *> (_inControls[i])->GetLastValue().c_str());
+					lo_message_add_string(message,dynamic_cast<InControl<std::string> *> (_inControls[i])->GetLastValue().c_str());
 					break;
 				case 'f':
-					lo_message_add_float(message,dynamic_cast<TypedInControl<float>*>(_inControls[i])->GetLastValue());
+					lo_message_add_float(message,dynamic_cast<InControl<float>*>(_inControls[i])->GetLastValue());
 					break;
 				case 'd':
-					lo_message_add_double(message,dynamic_cast<TypedInControl<double> *> (_inControls[i])->GetLastValue());
+					lo_message_add_double(message,dynamic_cast<InControl<double> *> (_inControls[i])->GetLastValue());
 					break;
 				case 'i':
-					lo_message_add_int32(message,dynamic_cast<TypedInControl<int> *> (_inControls[i])->GetLastValue());
+					lo_message_add_int32(message,dynamic_cast<InControl<int> *> (_inControls[i])->GetLastValue());
 					break;
 				case 'h':
-					lo_message_add_int64(message,dynamic_cast<TypedInControl<long int> *> (_inControls[i])->GetLastValue());
+					lo_message_add_int64(message,dynamic_cast<InControl<long int> *> (_inControls[i])->GetLastValue());
 					break;
 			}
 		}
@@ -172,15 +171,15 @@ protected:
 		switch (type.c_str()[0])
 		{
 			case 's':
-				return new TypedInControl<std::string> (name, this, &LibloSink::InControlCallback<std::string>);
+				return new InControl<std::string> (name, this, &LibloSink::InControlCallback<std::string>);
 			case 'f':
-				return new TypedInControl<float> (name, this, &LibloSink::InControlCallback<float>);
+				return new InControl<float> (name, this, &LibloSink::InControlCallback<float>);
 			case 'd':
-				return new TypedInControl<double> (name, this, &LibloSink::InControlCallback<double>);
+				return new InControl<double> (name, this, &LibloSink::InControlCallback<double>);
 			case 'i':
-				return new TypedInControl<int> (name,this, &LibloSink::InControlCallback<int>);
+				return new InControl<int> (name,this, &LibloSink::InControlCallback<int>);
 			case 'h':
-				return new TypedInControl<long int> (name,this, &LibloSink::InControlCallback<long int>);
+				return new InControl<long int> (name,this, &LibloSink::InControlCallback<long int>);
 			default:
 				return 0;
 				// TODO: Decide whether ASSERTing (contract) or throw (control) 

@@ -23,7 +23,7 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/AudioOutPortPublisher.hxx>
-#include <CLAM/TypedInControl.hxx>
+#include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/Text.hxx>
@@ -72,8 +72,8 @@ private:
 
 	CLAM::AudioOutPortPublisher _proxyOutPublisher;
 	CLAM::AudioMixer _mixer;
-	CLAM::TypedInControl<SamplerMessage> _inControlMessage;
-	CLAM::TypedInControl<int> _pruebaInt;
+	CLAM::InControl<SamplerMessage> _inControlMessage;
+	CLAM::InControl<int> _pruebaInt;
 
 	std::vector<CLAM::SndfilePlayer *> _filePlayers; 
 	std::vector<CLAM::FloatOutControl *> _seekDummyControls;

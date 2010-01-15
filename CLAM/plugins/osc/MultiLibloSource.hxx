@@ -2,7 +2,6 @@
 #define MultiLibloSource_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/TypedOutControl.hxx>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/Enum.hxx>
 #include <string>
@@ -99,13 +98,13 @@ protected:
 	OutControlBase * createControl(const std::string & type, const std::string & name)
 	{
 		if (type=="s")
-			return new TypedOutControl<std::string> (name,this);
+			return new OutControl<std::string> (name,this);
 		if (type=="f")
-			return new FloatOutControl (name,this);
+			return new OutControl<float> (name,this);
 		if (type=="d")
-			return new TypedOutControl<double> (name,this);
+			return new OutControl<double> (name,this);
 		if (type=="i" or type=="h")
-			return new TypedOutControl<int> (name,this);
+			return new OutControl<int> (name,this);
 		// TODO: Decide whether ASSERTing (contract) or throw (control) 
 		return 0;
 	}
@@ -114,13 +113,13 @@ protected:
 	{
 		const std::string typeName=control->GetTypeId().name();
 		if (typeName=="Ss")
-			dynamic_cast<TypedOutControl<std::string> *> (control)->SendControl(&(valueToSend->s));
+			dynamic_cast<OutControl<std::string> *> (control)->SendControl(&(valueToSend->s));
 		if(typeName=="f")
-			dynamic_cast<FloatOutControl *>(control)->SendControl(valueToSend->f);
+			dynamic_cast<OutControl<float> *>(control)->SendControl(valueToSend->f);
 		if(typeName=="d")
-			dynamic_cast<TypedOutControl<double> *> (control)->SendControl(valueToSend->f32);
+			dynamic_cast<OutControl<double> *> (control)->SendControl(valueToSend->f32);
 		if(typeName=="i")
-			dynamic_cast<TypedOutControl<int> *> (control)->SendControl(valueToSend->i);
+			dynamic_cast<OutControl<int> *> (control)->SendControl(valueToSend->i);
 		return;
 	}
 

@@ -2,7 +2,6 @@
 #define SpatDIFSourceReceiver_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/TypedOutControl.hxx>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/ControlArray.hxx>
 #include <CLAM/Enum.hxx>
@@ -120,13 +119,13 @@ protected:
 	{
 		const std::string typeName=control->GetTypeId().name();
 		if (typeName=="Ss")
-			dynamic_cast<TypedOutControl<std::string> *> (control)->SendControl(&(valueToSend->s));
+			dynamic_cast<OutControl<std::string> *> (control)->SendControl(&(valueToSend->s));
 		if(typeName=="f")
 			dynamic_cast<FloatOutControl *>(control)->SendControl(valueToSend->f);
 		if(typeName=="d")
-			dynamic_cast<TypedOutControl<double> *> (control)->SendControl(valueToSend->f32);
+			dynamic_cast<OutControl<double> *> (control)->SendControl(valueToSend->f32);
 		if(typeName=="i")
-			dynamic_cast<TypedOutControl<int> *> (control)->SendControl(valueToSend->i);
+			dynamic_cast<OutControl<int> *> (control)->SendControl(valueToSend->i);
 		return;
 	}
 
@@ -259,7 +258,7 @@ private:
 	FloatOutControl _velocityY;
 	FloatOutControl _velocityZ;
 
-	TypedOutControl <CLAM::MultiSampler::SamplerMessage> _outputSamplerMessage;
+	OutControl <CLAM::MultiSampler::SamplerMessage> _outputSamplerMessage;
 	CLAM::LibloSingleton & _libloSingleton;
 	std::list<CLAM::LibloSingleton::OSCInstance> _OSCInstances;
 

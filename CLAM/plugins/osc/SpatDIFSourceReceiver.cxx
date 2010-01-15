@@ -55,7 +55,7 @@ int CLAM::SpatDIFSourceReceiver::controls_handler(const char *path, const char *
 		{
 			samplerMessage.play = (argv[0]->i == 1);
 			samplerMessage.loop= (argv[1]->i == 1);
-			dynamic_cast<TypedOutControl <CLAM::MultiSampler::SamplerMessage> * > (&self.GetOutControl("Sampler typed messages"))->SendControl(samplerMessage);
+			dynamic_cast<OutControl <CLAM::MultiSampler::SamplerMessage> * > (&self.GetOutControl("Sampler typed messages"))->SendControl(samplerMessage);
 		}
 		return 0;
 	}
