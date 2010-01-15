@@ -21,8 +21,8 @@
 #define _ControlPiano_
 
 #include "Processing.hxx"
-#include "TypedInControl.hxx"
-#include "TypedOutControl.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 
 #include "MIDIMessage.hxx"
 
@@ -36,8 +36,8 @@ public:
 
 protected:
 	/** Controls **/
-	TypedInControl< MIDI::Message > mInputMIDIMessage;
-	TypedOutControl< MIDI::Message > mOutputMIDIMessage;
+	InControl< MIDI::Message > mInputMIDIMessage;
+	OutControl< MIDI::Message > mOutputMIDIMessage;
 
 public:
 

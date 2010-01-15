@@ -27,7 +27,7 @@
 #include "AudioOutPort.hxx"
 #include "AudioFile.hxx"
 #include "OutControl.hxx"
-#include "TypedOutControl.hxx"
+#include "OutControl.hxx"
 #include "AudioCodecs_Stream.hxx"
 
 namespace CLAM
@@ -61,7 +61,7 @@ namespace CLAM
 		AudioOutPort              mOutput;
 		FloatInControl            mSeekControl;
 		FloatOutControl           mTimeOutput;
-		TypedOutControl<unsigned long> mFramePositionOutput;
+		OutControl<unsigned long> mFramePositionOutput;
 		FloatOutControl           mProgressOutput;
 		AudioCodecs::Stream*      mNativeStream;
 		bool                      mEOFReached;

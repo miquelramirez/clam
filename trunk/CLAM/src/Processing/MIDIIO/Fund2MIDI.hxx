@@ -25,20 +25,12 @@
 #include "ProcessingConfig.hxx"
 #include "InPort.hxx"
 #include "OutControl.hxx"
-#include "TypedOutControl.hxx"
+#include "OutControl.hxx"
 #include "Fundamental.hxx"
 #include "MIDIMessage.hxx"
 
 namespace CLAM
 {
-
-	class Fund2MIDIConfig : public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (Fund2MIDIConfig, 0, ProcessingConfig);
-		
-	//	DYN_ATTRIBUTE (0, public, int , Value);
-	};
 
 	/** 	\brief Converts fundamental to a MIDI note value
 	*
@@ -53,38 +45,23 @@ namespace CLAM
 	{
 		InPort< Fundamental > mInFund;
 		FloatOutControl mFreqControlOut;
-		TypedOutControl< MIDI::Message > mOutputMIDIMessage;
+		OutControl< MIDI::Message > mOutputMIDIMessage;
 
-		Fund2MIDIConfig mConfig;
+		Config mConfig;
 
 		TSize _previousNote; ///< MIDI note previously sent
 	public:
 
 		const char *GetClassName() const { return "Fund2MIDI"; }
 
-		Fund2MIDI()
-			:
-			mInFund("In Fundamental", this),
-			mFreqControlOut("MIDI Out", this),
-			mOutputMIDIMessage("MIDI Message Out", this),
-			_previousNote(0)
-		{
-			Configure( mConfig );
-		}
-
-		Fund2MIDI( const Fund2MIDIConfig& cfg ) 
-			:
-			mInFund("In Fundamental", this),
-			mFreqControlOut("Frequency", this),
-			mOutputMIDIMessage("MIDI Message Out", this),
-			_previousNote(0)
+		Fund2MIDI( const ProcessingConfig & cfg = Config()  ) 
+			: mInFund("In Fundamental", this)
+			, mFreqControlOut("Frequency", this)
+			, mOutputMIDIMessage("MIDI Message Out", this)
+			, _previousNote(0)
 		{ 
 			Configure( cfg );
 		}
-
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) { return true; }
-
-		const ProcessingConfig& GetConfig() const { return mConfig; }
 
 		bool Do()
 		{

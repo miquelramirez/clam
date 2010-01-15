@@ -77,15 +77,15 @@ namespace Hidden
 	InControlBase * ControlPrinterTyped::createControl(const std::string & type, const std::string & name)
 	{
 		if (type=="s")
-			return new TypedInControl<std::string> (name,this);
+			return new InControl<std::string> (name,this);
 		if (type=="f")
 			return new FloatInControl (name,this);
 		if (type=="d")
-			return new TypedInControl<double> (name,this);
+			return new InControl<double> (name,this);
 		if (type=="i")
-			return new TypedInControl<int> (name,this);
+			return new InControl<int> (name,this);
 		if (type=="M")
-			return new TypedInControl<MIDI::Message> (name,this);
+			return new InControl<MIDI::Message> (name,this);
 		// TODO: Decide whether ASSERTing (contract) or throw (control) 
 		return 0;
 	}
