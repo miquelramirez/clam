@@ -2,7 +2,7 @@
 #define MTCReceiver_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/TypedOutControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/MIDIMessage.hxx>
 
 #include "../RtMidi.hxx"
@@ -13,7 +13,7 @@ namespace CLAM {
 	{ 
 		/** Controls **/
 
-		//TODO: TypedOutControl<long>
+		//TODO: OutControl<long>
 		FloatOutControl _millisecondsOut;
 		
 		RtMidiIn *_MIDIin;

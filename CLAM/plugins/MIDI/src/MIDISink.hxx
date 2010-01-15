@@ -2,7 +2,7 @@
 #define MIDISink_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/TypedInControl.hxx>
+#include <CLAM/InControl.hxx>
 #include <CLAM/MIDIMessage.hxx>
 #include "../RtMidi.hxx"
 #include <iostream>
@@ -11,7 +11,7 @@ namespace CLAM {
 	class MIDISink : public CLAM::Processing
 	{ 
 		/** Controls **/
-		TypedInControl< MIDI::Message> mMIDIMessage;
+		InControl< MIDI::Message> mMIDIMessage;
 		MIDI::Message mLastMessage;
 		RtMidiOut *mMIDIout;
 
