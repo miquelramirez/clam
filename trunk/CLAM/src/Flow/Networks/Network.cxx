@@ -267,12 +267,12 @@ namespace CLAM
 
 	bool Network::UpdateSelections (const NamesList & processingsNamesList)
 	{
-		NamesList::const_iterator namesIterator;
 		if (!_selectedProcessings.empty() || processingsNamesList.empty())
 		{
 			_selectedProcessings.clear();
 			return true;
 		}
+		NamesList::const_iterator namesIterator;
 		for (namesIterator=processingsNamesList.begin();namesIterator!=processingsNamesList.end();namesIterator++)
 			_selectedProcessings.insert(*namesIterator);
 		return false;
