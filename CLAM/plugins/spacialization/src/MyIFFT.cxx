@@ -62,7 +62,7 @@ struct MyIFFT::Implementation
 	double * _realOutput;
 };
 
-MyIFFT::MyIFFT(const IFFTConfig &c)
+MyIFFT::MyIFFT(const Config &c)
 	: mInput("Complex Spectrum", this)
 	, mOutput("Audio Buffer", this)
 	, _fftw3(0)
@@ -78,7 +78,7 @@ bool MyIFFT::ConcreteConfigure(const ProcessingConfig& c)
 		AddConfigErrorMessage("IFFT size should be greater than 0");
 		return false;
 	}
-	mSize = mConfig.GetAudioSize();	
+	_size = mConfig.GetAudioSize();	
 	SetupMemory();
 	return true;
 }
@@ -95,7 +95,7 @@ void MyIFFT::ReleaseMemory()
 void MyIFFT::SetupMemory()
 {
 	ReleaseMemory();
-	_fftw3 = new Implementation(mSize);
+	_fftw3 = new Implementation(_size);
 }
 
 
@@ -105,26 +105,26 @@ bool MyIFFT::Do()
 	mInput.Consume();
 	mOutput.Produce();
 	return toReturn;
-};
+}
 
 
 bool MyIFFT::Do( const ComplexSpectrum& in, Audio &out) const
 {
 	CLAM_ASSERT(IsRunning() ,"MyIFFT: Do(): Not in execution mode");
 	const std::vector<std::complex<TData> > & inbuffer = in.bins;
-	CLAM_ASSERT(inbuffer.size() == mSize/2+1, "MyIFFT: input data size doesn't match configuration.");
+	CLAM_ASSERT(inbuffer.size() == _size/2+1, "MyIFFT: input data size doesn't match configuration.");
 	for (int i=0; i< inbuffer.size(); i++)
 	{
-		_fftw3->_complexInput[i][0] = std::real(inbuffer[i])/mSize;
-		_fftw3->_complexInput[i][1] = std::imag(inbuffer[i])/mSize;
+		_fftw3->_complexInput[i][0] = std::real(inbuffer[i])/_size;
+		_fftw3->_complexInput[i][1] = std::imag(inbuffer[i])/_size;
 	}
 
 	fftw_execute(_fftw3->_plan);
 
 	out.SetSampleRate(TData(in.spectralRange*2));
-	out.SetSize(mSize);
+	out.SetSize(_size);
 	TData * outbuffer = out.GetBuffer().GetPtr();
-	for (int i=0; i<mSize; i++)
+	for (int i=0; i<_size; i++)
 		outbuffer[i] = _fftw3->_realOutput[i];
 	return true;
 }

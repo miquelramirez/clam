@@ -24,10 +24,8 @@
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
-#include <CLAM/Spectrum.hxx>
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
-#include <CLAM/IFFTConfig.hxx>
 #include "ComplexSpectrum.hxx"
 
 namespace CLAM {
@@ -41,7 +39,7 @@ namespace CLAM {
  
  @param[in] "Complex Spectrum" [Port] A complex spectrum
  @param[out] "Audio Buffer" [Port] An audio buffer
-
+ @param[in] "AudioSize" [Config] The outgoing audio size (fftsize 
  @todo Document MyIFFT configuration parameters
 
  @see MyFFT, AudioBuffer2Stream, NewSpectralProcessing
@@ -52,10 +50,21 @@ namespace CLAM {
 		InPort<ComplexSpectrum> mInput;
 		OutPort<Audio> mOutput;
 	public:
-		typedef IFFTConfig Config;
+		class Config : public ProcessingConfig
+		{
+			DYNAMIC_TYPE_USING_INTERFACE (Config, 1, ProcessingConfig);
+			DYN_ATTRIBUTE (0, public, int, AudioSize);
+			void DefaultInit()
+			{
+				AddAll();
+				UpdateData();
+				SetAudioSize(1024);
+			}
+		
+		};
 	private:
 		Config mConfig;
-		unsigned mSize;
+		unsigned _size;
 
 		/* IFFT possible execution states.
 		 */
@@ -78,7 +87,7 @@ namespace CLAM {
 
 	public:
 
-		MyIFFT(const IFFTConfig &c=IFFTConfig());
+		MyIFFT(const Config &c=Config());
 		~MyIFFT();
 		const char * GetClassName() const {return "MyIFFT";}
 
