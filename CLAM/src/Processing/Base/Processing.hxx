@@ -196,8 +196,6 @@ namespace CLAM
 		// TODO: Temporary kludge to be able to access the connectors registry directly from connector classes
 		friend class InPortBase;
 		friend class OutPortBase;
-		friend class InControl;
-		friend class OutControl;
 		friend class InControlBase;
 		friend class OutControlBase;
 // Basic usage interface:
