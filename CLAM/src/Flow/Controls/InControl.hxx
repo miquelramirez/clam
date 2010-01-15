@@ -34,61 +34,61 @@ namespace CLAM {
 	class Processing;
 	class OutControlBase;
 
-	template<class TypedControlData>
-	class TypedOutControl;
+	template<class ControlDataType>
+	class OutControl;
 
 	/**
 	* An InControl receives values of the template type in an asyncronous pace.
 	* A processing method can be set as callback to respond to incoming events.
 	* You can also consult GetLastValue to get the last received value.
 	*/
-	template<class TypedControlData>
-	class TypedInControl : public InControlBase
+	template<class ControlDataType>
+	class InControl : public InControlBase
 	{
 		class Callback;
 	private:
 		Callback * _callback;
 	protected:
-		TypedControlData mLastValue;
+		ControlDataType mLastValue;
 		
 	public:
 		/// Constructor to use when no callback is used
-		TypedInControl(const std::string &name = "unnamed in control", Processing * proc = 0)
+		InControl(const std::string &name = "unnamed in control", Processing * proc = 0)
 			: InControlBase(name,proc)
 			, _callback(new NullCallback)
 		{
 		}
 		/// Constructor to use a callback by const reference
 		template <typename ProcessingType, typename ParameterType>
-		TypedInControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(const ParameterType&))
+		InControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(const ParameterType&))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallback<ProcessingType,ParameterType>(proc, callback))
 		{
 		}
 		/// Constructor to use a callback by const reference plus a port id to distinguish different caller controls in a single serving callback
 		template <typename ProcessingType, typename ParameterType>
-		TypedInControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, const ParameterType&))
+		InControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, const ParameterType&))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallbackWithId<ProcessingType,ParameterType>(proc, callback, id))
 		{
 		}
 		/// Constructor to use a callback by copy
 		template <typename ProcessingType, typename ParameterType>
-		TypedInControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(ParameterType))
+		InControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(ParameterType))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallbackByCopy<ProcessingType,ParameterType>(proc, callback))
 		{
 		}
 		/// Constructor to use a callback by copy plus a port id to distinguish different caller controls in a single serving callback
 		template <typename ProcessingType, typename ParameterType>
-		TypedInControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, ParameterType))
+		InControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, ParameterType))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallbackByCopyWithId<ProcessingType,ParameterType>(proc, callback, id))
 		{
 		}
 
 
-		virtual ~TypedInControl()
+		virtual ~InControl()
 		{
 			delete _callback;
 		}
@@ -97,7 +97,7 @@ namespace CLAM {
 		/// Associated callback if any, gets triggered on result.
 		/// Connected OutControl may trigger it but it also may be
 		/// called directly, for example to set the initial value.
-		virtual void DoControl(const TypedControlData& val) 
+		virtual void DoControl(const ControlDataType& val) 
 		{
 			mLastValue = val;
 			_hasBeenRead=false;
@@ -105,7 +105,7 @@ namespace CLAM {
 		};
 
 		/// Returns the last received value
-		virtual const TypedControlData& GetLastValue() const 
+		virtual const ControlDataType& GetLastValue() const 
 		{
 			_hasBeenRead=true;
 			return mLastValue; 
@@ -118,7 +118,7 @@ namespace CLAM {
 			return GetLastValueAsString((TokenIsStorableAsLeaf*)0);
 		}
 		// For the typed linking check
-		virtual const std::type_info& GetTypeId() const { return typeid(TypedControlData); };
+		virtual const std::type_info& GetTypeId() const { return typeid(ControlDataType); };
 	private:
 		std::string GetLastValueAsString(StaticFalse* /*isStreamable*/) const
 		{
@@ -136,19 +136,19 @@ namespace CLAM {
 		// Callback wrappers
 
 		/// Base control callback wrapper. It defines the interface for callback wrappers.
-		typedef typename TypeInfo<TypedControlData>::StorableAsLeaf TokenIsStorableAsLeaf;
+		typedef typename TypeInfo<ControlDataType>::StorableAsLeaf TokenIsStorableAsLeaf;
 		class Callback
 		{
 			public:
 				virtual ~Callback() {}
-				virtual void DoControl(const TypedControlData & val) =0;
+				virtual void DoControl(const ControlDataType & val) =0;
 		};
 
 		/// Null control callback wrapper. Just do nothing.
 		class NullCallback : public Callback
 		{
 			public:
-				virtual void DoControl(const TypedControlData & val) {}
+				virtual void DoControl(const ControlDataType & val) {}
 		};
 
 		/// Processing method callback wrapper.
@@ -165,7 +165,7 @@ namespace CLAM {
 				, _method(method)
 			{
 			}
-			virtual void DoControl(const TypedControlData & value)
+			virtual void DoControl(const ControlDataType & value)
 			{
 				(_processing->*_method)(value);
 			}
@@ -188,7 +188,7 @@ namespace CLAM {
 				, _id(id)
 			{
 			}
-			virtual void DoControl(const TypedControlData & value)
+			virtual void DoControl(const ControlDataType & value)
 			{
 				(_processing->*_method)(_id, value);
 			}
@@ -209,7 +209,7 @@ namespace CLAM {
 				, _method(method)
 			{
 			}
-			virtual void DoControl(const TypedControlData & value)
+			virtual void DoControl(const ControlDataType & value)
 			{
 				(_processing->*_method)(value);
 			}
@@ -233,7 +233,7 @@ namespace CLAM {
 				, _id(id)
 			{
 			}
-			virtual void DoControl(const TypedControlData & value)
+			virtual void DoControl(const ControlDataType & value)
 			{
 				(_processing->*_method)(_id, value);
 			}
@@ -241,9 +241,8 @@ namespace CLAM {
 	};
 	
 /// Alias provided by convenience to ease the transitions to typed controls
-typedef TypedInControl<float> FloatInControl;
+typedef InControl<float> FloatInControl;
 
-	
 } // End namespace CLAM
 #endif //_InControl_
 
