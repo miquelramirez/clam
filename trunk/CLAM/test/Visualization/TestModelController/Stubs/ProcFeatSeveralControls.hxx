@@ -3,11 +3,12 @@
 
 #include <Processing.hxx>
 
-namespace CLAMDraft
+namespace CLAM
+{
+namespace Test
 {
 		using CLAM::Processing;
 		using CLAM::ProcessingConfig;
-		using CLAM::InControlTmpl;
 		using CLAM::TControlData;
 
 		class ProcFeatSeveralControlsConfig : public ProcessingConfig
@@ -61,12 +62,12 @@ namespace CLAMDraft
 		private:
 				ProcFeatSeveralControlsConfig             mConfig;
 
-				InControlTmpl<ProcFeatSeveralControls>    mInCtl_0;
-				InControlTmpl<ProcFeatSeveralControls>    mInCtl_1;
-				InControlTmpl<ProcFeatSeveralControls>    mInCtl_2;
-				InControlTmpl<ProcFeatSeveralControls>    mInCtl_3;
-				InControlTmpl<ProcFeatSeveralControls>    mInCtl_4;
-				InControlTmpl<ProcFeatSeveralControls>    mInCtl_5;
+				FloatInControl    mInCtl_0;
+				FloatInControl    mInCtl_1;
+				FloatInControl    mInCtl_2;
+				FloatInControl    mInCtl_3;
+				FloatInControl    mInCtl_4;
+				FloatInControl    mInCtl_5;
 
 				int   mTimesCalled0;
 				int   mTimesCalled1;
@@ -76,6 +77,7 @@ namespace CLAMDraft
 				int   mTimesCalled5;
 		};
 
+}
 }
 
 #endif // ProcFeatSeveralControls.hxx
