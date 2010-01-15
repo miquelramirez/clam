@@ -25,7 +25,6 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/AudioWindowingConfig.hxx>
 #include <CLAM/InControl.hxx>
-#include <CLAM/TypedInControl.hxx>
 
 #include <vector>
 #include <cmath>

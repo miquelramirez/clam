@@ -9,7 +9,7 @@
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/OutControl.hxx>
-#include <CLAM/TypedOutControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/InControl.hxx>
 #include <CLAM/AudioInPort.hxx>
 #include <CLAM/AudioMixer.hxx>
@@ -80,7 +80,7 @@ class EnvironmentManager : public CLAM::Processing
 	FloatInControl _xInControl;
 	FloatInControl _yInControl;
 	FloatInControl _zInControl;
-	TypedOutControl<std::string> _environmentName;
+	OutControl<std::string> _environmentName;
 	
 	FloatOutControl _occlusionFadeInMsOutControl;
 	FloatOutControl _occlusionMinCutoffFrequencyOutControl;
