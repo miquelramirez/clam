@@ -3,10 +3,10 @@
 
 #include "InPort.hxx" // CLAM
 #include "InControl.hxx" // CLAM
-#include <CLAM/TypedInControl.hxx> // CLAM
+#include <CLAM/InControl.hxx> // CLAM
 #include "OutPort.hxx" // CLAM
 #include "OutControl.hxx" // CLAM
-#include <CLAM/TypedOutControl.hxx> // CLAM
+#include <CLAM/OutControl.hxx> // CLAM
 #include "DummyProcessingData.hxx"
 
 namespace CLAMTest
@@ -62,9 +62,9 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 
 public:
 	template<class TControlData>
-	class TypedInControl;
+	class InControl;
 	template<class TControlData>
-	class TypedOutControl;
+	class OutControl;
 
 	// void implementation the pure virtual methods of processing
 	ProcessingTest() : 
@@ -97,9 +97,9 @@ private:
 	CLAM::FloatOutControl mOutControl1;
 	CLAM::FloatOutControl mOutControl2;
 	
-	CLAM::TypedInControl<int> mTypedInControl;
-	CLAM::TypedOutControl<int> mTypedOutControl;
-	CLAM::TypedOutControl<float> mTypedOutControl2;
+	CLAM::InControl<int> mTypedInControl;
+	CLAM::OutControl<int> mTypedOutControl;
+	CLAM::OutControl<float> mTypedOutControl2;
 	
 	CLAM::InPort<DummyProcessingData> mInPort;
 	CLAM::OutPort<DummyProcessingData> mOutPort1;
@@ -271,8 +271,8 @@ private:
 		CLAM::OutPort<int> out;
 		CLAM::FloatInControl inControl;
 		CLAM::FloatOutControl outControl;
-//		CLAM::TypedInControl<int> typedInControl;
-//		CLAM::TypedOutControl<int> typedOutControl;
+//		CLAM::InControl<int> typedInControl;
+//		CLAM::OutControl<int> typedOutControl;
 		
 		DummyIOProcessing()
 			: in("In", this)
