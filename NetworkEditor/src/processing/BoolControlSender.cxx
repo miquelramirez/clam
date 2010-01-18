@@ -11,6 +11,7 @@ namespace Hidden
 		"key", "BoolControlSender",
 		"category", "Controls",
 		"description", "BoolControlSender",
+		"control_sender_type", typeid(bool).name(),
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, BoolControlSender> reg = metadata;
