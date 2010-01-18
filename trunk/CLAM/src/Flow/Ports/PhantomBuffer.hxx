@@ -24,6 +24,7 @@
 
 
 #include <vector>
+#include <iostream>
 #include "Assert.hxx"
 
 namespace CLAM {
@@ -126,7 +127,6 @@ namespace CLAM {
 		           "Insertion position can not be greater than previous size.");
 		CLAM_ASSERT(newPhantomSize <= newLogicalSize,
 		           "PhantomBuffer::Resize(): Phantom Size can not be greater than size.");
-
 
 		if ( newLogicalSize <= LogicalSize() )
 			return;

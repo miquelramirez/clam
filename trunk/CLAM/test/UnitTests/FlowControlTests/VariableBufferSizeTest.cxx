@@ -50,7 +50,7 @@ class FlowChangingTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( FlowChangingTest );
 		
 	CPPUNIT_TEST( testAudioBufferSourcePropagatesAudioSize );
-//	CPPUNIT_TEST( testAudioBufferSource_keepsAllocatedSize_changingToLowerSize );
+	CPPUNIT_TEST( testAudioBufferSource_keepsAllocatedSize_changingToLowerSize );
 	CPPUNIT_TEST( testAudioBufferSource_keepsAllocatedSize_changingToBiggerSize );
 
 
@@ -102,7 +102,7 @@ class FlowChangingTest : public CppUnit::TestFixture
 		CPPUNIT_ASSERT_EQUAL(30u, dummy.getAllocatedSize());
 	}
 
-/*	void testAudioBufferSource_keepsAllocatedSize_changingToLowerSize()
+	void testAudioBufferSource_keepsAllocatedSize_changingToLowerSize()
 	{
 		float audio[30] = {};
 		CLAM::AudioSourceBuffer source;
@@ -119,7 +119,7 @@ class FlowChangingTest : public CppUnit::TestFixture
 		dummy.Do();
 		CPPUNIT_ASSERT_EQUAL(30u, dummy.getAllocatedSize());
 	}
-*/
+
 	void testAudioBufferSource_keepsAllocatedSize_changingToBiggerSize()
 	{
 		float audio[30] = {};
