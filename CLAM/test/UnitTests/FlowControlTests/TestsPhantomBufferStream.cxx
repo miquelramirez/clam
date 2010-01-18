@@ -318,16 +318,21 @@ public:
 	void testIntegrityAfterBufferResize()
 	{
 		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
-		writer.Size(1); // buff size == 2
-		writer.Hop(1);
-		writer[0]='A';
-		writer.Produce();
-		writer[0]='B';
-		writer.Produce();
 		writer.Size(2); // buff size == 4
 		writer.Hop(2);
+		writer[0]='A';
+		writer[1]='B';
+		writer.Produce();
+		writer[0]='C';
+		writer[1]='D';
+		writer.Produce();
+
+		writer.Size(4); // buff size == 8
+		writer.Hop(4);
 		writer[0]='X';
 		writer[1]='X';
+		writer[2]='X';
+		writer[3]='X';
 		writer.Produce();
 		CPPUNIT_ASSERT_EQUAL('A', writer[0]);
 	}

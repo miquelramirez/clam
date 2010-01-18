@@ -185,23 +185,35 @@ void StreamImpl<Token, PhantomBuffer>::NewReadingRegionSize( Region& reader )
 template< typename Token >
 void StreamImpl<Token, PhantomBuffer>::CommonNewRegionSize( Region& anyRegion )
 {
-	int logicalSizeCandidate = anyRegion.Size()*2;
+	int newLogicalSize;
+	int newPhantomSize;
 
-	if(logicalSizeCandidate <= LogicalSize())
+	if(anyRegion.Size()==1)
+	{
+		newLogicalSize = anyRegion.Size();
+		newPhantomSize = 0;
+	}
+	else
+	{	
+		int logicalSizeCandidate = anyRegion.Size()*2;
+		newLogicalSize = 1 << ExponentOfClosestGreaterPowerOfTwo(logicalSizeCandidate);
+		newPhantomSize = anyRegion.Size()*2;
+	}
+
+	if(newLogicalSize <= LogicalSize())
 		return;
-	
-	Region & producer = anyRegion.ProducerRegion() ? (*anyRegion.ProducerRegion()) : anyRegion;
-	int insertionPos = producer.BeginDistance();
-
-	int newLogicalSize = 1 << ExponentOfClosestGreaterPowerOfTwo(logicalSizeCandidate);
 
 	CLAM_DEBUG_ASSERT(newLogicalSize > LogicalSize(), "StreamImpl::commonNewRegionSize() - new logical size"
 							"must be greater than the older logical size" ); 
+
+	Region & producer = anyRegion.ProducerRegion() ? (*anyRegion.ProducerRegion()) : anyRegion;
+	int insertionPos = producer.BeginDistance();
+
 	int tokensToInsert = newLogicalSize - LogicalSize();
 
 	mDataImpl.Resize( 
 			newLogicalSize, 
-			anyRegion.Size()*2, // phantom buffer size
+			newPhantomSize, // phantom buffer size
 			insertionPos );
 	
 	UpdateBeginDistanceOfReadingRegions( producer, tokensToInsert );
