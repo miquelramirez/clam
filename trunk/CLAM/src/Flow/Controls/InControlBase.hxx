@@ -37,7 +37,7 @@ namespace CLAM {
 		/** Private copy constructor to avoid copies */
 		InControlBase(const InControlBase & toBeCopied ) {}
 	public:
-		const bool HasBeenRead() const { return _hasBeenRead; }
+		bool HasBeenRead() const { return _hasBeenRead; }
 		/**
 		 Class constructor.
 		 @param name Unique name of the control within the processing.
