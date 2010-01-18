@@ -96,31 +96,37 @@ public: // Actions
 
 		unsigned controlIndex = processing->controlIndexByXPos(point);
 		QString inControlName = processing->getIncontrolName(controlIndex);
-		CLAM::Processing * model = (CLAM::Processing*) processing->model();
-		CLAM::InControlBase& inControl = model->GetInControl(controlIndex);
-		float defaultValue = inControl.DefaultValue();
-		float lower = inControl.LowerBound();
-		float upper = inControl.UpperBound();
 
 		std::string controlSenderName  =  inControlName.toStdString();
-		// add control-sender processing to network
 		if (_network->HasProcessing(controlSenderName) )
-		{
 			controlSenderName = _network->GetUnusedName(controlSenderName);
-		}
-		_network->AddProcessing( controlSenderName, "OutControlSender");
-		CLAM::Processing & controlSender = _network->GetProcessing( controlSenderName );
-		// configure 
-		CLAM::OutControlSenderConfig config;
-		config.SetMin(lower);
-		config.SetMax(upper);
-		config.SetStep( std::max( (upper-lower)/200, CLAM::TControlData(0.01)) ); 
-		config.SetDefault( defaultValue );
-		controlSender.Configure( config );
-		// add box to canvas and connect
-		addProcessingBox( controlSenderName.c_str(), &controlSender, point+QPoint(0,-100));
-		addControlConnection( getBox(controlSenderName.c_str()), 0, processing, controlIndex );
 
+		std::string controlType = incontrolTypeId(processing->model(), controlIndex);
+		CLAM::Processing * controlSender = 0;
+		if (controlType==typeid(CLAM::TControlData).name())
+		{
+			controlSender = & _network->AddProcessing( controlSenderName, "OutControlSender");
+
+			CLAM::InControlBase & inControl = ((CLAM::Processing*)processing->model())->GetInControl(controlIndex);
+			float defaultValue = inControl.DefaultValue();
+			float lower = inControl.LowerBound();
+			float upper = inControl.UpperBound();
+
+			CLAM::OutControlSenderConfig config;
+			config.SetMin(lower);
+			config.SetMax(upper);
+			config.SetStep( std::max( (upper-lower)/200, CLAM::TControlData(0.01)) ); 
+			config.SetDefault( defaultValue );
+			controlSender->Configure( config );
+		}
+		if (controlType==typeid(bool).name())
+		{
+			controlSender = & _network->AddProcessing( controlSenderName, "BoolControlSender");
+		}
+		if (not controlSender) return;
+		// add box to canvas and connect
+		addProcessingBox( controlSenderName.c_str(), controlSender, point+QPoint(0,-100));
+		addControlConnection( getBox(controlSenderName.c_str()), 0, processing, controlIndex );
 		markAsChanged();
 	}
 
@@ -131,13 +137,14 @@ public: // Actions
 		unsigned controlIndex = processing->controlIndexByXPos(point);
 		QString outControlName = processing->getOutcontrolName(controlIndex);
 		std::string controlPrinterName  =  outControlName.toStdString();
-		// add Control Printer processing to network
 		if (_network->HasProcessing(controlPrinterName) )
-		{
 			controlPrinterName = _network->GetUnusedName(controlPrinterName);
-		}
-		_network->AddProcessing( controlPrinterName, "ControlPrinter");
-		CLAM::Processing & controlPrinter = _network->GetProcessing( controlPrinterName );
+		std::string controlType = outcontrolTypeId(processing->model(), controlIndex);
+		std::string type;
+		if      (controlType==typeid(CLAM::TControlData).name()) type = "ControlPrinter";
+		else if (controlType==typeid(bool).name()) type="BoolControlPrinter";
+		else return;
+		CLAM::Processing & controlPrinter = _network->AddProcessing( controlPrinterName, type);
 		// add box to canvas and connect
 		addProcessingBox( controlPrinterName.c_str(), &controlPrinter, point+QPoint(0,100));
 		addControlConnection( processing, controlIndex, getBox(controlPrinterName.c_str()), 0 );
@@ -155,9 +162,10 @@ public: // Actions
 		CLAM::Processing * model = (CLAM::Processing*)processing->model();
 		if (type.empty())
 		{
+			const std::type_info & portType = model->GetOutPort(portIndex).GetTypeId();
 			// Choose default if any
-			if (model->GetOutPort(portIndex).GetTypeId()==typeid(CLAM::TData))
-				type = "AudioSink";
+			if      (portType==typeid(CLAM::TData)) type = "AudioSink";
+			else if (portType==typeid(CLAM::Audio)) type = "AudioSinkBuffer";
 			else return;
 		}
 
@@ -179,9 +187,10 @@ public: // Actions
 		CLAM::Processing * model = (CLAM::Processing*)processing->model();
 		if (type.empty())
 		{
+			const std::type_info & portType = model->GetInPort(portIndex).GetTypeId();
 			// Choose default if any
-			if (model->GetInPort(portIndex).GetTypeId()==typeid(CLAM::TData))
-				type = "AudioSource";
+			if      (portType==typeid(CLAM::TData)) type = "AudioSource";
+			else if (portType==typeid(CLAM::Audio)) type = "AudioSourceBuffer";
 			else return;
 		}
 
@@ -435,7 +444,7 @@ public:
 	}
 	void refreshWires()
 	{
-		if (not _network) return;
+		if (networkIsDummy()) return;
 		clearWires();
 		typedef CLAM::Network::NamesList Names;
 		// TODO: Refactor this code please!!!
@@ -745,11 +754,35 @@ private:
 		if (!processing) return "";
 		return ((CLAM::Processing*)processing)->GetOutPort(index).GetTypeId().name();
 	}
-
 	std::string inportTypeId(void * processing, unsigned index) const
 	{
 		if (!processing) return "";
 		return ((CLAM::Processing*)processing)->GetInPort(index).GetTypeId().name();
+	}
+	std::string incontrolTypeId(void * processing, unsigned index) const
+	{
+		if (!processing) return "";
+		return ((CLAM::Processing*)processing)->GetInControl(index).GetTypeId().name();
+	}
+
+	std::string outcontrolTypeId(void * processing, unsigned index) const
+	{
+		if (!processing) return "";
+		return ((CLAM::Processing*)processing)->GetOutControl(index).GetTypeId().name();
+	}
+
+	void addToMenuLinkedProcessing(QMenu * menu, const QPoint & cursorPosition, const char * processingType)
+	{
+			menu->addAction( clamProcessingIcon(processingType), processingType,
+				this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
+	}
+	void addToMenuProcessingsWithKey(QMenu * menu, const QPoint & cursorPosition, const std::string & key, const std::string & value)
+	{
+		typedef CLAM::ProcessingFactory::Keys Keys;
+		CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+		Keys keys = factory.GetKeys(key, value);
+		for (Keys::const_iterator it=keys.begin(); it!=keys.end(); it++)
+			addToMenuLinkedProcessing(menu, cursorPosition, it->c_str());
 	}
 
 	virtual void networkConnectionContextMenu(QMenu * menu, const QPoint& cursorPosition, ProcessingBox * processing, ProcessingBox::Region region)
@@ -758,48 +791,52 @@ private:
 			this, SLOT(onCopyConnection()))->setData(cursorPosition);
 
 		if (not processing->model()) return;
+		menu->addSeparator();
 		if (region==ProcessingBox::incontrolsRegion)
 		{
-			menu->addAction(QIcon(":/icons/images/hslider.png"), tr("Add slider"),
-				this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
+			unsigned portindex = processing->controlIndexByXPos(cursorPosition);
+			std::string controlType = incontrolTypeId(processing->model(),portindex);
+
+			if (controlType==typeid(CLAM::TControlData).name())
+			{
+				menu->addAction(QIcon(":/icons/images/hslider.png"), tr("Add slider"),
+					this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
+			}
+			addToMenuProcessingsWithKey(menu, cursorPosition, "control_sender_type", controlType);
 		}
 		if (region==ProcessingBox::outcontrolsRegion)
 		{
-			menu->addAction(QIcon(":/icons/images/processing.png"), tr("Add control printer"),
-				this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
+			unsigned portindex = processing->controlIndexByXPos(cursorPosition);
+			std::string controlType = outcontrolTypeId(processing->model(),portindex);
+
+			if (controlType==typeid(CLAM::TControlData).name())
+			{
+				menu->addAction(QIcon(":/icons/images/processing.png"), tr("Add control printer"),
+					this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
+			}
+			addToMenuProcessingsWithKey(menu, cursorPosition, "control_display_type", controlType);
 		}
 		if (region==ProcessingBox::outportsRegion)
 		{
-			typedef CLAM::ProcessingFactory::Keys Keys;
-			menu->addSeparator();
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 			unsigned portindex = processing->portIndexByYPos(cursorPosition);
-			std::string outportType = outportTypeId(processing->model(),portindex);
-			Keys keys = factory.GetKeys("port_monitor_type", outportType);
-			for (Keys::const_iterator it=keys.begin(); it!=keys.end(); it++)
-			{
-				const char* key = it->c_str();
-				menu->addAction( clamProcessingIcon(key), key,
-					this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
-			}
-			if (outportType==typeid(CLAM::TData).name()) // Check for audio port
-			{
-				const char* key="AudioSink";
-				menu->addAction( clamProcessingIcon(key), key,
-					this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
-			}
+			std::string portType = outportTypeId(processing->model(),portindex);
+
+			if (portType==typeid(CLAM::TData).name())
+				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSink");
+			if (portType==typeid(CLAM::Audio).name())
+				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSinkBuffer");
+
+			addToMenuProcessingsWithKey(menu, cursorPosition, "port_monitor_type", portType);
 		}
 		if (region==ProcessingBox::inportsRegion)
 		{
 			unsigned portindex = processing->portIndexByYPos(cursorPosition);
-			std::string inportType=inportTypeId(processing->model(),portindex);
+			std::string portType=inportTypeId(processing->model(),portindex);
 
-			if (inportType==typeid(CLAM::TData).name()) // Check for audio port
-			{
-				const char* key="AudioSource";
-				menu->addAction( clamProcessingIcon(key), key,
-					this ,SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
-			}
+			if (portType==typeid(CLAM::TData).name())
+				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSource");
+			if (portType==typeid(CLAM::Audio).name())
+				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSourceBuffer");
 		}
 	}
 
