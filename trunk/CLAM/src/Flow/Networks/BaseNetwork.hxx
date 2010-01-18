@@ -139,13 +139,13 @@ public:
 	//! add method using a pointer to a new processing
 	virtual void AddProcessing( const std::string & name, Processing* processing, const ProcessingConfig *config=0 ) = 0;
 	//! add method using a key to get the new processing from factory
-	virtual void AddProcessing( const std::string & name, const std::string & key ) = 0;
+	virtual Processing & AddProcessing( const std::string & name, const std::string & key ) = 0;
 	virtual std::string AddProcessing( const std::string& key ) = 0;
 	virtual std::string GetUnusedName( const std::string& prefix, const bool cutOnLastSeparator=false, const std::string separator="_") const=0;
 	virtual bool RenameProcessing( const std::string & oldName, const std::string & newName ) = 0;
 	virtual void RemoveProcessing ( const std::string & ) = 0;
 
-	/** Tells whether the network is ready to rock. A network is ready when:
+	/** Tells whether the network is ready to run. A network is ready when:
 	 * - it contains any processing,
 	 * - all processings are properly configured, and
 	 * - all in ports are connected,

@@ -115,7 +115,7 @@ public:
 	//! add method using a pointer to a new processing
 	void AddProcessing( const std::string & name, Processing* processing, const ProcessingConfig * config=0 );
 	//! add method using a key to get the new processing from factory
-	void AddProcessing( const std::string & name, const std::string & key );
+	Processing & AddProcessing( const std::string & name, const std::string & key );
 	std::string AddProcessing( const std::string& key );
 	std::string GetUnusedName( const std::string& prefix, const bool cutOnLastSeparator=false, const std::string separator="_") const;
 	void RemoveProcessing ( const std::string & );
