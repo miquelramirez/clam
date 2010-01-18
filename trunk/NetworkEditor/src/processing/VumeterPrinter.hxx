@@ -27,8 +27,8 @@ public:
 
 	bool Do()
 	{
-		const int sampleRate = 44100;
-		const int samplesPerFrame = sampleRate/25;
+		const unsigned sampleRate = 44100;
+		const unsigned samplesPerFrame = sampleRate/25;
 		unsigned size = _input.GetAudio().GetBuffer().Size();
 		const CLAM::TData * data = &(_input.GetAudio().GetBuffer()[0]);
 
