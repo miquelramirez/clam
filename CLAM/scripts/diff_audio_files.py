@@ -71,7 +71,7 @@ def diff_files_wav(expected, result, diffbase) :
 
 
 if __name__=="__main__" :
-		equals = diff_files(sys.argv[1], sys.argv[2])
+		equals = diff_files(*sys.argv[1:])
 		if equals:
 			print "\033[32m Equals\033[0m"
 		else:
