@@ -596,8 +596,7 @@ namespace CLAM
 
 	Processing & Network::AddProcessing( const std::string & name, const std::string & factoryKey )
 	{
-		Processing * proc=0;
-		proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
+		Processing * proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
 		AddProcessing(name, proc);
 		return *proc;
 	}
