@@ -10,6 +10,8 @@ namespace Hidden
 		"key", "OutControlSender",
 		"category", "Controls",
 		"description", "OutControlSender",
+		"icon", "hslider.png",
+		"control_sender_type", typeid(TControlData).name(),
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, OutControlSender> reg = metadata;
