@@ -18,6 +18,7 @@ protected:
 	void timerEvent(QTimerEvent *event);
 
 private:
+	void updateLabels();
 	CLAM::Processing *_processing;
 	std::vector<QLabel *> _labels;
 };
