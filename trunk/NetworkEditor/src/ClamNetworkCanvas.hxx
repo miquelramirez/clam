@@ -791,7 +791,7 @@ private:
 			this, SLOT(onCopyConnection()))->setData(cursorPosition);
 
 		if (not processing->model()) return;
-		menu->addSeparator();
+		menu->addAction(tr("Add connected"))->setSeparator(true);
 		if (region==ProcessingBox::incontrolsRegion)
 		{
 			unsigned portindex = processing->controlIndexByXPos(cursorPosition);

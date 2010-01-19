@@ -882,7 +882,6 @@ public:
 		menu->addAction(QIcon(":/icons/images/remove.png"), tr("Disconnect"),
 			this, SLOT(onDisconnect()))->setData(cursorPosition);
 		networkConnectionContextMenu(menu, cursorPosition, processing, region);
-		menu->addSeparator();
 		connectionPopulateConnectToMenu(menu, cursorPosition, processing, region);
 	}
 
@@ -890,6 +889,7 @@ public:
 	{
 		if (not _enabledViableConnectionMenu) return;
 
+		menu->addAction(tr("Connect to"))->setSeparator(true);
 		bool isPortConnection = region == ProcessingBox::outportsRegion || region == ProcessingBox::inportsRegion;
 		bool selfIsInput = region == ProcessingBox::incontrolsRegion || region == ProcessingBox::inportsRegion;
 
