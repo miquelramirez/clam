@@ -79,6 +79,8 @@ main = "./linkchecking.cxx"
 sources.remove( main )
 env.AppendUnique(CPPPATH=sourcePaths)
 
+program = envPlugin.Program(target=main[2:-4], source=[main])
+
 if subprocess.call("pkg-config --atleast-version=0.26 liblo",shell=True)==0:
 	env.Append( LIBPATH=['/usr/local/lib'] )
 	env.Append( CPPDEFINES=['__MULTICAST_LIBLO__'] )
@@ -99,9 +101,6 @@ env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
-programs = [
-	env.Program(target=main[2:-4], source=[main]+sources),
-	]
 
 	
 
@@ -113,5 +112,5 @@ install = [
 	]
 
 env.Alias('install', install)
-env.Default(libraries, plugin, pcfile, programs)
+env.Default(libraries, plugin, pcfile, program)
 
