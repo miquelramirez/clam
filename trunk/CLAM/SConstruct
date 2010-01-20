@@ -227,6 +227,8 @@ crosscompiling = clam_env.has_key('crossmingw') and clam_env['crossmingw']
 if crosscompiling :
 	clam_env.Tool('crossmingw',toolpath=['scons/sconstools'])
 
+clam_env.Tool('textfile',toolpath=['scons/sconstools'])
+
 if clam_env['distcc_hosts'] :
 	clam_env['CXX'] = 'distcc '+clam_env['CXX']
 	clam_env['ENV']['DISTCC_HOSTS'] = clam_env['distcc_hosts']
