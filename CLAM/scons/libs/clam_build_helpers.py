@@ -355,7 +355,6 @@ def SetupSpawn( env ):
 
 def create_custom_builders( env ) :
 	def PkgConfigFile(env, package, version, prefix, description=None, url=None, requires=[], conflicts=[], cflags=[], libs=[]) :
-		env.Tool('textfile')
 		pkgConfigTemplate = """\
 name = @name@
 prefix = @prefix@
