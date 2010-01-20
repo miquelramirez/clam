@@ -63,7 +63,7 @@ def _do_subst(node, subs):
     then all instances of %VERSION% in the file will be replaced with
     1.2345 and so forth.
     """
-    contents = node.get_text_contents()
+    contents = node.get_contents()
     if not subs: return contents
     for (k,v) in subs:
         contents = re.sub(k, v, contents)
@@ -77,7 +77,7 @@ def _action(target, source, env):
     elif is_String(linesep):
         pass
     elif isinstance(linesep, Value):
-        linesep = linesep.get_text_contents()
+        linesep = linesep.get_contents()
     else:
         raise SCons.Errors.UserError(
                            'unexpected type/class for LINESEPARATOR: %s'
@@ -140,7 +140,7 @@ _common_varlist = ['SUBST_DICT', 'LINESEPARATOR']
 _text_varlist = _common_varlist + ['TEXTFILEPREFIX', 'TEXTFILESUFFIX']
 _text_builder = SCons.Builder.Builder(
     action = SCons.Action.Action(_action, _strfunc, varlist = _text_varlist),
-    source_factory = Value,
+#    source_factory = Value,
     emitter = _convert_list,
     prefix = '$TEXTFILEPREFIX',
     suffix = '$TEXTFILESUFFIX',
