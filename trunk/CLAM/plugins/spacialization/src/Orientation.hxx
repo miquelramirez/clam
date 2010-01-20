@@ -212,7 +212,7 @@ private:
 };
 
 
-static Vector3D vectorialProduct(const Vector3D& v1, const Vector3D& v2)
+inline Vector3D vectorialProduct(const Vector3D& v1, const Vector3D& v2)
 {
 	Vector3D result = {
 		v1.y * v2.z - v1.z * v2.y ,
@@ -221,17 +221,17 @@ static Vector3D vectorialProduct(const Vector3D& v1, const Vector3D& v2)
 		};
 	return result;
 }
-static Vector3D vectorByScalar(const float& factor, const Vector3D& v)
+inline Vector3D vectorByScalar(const float& factor, const Vector3D& v)
 {
 	Vector3D result = { factor * v.x, factor * v.y, factor * v.z };
 	return result;
 }
 
-static float scalarProduct(const Vector3D& v1, const Vector3D& v2)
+inline float scalarProduct(const Vector3D& v1, const Vector3D& v2)
 {
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
-static Vector3D substract(const Vector3D& v1, const Vector3D& v2)
+inline Vector3D substract(const Vector3D& v1, const Vector3D& v2)
 {
 	Vector3D result = {
 		v1.x - v2.x ,
@@ -240,11 +240,11 @@ static Vector3D substract(const Vector3D& v1, const Vector3D& v2)
 		};
 	return result;
 }
-static float mod(const Vector3D& v)
+inline float mod(const Vector3D& v)
 {
 	return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
 }
-static float angle(const Vector3D& v1, const Vector3D& v2)
+inline float angle(const Vector3D& v1, const Vector3D& v2)
 {
 	float divisor = mod(v1)*mod(v2);
 	const float deltaNumeric = 0.00001;
@@ -253,11 +253,11 @@ static float angle(const Vector3D& v1, const Vector3D& v2)
 	if (arg <-1 or arg >1) return arg < 0 ? M_PI : 0;
 	return acos( arg );
 }
-static void print(const Vector3D& v, std::string name="")
+inline void print(const Vector3D& v, std::string name="")
 {
 	std::cout << name << " (" << v.x << ", " << v.y << ", " << v.z << ")" << std::endl;
 }
-static float rad( float deg )
+inline float rad( float deg )
 {
 	return deg / 180 * M_PI;
 }
