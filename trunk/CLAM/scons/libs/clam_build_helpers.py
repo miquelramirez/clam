@@ -276,7 +276,7 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 	install_lib = env.Install( install_dirs.lib, lib)
 	# force generating local soname and linkername when installing
 	env.Depends(install_lib, [linkername_lib, soname_lib] )
-	install_descriptor = env.Install( install_dirs.pc, pcfile )
+	install_pc = env.Install( install_dirs.pc, pcfile )
 	install_soname = env.SonameLink( os.path.join( install_dirs.lib, soname), install_lib )
 	install_linkername =  env.LinkerNameLink( os.path.join(install_dirs.lib,linker_name), install_lib)
 #	static_lib = env.Library( 'clam_'+name, sources )
@@ -290,7 +290,7 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 	env.Alias( 'install_'+name+'_dev', [
 		install_headers,
 		install_linkername,
-		install_descriptor,
+		install_pc,
 # 		install_static,
 	])
 
@@ -305,12 +305,12 @@ def win32_lib_rules( name, version, headers, sources, install_dirs, pcfile, env,
 	lib = env.SharedLibrary( 'clam_' + name, sources)
 	tgt = env.Alias(name, lib)
 	install_lib = env.Install( install_dirs.lib, lib )
-	install_descriptor = env.Install( install_dirs.pc, pcfile )
+	install_pc = env.Install( install_dirs.pc, pcfile )
 	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
 	install_tgt = env.Alias('install_'+name, [
 		install_headers,
 		install_lib,
-		install_descriptor
+		install_pc
 	])
 	return tgt, install_tgt
 
