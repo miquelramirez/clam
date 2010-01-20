@@ -111,6 +111,7 @@ class InstallDirs :
 			self.prefix = environ['prefix_for_packaging'] 
 		else: self.prefix = environ['prefix']
 		self.lib  = self.prefix + '/lib'
+		self.pc   = self.prefix + '/lib/pkgconfig'
 		self.bin  = self.prefix + '/bin'
 		self.inc  = self.prefix + '/include'
 		self.data = self.prefix + '/share'
@@ -197,93 +198,72 @@ def check_pkg_config(context, *args, **kwords):
 tool_checks['check_pkg_config'] = check_pkg_config
 
 #---------------------------------------------------------------
-# from pkggen.py
-
-class PackageData :
-
-	def __init__(self, name, version='0.0', extra = [], depends = [] ) :
-		self.name = name
-		self.version = version
-		self.depends = depends
-		self.extra = extra
-
-	def create_pkg_descriptor( self, env, out_file ) :
-		out = open(out_file, 'w')
-		print >> out, "prefix = %s"%env['prefix']
-		print >> out, "libdir = ${prefix}/lib"
-		print >> out, "includedir = ${prefix}/include"
-		print >> out
-		print >> out, "Name: %s"%self.name
-		print >> out, "Version: %s"%self.version
-		print >> out, "Description: C++ Framework for analysis, synthesis and transformation of music audio signals"
-		print >> out, "Requires: %s"%" ".join(self.depends)
-		print >> out, "Conflicts: "
-		print >> out, "Libs: -L${libdir} -l%s"%self.name
-		edict = env.Dictionary()
-		cppflags = edict.get('CPPFLAGS', [''])
-		cpppaths = [ '-I'+path for path in env.Dictionary().get('CPPPATH', ['']) ]
-		print >> out, "Cflags: -I${includedir} %s"%" ".join(cppflags+cpppaths)
-
-		out.close()
-
-#---------------------------------------------------------------
 # from rulesets.py
 from SCons.Action import *
 
-
 def lib_rules(name, version, folders, blacklist, install_dirs, env, moduleDependencies=[]) :
+	pcfile = env.PkgConfigFile(
+		package = "clam_%s"%name,
+		version = version,
+		prefix = env['prefix'],
+		description = "C++ Framework for analysis, synthesis and transformation of music audio signals",
+		url = 'http://clam-project.org',
+		requires = ["clam_%s"%module for module in moduleDependencies],
+		cflags = env.Dictionary().get('CPPFLAGS', ['']) + ['-I'+path for path in env.Dictionary().get('CPPPATH', ['']) ],
+		)
 
-	headers, sources = retrieveSources(env, folders, blacklist)
-
-	if not env.GetOption('clean') :
-		# David: I don't understand why you don't want to clean it
-		# -> it is not a builder, it can not be cleaned, TODO: Turn it a builder -- David
-		pkg_data = PackageData( 'clam_%s'%name, version )
-		pkg_data.create_pkg_descriptor( env, 'clam_%s.pc'%name )
-
+	# This is needed for local compilation of modules
 	env.Prepend(CPPPATH=['include']+['../%s/include'%module for module in moduleDependencies])
 	env.Prepend(CPPPATH=['include/CLAM']+['../%s/include/CLAM'%module for module in moduleDependencies])
 	env.Append(LIBS=['clam_%s'%module for module in moduleDependencies ])
 	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
 	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
+	headers, sources = retrieveSources(env, folders, blacklist)
+
 	crosscompiling = env.get('crossmingw')
 	if sys.platform != 'win32' and not crosscompiling :
-		return posix_lib_rules( name, version, headers , sources, install_dirs, env )
+		return posix_lib_rules( name, version, headers , sources, pcfile, install_dirs, env )
 	else :
-		return win32_lib_rules( name, version, headers , sources, install_dirs, env )
+		return win32_lib_rules( name, version, headers , sources, pcfile, install_dirs, env )
 
-def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleDependencies=[]) :
+def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env, moduleDependencies=[]) :
 
-	#for file in sources :
-	#	print "file to compile: " + str(file)
-	lib_descriptor = env.File( 'clam_'+name+'.pc' )
-
-	# We expect a version like " X.Y-possibleextrachars "
-	versionnumbers = version.split('.')
-	libversion = "%s%s.%s"%(versionnumbers[0], versionnumbers[1], versionnumbers[2])
+	versionnumbers = tuple(version.split('.'))
 
 	if len(versionnumbers) != 3:
 		print " ERROR in buildtools.posix_lib_rules: version name does not follow CLAM standard "
 		print "   Check the variable 'version' in the main SConstruct"
 		sys.exit(1)
 
+	libversion = "%s%s.%s"%versionnumbers
 	if sys.platform == 'linux2' :
-		libname = 'libclam_'+name+'.so.%s%s.%s' % (versionnumbers[0], versionnumbers[1], versionnumbers[2])
-		soname = 'libclam_'+name+'.so.%s%s' % (versionnumbers[0], versionnumbers[1])
+		# Linker name: it a soft link without version numbers, to be specified
+		# to the linker when compiling binaries against the lib. Just needed
+		# for development of such binaries.
+		# Soname: is the name of the link that dependant executables will look
+		# for at runtime. Such name is embedded in the library by using "-Wl,-soname,..."
+		# and when linking a dependant exectuable is also embeded in it.
+		# Lib name: the actual fully versioned name of the library.
+		# Links with the soname and the lib name point to it.
+		# This method enables upgrading the lib without recompiling programs when
+		# the ABI is kept. 
 		linker_name = 'libclam_'+name+'.so'
+		soname      = linker_name+'.%s%s' % (versionnumbers[0], versionnumbers[1])
+		libname     = linker_name+'.'+ libversion
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( 'clam_' + name, sources, SHLIBSUFFIX='.so.%s'%libversion )
-		soname_lib = env.SonameLink( soname, lib )				# lib***.so.XY -> lib***.so.XY.Z
-		linkername_lib = env.LinkerNameLink( linker_name, soname_lib )		# lib***.so -> lib***.so.X
-		env.Depends(lib, ['../%s/libclam_%s.so.%s'%(module,module,versionnumbers[0]) for module in moduleDependencies ])
+		soname_lib     = env.SonameLink( soname, lib )          # lib***.so.XY -> lib***.so.XY.Z
+		linkername_lib = env.LinkerNameLink( linker_name, lib ) # lib***.so    -> lib***.so.XY.Z
 	else : #darwin
 		soname = 'libclam_'+name+'.%s.dylib' % versionnumbers[0]
 		middle_linker_name = 'libclam_'+name+'.%s.%s.dylib' % (versionnumbers[0], versionnumbers[1])
 		linker_name = 'libclam_'+name+'.dylib'
-		env.Append( CCFLAGS=['-fno-common'] )
-		env.Append( SHLINKFLAGS=['-dynamic',
-				'-Wl,-install_name,%s'%(install_dirs.lib + '/' + 'libclam_' + name + '.%s.dylib'%(version))] )
+		env.AppendUnique( CCFLAGS=['-fno-common'] )
+		env.AppendUnique( SHLINKFLAGS=[
+				'-dynamic',
+				'-Wl,-install_name,%s'%(install_dirs.lib + '/' + 'libclam_' + name + '.%s.dylib'%(version))
+				] )
 		lib = env.SharedLibrary( 'clam_' + name, sources, SHLIBSUFFIX='.%s.dylib'%version )
 		soname_lib = env.LinkerNameLink( middle_linker_name, lib )		# lib***.X.Y.dylib -> lib***.X.Y.Z.dylib
 		middlelinkername_lib = env.LinkerNameLink( soname, soname_lib )		# lib***.so.X -> lib***.so.X.Y
@@ -294,9 +274,11 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
 	env.AddPostAction( install_headers, "chmod 644 $TARGET" )
 	install_lib = env.Install( install_dirs.lib, lib)
-	install_descriptor = env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
-	install_soname = env.SonameLink( install_dirs.lib + '/' + soname, install_lib )
-	install_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_lib)
+	# force generating local soname and linkername when installing
+	env.Depends(install_lib, [linkername_lib, soname_lib] )
+	install_descriptor = env.Install( install_dirs.pc, pcfile )
+	install_soname = env.SonameLink( os.path.join( install_dirs.lib, soname), install_lib )
+	install_linkername =  env.LinkerNameLink( os.path.join(install_dirs.lib,linker_name), install_lib)
 #	static_lib = env.Library( 'clam_'+name, sources )
 #	install_static = env.Install( install_dirs.lib, static_lib )
 
@@ -319,15 +301,17 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 
 	return tgt, install_tgt
 
-def win32_lib_rules( name, version, headers, sources, install_dirs, env, moduleDependencies =[] ) :
-	crosscompiling=env.get('crossmingw')
+def win32_lib_rules( name, version, headers, sources, install_dirs, pcfile, env, moduleDependencies =[] ) :
 	lib = env.SharedLibrary( 'clam_' + name, sources)
 	tgt = env.Alias(name, lib)
-	lib_descriptor = env.File( 'clam_'+name+'.pc' )
-	install_static = env.Install( install_dirs.lib, lib )
-	install_descriptor = env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
+	install_lib = env.Install( install_dirs.lib, lib )
+	install_descriptor = env.Install( install_dirs.pc, pcfile )
 	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
-	install_tgt = env.Alias('install_'+name, [install_headers,install_static,install_descriptor])
+	install_tgt = env.Alias('install_'+name, [
+		install_headers,
+		install_lib,
+		install_descriptor
+	])
 	return tgt, install_tgt
 
 
@@ -370,6 +354,40 @@ def SetupSpawn( env ):
 
 
 def create_custom_builders( env ) :
+	def PkgConfigFile(env, package, version, prefix, description=None, url=None, requires=[], conflicts=[], cflags=[], libs=[]) :
+		env.Tool('textfile')
+		pkgConfigTemplate = """\
+name = @name@
+prefix = @prefix@
+libdir = $${prefix}/lib
+includedir = $${prefix}/include
+
+Name: $${name}
+Description: @description@
+Url: @url@
+Version: @version@
+Requires: @requires@
+Conflicts: @conflicts@
+Libs: -L$${libdir} -l$${name} @libs@
+Cflags: -I$${includedir} @cflags@
+"""
+		return env.Textfile(target = package,
+			source = [pkgConfigTemplate],
+			TEXTFILESUFFIX='.pc',
+			SUBST_DICT=[
+				('@prefix@', prefix ),
+				('@name@', package ),
+				('@version@', version ),
+				('@description@', "C++ Framework for analysis, synthesis and transformation of music audio signals" ),
+				('@url@', 'http://clam-project.org' ),
+				('@requires@', ", ".join(requires) ),
+				('@conflicts@', ", ".join(conflicts) ),
+				('@cflags@', " ".join(cflags) ),
+				('@libs@', " ".join(libs) ),
+				]
+			)
+	env.AddMethod(PkgConfigFile)
+
 	def generate_so_name( target, source, env ) :
 		source_dir = os.path.dirname( str(source[0]) )
 		cwd = os.getcwd()
