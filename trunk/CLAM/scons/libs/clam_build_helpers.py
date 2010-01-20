@@ -355,21 +355,21 @@ def SetupSpawn( env ):
 
 def create_custom_builders( env ) :
 	def PkgConfigFile(env, package, version, prefix, description=None, url=None, requires=[], conflicts=[], cflags=[], libs=[]) :
-		pkgConfigTemplate = """\
+		pkgConfigTemplate = env.Value("""\
 name = @name@
 prefix = @prefix@
-libdir = $${prefix}/lib
-includedir = $${prefix}/include
+libdir = ${prefix}/lib
+includedir = ${prefix}/include
 
-Name: $${name}
+Name: ${name}
 Description: @description@
 Url: @url@
 Version: @version@
 Requires: @requires@
 Conflicts: @conflicts@
-Libs: -L$${libdir} -l$${name} @libs@
-Cflags: -I$${includedir} @cflags@
-"""
+Libs: -L${libdir} -l${name} @libs@
+Cflags: -I${includedir} @cflags@
+""")
 		return env.Textfile(target = package,
 			source = [pkgConfigTemplate],
 			TEXTFILESUFFIX='.pc',
