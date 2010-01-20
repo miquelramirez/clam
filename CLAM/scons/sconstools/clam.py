@@ -1,5 +1,18 @@
 import sys
 
+def ClamQuietCompilation(env) :
+	env['CXXCOMSTR'] = '== Compiling C++ $SOURCE'
+	env['CCCOMSTR'] = '== Compiling C $SOURCE'
+	env['SHCXXCOMSTR'] = '== Compiling shared C++ $SOURCE'
+	env['SHCCCOMSTR'] = '== Compiling shared C $SOURCE'
+	env['LINKCOMSTR'] = '== Linking $TARGET'
+	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
+	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
+	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
+	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
+	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
+
 def enable_modules( self, libs, path) :
 	if sys.platform in ['linux2','darwin'] : 
 		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
@@ -25,10 +38,8 @@ def enable_modules( self, libs, path) :
 
 
 def generate(env) :
-	import new
-	import SCons
-	method = new.instancemethod(enable_modules,env,SCons.Environment)
-	env.EnableClamModules=method
+	env.AddMethod(enable_modules, "EnableClamModules")
+	env.AddMethod(ClamQuietCompilation)
 
 def exists(env):
 	return True
