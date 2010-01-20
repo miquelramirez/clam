@@ -197,7 +197,7 @@ void StreamImpl<Token, PhantomBuffer>::CommonNewRegionSize( Region& anyRegion )
 	{	
 		int logicalSizeCandidate = anyRegion.Size()*2;
 		newLogicalSize = 1 << ExponentOfClosestGreaterPowerOfTwo(logicalSizeCandidate);
-		newPhantomSize = anyRegion.Size()*2;
+		newPhantomSize = anyRegion.Size()-1;
 	}
 
 	if(newLogicalSize <= LogicalSize())
