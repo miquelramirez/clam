@@ -29,7 +29,7 @@
 #include <CLAM/Text.hxx>
 
 #include <CLAM/AudioMixer.hxx>
-#include "../sndfile/SndfilePlayer.hxx"
+#include <CLAM/sndfile/SndfilePlayer.hxx>
 
 #include <vector>
 #include <queue>

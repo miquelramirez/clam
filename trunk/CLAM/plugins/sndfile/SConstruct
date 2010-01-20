@@ -1,6 +1,17 @@
+#!/usr/bin/env python
 import os, glob, sys
 
-libraryName='SndfilePlayer'
+moduleName='sndfile'
+libraryName='clam_'+moduleName
+version = "0.0.0"
+description = "Experimental SndFile wrapper for the CLAM framework"
+url = 'http://clam-project.org'
+
+clamDependencies = [
+	'clam_core',
+	]
+otherDependencies = [
+	]
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -13,9 +24,10 @@ def recursiveDirs(root) :
 
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
 if sys.platform=='linux2' :
-	options.Add(BoolVariable('crossmingw', 'Activates the MinGW Windows crosscompiling mode', 'no'))
+	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 toolChain = 'default'
 if sys.platform == "win32": toolChain = 'mingw'
@@ -30,24 +42,51 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
-env.EnableClamModules([
-	'clam_core',
-	'clam_audioio',
-	'clam_processing',
-	] , CLAMInstallDir)
+env.EnableClamModules(clamDependencies, CLAMInstallDir)
+env.Tool('textfile', toolpath=[clam_sconstoolspath])
+env.Tool('pc', toolpath=[clam_sconstoolspath])
+if not env['verbose'] : env.ClamQuietCompilation()
 
+# Empty plugin linking to the module library
+envPlugin = env.Clone()
+envPlugin.AppendUnique(
+	LIBS=[libraryName],
+	LIBPATH=['.'],
+	)
+plugin = envPlugin.SharedLibrary(target=libraryName+'_plugin', source = [])
+
+# pkg-config file
+pcfile = env.PkgConfigFile(
+	package = libraryName,
+	version = version,
+	prefix = env['prefix'],
+	description = description,
+	url = url,
+	requires = clamDependencies+otherDependencies,
+	cflags = [],
+	)
+
+# Sources and headers
 sourcePaths = recursiveDirs(".")
-sources = scanFiles('*.cxx', sourcePaths)
-sources += scanFiles('*.c', sourcePaths)
+sources = scanFiles('*.cxx', sourcePaths) + scanFiles('*.c', sourcePaths)
 sources = dict.fromkeys(sources).keys()
-if sys.platform=='linux2' :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+headers = scanFiles('*.hxx', sourcePaths) + scanFiles('*.h', sourcePaths)
+env.AppendUnique(CPPPATH=sourcePaths)
+
+env.ParseConfig( "pkg-config --cflags --libs sndfile" )
+
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
 
-install = env.Install(os.path.join(InstallDir,'lib','clam'), libraries)
+install = [
+	env.Install(os.path.join(InstallDir,'lib'), libraries),
+	env.Install(os.path.join(InstallDir,'lib','clam'), plugin),
+	env.Install(os.path.join(InstallDir,'lib','pkgconfig'), pcfile),
+	env.Install(os.path.join(InstallDir,'include','CLAM',moduleName), headers),
+	]
 
 env.Alias('install', install)
-env.Default(libraries)
+env.Default(libraries, plugin, pcfile)
 

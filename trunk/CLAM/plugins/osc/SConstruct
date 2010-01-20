@@ -1,14 +1,36 @@
-#! /usr/bin/python
-
+#!/usr/bin/env python
 import os, glob, sys, subprocess
 
-libraryName='plugins_osc_source'
+moduleName='osc'
+libraryName='clam_'+moduleName
+version = "0.0.0"
+description = "Experimental OSC support for the CLAM framework"
+url = 'http://clam-project.org'
+
+clamDependencies = [
+	'clam_core',
+	'clam_processing',
+	'clam_sndfile',
+	]
+otherDependencies = [
+	]
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(os.path.join(path,pattern))
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
 options.Add(PathVariable('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathVariable.PathAccept))
-options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+if sys.platform=='linux2' :
+	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 toolChain = 'default'
 if sys.platform == "win32": toolChain = 'mingw'
@@ -23,53 +45,73 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
-env.EnableClamModules([
-	'clam_core',
-	'clam_audioio',
-	'clam_processing',
-	] , CLAMInstallDir)
+env.EnableClamModules(clamDependencies, CLAMInstallDir)
+env.Tool('textfile', toolpath=[clam_sconstoolspath])
+env.Tool('pc', toolpath=[clam_sconstoolspath])
+if not env['verbose'] : env.ClamQuietCompilation()
 
-sources = glob.glob('*.cxx')
-sources += glob.glob('../sndfile/*.c') #TODO: remove? ATM needed to compile the sampler
-main = "linkchecking.cxx"
+# Empty plugin linking to the module library
+envPlugin = env.Clone()
+envPlugin.AppendUnique(
+	LIBS=[libraryName],
+	LIBPATH=['.'],
+	)
+plugin = envPlugin.SharedLibrary(target=libraryName+'_plugin', source = [])
+
+# pkg-config file
+pcfile = env.PkgConfigFile(
+	package = libraryName,
+	version = version,
+	prefix = env['prefix'],
+	description = description,
+	url = url,
+	requires = clamDependencies+otherDependencies,
+	cflags = [],
+	)
+
+# Sources and headers
+sourcePaths = recursiveDirs(".")
+sourcePaths.remove("./deprecated")
+sources = scanFiles('*.cxx', sourcePaths) + scanFiles('*.c', sourcePaths)
+sources = dict.fromkeys(sources).keys()
+headers = scanFiles('*.hxx', sourcePaths) + scanFiles('*.h', sourcePaths)
+main = "./linkchecking.cxx"
 sources.remove( main )
-extraPaths = [
-	CLAMInstallDir+'/include',
-	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
-	'../sndfile', #TODO: remove? ATM needed to compile the sampler
-]
-env.Append(CPPPATH=extraPaths)
+env.AppendUnique(CPPPATH=sourcePaths)
+
+if subprocess.call("pkg-config --atleast-version=0.26 liblo",shell=True)==0:
+	env.Append( LIBPATH=['/usr/local/lib'] )
+	env.Append( CPPDEFINES=['__MULTICAST_LIBLO__'] )
+env.ParseConfig('pkg-config --cflags --libs liblo')
+
+if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
+	env.Append( LIBPATH=['/opt/local/lib'] )
+	env.Append( LIBS=['fftw3'] )
 
 # TODO: All this (but the ws2_32 in windows) can be retrieved from pkg-config
-env.Append( LIBS=['lo'] )
 if env['sandbox_path'] :
 	env.Append( CPPPATH=os.path.join(env['sandbox_path'],'local/include') )
 	env.Append( LIBPATH=os.path.join(env['sandbox_path'],'local/lib') )
 	env.Append( LIBS=['ws2_32'] )
 	env.Append( LIBS=['pthread'] )
 
-if sys.platform=='linux2' :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
 programs = [
-	env.Program(target=main[:-4], source=[main]+sources),
+	env.Program(target=main[2:-4], source=[main]+sources),
 	]
 
-if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
-	env.Append( LIBPATH=['/opt/local/lib'] )
-	env.Append( LIBS=['fftw3'] )
 	
-#check for multicast capable version of liblo:
-if subprocess.call("pkg-config --atleast-version=0.26 liblo",shell=True)==0:
-	env.Append( LIBPATH=['/usr/local/lib'] )
-	env.Append( CPPDEFINES=['__MULTICAST_LIBLO__'] )
 
-
-install = env.Install(os.path.join(InstallDir,'lib','clam'), libraries)
+install = [
+	env.Install(os.path.join(InstallDir,'lib'), libraries),
+	env.Install(os.path.join(InstallDir,'lib','clam'), plugin),
+	env.Install(os.path.join(InstallDir,'lib','pkgconfig'), pcfile),
+	env.Install(os.path.join(InstallDir,'include','CLAM',moduleName), headers),
+	]
 
 env.Alias('install', install)
-env.Default(libraries + programs)
-
+env.Default(libraries, plugin, pcfile, programs)
 
