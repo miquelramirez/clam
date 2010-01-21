@@ -1,7 +1,7 @@
 #ifndef _SimpleTransformer_
 #define _SimpleTransformer_
 
-#include "Frame.hxx"
+#include <CLAM/Frame.hxx>
 
 namespace CLAM
 {

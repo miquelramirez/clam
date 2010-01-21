@@ -1,5 +1,5 @@
 #include "SimpleTransformer.hxx"
-#include "Spectrum.hxx"
+#include <CLAM/Spectrum.hxx>
 
 namespace CLAM
 {
