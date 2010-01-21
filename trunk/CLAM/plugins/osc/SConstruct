@@ -15,15 +15,6 @@ clamDependencies = [
 otherDependencies = [
 	]
 
-def scanFiles(pattern, paths) :
-	files = []
-	for path in paths :
-		files+=glob.glob(os.path.join(path,pattern))
-	return files
-
-def recursiveDirs(root) :
-	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
-
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
@@ -40,48 +31,27 @@ Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
-InstallDir = env['prefix'] or env['clam_prefix']
+if not env['prefix'] : env['prefix'] = env['clam_prefix']
+
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.EnableClamModules(clamDependencies, CLAMInstallDir)
-env.Tool('textfile', toolpath=[clam_sconstoolspath])
-env.Tool('pc', toolpath=[clam_sconstoolspath])
-if not env['verbose'] : env.ClamQuietCompilation()
-
-# Empty plugin linking to the module library
-envPlugin = env.Clone()
-envPlugin.AppendUnique(
-	LIBS=[libraryName],
-	LIBPATH=['.'],
-	)
-plugin = envPlugin.SharedLibrary(target=libraryName+'_plugin', source = [])
-
-# pkg-config file
-pcfile = env.PkgConfigFile(
-	package = libraryName,
-	version = version,
-	prefix = env['prefix'],
-	description = description,
-	url = url,
-	requires = clamDependencies+otherDependencies,
-	cflags = [],
-	)
 
 # Sources and headers
-sourcePaths = recursiveDirs(".")
+sourcePaths = env.recursiveDirs(".")
 sourcePaths.remove("./deprecated")
-sources = scanFiles('*.cxx', sourcePaths) + scanFiles('*.c', sourcePaths)
+sources = env.scanFiles('*.cxx', sourcePaths) + env.scanFiles('*.c', sourcePaths)
 sources = dict.fromkeys(sources).keys()
-headers = scanFiles('*.hxx', sourcePaths) + scanFiles('*.h', sourcePaths)
+headers = env.scanFiles('*.hxx', sourcePaths) + env.scanFiles('*.h', sourcePaths)
 main = "./linkchecking.cxx"
 sources.remove( main )
 env.AppendUnique(CPPPATH=sourcePaths)
 
-if sys.platform=='linux2' :
-	envPlugin.AppendUnique(LIBS=['dl'])
-program = envPlugin.Program(target=main[2:-4], source=[main])
+#if sys.platform=='linux2' :
+#	envPlugin.AppendUnique(LIBS=['dl'])
+program = env.Program(target=main[2:-4], source=[main])
 
 if subprocess.call("pkg-config --atleast-version=0.26 liblo",shell=True)==0:
 	env.Append( LIBPATH=['/usr/local/lib'] )
@@ -100,20 +70,19 @@ if env['sandbox_path'] :
 	env.Append( LIBS=['pthread'] )
 
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
-libraries = [
-	env.SharedLibrary(target=libraryName, source = sources),
-	]
 
-	
-
-install = [
-	env.Install(os.path.join(InstallDir,'lib'), libraries),
-	env.Install(os.path.join(InstallDir,'lib','clam'), plugin),
-	env.Install(os.path.join(InstallDir,'lib','pkgconfig'), pcfile),
-	env.Install(os.path.join(InstallDir,'include','CLAM',moduleName), headers),
-	]
+install, default = env.ClamModule(
+	moduleName,
+	version,
+	description = description,
+	url = url,
+	sources = sources,
+	headers = headers,
+	clamDependencies = clamDependencies,
+	otherDependencies = otherDependencies,
+	)
 
 env.Alias('install', install)
-env.Default(libraries, plugin, pcfile, program)
+env.Default(program, *default)
 
 
