@@ -24,13 +24,17 @@ def ClamModule(env, moduleName, version,
 		) :
 	try: env.PkgConfigFile
 	except : env.Tool('pc', toolpath=[os.path.dirname(__file__)])
+
+	env.AppendUnique(CPPDEFINES=[('CLAM_MODULE',moduleName)])
+	env['SHOBJPREFIX']='generated/'
+	env['OBJPREFIX']='generated/'
 	
 	libraryName = 'clam_'+moduleName
 	if not env['verbose'] : env.ClamQuietCompilation()
 
 	# The empty plugin linking to the module library
 	envPlugin = env.Clone()
-	envPlugin.AppendUnique(
+	envPlugin.Prepend( # prepend to avoid using an eventual installed version
 		LIBS=[libraryName],
 		LIBPATH=['.'],
 		)
@@ -49,7 +53,13 @@ def ClamModule(env, moduleName, version,
 
 	versionNumbers=tuple(version.split("."))
 
-	if sys.platform == 'linux2' :
+	crosscompiling = env.get('crossmingw')
+	if sys.platform == 'win32' or crosscompiling :
+		lib = env.SharedLibrary( libraryName, sources)
+		localLinkName = []
+		localSoName = []
+		libraries = lib
+	elif sys.platform == 'linux2' :
 		# * Lib name: the actual fully versioned name of the library.
 		# * Soname: is the name of a link that dependant executables will look
 		# for at runtime. It does not contain the bugfix version. This enables
@@ -64,10 +74,31 @@ def ClamModule(env, moduleName, version,
 		libname  = 'libclam_'+moduleName+'.so.%s.%s.%s' % versionNumbers
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( libraryName, sources,
-				SHLIBSUFFIX='.so.%s.%s.%s'%versionNumbers )
+			SHLIBSUFFIX='.so.%s.%s.%s'%versionNumbers )
 		localSoName   = env.LinkerNameLink( soname, lib )   # lib***.so.XY -> lib***.so.XY.Z
 		localLinkName = env.LinkerNameLink( linkname, lib ) # lib***.so    -> lib***.so.XY.Z
 		libraries = [lib, localSoName, localLinkName]
+	else : #darwin
+		linkname = 'libclam_'+moduleName+'.dylib'
+		soname =   'libclam_'+moduleName+'.%s.%s.dylib' % versionNumbers[:2]
+		libname =  'libclam_'+moduleName+'.%s.%s.%s.dylib' % versionNumbers
+		env.AppendUnique( CCFLAGS=['-fno-common'] )
+		env.AppendUnique( SHLINKFLAGS=[
+			'-dynamic',
+			# TODO: Review which of the followin are needed at all
+#			'-Wl,-twolevel_namespace',
+#			'-Wl,-undefined,dynamic_lookup,-headerpad_max_install_names',
+#			'-Wl,-install_name,@executable_path/../lib/%s'%soname, # or full name?
+			'-Wl,-install_name,%s'%os.path.join(env['prefix'],'lib',soname),
+			'-Wl,-compatibility_version,%s.%s'%versionNumbers[:2],
+			'-Wl,-current_version,%s.%s.%s'%versionNumbers,
+			] )
+		lib = env.SharedLibrary( 'clam_' + moduleName, sources,
+			SHLIBSUFFIX='.%s.dylib'%version )
+		localSoName =   env.LinkerNameLink( soname, lib )   # lib***.X.Y.dylib -> lib***.X.Y.Z.dylib
+		localLinkName = env.LinkerNameLink( linkname, lib ) # lib***.dylib     -> lib***.X.Y.Z.dylib
+	libraries = [lib, localSoName, localLinkName]
+
 	installedLib = env.Install(os.path.join(env['prefix'],'lib'), lib)
 	install = [
 		installedLib,
@@ -89,6 +120,7 @@ def ClamQuietCompilation(env) :
 	env['SHCCCOMSTR'] = '== Compiling shared C $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
 	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
+	env['LDMODULECOMSTR'] = '== Linking plugin $TARGET'
 	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
 	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
 	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
@@ -146,7 +178,7 @@ def generate(env) :
 			shutil.copy(str(source[0]), str(target[0])),
 			"== Build copying $SOURCE"))
 
-	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : bld} )	
+	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : bld} )
 	env.AddMethod(enable_modules, "EnableClamModules")
 	env.AddMethod(ClamQuietCompilation)
 	env.AddMethod(ClamModule)
