@@ -1,65 +1,56 @@
-#! /usr/bin/python
-
+#!/usr/bin/env python
 import os, glob, sys
 
-libraryName='plugins_resampling'
+moduleName='resampling'
+version = "0.0.0"
+description = "Experimental SndFile wrapper for the CLAM framework"
+url = 'http://clam-project.org'
+clamDependencies = [
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	]
+otherDependencies = [
+	]
 
 options = Variables('options.cache', ARGUMENTS)
-options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
+options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(PathVariable('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathVariable.PathAccept))
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
-
-toolChain = 'default'
-if sys.platform == "win32": toolChain = 'mingw'
+toolChain = 'mingw' if sys.platform == "win32" else 'default'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
-InstallDir = env['prefix'] or env['clam_prefix']
+if not env['prefix'] : env['prefix'] = env['clam_prefix']
+
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
-env.EnableClamModules([
-	'clam_core',
-	'clam_audioio',
-	'clam_processing',
-	] , CLAMInstallDir)
+env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
 sources = glob.glob('*.cxx')
-extraPaths = [
-	CLAMInstallDir+'/include',
-	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
-]
-env.Append(CPPPATH=extraPaths)
+headers = glob.glob('*.hxx')
 
-# TODO: All this (but the ws2_32 in windows) can be retrieved from pkg-config
-env.Append( LIBS=['samplerate'] )
-if env['sandbox_path'] :
-	env.Append( CPPPATH=os.path.join(env['sandbox_path'],'local/include') )
-	env.Append( LIBPATH=os.path.join(env['sandbox_path'],'local/lib') )
-#	env.Append( LIBS=['ws2_32'] )
-#	env.Append( LIBS=['pthread'] )
+env.ParseConfig( "pkg-config --cflags --libs samplerate" )
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
-if sys.platform=='linux2' :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
-libraries = [
-	env.SharedLibrary(target=libraryName, source = sources),
-	]
-programs = [
-	]
-
-#if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
-#	env.Append( LIBPATH=['/opt/local/lib'] )
-#	env.Append( LIBS=['fftw3'] )
-	
-
-install = env.Install(os.path.join(InstallDir,'lib','clam'), libraries)
+install, default = env.ClamModule(
+	moduleName,
+	version,
+	description = description,
+	url = url,
+	sources = sources,
+	headers = headers,
+	clamDependencies = clamDependencies,
+	otherDependencies = otherDependencies,
+	)
 
 env.Alias('install', install)
-env.Default(libraries + programs)
-
+env.Default(default)
 
