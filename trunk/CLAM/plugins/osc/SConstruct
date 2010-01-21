@@ -53,9 +53,9 @@ if subprocess.call("pkg-config --atleast-version=0.26 liblo",shell=True)==0:
 	env.Append( CPPDEFINES=['__MULTICAST_LIBLO__'] )
 env.ParseConfig('pkg-config --cflags --libs liblo')
 
-#if sys.platform=='linux2' :
-#	envPlugin.AppendUnique(LIBS=['dl'])
-program = env.Program(target=main[2:-4], source=[main])
+envProg = Environment(ENV=os.environ)
+envProg.ParseConfig('pkg-config --cflags --libs liblo')
+program = envProg.Program(target=main[2:-4], source=[main])
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
