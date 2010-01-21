@@ -6,7 +6,6 @@ libraryName='clam_'+moduleName
 version = "0.0.0"
 description = "Experimental OSC support for the CLAM framework"
 url = 'http://clam-project.org'
-
 clamDependencies = [
 	'clam_core',
 	'clam_processing',
@@ -49,14 +48,14 @@ main = "./linkchecking.cxx"
 sources.remove( main )
 env.AppendUnique(CPPPATH=sourcePaths)
 
-#if sys.platform=='linux2' :
-#	envPlugin.AppendUnique(LIBS=['dl'])
-program = env.Program(target=main[2:-4], source=[main])
-
 if subprocess.call("pkg-config --atleast-version=0.26 liblo",shell=True)==0:
 	env.Append( LIBPATH=['/usr/local/lib'] )
 	env.Append( CPPDEFINES=['__MULTICAST_LIBLO__'] )
 env.ParseConfig('pkg-config --cflags --libs liblo')
+
+#if sys.platform=='linux2' :
+#	envPlugin.AppendUnique(LIBS=['dl'])
+program = env.Program(target=main[2:-4], source=[main])
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
