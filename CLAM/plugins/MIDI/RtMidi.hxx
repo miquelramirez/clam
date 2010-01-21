@@ -40,7 +40,7 @@
 #ifndef RTMIDI_H
 #define RTMIDI_H
 
-#include "RtError.h"
+#include "RtError.hxx"
 #include <string>
 
 class RtMidi
