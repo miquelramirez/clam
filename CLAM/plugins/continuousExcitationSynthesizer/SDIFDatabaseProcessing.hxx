@@ -23,14 +23,14 @@
 #define __SDIFDatabaseProcessing_hxx
 
 #include "SDIFDatabase.hxx"
-#include "ProcessingComposite.hxx"
-#include "InControl.hxx"
-#include "OutPort.hxx"
-#include "OutPortPublisher.hxx"
-#include "Spectrum.hxx"
-#include "SpectralPeakArray.hxx"
-#include "Fundamental.hxx"
-#include "DirectoryName.hxx"
+#include <CLAM/ProcessingComposite.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/OutPort.hxx>
+#include <CLAM/OutPortPublisher.hxx>
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/SpectralPeakArray.hxx>
+#include <CLAM/Fundamental.hxx>
+#include <CLAM/DirectoryName.hxx>
 
 namespace CLAM {
 

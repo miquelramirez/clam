@@ -22,7 +22,7 @@
 #ifndef _DIRECTORYBASEDMETADATAREADER_HXX
 #define _DIRECTORYBASEDMETADATAREADER_HXX
 
-#include "SampleMetadata.hxx"
+#include <CLAM/SampleMetadata.hxx>
 #include "MetadataReader.hxx"
 #include <vector>
 #include <string>

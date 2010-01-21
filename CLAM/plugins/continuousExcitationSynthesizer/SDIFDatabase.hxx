@@ -1,12 +1,12 @@
 #ifndef _SampleManager_
 #define _SampleManager_
 
-#include "SDIFFileReader.hxx"
-#include "SampleMetadata.hxx"
+#include <CLAM/SDIFFileReader.hxx>
+#include <CLAM/SampleMetadata.hxx>
 #include "DirectoryBasedMetadataReader.hxx"
-#include "LoopingSDIFFileReader.hxx"
+#include <CLAM/LoopingSDIFFileReader.hxx>
 #include "SimpleTransformer.hxx"
-#include "ThreadPool.hxx"
+#include <CLAM/ThreadPool.hxx>
 #include "ContinuousExcitationConstants.hxx"
 #include <string>
 #include <vector>

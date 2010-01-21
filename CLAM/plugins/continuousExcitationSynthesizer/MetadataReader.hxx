@@ -22,7 +22,7 @@
 #ifndef _METADATAREADER_HXX
 #define _METADATAREADER_HXX
 
-#include "SampleMetadata.hxx"
+#include <CLAM/SampleMetadata.hxx>
 #include <vector>
 
 namespace CLAM {

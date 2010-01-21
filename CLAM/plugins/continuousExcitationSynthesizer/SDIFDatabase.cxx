@@ -1,8 +1,8 @@
 #include "SDIFDatabase.hxx"
-#include "SDIFInConfig.hxx"
+#include <CLAM/SDIFInConfig.hxx>
 #include <algorithm>
 #include "SimpleTransformer.hxx"
-#include "DataUtil.hxx"
+#include <CLAM/DataUtil.hxx>
 #include <limits.h>
 
 namespace CLAM
