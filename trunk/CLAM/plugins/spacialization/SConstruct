@@ -3,11 +3,9 @@
 import os, glob, sys
 
 moduleName='spacialization'
-libraryName='clam_'+moduleName
 version = "0.0.0"
 description = "Barcelona Media contributed spacialization algorigthms for the CLAM framework"
 url = 'http://clam-project.org'
-
 clamDependencies = [
 	'clam_core',
 	'clam_audioio',
@@ -16,14 +14,8 @@ clamDependencies = [
 otherDependencies = [
 	]
 
-def scanFiles(pattern, paths) :
-	files = []
-	for path in paths :
-		files+=glob.glob(os.path.join(path,pattern))
-	return files
-
 options = Variables('options.cache', ARGUMENTS)
-options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
 options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(PathVariable('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathVariable.PathAccept))
@@ -31,62 +23,28 @@ options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 options.Add(EnumVariable('raytracing', 'Linking with Barcelona Media raytracing (not GPL)', 'disabled',
 	allowed_values= ('convergent', 'traditional', 'disabled') ) )
 
-toolChain = 'default'
-if sys.platform == "win32": toolChain = 'mingw'
+toolChain = 'mingw' if sys.platform == "win32" else 'default'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
-InstallDir = env['prefix'] or env['clam_prefix']
+if not env['prefix'] : env['prefix'] = env['clam_prefix']
+
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.EnableClamModules(clamDependencies, CLAMInstallDir)
-env.Tool('textfile', toolpath=[clam_sconstoolspath])
-env.Tool('pc', toolpath=[clam_sconstoolspath])
-if not env['verbose'] : env.ClamQuietCompilation()
 
-if sys.platform=='linux2' :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
-	print "adding optimization flags"
-	env.Append( CCFLAGS=[
-		'-fomit-frame-pointer', 
-		'-ffast-math',
-		'-funroll-loops',
-		'-mmmx',
-#		'-march=nocona',
-		'-msse',
-		'-mfpmath=sse'
-	]) 
-
-
-# Empty plugin linking to the module library
-envPlugin = env.Clone()
-envPlugin.AppendUnique(
-	LIBS=[libraryName],
-	LIBPATH=['.'],
-	)
-plugin = envPlugin.SharedLibrary(target=libraryName+'_plugin', source = [])
-
-# pkg-config file
-pcfile = env.PkgConfigFile(
-	package = libraryName,
-	version = version,
-	prefix = env['prefix'],
-	description = description,
-	url = url,
-	requires = clamDependencies+otherDependencies,
-	cflags = [],
-	)
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 # Sources and headers
 sourcePaths = ["src"]
-sources = scanFiles('*.cxx', sourcePaths)
+sources = env.scanFiles('*.cxx', sourcePaths)
 sources = dict.fromkeys(sources).keys()
-headers = scanFiles('*.hxx', sourcePaths)
+headers = env.scanFiles('*.hxx', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)
 
 if env['raytracing']=='traditional' or env['raytracing']=='convergent':
@@ -99,10 +57,6 @@ else :
 	sources.remove(os.path.join('src','RoomImpulseResponseSimulator.cxx'))
 	sources.remove(os.path.join('src','EnvironmentManager.cxx'))
 	sources.remove(os.path.join('src','OcclusionFilterControl.cxx'))
-libraries = [
-	env.SharedLibrary(target=libraryName, source = sources),
-#	env.SharedLibrary(target="clam_plugins", source = sources+['ladspa/clam_plugin.cxx'], SHLIBPREFIX=''),
-	]
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
@@ -110,9 +64,19 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
 	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
 
+install, default = env.ClamModule(
+	moduleName,
+	version,
+	description = description,
+	url = url,
+	sources = sources,
+	headers = headers,
+	clamDependencies = clamDependencies,
+	otherDependencies = otherDependencies,
+	)
 
 tests = [
-	env.Program("UnitTests", scanFiles("*.cxx", ['tests'])),
+	env.Program("UnitTests", env.scanFiles("*.cxx", ['tests'])),
 	]
 # TODO: This is a hack until LD_LIBRARY_PATH environment is nicely propagated
 ld_library_path = ""
@@ -121,20 +85,16 @@ if env['ENV'].has_key("LD_LIBRARY_PATH") :
 
 runTests = Command("UnitTests.passed",tests, "%s ./UnitTests"%ld_library_path)
 
-examples = scanFiles('*.clamnetwork', ['example-data'])
-examples+= scanFiles('*.ui', ['example-data'])
+examples = env.scanFiles('*.clamnetwork', ['example-data'])
+examples+= env.scanFiles('*.ui', ['example-data'])
 
 
-install = [
-	env.Install(os.path.join(InstallDir,'lib'), libraries),
-	env.Install(os.path.join(InstallDir,'lib','clam'), plugin),
-	env.Install(os.path.join(InstallDir,'lib','pkgconfig'), pcfile),
-	env.Install(os.path.join(InstallDir,'include','CLAM',moduleName), headers),
-#	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
+install += [
+#	env.Install(os.path.join(env['prefix'],'share','networkeditor','example-data'), examples)
 	]
 
 env.Alias('install', install)
 env.Alias('tests', runTests)
-env.Default(libraries, plugin, pcfile)
+env.Default(default)
 
 
