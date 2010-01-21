@@ -12,6 +12,7 @@ namespace Hidden
 		"key", "ControlPrinter",
 		"category", "Controls",
 		"description", "ControlPrinter",
+		"control_display_type", typeid(TControlData).name(),
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, ControlPrinter> reg = metadata;
