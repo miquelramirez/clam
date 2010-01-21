@@ -1,74 +1,68 @@
-#! /usr/bin/python
-
+#!/usr/bin/env python
 import os, glob, sys
 
-libraryName='plugins_speech'
-
-def scanFiles(pattern, paths) :
-	files = []
-	for path in paths :
-		files+=glob.glob(os.path.join(path,pattern))
-	return files
-
-def recursiveDirs(root) :
-	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
+moduleName='speech'
+version = "0.0.0"
+description = "Speech synthesis for the CLAM framework"
+url = 'http://clam-project.org'
+clamDependencies = [
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	]
+otherDependencies = [
+	]
 
 options = Variables('options.cache', ARGUMENTS)
-options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
+options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
-
-toolChain = 'default'
-if sys.platform == "win32": toolChain = 'mingw'
+toolChain = 'mingw' if sys.platform == "win32" else 'default'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
-InstallDir = env['prefix'] or env['clam_prefix']
+if not env['prefix'] : env['prefix'] = env['clam_prefix']
+
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
-env.EnableClamModules([
-	'clam_core',
-	'clam_audioio',
-	'clam_processing',
-	] , CLAMInstallDir)
+env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
-sourcePaths = recursiveDirs(".")
-sources = scanFiles('*.cxx', sourcePaths)
+sourcePaths = env.recursiveDirs(".")
+sources = env.scanFiles('*.cxx', sourcePaths)
 sources = dict.fromkeys(sources).keys()
+headers = env.scanFiles('*.hxx', sourcePaths)
 
-extraPaths = [
-	CLAMInstallDir+'/include',
-	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
-]
-env.Append(CPPPATH=extraPaths)
-
-if sys.platform=='linux2' :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
 	env.Append( LIBS=['fftw3'] )
 	
-libraries = [
-	env.SharedLibrary(target=libraryName, source = sources),
-	]
+install, default = env.ClamModule(
+	moduleName,
+	version,
+	description = description,
+	url = url,
+	sources = sources,
+	headers = headers,
+	clamDependencies = clamDependencies,
+	otherDependencies = otherDependencies,
+	)
 
 examples = [
 	'speech-example.clamnetwork',
 	'experimentalVowelSynth_withCardinalVowelControl.clamnetwork',
 	'experimentalVowelSynth_withGlottalSourceGenerator.clamnetwork',
 	]
-
-install = [
-	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
-	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
+install+= [
+	env.Install(os.path.join(env['prefix'],'share','networkeditor','example-data'), examples)
 	]
 
 env.Alias('install', install)
-env.Default(libraries)
-
+env.Default(default)
 

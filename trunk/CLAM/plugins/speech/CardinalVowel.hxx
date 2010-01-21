@@ -22,11 +22,11 @@
 #ifndef _CardinalVowel_
 #define _CardinalVowel_
 
-#include "DataTypes.hxx"
-#include "Processing.hxx"
-#include "ProcessingConfig.hxx"
-#include "InControl.hxx"
-#include "OutControl.hxx"
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/Processing.hxx>
+#include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/OutControl.hxx>
 
 namespace CLAM
 {
