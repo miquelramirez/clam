@@ -1,3 +1,5 @@
+import os
+
 pkgConfigTemplate = """\
 name = @name@
 prefix = @prefix@
@@ -31,6 +33,8 @@ def PkgConfigFile(env, package, version, prefix, description=None, url=None, req
 		)
 
 def generate(env) :
+	try: env.Textfile
+	except : env.Tool('textfile', toolpath=[os.path.dirname(__file__)])
 	env.AddMethod(PkgConfigFile)
 
 def exists(env) :
