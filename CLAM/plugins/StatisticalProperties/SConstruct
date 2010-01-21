@@ -1,48 +1,55 @@
-#! /usr/bin/python
-
+#!/usr/bin/env python
 import os, glob, sys
 
-libraryName='statisticalproperties'
-
-def scanFiles(pattern, paths) :
-	files = []
-	for path in paths :
-		files+=glob.glob(os.path.join(path,pattern))
-	return files
-
-def recursiveDirs(root) :
-	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
+moduleName='statisticalproperties'
+version = "0.0.0"
+description = "Statistical properties for the CLAM framework"
+url = 'http://clam-project.org'
+clamDependencies = [
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	]
+otherDependencies = [
+	]
 
 options = Variables('options.cache', ARGUMENTS)
-options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
-if sys.platform=='linux2' :
-	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
-env = Environment(ENV=os.environ, options=options)
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
+options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
+options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
+options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+toolChain = 'mingw' if sys.platform == "win32" else 'default'
+env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
+if not env['prefix'] : env['prefix'] = env['clam_prefix']
+
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
-env.EnableClamModules([
-	'clam_core',
-	'clam_audioio',
-	'clam_processing',
-	] , CLAMInstallDir)
+env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
-sourcePaths = recursiveDirs(".")
-sources = scanFiles('*.cxx', sourcePaths)
+sourcePaths = env.recursiveDirs(".")
+sources = env.scanFiles('*.cxx', sourcePaths)
 sources = dict.fromkeys(sources).keys()
-if sys.platform=='linux2' :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
-libraries = [
-	env.SharedLibrary(target=libraryName, source = sources),
-	]
+headers = env.scanFiles('*.hxx', sourcePaths)
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
-install = env.Install(os.path.join(CLAMInstallDir,'lib','clam'), libraries)
+install, default = env.ClamModule(
+	moduleName,
+	version,
+	description = description,
+	url = url,
+	sources = sources,
+	headers = headers,
+	clamDependencies = clamDependencies,
+	otherDependencies = otherDependencies,
+	)
 
 env.Alias('install', install)
-env.Default(libraries)
+env.Default(default)
+
