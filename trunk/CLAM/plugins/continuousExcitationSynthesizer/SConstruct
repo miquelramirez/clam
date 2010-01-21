@@ -1,21 +1,21 @@
-#! /usr/bin/python
-
+#!/usr/bin/env python
 import os, glob, sys
 
-baseName = 'continuous_excitation_synth'
-libraryName='plugins_'+baseName
-
-def scanFiles(pattern, paths) :
-	files = []
-	for path in paths :
-		files+=glob.glob(os.path.join(path,pattern))
-	return files
-
-def recursiveDirs(root) :
-	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
+moduleName='continuous_excitation_synth'
+version = "0.0.0"
+description = "Continuous excitation instrument synthesizer for the CLAM framework"
+url = 'http://clam-project.org'
+clamDependencies = [
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	]
+otherDependencies = [
+	]
 
 options = Variables('options.cache', ARGUMENTS)
-options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
+options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
@@ -27,30 +27,18 @@ Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
-InstallDir = env['prefix'] or env['clam_prefix']
+if not env['prefix'] : env['prefix'] = env['clam_prefix']
+
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
-env.EnableClamModules([
-	'clam_core',
-	'clam_audioio',
-	'clam_processing',
-	] , CLAMInstallDir)
+env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
-sourcePaths = recursiveDirs(".")
-print sourcePaths
+# Sources and headers
+sourcePaths = env.recursiveDirs(".")
 sources = glob.glob('*.cxx')
-#sources += glob.glob('toreview/*.cxx')
-extraPaths = [
-	CLAMInstallDir+'/include',
-	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
-	".",
-]
-
-env.Append(CPPPATH=extraPaths)
-sources = dict.fromkeys(sources).keys() # eliminate repeated
-print sources
+headers = glob.glob('*.hxx')
 
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
@@ -65,13 +53,20 @@ mainSources = {
 }
 for binary, mainSource in mainSources.items() :
 	sources.remove(mainSource)
-
-programs = [ env.Program(target=program, source = [mainSource] + sources)
+env.Prepend(LIBPATH=["."])
+programs = [ env.Program(target=program, source = [mainSource], LIBS='clam_'+moduleName)
 	for program, mainSource in mainSources.items()]
 
-libraries = [
-	env.SharedLibrary(target=libraryName, source = sources)
-	]
+install, default = env.ClamModule(
+	moduleName,
+	version,
+	description = description,
+	url = url,
+	sources = sources,
+	headers = headers,
+	clamDependencies = clamDependencies,
+	otherDependencies = otherDependencies,
+	)
 
 examples = [
 	'synth_with_osc.clamnetwork',
@@ -82,12 +77,11 @@ examples = [
 # help2man -N -n 'OSC controlled synthesizer based on Spectral Modelling techniques' ./ContinuousExcitationSynthesizer > ContinuousExcitationSynthesizer.1
 manpages = [ program+".1" for program in mainSources.keys() ]
 
-install = [
-	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
-	env.Install(os.path.join(InstallDir,'bin'), programs),
-	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples),
-	env.Install(os.path.join(InstallDir,'share','man','man1'), manpages),
+install+= [
+	env.Install(os.path.join(env['prefix'],'bin'), programs),
+	env.Install(os.path.join(env['prefix'],'share','networkeditor','example-data'), examples),
+	env.Install(os.path.join(env['prefix'],'share','man','man1'), manpages),
 	]
 env.Alias('install', install)
-env.Default(programs + libraries)
+env.Default(programs, default)
 
