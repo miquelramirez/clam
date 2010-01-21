@@ -1,7 +1,17 @@
 #! /usr/bin/python
-
 import os, glob, sys
 
+moduleName='guitareffects'
+version = "0.0.0"
+description = "Guitar effects for the CLAM framework"
+url = 'http://clam-project.org'
+clamDependencies = [
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	]
+otherDependencies = [
+	]
 libPaths = [
 	('guitardistortion', 'GuitarDistortion'),
 	('zyndistortion', 'ZynDistortion'),
@@ -13,17 +23,9 @@ libPaths = [
 	('clipping', 'Clipping'),
 ]
 
-def scanFiles(pattern, paths) :
-	files = []
-	for path in paths :
-		files+=glob.glob(os.path.join(path,pattern))
-	return files
-
-def recursiveDirs(root) :
-	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
-
 options = Variables('options.cache', ARGUMENTS)
-options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/bad/path'))
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
+options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
@@ -35,24 +37,13 @@ Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
-InstallDir = env['prefix'] or env['clam_prefix']
+if not env['prefix'] : env['prefix'] = env['clam_prefix']
+
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
-env.EnableClamModules([
-	'clam_core',
-	'clam_audioio',
-	'clam_processing',
-	] , CLAMInstallDir)
-
-if sys.platform=='linux2' :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
-
-libraries = [
-	env.SharedLibrary(target=libraryName, source = scanFiles("*.cxx", recursiveDirs(dir))) 
-		for libraryName, dir in libPaths
-	]
+env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
 examples = [
 	'Dist1-rack.ui',
@@ -60,13 +51,28 @@ examples = [
 	'TestAll.clamnetwork',
 	'SimpleDistortionNetwork.clamnetwork',
 	]
+dirs = sum((
+	env.recursiveDirs(dir)
+	for libraryName, dir in libPaths
+	),[])
 
-install = [
-	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
-	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+
+install, default = env.ClamModule(
+	moduleName,
+	version,
+	description = description,
+	url = url,
+	sources = env.scanFiles("*.cxx", dirs),
+	headers = env.scanFiles("*.hxx", dirs),
+	clamDependencies = clamDependencies,
+	otherDependencies = otherDependencies,
+	)
+
+install += [
+	env.Install(os.path.join(env['prefix'],'share','networkeditor','example-data'), examples)
 	]
 
 env.Alias('install', install)
-env.Default(libraries)
-
+env.Default(default)
 
