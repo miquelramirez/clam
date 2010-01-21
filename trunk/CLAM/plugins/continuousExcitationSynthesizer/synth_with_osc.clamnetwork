@@ -1,17 +1,29 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="AudioSink" position="373,133" size="128,111" type="AudioSink" />
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'DejaVu Sans'; font-size:8pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="LibloSource" position="0,0" size="100,58" type="LibloSource">
+  <processing id="AudioSink" position="412,127" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="MultiLibloSource" position="3,5" size="132,54" type="MultiLibloSource">
     <OscPath>/ebowSynthesizer</OscPath>
-    <ServerPort />
+    <ServerPort>7000</ServerPort>
+    <OSCTypeSpec>fff</OSCTypeSpec>
+    <EnableMulticast>0</EnableMulticast>
+    <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
-  <processing id="SDIFDatabaseProcessing" position="44,100" size="188,62" type="SDIFDatabaseProcessing">
-    <DirectoryName />
+  <processing id="SDIFDatabaseProcessing" position="2,122" size="188,62" type="SDIFDatabaseProcessing">
+    <DirectoryName></DirectoryName>
   </processing>
 
-  <processing id="SMSSynthesis" position="243,99" size="119,110" type="SMSSynthesis">
+  <processing id="SMSSynthesis" position="243,99" size="123,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -80,18 +92,18 @@
   </port_connection>
 
   <control_connection>
-    <out>LibloSource.osc to control 1</out>
+    <out>MultiLibloSource.0</out>
     <in>SDIFDatabaseProcessing.Pitch</in>
   </control_connection>
 
   <control_connection>
-    <out>LibloSource.osc to control 1</out>
-    <in>SDIFDatabaseProcessing.Brightness</in>
+    <out>MultiLibloSource.1</out>
+    <in>SDIFDatabaseProcessing.Amplitude</in>
   </control_connection>
 
   <control_connection>
-    <out>LibloSource.osc to control 2</out>
-    <in>SDIFDatabaseProcessing.Amplitude</in>
+    <out>MultiLibloSource.2</out>
+    <in>SDIFDatabaseProcessing.Brightness</in>
   </control_connection>
 
 </network>
