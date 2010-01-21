@@ -28,16 +28,15 @@ def ClamModule(env, moduleName, version,
 	env.AppendUnique(CPPDEFINES=[('CLAM_MODULE',moduleName)])
 	env['SHOBJPREFIX']='generated/'
 	env['OBJPREFIX']='generated/'
-	
+	# prepend to avoid using an eventual installed version of the module library
+	env.PrependUnique(LIBPATH=['.'])
+
 	libraryName = 'clam_'+moduleName
 	if not env['verbose'] : env.ClamQuietCompilation()
 
 	# The empty plugin linking to the module library
 	envPlugin = env.Clone()
-	envPlugin.Prepend( # prepend to avoid using an eventual installed version
-		LIBS=[libraryName],
-		LIBPATH=['.'],
-		)
+	envPlugin.Append(LIBS=[libraryName])
 	plugin = envPlugin.LoadableModule(target=libraryName+'_plugin', source = [])
 
 	# pkg-config file
