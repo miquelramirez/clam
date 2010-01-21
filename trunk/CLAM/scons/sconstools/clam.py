@@ -1,5 +1,8 @@
 import sys, os, glob
 
+from SCons.Action import Action
+from SCons.Builder import Builder
+
 def scanFiles(env, pattern, paths, blacklist=[]) :
 	files = []
 	for path in paths :
@@ -62,11 +65,14 @@ def ClamModule(env, moduleName, version,
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( libraryName, sources,
 				SHLIBSUFFIX='.so.%s.%s.%s'%versionNumbers )
-		localSoName   = env.LinkerNameLink( soname, lib )       # lib***.so.XY -> lib***.so.XY.Z
-		localLinkName = env.LinkerNameLink( target=linkname, source=lib ) # lib***.so    -> lib***.so.XY.Z
+		localSoName   = env.LinkerNameLink( soname, lib )   # lib***.so.XY -> lib***.so.XY.Z
+		localLinkName = env.LinkerNameLink( linkname, lib ) # lib***.so    -> lib***.so.XY.Z
 		libraries = [lib, localSoName, localLinkName]
+	installedLib = env.Install(os.path.join(env['prefix'],'lib'), lib)
 	install = [
-		env.Install(os.path.join(env['prefix'],'lib'), libraries),
+		installedLib,
+		env.LinkerNameLink( os.path.join(env['prefix'],'lib',linkname), installedLib),
+		env.SonameLink( os.path.join(env['prefix'],'lib',soname), installedLib),
 		env.Install(os.path.join(env['prefix'],'lib','clam'), plugin),
 		env.Install(os.path.join(env['prefix'],'lib','pkgconfig'), pcfile),
 		env.Install(os.path.join(env['prefix'],'include','CLAM',moduleName), headers),
@@ -116,28 +122,26 @@ def enable_modules( self, libs, path) :
 def generate(env) :
 	def generate_so_name( target, source, env ) :
 		source_dir = os.path.dirname( str(source[0]) )
-		print "Generating soname", source[0], target[0], source_dir
 		cwd = os.getcwd()
 		os.chdir( source_dir )
 		if sys.platform == 'linux2' :
 			os.system( "/sbin/ldconfig -n ." )
 		os.chdir(cwd)
 
-	bld = env.Builder( action=env.Action(generate_so_name,
+	bld = Builder( action=Action(generate_so_name,
 		"== Generating soname $TARGET") )
 	env.Append( BUILDERS={'SonameLink' : bld} )
 
 	def generate_linker_name( target, source, env ) :
-		print "Generating linker"
 		source_file = os.path.basename( str(source[0]) )
 		os.system( "ln -sf %s %s"%(source_file,str(target[0]) ))
 
-	bld = env.Builder( action=env.Action(generate_linker_name,
+	bld = Builder( action=Action(generate_linker_name,
 		"== Generating linker name $TARGET to $SOURCE") )
 	env.Append( BUILDERS={'LinkerNameLink' : bld} )
 
 	import shutil
-	bld = env.Builder( action =  env.Action( 
+	bld = Builder( action =Action( 
 		lambda target, source, env:
 			shutil.copy(str(source[0]), str(target[0])),
 			"== Build copying $SOURCE"))
