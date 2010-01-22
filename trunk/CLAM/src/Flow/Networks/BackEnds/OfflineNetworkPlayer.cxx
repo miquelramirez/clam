@@ -13,16 +13,16 @@ namespace CLAM
 
 bool OfflineNetworkPlayer::IsWorking()
 {
-	return (_outFileNames.size() != GetSize<Network::AudioSources>(GetAudioSources()) + GetSize<Network::AudioSourcesBuffer>(GetAudioSourcesBuffer()))
-		&& (_inFileNames.size() != GetSize<Network::AudioSinks>(GetAudioSinks()) + GetSize<Network::AudioSinksBuffer>(GetAudioSinksBuffer()));
+	return (_outFileNames.size() != GetSize<Network::Processings>(GetSources()))
+		&& (_inFileNames.size() != GetSize<Network::Processings>(GetSinks()));
 }
 
 std::string OfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
-	ss << GetSize<Network::AudioSources>(GetAudioSources()) + GetSize<Network::AudioSourcesBuffer>(GetAudioSourcesBuffer()) << " inputs and " 
-	   << GetSize<Network::AudioSinks>(GetAudioSinks()) + GetSize<Network::AudioSinksBuffer>(GetAudioSinksBuffer()) << " outputs needed but just " 
-	   << _inFileNames.size() << " input files provided" 
+	ss << GetSize<Network::Processings>(GetSources())  << " inputs and " 
+	   << GetSize<Network::Processings>(GetSinks())    << " outputs needed but just " 
+	   << _inFileNames.size()  << " input files provided" 
 	   << _outFileNames.size() << " output files provided" 
 	   << std::ends;
 	return ss.str();
