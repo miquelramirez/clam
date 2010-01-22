@@ -333,7 +333,7 @@ namespace CLAM
 		{
 			Processing * proc = it->second;
 			const std::string className = proc->GetClassName();
-			if (ProcessingFactory::GetInstance().AttributeExists(className,attribute))
+			if (!ProcessingFactory::GetInstance().AttributeExists(className,attribute))
 				continue;
 			ProcessingAndGeometry item;
 			item.processing = proc;
