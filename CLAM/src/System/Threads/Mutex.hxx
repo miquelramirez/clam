@@ -22,10 +22,6 @@
 #ifndef __MUTEX__
 #define __MUTEX__
 
-#if USE_PTHREADS != 1
-#error USE_PTHREADS was not set to 1 in your settings.cfg file, but you are including files that require this. Please fix your settings.cfg
-#endif
-
 #include <pthread.h>
 #include "Lock.hxx"
 #include <errno.h>
