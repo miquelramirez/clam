@@ -30,20 +30,12 @@ std::string NetworkPlayer::SourcesAndSinksToString()
 	std::string sinkNames;
 	const Network & net = GetNetwork();
 
-	const Network::AudioSources & sources = GetAudioSources();
-	const Network::AudioSinks & sinks = GetAudioSinks();
-
-	const Network::AudioSourcesBuffer & sourcesBuffer = GetAudioSourcesBuffer();
-	const Network::AudioSinksBuffer & sinksBuffer = GetAudioSinksBuffer();
-
-	for (Network::AudioSources::const_iterator it=sources.begin(); it!=sources.end(); ++it)
-		sourceNames += " * source:\t"+net.GetNetworkId( *it )+"\n";
-	for (Network::AudioSourcesBuffer::const_iterator it=sourcesBuffer.begin(); it!=sourcesBuffer.end(); ++it)
+	const Network::Processings & sources = GetSources();
+	for (Network::Processings::const_iterator it=sources.begin(); it!=sources.end(); ++it)
 		sourceNames += " * source:\t"+net.GetNetworkId( *it )+"\n";
 
-	for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); ++it)
-		sinkNames += " * sink:\t"+net.GetNetworkId( *it )+"\n";
-	for (Network::AudioSinksBuffer::const_iterator it=sinksBuffer.begin(); it!=sinksBuffer.end(); ++it)
+	const Network::Processings & sinks = GetSinks();
+	for (Network::Processings::const_iterator it=sinks.begin(); it!=sinks.end(); ++it)
 		sinkNames += " * sink:\t"+net.GetNetworkId( *it )+"\n";
 
 	return (sourceNames+sinkNames);
