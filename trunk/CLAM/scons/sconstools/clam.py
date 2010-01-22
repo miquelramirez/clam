@@ -25,6 +25,9 @@ def ClamModule(env, moduleName, version,
 	try: env.PkgConfigFile
 	except : env.Tool('pc', toolpath=[os.path.dirname(__file__)])
 
+	crosscompiling = env.get('crossmingw')
+	windowsTarget = sys.platform == 'win32' or crosscompiling
+
 	env.AppendUnique(CPPDEFINES=[('CLAM_MODULE',moduleName)])
 	env['SHOBJPREFIX']='generated/'
 	env['OBJPREFIX']='generated/'
@@ -37,7 +40,13 @@ def ClamModule(env, moduleName, version,
 	# The empty plugin linking to the module library
 	envPlugin = env.Clone()
 	envPlugin.Append(LIBS=[libraryName])
-	plugin = envPlugin.LoadableModule(target=libraryName+'_plugin', source = [])
+	if windowsTarget :
+		# Temporary hack because an SCons bug not inserting the -o option
+		plugin = envPlugin.SharedLibrary(target=libraryName+'_plugin', source = [])
+	else:
+		plugin = envPlugin.LoadableModule(target=libraryName+'_plugin', source = [])
+	if windowsTarget :
+		plugin = [plugin[0]]
 
 	# pkg-config file
 	pcfile = env.PkgConfigFile(
@@ -49,15 +58,17 @@ def ClamModule(env, moduleName, version,
 		requires = clamDependencies+otherDependencies,
 		cflags = [],
 		)
-
 	versionNumbers=tuple(version.split("."))
 
-	crosscompiling = env.get('crossmingw')
-	if sys.platform == 'win32' or crosscompiling :
-		lib = env.SharedLibrary( libraryName, sources)
-		localLinkName = []
-		localSoName = []
-		libraries = lib
+	install = [
+		]
+
+	if windowsTarget:
+		dll, lib, defFile = env.SharedLibrary( libraryName, sources)
+		install+= [
+			env.Install(os.path.join(env['prefix'],'bin'), dll),
+		]
+		libraries = [lib, defFile]
 	elif sys.platform == 'linux2' :
 		# * Lib name: the actual fully versioned name of the library.
 		# * Soname: is the name of a link that dependant executables will look
@@ -96,18 +107,22 @@ def ClamModule(env, moduleName, version,
 			SHLIBSUFFIX='.%s.dylib'%version )
 		localSoName =   env.LinkerNameLink( soname, lib )   # lib***.X.Y.dylib -> lib***.X.Y.Z.dylib
 		localLinkName = env.LinkerNameLink( linkname, lib ) # lib***.dylib     -> lib***.X.Y.Z.dylib
-	libraries = [lib, localSoName, localLinkName]
+		libraries = [lib, localSoName, localLinkName]
 
 	installedLib = env.Install(os.path.join(env['prefix'],'lib'), lib)
-	install = [
-		installedLib,
-		env.LinkerNameLink( os.path.join(env['prefix'],'lib',linkname), installedLib),
-		env.SonameLink( os.path.join(env['prefix'],'lib',soname), installedLib),
+	install+= [
 		env.Install(os.path.join(env['prefix'],'lib','clam'), plugin),
 		env.Install(os.path.join(env['prefix'],'lib','pkgconfig'), pcfile),
 		env.Install(os.path.join(env['prefix'],'include','CLAM',moduleName), headers),
+		installedLib,
 		]
+	if sys.platform == 'win32' or crosscompiling :
+		return install, (libraries, plugin, pcfile)
 
+	install+= [
+		env.LinkerNameLink( os.path.join(env['prefix'],'lib',linkname), installedLib),
+		env.SonameLink( os.path.join(env['prefix'],'lib',soname), installedLib),
+		]
 	return install, (libraries, plugin, pcfile)
 
 	
