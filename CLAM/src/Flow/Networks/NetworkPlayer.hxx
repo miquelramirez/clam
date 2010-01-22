@@ -123,6 +123,17 @@ protected:
 		return *_network;
 	}
 
+	Network::Processings GetSources() 
+	{
+		return GetNetwork().getOrderedProcessingsByAttribute("port_source_type");
+	}
+
+	Network::Processings GetSinks() 
+	{ 
+		return GetNetwork().getOrderedProcessingsByAttribute("port_sink_type"); 
+	}
+
+
 	Network::AudioSources GetAudioSources() 
 	{
 		return GetNetwork().getOrderedSources();
