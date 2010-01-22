@@ -236,7 +236,6 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 		print "   Check the variable 'version' in the main SConstruct"
 		sys.exit(1)
 
-	libversion = "%s%s.%s"%versionnumbers
 	if sys.platform == 'linux2' :
 		# Linker name: it a soft link without version numbers, to be specified
 		# to the linker when compiling binaries against the lib. Just needed
@@ -248,26 +247,28 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 		# Links with the soname and the lib name point to it.
 		# This method enables upgrading the lib without recompiling programs when
 		# the ABI is kept. 
+		libversion = "%s%s.%s"%versionnumbers
 		linker_name = 'libclam_'+name+'.so'
-		soname      = linker_name+'.%s%s' % (versionnumbers[0], versionnumbers[1])
-		libname     = linker_name+'.'+ libversion
+		soname      = 'libclam_'+name+'.so.%s%s' % versionnumbers[:2]
+		libname     = 'libclam_'+name+'.so.%s%s.%s' % versionnumbers
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( 'clam_' + name, sources, SHLIBSUFFIX='.so.%s'%libversion )
 		soname_lib     = env.SonameLink( soname, lib )          # lib***.so.XY -> lib***.so.XY.Z
 		linkername_lib = env.LinkerNameLink( linker_name, lib ) # lib***.so    -> lib***.so.XY.Z
 	else : #darwin
-		soname = 'libclam_'+name+'.%s.dylib' % versionnumbers[0]
-		middle_linker_name = 'libclam_'+name+'.%s.%s.dylib' % (versionnumbers[0], versionnumbers[1])
 		linker_name = 'libclam_'+name+'.dylib'
-		env.AppendUnique( CCFLAGS=['-fno-common'] )
+		soname      = 'libclam_'+name+'.%s.%s.dylib' % versionnumbers[:2]
+		libname     = 'libclam_'+name+'.%s.%s.%s.dylib' % versionnumbers
+		env.AppendUnique( CCFLAGS=['-fno-common'] ) # TODO : check whether scons adds this for shcc
 		env.AppendUnique( SHLINKFLAGS=[
 				'-dynamic',
-				'-Wl,-install_name,%s'%(install_dirs.lib + '/' + 'libclam_' + name + '.%s.dylib'%(version))
+				'-Wl,-install_name,%s'%os.path.join(install_dirs.lib,soname),
+#				'-compatibility_version %s.%s'%versionnumbers[:2], # TODO: Test this
+#				'-current_version %s.%s.%s'%versionnumbers,        # TODO: Test this
 				] )
-		lib = env.SharedLibrary( 'clam_' + name, sources, SHLIBSUFFIX='.%s.dylib'%version )
-		soname_lib = env.LinkerNameLink( middle_linker_name, lib )		# lib***.X.Y.dylib -> lib***.X.Y.Z.dylib
-		middlelinkername_lib = env.LinkerNameLink( soname, soname_lib )		# lib***.so.X -> lib***.so.X.Y
-		linkername_lib = env.LinkerNameLink( linker_name, middlelinkername_lib)		# lib***.dylib -> lib***.X.dylib
+		lib = env.SharedLibrary( 'clam_'+name, sources, SHLIBSUFFIX='.%s.dylib'%version )
+		soname_lib =     env.LinkerNameLink( soname, lib )     # lib***.X.Y.dylib -> lib***.X.Y.Z.dylib
+		linkername_lib = env.LinkerNameLink( linker_name, lib) # lib***.dylib     -> lib***.X.Y.Z.dylib
 
 	env.Append(CPPDEFINES="CLAM_MODULE='\"%s\"'"%name)
 
