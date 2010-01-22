@@ -34,22 +34,21 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 	
 	Network & net = GetNetwork();
 	
-	const Network::AudioSources & sources = GetAudioSources();
 	unsigned inFileIndex = 0;
 	unsigned inChannel = 0;
 
+	const Network::AudioSources & sources = GetAudioSources();
 	for (Network::AudioSources::const_iterator it = sources.begin(); it != sources.end(); ++it)
 	{
-		std::string processingName = net.GetNetworkId(*it);
-
-		const AudioSource::Ports & ports = (*it)->GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
+		Processing * processing = *it;
+		std::string processingName = net.GetNetworkId(processing);
+		for(unsigned port = 0; port < processing->GetNOutPorts(); ++port)
 		{
+			OutPortBase & outport = processing->GetOutPort(port);
 			std::stringstream portName;
-			if (ports.size() == 1)
-				 portName << processingName;
-			else
-				 portName << processingName << "_" << ports[port].mPort->GetName();
+			portName << processingName;
+			if (processing->GetNOutPorts() > 1)
+				 portName << "_" << outport.GetName();
 
 			inChannel++;
 			result << " * source:\t" << portName.str() << "\t";		
@@ -63,23 +62,19 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 			}
 		}
 	}
-
 	/***********************************************************************************/
-
 	const Network::AudioSourcesBuffer & sourcesBuffer = GetAudioSourcesBuffer();
-
 	for (Network::AudioSourcesBuffer::const_iterator it = sourcesBuffer.begin(); it != sourcesBuffer.end(); ++it)
 	{
-		std::string processingName = net.GetNetworkId(*it);
-
-		const AudioSourceBuffer::Ports & ports = (*it)->GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
+		Processing * processing = *it;
+		std::string processingName = net.GetNetworkId(processing);
+		for(unsigned port = 0; port < processing->GetNOutPorts(); ++port)
 		{
+			OutPortBase & outport = processing->GetOutPort(port);
 			std::stringstream portName;
-			if (ports.size() == 1)
-				 portName << processingName;
-			else
-				 portName << processingName << "_" << ports[port].mPort->GetName();
+			portName << processingName;
+			if (processing->GetNOutPorts() > 1)
+				 portName << "_" << outport.GetName();
 
 			inChannel++;
 			result << " * source:\t" << portName.str() << "\t";		
@@ -93,26 +88,23 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 			}
 		}
 	}
-
 	/***********************************************************************************/
-	
-	const Network::AudioSinks & sinks = GetAudioSinks();
 	unsigned outFileIndex = 0;
 	unsigned outChannel = 0;
 
+	const Network::AudioSinks & sinks = GetAudioSinks();
 	for (Network::AudioSinks::const_iterator it = sinks.begin(); it != sinks.end(); ++it)
 	{
-		std::string processingName = net.GetNetworkId( *it );
-
-		const AudioSink::Ports & ports = (*it)->GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
+		Processing * processing = *it;
+		std::string processingName = net.GetNetworkId( processing );
+		for(unsigned port = 0; port < processing->GetNInPorts(); ++port)
 		{
+			InPortBase & inport = processing->GetInPort(port);
 			//Register port on the JACK server
 			std::stringstream portName;
-			if (ports.size() == 1)
-				 portName << processingName;
-			else
-				 portName << processingName << "_" << ports[port].mPort->GetName();
+			portName << processingName;
+			if (processing->GetNInPorts() > 1)
+				 portName << "_" << inport.GetName();
 
 			outChannel++;
 			result << " * sink:\t" << portName.str() << "\t";
@@ -126,24 +118,20 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 			}
 		}	
 	}
-
 	/***********************************************************************************/
-
 	const Network::AudioSinksBuffer & sinksBuffer = GetAudioSinksBuffer();
-
 	for (Network::AudioSinksBuffer::const_iterator it = sinksBuffer.begin(); it != sinksBuffer.end(); ++it)
 	{
-		std::string processingName = net.GetNetworkId( *it );
-
-		const AudioSinkBuffer::Ports & ports = (*it)->GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
+		Processing * processing = *it;
+		std::string processingName = net.GetNetworkId( processing );
+		for(unsigned port = 0; port < processing->GetNInPorts(); ++port)
 		{
+			InPortBase & inport = processing->GetInPort(port);
 			//Register port on the JACK server
 			std::stringstream portName;
-			if (ports.size() == 1)
-				 portName << processingName;
-			else
-				 portName << processingName << "_" << ports[port].mPort->GetName();
+			portName << processingName;
+			if (processing->GetNInPorts() > 1)
+				 portName << "_" << inport.GetName();
 
 			outChannel++;
 			result << " * sink:\t" << portName.str() << "\t";

@@ -325,6 +325,31 @@ namespace CLAM
 		return orderedProcessings;
 	}
 
+	const Network::Processings Network::getOrderedProcessingsByAttribute(const std::string & attribute, bool horizontalOrder) const
+	{
+		std::list <ProcessingAndGeometry> processingsAndGeometries;
+		Processings orderedProcessings;
+		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
+		{
+			Processing * proc = it->second;
+			const std::string className = proc->GetClassName();
+			if (ProcessingFactory::GetInstance().AttributeExists(className,attribute))
+				continue;
+			ProcessingAndGeometry item;
+			item.processing = proc;
+			item.geometry = findProcessingGeometry(proc);
+			processingsAndGeometries.push_back(item);
+			processingsAndGeometries.sort(horizontalOrder?compareGeometriesUpperXThan:compareGeometriesUpperYThan);
+		}
+
+		for (std::list<ProcessingAndGeometry>::const_iterator it=processingsAndGeometries.begin();
+			it!=processingsAndGeometries.end();it++)
+		{
+			orderedProcessings.push_back( it->processing );
+		}
+
+		return orderedProcessings;
+	}
 
 	const Network::AudioSinks Network::getOrderedSinks() const
 	{

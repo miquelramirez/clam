@@ -11,6 +11,7 @@ namespace
 		"key", "AudioSourceBuffer",
 		"category", "Audio I/O",
 		"description", "AudioSourceBuffer",
+		"port_source_type", typeid(Audio).name(),
 		"icon", "source.svg",
 		"embedded_svg", "source.svg",
 		0

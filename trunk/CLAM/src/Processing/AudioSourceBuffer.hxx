@@ -18,7 +18,6 @@ namespace CLAM
 			const float* mFloatBuffer;
 			const double* mDoubleBuffer;
 			unsigned mBufferSize;
-			//AudioOutPort* mPort;
 			OutPort<Audio>* mPort;
 
 			Port() 
