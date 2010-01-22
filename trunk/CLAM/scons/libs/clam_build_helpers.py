@@ -302,7 +302,7 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 
 	return tgt, install_tgt
 
-def win32_lib_rules( name, version, headers, sources, install_dirs, pcfile, env, moduleDependencies =[] ) :
+def win32_lib_rules( name, version, headers, sources, pcfile, install_dirs, env, moduleDependencies =[] ) :
 	lib = env.SharedLibrary( 'clam_' + name, sources)
 	tgt = env.Alias(name, lib)
 	install_lib = env.Install( install_dirs.lib, lib )
