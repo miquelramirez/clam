@@ -35,7 +35,7 @@ template<typename Container> unsigned GetSize(Container const& t)
 {
 	unsigned nrOfPorts = 0;
 	for (typename Container::const_iterator it = t.begin(); it != t.end(); ++it)
-		nrOfPorts += (*it)->GetPorts().size();
+		nrOfPorts += (*it)->GetNInPorts()+(*it)->GetNOutPorts();
 	return nrOfPorts;
 }
 

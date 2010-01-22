@@ -14,8 +14,8 @@ bool MonoOfflineNetworkPlayer::IsWorking()
 std::string MonoOfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
-	ss << GetAudioSources().size()+GetAudioSourcesBuffer().size() << " inputs and " 
-		<< GetAudioSinks().size()+GetAudioSinksBuffer().size() << " outputs needed but just " 
+	ss << GetSources().size()    << " inputs and " 
+		<< GetSinks().size() << " outputs needed but just " 
 		<< _filenames.size() << " files provided" << std::ends;
 	return ss.str();
 }
