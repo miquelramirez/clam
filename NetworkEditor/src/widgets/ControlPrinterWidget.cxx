@@ -1,5 +1,5 @@
 #include "ControlPrinterWidget.hxx"
-#include "ControlPrinter.hxx"
+#include <CLAM/ControlPrinter.hxx>
 #include <CLAM/InControlBase.hxx>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QLabel>
