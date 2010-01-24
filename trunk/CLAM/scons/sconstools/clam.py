@@ -3,16 +3,25 @@ import sys, os, glob
 from SCons.Action import Action
 from SCons.Builder import Builder
 
-def scanFiles(env, pattern, paths, blacklist=[]) :
+def scanFiles(env, pattern, paths, recursive=False, blacklist=[], patternblacklist=[]) :
 	files = []
+	if recursive : paths = list(set(sum((env.recursiveDirs(path) for path in paths),[])))
 	for path in paths :
 		files+=glob.glob(os.path.join(path,pattern))
-	return [file for file in files if file not in blacklist]
+	return list(set([file for file in files 
+		if file not in blacklist and all((file.rfind(blackpattern)==-1 for blackpattern in patternblacklist)) ]))
 
 def recursiveDirs(env, root) :
 	return filter( 
 		(lambda a : a.rfind( ".svn")==-1 ), 
 		[ a[0] for a in os.walk(root)]  )
+
+def moveIntermediateInto(env, subfolder) :
+	env['SHOBJPREFIX']       = os.path.join(subfolder,'')
+	env['OBJPREFIX']         = os.path.join(subfolder,'')
+	env['QT4_MOCHPREFIX']    = os.path.join(subfolder,'moc_')
+	env['QT4_UICDECLPREFIX'] = os.path.join(subfolder,'uic_')
+	env['QT4_QRCCXXPREFIX']  = os.path.join(subfolder,'qrc_')
 
 def ClamModule(env, moduleName, version,
 		description="",
@@ -29,13 +38,17 @@ def ClamModule(env, moduleName, version,
 	windowsTarget = sys.platform == 'win32' or crosscompiling
 
 	env.AppendUnique(CPPDEFINES=[('CLAM_MODULE',moduleName)])
-	env['SHOBJPREFIX']='generated/'
-	env['OBJPREFIX']='generated/'
+	env.moveIntermediateInto('generated/')
 	# prepend to avoid using an eventual installed version of the module library
 	env.PrependUnique(LIBPATH=['.'])
 
 	libraryName = 'clam_'+moduleName
 	if not env['verbose'] : env.ClamQuietCompilation()
+
+	def print_cmd_line(commandline, target, source, env) :
+		sys.stdout.write("\033[33m%s\033[0m\n"%commandline)
+		sys.stdout.flush()
+	env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
 
 	# The empty plugin linking to the module library
 	envPlugin = env.Clone()
@@ -60,8 +73,7 @@ def ClamModule(env, moduleName, version,
 		)
 	versionNumbers=tuple(version.split("."))
 
-	install = [
-		]
+	install = [ ]
 
 	if windowsTarget:
 		dll, lib, defFile = env.SharedLibrary( libraryName, sources)
@@ -198,6 +210,7 @@ def generate(env) :
 	env.AddMethod(ClamModule)
 	env.AddMethod(scanFiles)
 	env.AddMethod(recursiveDirs)
+	env.AddMethod(moveIntermediateInto)
 
 def exists(env):
 	return True
