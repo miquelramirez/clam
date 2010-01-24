@@ -95,7 +95,6 @@ void CLAM::VM::Tonnetz::initializeGL()
 }
 void CLAM::VM::Tonnetz::resizeGL(int width, int height)
 {
-	int side = qMin(width, height);
 	glViewport(0 , 0, width, height); // This is to have a square
 	double left = 0;
 	double bottom = 0;

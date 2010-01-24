@@ -82,8 +82,8 @@ private:
 	int _updatePending;
 	const CLAM::TData * _data;
 	bool _smooth;
-	int _nX;
-	int _nY;
+	unsigned _nX;
+	unsigned _nY;
 	std::vector<float> _weights;
 	std::vector<float> _texture;
 	GLuint _textureId;

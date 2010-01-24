@@ -119,7 +119,7 @@ void CLAM::VM::BarGraph::paintEvent(QPaintEvent * event)
 		_dataSource->release();
 		return;
 	}
-	int size = _dataSource->nBins();
+	unsigned size = _dataSource->nBins();
 	double minValue=0;
 	double maxValue=1;
 	findBounds(minValue, maxValue, size, data);
