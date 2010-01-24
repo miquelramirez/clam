@@ -58,9 +58,8 @@ versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
-env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
-env['QT4_UICDECLPREFIX'] = os.path.join('generated','uic_')
-env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
+env.moveIntermediateInto('generated')
+env.activateColorCommandLine()
 
 if not env['verbose']: env.ClamQuietCompilation()
 
@@ -85,10 +84,10 @@ env.EnableQt4Modules([
 	)
 
 mainSources = {
-	'NetworkEditor' : os.path.join('src','main.cxx'),
-	'Prototyper' : os.path.join('src','prototyper','main.cxx'),
+	'NetworkEditor' :     os.path.join('src','main.cxx'),
+	'Prototyper' :        os.path.join('src','prototyper','main.cxx'),
 	'MonoOfflinePlayer' : os.path.join('src','MonoOfflinePlayerMain.cxx'),
-	'OfflinePlayer' : os.path.join('src','OfflinePlayerMain.cxx'),
+	'OfflinePlayer' :     os.path.join('src','OfflinePlayerMain.cxx'),
 }
 
 sourcePaths = [
@@ -97,30 +96,25 @@ sourcePaths = [
 	os.path.join('src','generated'),
 	os.path.join('src','processing'),
 	os.path.join('src','prototyper'),
-	os.path.join('src','monitors'),
-	os.path.join('src','monitors','generated'),
-	os.path.join('src','widgets'),
-	os.path.join('src','widgets','generated'),
 	os.path.join('src','clamWidgetsPlugins'),
 	os.path.join('src','clamWidgetsPlugins','generated'),
 ]
 extraPaths = [
+	os.path.join('src','monitors'),
+	os.path.join('src','widgets'),
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 ]
 includePaths = sourcePaths + extraPaths
 
-sources = scanFiles('*.cxx', sourcePaths)
-sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
-sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
-sources = unique(sources)
-for mainSource in mainSources.values() :
-	sources.remove(mainSource)	
+sources = env.scanFiles('*.cxx', sourcePaths,
+	blacklist = mainSources.values(),
+	patternblacklist=['moc_','qrc_'],
+	)
 
-qrcfiles = scanFiles("*.qrc", sourcePaths)
-if qrcfiles : sources += env.Qrc(source=qrcfiles)
+qrcfiles = env.scanFiles("*.qrc", sourcePaths)
 
-uifiles = scanFiles("*.ui", sourcePaths)
+uifiles = env.scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic4(source=uifiles)
 
 if isWindowsPlatform :
@@ -134,55 +128,48 @@ if isLinuxPlatform :
 	# TODO: This should not be hardcoded neither prefix (because package install)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
 
+env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
 if env['release'] :
-	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall','-pipe'] )
-else :
-	env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
+	env.Append( CCFLAGS=['-fomit-frame-pointer'] )
 
+qtmonitorDirs = env.recursiveDirs(os.path.join('src','widgets')) + env.recursiveDirs(os.path.join('src','monitors'))
+qtmonitorSources = env.scanFiles('*.cxx', qtmonitorDirs,
+	patternblacklist=[
+		'moc_',
+		'qrc_',
+		],
+	)
+qtmonitorEnv = env.Clone()
+qtmonitorSources += qtmonitorEnv.Qrc(source=qrcfiles)
+qtmonitorInstall, qtmonitorLocal = qtmonitorEnv.ClamModule(
+	moduleName='qtmonitors',
+	description='Qt widgets for the CLAM framework',
+	version=version,
+	sources=qtmonitorSources,
+	clamDependencies=[
+		'clam_core',
+		'clam_processing',
+		'clam_audioio',
+		],
+	)
+qtmonitorEnv.Append(CPPPATH=qtmonitorDirs)
 
+env.PrependUnique(LIBPATH=['.'])
+env.AppendUnique(LIBS=['clam_qtmonitors'])
 
-
-testsources = scanFiles('*.cxx', ['test'])
+testsources = env.scanFiles('*.cxx', ['test'])
 plugindirs = [
 	os.path.join('src','clamWidgetsPlugin'),
 	os.path.join('src','clamWidgetsPlugin','generated'),
-]
-pluginsources = scanFiles('*.cxx', plugindirs)
-pluginsources = filter( (lambda a : a.rfind( "moc_")==-1 ),  pluginsources )
-pluginsources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  pluginsources )
-pluginsources = dict.fromkeys(pluginsources).keys()
-# //TODO: review this
-pluginsources.append(os.path.join('src','widgets','SpectrumView.cxx'))
-pluginsources.append(os.path.join('src','widgets','PeakView.cxx'))
-pluginsources.append(os.path.join('src','widgets','MIDIPianoWidget.cxx'))
-pluginsources.append(os.path.join('src','widgets','PolarChromaPeaks.cxx'))
-pluginsources.append(os.path.join('src','widgets','Oscilloscope.cxx'))
-pluginsources.append(os.path.join('src','widgets','PixmapWidgets.cxx'))
-pluginsources.append(os.path.join('src','widgets','Vumeter.cxx'))
-pluginsources.append(os.path.join('src','widgets','ChordRanking.cxx'))
-pluginsources.append(os.path.join('src','widgets','Tonnetz.cxx'))
-pluginsources.append(os.path.join('src','widgets','KeySpace.cxx'))
-pluginsources.append(os.path.join('src','widgets','LPModelView.cxx'))
-pluginsources.append(os.path.join('src','widgets','MelSpectrumView.cxx'))
-pluginsources.append(os.path.join('src','widgets','MelCepstrumView.cxx'))
-pluginsources.append(os.path.join('src','widgets','BarGraph.cxx'))
-pluginsources.append(os.path.join('src','widgets','SegmentationView.cxx'))
-pluginsources.append(os.path.join('src','widgets','QSynthKnob.cxx'))
-pluginsources.append(os.path.join('src','widgets','Spectrogram.cxx'))
-pluginsources.append(os.path.join('src','widgets','QFirstPerson.cxx'))
-pluginsources.append(os.path.join('src','ControlSurfaceWidget.cxx'))
-pluginsources.append(os.path.join('src','processing','ControlSurface.cxx'))
-pluginsources.append(os.path.join('src','processing','ProgressControl.cxx'))
-pluginsources.append(os.path.join('src','ProgressControlWidget.cxx'))
+	]
+pluginsources = env.scanFiles('*.cxx', plugindirs,
+	patternblacklist=[
+		'moc_',
+		'qrc_',
+		],
+	)
 env.Append(CPPPATH=includePaths+plugindirs)
 
-"""
-widgetsources=scanFiles('*.cxx', [os.path.join('src', 'widgets')])
-print widgetsources
-widgetsources=filter( (lambda a : a.rfind( "moc_")==-1 ),  widgetsources )
-widgetsources=filter( (lambda a : a.rfind( "qrc_")==-1 ),  widgetsources )
-print widgetsources
-"""
 
 #commonObjects = env.StaticLibrary(target="networkeditor", source=sources)
 #programs = [ env.Program(target=program, source = [main, commonObjects])
@@ -197,7 +184,7 @@ env.AppendUnique(CPPFLAGS=pluginDefines)
 
 #env.AppendUnique(CPPFLAGS=['-fPIC']) # qtPlugin examples were compiled with this option
 
-qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources + env.Qrc(qrcfiles))
+qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources)
 
 manpages = [
 	'resources/man/man1/NetworkEditor.1',
@@ -206,10 +193,10 @@ manpages = [
 	'resources/man/man1/MonoOfflinePlayer.1',
 	]
 
-tsfiles = scanFiles("*.ts", ["src/i18n/"])
-translatableSources = scanFiles('*.cxx', sourcePaths);
-translatableSources+= scanFiles('*.hxx', sourcePaths);
-translatableSources+= scanFiles('*.ui', sourcePaths);
+tsfiles = env.scanFiles("*.ts", ["src/i18n/"])
+translatableSources = env.scanFiles('*.cxx', sourcePaths);
+translatableSources+= env.scanFiles('*.hxx', sourcePaths);
+translatableSources+= env.scanFiles('*.ui', sourcePaths);
 translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  translatableSources )
 translations = []
 if len(tsfiles) :
@@ -249,7 +236,8 @@ installation = {
 }
 
 installTargets = [
-	env.Install( env['prefix']+path, files ) for path, files in installation.items() ]
+	env.Install( env['prefix']+path, files ) for path, files in installation.items() 
+	] + qtmonitorInstall
 
 if isWindowsPlatform : 
 	def absolutePosixPathToWine(dir) :
@@ -330,5 +318,5 @@ if sys.platform=='darwin' :
 
 env.Alias('install', installTargets )
 
-env.Default(programs, translations, qtplugin)
+env.Default(programs, translations, qtplugin, qtmonitorLocal)
 
