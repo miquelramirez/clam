@@ -97,7 +97,7 @@ void CLAM::VM::ChordRanking::paintEvent(QPaintEvent * event)
 		return;
 	}
 	
-	int size = _dataSource->nBins();
+	unsigned size = _dataSource->nBins();
 	_maxValue*=0.95;
 	double minValue=1;
 	if (_maxValue<1e-5) _maxValue=1;
@@ -112,6 +112,7 @@ void CLAM::VM::ChordRanking::paintEvent(QPaintEvent * event)
 	std::sort(indexes.begin(), indexes.end(), IndirectSorter(_data));
 
 	QPainter painter(this);
+	painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 	unsigned barSize = painter.fontMetrics().height();
 	const unsigned margin=2;
 	unsigned barOffset = barSize+margin;
