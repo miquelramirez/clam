@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "FloatArrayDataSource.hxx"
-#include <CLAM/TypedInControl.hxx>
 #include <CLAM/MIDIMessage.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/InControlBase.hxx>
