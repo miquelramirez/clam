@@ -332,7 +332,7 @@ def generate(env):
 		argument = None,
 		skeys = ['.qrc'])
 	qrcbuilder = Builder(
-		action = SCons.Action.Action('$QT4_RCCCOM'), #, '$QT4_RCCCOMSTR'),
+		action = SCons.Action.Action('$QT4_RCCCOM', '$QT4_RCCCOMSTR'),
 		source_scanner = qrcscanner,
 		src_suffix = '$QT4_QRCSUFFIX',
 		suffix = '$QT4_QRCCXXSUFFIX',
@@ -343,7 +343,7 @@ def generate(env):
 
 	# Interface builder
 	uic4builder = Builder(
-		action = SCons.Action.Action('$QT4_UICCOM'), #, '$QT4_UICCOMSTR'),
+		action = SCons.Action.Action('$QT4_UICCOM', '$QT4_UICCOMSTR'),
 		src_suffix='$QT4_UISUFFIX',
 		suffix='$QT4_UICDECLSUFFIX',
 		prefix='$QT4_UICDECLPREFIX',
@@ -355,12 +355,12 @@ def generate(env):
 	# Metaobject builder
 	mocBld = Builder(action={}, prefix={}, suffix={})
 	for h in header_extensions:
-		act = SCons.Action.Action('$QT4_MOCFROMHCOM') #, '$QT4_MOCFROMHCOMSTR')
+		act = SCons.Action.Action('$QT4_MOCFROMHCOM', '$QT4_MOCFROMHCOMSTR')
 		mocBld.add_action(h, act)
 		mocBld.prefix[h] = '$QT4_MOCHPREFIX'
 		mocBld.suffix[h] = '$QT4_MOCHSUFFIX'
 	for cxx in cxx_suffixes:
-		act = SCons.Action.Action('$QT4_MOCFROMCXXCOM') #, '$QT4_MOCFROMCXXCOMSTR')
+		act = SCons.Action.Action('$QT4_MOCFROMCXXCOM', '$QT4_MOCFROMCXXCOMSTR')
 		mocBld.add_action(cxx, act)
 		mocBld.prefix[cxx] = '$QT4_MOCCXXPREFIX'
 		mocBld.suffix[cxx] = '$QT4_MOCCXXSUFFIX'
