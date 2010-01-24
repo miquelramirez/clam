@@ -56,7 +56,6 @@ def setup_global_environment( env, conf ) :
 		return config_error( "Could not find pthread (Posix Threads) library binaries!" )
 	if not conf.CheckLibrarySample('pthread', 'c', None, pthread_test_code ) : 
 		return config_error( "Could not find pthread (Posix Threads) library binaries!" )
-	env.Append( CPPFLAGS=['-DUSE_PTHREADS=1'] )
 
 	if sys.platform == 'linux2' :
 		env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
@@ -71,14 +70,8 @@ def setup_global_environment( env, conf ) :
 def test_that_lib(env, conf, name, libNames, header, symbol, extra=lambda : True) :
 	if not conf.CheckCHeader( header ) :
 		return config_error( "Could not find %s headers! Please check your %s installation" %(name, name) )
-	found = False
-	for libName in libNames :
-		if conf.CheckLib( library=libName, symbol=symbol ) :
-			found = True
-			break
-	if not found : 
+	if not any((conf.CheckLib(library=libName, symbol=symbol) for libName in libNames)) :
 		return config_error( "Could not find %s binaries! Please check your %s installation"%(name,name) )
-
 	if not extra() :
 		return config_error( "%s compile/link/run tests failed!"%name )
 	return True
@@ -288,11 +281,8 @@ def test_fftw3( env, conf) :
 
 		if not conf.CheckHeader( 'fftw3.h' ) :
 			return config_error( "FFTW3 header not found" )
-
-		for libname in ['fftw3', 'fftw3-3', None] :
-			if not libname: break
-			if conf.CheckLib( libname, 'fftw_plan_dft_r2c_1d') : break
-		if not libname :
+		if not any((conf.CheckLib( libname, 'fftw_plan_dft_r2c_1d')
+				for libname in ['fftw3', 'fftw3-3'] )) :
 			return config_error( "Unable to link FFTW3" )
 
 	env.Append( CPPFLAGS=['-DUSE_FFTW3=1'] )
