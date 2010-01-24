@@ -23,6 +23,13 @@ def moveIntermediateInto(env, subfolder) :
 	env['QT4_UICDECLPREFIX'] = os.path.join(subfolder,'uic_')
 	env['QT4_QRCCXXPREFIX']  = os.path.join(subfolder,'qrc_')
 
+def activateColorCommandLine(env) :
+	def print_cmd_line(commandline, target, source, env) :
+		sys.stdout.write("\033[33m%s\033[0m\n"%commandline)
+		sys.stdout.flush()
+	env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
+
+
 def ClamModule(env, moduleName, version,
 		description="",
 		url='http://clam-project.org',
@@ -45,10 +52,7 @@ def ClamModule(env, moduleName, version,
 	libraryName = 'clam_'+moduleName
 	if not env['verbose'] : env.ClamQuietCompilation()
 
-	def print_cmd_line(commandline, target, source, env) :
-		sys.stdout.write("\033[33m%s\033[0m\n"%commandline)
-		sys.stdout.flush()
-	env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
+	env.activateColorCommandLine()
 
 	# The empty plugin linking to the module library
 	envPlugin = env.Clone()
@@ -211,6 +215,7 @@ def generate(env) :
 	env.AddMethod(scanFiles)
 	env.AddMethod(recursiveDirs)
 	env.AddMethod(moveIntermediateInto)
+	env.AddMethod(activateColorCommandLine)
 
 def exists(env):
 	return True
