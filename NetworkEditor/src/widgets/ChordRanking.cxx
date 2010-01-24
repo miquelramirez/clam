@@ -97,7 +97,7 @@ void CLAM::VM::ChordRanking::paintEvent(QPaintEvent * event)
 		return;
 	}
 	
-	int size = _dataSource->nBins();
+	unsigned size = _dataSource->nBins();
 	_maxValue*=0.95;
 	double minValue=1;
 	if (_maxValue<1e-5) _maxValue=1;
