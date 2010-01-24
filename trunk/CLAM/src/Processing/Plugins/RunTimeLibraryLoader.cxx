@@ -67,17 +67,6 @@ bool RunTimeLibraryLoader::IsOnPath(const std::string & path) const
 	return false;
 }
 
-const std::string RunTimeLibraryLoader::FileOfSymbol (void * symbolAddress)
-{
-#ifndef WIN32
-	Dl_info info;
-	int ok=dladdr(symbolAddress,&info);
-	if (ok)
-		return info.dli_fname;
-#endif
-	return "";
-}
-
 void RunTimeLibraryLoader::Load() const
 {
 	std::string path = GetPaths();
@@ -156,9 +145,9 @@ bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string
 		return true;
 	}
 #ifdef WIN32
-	return (!FreeLibrary((HMODULE)handle));
+	return !FreeLibrary((HMODULE)handle);
 #else 
-	return (dlclose(handle));
+	return dlclose(handle);
 #endif
 }
 
@@ -180,6 +169,28 @@ const std::string RunTimeLibraryLoader::LibraryLoadError()
 	return dlerror();
 #endif
 }
+
+const std::string RunTimeLibraryLoader::FileOfSymbol (void * symbolAddress)
+{
+#ifdef WIN32
+	char pluginpath[1024]; 
+	HMODULE module; 
+	GetModuleHandleExA(
+		GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, 
+		(char *)symbolAddress, 
+		&module); 
+	GetModuleFileNameA(module, pluginpath, 1024); 
+	FreeLibrary(module); 
+	return pluginpath;
+#else
+	Dl_info info;
+	int ok=dladdr(symbolAddress,&info);
+	if (ok)
+		return info.dli_fname;
+#endif
+	return "";
+}
+
 std::vector<std::string> RunTimeLibraryLoader::SplitPathVariable(const std::string & pathVariable) const
 {
 	std::string content=pathVariable;
