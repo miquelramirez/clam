@@ -119,7 +119,7 @@ void CLAM::VM::BarGraph::paintEvent(QPaintEvent * event)
 		_dataSource->release();
 		return;
 	}
-	int size = _dataSource->nBins();
+	unsigned size = _dataSource->nBins();
 	double minValue=0;
 	double maxValue=1;
 	findBounds(minValue, maxValue, size, data);
@@ -128,6 +128,7 @@ void CLAM::VM::BarGraph::paintEvent(QPaintEvent * event)
 	float maxBarSize = height()-2*margin;
 	float zeroPos = margin + maxBarSize*maxValue/(maxValue-minValue);
 	QPainter painter(this);
+	painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 	if (barWidth<margin+5)
 	{
 		QPolygonF polygon;

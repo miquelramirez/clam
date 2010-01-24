@@ -1,10 +1,10 @@
 #ifndef __ProgressControl_hxx__
 #define __ProgressControl_hxx__
 
-#include "Processing.hxx"
-#include "ProcessingConfig.hxx"
-#include "OutControl.hxx"
-#include "InControl.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/OutControl.hxx>
+#include <CLAM/InControl.hxx>
 
 namespace CLAM
 {
