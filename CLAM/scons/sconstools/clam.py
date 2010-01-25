@@ -20,12 +20,12 @@ def moveIntermediateInto(env, subfolder) :
 	env['SHOBJPREFIX']       = os.path.join(subfolder,'')
 	env['OBJPREFIX']         = os.path.join(subfolder,'')
 	env['QT4_MOCHPREFIX']    = os.path.join(subfolder,'moc_')
-	env['QT4_UICDECLPREFIX'] = os.path.join(subfolder,'uic_')
+	env['QT4_UICDECLPREFIX'] = os.path.join(subfolder,'ui_')
 	env['QT4_QRCCXXPREFIX']  = os.path.join(subfolder,'qrc_')
 
 def activateColorCommandLine(env) :
 	def print_cmd_line(commandline, target, source, env) :
-		sys.stdout.write("\033[33m%s\033[0m\n"%commandline)
+		sys.stdout.write("\033[32;1m%s\033[0m\n"%commandline)
 		sys.stdout.flush()
 	env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
 
