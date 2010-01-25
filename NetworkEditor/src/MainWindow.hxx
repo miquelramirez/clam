@@ -1,4 +1,4 @@
-#include "uic_MainWindow.hxx"
+#include "ui_MainWindow.hxx"
 #include "ClamNetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
 #include <QtGui/QVBoxLayout>
@@ -10,7 +10,7 @@
 #include <QtCore/QSettings>
 #include <QtCore/QStringList>
 #include <QtCore/QTimer>
-#include "uic_About.hxx"
+#include "ui_About.hxx"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/NaiveFlowControl.hxx>
