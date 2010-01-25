@@ -22,7 +22,7 @@
 #ifndef PoolSegmentationDataSource_hxx
 #define PoolSegmentationDataSource_hxx
 
-#include "SegmentationDataSource.hxx"
+#include <CLAM/qtmonitors/SegmentationDataSource.hxx>
 
 #include <CLAM/DiscontinuousSegmentation.hxx>
 

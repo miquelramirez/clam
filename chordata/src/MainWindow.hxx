@@ -26,7 +26,7 @@
 #include "PoolFloatArrayDataSource.hxx"
 #include "PoolPeakDataSource.hxx"
 #include "PoolSegmentationDataSource.hxx"
-#include "ProgressControlWidget.hxx"
+#include <CLAM/qtmonitors/ProgressControlWidget.hxx>
 #include "FrameDivision.hxx"
 
 namespace CLAM

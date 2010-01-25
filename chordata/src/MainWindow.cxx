@@ -40,16 +40,16 @@
 #include <CLAM/PANetworkPlayer.hxx>
 #endif
 
-#include "KeySpace.hxx"
-#include "Spectrogram.hxx"
-#include "Tonnetz.hxx"
-#include "ChordRanking.hxx"
-#include "PolarChromaPeaks.hxx"
-#include "SegmentationView.hxx"
-#include "ProgressControl.hxx"
+#include <CLAM/qtmonitors/KeySpace.hxx>
+#include <CLAM/qtmonitors/Spectrogram.hxx>
+#include <CLAM/qtmonitors/Tonnetz.hxx>
+#include <CLAM/qtmonitors/ChordRanking.hxx>
+#include <CLAM/qtmonitors/PolarChromaPeaks.hxx>
+#include <CLAM/qtmonitors/SegmentationView.hxx>
+#include <CLAM/qtmonitors/ProgressControl.hxx>
+#include <CLAM/qtmonitors/MIDIPianoWidget.hxx>
 #include "FloatVectorStorage.hxx"
 #include "FloatPairVectorStorage.hxx"
-#include "MIDIPianoWidget.hxx"
 
 #include <iostream>
 #include <vector>
