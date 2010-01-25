@@ -169,13 +169,14 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 			 embeddedSvg=factory.GetValueFromAttribute(className,"faust_diagram");
 		}
 
-		QWidget * widget = new QSvgWidget(this);
-		QSvgRenderer *renderer = (dynamic_cast<QSvgWidget*>(widget))->renderer();
-		QString embeddedSvgQString=embeddedSvg.c_str();
-		if( (QFileInfo(embeddedSvgQString).exists() and renderer->load(embeddedSvgQString)) 
-			or renderer->load(tr(":/icons/images/%1").arg(embeddedSvg.c_str())) )
+		QSvgWidget * widget = new QSvgWidget(this);
+		QSvgRenderer *renderer = widget->renderer();
+		QString embeddedSvgQString = embeddedSvg.c_str();
+		if ( QFileInfo(embeddedSvgQString).exists() and renderer->load(embeddedSvgQString) ) 
 				return widget;
-		return 0;
+		if ( renderer->load(tr(":/icons/images/%1").arg(embeddedSvg.c_str())) )
+				return widget;
+		delete widget;
 	}
 	return 0;
 }
