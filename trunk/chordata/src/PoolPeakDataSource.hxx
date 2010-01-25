@@ -23,7 +23,7 @@
 #ifndef PoolPeakDataSource_hxx
 #define PoolPeakDataSource_hxx
 
-#include "PeakDataSource.hxx"
+#include <CLAM/qtmonitors/PeakDataSource.hxx>
 #include <vector>
 #include <list>
 #include "FrameDivision.hxx"

@@ -23,7 +23,7 @@
 #ifndef PoolFloatArrayDataSource_hxx
 #define PoolFloatArrayDataSource_hxx
 
-#include "FloatArrayDataSource.hxx"
+#include <CLAM/qtmonitors/FloatArrayDataSource.hxx>
 //#include "Project.hxx"
 #include <vector>
 #include "FrameDivision.hxx"

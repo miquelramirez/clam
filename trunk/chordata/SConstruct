@@ -58,24 +58,15 @@ versionInfo.generateVersionSources(os.path.join('src','ChordataVersion'), "Chord
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
-env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
-env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
-env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
-if not env['verbose']:
-	env['CXXCOMSTR'] = '== Compiling $SOURCE'
-	env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
-	env['LINKCOMSTR'] = '== Linking $TARGET'
-	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
-	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
-	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
-	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
-	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
-	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
+env.moveIntermediateInto('generated')
+if not env['verbose']: env.ClamQuietCompilation()
+env.activateColorCommandLine()
 
 env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
+	'clam_qtmonitors',
 	], CLAMInstallDir)
 
 env.EnableQt4Modules([
@@ -95,10 +86,6 @@ mainSources = {
 sourcePaths = [
 	os.path.join('src'),
 	os.path.join('src','generated'),
-	os.path.join('src','widgets'),
-	os.path.join('src','widgets','generated'),
-	os.path.join('src','monitors'),
-	os.path.join('src','monitors','generated'),
 ]
 extraPaths = []
 extraPaths += recursiveDirs(CLAMVmQtPath+"/plot")
