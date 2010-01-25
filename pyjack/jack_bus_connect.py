@@ -35,6 +35,8 @@ def _client_from_port(client) :
 	return client.split(':')[0]
 
 def _ports_of_client(client) :
+	if monitor_client == None : 
+		_init(True)
 	ports = monitor_client.get_ports()
 	return [port for port in ports if _client_from_port(port) == client ]
 
@@ -47,33 +49,47 @@ def _get_ports_as_list(source, target):
 	return source, sources, target, targets, num_connections
 
 def connect(source, target) :
+	if monitor_client == None : 
+		_init(True)
 	monitor_client.connect(source,target)
 	time.sleep( connect_wait_time )
 	connected_in_ports = monitor_client.get_connections(source)
 	return target in connected_in_ports
 
 def disconnect(source, target) :
+	if monitor_client == None : 
+		_init(True)
 	monitor_client.disconnect(source,target)
 	time.sleep( connect_wait_time )
 
-def _init() :
+def _init(exitOnError=True) :
 	try :
 		global monitor_client
 		monitor_client = jack.Client('jack_bus_connect')
 	except jack.NotConnectedError:
-		print "jackd not running"
-		sys.exit()
+		messageToPrint="jackd not running"
+		if exitOnError:
+			print "ERROR:",messageToPrint
+			sys.exit()
+		print "WARNING:",messageToPrint
+		return False
+	return True
 
 def _exit() :
-	monitor_client.detach()
+	if monitor_client != None : 
+		monitor_client.detach()
 	
 # public interface :
 
 def outports(client) : #TODO assert is string
+	if monitor_client == None : 
+		_init(True)
 	client_ports = _ports_of_client(client)
 	return [port for port in client_ports if monitor_client.get_port_flags(port) & jack.IsOutput ]
 
 def inports(client) :
+	if monitor_client == None : 
+		_init(True)
 	client_ports = _ports_of_client(client)
 	return [port for port in client_ports if monitor_client.get_port_flags(port) & jack.IsInput ]
 
@@ -109,6 +125,8 @@ def bus_disconnect(source, target) :
 	return num_connections
 
 def clients() :
+	if monitor_client == None : 
+		_init(True)
 	ports = monitor_client.get_ports()
 	l = [] 
 	l += set( [_client_from_port(port) for port in ports] )
@@ -167,11 +185,11 @@ def main() :
 
 print "name:", __name__
 if __name__=='__main__':
-	_init()
+	_init(True)
 	main()
 	_exit()
 elif __name__ == 'jack_bus_connect' :
-	_init()
+	_init(False)
 
 	
 '''
