@@ -134,10 +134,10 @@ if env['release'] :
 
 qtmonitorDirs = env.recursiveDirs(os.path.join('src','widgets')) + env.recursiveDirs(os.path.join('src','monitors'))
 qtmonitorSources = env.scanFiles('*.cxx', qtmonitorDirs,
-	patternblacklist=[
-		'moc_',
-		'qrc_',
-		],
+	patternblacklist=[ 'moc_', 'qrc_', ],
+	)
+qtmonitorHeaders = env.scanFiles('*.hxx', qtmonitorDirs,
+	patternblacklist=[ 'moc_', 'qrc_', ],
 	)
 qtmonitorEnv = env.Clone()
 qtmonitorSources += qtmonitorEnv.Qrc(source=qrcfiles)
@@ -146,6 +146,7 @@ qtmonitorInstall, qtmonitorLocal = qtmonitorEnv.ClamModule(
 	description='Qt widgets for the CLAM framework',
 	version=version,
 	sources=qtmonitorSources,
+	headers=qtmonitorHeaders,
 	clamDependencies=[
 		'clam_core',
 		'clam_processing',
@@ -163,10 +164,7 @@ plugindirs = [
 	os.path.join('src','clamWidgetsPlugin','generated'),
 	]
 pluginsources = env.scanFiles('*.cxx', plugindirs,
-	patternblacklist=[
-		'moc_',
-		'qrc_',
-		],
+	patternblacklist=[ 'moc_', 'qrc_', ],
 	)
 env.Append(CPPPATH=includePaths+plugindirs)
 
