@@ -3,7 +3,7 @@
 
 #ifdef _MSVC_VER
 
-#include <windows.h>
+#include "CLAM_windows.h"
 
 #else
 

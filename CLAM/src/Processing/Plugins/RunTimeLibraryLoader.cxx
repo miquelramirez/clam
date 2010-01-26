@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <dirent.h>
 #ifdef WIN32
-#	include <windows.h>
+#	include "CLAM_windows.h"
 #	undef GetClassName
 #else
 #	include <dlfcn.h>
@@ -40,7 +40,7 @@ void RunTimeLibraryLoader::ReLoad()
 	Load();
 }
 
-const std::list<std::string> RunTimeLibraryLoader::GetUsedLibraries()
+std::list<std::string> RunTimeLibraryLoader::GetUsedLibraries()
 {
 	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 	std::list<std::string> usedLibraries;

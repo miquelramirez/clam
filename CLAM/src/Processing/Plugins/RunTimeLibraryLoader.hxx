@@ -50,7 +50,7 @@ protected:
 		return fullFileName.substr(0,fullFileName.rfind("/"));
 	}
 	bool IsOnPath(const std::string & path) const;
-	virtual const std::list<std::string> GetUsedLibraries();
+	virtual std::list<std::string> GetUsedLibraries();
 
 private:
 	const std::string GetPaths() const;

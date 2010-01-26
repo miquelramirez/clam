@@ -104,7 +104,7 @@
   typedef CRITICAL_SECTION MUTEX;
 
 #elif defined(__WINDOWS_ASIO__)
-  #include <windows.h>
+  #include "CLAM_windows.h"
   #include <process.h>
 
   typedef int AUDIO_HANDLE;

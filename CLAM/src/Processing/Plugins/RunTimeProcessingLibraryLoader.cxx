@@ -1,11 +1,3 @@
-#ifdef WIN32
-#include <windows.h>
-#undef GetClassName
-#else
-#include <dlfcn.h>
-#endif
-#include <dirent.h>
-#include <iostream>
 #include "RunTimeLibraryLoader.hxx"
 
 class RunTimeProcessingLibraryLoader : public RunTimeLibraryLoader

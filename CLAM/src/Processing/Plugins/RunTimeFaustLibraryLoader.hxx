@@ -2,8 +2,7 @@
 #define RunTimeFaustLibraryLoader_hxx
 
 #ifdef WIN32
-#include <windows.h>
-#undef GetClassName
+#include "CLAM_windows.h"
 #else
 #include <dlfcn.h>
 #endif
@@ -30,9 +29,9 @@ public:
 	}
 
 	// overload as workaround of Load() overload and path issues
-	virtual const std::list<std::string> GetUsedLibraries()
+	virtual std::list<std::string> GetUsedLibraries()
 	{
-		const std::list<std::string> loadedLibraries=LoadedLibraries();
+		std::list<std::string> loadedLibraries=LoadedLibraries();
 		LoadedLibraries().clear();
 		return loadedLibraries;
 	}
