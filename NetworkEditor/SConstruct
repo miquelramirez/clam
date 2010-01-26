@@ -118,6 +118,7 @@ uifiles = env.scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic4(source=uifiles)
 
 if isWindowsPlatform :
+	env.Append(LIBS=['glu32'])
 	sources += env.RES(source=["resources/NetworkEditor.rc"])
 
 if isLinuxPlatform :
@@ -140,6 +141,10 @@ qtmonitorHeaders = env.scanFiles('*.hxx', qtmonitorDirs,
 	patternblacklist=[ 'moc_', 'qrc_', ],
 	)
 qtmonitorEnv = env.Clone()
+pluginDefines=['-DQT_PLUGIN','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
+qtmonitorEnv.AppendUnique(CPPFLAGS=pluginDefines)
+if isWindowsPlatform :
+	qtmonitorEnv.AppendUnique(LINKFLAGS=['-Wl,--export-all-symbols'])
 qtmonitorSources += qtmonitorEnv.Qrc(source=qrcfiles)
 qtmonitorInstall, qtmonitorLocal = qtmonitorEnv.ClamModule(
 	moduleName='qtmonitors',
@@ -153,10 +158,10 @@ qtmonitorInstall, qtmonitorLocal = qtmonitorEnv.ClamModule(
 		'clam_audioio',
 		],
 	)
-qtmonitorEnv.Append(CPPPATH=qtmonitorDirs)
+qtmonitorEnv.AppendUnique(CPPPATH=qtmonitorDirs)
 
 env.PrependUnique(LIBPATH=['.'])
-env.AppendUnique(LIBS=['clam_qtmonitors'])
+env.PrependUnique(LIBS=['clam_qtmonitors'])
 
 testsources = env.scanFiles('*.cxx', ['test'])
 plugindirs = [
@@ -179,8 +184,6 @@ programs = [ env.Program(target=program, source = [main] + sources)
 
 pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQT_OPENGL_LIB','-DQT_XML_LIB','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
 env.AppendUnique(CPPFLAGS=pluginDefines)
-
-#env.AppendUnique(CPPFLAGS=['-fPIC']) # qtPlugin examples were compiled with this option
 
 qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources)
 
@@ -241,7 +244,6 @@ if isWindowsPlatform :
 	def absolutePosixPathToWine(dir) :
 		return 'z:'+'\\\\'.join(dir.split('/'))
 
-	env.Append(LIBS=['glu32'])
 	winqtdir=env['QTDIR']
 	if crosscompiling : env['NSIS_MAKENSIS'] = 'wine ~/.wine/dosdevices/c:/Program\ Files/NSIS/makensis'
 	if crosscompiling : winqtdir = absolutePosixPathToWine(winqtdir)
@@ -255,7 +257,7 @@ if isWindowsPlatform :
 		env.Install(
 			env['prefix']+"/bin",
 			os.path.join(env['QTDIR'],'bin',"Qt"+dll+"4.dll")
-			) for dll in 'Core', 'Gui', 'OpenGL']
+			) for dll in 'Core', 'Gui', 'OpenGL','Svg']
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=%s'%winqtdir ])
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalDllPath ])
@@ -313,6 +315,8 @@ if sys.platform=='darwin' :
 		env.Dir('QtDesigner.app'),
 	] )
 	env.Alias('package', mac_packages)
+
+env.Depends('package', installTargets)
 
 env.Alias('install', installTargets )
 
