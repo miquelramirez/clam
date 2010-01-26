@@ -103,7 +103,9 @@ env.EnableQt4Modules([
 #	'QtUiTools',
 #	'QtDesigner',
 #	'Qt3Support',
-	], debug=False)
+	], debug=False,
+	crosscompiling=crosscompiling,
+	)
 
 
 sourcePaths = []
@@ -168,7 +170,7 @@ directoryBasedExamples = [
 ]
 
 directoryBasedLibraries = [
-	"PluginExamples/ClamLadspaPluginExample",
+#	"PluginExamples/ClamLadspaPluginExample",
 	"PluginExamples/ClamNativePluginExample",
 # TODO: Files to be integred on the Network editor
 #	"PluginExamples/LadspaOSCRemoteController",
@@ -202,14 +204,13 @@ for folder in directoryBasedExamples :
 	executable = os.path.basename(folder)+"Exe"
 	examples += [ env.Program(target=executable, source = sources + exampleSources ) ]
 
-
-
-tickEnv = env.Clone()
-tickEnv.AppendUnique(CPPPATH=['TickExtractor/libresample-0.1.3/include'])
-tickEnv.ParseConfig('pkg-config aubio --cflags --libs')
-tickSrc = glob.glob("TickExtractor/*cxx") + glob.glob("TickExtractor/libresample-0.1.3/src/*.c")
-examples += [ tickEnv.Program(target="TickExtractorExe", source = tickSrc) ]
-
+if not crosscompiling :
+	# Still having problems crosscompiling aubio
+	tickEnv = env.Clone()
+	tickEnv.AppendUnique(CPPPATH=['TickExtractor/libresample-0.1.3/include'])
+	tickEnv.ParseConfig('pkg-config aubio --cflags --libs')
+	tickSrc = glob.glob("TickExtractor/*cxx") + glob.glob("TickExtractor/libresample-0.1.3/src/*.c")
+	examples += [ tickEnv.Program(target="TickExtractorExe", source = tickSrc) ]
 
 env.Alias('examples',examples)
 
