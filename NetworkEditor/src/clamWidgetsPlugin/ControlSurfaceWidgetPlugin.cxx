@@ -47,7 +47,7 @@ bool ControlSurfaceWidgetPlugin::isInitialized() const
 
 QWidget *ControlSurfaceWidgetPlugin::createWidget(QWidget *parent)
 {
-    return new ControlSurfaceWidget(parent);
+    return new ControlSurfaceWidget(/*data source*/ 0, parent);
 }
 
 QString ControlSurfaceWidgetPlugin::name() const

@@ -53,17 +53,83 @@
 #include <QtCore/QFileInfo> // added to check if embbeded file exists as external without console error message
 
 
+namespace CLAM
+{
+class EmbededWidgetFactory
+{
+private:
+	typedef std::string Key;
+	typedef std::map<Key, EmbededWidgetFactory*> Creators;
+	static Creators & creators()
+	{
+		static Creators creators;
+		return creators;
+	}
+protected:
+	EmbededWidgetFactory(const Key & processingTypeName)
+	{
+		creators().insert(std::make_pair(processingTypeName, this));
+	}
+	virtual ~EmbededWidgetFactory() {} // TODO: to the cxx
+	virtual QWidget * concreteCreate(CLAM::Processing * processing, QWidget * parent) = 0;
+public:
+	static QWidget * create(CLAM::Processing * processing, QWidget * parent)
+	{
+		Key type = processing->GetClassName();
+		Creators::iterator it = creators().find(type);
+		if (it==creators().end()) return 0;
+		return it->second->concreteCreate(processing, parent);
+	}
+};
+
+template <typename WidgetType>
+class EmbededWidgetCreator : public EmbededWidgetFactory
+{
+public:
+	EmbededWidgetCreator(const Key & type)
+		: EmbededWidgetFactory(type)
+	{}
+	virtual QWidget * concreteCreate(CLAM::Processing * processing, QWidget * parent)
+	{
+		return new WidgetType(processing, parent);
+	}
+};
+
+template <typename WidgetType, typename MonitorType>
+class EmbededMonitorCreator : public EmbededWidgetFactory
+{
+public:
+	EmbededMonitorCreator(const Key & type)
+		: EmbededWidgetFactory(type)
+	{}
+	virtual QWidget * concreteCreate(
+		QWidget * parent, 
+		CLAM::Processing * processing)
+	{
+		MonitorType * monitor = dynamic_cast<MonitorType*>(processing);
+		if (not monitor) return 0;
+		WidgetType * widget = new WidgetType(parent);
+		widget->setDataSource(monitor);
+	}
+};
+
+namespace {
+	static EmbededWidgetCreator <ControlSurfaceWidget> reg("ControlSurface");
+}
+
+}
+
 QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 {
 	if (!model) return 0;
 	CLAM::Processing * processing = (CLAM::Processing*) model;
+	QWidget * myWidget = CLAM::EmbededWidgetFactory::create(processing, this);
+	if (myWidget) return myWidget;
+
 	std::string className = processing->GetClassName();
 
 	if (className=="OutControlSender")
 		return new ControlSenderWidget(processing);
-
-	if (className=="ControlSurface")
-		return new ControlSurfaceWidget(this, processing);
 
 	if (className=="ControlPrinter" || className=="ControlTraceWriter" || className=="ControlPrinterTyped" )
 		return new ControlPrinterWidget(processing);
