@@ -4,6 +4,9 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
+#include "EmbededWidgets.hxx"
+
+static CLAM::EmbededWidgetCreator <ControlSurfaceWidget> reg("ControlSurface");
 
 
 ControlSurfaceWidget::ControlSurfaceWidget(CLAM::Processing * processing, QWidget * parent)
