@@ -213,7 +213,7 @@ void StreamImpl<Token, PhantomBuffer>::CommonNewRegionSize( Region& anyRegion )
 
 	mDataImpl.Resize( 
 			newLogicalSize, 
-			newPhantomSize, // phantom buffer size
+			std::max(newPhantomSize,PhantomSize()), // phantom buffer size
 			insertionPos );
 	
 	UpdateBeginDistanceOfReadingRegions( producer, tokensToInsert );
