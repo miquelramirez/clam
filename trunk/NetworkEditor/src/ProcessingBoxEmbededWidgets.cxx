@@ -55,22 +55,22 @@
 
 namespace CLAM
 {
-class EmbededWidgetFactory
+class EmbededWidgetCreatorBase
 {
 private:
 	typedef std::string Key;
-	typedef std::map<Key, EmbededWidgetFactory*> Creators;
+	typedef std::map<Key, EmbededWidgetCreatorBase*> Creators;
 	static Creators & creators()
 	{
 		static Creators creators;
 		return creators;
 	}
 protected:
-	EmbededWidgetFactory(const Key & processingTypeName)
+	EmbededWidgetCreatorBase(const Key & processingTypeName)
 	{
 		creators().insert(std::make_pair(processingTypeName, this));
 	}
-	virtual ~EmbededWidgetFactory() {} // TODO: to the cxx
+	virtual ~EmbededWidgetCreatorBase() {} // TODO: to the cxx
 	virtual QWidget * concreteCreate(CLAM::Processing * processing, QWidget * parent) = 0;
 public:
 	static QWidget * create(CLAM::Processing * processing, QWidget * parent)
@@ -83,38 +83,38 @@ public:
 };
 
 template <typename WidgetType>
-class EmbededWidgetCreator : public EmbededWidgetFactory
+class EmbededWidgetCreator : public EmbededWidgetCreatorBase
 {
 public:
 	EmbededWidgetCreator(const Key & type)
-		: EmbededWidgetFactory(type)
+		: EmbededWidgetCreatorBase(type)
 	{}
 	virtual QWidget * concreteCreate(CLAM::Processing * processing, QWidget * parent)
 	{
-		return new WidgetType(processing, parent);
+		return new WidgetType(processing);
 	}
 };
 
 template <typename WidgetType, typename MonitorType>
-class EmbededMonitorCreator : public EmbededWidgetFactory
+class EmbededMonitorCreator : public EmbededWidgetCreatorBase
 {
 public:
 	EmbededMonitorCreator(const Key & type)
-		: EmbededWidgetFactory(type)
+		: EmbededWidgetCreatorBase(type)
 	{}
-	virtual QWidget * concreteCreate(
-		QWidget * parent, 
-		CLAM::Processing * processing)
+	virtual QWidget * concreteCreate(CLAM::Processing * processing, QWidget * parent)
 	{
 		MonitorType * monitor = dynamic_cast<MonitorType*>(processing);
 		if (not monitor) return 0;
 		WidgetType * widget = new WidgetType(parent);
-		widget->setDataSource(monitor);
+		widget->setDataSource(*monitor);
+		return widget;
 	}
 };
 
 namespace {
 	static EmbededWidgetCreator <ControlSurfaceWidget> reg("ControlSurface");
+	static EmbededMonitorCreator <PeakView, PeakViewMonitor> reg2("PeakView");
 }
 
 }
@@ -123,7 +123,7 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 {
 	if (!model) return 0;
 	CLAM::Processing * processing = (CLAM::Processing*) model;
-	QWidget * myWidget = CLAM::EmbededWidgetFactory::create(processing, this);
+	QWidget * myWidget = CLAM::EmbededWidgetCreatorBase::create(processing, this);
 	if (myWidget) return myWidget;
 
 	std::string className = processing->GetClassName();
