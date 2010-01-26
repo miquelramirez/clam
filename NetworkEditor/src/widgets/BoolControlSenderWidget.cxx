@@ -2,6 +2,9 @@
 #include <QtGui/QCheckBox>
 #include <QtGui/QHBoxLayout>
 #include "QSynthKnob.hxx"
+#include "EmbededWidgets.hxx"
+
+static CLAM::EmbededWidgetCreator <BoolControlSenderWidget> reg("BoolControlSender");
 
 BoolControlSenderWidget::BoolControlSenderWidget(CLAM::Processing * processing)
 	: _updating(false)

@@ -10,7 +10,7 @@ class QDESIGNER_WIDGET_EXPORT ProgressControlWidget : public QSlider
 {
 	Q_OBJECT
 public:
-	ProgressControlWidget(QWidget *parent = 0, CLAM::Processing *processing = 0);
+	ProgressControlWidget(CLAM::Processing *processing = 0, QWidget *parent = 0);
 	~ProgressControlWidget();
 
 	CLAM::Processing* GetProcessing();

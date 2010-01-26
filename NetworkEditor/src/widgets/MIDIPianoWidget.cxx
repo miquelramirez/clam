@@ -20,10 +20,13 @@
 #include "MIDIPianoWidget.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 #include <CLAM/CLAM_Math.hxx>
-
 #include <QtGui/QMouseEvent>
+#include "EmbededWidgets.hxx"
+
 
 namespace CLAM {
+
+static EmbededWidgetCreator <MIDIPianoWidget> reg("ControlPiano");
 
 MIDIPianoWidget::~MIDIPianoWidget()
 {

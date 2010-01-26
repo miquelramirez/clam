@@ -3,6 +3,11 @@
 #include <CLAM/InControlBase.hxx>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QLabel>
+#include "EmbededWidgets.hxx"
+
+static CLAM::EmbededWidgetCreator <ControlPrinterWidget> reg1("ControlPrinter");
+static CLAM::EmbededWidgetCreator <ControlPrinterWidget> reg2("ControlTraceWriter");
+static CLAM::EmbededWidgetCreator <ControlPrinterWidget> reg3("ControlPrinterTyped");
 
 ControlPrinterWidget::ControlPrinterWidget(CLAM::Processing * processing)
 	: _processing(processing)

@@ -2,6 +2,9 @@
 #include <CLAM/InControlBase.hxx>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
+#include "EmbededWidgets.hxx"
+
+static CLAM::EmbededWidgetCreator <BoolControlDisplay> reg("BoolControlPrinter");
 
 BoolControlDisplay::BoolControlDisplay(CLAM::Processing * processing)
 	: _processing(processing)

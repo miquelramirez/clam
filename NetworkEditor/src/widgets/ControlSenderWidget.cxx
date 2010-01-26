@@ -5,6 +5,9 @@
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QHBoxLayout>
 #include "QSynthKnob.hxx"
+#include "EmbededWidgets.hxx"
+
+static CLAM::EmbededWidgetCreator <ControlSenderWidget> reg("OutControlSender");
 
 ControlSenderWidget::ControlSenderWidget(CLAM::Processing * processing)
 	: _dial(0)
