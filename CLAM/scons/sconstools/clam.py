@@ -56,7 +56,8 @@ def ClamModule(env, moduleName, version,
 
 	# The empty plugin linking to the module library
 	envPlugin = env.Clone()
-	envPlugin.Append(LIBS=[libraryName])
+	envPlugin['LIBS']=[libraryName]
+	envPlugin['LIBPATH']=['.']
 	if windowsTarget :
 		# Temporary hack because an SCons bug not inserting the -o option
 		plugin = envPlugin.SharedLibrary(target=libraryName+'_plugin', source = [])
