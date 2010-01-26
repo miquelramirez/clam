@@ -17,7 +17,7 @@ class ControlSurfaceWidget : public QWidget
 	Q_PROPERTY(QString nameX READ nameX WRITE setNameX)
 	Q_PROPERTY(QString nameY READ nameY WRITE setNameY)
 public:
-	ControlSurfaceWidget(QWidget * parent=0, CLAM::Processing * processing=0);
+	ControlSurfaceWidget(CLAM::Processing * processing=0, QWidget * parent=0);
 	~ControlSurfaceWidget();
 	void paintEvent(QPaintEvent * event); 
 	void mousePressEvent(QMouseEvent * event); 

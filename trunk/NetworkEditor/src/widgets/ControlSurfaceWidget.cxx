@@ -6,7 +6,7 @@
 #include <QtGui/QMouseEvent>
 
 
-ControlSurfaceWidget::ControlSurfaceWidget(QWidget * parent, CLAM::Processing * processing)
+ControlSurfaceWidget::ControlSurfaceWidget(CLAM::Processing * processing, QWidget * parent)
 	: QWidget(parent)
 	, _spinBoxX(0)
 	, _spinBoxY(0)
