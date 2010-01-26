@@ -162,6 +162,15 @@ public:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config,config);
+		_listenerX.DoControl(0.);
+		_listenerY.DoControl(0.);
+		_listenerZ.DoControl(0.);
+		_listenerAzimuth.DoControl(0.);
+		_listenerElevation.DoControl(0.);
+		_listenerRoll.DoControl(0.);
+		_sourceX.DoControl(0.);
+		_sourceY.DoControl(0.);
+		_sourceZ.DoControl(0.);
 		return true;
 	}
 
