@@ -41,7 +41,6 @@
 #include "MIDIPianoWidget.hxx"
 #include "ControlPrinterWidget.hxx"
 #include "ControlSenderWidget.hxx"
-#include "ControlSurfaceWidget.hxx"
 #include "BoolControlDisplay.hxx"
 #include "BoolControlSenderWidget.hxx"
 #include "ProgressControlWidget.hxx"
@@ -56,8 +55,7 @@
 
 
 namespace {
-	static CLAM::EmbededWidgetCreator <ControlSurfaceWidget> reg("ControlSurface");
-	static CLAM::EmbededMonitorCreator <PeakView, PeakViewMonitor> reg2("PeakView");
+	static CLAM::EmbededMonitorCreator <PeakView, PeakViewMonitor> reg("PeakView");
 }
 
 QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
