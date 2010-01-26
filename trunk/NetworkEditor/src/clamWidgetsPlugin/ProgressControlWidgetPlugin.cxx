@@ -47,7 +47,7 @@ bool ProgressControlWidgetPlugin::isInitialized() const
 
 QWidget *ProgressControlWidgetPlugin::createWidget(QWidget *parent)
 {
-	return new ProgressControlWidget(parent);
+	return new ProgressControlWidget(0, parent);
 }
 
 QString ProgressControlWidgetPlugin::name() const

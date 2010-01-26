@@ -1,7 +1,10 @@
 #include "ProgressControlWidget.hxx"
 #include <cmath>
+#include "EmbededWidgets.hxx"
 
-ProgressControlWidget::ProgressControlWidget(QWidget *parent, CLAM::Processing *processing)
+static CLAM::EmbededWidgetCreator <ProgressControlWidget> reg("ProgressControl");
+
+ProgressControlWidget::ProgressControlWidget(CLAM::Processing *processing, QWidget * parent)
 	: QSlider( parent ),
 	  _processing( processing ),
 	  _updating( false ),

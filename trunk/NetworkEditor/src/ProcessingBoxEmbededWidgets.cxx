@@ -38,12 +38,6 @@
 #include "HistogramViewMonitor.hxx"
 #include "SegmentationView.hxx"
 #include "SegmentationViewMonitor.hxx"
-#include "MIDIPianoWidget.hxx"
-#include "ControlPrinterWidget.hxx"
-#include "ControlSenderWidget.hxx"
-#include "BoolControlDisplay.hxx"
-#include "BoolControlSenderWidget.hxx"
-#include "ProgressControlWidget.hxx"
 
 
 #include <typeinfo>
@@ -54,36 +48,31 @@
 #include <QtCore/QFileInfo> // added to check if embbeded file exists as external without console error message
 
 
-namespace {
+namespace a {
 	static CLAM::EmbededMonitorCreator <PeakView, PeakViewMonitor> reg("PeakView");
+} namespace b{
+	static CLAM::EmbededMonitorCreator <PolarChromaPeaks, PolarChromaPeaksMonitor> reg("PolarChromaPeaks");
+} namespace c{
+	static CLAM::EmbededMonitorCreator <CLAM::VM::Tonnetz, TonnetzMonitor> reg("Tonnetz");
+} namespace d{
+	static CLAM::EmbededMonitorCreator <CLAM::VM::KeySpace, KeySpaceMonitor> reg("KeySpace");
+} namespace e{
+	static CLAM::EmbededMonitorCreator <CLAM::VM::Spectrogram, SpectrogramMonitor> reg("Spectrogram");
+} namespace f{
+	static CLAM::EmbededMonitorCreator <CLAM::VM::ChordRanking,ChordRankingMonitor> reg("ChordRanking");
+} namespace g{
+	static CLAM::EmbededMonitorCreator <Tunner,TunnerMonitor> reg("Tunner");
 }
 
 QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 {
 	if (!model) return 0;
+
 	CLAM::Processing * processing = (CLAM::Processing*) model;
 	QWidget * myWidget = CLAM::EmbededWidgetCreatorBase::create(processing, this);
 	if (myWidget) return myWidget;
 
 	std::string className = processing->GetClassName();
-
-	if (className=="OutControlSender")
-		return new ControlSenderWidget(processing);
-
-	if (className=="ControlPrinter" || className=="ControlTraceWriter" || className=="ControlPrinterTyped" )
-		return new ControlPrinterWidget(processing);
-
-	if (className=="BoolControlPrinter")
-		return new BoolControlDisplay(processing);
-
-	if (className=="BoolControlSender")
-		return new BoolControlSenderWidget(processing);
-
-	if (className=="ControlPiano")
-		return new CLAM::MIDIPianoWidget(processing);
-
-	if (className=="ProgressControl")
-		return new ProgressControlWidget(this, processing);
 
 	if (className=="Vumeter")
 		return new Vumeter( this, dynamic_cast<VumeterMonitor*>(processing) );
@@ -97,48 +86,6 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 	if (className=="SpectrumView")
 		return new SpectrumView(this, dynamic_cast<SpectrumViewMonitor*>(processing) );
 
-	if (className=="PeakView")
-	{
-		PeakView * widget = new PeakView(this);
-		widget->setDataSource( *dynamic_cast<PeakViewMonitor*>(processing) );
-		return widget;
-	}
-	if (className=="PolarChromaPeaks")
-	{
-		PolarChromaPeaks * widget = new PolarChromaPeaks(this);
-		widget->setDataSource( *dynamic_cast<PolarChromaPeaksMonitor*>(processing) );
-		return widget;
-	}
-	if (className=="Tonnetz")
-	{
-		CLAM::VM::Tonnetz * widget = new CLAM::VM::Tonnetz(this);
-		widget->setDataSource( *dynamic_cast<TonnetzMonitor*>(processing) );
-		return widget;
-	}
-	if (className=="KeySpace")
-	{
-		CLAM::VM::KeySpace * widget = new CLAM::VM::KeySpace(this);
-		widget->setDataSource( *dynamic_cast<KeySpaceMonitor*>(processing) );
-		return widget;
-	}
-	if (className=="Spectrogram")
-	{
-		CLAM::VM::Spectrogram * widget = new CLAM::VM::Spectrogram(this);
-		widget->setDataSource( *dynamic_cast<SpectrogramMonitor*>(processing) );
-		return widget;
-	}
-	if (className=="ChordRanking")
-	{
-		CLAM::VM::ChordRanking * widget = new CLAM::VM::ChordRanking(this);
-		widget->setDataSource( *dynamic_cast<ChordRankingMonitor*>(processing) );
-		return widget;
-	}
-	if (className=="Tunner")
-	{
-		Tunner * widget = new Tunner(this);
-		widget->setDataSource( *dynamic_cast<TunnerMonitor*>(processing) );
-		return widget;
-	}
 	if (className=="LPModelView")
 		return new CLAM::VM::LPModelView(this, dynamic_cast<LPModelViewMonitor*>(processing));
 

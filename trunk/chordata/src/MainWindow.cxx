@@ -73,7 +73,7 @@ MainWindow::MainWindow()
 	connect(_ui.helpOnlineTutorialAction, SIGNAL(triggered()), this, SLOT(onlineTutorial()));	
 
 	QVBoxLayout * vboxLayout = new QVBoxLayout(_ui.centralwidget);
-	_progressControlWidget = new ProgressControlWidget(_ui.centralwidget);
+	_progressControlWidget = new ProgressControlWidget(0,_ui.centralwidget);
 	vboxLayout->addWidget(_progressControlWidget);
 
 	_fileReader = _network.AddProcessing("MonoAudioFileReader");
