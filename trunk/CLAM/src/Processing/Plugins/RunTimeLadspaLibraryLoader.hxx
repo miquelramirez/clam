@@ -2,8 +2,7 @@
 #define RunTimeLadspaLibraryLoader_hxx
 
 #ifdef WIN32
-#include <windows.h>
-#undef GetClassName
+#include "CLAM_windows.h"
 #else
 #include <dlfcn.h>
 #endif

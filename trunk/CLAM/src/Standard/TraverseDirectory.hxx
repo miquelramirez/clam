@@ -23,7 +23,7 @@
 #ifndef WIN32
 #	include <dirent.h>
 #else
-#	include <windows.h>
+#	include "CLAM_windows.h"
 #endif
 
 class TraverseDirectory
@@ -80,7 +80,7 @@ private:
 
 #ifdef WIN32
 
-#include <windows.h>
+#include "CLAM_windows.h"
 
 #else
 
