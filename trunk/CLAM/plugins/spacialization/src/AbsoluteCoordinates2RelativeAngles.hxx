@@ -168,7 +168,7 @@ public:
 		_listenerAzimuth.DoControl(0.);
 		_listenerElevation.DoControl(0.);
 		_listenerRoll.DoControl(0.);
-		_sourceX.DoControl(0.);
+		_sourceX.DoControl(1.);
 		_sourceY.DoControl(0.);
 		_sourceZ.DoControl(0.);
 		return true;
