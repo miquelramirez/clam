@@ -74,6 +74,7 @@ Section "Principal" SEC01
   File '${QTDIR}\bin\QtNetwork4.dll'
   File '${QTDIR}\bin\QtDesigner4.dll'
   File '${QTDIR}\bin\QtDesignerComponents4.dll'
+  File '${QTDIR}\bin\QtScript4.dll'
   File '${QTDIR}\bin\QtWebKit4.dll'
   File '${QTDIR}\bin\QtAssistantClient4.dll'
   File '${CLAMINSTALLDIR}\bin\mingwm10.dll'
@@ -85,6 +86,7 @@ Section "Principal" SEC01
 ;  File '${EXTERNALDLLDIR}\libvorbisfile-3.dll'
   File '${EXTERNALDLLDIR}\portaudio.dll'
   File '${EXTERNALDLLDIR}\pthreadGC2.dll'
+  File '${CLAMINSTALLDIR}\lib\libxerces-c2_8_0.dll'
   ; GTK libs
   File '${EXTERNALDLLDIR}\libxml++-2.6-2.dll'
   File '${EXTERNALDLLDIR}\libxml2.dll'
@@ -100,11 +102,13 @@ Section "Principal" SEC01
   File "${CLAMINSTALLDIR}\lib\clam\*.dll"
   SetOutPath "$INSTDIR\bin\designer"
   File "..\CLAMWidgets.dll"
-  SetOutPath "$INSTDIR\example-data\"
-  File "..\example-data\*"
+  SetOutPath "$INSTDIR\bin\iconengines"
+  File '${QTDIR}\plugins\iconengines\qsvgicon4.dll'
   SetOutPath "$INSTDIR\share\networkeditor\i18n"
   File "..\src\i18n\NetworkEditor_ca.qm"
   File "..\src\i18n\NetworkEditor_es.qm"
+  SetOutPath "$INSTDIR\example-data\"
+  File "..\example-data\*"
 
 
 !define Index "Line${__LINE__}"
