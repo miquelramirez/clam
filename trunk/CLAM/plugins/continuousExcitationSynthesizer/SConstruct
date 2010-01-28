@@ -15,12 +15,11 @@ otherDependencies = [
 
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
-options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
+options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
-toolChain = 'default'
-if sys.platform == "win32": toolChain = 'mingw'
+toolChain = 'mingw' if sys.platform == "win32" else 'default'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
@@ -35,22 +34,30 @@ if env['crossmingw'] :
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
-# Sources and headers
-sourcePaths = env.recursiveDirs(".")
-sources = glob.glob('*.cxx')
-headers = glob.glob('*.hxx')
+isWindowsPlatform = sys.platform=="win32" or env['crossmingw']
 
-if sys.platform=='linux2' :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
-if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
-	env.Append( LIBPATH=['/opt/local/lib'] )
-	env.Append( LIBS=['fftw3'] )
-	
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+
+# Sources and headers
 mainSources = {
-	'ContinuousExcitationSynthesizer': 'ContinuousExcitationSynthesizer.cxx',
+	'ContinuousExcitationSynthesizer': os.path.join('.','ContinuousExcitationSynthesizer.cxx'),
 #	'TestAudioDatabaseReader': os.path.join('toreview','TestAudioDatabaseReader.cxx'),
 #	'EbowSynthesizer': os.path.join('toreview','ebowSynthesizer.cxx'),
 }
+sourcePaths = ["."]
+sources = env.scanFiles('*.cxx', sourcePaths,
+	)
+print sources, mainSources.values()
+headers = env.scanFiles('*.hxx', sourcePaths)
+env.AppendUnique(CPPPATH=sourcePaths)
+
+if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
+	env.Append( LIBPATH=['/opt/local/lib'] )
+	env.Append( LIBS=['fftw3'] )
+
+#if isWindowsPlatform :
+#        env.AppendUnique(LINKFLAGS=['-Wl,--export-all-symbols'])
+
 for binary, mainSource in mainSources.items() :
 	sources.remove(mainSource)
 env.Prepend(LIBPATH=["."])
