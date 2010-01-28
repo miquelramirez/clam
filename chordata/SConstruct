@@ -188,8 +188,9 @@ installTargets = [
 def absolutePosixPathToWine(dir) :
 	return 'z:'+'\\\\'.join(dir.split('/'))
 
-if isWindowsPlatform : 
+if isWindowsPlatform :
 	winqtdir=env['QTDIR']
+	env.AppendUnique(LINKFLAGS=['-Wl,-subsystem,windows']) # remove the console in windows
 	if crosscompiling : env['NSIS_MAKENSIS'] = 'wine ~/.wine/dosdevices/c:/Program\ Files/NSIS/makensis'
 	if crosscompiling : winqtdir = absolutePosixPathToWine(winqtdir)
 	externalDllPath = env['external_dll_path']
