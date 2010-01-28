@@ -28,7 +28,8 @@
 #include <CLAM/Audio.hxx>
 #include <sndfile.hh>
 #include <pthread.h>
-#include <jack/ringbuffer.h>
+#undef GetClassName // pthreads in windows includes windows.h with GetClassName
+#include <clam_ringbuffer.h>
 
 namespace CLAM
 {
