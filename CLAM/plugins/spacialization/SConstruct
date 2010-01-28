@@ -43,7 +43,6 @@ env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 # Sources and headers
 sourcePaths = ["src"]
 sources = env.scanFiles('*.cxx', sourcePaths)
-sources = dict.fromkeys(sources).keys()
 headers = env.scanFiles('*.hxx', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)
 
@@ -63,6 +62,7 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBS='sndfile' )
 if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
 	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
+	env.Append( LIBS=['fftw3'] )
 
 install, default = env.ClamModule(
 	moduleName,
