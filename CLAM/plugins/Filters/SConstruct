@@ -3,7 +3,7 @@ import os, glob, sys
 
 moduleName='filterspkg'
 version = "0.0.0"
-description = "Experimental SndFile wrapper for the CLAM framework"
+description = "FIR for the CLAM framework"
 url = 'http://clam-project.org'
 clamDependencies = [
 	'clam_core',
