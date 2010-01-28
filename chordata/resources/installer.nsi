@@ -158,7 +158,7 @@ Section Uninstall
   RMDir "$INSTDIR\share\chordata\i18n"
   RMDir "$INSTDIR\share\chordata"
   RMDir "$INSTDIR\share"
-  Delete "${INSTDIR}\plugins\iconengines\*"
+  Delete "$INSTDIR\bin\iconengines\*"
   RMDir "$INSTDIR\bin\iconengines"
   Delete "$INSTDIR\bin\*"
   RMDir "$INSTDIR\bin"
