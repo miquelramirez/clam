@@ -28,7 +28,7 @@
 #include <sndfile.hh>
 #include <CLAM/Enum.hxx>
 #include <pthread.h>
-#include <jack/ringbuffer.h>
+#include <clam_ringbuffer.h>
 #include "WorkerSemaphore.hxx"
 #include "RingBuffer.hxx"
 

@@ -15,6 +15,7 @@ options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
 options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
+options.Add(PathVariable('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathVariable.PathAccept))
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 toolChain = 'default'
 if sys.platform == "win32": toolChain = 'mingw'
@@ -38,7 +39,13 @@ sources = env.scanFiles('*.cxx', sourcePaths) + env.scanFiles('*.c', sourcePaths
 sources = dict.fromkeys(sources).keys()
 headers = env.scanFiles('*.hxx', sourcePaths) + env.scanFiles('*.h', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)
-env.ParseConfig( "pkg-config --cflags --libs sndfile" )
+pkgconfig = "pkg-config"
+if sys.platform == "win32" or env['crossmingw'] :
+	pkgconfig = "PKG_CONFIG_PATH=%s %s"%(
+		os.path.join(env['sandbox_path'],'local','lib','pkgconfig'),
+		os.path.join(env['sandbox_path'],'local','bin','pkg-config.exe'))
+	env.AppendUnique(LIBS=['pthread'])
+env.ParseConfig( "%s --cflags --libs sndfile"%pkgconfig )
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 install, default = env.ClamModule(
