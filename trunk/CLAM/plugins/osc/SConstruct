@@ -39,23 +39,16 @@ env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
 # Sources and headers
-sourcePaths = env.recursiveDirs(".")
-sourcePaths.remove("./deprecated")
+sourcePaths = ["."]
 sources = env.scanFiles('*.cxx', sourcePaths) + env.scanFiles('*.c', sourcePaths)
 sources = dict.fromkeys(sources).keys()
 headers = env.scanFiles('*.hxx', sourcePaths) + env.scanFiles('*.h', sourcePaths)
-main = "./linkchecking.cxx"
-sources.remove( main )
 env.AppendUnique(CPPPATH=sourcePaths)
 
 if subprocess.call("pkg-config --atleast-version=0.26 liblo",shell=True)==0:
 	env.Append( LIBPATH=['/usr/local/lib'] )
 	env.Append( CPPDEFINES=['__MULTICAST_LIBLO__'] )
 env.ParseConfig('pkg-config --cflags --libs liblo')
-
-envProg = Environment(ENV=os.environ)
-envProg.ParseConfig('pkg-config --cflags --libs liblo')
-program = envProg.Program(target=main[2:-4], source=[main])
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
@@ -67,6 +60,7 @@ if env['sandbox_path'] :
 	env.Append( LIBPATH=os.path.join(env['sandbox_path'],'local/lib') )
 	env.Append( LIBS=['ws2_32'] )
 	env.Append( LIBS=['pthread'] )
+	env.ParseConfig('PKG_CONFIG_PATH=%s pkg-config --cflags --libs sndfile'%os.path.join(env['sandbox_path'],'local','lib','pkgconfig'))
 
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
@@ -82,6 +76,6 @@ install, default = env.ClamModule(
 	)
 
 env.Alias('install', install)
-env.Default(program, *default)
+env.Default(*default)
 
 
