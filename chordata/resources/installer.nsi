@@ -77,10 +77,10 @@ Section "Principal" SEC01
 ;  File '${QTDIR}\bin\QtDesignerComponents4.dll'
 ;  File '${QTDIR}\bin\QtAssistantClient4.dll'
   File '${CLAMINSTALLDIR}\bin\mingwm10.dll'
-  File '${CLAMINSTALLDIR}\lib\clam_audioio.dll'
-  File '${CLAMINSTALLDIR}\lib\clam_core.dll'
-  File '${CLAMINSTALLDIR}\lib\clam_processing.dll'
-  File '${CLAMINSTALLDIR}\lib\clam_qtmonitors.dll'
+  File '${CLAMINSTALLDIR}\bin\clam_audioio.dll'
+  File '${CLAMINSTALLDIR}\bin\clam_core.dll'
+  File '${CLAMINSTALLDIR}\bin\clam_processing.dll'
+  File '${CLAMINSTALLDIR}\bin\clam_qtmonitors.dll'
   File '${EXTERNALDLLDIR}\libogg-0.dll'
   File '${EXTERNALDLLDIR}\libsndfile-1.dll'
   File '${EXTERNALDLLDIR}\libvorbis-0.dll'
@@ -157,6 +157,8 @@ Section Uninstall
   RMDir "$INSTDIR\share\chordata\i18n"
   RMDir "$INSTDIR\share\chordata"
   RMDir "$INSTDIR\share"
+  Delete "${INSTDIR}\plugins\iconengines\*"
+  RMDir "$INSTDIR\bin\iconengines"
   Delete "$INSTDIR\bin\*"
   RMDir "$INSTDIR\bin"
   RMDir "$INSTDIR"
