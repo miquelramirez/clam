@@ -1,6 +1,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx"	
+#include "cppUnitHelper.hxx"
 #include "AudioCollator.hxx"
 
 #include "SimpleOscillator.hxx"
@@ -23,9 +23,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TestStreamingSMSAnalysisSynthesis );
 class TestStreamingSMSAnalysisSynthesis : public CppUnit::TestFixture
 {
 public:
-	
+
 	CPPUNIT_TEST_SUITE( TestStreamingSMSAnalysisSynthesis );
-	
+
 	CPPUNIT_TEST( testAnalysisSynthesis );
 	CPPUNIT_TEST( testAnalysisSynthesisInaNetwork );
 	CPPUNIT_TEST_SUITE_END();
@@ -56,10 +56,10 @@ private:
 
 		int synthFrameSize = analHopSize;
 		int analZeroPaddingFactor= 2;
-		
-		// SMS Analysis configuration 
+
+		// SMS Analysis configuration
 		CLAM::SMSAnalysisConfig analConfig;
-		
+
 		analConfig.SetSinWindowSize(analWindowSize);
 		analConfig.SetHopSize(analHopSize);
 //		analConfig.SetSinWindowType(mGlobalConfig.GetAnalysisWindowType());
@@ -73,15 +73,15 @@ private:
 //		analConfig.GetFundFreqDetect().SetReferenceFundFreq(mGlobalConfig.GetAnalysisReferenceFundFreq());
 //		analConfig.GetFundFreqDetect().SetLowestFundFreq(mGlobalConfig.GetAnalysisLowestFundFreq());
 //		analConfig.GetFundFreqDetect().SetHighestFundFreq(mGlobalConfig.GetAnalysisHighestFundFreq());
-		
+
 		CLAM::SMSSynthesisConfig synthConfig;
 		synthConfig.SetAnalWindowSize(resAnalWindowSize);
 		synthConfig.SetFrameSize(synthFrameSize);
 		synthConfig.SetHopSize(synthFrameSize);
 
-//		mAnalysis.Configure(analConfig);	
+//		mAnalysis.Configure(analConfig);
 //		mSynthesis.Configure(synthConfig);
-		
+
 	}
 
 	//TODO: fix. it runs but produces a broken sinusoidal
@@ -97,17 +97,17 @@ private:
 		readercfg.SetSourceFile(GetTestDataDirectory("sine.wav"));
 		audioProvider.GetOutPort("Samples Read").SetSize( frameSize );
 		audioProvider.GetOutPort("Samples Read").SetHop(frameSize);
-		
+
 		const std::string outputFile(GetTestDataDirectory("SMSTests/out_analysis-synthesis-streaming_sine"));
 		audioProvider.Configure( readercfg );
 		writercfg.SetTargetFile(outputFile+"_result.wav");
 		audioWriter.Configure( writercfg );
-		
+
 		CLAM::SMSAnalysisCore analysis;
 		CLAM::SMSSynthesis synthesis;
 		analysis.Configure( helperAnalysisConfigInstance() );
 		synthesis.Configure( helperSynthesisConfigInstance() );
-		
+
 		CLAM::ConnectPorts(audioProvider, "Samples Read", mAnalysis, "Input Audio");
 		CLAM::ConnectPorts(mAnalysis, "Sinusoidal Peaks", synthesis, "InputSinPeaks");
 		CLAM::ConnectPorts(mAnalysis, "Residual Spectrum", synthesis, "InputResSpectrum");
@@ -117,10 +117,10 @@ private:
 		audioWriter.Start();
 		mAnalysis.Start();
 		synthesis.Start();
-	
+
 		// Processings firings
 		CLAM_ASSERT(audioProvider.GetOutPort("Samples Read").CanProduce(), "mono audio file reader should have provided audio");
-	
+
 		while (audioProvider.Do())
 		{
 			mAnalysis.Do();
@@ -137,13 +137,13 @@ private:
 
 		std::string whyDifferents;
 		bool equals=helperCompareTwoAudioFiles(
-				outputFile+".wav", outputFile+"_result.wav", 
+				outputFile+".wav", outputFile+"_result.wav",
 				whyDifferents);
 		CPPUNIT_ASSERT_MESSAGE(whyDifferents, equals);
 
-					      
+
 	}
-	
+
 	// helper methods for the network tests
 	const CLAM::SMSAnalysisConfig& helperAnalysisConfigInstance()
 	{
@@ -153,10 +153,10 @@ private:
 
 //		int synthFrameSize = analHopSize;
 		int analZeroPaddingFactor= 2;
-		
-		// SMS Analysis configuration 
+
+		// SMS Analysis configuration
 		static CLAM::SMSAnalysisConfig analConfig;
-		
+
 		analConfig.SetSinWindowSize(helperAnalWindowSize() );
 		analConfig.SetHopSize(analHopSize);
 //		analConfig.SetSinWindowType(mGlobalConfig.GetAnalysisWindowType());
@@ -183,26 +183,23 @@ private:
 		return synthConfig;
 	}
 
-	
+
 	void testAnalysisSynthesisInaNetwork()
 	{
 		//CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 		CLAM::Network net;
 		CLAM::MonoOfflineNetworkPlayer * player =  new CLAM::MonoOfflineNetworkPlayer;
 		net.SetPlayer( player ); // network owns the player memory
-
-		net.AddProcessing( "Source", new CLAM::AudioSource );		
-		net.AddProcessing( "Sink", new CLAM::AudioSink );		
+		net.AddProcessing( "Source", new CLAM::AudioSource );
+		net.AddProcessing( "Sink", new CLAM::AudioSink );
 		net.AddProcessing( "Analysis", new CLAM::SMSAnalysisCore );
 		net.AddProcessing( "Synthesis", new CLAM::SMSSynthesis );
-
 		net.ConnectPorts("Source.1", "Analysis.Input Audio");
 		net.ConnectPorts("Analysis.Sinusoidal Peaks", "Synthesis.InputSinPeaks");
 		net.ConnectPorts("Analysis.Residual Spectrum", "Synthesis.InputResSpectrum");
 		net.ConnectPorts("Synthesis.OutputAudio", "Sink.1");
 		net.ConfigureProcessing("Analysis", helperAnalysisConfigInstance() );
 		net.ConfigureProcessing("Synthesis", helperSynthesisConfigInstance() );
-
 		std::string inputFile = GetTestDataDirectory("Elvis.wav");
 		std::string baseOutputFile = GetTestDataDirectory("SMSTests/out_sms_net_stream");
 		player->AddInputFile(inputFile);
@@ -212,7 +209,7 @@ private:
 
 		std::string  whyDifferents;
 		bool equals=helperCompareTwoAudioFiles(
-				baseOutputFile+".wav", baseOutputFile+"_result.wav", 
+				baseOutputFile+".wav", baseOutputFile+"_result.wav",
 				whyDifferents);
 		CPPUNIT_ASSERT_MESSAGE(whyDifferents, equals);
 

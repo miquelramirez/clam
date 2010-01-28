@@ -19,15 +19,15 @@ namespace CLAM
 			unsigned mBufferSize;
 			//AudioInPort* mPort;
 			InPort<Audio>* mPort;
-			
+
 			//resize needs a default constructor
 			Port()
-			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(0) 
+			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(0)
 			{
-			} 
+			}
 
-			explicit Port(InPort<Audio>* p) 
-			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(p) 
+			explicit Port(InPort<Audio>* p)
+			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(p)
 			{
 			}
 		};
@@ -67,7 +67,7 @@ namespace CLAM
 			//After being dropped it is ready to run as it does not need any configuration at all
 			//SetExecState(Ready);
 			Configure( config );
-			ResizePorts(1); 
+			ResizePorts(1);
 		}
 
 		~AudioSinkBuffer()
@@ -84,19 +84,19 @@ namespace CLAM
 			port.mPort->SetSize(1);
 			port.mPort->SetHop(1);
 		}
-		
+
 		void SetExternalBuffer(float* buf, unsigned nframes, unsigned index);
 		void SetExternalBuffer(double* buf, unsigned nframes, unsigned index);
 
 		bool Do();
-		
+
 		const char* GetClassName() const { return "AudioSinkBuffer";}
 
 		const ProcessingConfig & GetConfig() const
 		{
 			return _config;
 		}
-		
+
 		bool ConcreteConfigure(const ProcessingConfig& config)
 		{
 			CopyAsConcreteConfig(_config, config);
@@ -109,6 +109,13 @@ namespace CLAM
 
 		Ports& GetPorts() { return _ports; }
 
+        std::string const Portname(unsigned port) const
+		{
+			std::ostringstream os;
+			os << port + 1; //to make ports one based (when viewed in jack)
+			return os.str();
+		}
+
 	private:
 		void ResizePorts(unsigned sinks)
 		{
@@ -117,19 +124,12 @@ namespace CLAM
 
 			for (unsigned port = sinks; port < _ports.size(); ++port)
 				delete _ports[port].mPort;
-				
+
 			unsigned oldSize = _ports.size();
 			_ports.resize(sinks);
 
 			for (unsigned port = oldSize; port < sinks; ++port)
 				_ports[port] = Port(new InPort<Audio>(Portname(port), this));
-		}
-		
-		std::string const Portname(unsigned port) const
-		{
-			std::ostringstream os;
-			os << port + 1; //to make ports one based (when viewed in jack)
-			return os.str();
 		}
 	};
 
