@@ -42,7 +42,7 @@ template<typename Container> unsigned GetSize(Container const& t)
 } // namespace
 
 /**
- * A NetworkPlayer is an object that controls the playback of a 
+ * A NetworkPlayer is an object that controls the playback of a
  * Network providing a high level transport like interface.
  * This class is an abstract class.
  * Subclasses contextualizes the network inside a given execution
@@ -58,7 +58,11 @@ protected:
 	Network::AudioSinks _audioSinks;
 
 	Network::AudioSourcesBuffer _audioSourcesBuffer;
-	Network::AudioSinksBuffer _audioSinksBuffer;	
+	Network::AudioSinksBuffer _audioSinksBuffer;
+
+    Network::Processings _sources;
+    Network::Processings _sinks;
+
 public:
 	NetworkPlayer()
 		: _network(NULL)
@@ -72,23 +76,23 @@ public:
 
 	/// Should return true when the backend is able to run the network
 	virtual bool IsWorking() = 0;
-	
+
 	/// Whenever the backend is not working, this method returns the reason
 	virtual std::string NonWorkingReason() = 0;
 
 	/// Redefine to add any initialization after being attached to a network
 	/// TODO: Consider removing it as just Jack backend uses it but it is redundant
 	virtual void Init() {}
-	
+
 	/// Redefine to make the backend ready to process and start the network.
 	/// If IsPlaying() should do nothing.
 	/// If it IsPaused() you should consider just call BePlaying()
 	/// without starting the processings.
 	virtual void Start()=0; // { if (not IsPlaying()) BePlaying(); }
-	
+
 	/// Redefine it to deactivate the backend.
 	virtual void Stop()=0; // { if (not IsStopped()) BeStopped(); }
-	
+
 	virtual void Pause() { if (IsPlaying()) BePaused(); }
 
 	void SetNetworkBackLink( Network& net )
@@ -123,35 +127,35 @@ protected:
 		return *_network;
 	}
 
-	Network::Processings GetSources() 
+	Network::Processings GetSources()
 	{
 		return GetNetwork().getOrderedProcessingsByAttribute("port_source_type");
 	}
 
-	Network::Processings GetSinks() 
-	{ 
-		return GetNetwork().getOrderedProcessingsByAttribute("port_sink_type"); 
+	Network::Processings GetSinks()
+	{
+		return GetNetwork().getOrderedProcessingsByAttribute("port_sink_type");
 	}
 
 
-	Network::AudioSources GetAudioSources() 
+	Network::AudioSources GetAudioSources()
 	{
 		return GetNetwork().getOrderedSources();
 	}
 
-	Network::AudioSinks GetAudioSinks() 
-	{ 
-		return GetNetwork().getOrderedSinks(); 
+	Network::AudioSinks GetAudioSinks()
+	{
+		return GetNetwork().getOrderedSinks();
 	}
 
-	Network::AudioSourcesBuffer GetAudioSourcesBuffer() 
-	{	
+	Network::AudioSourcesBuffer GetAudioSourcesBuffer()
+	{
 		return GetNetwork().getOrderedSourcesBuffer();
 	}
 
-	Network::AudioSinksBuffer GetAudioSinksBuffer() 
-	{ 
-		return GetNetwork().getOrderedSinksBuffer(); 
+	Network::AudioSinksBuffer GetAudioSinksBuffer()
+	{
+		return GetNetwork().getOrderedSinksBuffer();
 	}
 
 	void CacheSourcesAndSinks()
@@ -160,7 +164,9 @@ protected:
 		_audioSinks = GetAudioSinks();
 		_audioSourcesBuffer = GetAudioSourcesBuffer();
 		_audioSinksBuffer = GetAudioSinksBuffer();
-	}
+        _sources = GetSources();
+        _sinks = GetSinks();
+    }
 
 private:
 	Network *_network;

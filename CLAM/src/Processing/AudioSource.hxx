@@ -19,13 +19,13 @@ namespace CLAM
 			unsigned mBufferSize;
 			AudioOutPort* mPort;
 
-			Port() 
-			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(0) 
+			Port()
+			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(0)
 			{
 			}
 
-			explicit Port(AudioOutPort* p) 
-			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(p) 
+			explicit Port(AudioOutPort* p)
+			: mFloatBuffer(0), mDoubleBuffer(0), mBufferSize(0), mPort(p)
 			{
 			}
 		};
@@ -69,7 +69,7 @@ namespace CLAM
 				Configure( config );
 
 				// default constructed with 1 port
-				ResizePorts(1); 
+				ResizePorts(1);
 			}
 
 			~AudioSource()
@@ -111,6 +111,13 @@ namespace CLAM
 			Ports& GetPorts() { return _ports; }
 			const Ports & GetPorts() const { return _ports; }
 
+			std::string const Portname(unsigned port) const
+			{
+				std::ostringstream os;
+				os << port + 1; //to make ports one based (when viewed in jack)
+				return os.str();
+			}
+
 		private:
 			void ResizePorts(unsigned sources)
 			{
@@ -127,12 +134,7 @@ namespace CLAM
 					_ports[port] = Port(new AudioOutPort(Portname(port), this));
 			}
 
-			std::string const Portname(unsigned port) const
-			{
-				std::ostringstream os;
-				os << port + 1; //to make ports one based (when viewed in jack)
-				return os.str();
-			}
+
 	};
 
 } //namespace CLAM
