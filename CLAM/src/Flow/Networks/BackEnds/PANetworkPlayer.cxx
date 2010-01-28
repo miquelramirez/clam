@@ -75,7 +75,7 @@ void displayPADevices()
 
 PANetworkPlayer::PANetworkPlayer()
 	: mPreferredBufferSize(paFramesPerBufferUnspecified)
-	, mSamplingRate(48000)
+	, mSamplingRate(44100)
 	, mPortAudioStream(0)
 	, mError(paNoError)
 {
