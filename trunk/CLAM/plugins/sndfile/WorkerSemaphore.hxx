@@ -29,7 +29,7 @@
 #include <sndfile.hh>
 #include <pthread.h>
 #undef GetClassName // pthreads in windows includes windows.h with GetClassName
-#include <clam_ringbuffer.h>
+#include "clam_ringbuffer.h"
 
 namespace CLAM
 {
