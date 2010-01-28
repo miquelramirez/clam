@@ -44,8 +44,11 @@ sources = dict.fromkeys(sources).keys()
 headers = env.scanFiles('*.hxx', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
-env.Append( CPPDEFINE=['__LINUX_ALSASEQ__'] )
-if sys.platform=='linux2' :
+if sys.platform == 'win32' or env['crossmingw'] :
+	env.Append( CPPDEFINES=['__WINDOWS_MM__'] )
+	env.Append( LIBS=['pthread', 'winmm'] )
+elif sys.platform=='linux2' :
+	env.Append( CPPDEFINES=['__LINUX_ALSASEQ__'] )
 	env.Append( LIBS=['pthread', 'asound'] )
 if sys.platform=='darwin' :
 	env.Append( FRAMEWORKS=['CoreMIDI','CoreFoundation','CoreAudio'] )
