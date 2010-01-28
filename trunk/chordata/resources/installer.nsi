@@ -88,7 +88,7 @@ Section "Principal" SEC01
 ;  File '${EXTERNALDLLDIR}\libvorbisfile-3.dll'
   File '${EXTERNALDLLDIR}\portaudio.dll'
   File '${EXTERNALDLLDIR}\pthreadGC2.dll'
-  File '${EXTERNALDLLDIR}\libxerces-c2_8_0.dll'
+  File '${CLAMINSTALLDIR}\lib\libxerces-c2_8_0.dll'
   ; GTK libs
   File '${EXTERNALDLLDIR}\libxml++-2.6-2.dll'
   File '${EXTERNALDLLDIR}\libxml2.dll'
