@@ -116,7 +116,7 @@ public:
 	bool highlighted() const
 	{
 		if (_source->isOutControlHighlighted(_outlet)) return true;
-		if (_target->isInControlHighlighted(_outlet)) return true;
+		if (_target->isInControlHighlighted(_inlet)) return true;
 		return false;
 	}
 	void draw(QPainter & painter)
