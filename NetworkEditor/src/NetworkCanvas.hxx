@@ -288,6 +288,10 @@ protected:
 	}
 	void drawForeground ( QPainter * painter, const QRectF & rect )
 	{
+		for (unsigned i = 0; i<_controlWires.size(); i++)
+			if (_controlWires[i]->highlighted()) _controlWires[i]->draw(*painter);
+		for (unsigned i = 0; i<_portWires.size(); i++)
+			if (_portWires[i]->highlighted()) _portWires[i]->draw(*painter);
 		if (_dragStatus==InportDrag)
 		{
 			unsigned n = _dragBusMode ? nInports(_dragProcessing->model())-_dragConnection : 1;
