@@ -458,7 +458,7 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 	_actionMode = NoAction;
 	_canvas->raise(this);
 	// move actions
-	if (region==nameRegion or region==bodyRegion)
+	if (region==nameRegion or region==bodyRegion or region==iconRegion)
 	{
 		if (region==bodyRegion and !event->modifiers() & Qt::ControlModifier)
 		{
@@ -583,6 +583,7 @@ void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 			break;
 		case nameRegion:
 		case bodyRegion:
+		case iconRegion:
 		case resizeHandleRegion:
 			if (not isSelected())
 			{
