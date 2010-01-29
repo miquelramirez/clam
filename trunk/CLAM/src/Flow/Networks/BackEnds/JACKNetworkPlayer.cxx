@@ -156,9 +156,9 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 											  JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 			_sinkJackPorts.push_back(jp);
             if(typeid(*sink)==typeid(AudioSink))
-                    ((AudioSource*)sink)->SetFrameAndHopSize(_jackBufferSize, port);
+                    ((AudioSink*)sink)->SetFrameAndHopSize(_jackBufferSize, port);
             else
-                    ((AudioSourceBuffer*)sink)->SetFrameAndHopSize(_jackBufferSize, port);
+                    ((AudioSinkBuffer*)sink)->SetFrameAndHopSize(_jackBufferSize, port);
         }
 	}
 }
