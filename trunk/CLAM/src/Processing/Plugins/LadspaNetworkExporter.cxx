@@ -20,10 +20,8 @@ class NetworkLADSPAPlugin
 	};
 
 private:
-	typedef std::vector< LADSPAInfo<AudioSource> > LADSPAInPortList;
-	typedef std::vector< LADSPAInfo<AudioSink> > LADSPAOutPortList;
-	typedef std::vector< LADSPAInfo<AudioSourceBuffer> > LADSPAInPortBufferList;
-	typedef std::vector< LADSPAInfo<AudioSinkBuffer> > LADSPAOutPortBufferList;
+	typedef std::vector< LADSPAInfo<Processing> > LADSPAInPortList;
+	typedef std::vector< LADSPAInfo<Processing> > LADSPAOutPortList;
 
 	typedef std::vector< LADSPAInfo<ControlSource> > LADSPAInControlList;
 	typedef std::vector< LADSPAInfo<ControlSink> > LADSPAOutControlList;
@@ -31,8 +29,6 @@ private:
 	Network _network;
 	LADSPAInPortList mReceiverList;
 	LADSPAOutPortList mSenderList;
-	LADSPAInPortBufferList mReceiverBufferList;
-	LADSPAOutPortBufferList mSenderBufferList;
 
 	LADSPAInControlList mInControlList;
 	LADSPAOutControlList mOutControlList;
@@ -172,105 +168,56 @@ void NetworkLADSPAPlugin::Deactivate()
 
 void NetworkLADSPAPlugin::LocateConnections()
 {
-	CLAM_ASSERT( mReceiverList.empty()&&mReceiverBufferList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered input ports");
-	CLAM_ASSERT( mSenderList.empty()&&mSenderBufferList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered output ports");
+	CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered input ports");
+	CLAM_ASSERT( mSenderList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered output ports");
 	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
 	CLAM_ASSERT( mOutControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
-	
-	Network::AudioSources sources=_network.getOrderedSources();
-	Network::AudioSinks sinks=_network.getOrderedSinks();
 
-	Network::AudioSourcesBuffer sourcesBuffer=_network.getOrderedSourcesBuffer();
-	Network::AudioSinksBuffer sinksBuffer=_network.getOrderedSinksBuffer();
+	Network::Processings sources=_network.getOrderedProcessingsByAttribute("port_source_type");
+	Network::Processings sinks=_network.getOrderedProcessingsByAttribute("port_sink_type");
 
 	Network::ControlSources controlSources = _network.getOrderedControlSources();
 	Network::ControlSinks controlSinks = _network.getOrderedControlSinks();
 
-	for (Network::AudioSources::const_iterator it=sources.begin(); it!=sources.end(); it++)
+	for (Network::Processings::const_iterator it=sources.begin(); it!=sources.end(); it++)
 	{
 		std::string processingName = _network.GetNetworkId(*it);
 
-		AudioSource::Ports ports = (*it)->GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
+        Processing * source =(*it);
+		unsigned nports = source->GetNOutPorts();
+		for(unsigned port = 0; port < nports; ++port)
 		{
 			std::stringstream portName;
-			if (ports.size() == 1)
-				portName << processingName;
-			else
-				portName << processingName << "_" << port;
+			portName << processingName;
+			if (nports > 1)
+				portName << "_" << port;
 
-			LADSPAInfo<AudioSource> info;
+			LADSPAInfo<Processing> info;
 			info.name = portName.str().c_str();
 			info.port = port;
-			info.processing=*it;
-			info.processing->SetFrameAndHopSize( mExternBufferSize, port );
-			mReceiverList.push_back(info);
+			info.processing=source;
+            mReceiverList.push_back(info);
 		}
 	}
 
-	for (Network::AudioSourcesBuffer::const_iterator it=sourcesBuffer.begin(); it!=sourcesBuffer.end(); it++)
-	{
-		std::string processingName = _network.GetNetworkId(*it);
-
-		AudioSourceBuffer::Ports ports = (*it)->GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
-		{
-			std::stringstream portName;
-			if (ports.size() == 1)
-				portName << processingName;
-			else
-				portName << processingName << "_" << port;
-
-			LADSPAInfo<AudioSourceBuffer> info;
-			info.name = portName.str().c_str();
-			info.port = port;
-			info.processing=*it;
-			info.processing->SetFrameAndHopSize( 1, port );
-			mReceiverBufferList.push_back(info);
-		}
-	}
-
-	for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); it++)
+	for (Network::Processings::const_iterator it=sinks.begin(); it!=sinks.end(); it++)
 	{
 		std::string processingName = _network.GetNetworkId( *it );
 
-		CLAM::AudioSink::Ports ports = (*it)->GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
+		Processing * sink =(*it);
+		unsigned nports = sink->GetNInPorts();
+		for(unsigned port = 0; port < nports; ++port)
 		{
 			std::stringstream portName;
-			if (ports.size() == 1)
-				portName << processingName;
-			else
-				portName << processingName << "_" << port;
+			portName << processingName;
+			if (nports > 1)
+				portName << "_" << port;
 
-			LADSPAInfo<AudioSink> info;
+			LADSPAInfo<Processing> info;
 			info.name = portName.str().c_str();
 			info.port = port;
-			info.processing =*it;
-			info.processing->SetFrameAndHopSize ( mExternBufferSize, port );		
-			mSenderList.push_back(info);	
-		}
-	}
-
-	for (Network::AudioSinksBuffer::const_iterator it=sinksBuffer.begin(); it!=sinksBuffer.end(); it++)
-	{
-		std::string processingName = _network.GetNetworkId( *it );
-
-		CLAM::AudioSinkBuffer::Ports ports = (*it)->GetPorts();
-		for(unsigned port = 0; port < ports.size(); ++port)
-		{
-			std::stringstream portName;
-			if (ports.size() == 1)
-				portName << processingName;
-			else
-				portName << processingName << "_" << port;
-
-			LADSPAInfo<AudioSinkBuffer> info;
-			info.name = portName.str().c_str();
-			info.port = port;
-			info.processing =*it;
-			info.processing->SetFrameAndHopSize ( 1, port );		
-			mSenderBufferList.push_back(info);
+			info.processing = sink;
+			mSenderList.push_back(info);
 		}
 	}
 
@@ -287,39 +234,46 @@ void NetworkLADSPAPlugin::LocateConnections()
 		LADSPAInfo<ControlSink> info;
 		info.name = _network.GetNetworkId( *it ).c_str();
 		info.processing =*it;
-		mOutControlList.push_back(info);	
+		mOutControlList.push_back(info);
 	}
-
+    UpdatePortFrameAndHopSize();
 }
 
 void NetworkLADSPAPlugin::UpdatePortFrameAndHopSize()
 {
-	//AudioSources
+	//AudioSources and AudioSourceBuffer
 	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-        for(unsigned port = 0; port < it->processing->GetPorts().size(); ++port)
-			it->processing->SetFrameAndHopSize( mExternBufferSize, port );
-
-	//AudioSourcesBuffer
-	for (LADSPAInPortBufferList::iterator it=mReceiverBufferList.begin(); it!=mReceiverBufferList.end(); it++)
-        for(unsigned port = 0; port < it->processing->GetPorts().size(); ++port)
-			it->processing->SetFrameAndHopSize( mExternBufferSize, port );
-
-	//AudioSinks
+    {
+        Processing * processing = it->processing;
+        unsigned nports = processing->GetNOutPorts();
+        for(unsigned port = 0; port < nports; ++port)
+		{
+		    if(typeid(*processing)==typeid(AudioSource))
+                ((AudioSource*)processing)->SetFrameAndHopSize( mExternBufferSize, port );
+            else // AuidoSourceBuffer
+                ((AudioSourceBuffer*)processing)->SetFrameAndHopSize( 1, port );
+		}
+    }
+	//AudioSinks and AudioSinksBuffer
 	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-        for(unsigned port = 0; port < it->processing->GetPorts().size(); ++port)
-			it->processing->SetFrameAndHopSize( mExternBufferSize, port );
-
-	//AudioSinksBuffer
-	for (LADSPAOutPortBufferList::iterator it=mSenderBufferList.begin(); it!=mSenderBufferList.end(); it++)
-        for(unsigned port = 0; port < it->processing->GetPorts().size(); ++port)
-			it->processing->SetFrameAndHopSize( mExternBufferSize, port );
+    {
+        Processing * processing = it->processing;
+        unsigned nports = processing->GetNInPorts();
+        for(unsigned port = 0; port < nports; ++port)
+		{
+		    if(typeid(*processing)==typeid(AudioSink))
+                ((AudioSink*)processing)->SetFrameAndHopSize ( mExternBufferSize, port );
+            else // AuidoSourceBuffer
+                ((AudioSinkBuffer*)processing)->SetFrameAndHopSize ( 1, port );
+		}
+    }
 }
 
 void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
 {
 	int currentport=0;
 
-	//Manage InPorts (AudioSources)
+	//Manage InPorts (AudioSource and AudioSourcesBuffer)
 	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
 	{
 		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
@@ -328,26 +282,8 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		currentport++;
 	}
 
-	//Manage InPorts (AudioSourcesBuffer)
-	for (LADSPAInPortBufferList::iterator it=mReceiverBufferList.begin(); it!=mReceiverBufferList.end(); it++)
-	{
-		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
-		names[currentport] = LadspaLibrary::dupstr( it->name.c_str() );
-		rangehints[currentport].HintDescriptor = 0;
-		currentport++;
-	}
-
-	//Manage OutPorts (AudioSinks)
+	//Manage OutPorts (AudioSink and AudioSinksBuffer)
 	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-	{
-		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO);
-		names[currentport] = LadspaLibrary::dupstr( it->name.c_str() );
-		rangehints[currentport].HintDescriptor = 0;
-		currentport++;
-	}
-
-	//Manage OutPorts (AudioSinksBuffer)
-	for (LADSPAOutPortBufferList::iterator it=mSenderBufferList.begin(); it!=mSenderBufferList.end(); it++)
 	{
 		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO);
 		names[currentport] = LadspaLibrary::dupstr( it->name.c_str() );
@@ -363,7 +299,7 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 
 		//Obté processingConfig, i defineix cada param
 		ControlSourceConfig conf = dynamic_cast<const ControlSourceConfig&>(it->processing->GetConfig() );
-		
+
 		rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
 		rangehints[currentport].UpperBound=(LADSPA_Data)conf.GetMaxValue();
 
@@ -379,7 +315,7 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | defaultHintValue);
 		currentport++;
 	}
-	
+
 	//Manage OutControls (ExternOutControls)
 	// (Please note that not all the LADSPA hosts make use of these kind of ports)
 	for (LADSPAOutControlList::iterator it=mOutControlList.begin(); it!=mOutControlList.end(); it++)
@@ -403,12 +339,12 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 		if (nsamples==0)
 			return; // Seems that in Ardour2.8 it does never runs plugins with 0 samples
 		UpdatePortFrameAndHopSize();
-	}		
-	
+	}
+
 	ProcessInControlValues();
 
 	EstablishLadspaBuffersToAudioSources(nsamples);
-	EstablishLadspaBuffersToAudioSinks(nsamples); 
+	EstablishLadspaBuffersToAudioSinks(nsamples);
 	//Do() as much as it is needed
 //	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
 	{
@@ -433,52 +369,50 @@ void NetworkLADSPAPlugin::ProcessOutControlValues()
 
 void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSources(const unsigned long nframes)
 {
-	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-		it->processing->SetExternalBuffer(it->dataBuffer, nframes, it->port );
-	for (LADSPAInPortBufferList::iterator it=mReceiverBufferList.begin(); it!=mReceiverBufferList.end(); it++)
-		it->processing->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+    for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+    {
+        Processing * source = it->processing;
+	    if(typeid(*source)==typeid(AudioSource))
+            ((AudioSource*)source)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+        else // AuidoSourceBuffer
+            ((AudioSourceBuffer*)source)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+    }
 }
 
 void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSinks(const unsigned long nframes)
 {
-	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-		it->processing->SetExternalBuffer(it->dataBuffer, nframes, it->port );
-	for (LADSPAOutPortBufferList::iterator it=mSenderBufferList.begin(); it!=mSenderBufferList.end(); it++)
-		it->processing->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+   	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+    {
+        Processing * sink = it->processing;
+	    if(typeid(*sink )==typeid(AudioSink))
+            ((AudioSink*)sink)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+        else // AuidoSourceBuffer
+            ((AudioSinkBuffer*)sink)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+    }
 }
 
 void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 {
 
-	int sizeRecList  = mReceiverList.size();
-	int sizeRecBList = mReceiverBufferList.size();
-	int sizeSenList  = mSenderList.size();
-	int sizeSenBList = mSenderBufferList.size();
-	int sizeInList  = mInControlList.size();
+	unsigned sizeRecList  = mReceiverList.size();
+	unsigned sizeSenList  = mSenderList.size();
+	unsigned sizeInList  = mInControlList.size();
 
 	if ( port < sizeRecList ) //Input port
 	{
 		mReceiverList.at( port ).dataBuffer=data;
 	}
-	else if ( port < sizeRecList + sizeRecBList ) //Input Buffer port
+	else if ( port < sizeRecList + sizeSenList) //Output port
 	{
-		mReceiverBufferList.at( port - sizeRecList ).dataBuffer=data;
+		mSenderList.at( port - sizeRecList ).dataBuffer=data;
 	}
-	else if ( port < sizeRecList + sizeRecBList + sizeSenList) //Output port
+	else if ( port < sizeRecList + sizeSenList + sizeInList) //Input control
 	{
-		mSenderList.at( port - sizeRecList - sizeRecBList ).dataBuffer=data;
+		mInControlList.at( port - sizeRecList - sizeSenList ).dataBuffer=data;
 	}
-	else if ( port < sizeRecList + sizeRecBList + sizeSenList + sizeSenBList) //Output Buffer port
-	{
-		mSenderBufferList.at( port - sizeRecList - sizeRecBList - sizeSenList ).dataBuffer=data;
-	}
-	else if ( port < sizeRecList + sizeSenList + sizeRecBList + sizeSenBList + sizeInList) //Input control
-	{
-		mInControlList.at( port - sizeRecList - sizeSenList -sizeRecBList - sizeSenBList).dataBuffer=data;
-	}
-	else 
+	else
 	{	//Output control
-		mOutControlList.at( port - sizeRecList - sizeSenList - sizeRecBList - sizeSenBList - sizeInList ).dataBuffer=data;
+		mOutControlList.at( port - sizeRecList - sizeSenList - sizeInList ).dataBuffer=data;
 	}
 }
 
@@ -497,7 +431,6 @@ LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor(
 
 	unsigned numports =
 		plugin.mReceiverList.size() + plugin.mSenderList.size() +
-		plugin.mReceiverBufferList.size() + plugin.mSenderBufferList.size() +
 		plugin.mInControlList.size() + plugin.mOutControlList.size();
 
 	if (numports == 0) return 0;
@@ -515,16 +448,16 @@ LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor(
 
 	LADSPA_PortDescriptor * piPortDescriptors = new LADSPA_PortDescriptor[ numports ];
 	descriptor->PortDescriptors = (const LADSPA_PortDescriptor *)piPortDescriptors;
-	
+
 	char ** pcPortNames = new char*[ numports ];
-	
+
 	descriptor->PortNames = (const char **)pcPortNames;
 
 	LADSPA_PortRangeHint * psPortRangeHints = new LADSPA_PortRangeHint[ numports ];
 	descriptor->PortRangeHints = (const LADSPA_PortRangeHint *)psPortRangeHints;
 
 	plugin.FillPortInfo( piPortDescriptors, pcPortNames, psPortRangeHints);
-	
+
 	descriptor->instantiate = ::Instantiate;
 	descriptor->connect_port = ::ConnectTo;
 	descriptor->activate = ::Activate;
