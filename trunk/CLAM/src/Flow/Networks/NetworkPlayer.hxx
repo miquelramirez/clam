@@ -54,12 +54,6 @@ class NetworkPlayer
 protected:
 	enum Status { Playing=0, Stopped=1, Paused=2 };
 
-	Network::AudioSources _audioSources;
-	Network::AudioSinks _audioSinks;
-
-	Network::AudioSourcesBuffer _audioSourcesBuffer;
-	Network::AudioSinksBuffer _audioSinksBuffer;
-
     Network::Processings _sources;
     Network::Processings _sinks;
 
@@ -137,7 +131,6 @@ protected:
 		return GetNetwork().getOrderedProcessingsByAttribute("port_sink_type");
 	}
 
-
 	Network::AudioSources GetAudioSources()
 	{
 		return GetNetwork().getOrderedSources();
@@ -160,10 +153,6 @@ protected:
 
 	void CacheSourcesAndSinks()
 	{
-		_audioSources = GetAudioSources();
-		_audioSinks = GetAudioSinks();
-		_audioSourcesBuffer = GetAudioSourcesBuffer();
-		_audioSinksBuffer = GetAudioSinksBuffer();
         _sources = GetSources();
         _sinks = GetSinks();
     }
