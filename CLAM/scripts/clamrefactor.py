@@ -148,19 +148,18 @@ class ClamNetwork() :
 		out.text = "%s.%s" % (fromProcessing, fromNr)
 		self.connections['outport'] .append(out)
 
-	def _findIndex(self, processingName):
+	def _findLastTag(self, tag):
+		order = [
+			'text',
+			'processing',
+			'port_connection',
+			'control_connection',
+			]
 		children = self.document.getroot().getchildren()
-		
+		tagOrder = order.index(tag)
 		for i, child in enumerate(children):
-			if child.tag == processingName: # find first
-				for child in children[i:]: # loop from there
-					if child.tag != processingName:
-						break
-					i = i+1
-				return i
-		
-		# insert after last processing
-		return len(self.document.findall('processing'))+1
+			if order.index(child.tag) > tagOrder: return i
+		return len(children)
 
 	def removeOutConnections(self, connectionType, processingName):
 		self._removeConnections(processingName) # keep internal data structure intact
@@ -175,7 +174,7 @@ class ClamNetwork() :
 	def  addConnection(self, connectionType, fromProcessing, fromNr, toProcessing, toNr):
 		self._addConnections(fromProcessing, fromNr) # keep internal data structure intact
 		
-		index = self._findIndex(connectionType)
+		index = self._findLastTag(connectionType)
 				
 		network = self.document.getroot()
 		connection = ElementTree.Element(connectionType)
@@ -198,7 +197,7 @@ class ClamNetwork() :
 		for element in processing.getchildren():
 			newProcessing.append(copy.copy(element))
 		
-		index = self._findIndex(processingId) 
+		index = self._findLastTag("processing") 
 		network = self.document.getroot()
 		network.insert(index, newProcessing)
 		
