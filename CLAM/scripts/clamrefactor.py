@@ -150,7 +150,7 @@ class ClamNetwork() :
 
 	def _findLastTag(self, tag):
 		order = [
-			'text',
+			'description',
 			'processing',
 			'port_connection',
 			'control_connection',
