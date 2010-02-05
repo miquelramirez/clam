@@ -61,6 +61,7 @@ install: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
+	dh_install --sourcedir=debian/clam-networkeditor
 
 	# Add here commands to install the package into debian/clam-networkeditor.
 	mkdir -p $(CURDIR)/debian/clam-networkeditor/usr
@@ -81,7 +82,7 @@ binary-arch: build install
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
-#	dh_install
+	dh_install --sourcedir=debian/clam-networkeditor
 	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
