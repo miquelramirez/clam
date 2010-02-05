@@ -37,3 +37,26 @@ Description: CLAM Network Editor, prototyping tool for CLAM
  Those examples include, among others, some sinusoidal plus residual 
  modelling (SMS) transformations and tonal (chords, notes) analysis.
 
+Package: libclam-qtmonitors1.3
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: visual
+ The CLAM framework can be used to develop rich real-time audio and music
+ applications either by c++ programming or by visual means using the
+ CLAM NetworkEditor.
+ .
+ This package provides the shared libraries and the plugins for the
+ for adding graphical processing units to your CLAM applications.
+ Real-time data visualization, control sending...
+
+Package: libclam-qtmonitors-dev
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: development files for libclam-qtmonitors1.3
+ The CLAM framework can be used to develop rich real-time audio and music
+ applications either by c++ programming or by visual means using the
+ CLAM NetworkEditor.
+ .
+ This package provides the files to develop using modules provided by
+ the clam-qtmonitors CLAM plugin.
+
