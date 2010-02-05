@@ -1,4 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioSinkBuffer" position="583,329" size="161,286" type="AudioSinkBuffer">
+    <NSinks>16</NSinks>
+  </processing>
 
   <processing id="Azimuth" position="91,9" size="574,80" type="OutControlSender">
     <Min>-180</Min>
@@ -16,166 +27,136 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="HoaEncoder" position="237,292" size="122,286" type="HoaEncoder">
+  <processing id="HoaEncoderBuffer" position="228,254" size="174,286" type="HoaEncoderBuffer">
     <Order>3</Order>
     <UseFuMa>1</UseFuMa>
   </processing>
 
-  <processing id="K" position="376,472" size="128,111" type="AudioSink" />
+  <processing id="Osc W" position="703,80" size="142,117" type="BufferOscilloscope"/>
 
-  <processing id="L" position="491,477" size="128,111" type="AudioSink" />
+  <processing id="Osc X" position="573,187" size="140,123" type="BufferOscilloscope"/>
 
-  <processing id="M" position="607,485" size="128,111" type="AudioSink" />
+  <processing id="Osc Y" position="702,187" size="141,124" type="BufferOscilloscope"/>
 
-  <processing id="N" position="730,488" size="128,111" type="AudioSink" />
+  <processing id="Osc Z" position="830,188" size="142,122" type="BufferOscilloscope"/>
 
-  <processing id="O" position="873,492" size="128,111" type="AudioSink" />
-
-  <processing id="Osc W" position="901,39" size="143,114" type="Oscilloscope" />
-
-  <processing id="Osc X" position="603,264" size="141,107" type="Oscilloscope" />
-
-  <processing id="Osc Y" position="723,264" size="145,108" type="Oscilloscope" />
-
-  <processing id="Osc Z" position="852,265" size="147,109" type="Oscilloscope" />
-
-  <processing id="P" position="998,497" size="128,111" type="AudioSink" />
-
-  <processing id="Q" position="1132,500" size="128,111" type="AudioSink" />
-
-  <processing id="R" position="492,365" size="128,111" type="AudioSink" />
-
-  <processing id="S" position="613,368" size="128,111" type="AudioSink" />
-
-  <processing id="Sintetic input" position="52,364" size="129,108" type="AudioSource" />
-
-  <processing id="T" position="733,370" size="128,111" type="AudioSink" />
-
-  <processing id="U" position="862,377" size="128,111" type="AudioSink" />
-
-  <processing id="V" position="993,383" size="128,111" type="AudioSink" />
-
-  <processing id="W" position="779,40" size="128,111" type="AudioSink" />
-
-  <processing id="X" position="608,165" size="128,111" type="AudioSink" />
-
-  <processing id="Y" position="728,167" size="128,111" type="AudioSink" />
-
-  <processing id="Z" position="851,171" size="128,111" type="AudioSink" />
+  <processing id="Sintetic input" position="15,289" size="177,108" type="AudioSourceBuffer">
+    <NSources>1</NSources>
+  </processing>
 
   <port_connection>
-    <out>HoaEncoder.W</out>
-    <in>W.1</in>
-  </port_connection>
-
-  <port_connection>
-    <out>HoaEncoder.W</out>
+    <out>HoaEncoderBuffer.W</out>
     <in>Osc W.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.X</out>
-    <in>X.1</in>
+    <out>HoaEncoderBuffer.W</out>
+    <in>AudioSinkBuffer.1</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.X</out>
+    <out>HoaEncoderBuffer.X</out>
     <in>Osc X.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.Y</out>
-    <in>Y.1</in>
+    <out>HoaEncoderBuffer.X</out>
+    <in>AudioSinkBuffer.2</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.Y</out>
+    <out>HoaEncoderBuffer.Y</out>
     <in>Osc Y.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.Z</out>
-    <in>Z.1</in>
+    <out>HoaEncoderBuffer.Y</out>
+    <in>AudioSinkBuffer.3</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.Z</out>
+    <out>HoaEncoderBuffer.Z</out>
     <in>Osc Z.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.R</out>
-    <in>R.1</in>
+    <out>HoaEncoderBuffer.Z</out>
+    <in>AudioSinkBuffer.4</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.S</out>
-    <in>S.1</in>
+    <out>HoaEncoderBuffer.R</out>
+    <in>AudioSinkBuffer.5</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.T</out>
-    <in>T.1</in>
+    <out>HoaEncoderBuffer.S</out>
+    <in>AudioSinkBuffer.6</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.U</out>
-    <in>U.1</in>
+    <out>HoaEncoderBuffer.T</out>
+    <in>AudioSinkBuffer.7</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.V</out>
-    <in>V.1</in>
+    <out>HoaEncoderBuffer.U</out>
+    <in>AudioSinkBuffer.8</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.K</out>
-    <in>K.1</in>
+    <out>HoaEncoderBuffer.V</out>
+    <in>AudioSinkBuffer.9</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.L</out>
-    <in>L.1</in>
+    <out>HoaEncoderBuffer.K</out>
+    <in>AudioSinkBuffer.10</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.M</out>
-    <in>M.1</in>
+    <out>HoaEncoderBuffer.L</out>
+    <in>AudioSinkBuffer.11</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.N</out>
-    <in>N.1</in>
+    <out>HoaEncoderBuffer.M</out>
+    <in>AudioSinkBuffer.12</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.O</out>
-    <in>O.1</in>
+    <out>HoaEncoderBuffer.N</out>
+    <in>AudioSinkBuffer.13</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.P</out>
-    <in>P.1</in>
+    <out>HoaEncoderBuffer.O</out>
+    <in>AudioSinkBuffer.14</in>
   </port_connection>
 
   <port_connection>
-    <out>HoaEncoder.Q</out>
-    <in>Q.1</in>
+    <out>HoaEncoderBuffer.P</out>
+    <in>AudioSinkBuffer.15</in>
+  </port_connection>
+
+  <port_connection>
+    <out>HoaEncoderBuffer.Q</out>
+    <in>AudioSinkBuffer.16</in>
   </port_connection>
 
   <port_connection>
     <out>Sintetic input.1</out>
-    <in>HoaEncoder.Input</in>
+    <in>HoaEncoderBuffer.Input</in>
   </port_connection>
 
   <control_connection>
     <out>Azimuth.out</out>
-    <in>HoaEncoder.azimuth</in>
+    <in>HoaEncoderBuffer.azimuth</in>
   </control_connection>
 
   <control_connection>
     <out>Elevation.out</out>
-    <in>HoaEncoder.elevation</in>
+    <in>HoaEncoderBuffer.elevation</in>
   </control_connection>
 
 </network>
