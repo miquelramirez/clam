@@ -39,6 +39,7 @@ Description: CLAM Network Editor, prototyping tool for CLAM
 
 Package: libclam-qtmonitors1.3
 Architecture: all
+Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: visual
  The CLAM framework can be used to develop rich real-time audio and music
@@ -51,6 +52,7 @@ Description: visual
 
 Package: libclam-qtmonitors-dev
 Architecture: all
+Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: development files for libclam-qtmonitors1.3
  The CLAM framework can be used to develop rich real-time audio and music
