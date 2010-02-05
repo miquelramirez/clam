@@ -47,7 +47,7 @@ AudioBufferMixer::AudioBufferMixer()
 void AudioBufferMixer::CreatePortsAndControls()
 {
 	unsigned portSize = BackendBufferSize();
-	
+
 	for( int i=0; i<mConfig.GetNumberOfInPorts(); i++ )
 	{
 		std::stringstream number("");
@@ -56,7 +56,7 @@ void AudioBufferMixer::CreatePortsAndControls()
 		inPort->SetSize( 1 );
 		inPort->SetHop( 1 );
 		mInputPorts.push_back( inPort );
-		
+
 		mInputControls.push_back( new FloatInControl("Gain " + number.str(), this) );
 	}
 	unsigned int inPortsNumber=mConfig.GetNumberOfInPorts();
@@ -76,13 +76,13 @@ void AudioBufferMixer::CreatePortsAndControls()
 	}
 	for( unsigned int i=0; i<inPortsNumber; i++ )
 	{
-		if (useConfigGains) 
+		if (useConfigGains)
 			mInputControls[i]->DoControl(gainsArray[i]);
 		else
 			/* Set gain = 1 by default */
 			mInputControls[i]->DoControl(1.);
 	}
-	
+
 	mOutputPort.SetSize( 1 );
 	mOutputPort.SetHop( 1 );
 }
@@ -98,7 +98,7 @@ void AudioBufferMixer::RemovePortsAndControls()
 	for(itInControl=mInputControls.begin(); itInControl!=mInputControls.end(); itInControl++)
 		delete *itInControl;
 	mInputControls.clear();
-			
+
 	GetInPorts().Clear();
 	GetInControls().Clear();
 }
@@ -118,7 +118,7 @@ bool AudioBufferMixer::Do()
 	unsigned int frameSize = mInputPorts[0]->GetData().GetSize();
 
 	//if(_network->IsPlaying())
-		std::cout << "AudioMixer: "<< frameSize << std::endl;
+		std::cout << "AudioBufferMixer: "<< frameSize << std::endl;
 
 	CLAM::Audio& so=mOutputPort.GetData();
 	so.SetSize(frameSize);
@@ -133,7 +133,7 @@ bool AudioBufferMixer::Do()
 		controls[i]=mInputControls[i]->GetLastValue();
 	}
 //	std::cout << " - Valor buffer: ";
-	for (unsigned int sample=0; sample < frameSize; sample++) 
+	for (unsigned int sample=0; sample < frameSize; sample++)
 	{
 		TData sum=0.0;
 		for (unsigned int inPort=0; inPort< numInPorts; inPort++)
@@ -144,8 +144,8 @@ bool AudioBufferMixer::Do()
 //		std::cout << output[sample] << " ";
 	}
 //	std::cout << std::endl;
-	
-	// execute consume/produce methods	
+
+	// execute consume/produce methods
 	for (unsigned int inPort=0; inPort<numInPorts; inPort++)
 		mInputPorts[inPort]->Consume();
 	mOutputPort.Produce();
