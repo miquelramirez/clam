@@ -1,0 +1,4 @@
+usr/include/CLAM/*
+usr/lib/pkgconfig/*
+usr/lib/libclam_qtmonitors.so
+
