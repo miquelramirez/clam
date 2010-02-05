@@ -11,20 +11,21 @@ proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
 distributions = [
 #	('debian', 'lenny',   "http://ftp.de.debian.org/debian/", ['main']),
-	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
+#	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 #	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('ubuntu', 'hardy', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('ubuntu', 'intrepid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
-	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+#	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'karmic', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 ]
 repositoryBase = "http://clam-project.org/clam/trunk/"
 repositories = [
 	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[1] ),
-	( 'CLAM/plugins',  'clam-plugins',       versionFromRemoteSvn('CLAM')[1] ),
-	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
-	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
-	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
-	( 'chordata',      'clam-chordata',      versionFromRemoteSvn('chordata')[1] ),
+#	( 'CLAM/plugins',  'clam-plugins',       versionFromRemoteSvn('CLAM')[1] ),
+#	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
+#	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
+#	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
+#	( 'chordata',      'clam-chordata',      versionFromRemoteSvn('chordata')[1] ),
 ]
 
 hooks = {
@@ -46,8 +47,9 @@ failedSteps = []
 
 def run(command) :
 	print "\033[32m:: ", command, " \033[0m"
+	sys.stdout.flush()
 	retcode = os.system(command)
-	if retcode < 0 : failedSteps.append(command)
+	if retcode != 0 : failedSteps.append(command)
 	return retcode
 	for line in os.popen(command) :
 		print line,
@@ -107,9 +109,10 @@ for (maindistro, distribution, mirror, components) in distributions :
 	if os.access("%s.tgz"%distribution, os.F_OK) :
 		command = "update"
 
-	run( ("COMPONENTS='%(components)s' pbuilder %(command)s " +
+	run( ("pbuilder %(command)s " +
 		" --othermirror 'deb file:%(resultdir)s ./'" +
 		backportMirror +
+		" --components '%(components)s' " +
 		" --buildplace . " +
 		" --basetgz ./%(distro)s.tgz " +
 		" --distribution %(distro)s " +
