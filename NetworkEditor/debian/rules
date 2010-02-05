@@ -28,7 +28,7 @@ build-stamp: configure-stamp
 
 	# Add here commands to compile the arch part of the package.
 	#$(MAKE) 
-	mkdir -p $(CURDIR)/debian/clam-networkeditor/usr
+	mkdir -p $(CURDIR)/debian/tmp/usr
 	scons $(OPTIONS)
 	convert -resize 32x32 -colors 24 src/images/NetworkEditor-icon.png $(CURDIR)/clam-networkeditor.xpm
 	convert -resize 32x32 -colors 24 src/images/Prototyper-icon.png $(CURDIR)/clam-prototyper.xpm
@@ -62,13 +62,13 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/clam-networkeditor.
-	mkdir -p $(CURDIR)/debian/clam-networkeditor/usr
+	# Add here commands to install the package into debian/tmp.
+	mkdir -p $(CURDIR)/debian/tmp/usr
 	scons install $(OPTIONS)
-	cp $(CURDIR)/clam-networkeditor.xpm ${CURDIR}/debian/clam-networkeditor/usr/share/pixmaps
-	cp $(CURDIR)/clam-prototyper.xpm ${CURDIR}/debian/clam-networkeditor/usr/share/pixmaps
-	/usr/share/clam/sconstools/changeExampleDataPath.py debian/clam-networkeditor/usr/share/networkeditor /usr/share/networkeditor
-	mv $(CURDIR)/debian/clam-networkeditor/usr/share/networkeditor/example-data ${CURDIR}/debian/clam-networkeditor-examples/usr/share/networkeditor
+	cp $(CURDIR)/clam-networkeditor.xpm ${CURDIR}/debian/tmp/usr/share/pixmaps
+	cp $(CURDIR)/clam-prototyper.xpm ${CURDIR}/debian/tmp/usr/share/pixmaps
+	/usr/share/clam/sconstools/changeExampleDataPath.py debian/tmp/usr/share/networkeditor /usr/share/networkeditor
+	mv $(CURDIR)/debian/tmp/usr/share/networkeditor/example-data ${CURDIR}/debian/clam-networkeditor-examples/usr/share/networkeditor
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -81,7 +81,7 @@ binary-arch: build install
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
-	dh_install --sourcedir=debian/clam-networkeditor
+	dh_install
 	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
