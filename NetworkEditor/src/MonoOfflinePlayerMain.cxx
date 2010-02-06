@@ -19,7 +19,7 @@ int usage(const std::string & program)
 		<< "and audio sources to wave files.\n"
 		<< "Unlike OfflinePlayer, just mono files are generated on output, and,"
 		<< "in the case of multichannel inputs, just the first channel is taken.\n"
-		<< "Output wave file formats are choosen by extension (wav, aiff, ogg...)\n"
+		<< "Output wave file formats are chosen by extension (wav, aiff, ogg...)\n"
 		<< "  -t SECONDS   Loops and/or cuts inputs to reach SECONDS seconds long.\n"
 		<< "\nReport bugs to http://clam-project.org\n"
 		<< std::endl;
