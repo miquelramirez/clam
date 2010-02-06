@@ -58,7 +58,7 @@ CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 	setWhatsThis(tr(
 				"<p>The <b>Tonnetz view</b> represents the intensity of each note played.</p>\n"
 				"<p>Notes are displayed in a toroidal surface so that harmonic notes are painted closer.\n"
-				"Thus, when the played notes are a chord, a mode dependant shape is displayed.\n"
+				"Thus, when the played notes are a chord, a mode dependent shape is displayed.\n"
 				"Typical shapes are:</p>\n"
 				"<ul>\n"
 				"<li>Major: Pointing up triangle. The root is the lefter note. (C-E-G)</li>\n"
