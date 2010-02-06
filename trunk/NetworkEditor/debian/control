@@ -25,7 +25,7 @@ Description: CLAM Network Editor, prototyping tool for CLAM
 Package: clam-networkeditor-examples
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, clam-networkeditor (>= ${source:Version} ), clam-networkeditor (<< ${source:Version}.1~)
-Description: CLAM Network Editor, prototyping tool for CLAM
+Description: CLAM Network Editor, examples
  The CLAM Network Editor is a tool for editing CLAM processing networks.
  Those processing networks can become the processing core of an audio
  application by using the CLAM::NetworkPlayer class in such program, 
