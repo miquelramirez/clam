@@ -38,7 +38,7 @@ Description: CLAM Network Editor, prototyping tool for CLAM
  modelling (SMS) transformations and tonal (chords, notes) analysis.
 
 Package: libclam-qtmonitors1.3
-Architecture: all
+Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: visual
@@ -51,7 +51,7 @@ Description: visual
  Real-time data visualization, control sending...
 
 Package: libclam-qtmonitors-dev
-Architecture: all
+Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: development files for libclam-qtmonitors1.3
