@@ -1,10 +1,8 @@
 usr/bin
 usr/lib/qt4/plugins/designer
 usr/share/man/man1
+usr/share/applications
 usr/share/networkeditor
-usr/share/menu
 usr/share/mimelnk/application
 usr/share/mime/packages
 usr/share/pixmaps
-
-
