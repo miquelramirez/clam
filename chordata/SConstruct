@@ -72,7 +72,7 @@ env.EnableClamModules([
 env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
-	'QtOpenGL',
+#	'QtOpenGL',
 	'QtSvg',
 	],
 	debug=False,
