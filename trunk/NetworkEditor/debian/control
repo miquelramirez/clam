@@ -18,7 +18,7 @@ Description: CLAM Network Editor, prototyping tool for CLAM
  or by using the CLAM Prototyper to link the network to a Qt Designer
  interface.
  .
- This packages provides both the Network Editor and the Prototyper.
+ This package provides both the Network Editor and the Prototyper.
  It also provides a plugin for Qt Designer which adds widgets
  to display several kinds of CLAM audio objects from a running network.
 

@@ -65,10 +65,10 @@ install: build
 	# Add here commands to install the package into debian/tmp.
 	mkdir -p $(CURDIR)/debian/tmp/usr
 	scons install $(OPTIONS)
-	cp $(CURDIR)/clam-networkeditor.xpm ${CURDIR}/debian/tmp/usr/share/pixmaps
-	cp $(CURDIR)/clam-prototyper.xpm ${CURDIR}/debian/tmp/usr/share/pixmaps
+	mkdir -p $(CURDIR)/debian/tmp/usr/share/pixmaps/
+	cp $(CURDIR)/clam-networkeditor.xpm ${CURDIR}/debian/tmp/usr/share/pixmaps/
+	cp $(CURDIR)/clam-prototyper.xpm ${CURDIR}/debian/tmp/usr/share/pixmaps/
 	/usr/share/clam/sconstools/changeExampleDataPath.py debian/tmp/usr/share/networkeditor /usr/share/networkeditor
-	mv $(CURDIR)/debian/tmp/usr/share/networkeditor/example-data ${CURDIR}/debian/clam-networkeditor-examples/usr/share/networkeditor
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -82,7 +82,7 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 	find debian
-	dh_install --sourcedir=debian/tmp
+	dh_install --sourcedir=debian/tmp --fail-missing
 	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
@@ -94,12 +94,13 @@ binary-arch: build install
 #	dh_installcron
 #	dh_installinfo
 	dh_installman
+	find debian/tmp
 	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
 #	dh_perl
-#	dh_makeshlibs
+	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
