@@ -34,15 +34,14 @@ protected:
 		for (unsigned long i=0; descriptorTable(i); i++)
 		{
 			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
-			std::ostringstream oss;
-			oss << descriptor->Label << i;
-			factory.AddCreatorWarningRepetitions(oss.str(), 
+			const char* id = descriptor->Label;
+			factory.AddCreatorWarningRepetitions(id, 
 					new CLAM::LadspaWrapperCreator(pluginFullFilename, 
-						i, 
-						oss.str()));
-			factory.AddAttribute(oss.str(), "category", "LADSPA");
-			factory.AddAttribute(oss.str(), "description", descriptor->Name);
-			factory.AddAttribute(oss.str(), "library", pluginFullFilename);
+						i,
+						id));
+			factory.AddAttribute(id, "category", "LADSPA");
+			factory.AddAttribute(id, "description", descriptor->Name);
+			factory.AddAttribute(id, "library", pluginFullFilename);
 			//std::cout << "[LADSPA] added \"" << plugin.factoryID << "\" to the Factory" << std::endl;
 		}
 		if (ReleaseLibraryHandler(handle, pluginFullFilename))
