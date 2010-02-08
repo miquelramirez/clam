@@ -1,3 +1,6 @@
+
+//TODO add mp3/ogg support to NetworkPlayer and deprecate this class. OfflineNetworkPlayer excepts multi-track wav files
+
 #ifndef _MonoOfflineNetworkPlayer_hxx_
 #define _MonoOfflineNetworkPlayer_hxx_
 
