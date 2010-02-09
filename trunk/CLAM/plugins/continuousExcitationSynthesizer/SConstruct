@@ -2,7 +2,7 @@
 import os, glob, sys
 
 moduleName='continuous_excitation_synth'
-version = "0.0.0"
+version = "1.4.0"
 description = "Continuous excitation instrument synthesizer for the CLAM framework"
 url = 'http://clam-project.org'
 clamDependencies = [

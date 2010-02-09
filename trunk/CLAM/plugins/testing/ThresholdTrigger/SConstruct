@@ -2,7 +2,7 @@
 import os, glob, sys
 
 moduleName='thresholdtrigger'
-version = "0.0.0"
+version = "1.4.0"
 description = "Experimental resample wrapper for the CLAM framework"
 url = 'http://clam-project.org'
 clamDependencies = [

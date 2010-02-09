@@ -3,7 +3,7 @@
 import os, glob, sys
 
 moduleName='spacialization'
-version = "0.0.0"
+version = "1.4.0"
 description = "Barcelona Media contributed spacialization algorigthms for the CLAM framework"
 url = 'http://clam-project.org'
 clamDependencies = [

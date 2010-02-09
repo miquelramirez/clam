@@ -3,7 +3,7 @@ import os, glob, sys, subprocess
 
 moduleName='osc'
 libraryName='clam_'+moduleName
-version = "0.0.0"
+version = "1.4.0"
 description = "Experimental OSC support for the CLAM framework"
 url = 'http://clam-project.org'
 clamDependencies = [

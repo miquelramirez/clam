@@ -3,7 +3,7 @@
 import os, glob, sys
 
 moduleName='midi'
-version = "0.0.0"
+version = "1.4.0"
 description = "MIDI utilities for the CLAM framework"
 url = 'http://clam-project.org'
 clamDependencies = [
