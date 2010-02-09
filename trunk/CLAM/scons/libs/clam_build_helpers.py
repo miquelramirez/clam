@@ -247,14 +247,14 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 		# Links with the soname and the lib name point to it.
 		# This method enables upgrading the lib without recompiling programs when
 		# the ABI is kept. 
-		libversion = "%s%s.%s"%versionnumbers
+		libversion = "%s.%s.%s"%versionnumbers
 		linker_name = 'libclam_'+name+'.so'
-		soname      = 'libclam_'+name+'.so.%s%s' % versionnumbers[:2]
-		libname     = 'libclam_'+name+'.so.%s%s.%s' % versionnumbers
+		soname      = 'libclam_'+name+'.so.%s.%s' % versionnumbers[:2]
+		libname     = 'libclam_'+name+'.so.%s.%s.%s' % versionnumbers
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( 'clam_' + name, sources, SHLIBSUFFIX='.so.%s'%libversion )
-		soname_lib     = env.SonameLink( soname, lib )          # lib***.so.XY -> lib***.so.XY.Z
-		linkername_lib = env.LinkerNameLink( linker_name, lib ) # lib***.so    -> lib***.so.XY.Z
+		soname_lib     = env.SonameLink( soname, lib )          # lib***.so.X.Y -> lib***.so.X.Y.Z
+		linkername_lib = env.LinkerNameLink( linker_name, lib ) # lib***.so     -> lib***.so.X.Y.Z
 	else : #darwin
 		linker_name = 'libclam_'+name+'.dylib'
 		soname      = 'libclam_'+name+'.%s.%s.dylib' % versionnumbers[:2]
