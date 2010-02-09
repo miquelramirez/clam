@@ -12,7 +12,9 @@
 
 #include <fstream>
 
-#include "ProcessingFactory.hxx" 
+#include "ProcessingFactory.hxx"
+
+static bool debug = true;
 
 
 void RunTimeLibraryLoader::ReLoad() 
@@ -73,7 +75,10 @@ void RunTimeLibraryLoader::Load() const
 	// for each path, load libraries
 	std::vector <std::string> environmentPaths = SplitPathVariable(path);
 	for (unsigned i=0; i<environmentPaths.size(); i++)
+	{
+		debug && std::cout << "RunTimeLibraryLoader: Scanning for libraries in " << environmentPaths[i] << std::endl;
 		LoadLibrariesFromPath(environmentPaths[i]);
+	}
 }
 
 void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
@@ -85,6 +90,7 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 		std::string pluginFilename(dirEntry->d_name);
 		if(pluginFilename == "." || pluginFilename == "..")
 			continue;
+		debug && std::cout << "RunTimeLibraryLoader: Found file " << pluginFilename << std::endl;
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
 		void * handle = FullyLoadLibrary(pluginFullFilename);
 
