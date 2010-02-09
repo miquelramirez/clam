@@ -1,0 +1,13 @@
+Windows NetworkEditor installer installs the plugins but they are not
+available. The problem is that the plugins can not be loaded because
+they depend on dll available in a different location not in the PATH.
+Possible solutions:
+* The installer adds lib/plugins in PATH environment so that the required dlls are available
+** Adding a nsis library and using it http://nsis.sourceforge.net/Path_Manipulation
+* The program launcher sets the path
+** My ideal solution, but no idea how to do that in windows. Anyone?
+* Install the plugins into bin, but requires further filtering in order not to load non-plugin dlls in that directory
+** Filtering by present symbol is nice but I do not know whether lazy load works in windows.
+** Filtering by name patters is weak but could work
+
+
