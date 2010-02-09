@@ -206,6 +206,8 @@ Section Uninstall
   RMDir  "$INSTDIR\lib"
   Delete "$INSTDIR\bin\designer\*"
   RMDir  "$INSTDIR\bin\designer"
+  Delete "$INSTDIR\bin\iconengines\*"
+  RMDir  "$INSTDIR\bin\iconengines"
   Delete "$INSTDIR\bin\*"
   RMDir  "$INSTDIR\bin"
   RMDir  "$INSTDIR"
