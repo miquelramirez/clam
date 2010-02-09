@@ -21,4 +21,16 @@ Description: Extension plugins for the CLAM framework
   * Sample by sample convolution effects
   * Lock-free wave file reader
 
+Package: libclam-plugins-dev
+Architecture: any
+section: libdevel
+Depends:  libclam-plugins (= ${binary:Version}), clam-devel (= ${binary:Version}),  ${shlibs:Depends}, ${misc:Depends}, clam-devel, libclam-plugins (==$bin
+Description: Development files for the libclam-plugins extensions to the CLAM framework.
+ This package provides the development files needed by applications explicitly
+ using the symbols defined in libclam-plugins package.
+ This package is not needed at all if you just want to use such black box manipulation
+ of the extension objects like NetworkEditor and Prototyper applications do.
+ Black box manipulation is limited to create processings by type name and using
+ common interfaces defined in libclam-core to manipolate them.
+ 
 
