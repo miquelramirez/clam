@@ -9,12 +9,12 @@ Homepage: http://clam-project.org/
 Vcs-Browser: https://clam-project.org/clam/trunk/packaging/CLAM/debian
 Vcs-Svn: https://clam-project.org/clam/trunk/packaging/CLAM/debian
 
-Package: libclam13
+Package: libclam1.4
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: libclam-audioio-dev, libclam-audioio0, libclam-core-dev, libclam-core0, libclam-processing-dev, libclam-processing0, libclam-vmfl-dev, libclam-vmfl0, libclam-vmqt-dev, libclam-vmqt0
-Suggests: clam-annotator, clam-networkeditor, clam-smstools
+Suggests: clam-annotator, clam-networkeditor, clam-smstools, clam-plugins
 Description: runtime package for the CLAM framework
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
@@ -28,7 +28,7 @@ Description: runtime package for the CLAM framework
 Package: libclam-dev
 Section: libdevel
 Architecture: any
-Depends: libclam13 (= ${binary:Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15), portaudio19-dev, libfftw3-dev | fftw3-dev, libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), liblo0-dev, libjack-dev, scons, python
+Depends: libclam1.4 (= ${binary:Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15), portaudio19-dev, libfftw3-dev | fftw3-dev, libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), liblo0-dev, libjack-dev, scons
 Suggests: libclam-doc (= ${binary:Version})
 Description: development package for the CLAM framework
  CLAM is a framework to develop audio and music applications in C++.
