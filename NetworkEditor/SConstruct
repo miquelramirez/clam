@@ -127,7 +127,7 @@ if isLinuxPlatform :
 	except:
 		env.AppendUnique(LIBS=['GLU']) #works on janunty (libglu1-mesa-dev doesnt have the pkg-config)
 	# TODO: This should not be hardcoded neither prefix (because package install)
-	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"${prefix}/share/networkeditor/example-data\\""')
 
 env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
 if env['release'] :
