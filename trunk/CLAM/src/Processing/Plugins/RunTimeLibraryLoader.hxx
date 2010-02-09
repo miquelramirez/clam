@@ -12,8 +12,8 @@ class RunTimeLibraryLoader
 public:
 
 	virtual ~RunTimeLibraryLoader() {}
-	virtual void Load() const;
-	virtual void ReLoad();
+	void Load() const;
+	void ReLoad();
 
 	const std::string CompletePathFor(const std::string & subpathAndName) const; // if subpathAndName exists on environment paths, returns full path
 
