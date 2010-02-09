@@ -63,10 +63,6 @@ Section "Principal" SEC01
   SetOutPath "$INSTDIR\bin"
   SetOverwrite ifnewer
   File "..\chordata.exe"
-  ; TODO: readd the boca task manager
-;  File "..\SimacServicesClient\dist\BocaTaskManager.exe"
-;  File "..\SimacServicesClient\dist\library.zip"
-;  File "..\SimacServicesClient\dist\w9xpopen.exe"
   File '${QTDIR}\bin\QtCore4.dll'
   File '${QTDIR}\bin\QtGui4.dll'
   File '${QTDIR}\bin\QtOpenGL4.dll'
@@ -77,6 +73,7 @@ Section "Principal" SEC01
 ;  File '${QTDIR}\bin\QtDesignerComponents4.dll'
 ;  File '${QTDIR}\bin\QtAssistantClient4.dll'
   File '${CLAMINSTALLDIR}\bin\mingwm10.dll'
+  File 'z:\usr\lib\wine\fakedlls\msvcrt.dll'
   File '${CLAMINSTALLDIR}\bin\clam_audioio.dll'
   File '${CLAMINSTALLDIR}\bin\clam_core.dll'
   File '${CLAMINSTALLDIR}\bin\clam_processing.dll'
@@ -148,21 +145,21 @@ Section Uninstall
   Delete "$SMPROGRAMS\CLAM\Chordata\Uninstall.lnk"
   Delete "$SMPROGRAMS\CLAM\Chordata\Website.lnk"
   Delete "$SMPROGRAMS\CLAM\Chordata\Chordata.lnk"
-  RMDir "$SMPROGRAMS\CLAM\Chordata"
-  RMDir "$SMPROGRAMS\CLAM"
+  RMDir  "$SMPROGRAMS\CLAM\Chordata"
+  RMDir  "$SMPROGRAMS\CLAM"
 
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
 
   Delete "$INSTDIR\share\chordata\i18n\*"
-  RMDir "$INSTDIR\share\chordata\i18n"
-  RMDir "$INSTDIR\share\chordata"
-  RMDir "$INSTDIR\share"
+  RMDir  "$INSTDIR\share\chordata\i18n"
+  RMDir  "$INSTDIR\share\chordata"
+  RMDir  "$INSTDIR\share"
   Delete "$INSTDIR\bin\iconengines\*"
-  RMDir "$INSTDIR\bin\iconengines"
+  RMDir  "$INSTDIR\bin\iconengines"
   Delete "$INSTDIR\bin\*"
-  RMDir "$INSTDIR\bin"
-  RMDir "$INSTDIR"
+  RMDir  "$INSTDIR\bin"
+  RMDir  "$INSTDIR"
 
   DeleteRegKey HKLM "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
