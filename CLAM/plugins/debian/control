@@ -24,7 +24,7 @@ Description: Extension plugins for the CLAM framework
 Package: libclam-plugins-dev
 Architecture: any
 section: libdevel
-Depends:  libclam-plugins (= ${binary:Version}), clam-devel (= ${binary:Version}),  ${shlibs:Depends}, ${misc:Depends}, clam-devel, libclam-plugins (==$bin
+Depends:  libclam-plugins (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, clam-devel, libclam-plugins (==$bin
 Description: Development files for the libclam-plugins extensions to the CLAM framework.
  This package provides the development files needed by applications explicitly
  using the symbols defined in libclam-plugins package.
