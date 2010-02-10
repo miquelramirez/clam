@@ -39,7 +39,7 @@ localDefinitions = dict(
 )
 localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"local")
 repositories = localDefinitions['repositories'].split()
-private_repositories = localDefinitions['repositories'].split()
+private_repositories = localDefinitions['private_repositories'].split()
 os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitions
 os.environ['PATH']='%(installPath)s/bin:' % localDefinitions + os.environ['PATH']
 os.environ['CLAM_PLUGIN_PATH']='%(installPath)s/lib/clam' % localDefinitions
@@ -69,7 +69,7 @@ clam.add_subtask( 'List of new commits', [
 		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:x }
 		for repo in repositories if repo not in private_repositories
 	] + [
-		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:'' }
+		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:'Hola' }
 		for repo in private_repositories
 	] )
 
