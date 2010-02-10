@@ -30,6 +30,7 @@ localDefinitions = dict(
 	description= '<img src="http://clam-project.org/images/linux_icon.png"/> <img src="http://clam-project.org/images/ubuntu_icon.png"/>',
 #	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
 	repositories = "clam acustica data_acustica clam/testdata",
+	private_repositories = "acustica data_acustica",
 	sandbox= os.path.expanduser('~/'),
 	qt3dir='',
 	qt4dir='',
@@ -38,6 +39,7 @@ localDefinitions = dict(
 )
 localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"local")
 repositories = localDefinitions['repositories'].split()
+private_repositories = localDefinitions['repositories'].split()
 os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitions
 os.environ['PATH']='%(installPath)s/bin:' % localDefinitions + os.environ['PATH']
 os.environ['CLAM_PLUGIN_PATH']='%(installPath)s/lib/clam' % localDefinitions
@@ -62,10 +64,13 @@ clam.add_subtask( 'List of new commits', [
 	] + [
 		# 'true' is needed in order testfarm not to catch the 'cd'
 		{CMD: 'true ; cd %s; svn log -r BASE:HEAD; cd -'%repo, INFO: lambda x:x }
-		for repo in repositories
+		for repo in repositories if repo not in private_repositories
 	] + [
 		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:x }
-		for repo in repositories
+		for repo in repositories if repo not in private_repositories
+	] + [
+		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:'' }
+		for repo in private_repositories
 	] )
 
 clam.add_subtask('count lines of code', [
