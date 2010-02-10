@@ -15,7 +15,7 @@ p, li { white-space: pre-wrap; }
     <NSources>1</NSources>
   </processing>
 
-  <processing id="mono2bformat0" position="343,127" size="139,94" type="mono2bformat0"/>
+  <processing id="mono2bformat0" position="343,127" size="139,94" type="mono2bformat"/>
 
   <port_connection>
     <out>mono.1</out>
