@@ -219,7 +219,7 @@ void OfflineNetworkPlayer::Start()
 		for(SndFileHandles::iterator it = infiles.begin(); it != infiles.end(); ++it)
 		{
 			unsigned int nChannels = (*it)->channels();
-			CLAM_ASSERT((*it)->channels(), "The audio had no channels");
+			CLAM_ASSERT(nChannels, "The audio had no channels");
 			int bufferReaderSize = nChannels*frameSize;
 			float * bufferReader = new float[bufferReaderSize];
 			int readSize = (*it)->read(bufferReader,bufferReaderSize);
@@ -253,21 +253,22 @@ void OfflineNetworkPlayer::Start()
 		unsigned outAudioIndex = 0;
 		for(SndFileHandles::iterator it = outfiles.begin(); it != outfiles.end(); ++it)
 		{
-			int bufferWriterSize = (*it)->channels()*frameSize;
+            unsigned int nChannels = (*it)->channels();
+			int bufferWriterSize = nChannels*frameSize;
 			float*	bufferWriter = new float[bufferWriterSize];
 
 			//Save the sources' buffers into the bufferWriter.
 			for(int frameIndex = 0; frameIndex < frameSize; frameIndex ++)
 			{
-				for(int channel = 0; channel < (*it)->channels(); channel++)
+				for(int channel = 0; channel < nChannels; channel++)
 				{
-					bufferWriter[(frameIndex*(*it)->channels()) + channel] =
+					bufferWriter[(frameIndex*nChannels) + channel] =
 						outbuffers[outAudioIndex + channel][frameIndex];
 				}
 			}
 			int writeSize = (*it)->write(bufferWriter, bufferWriterSize);
 			CLAM_ASSERT(writeSize == bufferWriterSize,"The outfile has not been written correctly");
-			outAudioIndex += (*it)->channels();
+			outAudioIndex += nChannels;
 			delete[] bufferWriter;
 		}
 
