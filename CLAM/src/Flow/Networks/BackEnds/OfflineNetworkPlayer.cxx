@@ -218,11 +218,12 @@ void OfflineNetworkPlayer::Start()
 		bool someInputFinished=false;
 		for(SndFileHandles::iterator it = infiles.begin(); it != infiles.end(); ++it)
 		{
-			unsigned int nChannels = (*it)->channels();
+		    SndfileHandle * sndfileHandle = (*it);
+			unsigned int nChannels = sndfileHandle->channels();
 			CLAM_ASSERT(nChannels, "The audio had no channels");
 			int bufferReaderSize = nChannels*frameSize;
 			float * bufferReader = new float[bufferReaderSize];
-			int readSize = (*it)->read(bufferReader,bufferReaderSize);
+			int readSize = sndfileHandle->read(bufferReader,bufferReaderSize);
 
 			//We have read the last part (not complete) of the buffer file. Fill the buffer with zeros.
 			if(readSize<bufferReaderSize)
@@ -232,7 +233,7 @@ void OfflineNetworkPlayer::Start()
 					bufferReader[i] = 0;
 				}
 				if(_enableLoopInputWavs)
-					(*it)->seek(0,SEEK_SET);
+					sndfileHandle->seek(0,SEEK_SET);
 				someInputFinished = true;
 			}
 			//Save the bufferReader into the sources' buffers.
@@ -253,7 +254,8 @@ void OfflineNetworkPlayer::Start()
 		unsigned outAudioIndex = 0;
 		for(SndFileHandles::iterator it = outfiles.begin(); it != outfiles.end(); ++it)
 		{
-            unsigned int nChannels = (*it)->channels();
+		    SndfileHandle * sndfileHandle = (*it);
+            unsigned int nChannels = sndfileHandle->channels();
 			int bufferWriterSize = nChannels*frameSize;
 			float*	bufferWriter = new float[bufferWriterSize];
 
@@ -266,7 +268,7 @@ void OfflineNetworkPlayer::Start()
 						outbuffers[outAudioIndex + channel][frameIndex];
 				}
 			}
-			int writeSize = (*it)->write(bufferWriter, bufferWriterSize);
+			int writeSize = sndfileHandle->write(bufferWriter, bufferWriterSize);
 			CLAM_ASSERT(writeSize == bufferWriterSize,"The outfile has not been written correctly");
 			outAudioIndex += nChannels;
 			delete[] bufferWriter;
