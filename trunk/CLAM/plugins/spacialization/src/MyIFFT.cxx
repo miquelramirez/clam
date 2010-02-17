@@ -129,5 +129,7 @@ bool MyIFFT::Do( const ComplexSpectrum& in, Audio &out) const
 	return true;
 }
 
+MyIFFT::Config::~Config() {}
+
 }
 
