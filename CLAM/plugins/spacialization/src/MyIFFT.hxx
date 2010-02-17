@@ -60,7 +60,7 @@ namespace CLAM {
 				UpdateData();
 				SetAudioSize(1024);
 			}
-		
+			~Config();	
 		};
 	private:
 		Config mConfig;

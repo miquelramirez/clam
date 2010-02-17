@@ -141,6 +141,7 @@ bool MyFFT::Do(const Audio& in, ComplexSpectrum &out)
 	return true;
 }
 
+MyFFT::Config::~Config() {}
 
 }; // CLAM
 
