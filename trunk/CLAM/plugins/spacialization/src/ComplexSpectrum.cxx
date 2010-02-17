@@ -27,5 +27,10 @@ namespace Hidden
 {
 	static ProcessingDataPlugin::Registrator<ComplexSpectrum> registrator("lightseagreen");
 }
+
+ComplexSpectrum::~ComplexSpectrum()
+{
+}
+
 }
 
