@@ -59,6 +59,7 @@ public:
 	virtual void CenterEvenRegions()=0;
 	void SetPublisher( OutPortBase& publisher); 
 	void UnsetPublisher(); 
+	virtual bool IsPublisher() const { return false; }
 	virtual void UnpublishOutPort() =0;
 	virtual const std::type_info & GetTypeId() const = 0;
 protected:
@@ -74,6 +75,7 @@ class OutPort : public OutPortBase
 {
 	typedef OutPort<Token> ProperOutPort;
 	typedef InPort<Token> ProperInPort;
+	typedef InPortPublisher<Token> ProperInPortPublisher;
 	typedef WritingRegion<Token> ProperWritingRegion;
 public:
 	OutPort( const std::string & name = "unnamed out port", Processing * proc = 0 );
@@ -98,21 +100,19 @@ public:
 	bool CanProduce();
 	void CenterEvenRegions();
 	
-	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
 	void UnpublishOutPort() {} 
 	virtual const std::type_info & GetTypeId() const
         {
                 return typeid(Token);
         };
 
+	Token & GetLastWrittenData( int offset = 0 );
 protected:	
-	bool TryConnectToPublisher( InPortBase & in );
-	bool TryConnectToConcreteIn( InPortBase & in );
+	bool ConnectToPublisher( ProperInPortPublisher & in );
 
 	bool TryDisconnectFromPublisher( InPortBase & in );
 	bool TryDisconnectFromConcreteIn( InPortBase & in );
 
-	Token & GetLastWrittenData( int offset = 0 );
 	ProperWritingRegion mRegion;
 
 };
@@ -140,29 +140,15 @@ OutPort<Token>::~OutPort()
 	DisconnectFromAll();
 }
 
-template<class Token>
-bool OutPort<Token>::TryConnectToConcreteIn( InPortBase & in )
-{
-	try
-	{
-		ConnectToConcreteIn( dynamic_cast<ProperInPort&>(in) );
-	}
-	catch(std::bad_cast & e)
-	{
-		return false;
-	}
-	return true;
-}
 
 template<class Token>
-bool OutPort<Token>::TryConnectToPublisher( InPortBase & in )
+bool OutPort<Token>::ConnectToPublisher( InPortPublisher<Token> & in )
 {
-	InPortPublisher<Token> * publisher =  dynamic_cast< InPortPublisher<Token> *>(&in);
-	if (!publisher) 
-		return false;
+	 
+	InPortPublisher<Token> * publisher =  &in;
 	
-	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
 	mVisuallyConnectedPorts.push_back( &in );
+	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
 	for( it=publisher->BeginPublishedInPortsList(); it!=publisher->EndPublishedInPortsList(); it++)
 		(*it)->AttachRegionToOutPort(this, mRegion );
 
@@ -174,11 +160,14 @@ bool OutPort<Token>::TryConnectToPublisher( InPortBase & in )
 template<class Token>
 void OutPort<Token>::ConnectToIn( InPortBase& in)
 {
-	bool successfullConnection;
-	successfullConnection = TryConnectToConcreteIn( in ) || TryConnectToPublisher( in );
+	bool successfullConnection = in.GetTypeId() == GetTypeId();
 	CLAM_ASSERT( successfullConnection,
 		     "OutPort<Token>::connectToIn coudn't connect to inPort "
    		     "because was not templatized by the same Token type as outPort" );
+	if (in.IsPublisher())
+		ConnectToPublisher( static_cast<ProperInPortPublisher&>(in) );
+	else
+		ConnectToConcreteIn( static_cast<ProperInPort&>(in) );
 }
 
 template<class Token>
@@ -195,17 +184,23 @@ void OutPort<Token>::ConnectToConcreteIn(InPort<Token>& in)
 template<class Token>
 void OutPort<Token>::DisconnectFromIn( InPortBase& in)
 {
-	bool successfullDisconnection;
-	successfullDisconnection = TryDisconnectFromConcreteIn( in ) || TryDisconnectFromPublisher( in );
-	CLAM_ASSERT( successfullDisconnection,
+	CLAM_ASSERT (GetTypeId() == in.GetTypeId(), 
 		     "OutPort<Token>::DisconnectFromIn coudn't discconnect from inPort "
    		     "because was not templatized by the same Token type as outPort" );
+
+	if (in.IsPublisher()) 
+		TryDisconnectFromPublisher( in );
+	else 
+		TryDisconnectFromConcreteIn( in );
 }
 
 template<class Token>
 bool OutPort<Token>::TryDisconnectFromConcreteIn( InPortBase & in )
 {
-	ProperInPort * concreteIn = dynamic_cast<ProperInPort*>(&in);
+	if (GetTypeId() != in.GetTypeId())
+		return false;
+
+	ProperInPort * concreteIn = static_cast<ProperInPort*>(&in);
 	if (!concreteIn)
 		return false;
 	
@@ -216,12 +211,14 @@ bool OutPort<Token>::TryDisconnectFromConcreteIn( InPortBase & in )
 template<class Token>
 bool OutPort<Token>::TryDisconnectFromPublisher( InPortBase & in )
 {
-	InPortPublisher<Token> *publisher = dynamic_cast<InPortPublisher<Token> *>(&in);
+	CLAM_ASSERT(GetTypeId()==in.GetTypeId(), "TryDisconnectFromPublisher: expect the same token template");
+
+	InPortPublisher<Token> *publisher = static_cast<InPortPublisher<Token> *>(&in);
 	if (!publisher)
 		return false;
 	
-	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
 	mVisuallyConnectedPorts.remove( &in );
+	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
 	for( it=publisher->BeginPublishedInPortsList(); it!=publisher->EndPublishedInPortsList(); it++)
 	{
 		if( (*it)->GetVisuallyConnectedOutPort())
@@ -294,8 +291,7 @@ bool OutPort<Token>::CanProduce()
 template<class Token>
 bool OutPort<Token>::IsConnectableTo(InPortBase & in)
 {	
-	return ( dynamic_cast< ProperInPort* >(&in) || 
-		dynamic_cast< InPortPublisher<Token> *>(&in));
+	return in.GetTypeId() == GetTypeId();
 }
 
 template<class Token>
@@ -312,15 +308,10 @@ template<class Token>
 InPortPublisher<Token>* OutPort<Token>::GetPublisherContaining(InPort<Token>& in)
 {
 	
-	InPortPublisher<Token> *result=0;
 	InPortsList::iterator it;
 	for( it=mVisuallyConnectedPorts.begin(); it!=mVisuallyConnectedPorts.end(); it++ )
 		if ( (*it)->IsPublisherOf(in) )
-		{
-			result=dynamic_cast<InPortPublisher<Token> *>(*it);
-			CLAM_DEBUG_ASSERT( result, "OutPort::GetPublisherContaining(in) IsPublisher but dynamic_cast failed");
-			return result;
-		}
+			return static_cast<InPortPublisher<Token> *>(*it);
 
 	return 0;
 		
@@ -347,22 +338,6 @@ Token & OutPort<Token>::GetLastWrittenData( int offset )
 	CLAM_DEBUG_ASSERT( 0 <= offset, "OutPort<Token>::GetLastWrittenData - Index under bounds" );
 	CLAM_DEBUG_ASSERT( offset <= GetSize(), "OutPort<Token>::GetLastWrittenData - Index over bounds" );
 	return mRegion.GetLastWrittenData( offset );
-}
-
-template<class Token>
-Token & OutPort<Token>::GetLastWrittenData( OutPortBase & out, int offset )
-{
-	try
-	{
-		OutPort<Token>& concreteOut = dynamic_cast< OutPort<Token>& >(out);
-		return concreteOut.GetLastWrittenData( offset );
-	}
-	catch(...)
-	{
-		CLAM_ASSERT( false, "OutPort<Token>::GetLastWrittenData - Passed an outport of wrong type" );
-	}
-	return *(Token *)NULL;
-		
 }
 
 } // namespace CLAM

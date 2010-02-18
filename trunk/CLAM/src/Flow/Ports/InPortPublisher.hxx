@@ -58,16 +58,13 @@ public:
 
 	void PublishInPort( InPortBase & in )
 	{
-		try
-		{
-			ConcretePublishInPort( dynamic_cast<ProperInPort&>(in) );
-		} catch (...) // could be std::bad_cast ?
-		{
-			CLAM_ASSERT( false,
-			"InPortPublisher<Token>::PublishInPort coudn't connect to outPort "
-			"because was not templatized by the same Token type as InPortPublisher" );
-		}
-
+		CLAM_ASSERT( in.GetTypeId() == GetTypeId(), 
+		"InPortPublisher<Token>::PublishInPort coudn't connect to outPort "
+		"because was not templatized by the same Token type as InPortPublisher" );
+		CLAM_ASSERT( not in.IsPublisher(), 
+		"InPortPublisher<Token>::PublishInPort() publishing a publisher is not supported");
+		
+		ConcretePublishInPort( static_cast<ProperInPort&>(in) );
 	}
 	//why not pass InPortBase? still not needed to call from the "generic" interface
 	void UnPublishInPort( ProperInPort& in )
@@ -113,16 +110,20 @@ public:
 		}
 	}
 	
-	bool IsPublisherOf( InPortBase& in)
+	bool IsPublisherOf( InPortBase& in) const
 	{	
 		// BIG TODO: go in-depth (search for publisher-publiser-inport)
-		typename ProperInPortsList::iterator it;
+		typename ProperInPortsList::const_iterator it;
 		for(it=mPublishedInPortsList.begin(); it!=mPublishedInPortsList.end(); it++)
 		{
 			if( *it == &in)
 				return true;
 		}
 		return false;
+	}
+	bool IsPublisher() const
+	{
+		return true;
 	}
 	virtual const std::type_info & GetTypeId() const 
 	{
