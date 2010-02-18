@@ -160,8 +160,7 @@ bool OutPort<Token>::ConnectToPublisher( InPortPublisher<Token> & in )
 template<class Token>
 void OutPort<Token>::ConnectToIn( InPortBase& in)
 {
-	bool successfullConnection = in.GetTypeId() == GetTypeId();
-	CLAM_ASSERT( successfullConnection,
+	CLAM_ASSERT( IsConnectableTo(in),
 		     "OutPort<Token>::connectToIn coudn't connect to inPort "
    		     "because was not templatized by the same Token type as outPort" );
 	if (in.IsPublisher())
@@ -184,7 +183,7 @@ void OutPort<Token>::ConnectToConcreteIn(InPort<Token>& in)
 template<class Token>
 void OutPort<Token>::DisconnectFromIn( InPortBase& in)
 {
-	CLAM_ASSERT (GetTypeId() == in.GetTypeId(), 
+	CLAM_ASSERT ( IsConnectableTo(in), 
 		     "OutPort<Token>::DisconnectFromIn coudn't discconnect from inPort "
    		     "because was not templatized by the same Token type as outPort" );
 
@@ -197,13 +196,9 @@ void OutPort<Token>::DisconnectFromIn( InPortBase& in)
 template<class Token>
 bool OutPort<Token>::TryDisconnectFromConcreteIn( InPortBase & in )
 {
-	if (GetTypeId() != in.GetTypeId())
-		return false;
+	CLAM_ASSERT( IsConnectableTo(in), "TryDisconnectFromConcreteIn: expect the same token template");
 
 	ProperInPort * concreteIn = static_cast<ProperInPort*>(&in);
-	if (!concreteIn)
-		return false;
-	
 	DisconnectFromConcreteIn( *concreteIn );
 	return true;
 }
@@ -211,11 +206,9 @@ bool OutPort<Token>::TryDisconnectFromConcreteIn( InPortBase & in )
 template<class Token>
 bool OutPort<Token>::TryDisconnectFromPublisher( InPortBase & in )
 {
-	CLAM_ASSERT(GetTypeId()==in.GetTypeId(), "TryDisconnectFromPublisher: expect the same token template");
+	CLAM_ASSERT( IsConnectableTo(in), "TryDisconnectFromPublisher: expect the same token template");
 
 	InPortPublisher<Token> *publisher = static_cast<InPortPublisher<Token> *>(&in);
-	if (!publisher)
-		return false;
 	
 	mVisuallyConnectedPorts.remove( &in );
 	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
@@ -291,7 +284,7 @@ bool OutPort<Token>::CanProduce()
 template<class Token>
 bool OutPort<Token>::IsConnectableTo(InPortBase & in)
 {	
-	return in.GetTypeId() == GetTypeId();
+	return SameType(in.GetTypeId(), GetTypeId());
 }
 
 template<class Token>
