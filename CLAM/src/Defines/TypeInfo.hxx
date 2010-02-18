@@ -24,9 +24,19 @@
 
 //class StaticTrue {};
 //class StaticFalse {};
+#include <typeinfo>
 #include "StaticBool.hxx"
+#include "Assert.hxx"
 
 namespace CLAM {
+	inline bool SameType(const std::type_info & type1, const std::type_info & type2)
+	{
+		if (type1.name() != type2.name()) return false;
+		CLAM_WARNING(type1!=type2,
+			"Types have the same name but are different. "
+			"Check that the type has a destructor in a cxx file, or you don't have .");
+		return true;
+	}
 
 	class DefaultTypeInfo {
 	public:

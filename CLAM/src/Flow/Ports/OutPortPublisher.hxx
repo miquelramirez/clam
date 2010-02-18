@@ -71,7 +71,7 @@ public:
 	
 	void PublishOutPort( OutPortBase & out )
 	{
-		CLAM_ASSERT( GetTypeId()==out.GetTypeId(),
+		CLAM_ASSERT( SameType(GetTypeId(),out.GetTypeId()),
 		"OutPortPublisher<Token>::PublishOutPort coudn't connect to outPort "
 		"because was not templatized by the same Token type as OutPortPublisher" );
 
