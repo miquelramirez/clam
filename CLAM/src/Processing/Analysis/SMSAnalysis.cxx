@@ -113,19 +113,19 @@ bool SMSAnalysis::Do(Frame& in)
 		return false;
 
 	OutPortBase & outSinSpectrum  = mCore.GetOutPort("Sinusoidal Branch Spectrum");
-	in.GetSinusoidalAnalSpectrum() =  OutPortPublisher<Spectrum>::GetLastWrittenData( outSinSpectrum );
+	in.GetSinusoidalAnalSpectrum() =  dynamic_cast<OutPortPublisher<Spectrum>&>(outSinSpectrum).GetLastWrittenData();
 
 	OutPortBase & outResSpectrum  = mCore.GetOutPort("Residual Spectrum");
-	in.GetResidualSpec() =  OutPortPublisher<Spectrum>::GetLastWrittenData( outResSpectrum );
+	in.GetResidualSpec() =  dynamic_cast<OutPortPublisher<Spectrum>&>(outResSpectrum).GetLastWrittenData();
 
 	OutPortBase & outSpectrum  = mCore.GetOutPort("Residual Branch Spectrum");
-	in.GetSpectrum() =  OutPortPublisher<Spectrum>::GetLastWrittenData( outSpectrum );
+	in.GetSpectrum() =  dynamic_cast<OutPortPublisher<Spectrum>&>(outSpectrum).GetLastWrittenData();
 
 	OutPortBase & fundamental  = mCore.GetOutPort("Fundamental");
-	in.GetFundamental() =  OutPortPublisher<Fundamental>::GetLastWrittenData( fundamental );
+	in.GetFundamental() =  dynamic_cast<OutPortPublisher<Fundamental>&>(fundamental).GetLastWrittenData();
 
 	OutPortBase & peaks  = mCore.GetOutPort("Sinusoidal Peaks");
-	in.GetSpectralPeakArray() =  OutPortPublisher<SpectralPeakArray>::GetLastWrittenData( peaks );
+	in.GetSpectralPeakArray() = dynamic_cast<OutPortPublisher<SpectralPeakArray>&>(peaks).GetLastWrittenData();
 
 	// MRJ: Let's check the poscondition...
 	CLAM_DEBUG_ASSERT( in.GetResidualSpec().GetSpectralRange() > 0, 

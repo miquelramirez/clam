@@ -71,20 +71,24 @@ public:
 	
 	void PublishOutPort( OutPortBase & out )
 	{
-		try
-		{
-			ConcretePublishOutPort( dynamic_cast<ProperOutPort&>(out) );
-		} catch (...) // could be std::bad_cast ?
-		{
-			CLAM_ASSERT( false,
-			"OutPortPublisher<Token>::PublishOutPort coudn't connect to outPort "
-			"because was not templatized by the same Token type as OutPortPublisher" );
-		}
+		CLAM_ASSERT( GetTypeId()==out.GetTypeId(),
+		"OutPortPublisher<Token>::PublishOutPort coudn't connect to outPort "
+		"because was not templatized by the same Token type as OutPortPublisher" );
+
+		CLAM_ASSERT( not out.IsPublisher(),
+		"OutPortPublisher<Token>::PublishOutPort: can not publish a publisher (yet)");
+
+		ConcretePublishOutPort( static_cast<ProperOutPort&>(out) );
 
 	}
 	void UnpublishOutPort()
 	{
 		mPublishedOutPort = 0;
+	}
+	bool IsPublisher() const
+	{
+		return true;
+
 	}
 	void ConcretePublishOutPort( ProperOutPort & out )
 	{
@@ -165,10 +169,9 @@ public:
 	}
 	Token & GetLastWrittenData( int offset = 0 )
 	{
-		return OutPort<Token>::GetLastWrittenData( *mPublishedOutPort, offset );
+		return mPublishedOutPort->GetLastWrittenData(offset);
 	}
 
-	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
 	virtual const std::type_info & GetTypeId() const 
 	{
 		return typeid(Token);
@@ -178,24 +181,6 @@ public:
 protected:
 	ProperOutPort * mPublishedOutPort;
 };
-
-template<class Token>
-Token & OutPortPublisher<Token>::GetLastWrittenData( OutPortBase & out, int offset )
-{
-	try
-	{
-		OutPortPublisher<Token>& concreteOut = dynamic_cast< OutPortPublisher<Token>& >(out);
-		return concreteOut.GetLastWrittenData( offset );
-	}
-	catch(...)
-	{
-		CLAM_ASSERT( false, "OutPortPublisher<Token>::DumpDataWithLastToken - Passed an outport of wrong type" );
-	}
-	return *(Token *)NULL;
-		
-}
-
-
 
 
 } // namespace CLAM

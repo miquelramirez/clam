@@ -63,20 +63,5 @@ Audio & AudioOutPort::GetLastWrittenAudio( int offset )
 	return mAudio;
 }
 
-Audio & AudioOutPort::GetLastWrittenAudio( OutPortBase & out, int offset )
-{
-	try
-	{
-		AudioOutPort & concreteOut = dynamic_cast< AudioOutPort& >(out);
-		return concreteOut.GetLastWrittenAudio( offset );
-	}
-	catch(...)
-	{
-		CLAM_ASSERT( false, "AudioOutPort::GetLastWrittenAudio - Passed an outport of wrong type" );
-	}
-	return *(Audio *)NULL;
-		
-}
-
 } // namespace CLAM
 

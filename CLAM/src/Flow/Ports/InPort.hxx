@@ -50,7 +50,8 @@ public:
 	virtual void SetHop(int newHop)=0;
 	virtual void UnAttachRegion()=0;
 	void Disconnect();	
-	virtual bool IsPublisherOf( InPortBase& ) { return false; }
+	virtual bool IsPublisherOf( InPortBase& ) const { return false; }
+	virtual bool IsPublisher() const  { return false; }
 	virtual const std::type_info& GetTypeId() const = 0;
 protected:
 	OutPortBase * mVisuallyConnectedOutPort;

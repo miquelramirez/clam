@@ -37,9 +37,6 @@ public:
 	void SetSampleRate( TData sampleRate );
 	TData GetSampleRate();
 	
-	
-	static Audio & GetLastWrittenAudio( OutPortBase &, int offset = 0);
-
 protected:
 	Audio mAudio;
 	Audio mLastWrittenAudio;
