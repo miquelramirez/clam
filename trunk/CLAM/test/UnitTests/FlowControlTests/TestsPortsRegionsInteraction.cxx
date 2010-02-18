@@ -55,7 +55,6 @@ public:
 	CPPUNIT_TEST( testAudioInPort_DefaultSize );
 	
 	CPPUNIT_TEST( testOutPort_IsPhysicallyConnectedToIn_withOneInPort );
-	CPPUNIT_TEST( testGetLastWrittenData_whenPortIsWrongType_throwsException );
 	CPPUNIT_TEST( testGetLastWrittenData_fillsWithCorrectData );
 	// delete sequence tests:
 	CPPUNIT_TEST( testOutPort_deleteSequence_Out_In );
@@ -540,22 +539,6 @@ public:
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Hop not exptected", 512, in.GetHop() );
 	}
 	
-	void testGetLastWrittenData_whenPortIsWrongType_throwsException()
-	{
-		CLAM::OutPort<char> out;
-		out.GetData() = 'a';
-		out.Produce();
-
-		try
-		{
-			int result = CLAM::OutPort<int>::GetLastWrittenData( out );
-			CPPUNIT_FAIL( "Assertion should be failed" );
-		}
-		catch( CLAM::ErrAssertionFailed &  )
-		{
-		}
-	}
-	
 	void testGetLastWrittenData_fillsWithCorrectData()
 	{
 		CLAM::OutPort<int> out;
@@ -563,7 +546,7 @@ public:
 		out.GetData() = data;
 		out.Produce();
 
-		int result = CLAM::OutPort<int>::GetLastWrittenData( out );
+		int result = out.GetLastWrittenData();
 
 		CPPUNIT_ASSERT_EQUAL( data, result );
 	}
