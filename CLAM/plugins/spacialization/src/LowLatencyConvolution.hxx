@@ -52,7 +52,7 @@ namespace CLAM
  @todo Complete LowLatencyConvolution documentation
 */
 class LowLatencyConvolution : public Processing
-{ 
+{
 public:
 	class Config : public ProcessingConfig
 	{
@@ -84,7 +84,7 @@ private:
 
 public:
 	const char* GetClassName() const { return "LowLatencyConvolution"; }
-	LowLatencyConvolution(const Config& config = Config()) 
+	LowLatencyConvolution(const Config& config = Config())
 		: _input("Input", this)
 		, _output("Output", this)
 		, _impulseResponse("ImpulseResponse", this)
@@ -128,13 +128,15 @@ public:
 		{
 			InitialitzeDelaySpectrums( nBlocks, nBins, impulseResponse[0].spectralRange );
 		}
+        CLAM_ASSERT(nBins == _delayedSpectrums[0].bins.size(), "LowLatencyConvolution: Spectrum number of bins changed on run time.");
 
 		output.bins.resize( nBins );
 		output.spectralRange = input.spectralRange;
 		for (unsigned i=0; i<output.bins.size(); i++)
 			output.bins[i]=0;
 
-		_delayedSpectrums[_current].bins=input.bins;
+		memcpy(&_delayedSpectrums[_current].bins[0],&input.bins[0],sizeof(std::complex<CLAM::TData>)*nBins);
+
 		unsigned delayIndex=_current+1;
 		ComplexSpectrum productSpectrum;
 		for (unsigned i=0; i<nBlocks; i++)
@@ -144,7 +146,7 @@ public:
 			_sum.Do(productSpectrum, output, output);
 		}
 		_current++;
-		if (_current>=nBlocks) 
+		if (_current>=nBlocks)
 		{
 			_current=0;
 		}
