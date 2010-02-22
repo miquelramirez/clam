@@ -1,0 +1,15 @@
+  0  180 Back Horizontal
+-45  135 Base Back Left
+-45 -135 Base Back Right
+-45   45 Base Front Left
+-45  -45 Base Front Right
+  0    0 Front Horizontal
+  0   60 Front Left Horizontal
+  0  -60 Front Right Horizontal
+  0  120 Rear Left Horizontal
+  0 -120 Rear Right Horizontal
+ 45  135 Top Back Left
+ 45 -135 Top Back Right
+ 45  -45 Top Front Right
+ 45   45 Top Front Left
+ 89    0 Top
