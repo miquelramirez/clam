@@ -40,6 +40,8 @@ CLAMInstallDir = env['clam_prefix']
 if not env['prefix'] : env['prefix'] = env['clam_prefix']
 
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+if not os.access(os.path.join(clam_sconstoolspath,"clam.py"),os.R_OK):
+	raise Exception("CLAM not installed at '%s'. Use clam_prefix option."%CLAMInstallDir)
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
