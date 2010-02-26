@@ -15,7 +15,7 @@
 CFLAGS = -Wall -g
 SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr release=yes
 SCONS= scons
-PLUGINS=continuousExcitationSynthesizer osc spacialization GuitarEffects samplebysample speech sndfile
+PLUGINS=continuousExcitationSynthesizer osc spacialization GuitarEffects Filters samplebysample speech sndfile
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
