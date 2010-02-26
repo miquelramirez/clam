@@ -35,13 +35,24 @@ protected:
 		{
 			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
 			const char* id = descriptor->Label;
-			factory.AddCreatorWarningRepetitions(id, 
-					new CLAM::LadspaWrapperCreator(pluginFullFilename, 
+			factory.AddCreatorWarningRepetitions(id,
+					new CLAM::LadspaWrapperCreator(pluginFullFilename,
 						i,
 						id));
 			factory.AddAttribute(id, "category", "LADSPA");
 			factory.AddAttribute(id, "description", descriptor->Name);
 			factory.AddAttribute(id, "library", pluginFullFilename);
+
+			std::ostringstream oss;
+			oss << descriptor->Label << "_buffer" << i;
+            std::string id2=oss.str();
+			factory.AddCreatorWarningRepetitions(id2,
+					new CLAM::LadspaWrapperBufferCreator(pluginFullFilename,
+						i,
+						id2));
+			factory.AddAttribute(id2, "category", "LADSPA_BUFFER");
+			factory.AddAttribute(id2, "description", descriptor->Name);
+			factory.AddAttribute(id2, "library", pluginFullFilename);
 			//std::cout << "[LADSPA] added \"" << plugin.factoryID << "\" to the Factory" << std::endl;
 		}
 		if (ReleaseLibraryHandler(handle, pluginFullFilename))
