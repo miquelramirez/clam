@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.0" id="Unnamed Network">
+
+  <processing id="MonoAudioFileWriter" position="479,249" size="190,58" type="MonoAudioFileWriter">
+    <TargetFile></TargetFile>
+    <SampleRate>44100</SampleRate>
+  </processing>
+
+  <processing id="Noise Mean" position="48,75" size="190,78" type="OutControlSender">
+    <Min>-1</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Noise Standard Deviation" position="245,74" size="223,78" type="OutControlSender">
+    <Min>0</Min>
+    <Default>1</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="WhiteNoise" position="161,248" size="132,58" type="WhiteNoise">
+    <DistributionType>Gaussian</DistributionType>
+  </processing>
+
+  <port_connection>
+    <out>WhiteNoise.mOutput</out>
+    <in>MonoAudioFileWriter.Samples Write</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Noise Mean.out</out>
+    <in>WhiteNoise.Noise Mean</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Noise Standard Deviation.out</out>
+    <in>WhiteNoise.Noise Standard Deviation</in>
+  </control_connection>
+
+</network>
