@@ -1,8 +1,7 @@
 == Description ==
 
-Uniform white noise.
+Uniform and gaussian white noise.
 
-TODO: add gaussian white noise as an option
 
 == Install ==
 
