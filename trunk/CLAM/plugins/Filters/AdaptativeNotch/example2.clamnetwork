@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AdaptativeNotch" position="228,209" size="143,62" type="AdaptativeNotch">
+    <FilterLength>4</FilterLength>
+    <Step>1.5</Step>
+  </processing>
+
+  <processing id="Amplitude" position="111,-25" size="185,78" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Amplitude_1" position="-63,338" size="185,78" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="AudioAdder" position="260,79" size="109,62" type="AudioAdder"/>
+
+  <processing id="AudioAdder_1" position="141,70" size="113,62" type="AudioAdder"/>
+
+  <processing id="AudioAmplifier" position="56,171" size="114,58" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+    <PortsNumber>1</PortsNumber>
+  </processing>
+
+  <processing id="AudioSink" position="444,420" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="Gain" position="76,72" size="177,78" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Noise" position="-40,455" size="156,58" type="SimpleOscillator">
+    <Frequency>400</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="Oscilloscope" position="348,68" size="263,161" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_1" position="577,416" size="430,210" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_2" position="-6,214" size="505,235" type="Oscilloscope"/>
+
+  <processing id="Pitch" position="-83,-25" size="217,78" type="OutControlSender">
+    <Min>0</Min>
+    <Default>500</Default>
+    <Max>10000</Max>
+    <Step>100</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="SimpleOscillator" position="-76,55" size="141,58" type="SimpleOscillator">
+    <Frequency>200</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="SpectralAnalysis" position="400,211" size="142,58" type="SpectralAnalysis">
+    <WindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>1025</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>0</Invert>
+    </WindowGenerator>
+    <CircularShift>
+      <Amount>-512</Amount>
+    </CircularShift>
+    <FFT>
+      <AudioSize>1024</AudioSize>
+    </FFT>
+    <prHopSize>512</prHopSize>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>1024</prFFTSize>
+    <prWindowSize>1025</prWindowSize>
+    <prWindowType>BlackmanHarris92</prWindowType>
+  </processing>
+
+  <processing id="SpectralAnalysis_1" position="391,11" size="157,58" type="SpectralAnalysis">
+    <WindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>1025</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>0</Invert>
+    </WindowGenerator>
+    <CircularShift>
+      <Amount>-512</Amount>
+    </CircularShift>
+    <FFT>
+      <AudioSize>1024</AudioSize>
+    </FFT>
+    <prHopSize>512</prHopSize>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>1024</prFFTSize>
+    <prWindowSize>1025</prWindowSize>
+    <prWindowType>BlackmanHarris92</prWindowType>
+  </processing>
+
+  <processing id="SpectrumView" position="598,231" size="357,194" type="SpectrumView"/>
+
+  <processing id="SpectrumView_1" position="603,9" size="350,210" type="SpectrumView"/>
+
+  <processing id="WhiteNoise" position="-106,161" size="97,58" type="WhiteNoise">
+    <DistributionType>Uniform</DistributionType>
+  </processing>
+
+  <port_connection>
+    <out>AdaptativeNotch.Output</out>
+    <in>AudioSink.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AdaptativeNotch.Output</out>
+    <in>SpectralAnalysis.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AdaptativeNotch.Output</out>
+    <in>Oscilloscope_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAdder.Audio Output</out>
+    <in>SpectralAnalysis_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAdder.Audio Output</out>
+    <in>AdaptativeNotch.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAdder.Audio Output</out>
+    <in>Oscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAdder_1.Audio Output</out>
+    <in>AudioAdder.First Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output</out>
+    <in>AudioAdder_1.Second Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Noise.Audio Output</out>
+    <in>AudioAdder.Second Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Noise.Audio Output</out>
+    <in>AdaptativeNotch.Reference</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator.Audio Output</out>
+    <in>Oscilloscope_2.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator.Audio Output</out>
+    <in>AudioAdder_1.First Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis.Output</out>
+    <in>SpectrumView.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis_1.Output</out>
+    <in>SpectrumView_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>WhiteNoise.mOutput</out>
+    <in>AudioAmplifier.Input Audio</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Amplitude.out</out>
+    <in>SimpleOscillator.Amplitude</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Amplitude_1.out</out>
+    <in>Noise.Amplitude</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain.out</out>
+    <in>AudioAmplifier.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch.out</out>
+    <in>SimpleOscillator.Pitch</in>
+  </control_connection>
+
+</network>
