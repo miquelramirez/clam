@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioAdder" position="242,30" size="98,62" type="AudioAdder"/>
+
+  <processing id="AudioSink" position="634,-44" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="Notch2ndOrder" position="398,-8" size="120,55" type="Notch2ndOrder">
+    <CentralFrequency>200</CentralFrequency>
+    <Bandwidth>13</Bandwidth>
+  </processing>
+
+  <processing id="SimpleOscillator" position="24,6" size="127,55" type="SimpleOscillator">
+    <Frequency>200</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="SimpleOscillator_1" position="22,72" size="140,55" type="SimpleOscillator">
+    <Frequency>400</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="SpectralAnalysis" position="429,67" size="128,55" type="SpectralAnalysis">
+    <WindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>1025</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>0</Invert>
+    </WindowGenerator>
+    <CircularShift>
+      <Amount>-512</Amount>
+    </CircularShift>
+    <FFT>
+      <AudioSize>1024</AudioSize>
+    </FFT>
+    <prHopSize>512</prHopSize>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>1024</prFFTSize>
+    <prWindowSize>1025</prWindowSize>
+    <prWindowType>BlackmanHarris92</prWindowType>
+  </processing>
+
+  <processing id="SpectralAnalysis_1" position="112,179" size="141,55" type="SpectralAnalysis">
+    <WindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>1025</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>0</Invert>
+    </WindowGenerator>
+    <CircularShift>
+      <Amount>-512</Amount>
+    </CircularShift>
+    <FFT>
+      <AudioSize>1024</AudioSize>
+    </FFT>
+    <prHopSize>512</prHopSize>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>1024</prFFTSize>
+    <prWindowSize>1025</prWindowSize>
+    <prWindowType>BlackmanHarris92</prWindowType>
+  </processing>
+
+  <processing id="SpectrumView" position="302,489" size="518,357" type="SpectrumView"/>
+
+  <processing id="SpectrumView_1" position="287,134" size="518,349" type="SpectrumView"/>
+
+  <port_connection>
+    <out>AudioAdder.Audio Output</out>
+    <in>SpectralAnalysis_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAdder.Audio Output</out>
+    <in>Notch2ndOrder.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Notch2ndOrder.Output</out>
+    <in>AudioSink.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Notch2ndOrder.Output</out>
+    <in>SpectralAnalysis.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator.Audio Output</out>
+    <in>AudioAdder.First Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator_1.Audio Output</out>
+    <in>AudioAdder.Second Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis.Output</out>
+    <in>SpectrumView.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis_1.Output</out>
+    <in>SpectrumView_1.Input</in>
+  </port_connection>
+
+</network>
