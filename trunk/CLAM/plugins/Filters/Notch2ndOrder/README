@@ -1,0 +1,23 @@
+== Description ==
+
+2nd order fixed notch filter
+
+Transfer function
+Given:
+	th = 2 * pi * centralFrequency * samplePeriod
+	d = exp(-2 * pi * bandwidth/2.0 * samplePeriod)
+	a = ( 1 + d^2) / 2
+	b = ( 1 + d^2) * cos(th)
+
+then:
+	  z^2 - 2 cos (th) z + 1
+  H(z) = a ----------------------
+	    z^2 - b z + d^2
+
+Diference equation:
+	y(n) - b * y(n-1) + d^2 * y(n-2) = a * x(n)  - a*2*cos(th) * x(n-1) + a * x(n-2)
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install
