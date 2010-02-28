@@ -1,0 +1,8 @@
+== Description ==
+
+Adaptative notch filter that uses the Steepest Descent algorithm.
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install
