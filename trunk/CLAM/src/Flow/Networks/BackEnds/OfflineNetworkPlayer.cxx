@@ -254,8 +254,8 @@ void OfflineNetworkPlayer::Start()
 		unsigned outAudioIndex = 0;
 		for(SndFileHandles::iterator it = outfiles.begin(); it != outfiles.end(); ++it)
 		{
-		    SndfileHandle * sndfileHandle = (*it);
-            unsigned int nChannels = sndfileHandle->channels();
+			SndfileHandle * sndfileHandle = (*it);
+			unsigned int nChannels = sndfileHandle->channels();
 			int bufferWriterSize = nChannels*frameSize;
 			float*	bufferWriter = new float[bufferWriterSize];
 

@@ -54,8 +54,8 @@ class NetworkPlayer
 protected:
 	enum Status { Playing=0, Stopped=1, Paused=2 };
 
-    Network::Processings _sources;
-    Network::Processings _sinks;
+	Network::Processings _sources;
+	Network::Processings _sinks;
 
 public:
 	NetworkPlayer()
@@ -153,9 +153,9 @@ protected:
 
 	void CacheSourcesAndSinks()
 	{
-        _sources = GetSources();
-        _sinks = GetSinks();
-    }
+		_sources = GetSources();
+		_sinks = GetSinks();
+	}
 
 private:
 	Network *_network;

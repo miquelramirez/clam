@@ -33,7 +33,7 @@ FlowControl::FlowControl()
 	: mNetworkChanged(false)
 	, mNetwork(0)
 {
-}      
+}
 
 void FlowControl::AttachToNetwork( Network* network)
 {

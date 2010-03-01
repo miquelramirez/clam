@@ -86,7 +86,7 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 		for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
 		{
 			InPortBase & inPort = **itInPort;
-		        //ignore orphan inports
+			//ignore orphan inports
 			if (!inPort.HasProcessing()) continue;
 
 			Processing * proc = inPort.GetProcessing();
