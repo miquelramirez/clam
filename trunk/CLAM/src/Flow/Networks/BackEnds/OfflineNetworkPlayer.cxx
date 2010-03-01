@@ -176,11 +176,9 @@ void OfflineNetworkPlayer::Start()
 		{
 			inbuffers[buffer].Resize( frameSize );
 			inbuffers[buffer].SetSize( frameSize );
-
-            if(typeid(*source)==typeid(AudioSource))
-                ((AudioSource*)source)->SetExternalBuffer( &(inbuffers[buffer][0]),frameSize, port);
-            else // AuidoSourceBuffer
-                ((AudioSourceBuffer*)source)->SetExternalBuffer( &(inbuffers[buffer][0]),frameSize, port);
+			const TData * data = &inbuffers[buffer][0];
+			SetExternalBuffer<AudioSource>(source, data, frameSize, port);
+			SetExternalBuffer<AudioSourceBuffer>(source, data, frameSize, port);
 		}
 	}
 
@@ -200,10 +198,9 @@ void OfflineNetworkPlayer::Start()
 			outbuffers[buffer].Resize( frameSize );
 			outbuffers[buffer].SetSize( frameSize );
 
-            if(typeid(*sink)==typeid(AudioSink))
-                ((AudioSink*)sink)->SetExternalBuffer(&(outbuffers[buffer][0]), frameSize, port);
-            else // AuidoSourceBuffer
-                ((AudioSinkBuffer*)sink)->SetExternalBuffer(&(outbuffers[buffer][0]), frameSize, port);
+			TData * data = &outbuffers[buffer][0];
+			SetExternalBuffer<AudioSink>(sink, data, frameSize, port);
+			SetExternalBuffer<AudioSinkBuffer>(sink, data, frameSize, port);
 		}
 	}
 
@@ -218,7 +215,7 @@ void OfflineNetworkPlayer::Start()
 		bool someInputFinished=false;
 		for(SndFileHandles::iterator it = infiles.begin(); it != infiles.end(); ++it)
 		{
-		    SndfileHandle * sndfileHandle = (*it);
+			SndfileHandle * sndfileHandle = (*it);
 			unsigned int nChannels = sndfileHandle->channels();
 			CLAM_ASSERT(nChannels, "The audio had no channels");
 			int bufferReaderSize = nChannels*frameSize;

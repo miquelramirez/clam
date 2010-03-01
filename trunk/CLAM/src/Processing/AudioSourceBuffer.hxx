@@ -112,6 +112,7 @@ namespace CLAM
 			Ports& GetPorts() { return _ports; }
 			const Ports & GetPorts() const { return _ports; }
 
+		private:
 			std::string const Portname(unsigned port) const
 			{
 				std::ostringstream os;
@@ -119,7 +120,6 @@ namespace CLAM
 				return os.str();
 			}
 
-		private:
 			void ResizePorts(unsigned sources)
 			{
 				if (sources == _ports.size())

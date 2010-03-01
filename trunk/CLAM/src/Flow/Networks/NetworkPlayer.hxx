@@ -156,6 +156,25 @@ protected:
 		_sources = GetSources();
 		_sinks = GetSinks();
 	}
+	template <typename ProcessingType>
+	void SetFrameAndHopSizeIf(Processing * proc, unsigned bufferSize, unsigned port)
+	{
+		if(typeid(*proc)!=typeid(ProcessingType)) return
+		((ProcessingType*)proc)->SetFrameAndHopSize(bufferSize, port);
+		
+	}
+	template <typename ProcessingType>
+	void SetExternalBuffer(Processing * proc, const float * data, unsigned nframes, unsigned port)
+	{
+		if(typeid(*proc)!=typeid(ProcessingType)) return
+		((ProcessingType*)proc)->SetExternalBuffer(data, nframes, port);
+	}
+	template <typename ProcessingType>
+	void SetExternalBuffer(Processing * proc, float * data, unsigned nframes, unsigned port)
+	{
+		if(typeid(*proc)!=typeid(ProcessingType)) return
+		((ProcessingType*)proc)->SetExternalBuffer(data, nframes, port);
+	}
 
 private:
 	Network *_network;
