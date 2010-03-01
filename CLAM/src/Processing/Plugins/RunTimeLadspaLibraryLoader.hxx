@@ -45,7 +45,7 @@ protected:
 
 			std::ostringstream oss;
 			oss << descriptor->Label << "_buffer" << i;
-            std::string id2=oss.str();
+			std::string id2=oss.str();
 			factory.AddCreatorWarningRepetitions(id2,
 					new CLAM::LadspaWrapperBufferCreator(pluginFullFilename,
 						i,
