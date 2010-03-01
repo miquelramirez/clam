@@ -1,4 +1,4 @@
-2010-??-?? pyCLAM 0.?.? SVN $Revision:  $ (CLAM 1.4)
+2010-??-?? pyCLAM 0.?.? SVN $Revision$ (CLAM 1.4)
  * More classes exposed.
  * More detailed and clearer compilation instructions.
  * Py++ doxygen documentation extractor script added.
@@ -19,7 +19,7 @@
  * Detect current python version and gcc env var (not hardcoded anymore) in bindings generator script
  * Switch to indexing suite v1
 
-2008-??-?? pyCLAM 0.?.? SVN $Revision: $ (CLAM 1.3)
+2008-??-?? pyCLAM 0.?.? SVN $Revision$ (CLAM 1.3)
  * Unit tests now using standard clam 'test_data_path'.
  * New file_info.py example using AudioFileSource and AudioTextDescriptors (port of 'examples/FileInfo_example.cxx').
  * New exposed classes related with audio files (filename, header, encoding, text descriptors, etc).
