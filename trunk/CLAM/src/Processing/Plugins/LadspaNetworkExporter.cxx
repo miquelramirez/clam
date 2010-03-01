@@ -183,7 +183,7 @@ void NetworkLADSPAPlugin::LocateConnections()
 	{
 		std::string processingName = _network.GetNetworkId(*it);
 
-        Processing * source =(*it);
+		Processing * source =(*it);
 		unsigned nports = source->GetNOutPorts();
 		for(unsigned port = 0; port < nports; ++port)
 		{
@@ -196,7 +196,7 @@ void NetworkLADSPAPlugin::LocateConnections()
 			info.name = portName.str().c_str();
 			info.port = port;
 			info.processing=source;
-            mReceiverList.push_back(info);
+			mReceiverList.push_back(info);
 		}
 	}
 
@@ -236,37 +236,37 @@ void NetworkLADSPAPlugin::LocateConnections()
 		info.processing =*it;
 		mOutControlList.push_back(info);
 	}
-    UpdatePortFrameAndHopSize();
+	UpdatePortFrameAndHopSize();
 }
 
 void NetworkLADSPAPlugin::UpdatePortFrameAndHopSize()
 {
 	//AudioSources and AudioSourceBuffer
 	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-    {
-        Processing * processing = it->processing;
-        unsigned nports = processing->GetNOutPorts();
-        for(unsigned port = 0; port < nports; ++port)
+	{
+		Processing * processing = it->processing;
+		unsigned nports = processing->GetNOutPorts();
+		for(unsigned port = 0; port < nports; ++port)
 		{
-		    if(typeid(*processing)==typeid(AudioSource))
-                ((AudioSource*)processing)->SetFrameAndHopSize( mExternBufferSize, port );
-            else // AuidoSourceBuffer
-                ((AudioSourceBuffer*)processing)->SetFrameAndHopSize( 1, port );
+			if(typeid(*processing)==typeid(AudioSource))
+				((AudioSource*)processing)->SetFrameAndHopSize( mExternBufferSize, port );
+			else // AuidoSourceBuffer
+				((AudioSourceBuffer*)processing)->SetFrameAndHopSize( 1, port );
 		}
-    }
+	}
 	//AudioSinks and AudioSinksBuffer
 	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-    {
-        Processing * processing = it->processing;
-        unsigned nports = processing->GetNInPorts();
-        for(unsigned port = 0; port < nports; ++port)
+	{
+		Processing * processing = it->processing;
+		unsigned nports = processing->GetNInPorts();
+		for(unsigned port = 0; port < nports; ++port)
 		{
-		    if(typeid(*processing)==typeid(AudioSink))
-                ((AudioSink*)processing)->SetFrameAndHopSize ( mExternBufferSize, port );
-            else // AuidoSourceBuffer
-                ((AudioSinkBuffer*)processing)->SetFrameAndHopSize ( 1, port );
+			if(typeid(*processing)==typeid(AudioSink))
+				((AudioSink*)processing)->SetFrameAndHopSize ( mExternBufferSize, port );
+			else // AuidoSourceBuffer
+				((AudioSinkBuffer*)processing)->SetFrameAndHopSize ( 1, port );
 		}
-    }
+	}
 }
 
 void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
@@ -369,26 +369,26 @@ void NetworkLADSPAPlugin::ProcessOutControlValues()
 
 void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSources(const unsigned long nframes)
 {
-    for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-    {
-        Processing * source = it->processing;
-	    if(typeid(*source)==typeid(AudioSource))
-            ((AudioSource*)source)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
-        else // AuidoSourceBuffer
-            ((AudioSourceBuffer*)source)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
-    }
+	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+	{
+		Processing * source = it->processing;
+		if(typeid(*source)==typeid(AudioSource))
+			((AudioSource*)source)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+		else // AuidoSourceBuffer
+			((AudioSourceBuffer*)source)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+	}
 }
 
 void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSinks(const unsigned long nframes)
 {
    	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-    {
-        Processing * sink = it->processing;
-	    if(typeid(*sink )==typeid(AudioSink))
-            ((AudioSink*)sink)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
-        else // AuidoSourceBuffer
-            ((AudioSinkBuffer*)sink)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
-    }
+	{
+		Processing * sink = it->processing;
+		if(typeid(*sink )==typeid(AudioSink))
+			((AudioSink*)sink)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+		else // AuidoSourceBuffer
+			((AudioSinkBuffer*)sink)->SetExternalBuffer(it->dataBuffer, nframes, it->port );
+	}
 }
 
 void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
