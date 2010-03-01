@@ -23,11 +23,12 @@
 #include <CLAM/LadspaNetworkExporter.hxx>
 #include <CLAM/LadspaProcessingExporter.hxx>
 #include <CLAM/LadspaLibrary.hxx>
+#include <CLAM/EmbeddedFile.hxx>
 
 static CLAM::LadspaLibrary library;
 
-CLAM_EXTERNAL_FILE_DATA(genderChange,"PluginExamples/ClamLadspaPluginExample/genderChange.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(wire,"PluginExamples/ClamLadspaPluginExample/wire.clamnetwork")
+CLAM_EMBEDDED_FILE(genderChange,"PluginExamples/ClamLadspaPluginExample/genderChange.clamnetwork")
+CLAM_EMBEDDED_FILE(wire,"PluginExamples/ClamLadspaPluginExample/wire.clamnetwork")
 
 extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 {
