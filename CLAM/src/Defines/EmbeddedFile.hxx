@@ -15,13 +15,16 @@ asm ( \
 " _" #varname ":\n" \
 "   .incbin \"" file "\"\n" \
 "   .byte 0\n" \
-"   .scl 1\n" \
 "   .size . - _" #varname "\n" \
 " .endef \n" \
 ); \
 extern const char varname[];
+// This was needed but at some version it made it not to compile
+// "   .scl 1\n"
+
 #elif defined __ELF__
 // ELF binary target version
+
 #define CLAM_EMBEDDED_FILE(varname, file) \
 asm ( \
 "  .section \".rodata\"\n" \
@@ -34,6 +37,8 @@ asm ( \
 extern const char varname[];
 #else
 #error "No support for embedded files in your platform"
+#define CLAM_EMBEDDED_FILE(varname, file) \
+extern const char varname[];
 #endif
 
 
