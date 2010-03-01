@@ -2,8 +2,9 @@
  * Jack support as audio backend
  * Command line options
 
-2009-01-?? chordata 1.0.0 SVN $Revision$
+2009-01-?? chordata 1.0.0
 'Embrio release'
+ * SVN Revision: 11172?
  * First working version
  * Loading song in mp3, ogg, wavs...
  * Offline chord analysis
