@@ -1,4 +1,4 @@
-2008-08-11 NetworkEditor 1.4.0 SVN $Revision$
+2010-??-?? NetworkEditor 1.4.0 SVN $Revision$
 ''
  * Networks can be paused (in NetworkEditor and OfflinePlayer)
  * Fix: Playback status changes from the backend side are pooled by the indicator
@@ -16,7 +16,10 @@
  * Fix: spinboxes on controlsenders sent step values instead the actual value
  * Configurators: Support for negative floating point numbers
  * Configurators: increased precission from 2 to now 5 decimals
- * .pos files for processing boxes positions deprecated.
+ * .pos files for processing boxes positions deprecated
+ * ControlPrinterTyped
+ * MIDIPianoWidget: MIDI monitor and note generator
+ * Histogram view
 
 2008-08-11 NetworkEditor 1.3.0
 'Shooting flying plugins release'
