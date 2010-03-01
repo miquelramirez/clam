@@ -14,8 +14,9 @@
 static const char * ladspaCxxTemplate =
 	"#include <CLAM/LadspaNetworkExporter.hxx>\n"
 	"#include <CLAM/LadspaLibrary.hxx>\n"
+	"#include <CLAM/EmbeddedFile.hxx>\n"
 	"static CLAM::LadspaLibrary library;\n"
-	"CLAM_EXTERNAL_FILE_DATA(embededNetwork,\"%1\")\n"
+	"CLAM_EMBEDDED_FILE(embededNetwork,\"%1\")\n"
 	"extern \"C\" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)\n"
 	"{\n"
 	"	static CLAM::LadspaNetworkExporter n2(library, embededNetwork, %2,\n"
