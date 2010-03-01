@@ -211,7 +211,7 @@ namespace CLAM
 			if (not storage.Load(xmlAdapter)) break;
 			std::string fullOut = connectionDefinition.GetOutName();
 			std::string fullIn = connectionDefinition.GetInName();
-                        
+
 			if (_setPasteMode)
 			{
 				fullOut = namesMap.find(GetProcessingIdentifier(fullOut))->second

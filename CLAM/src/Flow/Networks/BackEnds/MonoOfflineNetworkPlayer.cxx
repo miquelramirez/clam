@@ -51,14 +51,14 @@ void MonoOfflineNetworkPlayer::Start()
 		readers.push_back(fileReader);
 		audioBuffers[fileIndex].SetSize( frameSize );
 
-        Processing * source = _sources[i];
+		Processing * source = _sources[i];
 		unsigned port_size = source->GetNOutPorts();
 		for(unsigned port = 0; port < port_size; ++port)
-        {
-            if(typeid(*source)==typeid(AudioSource))
-                ((AudioSource*)source)->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
-            else // AuidoSourceBuffer
-                ((AudioSourceBuffer*)source)->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
+		{
+			if(typeid(*source)==typeid(AudioSource))
+				((AudioSource*)source)->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
+			else // AuidoSourceBuffer
+				((AudioSourceBuffer*)source)->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
 		}
 
 		std::cout << " In: " << _filenames[fileIndex] << std::endl;
@@ -86,10 +86,10 @@ void MonoOfflineNetworkPlayer::Start()
 		unsigned port_size = sink->GetNInPorts();
 		for(unsigned port = 0; port < port_size; ++port)
 		{
-		    if(typeid(*sink)==typeid(AudioSink))
-                ((AudioSink*)sink)->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
-            else
-                ((AudioSinkBuffer*)sink)->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
+			if(typeid(*sink)==typeid(AudioSink))
+				((AudioSink*)sink)->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
+			else
+				((AudioSinkBuffer*)sink)->SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize, port);
 		}
 		std::cout << " Out: " << _filenames[fileIndex] << std::endl;
 		fileIndex++;
