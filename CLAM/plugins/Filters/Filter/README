@@ -4,6 +4,8 @@ Direct form implementation of the linear, time-invariant difference equation:
 
 \sum_{k=0}^{N} a_{k+1} y[n-k] = \sum_{k=0}^{M} b_{k+1} x[n-k]
 
+The same form of the 'filter' function of common numerical computation programs
+
 == Install ==
 
 scons clam_prefix=path/to/installed/clam/prefix
