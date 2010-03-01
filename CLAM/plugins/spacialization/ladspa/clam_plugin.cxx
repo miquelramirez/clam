@@ -1,54 +1,55 @@
 
 #include <CLAM/LadspaNetworkExporter.hxx>
 #include <CLAM/LadspaLibrary.hxx>
+#include <CLAM/EmbeddedFile.hxx>
 
 
-CLAM_EXTERNAL_FILE_DATA(bformatrotation_osc_embededNetwork,"bformatrotation.clamnetwork")
+CLAM_EMBEDDED_FILE(bformatrotation_osc_embededNetwork,"bformatrotation.clamnetwork")
 
-CLAM_EXTERNAL_FILE_DATA(mono2binaural_osc_embededNetwork,"../example-data/mono2binaural_osc.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat2binaural_rotation_osc_embededNetwork,"../example-data/bformat2binaural_rotation_osc.clamnetwork")
+CLAM_EMBEDDED_FILE(mono2binaural_osc_embededNetwork,"../example-data/mono2binaural_osc.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat2binaural_rotation_osc_embededNetwork,"../example-data/bformat2binaural_rotation_osc.clamnetwork")
 
-CLAM_EXTERNAL_FILE_DATA(mono2bformat_embededNetwork,"../example-data/mono2bformat_nofaders.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformatRotationZoom_embededNetwork,"../example-data/bformatRotationZoom.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat2surround_embededNetwork,"../example-data/bformat2surround.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat2binaural_embededNetwork,"../example-data/bformat2binaural.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(mono2binaural_embededNetwork,"../example-data/mono2binaural_nofaders.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat2cube_embededNetwork,"../example-data/bformat2cube.clamnetwork")
+CLAM_EMBEDDED_FILE(mono2bformat_embededNetwork,"../example-data/mono2bformat_nofaders.clamnetwork")
+CLAM_EMBEDDED_FILE(bformatRotationZoom_embededNetwork,"../example-data/bformatRotationZoom.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat2surround_embededNetwork,"../example-data/bformat2surround.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat2binaural_embededNetwork,"../example-data/bformat2binaural.clamnetwork")
+CLAM_EMBEDDED_FILE(mono2binaural_embededNetwork,"../example-data/mono2binaural_nofaders.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat2cube_embededNetwork,"../example-data/bformat2cube.clamnetwork")
 
 //fakes:
-//CLAM_EXTERNAL_FILE_DATA(fake_bformat2surround_embededNetwork,"fake_bformat2surround.clamnetwork")
-//CLAM_EXTERNAL_FILE_DATA(fake_bformat2binaural_embededNetwork,"fake_bformat2binaural.clamnetwork")
+//CLAM_EMBEDDED_FILE(fake_bformat2surround_embededNetwork,"fake_bformat2surround.clamnetwork")
+//CLAM_EMBEDDED_FILE(fake_bformat2binaural_embededNetwork,"fake_bformat2binaural.clamnetwork")
 
-CLAM_EXTERNAL_FILE_DATA(vbap3d_embededNetwork,"../example-data/vbap3d_nofaders.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap3d_dummy_22outs_embededNetwork,"../example-data/vbap3d_dummy_22outs_nofaders.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap3d_embededNetwork,"../example-data/vbap3d_nofaders.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap3d_dummy_22outs_embededNetwork,"../example-data/vbap3d_dummy_22outs_nofaders.clamnetwork")
 
-CLAM_EXTERNAL_FILE_DATA(dummyControls_embededNetwork,"dummy_azimuth_elevation_controls.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat_to_15_embededNetwork,"../example-data/bformat2fifteen.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat_to_22_embededNetwork,"../example-data/bformat_to_22.clamnetwork")
+CLAM_EMBEDDED_FILE(dummyControls_embededNetwork,"dummy_azimuth_elevation_controls.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat_to_15_embededNetwork,"../example-data/bformat2fifteen.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat_to_22_embededNetwork,"../example-data/bformat_to_22.clamnetwork")
 
-CLAM_EXTERNAL_FILE_DATA(bformat06,"bformat06.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat14,"bformat14.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat15,"bformat15.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat16,"bformat16.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat17,"bformat17.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat18,"bformat18.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat19,"bformat19.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat20,"bformat20.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat21,"bformat21.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat22,"bformat22.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat06,"bformat06.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat14,"bformat14.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat15,"bformat15.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat16,"bformat16.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat17,"bformat17.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat18,"bformat18.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat19,"bformat19.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat20,"bformat20.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat21,"bformat21.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat22,"bformat22.clamnetwork")
 
-CLAM_EXTERNAL_FILE_DATA(vbap14,"vbap14.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap15,"vbap15.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap15_shorter_distance,"vbap15_shorter_distance.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap16,"vbap16.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap17,"vbap17.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap18,"vbap18.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap19,"vbap19.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap20,"vbap20.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap21,"vbap21.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(vbap22,"vbap22.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap14,"vbap14.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap15,"vbap15.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap15_shorter_distance,"vbap15_shorter_distance.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap16,"vbap16.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap17,"vbap17.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap18,"vbap18.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap19,"vbap19.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap20,"vbap20.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap21,"vbap21.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap22,"vbap22.clamnetwork")
 
-CLAM_EXTERNAL_FILE_DATA(decoded_bformat15,"decoded_bformat15.clamnetwork")
+CLAM_EMBEDDED_FILE(decoded_bformat15,"decoded_bformat15.clamnetwork")
 
 #include <iostream>
 /*
