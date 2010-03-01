@@ -7,6 +7,14 @@
 namespace CLAM
 {
 
+static std::string exportedName(const std::string & processingName, unsigned port, unsigned nports)
+{
+	std::stringstream portName;
+	portName << processingName;
+	if (nports > 1) portName << "_" << port;
+	return portName.str();
+}
+
 class NetworkLADSPAPlugin
 {
 	template<class T>
@@ -117,13 +125,12 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & name, const std::st
 {
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
-	_network.SetName("Testing name");
 
 //	std::cerr << "NetworkLADSPAPlugin: Constructed" << std::endl;
 	std::istringstream xmlfile(networkXmlContent);
 	try
 	{
-		XmlStorage::Restore( _network, xmlfile);
+		XmlStorage::Restore( _network, xmlfile );
 	}
 	catch ( XmlStorageErr err)
 	{
@@ -165,7 +172,6 @@ void NetworkLADSPAPlugin::Deactivate()
 	_network.Stop();
 }
 
-
 void NetworkLADSPAPlugin::LocateConnections()
 {
 	CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered input ports");
@@ -187,13 +193,9 @@ void NetworkLADSPAPlugin::LocateConnections()
 		unsigned nports = source->GetNOutPorts();
 		for(unsigned port = 0; port < nports; ++port)
 		{
-			std::stringstream portName;
-			portName << processingName;
-			if (nports > 1)
-				portName << "_" << port;
-
+			std::string portName = exportedName(processingName,port,nports);
 			LADSPAInfo<Processing> info;
-			info.name = portName.str().c_str();
+			info.name = portName.c_str();
 			info.port = port;
 			info.processing=source;
 			mReceiverList.push_back(info);
@@ -208,13 +210,9 @@ void NetworkLADSPAPlugin::LocateConnections()
 		unsigned nports = sink->GetNInPorts();
 		for(unsigned port = 0; port < nports; ++port)
 		{
-			std::stringstream portName;
-			portName << processingName;
-			if (nports > 1)
-				portName << "_" << port;
-
+			std::string portName = exportedName(processingName,port,nports);
 			LADSPAInfo<Processing> info;
-			info.name = portName.str().c_str();
+			info.name = portName.c_str();
 			info.port = port;
 			info.processing = sink;
 			mSenderList.push_back(info);
