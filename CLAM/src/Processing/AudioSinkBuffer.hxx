@@ -109,14 +109,14 @@ namespace CLAM
 
 		Ports& GetPorts() { return _ports; }
 
-        std::string const Portname(unsigned port) const
+	private:
+		std::string const Portname(unsigned port) const
 		{
 			std::ostringstream os;
 			os << port + 1; //to make ports one based (when viewed in jack)
 			return os.str();
 		}
 
-	private:
 		void ResizePorts(unsigned sinks)
 		{
 			if (sinks == _ports.size())

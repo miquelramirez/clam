@@ -12,11 +12,14 @@ namespace CLAM
 {
 
 
-int PANetworkPlayer::ProcessCallback (const void *inputBuffers, void *outputBuffers,
-									  unsigned long framesPerBuffer,
-									  const PaStreamCallbackTimeInfo* timeInfo,
-									  PaStreamCallbackFlags statusFlags,
-									  void *userData)
+int PANetworkPlayer::ProcessCallback (
+	const void *inputBuffers,
+	void *outputBuffers,
+	unsigned long framesPerBuffer,
+	const PaStreamCallbackTimeInfo* timeInfo,
+	PaStreamCallbackFlags statusFlags,
+	void *userData
+	)
 {
 	if (statusFlags)
 	{
@@ -248,7 +251,7 @@ bool PANetworkPlayer::CheckPaError(PaError result)
 }
 
 void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
-		    unsigned long framesPerBuffer)
+	unsigned long framesPerBuffer)
 {
 	if (IsStopped()) return;
 	if (mNeedsPriority)
@@ -293,10 +296,9 @@ void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 		unsigned ports_size = source->GetNOutPorts();
 		for (unsigned port = 0; port < ports_size; ++port)
 		{
-		    if(typeid(*source)==typeid(AudioSource))
-		    	((AudioSource*)source)->SetExternalBuffer(input[buffer++], nframes, port);
-            else
-                ((AudioSourceBuffer*)source)->SetExternalBuffer(input[buffer++], nframes, port);
+			const TData * data = input[buffer++];
+			SetExternalBuffer<AudioSource>(source, data, nframes, port);
+			SetExternalBuffer<AudioSourceBuffer>(source, data, nframes, port);
 		}
 	}
 }
@@ -311,10 +313,9 @@ void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 		unsigned ports_size = sink->GetNInPorts();
 		for (unsigned port = 0; port < ports_size; ++port)
 		{
-		    if(typeid(*sink)==typeid(AudioSink))
-                ((AudioSink*)sink)->SetExternalBuffer(output[buffer++], nframes, port);
-            else // AuidoSourceBuffer
-                ((AudioSinkBuffer*)sink)->SetExternalBuffer(output[buffer++], nframes, port);
+			TData * data = output[buffer++];
+			SetExternalBuffer<AudioSink>(sink, data, nframes, port);
+			SetExternalBuffer<AudioSinkBuffer>(sink, data, nframes, port);
 		}
 	}
 }

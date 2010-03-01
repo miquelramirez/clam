@@ -88,8 +88,6 @@ public:
 	typedef std::list<std::string> Values;
 	typedef std::list<Pair> Pairs; 
 
-	typedef AbstractProduct* (*CreatorMethod)(void); //TODO drop after refactoring
-
 	/** Abstract class for Creator objects which are stored in the Factory::Registry */
 	class Creator
 	{
@@ -536,11 +534,13 @@ public:
 		std::string attribute, value;
 		for(unsigned i = 2; metadata[i]; i++)
 		{
+			attribute = metadata[i];
 			if(!metadata[i+1])
 			{
-				std::cout << "[METADATA] error with attribute \"" << metadata[i] << "\"" << std::endl;
+				std::cout << "[METADATA] error with attribute \"" << attribute << "\"" << std::endl;
+				CLAM_ASSERT(false, "Bad metadata value");
+				break;
 			}
-			attribute = metadata[i];
 			value = metadata[++i];
 			factory.AddAttribute(key, attribute, value);
 		}
