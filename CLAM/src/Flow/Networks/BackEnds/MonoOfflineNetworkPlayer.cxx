@@ -8,14 +8,15 @@ namespace CLAM
 
 bool MonoOfflineNetworkPlayer::IsWorking()
 {
-	return _filenames.size()!=GetSinks().size()+GetSources().size();
+	CacheSourcesAndSinks();
+	return _filenames.size()!=_exportedSinks.size()+_exportedSources.size();
 }
 
 std::string MonoOfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
-	ss << GetSources().size()    << " inputs and "
-		<< GetSinks().size() << " outputs needed but just "
+	ss << _exportedSources.size()    << " inputs and "
+		<< _exportedSinks.size() << " outputs needed but just "
 		<< _filenames.size() << " files provided" << std::ends;
 	return ss.str();
 }
@@ -35,14 +36,14 @@ void MonoOfflineNetworkPlayer::Start()
 	std::vector<MonoAudioFileReader*> readers;
 	MonoAudioFileReaderConfig readercfg;
 	unsigned fileIndex=0;
-	for (unsigned i=0; i<_sources.size(); i++)
+	for (unsigned i=0; i<_exportedSources.size(); i++)
 	{
 		CLAM_ASSERT(fileIndex<_filenames.size(),
 			"Not all the network inputs could be fullfiled. Have you checked the IsWorking() method?");
-
-		std::ifstream checkfile(_filenames[fileIndex].c_str());
-		CLAM_ASSERT(checkfile.is_open(), std::string(std::string("Could not open one of the input files: ")+_filenames[fileIndex]).c_str());
-
+		{
+			std::ifstream checkfile(_filenames[fileIndex].c_str());
+			CLAM_ASSERT(checkfile.is_open(), std::string(std::string("Could not open one of the input files: ")+_filenames[fileIndex]).c_str());
+		}
 		readercfg.SetSourceFile(_filenames[fileIndex]);
 		readercfg.SetLoop(_enableLoopInputWavs);
 		MonoAudioFileReader * fileReader = new MonoAudioFileReader(readercfg);
@@ -51,22 +52,15 @@ void MonoOfflineNetworkPlayer::Start()
 		readers.push_back(fileReader);
 		audioBuffers[fileIndex].SetSize( frameSize );
 
-		Processing * source = _sources[i];
-		unsigned port_size = source->GetNOutPorts();
-		for(unsigned port = 0; port < port_size; ++port)
-		{
-			TData * buffer = &audioBuffers[fileIndex].GetBuffer()[0];
-			SetExternalBuffer<AudioSource>(source, buffer, frameSize, port);
-			SetExternalBuffer<AudioSourceBuffer>(source, buffer, frameSize, port);
-		}
-
-		std::cout << " In: " << _filenames[fileIndex] << std::endl;
+		TData * buffer = &audioBuffers[fileIndex].GetBuffer()[0];
+		SetSourceBuffer(i, buffer, frameSize);
+		std::cout << " In " << SourceName(i) << ":" << _filenames[fileIndex] << std::endl;
 		fileIndex++;
 	}
 
 	std::vector<MonoAudioFileWriter*> writers;
 	MonoAudioFileWriterConfig writercfg;
-	for (unsigned i=0; i<_sinks.size(); i++)
+	for (unsigned i=0; i<_exportedSinks.size(); i++)
 	{
 		if (fileIndex>=_filenames.size())
 		{
@@ -81,15 +75,9 @@ void MonoOfflineNetworkPlayer::Start()
 		writers.push_back(fileWriter);
 		audioBuffers[fileIndex].SetSize( frameSize );
 
-		Processing* sink =  _sinks[i];
-		unsigned port_size = sink->GetNInPorts();
-		for(unsigned port = 0; port < port_size; ++port)
-		{
-			TData * buffer = &audioBuffers[fileIndex].GetBuffer()[0];
-			SetExternalBuffer<AudioSink>(sink, buffer, frameSize, port);
-			SetExternalBuffer<AudioSinkBuffer>(sink, buffer, frameSize, port);
-		}
-		std::cout << " Out: " << _filenames[fileIndex] << std::endl;
+		TData * buffer = &audioBuffers[fileIndex].GetBuffer()[0];
+		SetSinkBuffer(i, buffer, frameSize);
+		std::cout << " Out: " << SinkName(i) << ":" << _filenames[fileIndex] << std::endl;
 		fileIndex++;
 	}
 

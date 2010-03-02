@@ -3,6 +3,7 @@
 #include "ControlSink.hxx"
 #include "AudioSourceBuffer.hxx"
 #include "AudioSinkBuffer.hxx"
+#include "NetworkPlayer.hxx"
 
 namespace CLAM
 {

@@ -99,15 +99,14 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 {
 	CLAM_ASSERT( _sourceJackPorts.empty(),
 		"JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
+	unsigned nPorts = _exportedSources.size();
+	_sourceJackPorts.resize(nPorts);
 	for (unsigned i=0; i<_exportedSources.size(); i++)
 	{
-		JackPort jp;
-		jp.jackPort = jack_port_register(
-			_jackClient, _exportedSources[i].name,
+		_sourceJackPorts[i] = jack_port_register(
+			_jackClient, SourceName(i).c_str(),
 			JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-		_sourceJackPorts.push_back(jp);
-		SetFrameAndHopSizeIf<AudioSource>(source,_jackBufferSize,port);
-		SetFrameAndHopSizeIf<AudioSourceBuffer>(source,_jackBufferSize,port);
+		SetSourceFrameSize(i,_jackBufferSize);
 	}
 }
 
@@ -115,83 +114,66 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 {
 	CLAM_ASSERT( _sinkJackPorts.empty(),
 		"JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");
-
-	for(unsigned i = 0; i < _exportedSinks.size(); ++i)
+	unsigned nPorts = _exportedSinks.size();
+	_sinkJackPorts.resize(nPorts);
+	for(unsigned i = 0; i < nPorts; ++i)
 	{
-		JackPort jp;
-		jp.jackPort=jack_port_register(
-			_jackClient, _exportedSinks[i].name,
+		_sinkJackPorts[i] = jack_port_register(
+			_jackClient, SinkName(i).c_str(),
 			JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
-		_sinkJackPorts.push_back(jp);
-		SetFrameAndHopSizeIf<AudioSink>(sink,_jackBufferSize,port);
-		SetFrameAndHopSizeIf<AudioSinkBuffer>(sink,_jackBufferSize,port);
+		SetSinkFrameSize(i, _jackBufferSize);
 	}
 }
 
 void JACKNetworkPlayer::UnRegisterPorts()
 {
-	for (JackPorts::iterator it=_sinkJackPorts.begin(); it!=_sinkJackPorts.end(); it++)
+	for (unsigned i=0; i<_sinkJackPorts.size(); i++)
 	{
-		if ( jack_port_unregister ( _jackClient, it->jackPort) )
+		if ( jack_port_unregister ( _jackClient, _sinkJackPorts[i]) )
 		{
-			std::cerr << "JACK ERROR: unregistering port " << it->PortName() << std::endl;
+			std::cerr << "JACK ERROR: unregistering port " << PortName(_sinkJackPorts[i]) << std::endl;
 			exit(1);
 		}
 	}
 	_sinkJackPorts.clear();
 
-	for (JackPorts::iterator it=_sourceJackPorts.begin(); it!=_sourceJackPorts.end(); it++)
+	for (unsigned i=0; i<_sourceJackPorts.size(); i++)
 	{
-		if ( jack_port_unregister ( _jackClient, it->jackPort) )
+		if ( jack_port_unregister ( _jackClient, _sourceJackPorts[i]) )
 		{
-			std::cerr << "JACK ERROR: unregistering port " << it->PortName() << std::endl;
+			std::cerr << "JACK ERROR: unregistering port " << PortName(_sourceJackPorts[i]) << std::endl;
 			exit(1);
 		}
 	}
 	_sourceJackPorts.clear();
 }
 
-void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes)
+void JACKNetworkPlayer::CopyJackBuffersToSources(const jack_nframes_t nframes)
 {
-	unsigned buffer = 0;
-	for (unsigned i=0; i<_exportedSources.size(); ++i)
+	for (unsigned i=0; i<_sourceJackPorts.size(); i++)
 	{
-		Processing* source = _exportedSources[i].processing;
-		unsigned port = _exportedSources[i].port;
-
 		jack_default_audio_sample_t *jackInBuffer =
-			(jack_default_audio_sample_t*) jack_port_get_buffer(_sourceJackPorts[buffer++].jackPort, nframes);
-
-		//Tell the AudioSource where to look for data in its Do()
-		SetExternalBuffer<AudioSource>(source, jackInBuffer, nframes, port);
-		SetExternalBuffer<AudioSourceBuffer>(source, jackInBuffer, nframes, port);
+			(jack_default_audio_sample_t*) jack_port_get_buffer(_sourceJackPorts[i], nframes);
+		SetSourceBuffer(i, jackInBuffer, nframes);
 	}
 }
 
 void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 {
-	unsigned buffer = 0;
-	for (unsigned i = 0; i < _exportedSinks.size(); ++i)
+	for (unsigned i=0; i<_sinkJackPorts.size(); i++)
 	{
-		Processing* sink = _exportedSinks[i].processing;
-		unsigned port = _exportedSinks[i].port;
-
-		//Retrieve JACK buffer location
 		jack_default_audio_sample_t* jackOutBuffer =
-			(jack_default_audio_sample_t*) jack_port_get_buffer(_sinkJackPorts[buffer++].jackPort, nframes);
-
-		//Tell the AudioSource where to copy data consumed in its Do()
-		SetExternalBuffer<AudioSink>(sink, jackOutBuffer, nframes, port);
-		SetExternalBuffer<AudioSinkBuffer>(sink, jackOutBuffer, nframes, port);
+			(jack_default_audio_sample_t*) jack_port_get_buffer(_sinkJackPorts[i], nframes);
+		SetSinkBuffer(i, jackOutBuffer, nframes);
 	}
 }
 
 void JACKNetworkPlayer::BlankJackBuffers(const jack_nframes_t nframes)
 {
-	for (JackPorts::iterator it=_sinkJackPorts.begin(); it!=_sinkJackPorts.end(); it++)
+	for (unsigned i=0; i<_sinkJackPorts.size(); i++)
 	{
 		jack_default_audio_sample_t *jackOutBuffer =
-			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
+			(jack_default_audio_sample_t*) jack_port_get_buffer ( _sinkJackPorts[i], nframes);
 		std::memset(jackOutBuffer, 0, nframes*sizeof(jack_default_audio_sample_t));
 	}
 }
@@ -261,7 +243,7 @@ void JACKNetworkPlayer::Do(const jack_nframes_t nframes)
 		return;
 	}
 
-	CopyJackBuffersToGenerators(nframes);
+	CopyJackBuffersToSources(nframes);
 	CopySinksToJackBuffers(nframes);
 	GetNetwork().Do();
 }
@@ -269,19 +251,19 @@ void JACKNetworkPlayer::Do(const jack_nframes_t nframes)
 //Saves the connections made to our local in/out jack ports
 void JACKNetworkPlayer::StoreConnections()
 {
-	for (JackPorts::iterator it=_sourceJackPorts.begin(); it!=_sourceJackPorts.end(); it++)
+	for (unsigned i=0; i<_sourceJackPorts.size(); i++)
 	{
 		JackConnection connection;
-		connection.processingName = it->PortName();
-		connection.outsideConnections = jack_port_get_connections ( it->jackPort );
+		connection.processingName = PortName(_sourceJackPorts[i]);
+		connection.outsideConnections = jack_port_get_connections ( _sourceJackPorts[i] );
 		_incomingJackConnections.push_back(connection);
 	}
 
-	for (JackPorts::iterator it=_sinkJackPorts.begin(); it!=_sinkJackPorts.end(); it++)
+	for (unsigned i=0; i<_sinkJackPorts.size(); i++)
 	{
 		JackConnection connection;
-		connection.processingName = it->PortName();
-		connection.outsideConnections = jack_port_get_connections ( it->jackPort );
+		connection.processingName = PortName(_sinkJackPorts[i]);
+		connection.outsideConnections = jack_port_get_connections ( _sinkJackPorts[i] );
 		_outgoingJackConnections.push_back(connection);
 	}
 }
@@ -321,11 +303,9 @@ void JACKNetworkPlayer::RestoreConnections()
 void JACKNetworkPlayer::AutoConnectPorts()
 {
 	//Automatically connect the ports to external jack ports
-	//std::cout << "Automatically connecting to JACK input and output ports" << std::endl;
 
 	//CONNECT JACK OUTPUT PORTS TO CLAM EXTERNGENERATORS
 	const char ** portnames= jack_get_ports ( _jackClient , _jackOutPortAutoConnectList.c_str(), NULL, JackPortIsOutput);
-
 	if (not portnames)
 	{
 		std::cout << " -WARNING: couldn't locate any JACK output port <"
@@ -333,46 +313,38 @@ void JACKNetworkPlayer::AutoConnectPorts()
 	}
 	else
 	{
-		int i=0;
-
-		//Double iterate AudioSources & found JACK out ports
-		for ( JackPorts::iterator it= _sourceJackPorts.begin(); it!=_sourceJackPorts.end(); it++)
+		for (unsigned i=0; i<_sourceJackPorts.size() && portnames[i]; i++)
 		{
+			jack_port_t * port = _sourceJackPorts[i];
 			std::cout << "- Connecting " << portnames[i] << " -> "
-				<< it->PortName() << std::endl;
+				<< PortName(port) << std::endl;
 
-			if ( jack_connect( _jackClient, portnames[i], it->PortName() ) !=0 )
+			if ( jack_connect( _jackClient, portnames[i], PortName(port) ) !=0 )
 				std::cerr << " -WARNING: couldn't connect" << std::endl;
-
-			i++;
-			if (portnames[i]==NULL) break;
 		}
+		free(portnames);
 	}
-	free(portnames);
 
 	//CONNECT CLAM EXTERNSINKS TO JACK INPUT PORTS
 	portnames= jack_get_ports ( _jackClient , _jackInPortAutoConnectList.c_str(), NULL, JackPortIsInput);
-
 	if ( not portnames)
 	{
 		std::cout << " -WARNING: couldn't locate any JACK input port <"
 			<< _jackInPortAutoConnectList << ">"<<std::endl;
-		return;
 	}
-	int i=0;
-
-	//Double iterate found JACK in ports & ExterSinks
-	for (JackPorts::iterator it= _sinkJackPorts.begin(); it!=_sinkJackPorts.end(); it++)
+	else 
 	{
-		std::cout << "- Connecting "<< it->PortName()
-			<< " -> " << portnames[i] << std::endl;
+		for (unsigned i=0; i<_sinkJackPorts.size() && portnames[i]; i++)
+		{
+			const char * localPortName = PortName(_sinkJackPorts[i]);
+			std::cout << "- Connecting "<< localPortName
+				<< " -> " << portnames[i] << std::endl;
 
-		if ( jack_connect( _jackClient, it->PortName(), portnames[i]) != 0)
-			std::cerr << " -WARNING: couldn't connect" << std::endl;
-		i++;
-		if (portnames[i]==NULL) break;
+			if ( jack_connect( _jackClient, localPortName, portnames[i]) != 0)
+				std::cerr << " -WARNING: couldn't connect" << std::endl;
+		}
+		free(portnames);
 	}
-	free(portnames);
 }
 
 } //namespace CLAM

@@ -29,18 +29,6 @@
 namespace CLAM
 {
 
-namespace {
-
-template<typename Container> unsigned GetSize(Container const& t)
-{
-	unsigned nrOfPorts = 0;
-	for (typename Container::const_iterator it = t.begin(); it != t.end(); ++it)
-		nrOfPorts += (*it)->GetNInPorts()+(*it)->GetNOutPorts();
-	return nrOfPorts;
-}
-
-} // namespace
-
 /**
  * A NetworkPlayer is an object that controls the playback of a
  * Network providing a high level transport like interface.
@@ -68,8 +56,6 @@ protected:
 	typedef std::vector <ExportedPort> ExportedPorts;
 	ExportedPorts _exportedSources;
 	ExportedPorts _exportedSinks;
-	Network::Processings _sources;
-	Network::Processings _sinks;
 
 public:
 	NetworkPlayer()
@@ -134,42 +120,12 @@ protected:
 		CLAM_ASSERT( (_network!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
 		return *_network;
 	}
-
-	Network::Processings GetSources()
-	{
-		return GetNetwork().getOrderedProcessingsByAttribute("port_source_type");
-	}
-
-	Network::Processings GetSinks()
-	{
-		return GetNetwork().getOrderedProcessingsByAttribute("port_sink_type");
-	}
-
-	Network::AudioSources GetAudioSources()
-	{
-		return GetNetwork().getOrderedSources();
-	}
-
-	Network::AudioSinks GetAudioSinks()
-	{
-		return GetNetwork().getOrderedSinks();
-	}
-
-	Network::AudioSourcesBuffer GetAudioSourcesBuffer()
-	{
-		return GetNetwork().getOrderedSourcesBuffer();
-	}
-
-	Network::AudioSinksBuffer GetAudioSinksBuffer()
-	{
-		return GetNetwork().getOrderedSinksBuffer();
-	}
-
+protected:
 	void CacheSourcesAndSinks()
 	{
 		_exportedSources.clear();
-		_sources = GetSources();
-		for (Network::Processings::const_iterator it = _sources.begin(); it != _sources.end(); ++it)
+		Network::Processings sources = GetSources();
+		for (Network::Processings::const_iterator it = sources.begin(); it != sources.end(); ++it)
 		{
 			Processing * processing = *it;
 			std::string processingName = _network->GetNetworkId(processing);
@@ -184,8 +140,8 @@ protected:
 			}
 		}
 		_exportedSinks.clear();
-		_sinks = GetSinks();
-		for (Network::Processings::const_iterator it = _sinks.begin(); it != _sinks.end(); ++it)
+		Network::Processings sinks = GetSinks();
+		for (Network::Processings::const_iterator it = sinks.begin(); it != sinks.end(); ++it)
 		{
 			Processing * processing = *it;
 			std::string processingName = _network->GetNetworkId(processing);
@@ -199,6 +155,52 @@ protected:
 				_exportedSinks.push_back(ExportedPort(processing,i, portName.str()));
 			}
 		}
+	}
+	const std::string & SourceName(unsigned source) const
+	{
+		return _exportedSources[source].name;
+	}
+	const std::string & SinkName(unsigned sink) const
+	{
+		return _exportedSinks[sink].name;
+	}
+	void SetSourceBuffer(unsigned source, const float * data, unsigned nframes)
+	{
+		Processing * processing = _exportedSources[source].processing;
+		unsigned port = _exportedSources[source].port;
+		SetExternalBuffer<AudioSource>(processing, data, nframes, port);
+		SetExternalBuffer<AudioSourceBuffer>(processing, data, nframes, port);
+	}
+	void SetSinkBuffer(unsigned sink, float * data, unsigned nframes)
+	{
+		Processing * processing = _exportedSinks[sink].processing;
+		unsigned port = _exportedSinks[sink].port;
+		SetExternalBuffer<AudioSink>(processing, data, nframes, port);
+		SetExternalBuffer<AudioSinkBuffer>(processing, data, nframes, port);
+	}
+	void SetSinkFrameSize(unsigned sink, unsigned frameSize)
+	{
+		unsigned port = _exportedSinks[sink].port;
+		Processing * processing = _exportedSinks[sink].processing;
+		SetFrameAndHopSizeIf<AudioSink>(processing,frameSize,port);
+		SetFrameAndHopSizeIf<AudioSinkBuffer>(processing,frameSize,port);
+	}
+	void SetSourceFrameSize(unsigned source, unsigned frameSize)
+	{
+		unsigned port = _exportedSources[source].port;
+		Processing * processing = _exportedSources[source].processing;
+		SetFrameAndHopSizeIf<AudioSource>(processing,frameSize,port);
+		SetFrameAndHopSizeIf<AudioSourceBuffer>(processing,frameSize,port);
+	}
+private:
+	Network::Processings GetSources()
+	{
+		return GetNetwork().getOrderedProcessingsByAttribute("port_source_type");
+	}
+
+	Network::Processings GetSinks()
+	{
+		return GetNetwork().getOrderedProcessingsByAttribute("port_sink_type");
 	}
 	template <typename ProcessingType>
 	void SetFrameAndHopSizeIf(Processing * proc, unsigned bufferSize, unsigned port)
