@@ -45,10 +45,6 @@ private:
 	jack_client_t * _jackClient;
 	std::string _jackClientName;
 
-private:
-	void AddSourceJackBinding(Network::AudioSources::const_iterator& it, 
-							  std::string const& name, unsigned index);
-
 public:
 	JACKNetworkPlayer(const std::string & name="CLAM network player");
 	virtual ~JACKNetworkPlayer();

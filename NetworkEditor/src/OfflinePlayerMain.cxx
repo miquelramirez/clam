@@ -23,6 +23,7 @@ int usage(const std::string & program)
 		<< "  -f BITS      Use PCM format of BITS depth for all output waves (16,24,32,64).\n"
 		<< "  -o           Indicates that the next parameters are outputs instead inputs.\n"
 		<< "  -c CHANNELS  Groups the next CHANNELS sinks in a the next file.\n"
+		<< "When no wave file is provided, inputs and outputs available in the network are shown.\n"
 		<< "\nReport bugs to http://clam-project.org\n"
 		<< std::endl;
 	return -1;
@@ -88,7 +89,8 @@ int main( int argc, char *argv[] )
  	CLAM::XMLStorage::Restore(net, networkFile);
 
 	if (argc==2)
-	{	std::cout << "Sources and Sinks list:\n" << player->SourcesAndSinksToString() << std::endl;
+	{
+		std::cout << "Sources and Sinks list:\n" << player->SourcesAndSinksToString() << std::endl;
 		std::cout << "Inspecting Network." << std::endl;
 		return 0;
 	}

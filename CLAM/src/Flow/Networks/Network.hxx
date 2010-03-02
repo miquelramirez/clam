@@ -26,23 +26,53 @@
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
-#include "BaseNetwork.hxx"
+#include "Component.hxx"
 #include "Text.hxx"
 #include <string>
 #include <list>
 #include <map>
 #include <set>
-#include <utility>
+//#include <utility>
 
 namespace CLAM
 {
 
 class NetworkPlayer;
 class FlowControl;
+class ControlSink;
+class ControlSource;
 
-class Network : public BaseNetwork
+class InformationText
+{
+public:
+	int x;
+	int y;
+	Text text;
+};
+
+
+class Network : public Component
 {
 
+public:
+	// used types
+	typedef std::list<std::string> NamesList;
+	typedef std::map <std::string, Processing* > ProcessingsMap;
+	typedef std::list<InPortBase *> InPortsList;
+
+	typedef std::vector<Processing*> Processings;
+	typedef std::vector<ControlSource*> ControlSources;
+	typedef std::vector<ControlSink*> ControlSinks;
+
+	typedef std::vector<InformationText*> InformationTexts;
+
+	typedef struct { int x, y, width, height; } Geometry;
+	typedef struct { Processing* processing; Geometry geometry; } ProcessingAndGeometry;
+	typedef std::map <std::string, Geometry> ProcessingsGeometriesMap;
+	typedef struct { std::string sourceName, sinkName; } Connection;
+	typedef std::list<Connection> ConnectionsList;
+	// attributes for canvas copy & paste
+	typedef std::set<std::string> NamesSet;
 public:
 	// constructor / destructor
 	Network();
@@ -214,6 +244,23 @@ private:
 	void StringPairToInts(const std::string & geometryInString, int & a, int & b);
 	const std::string IntsToString (const int & a, const int & b) const;
 
+protected:
+	static std::size_t PositionOfLastIdentifier( const std::string& str)
+	{
+		std::size_t result = str.find_last_of( NamesIdentifiersSeparator() );
+		CLAM_ASSERT( result!=std::string::npos, "Malformed port/control name. It should be ProcessingName.[Port/Control]Name");
+		return result;
+	}
+	static std::size_t PositionOfProcessingIdentifier( const std::string& str)
+	{
+		std::size_t endPos = PositionOfLastIdentifier(str)-1;
+		std::size_t	last_ofResult = str.find_last_of( NamesIdentifiersSeparator(), endPos );
+		return last_ofResult == std::string::npos ? 0 : last_ofResult+1;
+	}
+	static char NamesIdentifiersSeparator()
+	{
+		return '.';
+	}
 private:
 	bool BrokenConnection( const std::string & producer, const std::string & consumer );
 	std::vector<std::string> _brokenConnections;

@@ -20,25 +20,52 @@
  */
 
 #include "NetworkPlayer.hxx"
+#include "AudioSource.hxx"
+#include "AudioSourceBuffer.hxx"
+#include "AudioSink.hxx"
+#include "AudioSinkBuffer.hxx"
 
 namespace CLAM
 {
 
 std::string NetworkPlayer::SourcesAndSinksToString()
 {
-	std::string sourceNames;
-	std::string sinkNames;
-	const Network & net = GetNetwork();
+	CacheSourcesAndSinks();
+	std::string result;
+	for (unsigned i=0; i<_exportedSources.size(); i++)
+		result += " * source:\t"+SourceName(i)+"\n";
+	for (unsigned i=0; i<_exportedSinks.size(); i++)
+		result += " * sink:\t"+SinkName(i)+"\n";
+	return result;
+}
 
-	const Network::Processings & sources = GetSources();
-	for (Network::Processings::const_iterator it=sources.begin(); it!=sources.end(); ++it)
-		sourceNames += " * source:\t"+net.GetNetworkId( *it )+"\n";
-
-	const Network::Processings & sinks = GetSinks();
-	for (Network::Processings::const_iterator it=sinks.begin(); it!=sinks.end(); ++it)
-		sinkNames += " * sink:\t"+net.GetNetworkId( *it )+"\n";
-
-	return (sourceNames+sinkNames);
+void NetworkPlayer::SetSourceBuffer(unsigned source, const float * data, unsigned nframes)
+{
+	Processing * processing = _exportedSources[source].processing;
+	unsigned port = _exportedSources[source].port;
+	SetExternalBuffer<AudioSource>(processing, data, nframes, port);
+	SetExternalBuffer<AudioSourceBuffer>(processing, data, nframes, port);
+}
+void NetworkPlayer::SetSinkBuffer(unsigned sink, float * data, unsigned nframes)
+{
+	Processing * processing = _exportedSinks[sink].processing;
+	unsigned port = _exportedSinks[sink].port;
+	SetExternalBuffer<AudioSink>(processing, data, nframes, port);
+	SetExternalBuffer<AudioSinkBuffer>(processing, data, nframes, port);
+}
+void NetworkPlayer::SetSinkFrameSize(unsigned sink, unsigned frameSize)
+{
+	unsigned port = _exportedSinks[sink].port;
+	Processing * processing = _exportedSinks[sink].processing;
+	SetFrameAndHopSizeIf<AudioSink>(processing,frameSize,port);
+	SetFrameAndHopSizeIf<AudioSinkBuffer>(processing,frameSize,port);
+}
+void NetworkPlayer::SetSourceFrameSize(unsigned source, unsigned frameSize)
+{
+	unsigned port = _exportedSources[source].port;
+	Processing * processing = _exportedSources[source].processing;
+	SetFrameAndHopSizeIf<AudioSource>(processing,frameSize,port);
+	SetFrameAndHopSizeIf<AudioSourceBuffer>(processing,frameSize,port);
 }
 
 } //namespace

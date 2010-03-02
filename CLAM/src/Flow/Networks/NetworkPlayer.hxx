@@ -164,34 +164,10 @@ protected:
 	{
 		return _exportedSinks[sink].name;
 	}
-	void SetSourceBuffer(unsigned source, const float * data, unsigned nframes)
-	{
-		Processing * processing = _exportedSources[source].processing;
-		unsigned port = _exportedSources[source].port;
-		SetExternalBuffer<AudioSource>(processing, data, nframes, port);
-		SetExternalBuffer<AudioSourceBuffer>(processing, data, nframes, port);
-	}
-	void SetSinkBuffer(unsigned sink, float * data, unsigned nframes)
-	{
-		Processing * processing = _exportedSinks[sink].processing;
-		unsigned port = _exportedSinks[sink].port;
-		SetExternalBuffer<AudioSink>(processing, data, nframes, port);
-		SetExternalBuffer<AudioSinkBuffer>(processing, data, nframes, port);
-	}
-	void SetSinkFrameSize(unsigned sink, unsigned frameSize)
-	{
-		unsigned port = _exportedSinks[sink].port;
-		Processing * processing = _exportedSinks[sink].processing;
-		SetFrameAndHopSizeIf<AudioSink>(processing,frameSize,port);
-		SetFrameAndHopSizeIf<AudioSinkBuffer>(processing,frameSize,port);
-	}
-	void SetSourceFrameSize(unsigned source, unsigned frameSize)
-	{
-		unsigned port = _exportedSources[source].port;
-		Processing * processing = _exportedSources[source].processing;
-		SetFrameAndHopSizeIf<AudioSource>(processing,frameSize,port);
-		SetFrameAndHopSizeIf<AudioSourceBuffer>(processing,frameSize,port);
-	}
+	void SetSourceBuffer(unsigned source, const float * data, unsigned nframes);
+	void SetSinkBuffer(unsigned sink, float * data, unsigned nframes);
+	void SetSinkFrameSize(unsigned sink, unsigned frameSize);
+	void SetSourceFrameSize(unsigned source, unsigned frameSize);
 private:
 	Network::Processings GetSources()
 	{

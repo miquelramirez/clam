@@ -32,6 +32,8 @@
 #ifdef USE_LADSPA //TODO alway include it. move conditional code in LFactory.hxx
 #include "ProcessingFactory.hxx"
 #endif
+#include "ControlSink.hxx"
+#include "ControlSource.hxx"
 #include "CLAMVersion.hxx"
 
 #include <sstream>

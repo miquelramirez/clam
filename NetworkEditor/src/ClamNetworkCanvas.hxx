@@ -7,6 +7,7 @@
 #include <CLAM/Network.hxx>
 #include <CLAM/ProcessingDataPlugin.hxx>
 #include <CLAM/ProcessingFactory.hxx>
+#include <CLAM/Audio.hxx>
 #include "OutControlSender.hxx"
 #include "Configurator.hxx"
 #include "NetworkCanvas.hxx"
