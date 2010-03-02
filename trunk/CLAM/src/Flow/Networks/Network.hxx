@@ -93,11 +93,6 @@ public:
 	const Geometry findProcessingGeometry(Processing* ) const;
 	const Processings getOrderedProcessings(const std::string & type, bool horizontalOrder) const;
 	const Processings getOrderedProcessingsByAttribute(const std::string & attribute, bool horizontalOrder=false) const;
-	const AudioSinks getOrderedSinks() const;
-	const AudioSources getOrderedSources() const;
-	const AudioSinksBuffer getOrderedSinksBuffer() const;
-	const AudioSourcesBuffer getOrderedSourcesBuffer() const;
-
 	const ControlSinks getOrderedControlSinks() const;
 	const ControlSources getOrderedControlSources() const;
 	static const bool compareGeometriesUpperYThan(ProcessingAndGeometry &, ProcessingAndGeometry &);

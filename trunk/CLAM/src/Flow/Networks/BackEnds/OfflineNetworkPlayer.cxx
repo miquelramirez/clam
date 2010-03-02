@@ -13,15 +13,16 @@ namespace CLAM
 
 bool OfflineNetworkPlayer::IsWorking()
 {
-	return (_outFileNames.size() != GetSize<Network::Processings>(GetSources()))
-		&& (_inFileNames.size() != GetSize<Network::Processings>(GetSinks()));
+	CacheSourcesAndSinks();
+	return (_inFileNames.size() != _exportedSources.size())
+		&& (_outFileNames.size() != _exportedSinks.size());
 }
 
 std::string OfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
-	ss << GetSize<Network::Processings>(GetSources())  << " inputs and "
-	   << GetSize<Network::Processings>(GetSinks())    << " outputs needed but just "
+	ss << _exportedSources.size()  << " inputs and "
+	   << _exportedSinks.size()    << " outputs needed but just "
 	   << _inFileNames.size()  << " input files provided"
 	   << _outFileNames.size() << " output files provided"
 	   << std::ends;
@@ -32,66 +33,38 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 {
 	std::ostringstream result;
 
-	Network & net = GetNetwork();
-
 	unsigned inFileIndex = 0;
 	unsigned inChannel = 0;
-
-	const Network::Processings & sources = GetSources();
-	for (Network::Processings::const_iterator it = sources.begin(); it != sources.end(); ++it)
+	for (unsigned i=0; i<_exportedSources.size(); i++)
 	{
-		Processing * processing = *it;
-		std::string processingName = net.GetNetworkId(processing);
-		for(unsigned port = 0; port < processing->GetNOutPorts(); ++port)
+		++inChannel;
+		result << " * source:\t" << _exportedSources[i].name << "\t";
+		result << "In:\t" << _inFileNames[inFileIndex] << "\tchannel " << inChannel << "\n";
+
+		//We have read all the channels of infiles[inFileIndex]
+		if((unsigned)infiles[inFileIndex]->channels() == inChannel)
 		{
-			OutPortBase & outport = processing->GetOutPort(port);
-			std::stringstream portName;
-			portName << processingName;
-			if (processing->GetNOutPorts() > 1)
-				 portName << "_" << outport.GetName();
-
-			inChannel++;
-			result << " * source:\t" << portName.str() << "\t";
-			result << "In:\t" << _inFileNames[inFileIndex] << "\tchannel " << inChannel << "\n";
-
-			//We have read all the channels of infiles[inFileIndex]
-			if((unsigned)infiles[inFileIndex]->channels() == inChannel)
-			{
-				inFileIndex++;
-				inChannel = 0;
-			}
+			inFileIndex++;
+			inChannel = 0;
 		}
 	}
-	/***********************************************************************************/
+
 	unsigned outFileIndex = 0;
 	unsigned outChannel = 0;
-
-	const Network::Processings & sinks = GetSinks();
-	for (Network::Processings::const_iterator it = sinks.begin(); it != sinks.end(); ++it)
+	for (unsigned i=0; i<_exportedSinks.size(); i++)
 	{
-		Processing * processing = *it;
-		std::string processingName = net.GetNetworkId( processing );
-		for(unsigned port = 0; port < processing->GetNInPorts(); ++port)
+		outChannel++;
+		result << " * sink:\t" << _exportedSinks[i].name << "\t";
+		result << "Out:\t" << _outFileNames[outFileIndex] << "\tchannel " << outChannel << "\n";
+
+		//We have read all the channels of outfiles[outFileIndex]
+		if((unsigned)outfiles[outFileIndex]->channels() == outChannel)
 		{
-			InPortBase & inport = processing->GetInPort(port);
-			//Register port on the JACK server
-			std::stringstream portName;
-			portName << processingName;
-			if (processing->GetNInPorts() > 1)
-				 portName << "_" << inport.GetName();
-
-			outChannel++;
-			result << " * sink:\t" << portName.str() << "\t";
-			result << "Out:\t" << _outFileNames[outFileIndex] << "\tchannel " << outChannel << "\n";
-
-			//We have read all the channels of outfiles[outFileIndex]
-			if((unsigned)outfiles[outFileIndex]->channels() == outChannel)
-			{
-				outFileIndex++;
-				outChannel = 0;
-			}
+			outFileIndex++;
+			outChannel = 0;
 		}
 	}
+
 	return result.str();
 }
 
@@ -133,7 +106,7 @@ void OfflineNetworkPlayer::Start()
 	}
 
 	// Check that the number of input channels matches the number of ports in the network
-	CLAM_ASSERT(inputChannelsCount == GetSize<Network::Processings>(_sources),
+	CLAM_ASSERT(inputChannelsCount == _exportedSources.size(),
 	 	"The number of input channels is different than the number of sourceports in the provided network.");
 
 	//Open the files and get the total number of channels
@@ -155,7 +128,7 @@ void OfflineNetworkPlayer::Start()
 	}
 
 	// Check that the number of output channels matches the of ports in the network
-	CLAM_ASSERT(outputChannelsCount == GetSize<Network::Processings>(_sinks),
+	CLAM_ASSERT(outputChannelsCount == _exportedSinks.size(),
 	 	"The number of output channels is different than the number of sinkports in the provided network.");
 
 	std::cout << "Sources and Sinks list:" <<std::endl;
@@ -165,21 +138,13 @@ void OfflineNetworkPlayer::Start()
 	//CLAM_ASSERT(_audioSources.size() == infiles.size(),
 	//		"The number of sources is greater than the intput files.");
 
-	unsigned buffer = 0;
 	std::vector<DataArray> inbuffers(inputChannelsCount);
-	for(unsigned i = 0; i < _sources.size(); ++i)
+	for(unsigned i = 0; i < _exportedSources.size(); ++i)
 	{
-		Processing* source = _sources[i];
-
-		unsigned port_size = source->GetNOutPorts();
-		for(unsigned port = 0; port < port_size; ++port, ++buffer)
-		{
-			inbuffers[buffer].Resize( frameSize );
-			inbuffers[buffer].SetSize( frameSize );
-			const TData * data = &inbuffers[buffer][0];
-			SetExternalBuffer<AudioSource>(source, data, frameSize, port);
-			SetExternalBuffer<AudioSourceBuffer>(source, data, frameSize, port);
-		}
+		inbuffers[i].Resize( frameSize );
+		inbuffers[i].SetSize( frameSize );
+		const TData * data = &inbuffers[i][0];
+		SetSourceBuffer(i, data, frameSize);
 	}
 
 	//Prepare the sinks
@@ -187,21 +152,13 @@ void OfflineNetworkPlayer::Start()
 	//		"The number of sinks is greater than the output files ");
 
 	std::vector<DataArray> outbuffers(outputChannelsCount);
-	buffer = 0;
-	for( unsigned i = 0; i < _sinks.size(); ++i)
+	for( unsigned i = 0; i < _exportedSinks.size(); ++i)
 	{
-		Processing* sink = _sinks[i];
+		outbuffers[i].Resize( frameSize );
+		outbuffers[i].SetSize( frameSize );
 
-		unsigned port_size = sink->GetNInPorts();
-		for(unsigned port = 0; port < port_size; ++port, ++buffer)
-		{
-			outbuffers[buffer].Resize( frameSize );
-			outbuffers[buffer].SetSize( frameSize );
-
-			TData * data = &outbuffers[buffer][0];
-			SetExternalBuffer<AudioSink>(sink, data, frameSize, port);
-			SetExternalBuffer<AudioSinkBuffer>(sink, data, frameSize, port);
-		}
+		TData * data = &outbuffers[i][0];
+		SetSinkBuffer(i, data, frameSize);
 	}
 
 
@@ -259,7 +216,7 @@ void OfflineNetworkPlayer::Start()
 			//Save the sources' buffers into the bufferWriter.
 			for(int frameIndex = 0; frameIndex < frameSize; frameIndex ++)
 			{
-				for(int channel = 0; channel < nChannels; channel++)
+				for(unsigned channel = 0; channel < nChannels; channel++)
 				{
 					bufferWriter[(frameIndex*nChannels) + channel] =
 						outbuffers[outAudioIndex + channel][frameIndex];

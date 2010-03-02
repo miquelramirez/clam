@@ -76,16 +76,14 @@ bool LadspaWrapper::ConcreteStop()
 bool LadspaWrapper::Do()
 {
 	DoUpdatePortsPointers();
-	
+
 	_descriptor->run(_instance, _bufferSize );
 
 	for(unsigned int i=0;i<_outputControlValues.size();i++)
 		SendFloatToOutControl(*this, i, _outputControlValues[i]);
 
 	for(unsigned int i=0;i<_inputPorts.size();i++)
-	{
 		 _inputPorts[i]->Consume();
-	}
 	for(unsigned int i=0;i<_outputPorts.size();i++)
 		_outputPorts[i]->Produce();
 	return true;
@@ -134,7 +132,7 @@ void LadspaWrapper::RemovePortsAndControls()
 	for(itOutControl=_outputControls.begin(); itOutControl!=_outputControls.end(); itOutControl++)
 		delete *itOutControl;
 	_outputControls.clear();
-	
+
 	_outputControlValues.clear();
 
 	GetInPorts().Clear();
@@ -150,14 +148,14 @@ void LadspaWrapper::ConfigurePortsAndControls()
 	{
 		const LADSPA_PortDescriptor portDescriptor = _descriptor->PortDescriptors[i];
 		// in port
-		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor)) 
+		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor))
 		{
 			AudioInPort * port = new AudioInPort(_descriptor->PortNames[i],this );
 			port->SetSize( _bufferSize );
 			_inputPorts.push_back(port);
 		}
 		// out port
-		if(LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor)) 
+		if(LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor))
 		{
 			AudioOutPort * port = new AudioOutPort(_descriptor->PortNames[i],this );
 			port->SetSize( _bufferSize );
@@ -165,29 +163,29 @@ void LadspaWrapper::ConfigurePortsAndControls()
 		}
 
 		// in control
-		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor)) 
+		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor))
 		{
 			FloatInControl * control = new FloatInControl(_descriptor->PortNames[i], this);
 
 			const LADSPA_PortRangeHint & hint = _descriptor->PortRangeHints[i];
 			bool isBounded = (
 				LADSPA_IS_HINT_BOUNDED_ABOVE(hint.HintDescriptor) &&
-				LADSPA_IS_HINT_BOUNDED_BELOW(hint.HintDescriptor) 
+				LADSPA_IS_HINT_BOUNDED_BELOW(hint.HintDescriptor)
 				);
 			if (isBounded)
 			{
-				control->SetBounds( hint.LowerBound, hint.UpperBound ); 
+				control->SetBounds( hint.LowerBound, hint.UpperBound );
 				control->DoControl( control->DefaultValue() );
 			}
 			_inputControls.push_back(control);
-		}			
+		}
 		// out control
-		if (LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor)) 
+		if (LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor))
 		{
 			FloatOutControl * control = new FloatOutControl(_descriptor->PortNames[i], this);
 			_outputControlValues.push_back(LADSPA_Data());
 			_outputControls.push_back(control);
-		}				
+		}
 	}
 }
 
@@ -210,7 +208,6 @@ void LadspaWrapper::ConfigureControlsPointers()
 				_descriptor->connect_port(_instance, i, & _outputControlValues[outControlIndex++]);
 		}
 	}
-
 }
 
 void LadspaWrapper::DoUpdatePortsPointers()
@@ -222,14 +219,13 @@ void LadspaWrapper::DoUpdatePortsPointers()
 		const LADSPA_PortDescriptor portDescriptor = _descriptor->PortDescriptors[i];
 		if (!LADSPA_IS_PORT_CONTROL(portDescriptor)) // is audio port
 		{
-			if (LADSPA_IS_PORT_INPUT(portDescriptor)) 
+			if (LADSPA_IS_PORT_INPUT(portDescriptor))
 				_descriptor->connect_port(_instance, i, _inputPorts[inPortIndex++]->GetAudio().GetBuffer().GetPtr());
 			else
 				_descriptor->connect_port(_instance, i, _outputPorts[outPortIndex++]->GetAudio().GetBuffer().GetPtr());
 		}
 	}
 
-	
 }
 
 const char * LadspaWrapper::GetClassName() const

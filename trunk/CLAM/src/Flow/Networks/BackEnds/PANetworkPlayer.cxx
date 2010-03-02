@@ -102,8 +102,8 @@ void PANetworkPlayer::Start()
 
 	CacheSourcesAndSinks();
 
-	int nInChannels = GetSize<Network::Processings>(_sources);
-	int nOutChannels = GetSize<Network::Processings>(_sinks);
+	int nInChannels = _exportedSources.size();
+	int nOutChannels = _exportedSinks.size();
 
 	PaHostApiTypeId apiTryList[] = {
 		paDirectSound,
@@ -288,41 +288,23 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 
 void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 {
-	int buffer(0);
-	Processing* source;
-	for(unsigned i = 0; i < _sources.size(); ++i)
+	for(unsigned i = 0; i < _exportedSources.size(); ++i)
 	{
-		source = _sources[i];
-		unsigned ports_size = source->GetNOutPorts();
-		for (unsigned port = 0; port < ports_size; ++port)
-		{
-			const TData * data = input[buffer++];
-			SetExternalBuffer<AudioSource>(source, data, nframes, port);
-			SetExternalBuffer<AudioSourceBuffer>(source, data, nframes, port);
-		}
+		SetSourceBuffer(i, input[i], nframes);
 	}
 }
 
 void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 {
-	int buffer(0);
-	Processing* sink;
-	for(unsigned i = 0; i < _sinks.size(); ++i)
+	for (unsigned i=0; i<_exportedSinks.size(); ++i)
 	{
-		sink = _sinks[i];
-		unsigned ports_size = sink->GetNInPorts();
-		for (unsigned port = 0; port < ports_size; ++port)
-		{
-			TData * data = output[buffer++];
-			SetExternalBuffer<AudioSink>(sink, data, nframes, port);
-			SetExternalBuffer<AudioSinkBuffer>(sink, data, nframes, port);
-		}
+		SetSinkBuffer(i, output[i], nframes);
 	}
 }
 
 void PANetworkPlayer::MuteOutBuffers(float** output, unsigned long nframes)
 {
-	unsigned nSinks = GetSize<Network::Processings>(GetSinks());
+	unsigned nSinks = _exportedSinks.size();
 	for (unsigned i=0; i<nSinks; i++)
 		std::memset(output[i], 0, nframes*sizeof(float));
 }

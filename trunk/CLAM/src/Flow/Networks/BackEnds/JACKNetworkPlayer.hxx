@@ -14,20 +14,17 @@ namespace CLAM
 class JACKNetworkPlayer : public NetworkPlayer
 {
 private:
-	struct JackPort 
+	typedef std::vector<jack_port_t*> JackPorts;
+	const char * PortName(jack_port_t * port)
 	{
-		const char* PortName() { return jack_port_name(jackPort); }
-		jack_port_t* jackPort;
-	};
-	
-	typedef std::vector<JackPort> JackPorts;
-
+		return jack_port_name(port);
+	}
+	/** Memento to restore jack connection status */
 	struct JackConnection
 	{
 		std::string processingName;
 		const char ** outsideConnections;
 	};
-
 	typedef std::list<JackConnection> JackConnections;
 
 private:
@@ -71,7 +68,7 @@ public:
 	void OnShutdown();
 
 	//Buffer copying methods
-	void CopyJackBuffersToGenerators(const jack_nframes_t nframes);
+	void CopyJackBuffersToSources(const jack_nframes_t nframes);
 	void CopySinksToJackBuffers(const jack_nframes_t nframes);
 	void BlankJackBuffers(const jack_nframes_t nframes);
 	
