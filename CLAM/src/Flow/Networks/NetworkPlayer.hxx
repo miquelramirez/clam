@@ -53,7 +53,21 @@ class NetworkPlayer
 {
 protected:
 	enum Status { Playing=0, Stopped=1, Paused=2 };
-
+	struct ExportedPort
+	{
+		ExportedPort(Processing * aProcesing, unsigned aPort, const std::string & aName)
+			: processing(aProcesing)
+			, port(aPort)
+			, name(aName)
+		{
+		}
+		Processing * processing;
+		unsigned port;
+		std::string name;
+	};
+	typedef std::vector <ExportedPort> ExportedPorts;
+	ExportedPorts _exportedSources;
+	ExportedPorts _exportedSinks;
 	Network::Processings _sources;
 	Network::Processings _sinks;
 
@@ -153,8 +167,38 @@ protected:
 
 	void CacheSourcesAndSinks()
 	{
+		_exportedSources.clear();
 		_sources = GetSources();
+		for (Network::Processings::const_iterator it = _sources.begin(); it != _sources.end(); ++it)
+		{
+			Processing * processing = *it;
+			std::string processingName = _network->GetNetworkId(processing);
+			unsigned nPorts = processing->GetNOutPorts();
+			for (unsigned i=0; i<nPorts; i++)
+			{
+				std::ostringstream portName;
+				portName << processingName;
+				if (nPorts > 1)
+					portName << "_" << processing->GetOutPort(i).GetName();
+				_exportedSources.push_back(ExportedPort(processing,i, portName.str()));
+			}
+		}
+		_exportedSinks.clear();
 		_sinks = GetSinks();
+		for (Network::Processings::const_iterator it = _sinks.begin(); it != _sinks.end(); ++it)
+		{
+			Processing * processing = *it;
+			std::string processingName = _network->GetNetworkId(processing);
+			unsigned nPorts = processing->GetNInPorts();
+			for (unsigned i=0; i<nPorts; i++)
+			{
+				std::ostringstream portName;
+				portName << processingName;
+				if (nPorts > 1)
+					portName << "_" << processing->GetInPort(i).GetName();
+				_exportedSinks.push_back(ExportedPort(processing,i, portName.str()));
+			}
+		}
 	}
 	template <typename ProcessingType>
 	void SetFrameAndHopSizeIf(Processing * proc, unsigned bufferSize, unsigned port)

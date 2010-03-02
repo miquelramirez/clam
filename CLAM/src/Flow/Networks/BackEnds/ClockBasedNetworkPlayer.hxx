@@ -10,7 +10,7 @@ class ClockBasedNetworkPlayer : public NetworkPlayer
 {
 public:
 	ClockBasedNetworkPlayer()
-{
+	{
 		std::cout << "helloworld" << std::endl;
 	}
 
