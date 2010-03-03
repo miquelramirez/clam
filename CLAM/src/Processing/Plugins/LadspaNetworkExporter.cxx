@@ -137,7 +137,6 @@ namespace CLAM
 
 NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & name, const std::string & networkXmlContent)
 {
-	std::cerr << "NetworkLADSPAPlugin: Constructed" << std::endl;
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
 
@@ -174,7 +173,6 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & name, const std::st
 
 NetworkLADSPAPlugin::~NetworkLADSPAPlugin()
 {
-	std::cerr << "NetworkLADSPAPlugin: DELETED" << std::endl;
 }
 
 void NetworkLADSPAPlugin::Activate()
