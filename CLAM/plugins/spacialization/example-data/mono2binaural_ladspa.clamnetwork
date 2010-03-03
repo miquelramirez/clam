@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.0" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioWindowing" position="281,89" size="166,58" type="AudioStream2Buffer">
+    <HopSize>512</HopSize>
+    <BufferSize>1024</BufferSize>
+  </processing>
+
+  <processing id="Convolution_L1" position="355,336" size="157,62" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_L2" position="356,381" size="157,62" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_R1" position="356,430" size="159,62" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_R2" position="356,476" size="159,62" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="HRTFDatabaseFetcher2" position="7,403" size="207,62" type="HRTFDatabaseFetcher">
+    <FrameSize>512</FrameSize>
+    <HrtfDatabase>../../../../../acustica/HRTFs/ircam1017L.hrtfs</HrtfDatabase>
+  </processing>
+
+  <processing id="IFFT_L1" position="502,338" size="105,58" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="IFFT_L2" position="502,381" size="105,58" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="IFFT_R1" position="505,435" size="107,58" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="IFFT_R2" position="503,478" size="107,58" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="IRSwappingDelay_L" position="180,363" size="185,62" type="IRSwappingDelay"/>
+
+  <processing id="IRSwappingDelay_R" position="187,450" size="187,62" type="IRSwappingDelay"/>
+
+  <processing id="L" position="919,251" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="Monoaural" position="118,83" size="128,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="MyFFT" position="441,87" size="98,58" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="R" position="912,528" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="XFadeAndSwitch_L" position="752,272" size="178,94" type="XFadeAndSwitch"/>
+
+  <processing id="XFadeAndSwitch_R" position="751,529" size="180,94" type="XFadeAndSwitch"/>
+
+  <processing id="azimuth" position="139,248" size="163,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>360</MaxValue>
+    <DefaultValue>0</DefaultValue>
+    <Step>0.5</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="elevation" position="3,252" size="148,58" type="ControlSource">
+    <MinValue>-90</MinValue>
+    <MaxValue>90</MaxValue>
+    <DefaultValue>0</DefaultValue>
+    <Step>0.5</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="toStream_L1" position="606,338" size="139,60" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <BufferSize>1024</BufferSize>
+  </processing>
+
+  <processing id="toStream_L2" position="605,383" size="139,58" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <BufferSize>1024</BufferSize>
+  </processing>
+
+  <processing id="toStream_R1" position="603,431" size="141,58" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <BufferSize>1024</BufferSize>
+  </processing>
+
+  <processing id="toStream_R2" position="603,476" size="141,58" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <BufferSize>1024</BufferSize>
+  </processing>
+
+  <port_connection>
+    <out>AudioWindowing.Audio buffer</out>
+    <in>MyFFT.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_L1.Output</out>
+    <in>IFFT_L1.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_L2.Output</out>
+    <in>IFFT_L2.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_R1.Output</out>
+    <in>IFFT_R1.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_R2.Output</out>
+    <in>IFFT_R2.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>HRTFDatabaseFetcher2.ImpulseResponseL</out>
+    <in>IRSwappingDelay_L.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>HRTFDatabaseFetcher2.ImpulseResponseR</out>
+    <in>IRSwappingDelay_R.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IFFT_L1.Audio Buffer</out>
+    <in>toStream_L1.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IFFT_L2.Audio Buffer</out>
+    <in>toStream_L2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IFFT_R1.Audio Buffer</out>
+    <in>toStream_R1.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IFFT_R2.Audio Buffer</out>
+    <in>toStream_R2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_L.Current IR</out>
+    <in>Convolution_L1.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_L.Current IR</out>
+    <in>XFadeAndSwitch_L.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_L.Previous IR</out>
+    <in>Convolution_L2.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_L.Previous IR</out>
+    <in>XFadeAndSwitch_L.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_R.Current IR</out>
+    <in>Convolution_R1.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_R.Current IR</out>
+    <in>XFadeAndSwitch_R.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_R.Previous IR</out>
+    <in>Convolution_R2.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_R.Previous IR</out>
+    <in>XFadeAndSwitch_R.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Monoaural.1</out>
+    <in>AudioWindowing.Audio stream</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_L1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_R1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_R2.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_L2.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch_L.CrossFadedBuffer</out>
+    <in>L.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch_R.CrossFadedBuffer</out>
+    <in>R.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream_L1.Audio stream</out>
+    <in>XFadeAndSwitch_L.Audio1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream_L2.Audio stream</out>
+    <in>XFadeAndSwitch_L.Audio2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream_R1.Audio stream</out>
+    <in>XFadeAndSwitch_R.Audio1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream_R2.Audio stream</out>
+    <in>XFadeAndSwitch_R.Audio2</in>
+  </port_connection>
+
+  <control_connection>
+    <out>azimuth.output</out>
+    <in>HRTFDatabaseFetcher2.azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>elevation.output</out>
+    <in>HRTFDatabaseFetcher2.elevation</in>
+  </control_connection>
+
+</network>
