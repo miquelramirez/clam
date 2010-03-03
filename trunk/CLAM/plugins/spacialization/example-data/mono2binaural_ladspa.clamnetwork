@@ -34,7 +34,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="HRTFDatabaseFetcher2" position="7,403" size="207,62" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <HrtfDatabase>../../../../../acustica/HRTFs/ircam1017L.hrtfs</HrtfDatabase>
+    <HrtfDatabase>/usr/local/share/clam/layouts/hrtf_database.hrtfs</HrtfDatabase>
   </processing>
 
   <processing id="IFFT_L1" position="502,338" size="105,58" type="MyIFFT">
