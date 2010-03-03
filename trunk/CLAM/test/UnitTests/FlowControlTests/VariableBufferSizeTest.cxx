@@ -36,6 +36,8 @@
 #include "MonoAudioFileReader.hxx" // CLAM
 #include "AudioSink.hxx" // CLAM
 #include "AudioSource.hxx" // CLAM
+#include "AudioSinkBuffer.hxx" // CLAM
+#include "AudioSourceBuffer.hxx" // CLAM
 #include "AudioOut.hxx" // CLAM
 #include "AudioIn.hxx" // CLAM
 
