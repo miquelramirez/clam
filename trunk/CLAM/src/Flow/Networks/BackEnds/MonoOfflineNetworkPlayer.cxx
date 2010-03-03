@@ -9,14 +9,14 @@ namespace CLAM
 bool MonoOfflineNetworkPlayer::IsWorking()
 {
 	CacheSourcesAndSinks();
-	return _filenames.size()!=_exportedSinks.size()+_exportedSources.size();
+	return _filenames.size()!=GetNSinks()+GetNSources();
 }
 
 std::string MonoOfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
-	ss << _exportedSources.size()    << " inputs and "
-		<< _exportedSinks.size() << " outputs needed but just "
+	ss << GetNSources()    << " inputs and "
+		<< GetNSinks() << " outputs needed but just "
 		<< _filenames.size() << " files provided" << std::ends;
 	return ss.str();
 }
@@ -36,7 +36,7 @@ void MonoOfflineNetworkPlayer::Start()
 	std::vector<MonoAudioFileReader*> readers;
 	MonoAudioFileReaderConfig readercfg;
 	unsigned fileIndex=0;
-	for (unsigned i=0; i<_exportedSources.size(); i++)
+	for (unsigned i=0; i<GetNSources(); i++)
 	{
 		CLAM_ASSERT(fileIndex<_filenames.size(),
 			"Not all the network inputs could be fullfiled. Have you checked the IsWorking() method?");
@@ -60,7 +60,7 @@ void MonoOfflineNetworkPlayer::Start()
 
 	std::vector<MonoAudioFileWriter*> writers;
 	MonoAudioFileWriterConfig writercfg;
-	for (unsigned i=0; i<_exportedSinks.size(); i++)
+	for (unsigned i=0; i<GetNSinks(); i++)
 	{
 		if (fileIndex>=_filenames.size())
 		{

@@ -102,8 +102,8 @@ void PANetworkPlayer::Start()
 
 	CacheSourcesAndSinks();
 
-	int nInChannels = _exportedSources.size();
-	int nOutChannels = _exportedSinks.size();
+	int nInChannels = GetNSources();
+	int nOutChannels = GetNSinks();
 
 	PaHostApiTypeId apiTryList[] = {
 		paDirectSound,
@@ -288,7 +288,7 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 
 void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 {
-	for(unsigned i = 0; i < _exportedSources.size(); ++i)
+	for(unsigned i = 0; i < GetNSources(); ++i)
 	{
 		SetSourceBuffer(i, input[i], nframes);
 	}
@@ -296,7 +296,7 @@ void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 
 void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 {
-	for (unsigned i=0; i<_exportedSinks.size(); ++i)
+	for (unsigned i=0; i<GetNSinks(); ++i)
 	{
 		SetSinkBuffer(i, output[i], nframes);
 	}
@@ -304,7 +304,7 @@ void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 
 void PANetworkPlayer::MuteOutBuffers(float** output, unsigned long nframes)
 {
-	unsigned nSinks = _exportedSinks.size();
+	unsigned nSinks = GetNSinks();
 	for (unsigned i=0; i<nSinks; i++)
 		std::memset(output[i], 0, nframes*sizeof(float));
 }

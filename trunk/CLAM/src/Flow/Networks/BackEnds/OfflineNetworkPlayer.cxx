@@ -14,15 +14,15 @@ namespace CLAM
 bool OfflineNetworkPlayer::IsWorking()
 {
 	CacheSourcesAndSinks();
-	return (_inFileNames.size() != _exportedSources.size())
-		&& (_outFileNames.size() != _exportedSinks.size());
+	return (_inFileNames.size() != GetNSources())
+		&& (_outFileNames.size() != GetNSinks());
 }
 
 std::string OfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
-	ss << _exportedSources.size()  << " inputs and "
-	   << _exportedSinks.size()    << " outputs needed but just "
+	ss << GetNSources()  << " inputs and "
+	   << GetNSinks()    << " outputs needed but just "
 	   << _inFileNames.size()  << " input files provided"
 	   << _outFileNames.size() << " output files provided"
 	   << std::ends;
@@ -35,10 +35,10 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 
 	unsigned inFileIndex = 0;
 	unsigned inChannel = 0;
-	for (unsigned i=0; i<_exportedSources.size(); i++)
+	for (unsigned i=0; i<GetNSources(); i++)
 	{
 		++inChannel;
-		result << " * source:\t" << _exportedSources[i].name << "\t";
+		result << " * source:\t" << SourceName(i) << "\t";
 		result << "In:\t" << _inFileNames[inFileIndex] << "\tchannel " << inChannel << "\n";
 
 		//We have read all the channels of infiles[inFileIndex]
@@ -51,10 +51,10 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 
 	unsigned outFileIndex = 0;
 	unsigned outChannel = 0;
-	for (unsigned i=0; i<_exportedSinks.size(); i++)
+	for (unsigned i=0; i<GetNSinks(); i++)
 	{
 		outChannel++;
-		result << " * sink:\t" << _exportedSinks[i].name << "\t";
+		result << " * sink:\t" << SinkName(i) << "\t";
 		result << "Out:\t" << _outFileNames[outFileIndex] << "\tchannel " << outChannel << "\n";
 
 		//We have read all the channels of outfiles[outFileIndex]
@@ -106,7 +106,7 @@ void OfflineNetworkPlayer::Start()
 	}
 
 	// Check that the number of input channels matches the number of ports in the network
-	CLAM_ASSERT(inputChannelsCount == _exportedSources.size(),
+	CLAM_ASSERT(inputChannelsCount == GetNSources(),
 	 	"The number of input channels is different than the number of sourceports in the provided network.");
 
 	//Open the files and get the total number of channels
@@ -128,7 +128,7 @@ void OfflineNetworkPlayer::Start()
 	}
 
 	// Check that the number of output channels matches the of ports in the network
-	CLAM_ASSERT(outputChannelsCount == _exportedSinks.size(),
+	CLAM_ASSERT(outputChannelsCount == GetNSinks(),
 	 	"The number of output channels is different than the number of sinkports in the provided network.");
 
 	std::cout << "Sources and Sinks list:" <<std::endl;
@@ -139,7 +139,7 @@ void OfflineNetworkPlayer::Start()
 	//		"The number of sources is greater than the intput files.");
 
 	std::vector<DataArray> inbuffers(inputChannelsCount);
-	for(unsigned i = 0; i < _exportedSources.size(); ++i)
+	for(unsigned i = 0; i < GetNSources(); ++i)
 	{
 		inbuffers[i].Resize( frameSize );
 		inbuffers[i].SetSize( frameSize );
@@ -152,7 +152,7 @@ void OfflineNetworkPlayer::Start()
 	//		"The number of sinks is greater than the output files ");
 
 	std::vector<DataArray> outbuffers(outputChannelsCount);
-	for( unsigned i = 0; i < _exportedSinks.size(); ++i)
+	for( unsigned i = 0; i < GetNSinks(); ++i)
 	{
 		outbuffers[i].Resize( frameSize );
 		outbuffers[i].SetSize( frameSize );

@@ -41,21 +41,6 @@ class NetworkPlayer
 {
 protected:
 	enum Status { Playing=0, Stopped=1, Paused=2 };
-	struct ExportedPort
-	{
-		ExportedPort(Processing * aProcesing, unsigned aPort, const std::string & aName)
-			: processing(aProcesing)
-			, port(aPort)
-			, name(aName)
-		{
-		}
-		Processing * processing;
-		unsigned port;
-		std::string name;
-	};
-	typedef std::vector <ExportedPort> ExportedPorts;
-	ExportedPorts _exportedSources;
-	ExportedPorts _exportedSinks;
 
 public:
 	NetworkPlayer()
@@ -121,6 +106,8 @@ protected:
 		return *_network;
 	}
 protected:
+	unsigned GetNSinks() const { return _exportedSinks.size(); }                   
+	unsigned GetNSources() const { return _exportedSources.size(); }               
 	void CacheSourcesAndSinks()
 	{
 		_exportedSources.clear();
@@ -199,6 +186,21 @@ private:
 	}
 
 private:
+	struct ExportedPort
+	{
+		ExportedPort(Processing * aProcesing, unsigned aPort, const std::string & aName)
+			: processing(aProcesing)
+			, port(aPort)
+			, name(aName)
+		{
+		}
+		Processing * processing;
+		unsigned port;
+		std::string name;
+	};
+	typedef std::vector <ExportedPort> ExportedPorts;
+	ExportedPorts _exportedSources;
+	ExportedPorts _exportedSinks;
 	Network *_network;
 	volatile Status _status;
 };

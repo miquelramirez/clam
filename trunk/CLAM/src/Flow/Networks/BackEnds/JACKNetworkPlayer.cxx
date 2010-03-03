@@ -99,9 +99,9 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 {
 	CLAM_ASSERT( _sourceJackPorts.empty(),
 		"JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
-	unsigned nPorts = _exportedSources.size();
+	unsigned nPorts = GetNSources();
 	_sourceJackPorts.resize(nPorts);
-	for (unsigned i=0; i<_exportedSources.size(); i++)
+	for (unsigned i=0; i<nPorts; i++)
 	{
 		_sourceJackPorts[i] = jack_port_register(
 			_jackClient, SourceName(i).c_str(),
@@ -114,7 +114,7 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 {
 	CLAM_ASSERT( _sinkJackPorts.empty(),
 		"JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");
-	unsigned nPorts = _exportedSinks.size();
+	unsigned nPorts = GetNSinks();
 	_sinkJackPorts.resize(nPorts);
 	for(unsigned i = 0; i < nPorts; ++i)
 	{
