@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Fundació Barcelona Media Universitat Pompeu Fabra
+ * Copyright (c) 2010 Fundació Barcelona Media Universitat Pompeu Fabra
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,16 +18,15 @@
  *
  */
 
-#include "HRTFDatabaseFetcher.hxx"
+#include "SingleHRTFFetcher.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 namespace detail
 {
 	static const char* metadata[] = {
-		"key", "HRTFDatabaseFetcher",
+		"key", "SingleHRTFFetcher",
 		"category", "[plugin] 3D Audio",
-		"description", "HRTFDatabaseFetcher",
+		"description", "SingleHRTFFetcher",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::HRTFDatabaseFetcher> reg = metadata;
-
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::SingleHRTFFetcher> reg = metadata;
 }
