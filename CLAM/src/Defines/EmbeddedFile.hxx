@@ -10,13 +10,14 @@
 // COFF binary target version
 #define CLAM_EMBEDDED_FILE(varname, file) \
 asm ( \
-"  .section .rodata\n" \
+"  .section \".rodata\"\n" \
 "  .def _" #varname "\n" \
 " _" #varname ":\n" \
 "   .incbin \"" file "\"\n" \
 "   .byte 0\n" \
+"   .scl 2\n" \
 "   .size . - _" #varname "\n" \
-" .endef \n" \
+" .endef\n" \
 ); \
 extern const char varname[];
 // This was needed but at some version it made it not to compile
