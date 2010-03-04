@@ -99,16 +99,16 @@ void VstNetworkExporter::getParameterLabel(VstInt32 index, char *label)
 
 //---------------------------------------------------------------------
 VstNetworkExporter::VstNetworkExporter (
-		const std::string & networkContent,
+		const std::string & networkXml,
 		VstInt32 uniqueId,
 		const std::string & effectName,
 		const std::string & productString,
 		const std::string & vendor,
 		VstInt32 version
 	)
-	: AudioEffectX (0, 1 /*nPrograms*/, GetNumberOfParameters(networkContent) )
-	, _embeddedNetwork(networkContent)
+	: AudioEffectX (0, 1 /*nPrograms*/, GetNumberOfParameters(networkXml) )
 	, _uniqueId(uniqueId)
+	, _embeddedNetwork(networkXml)
 	, _effectName(effectName)
 	, _productString(productString)
 	, _vendor(vendor)
@@ -119,16 +119,16 @@ VstNetworkExporter::VstNetworkExporter (
 
 VstNetworkExporter::VstNetworkExporter (
 		audioMasterCallback audioMaster,
-		const std::string & embededNetwork,
+		const std::string & networkXml,
 		VstInt32 uniqueId,
 		const std::string & effectName,
 		const std::string & productString,
 		const std::string & vendor,
 		int version
 	)
-	: AudioEffectX (audioMaster, 1 /*nPrograms*/, GetNumberOfParameters(embededNetwork) )
+	: AudioEffectX (audioMaster, 1 /*nPrograms*/, GetNumberOfParameters(networkXml) )
 	, _uniqueId(uniqueId)
-	, _embeddedNetwork(embededNetwork)
+	, _embeddedNetwork(networkXml)
 	, _effectName(effectName)
 	, _productString(productString)
 	, _vendor(vendor)
@@ -136,29 +136,41 @@ VstNetworkExporter::VstNetworkExporter (
 {
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
-
+	std::istringstream xmlfile(networkXml);
 	try
 	{
-		std::istringstream xmlfile(embededNetwork);
 		XmlStorage::Restore( _network, xmlfile );
 	}
-	catch ( std::exception& err)
+	catch ( XmlStorageErr err)
 	{
-		std::cerr << "VstNetworkExporter WARNING: error parsing embeded network. "
-				"Plugin not loaded" << std::endl
-			<< "exception.what() " << err.what() << std::endl;
-		// TODO: error
+		std::cerr << "CLAM VST: Error while loading CLAM network based plugin '" << _effectName << "'." <<std::endl;
+		std::cerr << err.what() << std::endl;
+		std::cerr << "Plugin not loaded." << std::endl;
+		return;
 	}
-	_network.Start();
+	if (_network.HasMisconfiguredProcessings())
+	{
+		std::cerr << "CLAM VST: Error while configuring CLAM network based plugin '" << _effectName << "'." <<std::endl;
+		std::cerr << _network.GetConfigurationErrors() << std::endl;
+		std::cerr << "Plugin not loaded." << std::endl;
+		return;
+	}
+	if (_network.HasUnconnectedInPorts())
+	{
+		std::cerr << "CLAM VST: Error loading CLAM network based plugin '" << _effectName << "'." <<std::endl;
+		std::cerr << "Plugin not loaded because internal network inports were unconnected." <<std::endl;
+		std::cerr << _network.GetUnconnectedInPorts() << std::flush;
+		return;
+	}
 	LocateConnections();
 
 	setNumInputs (mReceiverList.size());
 	setNumOutputs (mSenderList.size());
 	setUniqueID (_uniqueId);
 	_programName = "Default";
+	_network.Start();
 }
 
-//---------------------------------------------------------------------
 VstNetworkExporter::~VstNetworkExporter ()
 {
 	_network.Stop();
@@ -168,9 +180,9 @@ VstNetworkExporter::~VstNetworkExporter ()
 int VstNetworkExporter::GetNumberOfParameters( const std::string & networkXmlContent )
 {
 	Network net;
+	std::istringstream file(networkXmlContent);
 	try
 	{
-		std::istringstream file(networkXmlContent);
 		XmlStorage::Restore( net, file );
 	}
 	catch ( XmlStorageErr err)
@@ -196,7 +208,7 @@ int VstNetworkExporter::GetNumberOfParameters( const std::string & networkXmlCon
 void VstNetworkExporter::processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames)
 {
 	std::cout << "." << std::flush;
-	if (sampleFrames!=mExternBufferSize)
+	if (unsigned(sampleFrames)!=mExternBufferSize)
 	{
 		std::cerr << "Switching to "<< sampleFrames <<std::endl;
 		mExternBufferSize=sampleFrames;
@@ -204,10 +216,10 @@ void VstNetworkExporter::processReplacing (float **inputs, float **outputs, VstI
 	}
 
 	for (unsigned i=0; i<mReceiverList.size(); i++)
-		mReceiverList[i].processing->SetExternalBuffer( inputs[i], sampleFrames );
+		mReceiverList[i].processing->SetExternalBuffer( inputs[i], mExternBufferSize, 0 );
 
 	for (unsigned i=0; i<mSenderList.size(); i++)
-		mSenderList[i].processing->SetExternalBuffer( outputs[i], sampleFrames );
+		mSenderList[i].processing->SetExternalBuffer( outputs[i], mExternBufferSize, 0 );
 
 	_network.Do();
 }
@@ -229,7 +241,7 @@ void VstNetworkExporter::LocateConnections()
 			ConnectorInfo<AudioSource> info;
 			info.name=it->first;
 			info.processing=(AudioSource*)processing;
-			info.processing->SetFrameAndHopSize( mExternBufferSize );
+			info.processing->SetFrameAndHopSize( mExternBufferSize,0 );
 			mReceiverList.push_back(info);
 		}
 		if (className == "AudioSink")
@@ -238,7 +250,7 @@ void VstNetworkExporter::LocateConnections()
 			ConnectorInfo<AudioSink> info;
 			info.name=it->first;
 			info.processing=(AudioSink*)processing;
-			info.processing->SetFrameAndHopSize( mExternBufferSize );
+			info.processing->SetFrameAndHopSize( mExternBufferSize,0 );
 			mSenderList.push_back(info);
 		}
 
@@ -261,10 +273,10 @@ void VstNetworkExporter::LocateConnections()
 void VstNetworkExporter::UpdatePortFrameAndHopSize()
 {
 	for (unsigned i=0; i<mReceiverList.size(); i++)
-		mReceiverList[i].processing->SetFrameAndHopSize(mExternBufferSize);
+		mReceiverList[i].processing->SetFrameAndHopSize(mExternBufferSize,0);
 		
 	for (unsigned i=0; i<mSenderList.size(); i++)
-		mSenderList[i].processing->SetFrameAndHopSize(mExternBufferSize);
+		mSenderList[i].processing->SetFrameAndHopSize(mExternBufferSize,0);
 }
 
 } // CLAM

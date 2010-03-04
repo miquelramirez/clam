@@ -3,13 +3,15 @@
 #include "QClamVstEditor.hxx"
 #include <iostream>
 
-CLAM_EMBEDDED_FILE(embededNetwork,"wire.xml")
-CLAM_EMBEDDED_FILE(embededUI, "interface.ui")
-
+//CLAM_EMBEDDED_FILE(embededNetwork,"wire.xml")
+//CLAM_EMBEDDED_FILE(embededUI, "interface.ui")
+extern char embededUI[];
+extern char embededNetwork[];
 
 AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 {
 	static CLAM::VstNetworkExporter exporter(
+		audioMaster,
 		embededNetwork,
 		CCONST('C','L','A','M'),
 		"CLAM effect", // Effect name
