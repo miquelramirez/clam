@@ -8,14 +8,6 @@
 namespace CLAM
 {
 
-static std::string exportedName(const std::string & processingName, unsigned port, unsigned nports)
-{
-	std::stringstream portName;
-	portName << processingName;
-	if (nports > 1) portName << "_" << port;
-	return portName.str();
-}
-
 class NetworkLADSPAPlugin : public NetworkPlayer
 {
 	template<class T>
@@ -29,9 +21,6 @@ class NetworkLADSPAPlugin : public NetworkPlayer
 	};
 
 private:
-	typedef std::vector< LADSPAInfo<Processing> > LADSPAInPortList;
-	typedef std::vector< LADSPAInfo<Processing> > LADSPAOutPortList;
-
 	typedef std::vector< LADSPAInfo<ControlSource> > LADSPAInControlList;
 	typedef std::vector< LADSPAInfo<ControlSink> > LADSPAOutControlList;
 
@@ -41,9 +30,6 @@ private:
 	Buffers _sinkBuffers;
 	Buffers _inControlBuffers;
 	Buffers _outControlBuffers;
-	LADSPAInPortList mReceiverList;
-	LADSPAOutPortList mSenderList;
-
 	LADSPAInControlList mInControlList;
 	LADSPAOutControlList mOutControlList;
 	unsigned long mClamBufferSize, mExternBufferSize;
