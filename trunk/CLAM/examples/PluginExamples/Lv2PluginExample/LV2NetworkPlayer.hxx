@@ -30,11 +30,11 @@ class LV2NetworkPlayer : public NetworkPlayer
 		};
 
 private:
-    typedef std::vector<float * > Buffers;
-    Buffers _sourceBuffers;
-    Buffers _sinkBuffers;
-    Buffers _inControlBuffers;
-    Buffers _outControlBuffers;
+	typedef std::vector<float * > Buffers;
+	Buffers _sourceBuffers;
+	Buffers _sinkBuffers;
+	Buffers _inControlBuffers;
+	Buffers _outControlBuffers;
 
 	typedef std::vector<CLAM::ControlSource*> InControlList;
 	typedef std::vector<CLAM::ControlSink*> OutControlList;
@@ -59,7 +59,7 @@ public:
 	void InstantiateExporter();
 	void ConnectPortExporter(uint32_t port, void *data);
 	void RunExporter(uint32_t nframes);
-	static  LV2_Descriptor * CreateLV2Descriptor(
+	static LV2_Descriptor * CreateLV2Descriptor(
 		const std::string & networkXmlContent,
 		const std::string & uri
 	);
@@ -71,14 +71,14 @@ public:
 	void ProcessInControlValues();
 	void LocateConnections();
 public: // NetworkPlayer interface
-    virtual bool IsWorking() { return true; }
-    virtual std::string NonWorkingReason() { return ""; }
-    virtual void Start() {}
-    virtual void Stop() {}
-//  virtual void Pause() {}
-    virtual bool IsRealTime() const { return true; }
-//  virtual unsigned BackendBufferSize();
-//  virtual unsigned BackendSampleRate();
+	virtual bool IsWorking() { return true; }
+	virtual std::string NonWorkingReason() { return ""; }
+	virtual void Start() {}
+	virtual void Stop() {}
+//	virtual void Pause() {}
+	virtual bool IsRealTime() const { return true; }
+//	virtual unsigned BackendBufferSize();
+//	virtual unsigned BackendSampleRate();
 
 };
 }
