@@ -84,7 +84,7 @@ protected:
 	VSTInControlList mInControlList;
 	VSTInPortList mReceiverList;
 	VSTOutPortList mSenderList;
-	int mClamBufferSize, mExternBufferSize;
+	unsigned mClamBufferSize, mExternBufferSize;
 
 private:
 	CLAM::Network& GetNetwork() { return _network; }
