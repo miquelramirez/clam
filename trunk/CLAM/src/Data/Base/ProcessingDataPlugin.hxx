@@ -47,6 +47,10 @@ private:
 //		std::cout << "Adding TypePlugin " << _name << " shown as " << _displayName << " with color " << color << std::endl;
 		getTypeMap().insert(std::make_pair(_name, this));
 	}
+	~ProcessingDataPlugin()
+	{
+		if (lookUp(_type)==this) getTypeMap().erase(_type.name());
+	}
 public:
 	const std::string & color() const { return _color; }
 	const std::string & name() const { return _name; }
@@ -93,6 +97,7 @@ public:
 			: _plugin( new ProcessingDataPlugin(typeid(DataType), color, displayName))
 		{
 		}
+		~Registrator() { delete _plugin; }
 	};
 };
 
