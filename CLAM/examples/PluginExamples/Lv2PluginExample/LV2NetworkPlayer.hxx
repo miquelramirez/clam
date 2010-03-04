@@ -1,5 +1,5 @@
-#ifndef Exporter_hxx
-#define Exporter_hxx
+#ifndef LV2NetworkPlayer_hxx
+#define LV2NetworkPlayer_hxx
 #include <vector>
 #include <lv2.h>
 #include <math.h>
@@ -17,7 +17,7 @@
 namespace CLAM
 {
 
-class Exporter : public NetworkPlayer
+class LV2NetworkPlayer : public NetworkPlayer
 {
 	template<class T>
 		class LV2Info
@@ -50,8 +50,8 @@ private:
 	unsigned long mExternBufferSize;
 		
 public:
-	Exporter(const LV2_Descriptor * descriptor);
-	~Exporter();
+	LV2NetworkPlayer(const LV2_Descriptor * descriptor);
+	~LV2NetworkPlayer();
 
 	void ActivateExporter();
 	void DeactivateExporter();
@@ -83,4 +83,4 @@ public: // NetworkPlayer interface
 };
 }
 
-#endif //Exporter_hxx
+#endif //LV2NetworkPlayer_hxx

@@ -248,8 +248,8 @@ def printMakeFile(bundle, names):
 		f.write(name.lower()+".ttl ")
 	f.write(name.lower().capitalize()+".so $(BUNDLE)\n\n\n")
 
-	f.write(name.lower().capitalize()+".so: Exporter.cxx clam_plugin.cxx LV2NetworkExporter.cxx\n")
-	f.write("\tg++ -shared -fPIC -DPIC clam_plugin.cxx LV2NetworkExporter.cxx Exporter.cxx `pkg-config --cflags --libs lv2core clam_core clam_processing clam_audioio` -o "+name.lower().capitalize()+".so  -l asound\n\n")
+	f.write(name.lower().capitalize()+".so: LV2NetworkPlayer.cxx clam_plugin.cxx LV2NetworkExporter.cxx\n")
+	f.write("\tg++ -shared -fPIC -DPIC clam_plugin.cxx LV2NetworkExporter.cxx LV2NetworkPlayer.cxx `pkg-config --cflags --libs lv2core clam_core clam_processing clam_audioio` -o "+name.lower().capitalize()+".so  -l asound\n\n")
 	f.write("install: $(BUNDLE)\n\tmkdir -p $(INSTALL_DIR)\n\trm -rf $(INSTALL_DIR)/$(BUNDLE)\n\tcp -R $(BUNDLE) $(INSTALL_DIR)\n\n")
 	f.write("clean:\n\trm -rf $(BUNDLE) "+ name.lower().capitalize()+".so ")
 	for name in names:
