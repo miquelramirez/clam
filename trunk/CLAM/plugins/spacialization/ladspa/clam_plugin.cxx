@@ -13,7 +13,7 @@ CLAM_EMBEDDED_FILE(mono2bformat_embededNetwork,"../example-data/mono2bformat_nof
 CLAM_EMBEDDED_FILE(bformatRotationZoom_embededNetwork,"../example-data/bformatRotationZoom.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat2surround_embededNetwork,"../example-data/bformat2surround.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat2binaural_embededNetwork,"../example-data/bformat2binaural.clamnetwork")
-CLAM_EMBEDDED_FILE(mono2binaural_embededNetwork,"../example-data/mono2binaural_nofaders.clamnetwork")
+CLAM_EMBEDDED_FILE(mono2binaural_embededNetwork,"../example-data/mono2binaural_ladspa.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat2cube_embededNetwork,"../example-data/bformat2cube.clamnetwork")
 
 //fakes:
@@ -77,15 +77,15 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"bformat2binaural", "BFormat to binaural (HRTF)",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
+	static CLAM::LadspaNetworkExporter n104(library, mono2binaural_embededNetwork, 104,
+			"mono2binaural", "Mono to binaural (HRTF)",
+			"BarcelonaMedia-Audio", "GNU GPL");
 
 	static CLAM::LadspaNetworkExporter n110(library, bformatrotation_osc_embededNetwork, 110,
 			"bformat_rotation_zoom", "BFormat rotation and zoom (osc controls)",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
 /*
-	static CLAM::LadspaNetworkExporter n104(library, mono2binaural_embededNetwork, 104,
-			"mono2binaural", "Mono to binaural (HRTF)",
-			"BarcelonaMedia-Audio", "GNU GPL");
 	static CLAM::LadspaNetworkExporter n203(library, bformat2binaural_rotation_osc_embededNetwork, 203,
 			"bformat2binaural_rotation_osc", "BFormat to binaural (HRTF) with headtracking",
 			"BarcelonaMedia-Audio", "GNU GPL");
