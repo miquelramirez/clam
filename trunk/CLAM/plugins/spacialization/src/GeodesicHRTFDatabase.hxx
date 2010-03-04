@@ -109,9 +109,10 @@ public:
 	{
 		_storage.resize(_orientations.size());
 		const unsigned nChannel=0;
-		const unsigned irIndex=getIndex(elevation, azimuth);
-		if (!computeResponseSpectrums(_waveFiles[irIndex], _storage[irIndex], frameSize, errorMsg, nChannel, sampleRate))
-			return false;
+		const unsigned indexL=getIndex(elevation, azimuth);
+		const unsigned indexR=getIndex(elevation, 360-azimuth);
+		if (!computeResponseSpectrums(_waveFiles[indexL], _storage[indexL], frameSize, errorMsg, nChannel, sampleRate))	return false;
+		if (!computeResponseSpectrums(_waveFiles[indexR], _storage[indexR], frameSize, errorMsg, nChannel, sampleRate))	return false;
 		return true;
 	}
 	double azimutForIndex(unsigned index) const
