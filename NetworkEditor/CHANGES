@@ -1,5 +1,6 @@
-2010-??-?? NetworkEditor 1.4.0 SVN $Revision$
-''
+2010-03-04 NetworkEditor 1.4.0
+'3D moluscs in the space release'
+ * SVN $Revision$
  * Networks can be paused (in NetworkEditor and OfflinePlayer)
  * Fix: Playback status changes from the backend side are pooled by the indicator
  * Typed controls: controls deal with other types than floats
@@ -7,17 +8,20 @@
  * Interface enhancements:
    * NetworkCanvas ported to QGraphicsView framework
    * Multiple port drag: Control key drags a bus of wires from a processing to another.
-   * Highlighting a port/control also highlights connected wires
-   * Network and in-canvas documentation
-   * Icons on processing boxes (double clicking pops up configuration, hovering
-     shows type information)
+   * Highlighting connected wires when you hover a port/control
+   * Connection context menu organized with sections
+   * Network wide and in-canvas documentation
+   * Icons on processing boxes (double clicking, configures; hovering, shows type info)
    * Fix: Processings were configured twice or three times when loaded.
+ * NetworkCanvas clam dependencies moved out to ClamNetworkCanvas so the core can
+   be reused for other purposes (jack, other projects...)
  * clam-qtmonitors library now contains common monitors, control senders and displays
  * Fix: spinboxes on controlsenders sent step values instead the actual value
  * Configurators: Support for negative floating point numbers
- * Configurators: increased precission from 2 to now 5 decimals
+ * Configurators: increased float precission from 2 to now 5 decimals
+ * Boolean controls as an example for new typed controls. Include:
+   * BinaryCounter, BooleanGate, BoolControlSender, BoolControlDisplay...
  * .pos files for processing boxes positions deprecated
- * ControlPrinterTyped
  * MIDIPianoWidget: MIDI monitor and note generator
  * Histogram view
 
