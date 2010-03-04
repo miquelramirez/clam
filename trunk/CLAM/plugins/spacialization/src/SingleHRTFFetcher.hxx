@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Fundació Barcelona Media Universitat Pompeu Fabra
+ * Copyright (c) 2010 Fundació Barcelona Media Universitat Pompeu Fabra
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef HRTFDatabaseFetcher_hxx
-#define HRTFDatabaseFetcher_hxx
+#ifndef SingleHRTFFetcher_hxx
+#define SingleHRTFFetcher_hxx
 
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
@@ -36,6 +36,7 @@
 
 namespace CLAM
 {
+
 
 /**
  A Processing that outputs the HRTF of a database that is closer to a given orientation.
@@ -58,17 +59,19 @@ namespace CLAM
  @param[out] "ImpulseResponseR" [Port] The impulse response to be applied on the right channel 
  @param[out] "chosen elevation" [Control] The actual elevation of the chosen HRTF function
  @param[out] "chosen azimuth" [Control] The actual azimuth of the chosen HRTF function
- @todo document HRTFDatabaseFetcher
+ @todo document SingleHRTFFetcher
  @ingroup SpatialAudio
 */
-class HRTFDatabaseFetcher : public Processing
+class SingleHRTFFetcher : public Processing
 { 
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 4, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
 		DYN_ATTRIBUTE( 1, public, InFilename, HrtfDatabase);
+		DYN_ATTRIBUTE( 2, public, float, Azimuth);
+		DYN_ATTRIBUTE( 3, public, float, Elevation);
 	protected:
 		void DefaultInit()
 		{
@@ -76,6 +79,8 @@ public:
 			UpdateData();
 			SetHrtfDatabase( "" );
 			SetFrameSize(512);
+			SetAzimuth(0.);
+			SetElevation(0.);
 		};
 	};
 private:
@@ -90,8 +95,8 @@ private:
 	GeodesicHRTFDatabase _database; 
 
 public:
-	const char* GetClassName() const { return "HRTFDatabaseFetcher"; }
-	HRTFDatabaseFetcher(const Config& config = Config()) 
+	const char* GetClassName() const { return "SingleHRTFFetcher"; }
+	SingleHRTFFetcher(const Config& config = Config()) 
 		: _impulseResponseL("ImpulseResponseL", this)
 		, _impulseResponseR("ImpulseResponseR", this)
 		, _elevation("elevation", this)
@@ -108,11 +113,6 @@ public:
 		CopyAsConcreteConfig(_config, config);
 
 		std::string errorMsg;
-		if (!_database.loadImpulseResponseDatabaseDefinition(_config.GetHrtfDatabase(), errorMsg))
-		{
-			AddConfigErrorMessage(errorMsg);
-			return false;
-		}
 		const unsigned sampleRate=44100;
 		if (!_database.loadImpulseResponseDatabaseData( _config.GetFrameSize(), sampleRate, errorMsg ))
 		{
@@ -151,5 +151,5 @@ public:
 
 } // namespace CLAM
 
-#endif // HRTFDatabaseFetcher_hxx
+#endif // SingleHRTFFetcher_hxx
 
