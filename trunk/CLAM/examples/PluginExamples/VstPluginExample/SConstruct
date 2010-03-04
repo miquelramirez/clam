@@ -126,6 +126,7 @@ plugins = [
 		"CLAMVstPlugin.cxx",
 		"VstNetworkExporter.cxx",
 		"QClamVstEditor.cxx",
+		"Files.s",
 		]),
 #	# A VstGui based plugin would need that
 #	env.SharedLibrary("CLAMVstPlugin", source = commonSources + vstguiSources [
