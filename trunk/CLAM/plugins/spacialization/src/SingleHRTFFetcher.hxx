@@ -88,8 +88,6 @@ private:
 	Config _config;
 	OutPort< ImpulseResponse* > _impulseResponseL;
 	OutPort< ImpulseResponse* > _impulseResponseR;
-	FloatInControl _elevation; ///< angle to the horizon
-	FloatInControl _azimuth; ///< horizontal angle from viewpoint (north-south-east-west)
 	FloatOutControl _chosenElevation; ///< angle to the horizon
 	FloatOutControl _chosenAzimuth; ///< horizontal angle from viewpoint (north-south-east-west)
 	GeodesicHRTFDatabase _database; 
@@ -99,42 +97,42 @@ public:
 	SingleHRTFFetcher(const Config& config = Config()) 
 		: _impulseResponseL("ImpulseResponseL", this)
 		, _impulseResponseR("ImpulseResponseR", this)
-		, _elevation("elevation", this)
-		, _azimuth("azimuth", this)
 		, _chosenElevation("chosen elevation", this)
 		, _chosenAzimuth("chosen azimuth", this)
 	{
 		Configure( config );
-		_elevation.SetBounds(-90,90);
-		_azimuth.SetBounds(0,360);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
 
 		std::string errorMsg;
-		const unsigned sampleRate=44100;
-		if (!_database.loadImpulseResponseDatabaseData( _config.GetFrameSize(), sampleRate, errorMsg ))
+		if (!_database.loadImpulseResponseDatabaseMetadata(_config.GetHrtfDatabase(), errorMsg))
 		{
 			AddConfigErrorMessage(errorMsg);
 			return false;
 		}
-		std::cout << "HRTF database loaded." << std::endl;
+		const unsigned sampleRate=44100;
+		if (!_database.loadImpulseResponseOfAnAngle( 
+			_config.GetFrameSize(), 
+			sampleRate, 
+			errorMsg, 
+			_config.GetElevation(),
+			_config.GetAzimuth() ) )
+		{
+			AddConfigErrorMessage(errorMsg);
+			return false;
+		}
+
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 
-	static unsigned map(FloatInControl & control, unsigned nIndexes, double min, double max)
-	{
-		double normalizedValue = (control.GetLastValue() - min) / (max-min);
-		unsigned result = unsigned(std::floor(normalizedValue*nIndexes+.5));
-		return result < nIndexes? result : 0;
-	}
 public:
 	bool Do()
 	{
-		double elevation = _elevation.GetLastValue();
-		double azimuth = _azimuth.GetLastValue();
+		const double azimuth = _config.GetAzimuth();
+		const float elevation = _config.GetElevation();
 		unsigned indexL = _database.getIndex(elevation, azimuth);
 		unsigned indexR = _database.getIndex(elevation, 360-azimuth);
 		_chosenElevation.SendControl(_database.elevationForIndex(indexL));

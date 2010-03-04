@@ -108,7 +108,7 @@ public:
 		CopyAsConcreteConfig(_config, config);
 
 		std::string errorMsg;
-		if (!_database.loadImpulseResponseDatabaseDefinition(_config.GetHrtfDatabase(), errorMsg))
+		if (!_database.loadImpulseResponseDatabaseMetadata(_config.GetHrtfDatabase(), errorMsg))
 		{
 			AddConfigErrorMessage(errorMsg);
 			return false;

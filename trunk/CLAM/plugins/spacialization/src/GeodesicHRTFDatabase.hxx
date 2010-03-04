@@ -61,7 +61,7 @@ public:
 		if (lastBarPos == std::string::npos) return "";
 		return path.substr(0,lastBarPos+1);
 	}
-	bool loadImpulseResponseDatabaseDefinition(
+	bool loadImpulseResponseDatabaseMetadata(
 			const std::string & path,
 			std::string & errorMsg )
 	{
@@ -98,6 +98,20 @@ public:
 		for (unsigned i=0; i < _storage.size(); i++)
 			if (!computeResponseSpectrums(_waveFiles[i], _storage[i], frameSize, errorMsg, nChannel, sampleRate))
 				return false;
+		return true;
+	}
+	bool loadImpulseResponseOfAnAngle( 
+			unsigned frameSize,
+			unsigned sampleRate,
+			std::string & errorMsg,
+			float elevation,
+			float azimuth)
+	{
+		_storage.resize(_orientations.size());
+		const unsigned nChannel=0;
+		const unsigned irIndex=getIndex(elevation, azimuth);
+		if (!computeResponseSpectrums(_waveFiles[irIndex], _storage[irIndex], frameSize, errorMsg, nChannel, sampleRate))
+			return false;
 		return true;
 	}
 	double azimutForIndex(unsigned index) const
