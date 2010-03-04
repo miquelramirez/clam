@@ -39,7 +39,7 @@ class ComplexSpectrum
 {
 public:
 	std::vector<std::complex<TData> > bins;
-	~ComplexSpectrum();
+	virtual ~ComplexSpectrum();
 	TData spectralRange;
 	void dump(std::ostream & os)
 	{
