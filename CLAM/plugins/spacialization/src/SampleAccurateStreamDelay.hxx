@@ -37,6 +37,13 @@ class SampleAccurateStreamDelay : public SampleAccurateDelay
 	AudioOutPort _out;
 
 public:
+	SampleAccurateStreamDelay(const Config& config = Config()) 
+		: _in("InputStream", this)
+		, _out("OutputStream", this)
+	{
+		Configure( config );
+	}
+
 	bool ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(_config, c);	
@@ -58,12 +65,6 @@ public:
 
 		
 		return true;
-	}
-	SampleAccurateStreamDelay(const Config& config = Config()) 
-		: _in("InputStream", this)
-		, _out("OutputStream", this)
-	{
-		Configure( config );
 	}
 	
 	const char* GetClassName() const { return "SampleAccurateStreamDelay"; }
