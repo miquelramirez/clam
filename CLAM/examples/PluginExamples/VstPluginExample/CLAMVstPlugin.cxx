@@ -3,10 +3,11 @@
 #include "QClamVstEditor.hxx"
 #include <iostream>
 
+// TODO: This cannot be used until mingw is fixed. See 'Files.s'
 //CLAM_EMBEDDED_FILE(embededNetwork,"wire.xml")
 //CLAM_EMBEDDED_FILE(embededUI, "interface.ui")
-extern char embededUI[];
-extern char embededNetwork[];
+extern const char embededUI[];
+extern const char embededNetwork[];
 
 AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 {
