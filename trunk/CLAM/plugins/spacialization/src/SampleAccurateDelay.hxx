@@ -72,6 +72,7 @@ protected:
 	
 	void setDelay(float delaySamples) 
 	{
+		CLAM_ASSERT(_delayBufferSize, "setDelay: Zero delay delay is not allowed!");
 		Index delayInSamples = round(delaySamples);
 		
 		if (delayInSamples > _delayBufferSize) 
@@ -93,6 +94,7 @@ protected:
 	
 	TData delayLine(TData x)
 	{	
+		CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
 		Index writeindex = _writeIndex++ % _delayBufferSize;
 		Index readindex = _readIndex++ % _delayBufferSize;
 
@@ -106,7 +108,8 @@ protected:
 		
 public:
 	SampleAccurateDelay(const Config& config = Config()) 
-		: _crossFadeIndex(0)
+		: _delayBufferSize(1)
+		, _crossFadeIndex(0)
 		, _delayControl("Delay in Samples", this)
 	{
 		Configure( config );
@@ -119,7 +122,6 @@ public:
 	
 	const ProcessingConfig & GetConfig() const { return _config; }
 	
-	virtual bool Do() = 0;
 };
 
 } // namespace CLAM

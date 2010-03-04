@@ -43,6 +43,23 @@ public:
 	{
 		Configure( config );
 	}
+
+	bool ConcreteConfigure(const ProcessingConfig& c)
+	{
+		CopyAsConcreteConfig(_config, c);	
+		_sampleRate = _config.GetSampleRate();
+		
+		_crossFadeBuffer.resize(CROSSFADESIZE);
+		std::fill(_crossFadeBuffer.begin(), _crossFadeBuffer.end(), 0.);
+		
+		_delayBuffer.resize(_config.GetMaxDelayInSeconds() * _sampleRate);
+		_delayBufferSize = _delayBuffer.size(); 
+		_readIndex = _writeIndex = (_delayBufferSize-1); 
+		std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);
+		_delayControl.DoControl(0.);
+
+		return true;
+	}
 	
 	const char* GetClassName() const { return "SampleAccurateBufferDelay"; }
 	
