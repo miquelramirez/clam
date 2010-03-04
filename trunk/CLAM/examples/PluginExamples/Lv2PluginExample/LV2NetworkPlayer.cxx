@@ -1,19 +1,19 @@
-#include "Exporter.hxx"
+#include "LV2NetworkPlayer.hxx"
 #include "LV2Library.hxx"
 
 // LV2 Callbacks
 extern "C"
 {
-	static CLAM::Exporter * exporter(LV2_Handle handle)
+	static CLAM::LV2NetworkPlayer * exporter(LV2_Handle handle)
 	{
-		return (CLAM::Exporter*)handle;
+		return (CLAM::LV2NetworkPlayer*)handle;
 	}
 
 	// Construct a new plugin instance.
 	static LV2_Handle Instantiate(const LV2_Descriptor * descriptor, double sampleRate, const char *path, const LV2_Feature * const* features)
 	{
 //		std::cout << "INSTANTIATE"<<std::endl;
-		return new CLAM::Exporter(descriptor);
+		return new CLAM::LV2NetworkPlayer(descriptor);
 	}
 
 	// Destruct plugin instance
@@ -56,7 +56,7 @@ extern "C"
 		std::cout << "CREATE_LV2_DESCRIPTOR"<<std::endl;
 		
 		if(index==0) {
-			return Exporter::CreateLV2Descriptor();		
+			return LV2NetworkPlayer::CreateLV2Descriptor();		
 		}
 		else
 			return NULL;
@@ -67,7 +67,7 @@ extern "C"
 namespace CLAM
 {
 
-Exporter::Exporter(const LV2_Descriptor * descriptor)
+LV2NetworkPlayer::LV2NetworkPlayer(const LV2_Descriptor * descriptor)
 {
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
@@ -105,7 +105,7 @@ Exporter::Exporter(const LV2_Descriptor * descriptor)
 	LocateConnections();
 }
 
-void Exporter::LocateConnections()
+void LV2NetworkPlayer::LocateConnections()
 {
 
 //	CHECK THAT ALL VECTORS AREN'T EMPTY
@@ -147,19 +147,19 @@ void Exporter::LocateConnections()
 	_outControlBuffers.resize(mOutControlList.size());
 }
 
-Exporter::~Exporter(){}
-void Exporter::ActivateExporter()
+LV2NetworkPlayer::~LV2NetworkPlayer(){}
+void LV2NetworkPlayer::ActivateExporter()
 {
 	_network.Start();
 }
-void Exporter::DeactivateExporter()
+void LV2NetworkPlayer::DeactivateExporter()
 {
 	_network.Stop();
 }
-void Exporter::CleanupExporter(){}
-void Exporter::InstantiateExporter(){}
+void LV2NetworkPlayer::CleanupExporter(){}
+void LV2NetworkPlayer::InstantiateExporter(){}
 
-void Exporter::ConnectPortExporter(uint32_t port, void *data)
+void LV2NetworkPlayer::ConnectPortExporter(uint32_t port, void *data)
 {
 	if ( port < _inControlBuffers.size() )
 	{
@@ -187,7 +187,7 @@ void Exporter::ConnectPortExporter(uint32_t port, void *data)
 	CLAM_ASSERT(true,"Accessing a non-existing port");
 }
 	
-void Exporter::UpdatePortFrameAndHopSize()
+void LV2NetworkPlayer::UpdatePortFrameAndHopSize()
 {	
 	for (unsigned i=0; i<GetNSources(); i++)
 		SetSourceFrameSize(i, mExternBufferSize);
@@ -195,31 +195,31 @@ void Exporter::UpdatePortFrameAndHopSize()
 		SetSinkFrameSize(i, mExternBufferSize);
 }
 
-void Exporter::SetAudioSourceBuffers(const unsigned long nframes)
+void LV2NetworkPlayer::SetAudioSourceBuffers(const unsigned long nframes)
 {
 	for (unsigned i=0; i<GetNSources(); i++)
 		SetSourceBuffer(i,_sourceBuffers[i], nframes);
 }
 
-void Exporter::SetAudioSinkBuffers(const unsigned long nframes)
+void LV2NetworkPlayer::SetAudioSinkBuffers(const unsigned long nframes)
 {
 	for (unsigned i=0; i<GetNSinks(); i++)
 		SetSinkBuffer(i,_sinkBuffers[i], nframes);
 }
 
-void Exporter::ProcessInControlValues()
+void LV2NetworkPlayer::ProcessInControlValues()
 {
 	for (LV2InControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
 		it->processing->Do( (float) *(it->dataBuffer) );
 }
 
-void Exporter::ProcessOutControlValues()
+void LV2NetworkPlayer::ProcessOutControlValues()
 {
 
 }	
 
 
-void Exporter::RunExporter(uint32_t nframes)
+void LV2NetworkPlayer::RunExporter(uint32_t nframes)
 {
 	if(nframes != mExternBufferSize)
 	{
@@ -235,7 +235,7 @@ void Exporter::RunExporter(uint32_t nframes)
 }
 
 //TODO Delete the networkXmlContent
-LV2_Descriptor * Exporter::CreateLV2Descriptor(
+LV2_Descriptor * LV2NetworkPlayer::CreateLV2Descriptor(
 	const std::string & networkXmlContent,
 	const std::string & uri
 	)

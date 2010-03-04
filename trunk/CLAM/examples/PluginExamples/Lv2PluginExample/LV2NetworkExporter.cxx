@@ -1,6 +1,6 @@
 #include "LV2NetworkExporter.hxx"
 #include "LV2Library.hxx"
-#include "Exporter.hxx"
+#include "LV2NetworkPlayer.hxx"
 
 LV2NetworkExporter::LV2NetworkExporter(
 	LV2Library & library, 
@@ -8,7 +8,7 @@ LV2NetworkExporter::LV2NetworkExporter(
 	const std::string & uri
 	)
 {
-	LV2_Descriptor * descriptor = CLAM::Exporter::CreateLV2Descriptor(networkXmlContent, uri);
+	LV2_Descriptor * descriptor = CLAM::LV2NetworkPlayer::CreateLV2Descriptor(networkXmlContent, uri);
 	if (not descriptor) return;
 	library.AddPluginType(descriptor,networkXmlContent);
 }
