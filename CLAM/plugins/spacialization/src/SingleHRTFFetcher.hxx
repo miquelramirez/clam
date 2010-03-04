@@ -39,22 +39,13 @@ namespace CLAM
 
 
 /**
- A Processing that outputs the HRTF of a database that is closer to a given orientation.
- Two ImpulseResponse are fetched, one for the left ear and one for the right one.
- Angles follow @ref AmbisonicsConventions
- 
- An HRTF database is a text file, with .hrtfs extension, 
- where each row defines the following space separated fields:
- -# Elevation in degrees
- -# Azimuth in degrees
- -# Path of the wave file containing the left ear response, relative to the path where .hrtf file resides.
-
- Right ear responses are selected by symmetry.
+ A Processing very similar to HRTFDatabaseFetcher with the difference that instead of 
+ receiving azimuth and elevation via controls it receives them via configuration.
+ That makes possible to just load two HRTFs instead of the whole database.
+ Please refere to the HRTFDatabaseFetcher for details.
 
  @param FrameSize [Config] The framesize to build the ImpulseResponse object
  @param HrtfDatabase [Config] The framesize to build the ImpulseResponse object
- @param[in] elevation [Control] The elevation of the source to be reproduced in listener reference frame
- @param[in] azimuth [Control] The azimuth of the source to be reproduced in listener reference frame
  @param[out] "ImpulseResponseL" [Port] The impulse response to be applied on the left channel
  @param[out] "ImpulseResponseR" [Port] The impulse response to be applied on the right channel 
  @param[out] "chosen elevation" [Control] The actual elevation of the chosen HRTF function
