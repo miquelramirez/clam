@@ -43,6 +43,6 @@ namespace Hidden
 	{
 		AddAll();
 		UpdateData();
-		SetDistortionType(EDistType::eArctangent);
+		SetDistortionType(EZynDistType::eArctangent);
 	}
 }
