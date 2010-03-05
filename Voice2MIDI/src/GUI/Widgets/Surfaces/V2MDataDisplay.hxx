@@ -10,7 +10,7 @@
 #ifndef _V2MDATADISPLAY_
 #define _V2MDATADISPLAY_
 
-#include <qgl.h>
+#include <QtOpenGL/QGLWidget>
 #include <CLAM/Array.hxx>
 #include <CLAM/Signalv1.hxx>
 #include <CLAM/Slotv1.hxx>
