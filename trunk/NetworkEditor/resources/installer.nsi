@@ -79,6 +79,7 @@ Section "Principal" SEC01
   File '${QTDIR}\bin\QtAssistantClient4.dll'
   File '${CLAMINSTALLDIR}\bin\mingwm10.dll'
   File '${CLAMINSTALLDIR}\bin\clam_*.dll'
+  File '${CLAMINSTALLDIR}\lib\clam_*.dll'
   File '${EXTERNALDLLDIR}\libogg-0.dll'
   File '${EXTERNALDLLDIR}\libsndfile-1.dll'
   File '${EXTERNALDLLDIR}\libvorbis-0.dll'
