@@ -205,6 +205,9 @@ public:
 	 */
 	bool HasSyncSource() const;
 
+    /** This method reports whether the network supports dynamic buffer-size host.*/
+	bool SupportsVariableAudioSize() const;
+
 	/**
 	 * Returns an string containing configuration errors.
 	 * Don't rely on the format because is subject to change.

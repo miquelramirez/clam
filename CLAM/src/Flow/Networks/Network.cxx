@@ -972,6 +972,15 @@ namespace CLAM
 		return false;
 	}
 
+	bool Network::SupportsVariableAudioSize() const
+	{
+	    ProcessingsMap::const_iterator it;
+		for(it=BeginProcessings(); it!=EndProcessings(); it++)
+			if(!it->second->SupportsVariableAudioSize())
+				return false;
+		return true;
+    }
+
 	// TODO: Test GetConfigurationErrors
 	std::string Network::GetConfigurationErrors() const
 	{
