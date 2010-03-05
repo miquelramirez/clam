@@ -1,11 +1,6 @@
 #ifndef RunTimeLadspaLibraryLoader_hxx
 #define RunTimeLadspaLibraryLoader_hxx
 
-#ifdef WIN32
-#include "CLAM_windows.h"
-#else
-#include <dlfcn.h>
-#endif
 #include <dirent.h>
 //#include "RunTimeLibraryLoader.hxx"
 
@@ -23,7 +18,7 @@ protected:
 	void SetupLibrary(void* handle, const std::string & pluginFullFilename) const
 	{
 		LADSPA_Descriptor_Function descriptorTable = 0;
-		descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
+		descriptorTable = (LADSPA_Descriptor_Function)GetSymbol(handle, "ladspa_descriptor");
 		if (!descriptorTable)
 		{
 			std::cout << "[LADSPA Plugin] Warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
