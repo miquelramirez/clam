@@ -20,6 +20,7 @@ versions = {
  "SMSTools" : "---",
  "Voice2MIDI": "---",
  "chordata": "---",
+ "pyclam": "---",
 }
 for package, _ in versions.iteritems():
 	versions[package] = versionInfo.versionFromRemoteSvn(package)[1]
