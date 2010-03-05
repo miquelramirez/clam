@@ -1,6 +1,7 @@
 2010-03-04 chordata 1.0.0
-'3D moluscs in the space release'
+'3D molluscs in the space release'
  * SVN $Revision: 11172$
+ * Using CLAM 1.4.0
  * Jack support as audio backend
  * Command line options
  * First working version

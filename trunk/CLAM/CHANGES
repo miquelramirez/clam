@@ -1,8 +1,11 @@
 2010-03-04 CLAM 1.4.0
-'3D moluscs in the space release'
+'3D molluscs in the space release'
  * SVN $Revision$
- * Typed controls: Controls with other type than floats.
- * Regular in controls have callback (deprecates InControlTmpl)
+ * New controls:
+   * Typed controls: Controls with other type than floats.
+   * Regular in controls have callback (deprecates InControlTmpl)
+   * Example processings using boolean and MIDI controls
+   * MIDI module handling MIDIMessage controls
  * Processing type metadata:
    * Icons
    * Relations to a token type as sink, source or monitor
@@ -11,7 +14,20 @@
  * Rich data types: although you can use any C++ data type as data token
    or control without explicit declaring it, you can add properties, such 
    as connector color or a display name by defining a ProcessingDataPlugin.
- * Networks can pause without stopping the backend.
+ * NetworkPlayers (backends):
+   * Pause state: not playing the network but feeding silence to the backend
+   * Multiport sources and sinks supported
+   * Buffer audio sources and sinks (vs. stream audio, which is still available)
+   * Common implementation factored out to the base class
+   * Plugins (Ladspa, Vst, Lv2) became NetworkPlayers
+ * LadspaNetworkPlayer (former LadspaPlugin):
+   * Now it is a Network Player
+   * Supports variable frame size (avoid clicks in ardour)
+   * When network processings support variable audio size it avoids buffering and copies
+   * ControlSources parameters can be maped to LADSPA hints within LADSPA limitations
+ * Ladspa hosted plugins have a buffer based version (vs, stream, avoiding copies)
+ * examples/Plugins/Lv2PluginExample: New experimental network player for LV2
+ * examples/Plugins/VstPluginExample: Added primitive support for Qt interfaces
  * Processing::Get{In,Out}{Control,Port}() overloaded for indexes and names.
  * Processing::GetN{In,Out}{Controls,Ports}() to get the number of connectors.
  * Processing::Get{In,Out}{Controls,Ports}() are now protected methods.
@@ -24,16 +40,6 @@
    when you rename a processing, port, control, configuration parameter...
    also useful to cleanly change configuration parameters directly on the xml.
  * Added 'intel-optimize' option to optimize for intel architectures
- * New MIDIMessage class
- * Network players have more common code
- * LadspaNetworkPlayer (former LadspaPlugin):
-   * Now it is a Network Player
-   * Supports variable frame size (avoid clicks in ardour)
-   * When network processings support variable audio size it avoids buffering and copies
-   * ControlSources parameters can be maped to LADSPA hints within LADSPA limitations
- * Ladspa hosted plugins have a buffer based version (vs, stream, avoiding copies)
- * examples/Plugins/Lv2PluginExample: New experimental network player for LV2
- * examples/Plugins/VstPluginExample: Added primitive support for Qt interfaces
  * Build system: native plugins are now built as regular libraries (with installable
    headers) plus an empty plugin library that just links against them.
    This enables having interdependencies, or explicitly use symbols defined in a plugin.
@@ -51,6 +57,7 @@
    * RoomImpulseResponseSimulator: SuppressInitialDelay and SeparateDirectSoundAndReverb options
    * BFormatRotation: Fixed formulas
    * CrossCorrelation: Computes the cross-correlation of two audios on spectral domain
+   * ...many others not included here, check the doxygen for the module.
  * plugins/filters:
    * Filter processing: Direct form implementation of the linear, time-invariant
      difference equation. The same form of the 'filter' function of common
