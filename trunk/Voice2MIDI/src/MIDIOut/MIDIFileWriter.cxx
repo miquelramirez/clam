@@ -6,6 +6,7 @@
 */
 
 #include "MIDIFileWriter.hxx"
+#include <cstdio>
 
 namespace V2M
 {
