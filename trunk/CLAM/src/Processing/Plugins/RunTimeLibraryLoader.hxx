@@ -23,6 +23,7 @@ public:
 	static bool ReleaseLibraryHandler(void * handle, const std::string pluginFullFilename="");
 	static const std::string LibraryLoadError();
 	static const std::string FileOfSymbol (void * symbolAddress);
+	static void * GetSymbol(void * libraryHandler, const std::string & symbolName);
 
 protected:
 	void LoadLibrariesFromPath(const std::string & path) const;

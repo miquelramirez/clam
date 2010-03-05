@@ -12,7 +12,6 @@
 #include "Audio.hxx"
 #include <ctime>
 #include <cstdlib>
-#include <dlfcn.h>
 
 namespace CLAM
 {
@@ -107,7 +106,7 @@ bool LadspaWrapperBuffer::LoadLibraryFunction(const std::string& libraryFileName
 {
 	//std::cout<<"LadspaWrapperBuffer::LoadLibraryFunction("<<libraryFileName<<")"<<std::endl;
 	_sharedObject = RunTimeLibraryLoader::LazyLoadLibrary(libraryFileName);
-	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(_sharedObject, "ladspa_descriptor");
+	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)RunTimeLibraryLoader::GetSymbol(_sharedObject, "ladspa_descriptor");
 	if(!function)
 	{
 		std::string error = "[LADSPA] can't open library: " + libraryFileName;
