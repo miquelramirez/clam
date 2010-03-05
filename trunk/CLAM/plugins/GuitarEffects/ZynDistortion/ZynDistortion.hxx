@@ -43,13 +43,13 @@ namespace CLAM{
 		return ( value > 0. ) ? 1. : -1.;
 	}
 
-	class EDistType : public Enum
+	class EZynDistType : public Enum
 	{
 	public:
-		EDistType() : Enum(ValueTable(), eArctangent) {}
-		EDistType(tValue v) : Enum(ValueTable(), v) {};
-		EDistType(std::string s) : Enum(ValueTable(), s) {};
-		virtual Component* Species() const { return new EDistType(eArctangent); }
+		EZynDistType() : Enum(ValueTable(), eArctangent) {}
+		EZynDistType(tValue v) : Enum(ValueTable(), v) {};
+		EZynDistType(std::string s) : Enum(ValueTable(), s) {};
+		virtual Component* Species() const { return new EZynDistType(eArctangent); }
 	
 		enum {
 			eArctangent,
@@ -99,7 +99,7 @@ namespace CLAM{
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE( ZynDistortionConfig, 1, ProcessingConfig );
-		DYN_ATTRIBUTE( 0, public, EDistType, DistortionType );
+		DYN_ATTRIBUTE( 0, public, EZynDistType, DistortionType );
 
 	protected:
 		void DefaultInit();
@@ -124,7 +124,7 @@ namespace CLAM{
 		FloatInControl mDrive; ///< Drive amount
 
 
-		EDistType mDistType; ///< kind of distortion selector
+		EZynDistType mDistType; ///< kind of distortion selector
 
 	public:
 		ZynDistortion()
@@ -159,14 +159,14 @@ namespace CLAM{
 
 			switch( mDistType )
 			{
-			case EDistType::eArctangent:
+			case EZynDistType::eArctangent:
 				ws = CLAM_pow(10,ws*ws*3.0) - 1.0 + 0.001; //never 0, avoids atan(0)=0 and further zero division
 				for (int i=0;i<size;i++) 
 				{
 					outb[i] = CLAM_atan(inb[i]*ws)/CLAM_atan(ws);
 				}
 				break;
-			case EDistType::eAsymmetric:
+			case EZynDistType::eAsymmetric:
 				ws = ws*ws*32.0 + 0.0001;
 				if (ws<1.0) tmpv = CLAM_sin(ws) + 0.1; else tmpv = 1.1;
 				for (int i=0;i<size;i++)
@@ -174,7 +174,7 @@ namespace CLAM{
 					outb[i] = CLAM_sin( inb[i]*(0.1+ws-ws*inb[i]) ) / tmpv;
 				}
 				break;
-			case EDistType::ePow:
+			case EZynDistType::ePow:
 				ws = ws*ws*ws*20.0 + 0.0001;
 				for (int i=0;i<size;i++)
 				{
@@ -187,7 +187,7 @@ namespace CLAM{
 					else outb[i]=0.0;
 				};
 				break;
-			case EDistType::eSine:
+			case EZynDistType::eSine:
 				ws = ws*ws*ws*32.0 + 0.0001;
 				if (ws<1.57) tmpv = CLAM_sin(ws); else tmpv = 1.0;
 				for (int i=0;i<size;i++)
@@ -195,14 +195,14 @@ namespace CLAM{
 					outb[i] = CLAM_sin(inb[i]*ws)/tmpv;
 				}
 				break;
-			case EDistType::eQuantisize:
+			case EZynDistType::eQuantisize:
 				ws = ws*ws + 0.000001;
 				for (int i=0;i<size;i++)
 				{
 					outb[i] = floor(inb[i]/ws+0.2)*ws;
 				}
 				break;
-			case EDistType::eZigzag:
+			case EZynDistType::eZigzag:
 				ws = ws*ws*ws*32 + 0.0001;
 				if (ws<1.0) tmpv = CLAM_sin(ws); else tmpv = 1.0;
 				for (int i=0;i<size;i++)
@@ -210,7 +210,7 @@ namespace CLAM{
 					outb[i] = asin( CLAM_sin(inb[i]*ws) ) / tmpv;
 				}
 				break;
-			case EDistType::eLimiter:
+			case EZynDistType::eLimiter:
 				ws = CLAM_pow(2.0,-ws*ws*8.0);
 				for (int i=0;i<size;i++)
 				{
@@ -221,7 +221,7 @@ namespace CLAM{
 					else outb[i] = inb[i]/ws;
 				}
 				break;
-			case EDistType::eUpperLimiter:
+			case EZynDistType::eUpperLimiter:
 				ws = CLAM_pow(2.0,-ws*ws*8.0);
 				for (int i=0;i<size;i++)
 				{
@@ -229,7 +229,7 @@ namespace CLAM{
 					outb[i] *= 2.0;
 				}
 				break;
-			case EDistType::eLowerLimiter:
+			case EZynDistType::eLowerLimiter:
 				ws = CLAM_pow(2.0,-ws*ws*8.0);
 				for (int i=0;i<size;i++)
 				{
@@ -237,7 +237,7 @@ namespace CLAM{
 					outb[i] *= 2.0;
 				}
 				break;
-			case EDistType::eInverseLimiter:
+			case EZynDistType::eInverseLimiter:
 				ws = (CLAM_pow(2.0,ws*6.0)-1.0)/CLAM_pow(2.0,6.0);
 				for (int i=0;i<size;i++)
 				{
@@ -248,14 +248,14 @@ namespace CLAM{
 					else outb[i]=0;
 				}
 				break;
-			case EDistType::eClip:
+			case EZynDistType::eClip:
 				ws = CLAM_pow(5,ws*ws*1.0) - 1.0;
 				for (int i=0;i<size;i++)
 				{
 					outb[i] = inb[i]*(ws+0.5)*0.9999 - floor(0.5+inb[i]*(ws+0.5)*0.9999);
 				}
 				break;
-			case EDistType::eAsym2:
+			case EZynDistType::eAsym2:
 				ws = ws*ws*ws*30 + 0.001;
 				if (ws<0.3) tmpv=ws; else tmpv=1.0;
 				for (int i=0;i<size;i++)
@@ -264,7 +264,7 @@ namespace CLAM{
 					if ((tmp>-2.0) && (tmp<1.0)) outb[i] = tmp*(1.0-tmp)*(tmp+2.0)/tmpv; else outb[i]=0.0;
 				}
 				break;
-			case EDistType::ePow2:
+			case EZynDistType::ePow2:
 				ws = ws*ws*ws*32.0 + 0.0001;
 				if (ws<1.0) tmpv=ws*(1+ws)/2.0; else tmpv=1.0;
 				for (int i=0;i<size;i++)
@@ -280,7 +280,7 @@ namespace CLAM{
 					}
 				}
 				break;
-			case EDistType::eSigmoid:
+			case EZynDistType::eSigmoid:
 				ws = CLAM_pow(ws,5.0)*80.0 + 0.0001;
 				if (ws>10.0) tmpv=0.5; else tmpv=0.5-1.0/(CLAM_exp(ws)+1.0);
 				for (int i=0;i<size;i++)
