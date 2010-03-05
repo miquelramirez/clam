@@ -1,14 +1,14 @@
 #include "LadspaNetworkExporter.hxx"
 #include "ControlSource.hxx"
 #include "ControlSink.hxx"
-#include "AudioSourceBuffer.hxx"
-#include "AudioSinkBuffer.hxx"
+#include "AudioBufferSource.hxx"
+#include "AudioBufferSink.hxx"
 #include "NetworkPlayer.hxx"
 
 namespace CLAM
 {
 
-class NetworkLADSPAPlugin : public NetworkPlayer
+class LadspaNetworkPlayer : public NetworkPlayer
 {
 	template<class T>
 	class LADSPAInfo
@@ -23,16 +23,17 @@ class NetworkLADSPAPlugin : public NetworkPlayer
 private:
 	typedef std::vector< LADSPAInfo<ControlSource> > LADSPAInControlList;
 	typedef std::vector< LADSPAInfo<ControlSink> > LADSPAOutControlList;
+	typedef std::vector<LADSPA_Data * > Buffers;
 
 	Network _network;
-	typedef std::vector<LADSPA_Data * > Buffers;
 	Buffers _sourceBuffers;
 	Buffers _sinkBuffers;
 	Buffers _inControlBuffers;
 	Buffers _outControlBuffers;
 	LADSPAInControlList mInControlList;
 	LADSPAOutControlList mOutControlList;
-	unsigned long mClamBufferSize, mExternBufferSize;
+	unsigned long mClamBufferSize;
+	unsigned long mExternBufferSize;
 public:
 	virtual bool IsWorking() { return true; }
 	virtual std::string NonWorkingReason() { return ""; }
@@ -43,8 +44,8 @@ public:
 //	virtual unsigned BackendBufferSize();
 //	virtual unsigned BackendSampleRate();
 public:
-	NetworkLADSPAPlugin(const std::string & label, const std::string & networkXmlContent);
-	~NetworkLADSPAPlugin();
+	LadspaNetworkPlayer(const std::string & label, const std::string & networkXmlContent);
+	~LadspaNetworkPlayer();
 
 	void Activate();
 	void Deactivate();
@@ -78,33 +79,33 @@ extern "C"
 	static LADSPA_Handle Instantiate(const LADSPA_Descriptor * descriptor, unsigned long sampleRate)
 	{
 //		std::cerr << "Network2Ladspa: instantiate" << std::endl;
-		return new CLAM::NetworkLADSPAPlugin(descriptor->Label, (const char*)descriptor->ImplementationData);
+		return new CLAM::LadspaNetworkPlayer(descriptor->Label, (const char*)descriptor->ImplementationData);
 	}
 	// Destruct plugin instance
 	static void CleanUp(LADSPA_Handle handle)
 	{
 //		std::cerr << "Network2Ladspa: cleanup " << handle << std::endl;
-		delete (CLAM::NetworkLADSPAPlugin*) handle;
+		delete (CLAM::LadspaNetworkPlayer*) handle;
 	}
 
 	// Run the plugin
 	static void Run(LADSPA_Handle handle, unsigned long sampleCount)
 	{
-		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+		CLAM::LadspaNetworkPlayer *p = (CLAM::LadspaNetworkPlayer*) handle;
 		p->Run( sampleCount );
 	}
 	// Activate Plugin
 	static void Activate(LADSPA_Handle handle)
 	{
 //		std::cerr << "Network2Ladspa: activate " << handle << std::endl;
-		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+		CLAM::LadspaNetworkPlayer *p = (CLAM::LadspaNetworkPlayer*) handle;
 		p->Activate();
 	}
 
 	static void Deactivate(LADSPA_Handle handle)
 	{
 //		std::cerr << "Network2Ladspa: deactivate " << handle << std::endl;
-		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+		CLAM::LadspaNetworkPlayer *p = (CLAM::LadspaNetworkPlayer*) handle;
 		p->Deactivate();
 	}
 
@@ -112,7 +113,7 @@ extern "C"
 	static void ConnectTo(LADSPA_Handle handle, unsigned long port, LADSPA_Data * dataLocation)
 	{
 //		std::cerr << "Network2Ladspa: connect " << port << std::endl;
-		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+		CLAM::LadspaNetworkPlayer *p = (CLAM::LadspaNetworkPlayer*) handle;
 		p->ConnectTo( port, dataLocation );
 	}
 }
@@ -121,12 +122,11 @@ namespace CLAM
 {
 
 
-NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & name, const std::string & networkXmlContent)
+LadspaNetworkPlayer::LadspaNetworkPlayer(const std::string & name, const std::string & networkXmlContent)
 {
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
 
-	SetNetworkBackLink(_network);
 	std::istringstream xmlfile(networkXmlContent);
 	try
 	{
@@ -154,29 +154,33 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & name, const std::st
 		return;
 	}
 
+	// TOFIX: Should be a full link for the network to obtain parameters 
+	// but the network adquires the ownership of the player and, in this case,
+	// the player owns the network.
+	SetNetworkBackLink(_network);
 	LocateConnections();
 }
 
-NetworkLADSPAPlugin::~NetworkLADSPAPlugin()
+LadspaNetworkPlayer::~LadspaNetworkPlayer()
 {
 }
 
-void NetworkLADSPAPlugin::Activate()
+void LadspaNetworkPlayer::Activate()
 {
 	_network.Start();
 }
 
-void NetworkLADSPAPlugin::Deactivate()
+void LadspaNetworkPlayer::Deactivate()
 {
 	_network.Stop();
 }
 
-void NetworkLADSPAPlugin::LocateConnections()
+void LadspaNetworkPlayer::LocateConnections()
 {
 	CacheSourcesAndSinks();
 
-	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
-	CLAM_ASSERT( mOutControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
+	CLAM_ASSERT( mInControlList.empty(), "LadspaNetworkPlayer::LocateConnections() : there are already registered controls");
+	CLAM_ASSERT( mOutControlList.empty(), "LadspaNetworkPlayer::LocateConnections() : there are already registered controls");
 
 	Network::ControlSources controlSources = _network.getOrderedControlSources();
 	Network::ControlSinks controlSinks = _network.getOrderedControlSinks();
@@ -205,9 +209,9 @@ void NetworkLADSPAPlugin::LocateConnections()
 	UpdatePortFrameAndHopSize();
 }
 
-void NetworkLADSPAPlugin::UpdatePortFrameAndHopSize()
+void LadspaNetworkPlayer::UpdatePortFrameAndHopSize()
 {
-	//AudioSources and AudioSourceBuffer
+	//AudioSources and AudioBufferSource
 	for (unsigned i=0; i<GetNSources(); i++)
 	{
 		SetSourceFrameSize(i, mExternBufferSize);
@@ -218,11 +222,11 @@ void NetworkLADSPAPlugin::UpdatePortFrameAndHopSize()
 	}
 }
 
-void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
+void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
 {
 	int currentport=0;
 
-	//Manage InPorts (AudioSource and AudioSourcesBuffer)
+	//Manage InPorts (AudioSource and AudioBufferSources)
 	for (unsigned i=0; i<GetNSources(); i++)
 	{
 		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
@@ -278,7 +282,7 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 	}
 }
 
-void NetworkLADSPAPlugin::Run( unsigned long nsamples )
+void LadspaNetworkPlayer::Run( unsigned long nsamples )
 {
 	//Check current buffer size of ports, to make sure everything fits!
 	// if it isn't so, upgrade Frame and Hop sizes (vital)
@@ -304,31 +308,31 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 	ProcessOutControlValues();
 }
 
-void NetworkLADSPAPlugin::ProcessInControlValues()
+void LadspaNetworkPlayer::ProcessInControlValues()
 {
 	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
 		it->processing->Do( (float) *(it->dataBuffer) );
 }
 
-void NetworkLADSPAPlugin::ProcessOutControlValues()
+void LadspaNetworkPlayer::ProcessOutControlValues()
 {
 	for (LADSPAOutControlList::iterator it=mOutControlList.begin(); it!=mOutControlList.end(); it++)
 		*(it->dataBuffer)=it->processing->GetControlValue();
 }
 
-void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSources(const unsigned long nframes)
+void LadspaNetworkPlayer::EstablishLadspaBuffersToAudioSources(const unsigned long nframes)
 {
 	for (unsigned i=0; i<GetNSources(); i++)
 		SetSourceBuffer(i, _sourceBuffers[i], nframes);
 }
 
-void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSinks(const unsigned long nframes)
+void LadspaNetworkPlayer::EstablishLadspaBuffersToAudioSinks(const unsigned long nframes)
 {
 	for (unsigned i=0; i<GetNSinks(); i++)
 		SetSinkBuffer(i, _sinkBuffers[i], nframes);
 }
 
-void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
+void LadspaNetworkPlayer::ConnectTo(unsigned long port, LADSPA_Data * data)
 {
 
 	unsigned nSources  = GetNSources();
@@ -363,7 +367,7 @@ void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 
 
 
-LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor(
+LADSPA_Descriptor * LadspaNetworkPlayer::CreateLADSPADescriptor(
 	const std::string & networkXmlContent,
 	unsigned id,
 	const std::string & label,
@@ -372,7 +376,7 @@ LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor(
 	const std::string & copyright
 	)
 {
-	CLAM::NetworkLADSPAPlugin plugin(label, networkXmlContent);
+	CLAM::LadspaNetworkPlayer plugin(label, networkXmlContent);
 
 	unsigned numports = plugin.GetNSources() + plugin.GetNSinks() +
 		plugin.mInControlList.size() + plugin.mOutControlList.size();
@@ -421,7 +425,7 @@ LadspaNetworkExporter::LadspaNetworkExporter(
 	const std::string & copyright
 	)
 {
-	LADSPA_Descriptor * descriptor = NetworkLADSPAPlugin::CreateLADSPADescriptor(
+	LADSPA_Descriptor * descriptor = LadspaNetworkPlayer::CreateLADSPADescriptor(
 		networkXmlContent, id, label, name,
 		maker, copyright);
 	if (not descriptor) return;

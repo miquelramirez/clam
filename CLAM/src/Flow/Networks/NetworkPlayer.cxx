@@ -21,9 +21,9 @@
 
 #include "NetworkPlayer.hxx"
 #include "AudioSource.hxx"
-#include "AudioSourceBuffer.hxx"
+#include "AudioBufferSource.hxx"
 #include "AudioSink.hxx"
-#include "AudioSinkBuffer.hxx"
+#include "AudioBufferSink.hxx"
 
 namespace CLAM
 {
@@ -44,28 +44,28 @@ void NetworkPlayer::SetSourceBuffer(unsigned source, const float * data, unsigne
 	Processing * processing = _exportedSources[source].processing;
 	unsigned port = _exportedSources[source].port;
 	SetExternalBuffer<AudioSource>(processing, data, nframes, port);
-	SetExternalBuffer<AudioSourceBuffer>(processing, data, nframes, port);
+	SetExternalBuffer<AudioBufferSource>(processing, data, nframes, port);
 }
 void NetworkPlayer::SetSinkBuffer(unsigned sink, float * data, unsigned nframes)
 {
 	Processing * processing = _exportedSinks[sink].processing;
 	unsigned port = _exportedSinks[sink].port;
 	SetExternalBuffer<AudioSink>(processing, data, nframes, port);
-	SetExternalBuffer<AudioSinkBuffer>(processing, data, nframes, port);
+	SetExternalBuffer<AudioBufferSink>(processing, data, nframes, port);
 }
 void NetworkPlayer::SetSinkFrameSize(unsigned sink, unsigned frameSize)
 {
 	unsigned port = _exportedSinks[sink].port;
 	Processing * processing = _exportedSinks[sink].processing;
 	SetFrameAndHopSizeIf<AudioSink>(processing,frameSize,port);
-	SetFrameAndHopSizeIf<AudioSinkBuffer>(processing,frameSize,port);
+	SetFrameAndHopSizeIf<AudioBufferSink>(processing,frameSize,port);
 }
 void NetworkPlayer::SetSourceFrameSize(unsigned source, unsigned frameSize)
 {
 	unsigned port = _exportedSources[source].port;
 	Processing * processing = _exportedSources[source].processing;
 	SetFrameAndHopSizeIf<AudioSource>(processing,frameSize,port);
-	SetFrameAndHopSizeIf<AudioSourceBuffer>(processing,frameSize,port);
+	SetFrameAndHopSizeIf<AudioBufferSource>(processing,frameSize,port);
 }
 
 } //namespace

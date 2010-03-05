@@ -7,23 +7,23 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="1 Sintetic input" position="295,401" size="155,115" type="AudioSourceBuffer">
+  <processing id="1 Sintetic input" position="295,401" size="155,115" type="AudioBufferSource">
     <NSources>1</NSources>
   </processing>
 
-  <processing id="1 W" position="701,219" size="128,111" type="AudioSinkBuffer">
+  <processing id="1 W" position="701,219" size="128,111" type="AudioBufferSink">
     <NSinks>1</NSinks>
   </processing>
 
-  <processing id="2 X" position="701,322" size="128,111" type="AudioSinkBuffer">
+  <processing id="2 X" position="701,322" size="128,111" type="AudioBufferSink">
     <NSinks>1</NSinks>
   </processing>
 
-  <processing id="3 Y" position="700,426" size="128,111" type="AudioSinkBuffer">
+  <processing id="3 Y" position="700,426" size="128,111" type="AudioBufferSink">
     <NSinks>1</NSinks>
   </processing>
 
-  <processing id="4 Z" position="702,529" size="128,111" type="AudioSinkBuffer">
+  <processing id="4 Z" position="702,529" size="128,111" type="AudioBufferSink">
     <NSinks>1</NSinks>
   </processing>
 

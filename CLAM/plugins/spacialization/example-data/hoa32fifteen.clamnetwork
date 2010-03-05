@@ -7,11 +7,11 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="AudioSinkBuffer" position="733,69" size="161,270" type="AudioSinkBuffer">
+  <processing id="AudioBufferSink" position="733,69" size="161,270" type="AudioBufferSink">
     <NSinks>15</NSinks>
   </processing>
 
-  <processing id="AudioSourceBuffer" position="111,66" size="177,286" type="AudioSourceBuffer">
+  <processing id="AudioBufferSource" position="111,66" size="177,286" type="AudioBufferSource">
     <NSources>16</NSources>
   </processing>
 
@@ -23,158 +23,158 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <port_connection>
-    <out>AudioSourceBuffer.1</out>
+    <out>AudioBufferSource.1</out>
     <in>Hoa2RegularSpeakerArrayBuffer.W</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.2</out>
+    <out>AudioBufferSource.2</out>
     <in>Hoa2RegularSpeakerArrayBuffer.X</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.3</out>
+    <out>AudioBufferSource.3</out>
     <in>Hoa2RegularSpeakerArrayBuffer.Y</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.4</out>
+    <out>AudioBufferSource.4</out>
     <in>Hoa2RegularSpeakerArrayBuffer.Z</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.5</out>
+    <out>AudioBufferSource.5</out>
     <in>Hoa2RegularSpeakerArrayBuffer.R</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.6</out>
+    <out>AudioBufferSource.6</out>
     <in>Hoa2RegularSpeakerArrayBuffer.S</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.7</out>
+    <out>AudioBufferSource.7</out>
     <in>Hoa2RegularSpeakerArrayBuffer.T</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.8</out>
+    <out>AudioBufferSource.8</out>
     <in>Hoa2RegularSpeakerArrayBuffer.U</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.9</out>
+    <out>AudioBufferSource.9</out>
     <in>Hoa2RegularSpeakerArrayBuffer.V</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.10</out>
+    <out>AudioBufferSource.10</out>
     <in>Hoa2RegularSpeakerArrayBuffer.K</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.11</out>
+    <out>AudioBufferSource.11</out>
     <in>Hoa2RegularSpeakerArrayBuffer.L</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.12</out>
+    <out>AudioBufferSource.12</out>
     <in>Hoa2RegularSpeakerArrayBuffer.M</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.13</out>
+    <out>AudioBufferSource.13</out>
     <in>Hoa2RegularSpeakerArrayBuffer.N</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.14</out>
+    <out>AudioBufferSource.14</out>
     <in>Hoa2RegularSpeakerArrayBuffer.O</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.15</out>
+    <out>AudioBufferSource.15</out>
     <in>Hoa2RegularSpeakerArrayBuffer.P</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSourceBuffer.16</out>
+    <out>AudioBufferSource.16</out>
     <in>Hoa2RegularSpeakerArrayBuffer.Q</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.01</out>
-    <in>AudioSinkBuffer.1</in>
+    <in>AudioBufferSink.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.02</out>
-    <in>AudioSinkBuffer.2</in>
+    <in>AudioBufferSink.2</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.03</out>
-    <in>AudioSinkBuffer.3</in>
+    <in>AudioBufferSink.3</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.04</out>
-    <in>AudioSinkBuffer.4</in>
+    <in>AudioBufferSink.4</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.05</out>
-    <in>AudioSinkBuffer.5</in>
+    <in>AudioBufferSink.5</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.06</out>
-    <in>AudioSinkBuffer.6</in>
+    <in>AudioBufferSink.6</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.07</out>
-    <in>AudioSinkBuffer.7</in>
+    <in>AudioBufferSink.7</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.08</out>
-    <in>AudioSinkBuffer.8</in>
+    <in>AudioBufferSink.8</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.09</out>
-    <in>AudioSinkBuffer.9</in>
+    <in>AudioBufferSink.9</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.10</out>
-    <in>AudioSinkBuffer.10</in>
+    <in>AudioBufferSink.10</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.11</out>
-    <in>AudioSinkBuffer.11</in>
+    <in>AudioBufferSink.11</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.12</out>
-    <in>AudioSinkBuffer.12</in>
+    <in>AudioBufferSink.12</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.13</out>
-    <in>AudioSinkBuffer.13</in>
+    <in>AudioBufferSink.13</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.14</out>
-    <in>AudioSinkBuffer.14</in>
+    <in>AudioBufferSink.14</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArrayBuffer.15</out>
-    <in>AudioSinkBuffer.15</in>
+    <in>AudioBufferSink.15</in>
   </port_connection>
 
 </network>

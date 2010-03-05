@@ -1,4 +1,4 @@
-#include "AudioSourceBuffer.hxx"
+#include "AudioBufferSource.hxx"
 #include "ProcessingFactory.hxx"
 #include "Audio.hxx"
 
@@ -8,20 +8,20 @@ namespace CLAM
 namespace
 {
 	static const char* metadata[] = {
-		"key", "AudioSourceBuffer",
+		"key", "AudioBufferSource",
 		"category", "Audio I/O",
-		"description", "AudioSourceBuffer",
+		"description", "AudioBufferSource",
 		"port_source_type", typeid(Audio).name(),
 		"icon", "source.svg",
 		"embedded_svg", "source.svg",
 		0
 	};
-	static FactoryRegistrator<ProcessingFactory, AudioSourceBuffer> reg = metadata;
+	static FactoryRegistrator<ProcessingFactory, AudioBufferSource> reg = metadata;
 }
 
-AudioSourceBuffer::Config::~Config() { }
+AudioBufferSource::Config::~Config() { }
 
-bool AudioSourceBuffer::Do()
+bool AudioBufferSource::Do()
 {
 	for (Ports::iterator it = _ports.begin(); it != _ports.end(); ++it)
 	{
@@ -29,9 +29,9 @@ bool AudioSourceBuffer::Do()
 		OutPort<Audio>* out = port.mPort;
 
 		CLAM::Audio& so=out->GetData();
-		CLAM_DEBUG_ASSERT(!port.mFloatBuffer || !port.mDoubleBuffer, "AudioSourceBuffer: Just one buffer should be set");
-		CLAM_DEBUG_ASSERT(port.mFloatBuffer || port.mDoubleBuffer, "AudioSourceBuffer: No external buffer set");
-		CLAM_DEBUG_ASSERT(port.mBufferSize>0, "AudioSourceBuffer: internal buffer size must be greater than 0");
+		CLAM_DEBUG_ASSERT(!port.mFloatBuffer || !port.mDoubleBuffer, "AudioBufferSource: Just one buffer should be set");
+		CLAM_DEBUG_ASSERT(port.mFloatBuffer || port.mDoubleBuffer, "AudioBufferSource: No external buffer set");
+		CLAM_DEBUG_ASSERT(port.mBufferSize>0, "AudioBufferSource: internal buffer size must be greater than 0");
 		
 		so.SetSize(port.mBufferSize);
 		
@@ -52,7 +52,7 @@ bool AudioSourceBuffer::Do()
 	return true;
 }
 
-void AudioSourceBuffer::SetExternalBuffer(const float* buf, unsigned nframes, unsigned index)
+void AudioBufferSource::SetExternalBuffer(const float* buf, unsigned nframes, unsigned index)
 {
 	CLAM_ASSERT(index < _ports.size(), "OutPort<Audio> index out of range");
 	Port& port = _ports[index];
@@ -63,7 +63,7 @@ void AudioSourceBuffer::SetExternalBuffer(const float* buf, unsigned nframes, un
 	port.mDoubleBuffer = 0;
 }
 
-void AudioSourceBuffer::SetExternalBuffer(const double* buf, unsigned nframes, unsigned index)
+void AudioBufferSource::SetExternalBuffer(const double* buf, unsigned nframes, unsigned index)
 {
 	CLAM_ASSERT(index < _ports.size(), "OutPort<Audio> index out of range");
 	Port& port = _ports[index];
