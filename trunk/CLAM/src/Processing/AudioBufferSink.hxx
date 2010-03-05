@@ -1,5 +1,5 @@
-#ifndef AudioSinkBuffer_hxx
-#define AudioSinkBuffer_hxx
+#ifndef AudioBufferSink_hxx
+#define AudioBufferSink_hxx
 
 #include "Processing.hxx"
 #include "InPort.hxx"
@@ -9,7 +9,7 @@
 
 namespace CLAM
 {
-	class AudioSinkBuffer : public Processing
+	class AudioBufferSink : public Processing
 	{
 	public:
 		struct Port
@@ -62,7 +62,7 @@ namespace CLAM
 		Ports _ports;
 
 	public:
-		AudioSinkBuffer(const ProcessingConfig & config=Config())
+		AudioBufferSink(const ProcessingConfig & config=Config())
 		{
 			//After being dropped it is ready to run as it does not need any configuration at all
 			//SetExecState(Ready);
@@ -70,7 +70,7 @@ namespace CLAM
 			ResizePorts(1);
 		}
 
-		~AudioSinkBuffer()
+		~AudioBufferSink()
 		{
 			for (unsigned port = 0; port < _ports.size(); ++port)
 				delete _ports[port].mPort;
@@ -90,7 +90,7 @@ namespace CLAM
 
 		bool Do();
 
-		const char* GetClassName() const { return "AudioSinkBuffer";}
+		const char* GetClassName() const { return "AudioBufferSink";}
 
 		const ProcessingConfig & GetConfig() const
 		{

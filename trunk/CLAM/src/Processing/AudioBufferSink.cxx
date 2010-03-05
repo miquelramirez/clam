@@ -1,4 +1,4 @@
-#include "AudioSinkBuffer.hxx"
+#include "AudioBufferSink.hxx"
 #include "ProcessingFactory.hxx"
 #include "Audio.hxx"
 
@@ -10,18 +10,18 @@ namespace CLAM
 namespace 
 {
 	static const char* metadata[] = {
-		"key", "AudioSinkBuffer",
+		"key", "AudioBufferSink",
 		"category", "Audio I/O",
-		"description", "AudioSinkBuffer",
+		"description", "AudioBufferSink",
 		"port_sink_type", typeid(Audio).name(),
 		"icon", "sink.svg",
 		"embedded_svg", "sink.svg",
 		0
 	};
-	static FactoryRegistrator<ProcessingFactory, AudioSinkBuffer> reg = metadata;
+	static FactoryRegistrator<ProcessingFactory, AudioBufferSink> reg = metadata;
 }
 
-bool AudioSinkBuffer::Do()
+bool AudioBufferSink::Do()
 {
 	for (Ports::iterator it = _ports.begin(); it != _ports.end(); ++it)
 	{
@@ -44,7 +44,7 @@ bool AudioSinkBuffer::Do()
 	return true;
 }
 
-void AudioSinkBuffer::SetExternalBuffer(float* buf, unsigned nframes, unsigned index)
+void AudioBufferSink::SetExternalBuffer(float* buf, unsigned nframes, unsigned index)
 {
 	CLAM_ASSERT(index < _ports.size(), "InPort<Audio> index out of range");
 	Port& port = _ports[index];
@@ -56,7 +56,7 @@ void AudioSinkBuffer::SetExternalBuffer(float* buf, unsigned nframes, unsigned i
 
 }
 
-void AudioSinkBuffer::SetExternalBuffer(double* buf, unsigned nframes, unsigned index)
+void AudioBufferSink::SetExternalBuffer(double* buf, unsigned nframes, unsigned index)
 {
 	CLAM_ASSERT(index < _ports.size(), "InPort<Audio> index out of range");
 	Port& port = _ports[index];

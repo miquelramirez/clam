@@ -1,5 +1,5 @@
-#ifndef AudioSourceBuffer_hxx
-#define AudioSourceBuffer_hxx
+#ifndef AudioBufferSource_hxx
+#define AudioBufferSource_hxx
 
 #include "Processing.hxx"
 #include "OutPort.hxx"
@@ -10,7 +10,7 @@
 namespace CLAM
 {
 
-	class AudioSourceBuffer : public Processing
+	class AudioBufferSource : public Processing
 	{
 	public:
 		struct Port
@@ -63,7 +63,7 @@ namespace CLAM
 			Ports  _ports;
 
 		public:
-			AudioSourceBuffer(const ProcessingConfig & config=Config())
+			AudioBufferSource(const ProcessingConfig & config=Config())
 			{
 				//After being dropped it is ready to run as it does not need any configuration at all
 				//SetExecState(Ready);
@@ -73,7 +73,7 @@ namespace CLAM
 				ResizePorts(1);
 			}
 
-			~AudioSourceBuffer()
+			~AudioBufferSource()
 			{
 				for (unsigned port = 0; port < _ports.size(); ++port)
 					delete _ports[port].mPort;
@@ -92,7 +92,7 @@ namespace CLAM
 
 			bool Do();
 
-			const char* GetClassName() const { return "AudioSourceBuffer";}
+			const char* GetClassName() const { return "AudioBufferSource";}
 
 			const ProcessingConfig & GetConfig() const
 			{

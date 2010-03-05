@@ -101,7 +101,10 @@ LV2NetworkPlayer::LV2NetworkPlayer(const LV2_Descriptor * descriptor)
 		std::cerr << _network.GetUnconnectedInPorts() << std::flush;
 		return;
 	}
-
+	// TOFIX: Should be a full link for the network to obtain parameters 
+	// but the network adquires the ownership of the player and, in this case,
+	// the player owns the network.
+	SetNetworkBackLink(_network);
 	LocateConnections();
 }
 

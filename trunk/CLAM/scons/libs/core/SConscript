@@ -7,6 +7,7 @@ env=core_env
 moduleDependencies = []
 
 folders = [
+	'src/core',
 	'src/Base',
 	'src/Data/Base',
 	'src/Data/BasicProcessing/Audio.*',
@@ -20,6 +21,8 @@ folders = [
 	'src/Processing/Base',
 	'src/Processing/AudioSink*xx',
 	'src/Processing/AudioSource*xx',
+	'src/Processing/AudioBufferSink*xx',
+	'src/Processing/AudioBufferSource*xx',
 	'src/Processing/ControlSink*xx',
 	'src/Processing/ControlSource*xx',
 	'src/Processing/Plugins',

@@ -36,8 +36,8 @@
 #include "MonoAudioFileReader.hxx" // CLAM
 #include "AudioSink.hxx" // CLAM
 #include "AudioSource.hxx" // CLAM
-#include "AudioSinkBuffer.hxx" // CLAM
-#include "AudioSourceBuffer.hxx" // CLAM
+#include "AudioBufferSink.hxx" // CLAM
+#include "AudioBufferSource.hxx" // CLAM
 #include "AudioOut.hxx" // CLAM
 #include "AudioIn.hxx" // CLAM
 
@@ -92,7 +92,7 @@ class FlowChangingTest : public CppUnit::TestFixture
 	void testAudioBufferSourcePropagatesAudioSize()
 	{
 		float audio[30] = {};
-		CLAM::AudioSourceBuffer source;
+		CLAM::AudioBufferSource source;
 		DummyProcessing dummy;
 
 		CLAM::ConnectPorts(source, 0, dummy, 0);
@@ -107,7 +107,7 @@ class FlowChangingTest : public CppUnit::TestFixture
 	void testAudioBufferSource_keepsAllocatedSize_changingToLowerSize()
 	{
 		float audio[30] = {};
-		CLAM::AudioSourceBuffer source;
+		CLAM::AudioBufferSource source;
 		DummyProcessing dummy;
 
 		CLAM::ConnectPorts(source, 0, dummy, 0);
@@ -125,7 +125,7 @@ class FlowChangingTest : public CppUnit::TestFixture
 	void testAudioBufferSource_keepsAllocatedSize_changingToBiggerSize()
 	{
 		float audio[30] = {};
-		CLAM::AudioSourceBuffer source;
+		CLAM::AudioBufferSource source;
 		DummyProcessing dummy;
 
 		CLAM::ConnectPorts(source, 0, dummy, 0);
