@@ -130,7 +130,7 @@ ErrAssertionFailed::ErrAssertionFailed(const char* message, const char* filename
 static void DefaultWarningHandler(const char* message, const char* filename, int lineNumber )
 {
 	std::cerr << "####### WARNING: At file " << filename << " line " << lineNumber << std::endl;
-	std::cerr << message << std::endl;
+	std::cerr << "\033[31m" << message << "\033[0m" << std::endl;
 }
 
 static WarningHandlerType CurrentWarningHandler=DefaultWarningHandler;

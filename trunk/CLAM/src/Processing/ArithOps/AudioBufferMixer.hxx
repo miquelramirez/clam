@@ -58,6 +58,7 @@ public:
 	const char * GetClassName() const {return "AudioBufferMixer";}
 	const ProcessingConfig &GetConfig() const { return mConfig;}
 	bool Do();
+	virtual bool SupportsVariableAudioSize() const {return true;}
 };
 
 } // namespace CLAM

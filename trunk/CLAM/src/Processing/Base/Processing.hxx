@@ -49,57 +49,57 @@ namespace CLAM
 	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
 	 */
 	void ConnectPorts(
-			Processing & sender, const std::string & outPortName, 
+			Processing & sender, const std::string & outPortName,
 			Processing & receiver, const std::string & inPortName );
 	/**
 	 * Connects two ports of two processings selecting them by the port number.
 	 * Short hand for sender.GetOutPort(outPortNumber).ConnectToIn(receiver.GetOutPort(inPortNumber))
 	 */
 	void ConnectPorts(
-			Processing & sender, unsigned outPortNumber, 
+			Processing & sender, unsigned outPortNumber,
 			Processing & receiver, unsigned inPortNumber );
 	/**
 	 * Free function that connects two controls.
 	 * Short hand for sender.GetOutControl(outControlNumber).AddLink( receiver.GetOutControl(inControlNumber))
 	 */
 	void ConnectControls(
-			Processing & sender, unsigned outControlNumber, 
+			Processing & sender, unsigned outControlNumber,
 			Processing & receiver, unsigned inControlNumber );
 	/**
 	 * Connects two controls of two processings selecting them by the control name.
 	 * Short hand for sender.GetOutControl(outControlName).AddLink( receiver.GetOutControl(inControlName))
 	 */
 	void ConnectControls(
-			Processing & sender, const std::string & outControlName, 
+			Processing & sender, const std::string & outControlName,
 			Processing & receiver, const std::string & inControlName );
 #if 0
 	/**
 	 * Free function that connects two typed controls.
 	 */
 	void ConnectTypedControls(
-			Processing & sender, unsigned typedOutControlNumber, 
+			Processing & sender, unsigned typedOutControlNumber,
 			Processing & receiver, unsigned typedInControlNumber );
 	/**
 	 * Connects two typed controls of two processings selecting them by the control name.
 	 */
 	void ConnectTypedControls(
-			Processing & sender, const std::string & typedOutControlName, 
+			Processing & sender, const std::string & typedOutControlName,
 			Processing & receiver, const std::string & typedInControlName );
 
-#endif 
+#endif
 	/**
 	 * Connects a free port to one belonging to a processing selecting it by the port number.
 	 * Short hand for sender.ConnectToIn(receiver.GetOutPort(inPortName))
 	 */
 	void ConnectPorts(
-			OutPortBase & sender, 
+			OutPortBase & sender,
 			Processing & receiver, unsigned inPortNumber );
 	/**
 	 * Connects a processing port, selected by number, to a free in port.
 	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver)
 	 */
 	void ConnectPorts(
-			Processing & sender, unsigned outPortNumber, 
+			Processing & sender, unsigned outPortNumber,
 			InPortBase & receiver );
 	/**
 	 * Tries to send a float to an inaccessible InControl, this is kept for compatibility
@@ -145,9 +145,9 @@ namespace CLAM
 	 * It defines their shared interface and contains common infrastructure.
 	 * Processings are the building blocks for any CLAM system,
 	 * they are an abstraction of an audio/music processing step.
-	 * 
+	 *
 	 * Whenever the Do method is called, the processing consumes
-	 * data tokens from its input ports and produces data tokens 
+	 * data tokens from its input ports and produces data tokens
 	 * for its output ports performing a single processing step.
 	 * Each port is related to a given C++ data type and the number
 	 * of tokens that are seen/consumed/produced at every Do step
@@ -155,9 +155,9 @@ namespace CLAM
 	 *
 	 * A processing can also receive an event from another one in an
 	 * asyncronous way in order to change the way the processing is
-	 * done. 
+	 * done.
 	 * Asyncronous comunication is done using the Control abstraction.
-	 * 
+	 *
 	 * @see InPortBase, OutPortBase, InControlBase, OutControlBase
 	 *
 	 * An initial setup is needed before using any processing.
@@ -187,7 +187,7 @@ namespace CLAM
 		/** Processing Object possible execution states. */
 		typedef enum {
 			Unconfigured=0,
-			Ready, 
+			Ready,
 			Running
 		} ExecState;
 
@@ -244,7 +244,7 @@ namespace CLAM
 
 		/** Override it in every subclass and retur the name of that class */
 		virtual const char * GetClassName() const = 0;
-		
+
 		/** Override this method if your processing cannot process inplace*/
 		virtual bool CanProcessInplace() { return true; }
 
@@ -269,7 +269,7 @@ namespace CLAM
 		 * argument is not an object of the expected configuration class.
 		 * */
 		virtual bool ConcreteConfigure(const ProcessingConfig&) { return true; }
-		
+
 		/**
 		 * Processing objects have to redefine this method when starting
 		 * them implies some internal changes. ie: adquiring resources.
@@ -283,12 +283,12 @@ namespace CLAM
 		 * @returns Whether stop changes have been successful
 		 */
 		virtual bool ConcreteStop() {return true;}
-		
+
 		/// Given by the NetworkPlayer (backend) if exists
 		unsigned BackendBufferSize();
 		/// Given by the NetworkPlayer (backend) if exists
 		unsigned BackendSampleRate();
-// Public interface:	
+// Public interface:
 	public:
 		/** Check that Supervised Do() can be safely called */
 		bool CanConsumeAndProduce();
@@ -317,13 +317,13 @@ namespace CLAM
 		 * in running or in disabled state.
 		 */
 	private:
-		ExecState GetExecState() const {return _execState;} 
+		ExecState GetExecState() const {return _execState;}
 	public:
 		std::string GetExecStateString() const;
 		bool IsConfigured() const { return _execState != Unconfigured; }
 		bool IsRunning() const { return _execState == Running; }
 
-		
+
 		void RegisterOutPort(OutPortBase* out);
 		void RegisterInPort(InPortBase* in);
 		void RegisterOutControl(OutControlBase* out);
@@ -338,7 +338,7 @@ namespace CLAM
 		 * interfaces, etc.
 		 */
 		virtual bool ModifiesPortsAndControlsAtConfiguration()	{ return false;	}
-	
+
 		bool HasInPort( const std::string & name )
 		{
 			return mInPortRegistry.Has(name);
@@ -370,7 +370,7 @@ namespace CLAM
 		InControlBase & GetInControl( const std::string & name )
 		{
 			return mInControlRegistry.Get(name);
-		}		
+		}
 		OutControlBase & GetOutControl( const std::string & name )
 		{
 			return mOutControlRegistry.Get(name);
@@ -391,19 +391,19 @@ namespace CLAM
 		{
 			return mOutControlRegistry.GetByNumber(index);
 		}
-		unsigned GetNInPorts()
+		unsigned GetNInPorts() const
 		{
 			return mInPortRegistry.Size();
 		}
-		unsigned GetNOutPorts()
+		unsigned GetNOutPorts() const
 		{
 			return mOutPortRegistry.Size();
 		}
-		unsigned GetNInControls()
+		unsigned GetNInControls() const
 		{
 			return mInControlRegistry.Size();
 		}
-		unsigned GetNOutControls()
+		unsigned GetNOutControls() const
 		{
 			return mOutControlRegistry.Size();
 		}
@@ -411,13 +411,13 @@ namespace CLAM
 	protected:
 		/** Accessor to published Controls manager */
 		InControlRegistry& GetInControls() { return mInControlRegistry; }
-		
+
 		/** Accessor to published Controls manager */
 		OutControlRegistry& GetOutControls() { return mOutControlRegistry; }
-		
+
 		/** Accessor to published Ports manager */
 		InPortRegistry& GetInPorts() { return mInPortRegistry; }
-		
+
 		/** Accessor to published Portss manager */
 		OutPortRegistry& GetOutPorts() { return mOutPortRegistry; }
 	public:
@@ -428,18 +428,21 @@ namespace CLAM
 		 * or an audio callback hook (i.e. Externalizer) */
 		virtual bool IsSyncSource() const { return false; }
 
+        /** This method reports whether the processing supports dynamic buffer-size host.*/
+		virtual bool SupportsVariableAudioSize() const {return ((GetNInPorts()+GetNOutPorts())==0)?true:false;}
+
 // Helpers only for subclasses
 	protected:
 		/**
 		 * Use this method to append a configuration errors
 		 * to the processing when implementing ConcreteConfigure.
 		 * For convenience, it returns false so when a configuration error
-		 * is found, you can append the message and return from 
+		 * is found, you can append the message and return from
 		 * ConcreteConfigure in a single statement.
 		*/
 		bool AddConfigErrorMessage( const std::string& msg );
-	
-		/** In debug-mode checks that the processing is configured and started. 
+
+		/** In debug-mode checks that the processing is configured and started.
 		 * And always checks it's not disabled */
 		bool AbleToExecute(void) const;
 
@@ -460,7 +463,7 @@ namespace CLAM
 // Attributes:
 		/** Pointer to the parent (composite) processing object, or 0 */
 		ProcessingComposite *mpParent;
-		/** The parent network if any. 
+		/** The parent network if any.
 		 * Note that Processings can be used directly without a network*/
 		Network * _network;
 	private:
@@ -479,9 +482,9 @@ namespace CLAM
 		OutPortRegistry mOutPortRegistry;
 	};
 
-	
 
-// -----------------------------------------------------------------------------------------------	
+
+// -----------------------------------------------------------------------------------------------
 // Inline implementations
 
 inline bool Processing::AbleToExecute(void) const
@@ -499,10 +502,10 @@ inline bool Processing::AbleToExecute(void) const
 }
 
 template <typename ConcreteConfig>
-inline void Processing::CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const 
+inline void Processing::CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const
 {
-	CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract), 
-		(std::string("Configuring a processing with a configuration of type ") + typeid(abstract).name() + 
+	CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract),
+		(std::string("Configuring a processing with a configuration of type ") + typeid(abstract).name() +
 		" while it was expected a " + typeid(ConcreteConfig).name() + ".").c_str());
 	concrete = static_cast<const ConcreteConfig &>(abstract);
 }

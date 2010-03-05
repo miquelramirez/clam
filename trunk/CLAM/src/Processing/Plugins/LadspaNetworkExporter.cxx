@@ -167,6 +167,8 @@ LadspaNetworkPlayer::~LadspaNetworkPlayer()
 
 void LadspaNetworkPlayer::Activate()
 {
+    
+    CLAM_WARNING(_network.SupportsVariableAudioSize(), "Network don't support variable audio size");
 	_network.Start();
 }
 

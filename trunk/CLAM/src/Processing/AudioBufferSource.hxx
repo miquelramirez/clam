@@ -92,6 +92,8 @@ namespace CLAM
 
 			bool Do();
 
+            virtual bool SupportsVariableAudioSize() const {return true;}
+
 			const char* GetClassName() const { return "AudioBufferSource";}
 
 			const ProcessingConfig & GetConfig() const

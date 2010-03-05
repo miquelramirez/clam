@@ -111,6 +111,7 @@ namespace CLAM{
 
 		typedef AudioAmplifierConfig Config;
 
+        virtual bool SupportsVariableAudioSize() const {return true;}
 
 	protected:
 		const ProcessingConfig& GetConfig() const { return _config; }
