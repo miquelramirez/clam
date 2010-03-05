@@ -1,51 +1,77 @@
-2010-??-?? pyCLAM 0.?.? SVN $Revision$ (CLAM 1.4)
+2010-03-04 pyCLAM 0.2.0
+ * SVN $Revision$
+ * Using CLAM 1.4.0
  * More classes exposed.
  * More detailed and clearer compilation instructions.
  * Py++ doxygen documentation extractor script added.
-   * Doxygen documentation extractor script fixed and improved. Now most embedded documentation at C++ sources are accessible from python through the help() command or the .__doc__ member.
-   * Adding support for the full list of doxygen special commands ( (@,\)see, (@,\)return, etc ).
- * Build system improvements (compiler flags, pkg-config to get cflags definitions, clam prefix conventions, clam scons tool, etc).
+   * Doxygen documentation extractor script fixed and improved.
+     Now most embedded documentation at C++ sources are accessible
+     from python through the help() command or the .__doc__ member.
+   * Adding support for the full list of doxygen special commands
+     ( (@,\)see, (@,\)return, etc ).
+ * Build system improvements (compiler flags, pkg-config to get
+   cflags definitions, clam prefix conventions, clam scons tool, etc).
  * playfile.py example updated.
- * New file_info.py example using AudioFileSource and AudioTextDescriptors (port of 'examples/FileInfo_example.cxx')
+ * New file_info.py example using AudioFileSource and AudioTextDescriptors
+   (port of 'examples/FileInfo_example.cxx')
  * Unit tests now using standard clam 'test_data_path'.
  * New unit tests.
  * Some updates and code clean in some tests and examples.
  * gcc-4.3 support
- * Name refactor in DataArray class. EditElem renamed as SetElem. This method is needed to overload the [] operator in python bindings and have working clam-arrays as vectors.
+ * Name refactor in DataArray class. EditElem renamed as SetElem.
+   This method is needed to overload the [] operator in python bindings
+   and have working clam-arrays as vectors.
  * INSTALL instructions simplification: dependencies as a bunch of packages.
  * Fix in generate_bindings.py related to scons options file parse.
  * Minor bug fixes in general. 
  * pyclam patch updated (now patching Array.hxx is no more required)
- * Detect current python version and gcc env var (not hardcoded anymore) in bindings generator script
+ * Detect current python version and gcc env var (not hardcoded anymore)
+   in bindings generator script
  * Switch to indexing suite v1
 
-2008-??-?? pyCLAM 0.?.? (CLAM 1.3)
- * SVN Revision: ?
+2008-??-?? pyCLAM 0.1.0 (CLAM 1.3)
  * Unit tests now using standard clam 'test_data_path'.
- * New file_info.py example using AudioFileSource and AudioTextDescriptors (port of 'examples/FileInfo_example.cxx').
- * New exposed classes related with audio files (filename, header, encoding, text descriptors, etc).
- * SConstruct now using CLAM defines from pkg-config files instead of hardcoded ones.
- ** Same convention for prefix and clam_prefix than the rest of the clam applications.
- ** Compiler optimizations flags added in release mode.
- * Doxygen documentation extractor script fixed and improved. Now most documentation is accessible from python. through the help() command (documentation string is at .__doc__ member).
+ * New file_info.py example using AudioFileSource and AudioTextDescriptors
+   (port of 'examples/FileInfo_example.cxx').
+ * New exposed classes related with audio files (filename, header, encoding,
+   text descriptors, etc).
+ * SConstruct now using CLAM defines from pkg-config files instead of
+   hardcoded ones.
+   ** Same convention for prefix and clam_prefix than the rest of the clam
+      applications.
+   ** Compiler optimizations flags added in release mode.
+ * Doxygen documentation extractor script fixed and improved. Now most
+   documentation is accessible from python. through the help() command
+   (documentation string is at __doc__ member).
  * Py++ doxygen documentation extractor script added.
- * Spectrum and SpectrumConfig classes are now manually exposed to python and old extra wrappers for these classes. were removed. Warning: at the moment they are not fully exposed, there are ready just a couple of methods.
- * DataArray __setitem__ class method definition wrapping a new method EditElem in order to have [] working for python vectors also in assignation, instead of have to use the workaround with set(). pyclam.patch updated.
- * Audio and DataArray classes manually exposed. Removed now unused extra wrappers for those classes at Definitions.hxx.
+ * Spectrum and SpectrumConfig classes are now manually exposed to python and
+   old extra wrappers for these classes. were removed. Warning: at the moment
+   they are not fully exposed, there are ready just a couple of methods.
+ * DataArray __setitem__ class method definition wrapping a new method EditElem
+   in order to have [] working for python vectors also in assignation, instead
+   of have to use the workaround with set(). pyclam.patch updated.
+ * Audio and DataArray classes manually exposed. Removed now unused extra wrappers
+   for those classes at Definitions.hxx.
  * distcc support added to scons script.
  * Moving remaining source to src directory. indexing suite directory, Definitions.*xx, etc.
  * MonoAudioFileReaderConfig now exposed to python by hand.
  * Removed unused old extra-wrappers for some Processing's and ProcessingConfig's.
  * Bug fixed in py++ to get 'by hand' class registration above of all.
  * License include (in bindings files generated by py++).
- * Split of the python library in many files in order to get a lower compile time. Before was only a single file, useful to have the generated bindings updated in the server, but when the library gets stable, automatic generated files could be also uploaded to achieve the same.
- * New manually exposed classes (like FFTConfig) in order to avoid some problems with py++ and DynamicTypes.
- * Py++ script tweak to allow automatic inclusion and register of manually 'parsed' and exposed classes.
+ * Split of the python library in many files in order to get a lower compile
+   time. Before was only a single file, useful to have the generated bindings
+   updated in the server, but when the library gets stable, automatic generated
+   files could be also uploaded to achieve the same.
+ * New manually exposed classes (like FFTConfig) in order to avoid some
+   problems with py++ and DynamicTypes.
+ * Py++ script tweak to allow automatic inclusion and register of manually
+   'parsed' and exposed classes.
  * Code clean. Removed (now)unused extra-wrappers (Network, NetworkPlayer, etc).
  * Debug option added to scons build script.
  * Examples update:
- ** New example: loading_and_playing_a_network.py
- ** Among other things now using 'from clam import *' instead of 'import clam' in order to avoid the "namespace prefix": 'clam.'
+   ** New example: loading_and_playing_a_network.py
+   ** Among other things now using 'from clam import *' instead of 'import clam'
+      in order to avoid the "namespace prefix": 'clam.'
  * PyUnit based unit tests added.
  * Plugins bindings enabled/disabled and own path prefix added as SCons option.
  * Extending bindings to processing plugins (optional feature).

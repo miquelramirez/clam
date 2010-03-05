@@ -1,5 +1,18 @@
-2008-??-?? Annotator 0.4.1 SVN $Revision$
-''
+2010-03-04 Annotator 0.4.1
+'3D molluscs in the space release'
+ * SVN $Revision$
+ * Using CLAM 1.4.0
+ * Aggregation based extractors (Jun Wang GSoC)
+   * Projects are always an aggregation of descriptor sources
+   * Aggregated sources map to a target working description scheme
+   * When saved back, editions go to sources if needed (databases, files, webservices)
+   * New interface to edit the descriptor sources mapping
+   * New interface to configure description sources
+   * Better handling of missing descriptors
+ * Semantic web extractors (Jun Wang GSoC)
+   * Music Brainz support
+   * Web service based extractors
+ * Fix: Better handling of empty segmentations
  * Fix: Overlapping numbers on the rulers
  * Man pages added for the companion executables
  * Renamed OnsetDetector(.exe) -> OnsetDetectorCore(.exe)
