@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: CLAM Team <developers@clam-project.org>
 Uploaders: David García Garzón <dgarcia_debian@iua.upf.edu>
 Homepage: http://clam-project.org
-Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, libclam-qtmonitors-dev, qt4-dev-tools, libqt4-dev, libqt4-dev (<4.4) | libqt4-opengl-dev, docbook-to-man, imagemagick
+Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, libclam-qtmonitors-dev, qt4-dev-tools, libqt4-dev, libqt4-dev (<4.4) | libqt4-opengl-dev, docbook-to-man, imagemagick, libwmf-bin
 Standards-Version: 3.8.3
 
 Package: clam-chordata
