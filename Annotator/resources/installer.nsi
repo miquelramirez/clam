@@ -79,7 +79,7 @@ Section "Principal" SEC01
 ;  File '${QTDIR}\bin\QtDesigner4.dll'
 ;  File '${QTDIR}\bin\QtDesignerComponents4.dll'
 ;  File '${QTDIR}\bin\QtAssistantClient4.dll'
-  File '${QTDIR}\bin\mingwm10.dll'
+  File '${CLAMINSTALLDIR}\bin\mingwm10.dll'
   File '${CLAMINSTALLDIR}\lib\clam_audioio.dll'
   File '${CLAMINSTALLDIR}\lib\clam_core.dll'
   File '${CLAMINSTALLDIR}\lib\clam_processing.dll'
@@ -90,6 +90,7 @@ Section "Principal" SEC01
 ;  File '${EXTERNALDLLDIR}\libvorbisfile-3.dll'
   File '${EXTERNALDLLDIR}\portaudio.dll'
   File '${EXTERNALDLLDIR}\pthreadGC2.dll'
+  File '${CLAMINSTALLDIR}\lib\libxerces-c2_8_0.dll'
   ; GTK libs
   File '${EXTERNALDLLDIR}\libxml++-2.6-2.dll'
   File '${EXTERNALDLLDIR}\libxml2.dll'
