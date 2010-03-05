@@ -79,3 +79,4 @@
  * SCons options.cache file support added in order to deal with the CLAM installation prefix.
  * Switching from Makefile to SCons as build system.
  * Initial import. CLAM library python bindings.
+
