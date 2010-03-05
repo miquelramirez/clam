@@ -79,15 +79,6 @@ void RunTimeLibraryLoader::Load() const
 		LoadLibrariesFromPath(environmentPaths[i]);
 	}
 }
-void * RunTimeLibraryLoader::GetSymbol(void * libraryHandler, const std::string & symbolName)
-{
-#ifdef WIN32
-	return GetProcAddress((HMODULE)libraryHandler, symbolName.c_str());
-#else
-	return dlsym(libraryHandler, symbolName.c_str());
-#endif
-}
-
 void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 {
 	DIR* dir = opendir(path.c_str());
@@ -137,6 +128,15 @@ void * RunTimeLibraryLoader::LazyLoadLibrary(const std::string & libraryPath)
 #endif
 }
 
+
+void * RunTimeLibraryLoader::GetSymbol(void * libraryHandler, const std::string & symbolName)
+{
+#ifdef WIN32
+	return (void*) GetProcAddress((HMODULE)libraryHandler, symbolName.c_str());
+#else
+	return dlsym(libraryHandler, symbolName.c_str());
+#endif
+}
 
 
 void * RunTimeLibraryLoader::GetLibraryHandler(const std::string & libraryPath) const
