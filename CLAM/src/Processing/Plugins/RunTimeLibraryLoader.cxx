@@ -80,6 +80,14 @@ void RunTimeLibraryLoader::Load() const
 		LoadLibrariesFromPath(environmentPaths[i]);
 	}
 }
+void * RunTimeLibraryLoader::GetSymbol(void * libraryHandler, const std::string & symbolName)
+{
+#ifdef WIN32
+	return GetProcAddress(libraryHandler, symbolName.c_str());
+#else
+	return dlsym(libraryHandler, symbolName.c_str());
+#endif
+}
 
 void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 {

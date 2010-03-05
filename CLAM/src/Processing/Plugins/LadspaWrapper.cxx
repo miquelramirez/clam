@@ -1,7 +1,6 @@
 #ifdef USE_LADSPA
 
 #include "LadspaWrapper.hxx"
-//#include <ladspa.h>
 #include "OSDefines.hxx"
 #include "CLAM_Math.hxx"
 #include "Factory.hxx"
@@ -11,7 +10,6 @@
 #include "OutControl.hxx"
 #include <ctime>
 #include <cstdlib>
-#include <dlfcn.h>
 
 namespace CLAM
 {
@@ -92,7 +90,7 @@ bool LadspaWrapper::LoadLibraryFunction(const std::string& libraryFileName, unsi
 {
 	//std::cout<<"LadspaWrapper::LoadLibraryFunction("<<libraryFileName<<")"<<std::endl;
 	_sharedObject = RunTimeLibraryLoader::LazyLoadLibrary(libraryFileName);
-	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(_sharedObject, "ladspa_descriptor");
+	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)RunTimeLibraryLoader::GetSymbol(_sharedObject, "ladspa_descriptor");
 	if(!function)
 	{
 		std::string error = "[LADSPA] can't open library: " + libraryFileName;
