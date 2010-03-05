@@ -5,7 +5,6 @@
 #include <dirent.h>
 #ifdef WIN32
 #	include "CLAM_windows.h"
-#	undef GetClassName
 #else
 #	include <dlfcn.h>
 #endif
@@ -83,7 +82,7 @@ void RunTimeLibraryLoader::Load() const
 void * RunTimeLibraryLoader::GetSymbol(void * libraryHandler, const std::string & symbolName)
 {
 #ifdef WIN32
-	return GetProcAddress(libraryHandler, symbolName.c_str());
+	return GetProcAddress((HMODULE)libraryHandler, symbolName.c_str());
 #else
 	return dlsym(libraryHandler, symbolName.c_str());
 #endif
