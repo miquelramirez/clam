@@ -166,7 +166,7 @@ public: // Actions
 			const std::type_info & portType = model->GetOutPort(portIndex).GetTypeId();
 			// Choose default if any
 			if      (portType==typeid(CLAM::TData)) type = "AudioSink";
-			else if (portType==typeid(CLAM::Audio)) type = "AudioSinkBuffer";
+			else if (portType==typeid(CLAM::Audio)) type = "AudioBufferSink";
 			else return;
 		}
 
@@ -191,7 +191,7 @@ public: // Actions
 			const std::type_info & portType = model->GetInPort(portIndex).GetTypeId();
 			// Choose default if any
 			if      (portType==typeid(CLAM::TData)) type = "AudioSource";
-			else if (portType==typeid(CLAM::Audio)) type = "AudioSourceBuffer";
+			else if (portType==typeid(CLAM::Audio)) type = "AudioBufferSource";
 			else return;
 		}
 
@@ -825,7 +825,7 @@ private:
 			if (portType==typeid(CLAM::TData).name())
 				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSink");
 			if (portType==typeid(CLAM::Audio).name())
-				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSinkBuffer");
+				addToMenuLinkedProcessing(menu,cursorPosition,"AudioBufferSink");
 
 			addToMenuProcessingsWithKey(menu, cursorPosition, "port_monitor_type", portType);
 		}
@@ -837,7 +837,7 @@ private:
 			if (portType==typeid(CLAM::TData).name())
 				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSource");
 			if (portType==typeid(CLAM::Audio).name())
-				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSourceBuffer");
+				addToMenuLinkedProcessing(menu,cursorPosition,"AudioBufferSource");
 		}
 	}
 
