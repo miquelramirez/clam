@@ -74,7 +74,9 @@ class ExporterHandler(ContentHandler):
 			ControlSink = self.outputControl,
 			ControlSource = self.inputControl,
 			AudioSink = self.outputAudio,
+			AudioBufferSink = self.outputAudio,
 			AudioSource = self.inputAudio,
+			AudioBufferSource = self.inputAudio,
 			)
 
 	def startElement(self, name, attrs):
@@ -83,7 +85,7 @@ class ExporterHandler(ContentHandler):
 			type = attrs.get('type')
 			id = attrs.get('id')
 			x,y = attrs.get('position').split(',')
-			if type in ('AudioSink', 'AudioSource') :
+			if type in ('AudioSink', 'AudioSource', 'AudioBufferSink', 'AudioBufferSource') :
 				self.audioAux = AudioPort(id,float(y))
 				self.audioAux.direction = "Output" if type=="AudioSink" else "Input"
 			elif type in ('ControlSink', 'ControlSource') :
@@ -135,14 +137,14 @@ class ExporterHandler(ContentHandler):
 			))
 
 		ports = []
-		for inControl in sorted(self.inputControl, key=lambda p:p.pos) :
-			ports += inControl.ttl("Input",len(ports))
-		for outControl in sorted(self.outputControl, key=lambda p:p.pos) :
-			ports += outControl.ttl("Output",len(ports))
-		for inAudio in sorted(self.inputAudio, key=lambda p:p.pos) :
-			ports += inAudio.ttl("Input", len(ports))
-		for outAudio in sorted(self.outputAudio, key=lambda p:p.pos) :
-			ports += outAudio.ttl("Output", len(ports))
+		for port in sorted(self.inputControl, key=lambda p:p.pos) :
+			ports += port.ttl("Input",len(ports))
+		for port in sorted(self.outputControl, key=lambda p:p.pos) :
+			ports += port.ttl("Output",len(ports))
+		for port in sorted(self.inputAudio, key=lambda p:p.pos) :
+			ports += port.ttl("Input", len(ports))
+		for port in sorted(self.outputAudio, key=lambda p:p.pos) :
+			ports += port.ttl("Output", len(ports))
 		f.write(",\n".join(ports) + ".\n")
 		f.close()
 
