@@ -1,6 +1,10 @@
+2010-??-?? Annotator 0.5.1 SVN $Revision$
+
+
+
 2010-03-05 Annotator 0.5.0
 '3D molluscs in the space release'
- * SVN $Revision$
+ * SVN Revision: 14035
  * Using CLAM 1.4.0
  * Aggregation based extractors (Jun Wang GSoC)
    * Projects are always an aggregation of descriptor sources

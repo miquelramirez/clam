@@ -1,6 +1,9 @@
+2010-??-?? CLAM 1.4.1 SVN $Revision$
+
+
 2010-03-05 CLAM 1.4.0
 '3D molluscs in the space release'
- * SVN $Revision$
+ * SVN Revision: 14035
  * New controls:
    * Typed controls: Controls with other type than floats.
    * Regular in controls have callback (deprecates InControlTmpl)
