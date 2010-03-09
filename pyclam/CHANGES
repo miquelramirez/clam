@@ -1,6 +1,10 @@
+2010-??-?? pyclam 0.3.0 SVN $Revision$
+
+
+
 2010-03-05 pyclam 0.2.0
- * SVN $Revision$
  * Using CLAM 1.4.0
+ * SVN Revision: 14035
  * More classes exposed.
  * More detailed and clearer compilation instructions.
  * Py++ doxygen documentation extractor script added.

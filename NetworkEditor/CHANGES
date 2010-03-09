@@ -1,6 +1,9 @@
+2010-??-?? NetworkEditor 1.4.1 SVN $Revision$
+
+
 2010-03-05 NetworkEditor 1.4.0
 '3D moluscs in the space release'
- * SVN $Revision$
+ * SVN Revision: 14035
  * Using CLAM 1.4.0
  * Networks can be paused (in NetworkEditor and OfflinePlayer)
  * Fix: Playback status changes from the backend side are pooled by the indicator
