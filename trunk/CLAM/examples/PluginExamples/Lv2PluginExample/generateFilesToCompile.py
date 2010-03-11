@@ -38,9 +38,9 @@ class AudioPort():
 class ControlPort(AudioPort):
 	def __init__ (self, id, pos):
 		AudioPort.__init__(self, id, pos)
-		self.MinValue  =	""
-		self.Maximum  =	""
-		self.DefaultValue  =	""
+		self.MinValue = ""
+		self.Maximum = ""
+		self.DefaultValue = ""
 
 	def ttl(self, direction, firstIndex) :
 		return [ """\
