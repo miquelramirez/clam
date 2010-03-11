@@ -51,6 +51,8 @@ CLAM_EMBEDDED_FILE(vbap22,"vbap22.clamnetwork")
 
 CLAM_EMBEDDED_FILE(decoded_bformat15,"decoded_bformat15.clamnetwork")
 
+CLAM_EMBEDDED_FILE(bypassExample,"bypassExample.clamnetwork")
+
 #include <iostream>
 /*
 Numbering:
@@ -177,5 +179,10 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 	static CLAM::LadspaNetworkExporter n3015(library, decoded_bformat15, 3015,
 			"id_decoded_bformat_15", "decoded_bformat15",
 			"BarcelonaMedia-Audio", "GNU GPL");
+
+	static CLAM::LadspaNetworkExporter n3016(library, bypassExample, 3016,
+			"id_bypassExample", "bypassExample",
+			"BarcelonaMedia-Audio", "GNU GPL");
+
 	return library.pluginAt(index);
 }
