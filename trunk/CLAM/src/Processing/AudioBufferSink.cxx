@@ -7,7 +7,7 @@
 namespace CLAM
 {
 
-namespace 
+namespace
 {
 	static const char* metadata[] = {
 		"key", "AudioBufferSink",
@@ -29,7 +29,7 @@ bool AudioBufferSink::Do()
 		InPort<Audio>* in = port.mPort;
 
 		const CLAM::Audio& so=in->GetData();
-		
+
 		CLAM_DEBUG_ASSERT(port.mFloatBuffer, "No float buffer");
 		CLAM_DEBUG_ASSERT(!port.mDoubleBuffer, "There should not be double buffer");
 		CLAM_DEBUG_ASSERT(so.GetSize()>0, "internal buffer size must be greater than 0");
@@ -46,6 +46,7 @@ bool AudioBufferSink::Do()
 
 void AudioBufferSink::SetExternalBuffer(float* buf, unsigned nframes, unsigned index)
 {
+    std::cout << "AudioBufferSink::SetExternalBuffer using float" << std::endl;
 	CLAM_ASSERT(index < _ports.size(), "InPort<Audio> index out of range");
 	Port& port = _ports[index];
 	port.mPort->SetSize(1);
@@ -58,6 +59,7 @@ void AudioBufferSink::SetExternalBuffer(float* buf, unsigned nframes, unsigned i
 
 void AudioBufferSink::SetExternalBuffer(double* buf, unsigned nframes, unsigned index)
 {
+    std::cout << "AudioBufferSink::SetExternalBuffer using double" << std::endl;
 	CLAM_ASSERT(index < _ports.size(), "InPort<Audio> index out of range");
 	Port& port = _ports[index];
 	port.mPort->SetSize(1);

@@ -88,6 +88,7 @@ mainSources = {
 	'Prototyper' :        os.path.join('src','prototyper','main.cxx'),
 	'MonoOfflinePlayer' : os.path.join('src','MonoOfflinePlayerMain.cxx'),
 	'OfflinePlayer' :     os.path.join('src','OfflinePlayerMain.cxx'),
+	'CheckClamNetwork' :     os.path.join('src','CheckClamNetworkMain.cxx'),
 }
 
 sourcePaths = [

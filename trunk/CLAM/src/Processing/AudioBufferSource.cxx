@@ -32,9 +32,9 @@ bool AudioBufferSource::Do()
 		CLAM_DEBUG_ASSERT(!port.mFloatBuffer || !port.mDoubleBuffer, "AudioBufferSource: Just one buffer should be set");
 		CLAM_DEBUG_ASSERT(port.mFloatBuffer || port.mDoubleBuffer, "AudioBufferSource: No external buffer set");
 		CLAM_DEBUG_ASSERT(port.mBufferSize>0, "AudioBufferSource: internal buffer size must be greater than 0");
-		
+
 		so.SetSize(port.mBufferSize);
-		
+
 		CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
 
 		if (port.mFloatBuffer)
@@ -54,6 +54,7 @@ bool AudioBufferSource::Do()
 
 void AudioBufferSource::SetExternalBuffer(const float* buf, unsigned nframes, unsigned index)
 {
+    std::cout << "AudioBufferSink::SetExternalBuffer using float" << std::endl;
 	CLAM_ASSERT(index < _ports.size(), "OutPort<Audio> index out of range");
 	Port& port = _ports[index];
 	port.mPort->SetSize(1);
@@ -65,6 +66,7 @@ void AudioBufferSource::SetExternalBuffer(const float* buf, unsigned nframes, un
 
 void AudioBufferSource::SetExternalBuffer(const double* buf, unsigned nframes, unsigned index)
 {
+    std::cout << "AudioBufferSink::SetExternalBuffer using double" << std::endl;
 	CLAM_ASSERT(index < _ports.size(), "OutPort<Audio> index out of range");
 	Port& port = _ports[index];
 	port.mPort->SetSize(1);
