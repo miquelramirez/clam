@@ -117,9 +117,6 @@ bool AudioBufferMixer::Do()
 	unsigned int numInPorts = mConfig.GetNumberOfInPorts();
 	unsigned int frameSize = mInputPorts[0]->GetData().GetSize();
 
-	//if(_network->IsPlaying())
-		std::cout << "AudioBufferMixer: "<< frameSize << std::endl;
-
 	CLAM::Audio& so=mOutputPort.GetData();
 	so.SetSize(frameSize);
 
