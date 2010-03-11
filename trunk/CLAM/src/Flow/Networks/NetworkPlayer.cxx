@@ -32,38 +32,38 @@ std::string NetworkPlayer::SourcesAndSinksToString()
 {
 	CacheSourcesAndSinks();
 	std::string result;
-	for (unsigned i=0; i<_exportedSources.size(); i++)
+	for (unsigned i=0; i<_audioSources.size(); i++)
 		result += " * source:\t"+SourceName(i)+"\n";
-	for (unsigned i=0; i<_exportedSinks.size(); i++)
+	for (unsigned i=0; i<_audioSinks.size(); i++)
 		result += " * sink:\t"+SinkName(i)+"\n";
 	return result;
 }
 
 void NetworkPlayer::SetSourceBuffer(unsigned source, const float * data, unsigned nframes)
 {
-	Processing * processing = _exportedSources[source].processing;
-	unsigned port = _exportedSources[source].port;
+	Processing * processing = _audioSources[source].processing;
+	unsigned port = _audioSources[source].port;
 	SetExternalBuffer<AudioSource>(processing, data, nframes, port);
 	SetExternalBuffer<AudioBufferSource>(processing, data, nframes, port);
 }
 void NetworkPlayer::SetSinkBuffer(unsigned sink, float * data, unsigned nframes)
 {
-	Processing * processing = _exportedSinks[sink].processing;
-	unsigned port = _exportedSinks[sink].port;
+	Processing * processing = _audioSinks[sink].processing;
+	unsigned port = _audioSinks[sink].port;
 	SetExternalBuffer<AudioSink>(processing, data, nframes, port);
 	SetExternalBuffer<AudioBufferSink>(processing, data, nframes, port);
 }
 void NetworkPlayer::SetSinkFrameSize(unsigned sink, unsigned frameSize)
 {
-	unsigned port = _exportedSinks[sink].port;
-	Processing * processing = _exportedSinks[sink].processing;
+	unsigned port = _audioSinks[sink].port;
+	Processing * processing = _audioSinks[sink].processing;
 	SetFrameAndHopSizeIf<AudioSink>(processing,frameSize,port);
 	SetFrameAndHopSizeIf<AudioBufferSink>(processing,frameSize,port);
 }
 void NetworkPlayer::SetSourceFrameSize(unsigned source, unsigned frameSize)
 {
-	unsigned port = _exportedSources[source].port;
-	Processing * processing = _exportedSources[source].processing;
+	unsigned port = _audioSources[source].port;
+	Processing * processing = _audioSources[source].processing;
 	SetFrameAndHopSizeIf<AudioSource>(processing,frameSize,port);
 	SetFrameAndHopSizeIf<AudioBufferSource>(processing,frameSize,port);
 }
