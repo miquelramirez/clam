@@ -49,19 +49,6 @@ extern "C"
 		exporter(handle)->ConnectPortExporter( port, data );
 	}
 
-/*	This function is necessary when creates the plugin without library
-	LV2_SYMBOL_EXPORT
-	const LV2_Descriptor *lv2_descriptor( uint32_t index)
-	{
-		std::cout << "CREATE_LV2_DESCRIPTOR"<<std::endl;
-		
-		if(index==0) {
-			return LV2NetworkPlayer::CreateLV2Descriptor();		
-		}
-		else
-			return NULL;
-	}
-*/
 }
 
 namespace CLAM
@@ -110,47 +97,17 @@ LV2NetworkPlayer::LV2NetworkPlayer(const LV2_Descriptor * descriptor)
 
 void LV2NetworkPlayer::LocateConnections()
 {
-
-//	CHECK THAT ALL VECTORS AREN'T EMPTY
-//	CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered input ports");
-//	CLAM_ASSERT( mSenderList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered output ports");
-//	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
-//	CLAM_ASSERT( mOutControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
 	CacheSourcesAndSinks();
-
 	_sourceBuffers.resize(GetNSources());
-	for (unsigned i=0; i<GetNSources(); i++)
-	{
-		SetSourceFrameSize(i, mExternBufferSize);
-	}
 	_sinkBuffers.resize(GetNSinks());
-	for (unsigned i=0; i<GetNSinks(); i++)
-	{
-		SetSinkFrameSize(i, mExternBufferSize);
-	}
-
-	InControlList controlSources = _network.getOrderedControlSources();
-	for (CLAM::Network::ControlSources::const_iterator it=controlSources.begin(); it!=controlSources.end(); it++)
-	{	//std::cout<<"INSERT CONTROL SOURCE"<<std::endl;
-		LV2Info<CLAM::ControlSource> info;
-		info.name = _network.GetNetworkId(*it).c_str();
-		info.processing=*it;
-		mInControlList.push_back(info);
-	}
-	_inControlBuffers.resize(mInControlList.size());
-
-	OutControlList controlSinks  = _network.getOrderedControlSinks();
-	for (CLAM::Network::ControlSinks::const_iterator it=controlSinks.begin(); it!=controlSinks.end(); it++)
-	{	//std::cout<<"INSERT CONTROL SINK"<<std::endl;
-		LV2Info<CLAM::ControlSink> info;
-		info.name = _network.GetNetworkId( *it ).c_str();
-		info.processing =*it;
-		mOutControlList.push_back(info);	
-	}
-	_outControlBuffers.resize(mOutControlList.size());
+	_inControlBuffers.resize(GetNControlSources());
+	_outControlBuffers.resize(GetNControlSinks());
+	UpdatePortFrameAndHopSize();
 }
 
-LV2NetworkPlayer::~LV2NetworkPlayer(){}
+LV2NetworkPlayer::~LV2NetworkPlayer()
+{
+}
 void LV2NetworkPlayer::ActivateExporter()
 {
 	_network.Start();
@@ -159,8 +116,9 @@ void LV2NetworkPlayer::DeactivateExporter()
 {
 	_network.Stop();
 }
-void LV2NetworkPlayer::CleanupExporter(){}
-void LV2NetworkPlayer::InstantiateExporter(){}
+void LV2NetworkPlayer::InstantiateExporter()
+{
+}
 
 void LV2NetworkPlayer::ConnectPortExporter(uint32_t port, void *data)
 {
@@ -212,13 +170,14 @@ void LV2NetworkPlayer::SetAudioSinkBuffers(const unsigned long nframes)
 
 void LV2NetworkPlayer::ProcessInControlValues()
 {
-	for (LV2InControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
-		it->processing->Do( (float) *(it->dataBuffer) );
+	for (unsigned i=0; i<GetNControlSources(); i++)
+		ReadControlSource(i,_inControlBuffers[i]);
 }
 
 void LV2NetworkPlayer::ProcessOutControlValues()
 {
-
+	for (unsigned i=0; i<GetNControlSinks(); i++)
+		FeedControlSink(i,_outControlBuffers[i]);
 }	
 
 
@@ -243,20 +202,18 @@ LV2_Descriptor * LV2NetworkPlayer::CreateLV2Descriptor(
 	const std::string & uri
 	)
 {
-	// HERE WRITE THE RDF	
-
 	LV2_Descriptor * descriptor = new LV2_Descriptor;
-	
-	descriptor->URI 		= LV2Library::dupstr(uri.c_str());
-	descriptor->extension_data	= NULL;
-	descriptor->instantiate = ::Instantiate;
-	descriptor->connect_port = ::ConnectTo;
-	descriptor->activate = ::Activate;
-	descriptor->run = ::Run;
-	descriptor->deactivate = Deactivate;
-	descriptor->cleanup = ::CleanUp;
+	descriptor->URI            = LV2Library::dupstr(uri.c_str());
+	descriptor->extension_data = NULL;
+	descriptor->instantiate    = ::Instantiate;
+	descriptor->connect_port   = ::ConnectTo;
+	descriptor->activate       = ::Activate;
+	descriptor->run            = ::Run;
+	descriptor->deactivate     = ::Deactivate;
+	descriptor->cleanup        = ::CleanUp;
 
 	return descriptor;
 }
 
 }
+
