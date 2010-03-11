@@ -106,11 +106,11 @@ protected:
 		return *_network;
 	}
 protected:
-	unsigned GetNSinks() const { return _exportedSinks.size(); }                   
-	unsigned GetNSources() const { return _exportedSources.size(); }               
+	unsigned GetNSinks() const { return _audioSinks.size(); }                   
+	unsigned GetNSources() const { return _audioSources.size(); }               
 	void CacheSourcesAndSinks()
 	{
-		_exportedSources.clear();
+		_audioSources.clear();
 		Network::Processings sources = GetSources();
 		for (Network::Processings::const_iterator it = sources.begin(); it != sources.end(); ++it)
 		{
@@ -119,14 +119,13 @@ protected:
 			unsigned nPorts = processing->GetNOutPorts();
 			for (unsigned i=0; i<nPorts; i++)
 			{
-				std::ostringstream portName;
-				portName << processingName;
+				std::string portName = processingName;
 				if (nPorts > 1)
-					portName << "_" << processing->GetOutPort(i).GetName();
-				_exportedSources.push_back(ExportedPort(processing,i, portName.str()));
+					portName+ "_"+processing->GetOutPort(i).GetName();
+				_audioSources.push_back(ExportedPort(processing,i, portName));
 			}
 		}
-		_exportedSinks.clear();
+		_audioSinks.clear();
 		Network::Processings sinks = GetSinks();
 		for (Network::Processings::const_iterator it = sinks.begin(); it != sinks.end(); ++it)
 		{
@@ -135,21 +134,20 @@ protected:
 			unsigned nPorts = processing->GetNInPorts();
 			for (unsigned i=0; i<nPorts; i++)
 			{
-				std::ostringstream portName;
-				portName << processingName;
+				std::string portName = processingName;
 				if (nPorts > 1)
-					portName << "_" << processing->GetInPort(i).GetName();
-				_exportedSinks.push_back(ExportedPort(processing,i, portName.str()));
+					portName +="_"+processing->GetInPort(i).GetName();
+				_audioSinks.push_back(ExportedPort(processing,i, portName));
 			}
 		}
 	}
 	const std::string & SourceName(unsigned source) const
 	{
-		return _exportedSources[source].name;
+		return _audioSources[source].name;
 	}
 	const std::string & SinkName(unsigned sink) const
 	{
-		return _exportedSinks[sink].name;
+		return _audioSinks[sink].name;
 	}
 	void SetSourceBuffer(unsigned source, const float * data, unsigned nframes);
 	void SetSinkBuffer(unsigned sink, float * data, unsigned nframes);
@@ -199,8 +197,10 @@ private:
 		std::string name;
 	};
 	typedef std::vector <ExportedPort> ExportedPorts;
-	ExportedPorts _exportedSources;
-	ExportedPorts _exportedSinks;
+	ExportedPorts _audioSources;
+	ExportedPorts _audioSinks;
+	ExportedPorts _controlSources;
+	ExportedPorts _controlSinks;
 	Network *_network;
 	volatile Status _status;
 };
