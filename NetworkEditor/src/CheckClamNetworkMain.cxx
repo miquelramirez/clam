@@ -49,13 +49,20 @@ int main( int argc, char *argv[] )
 	faustLoader.Load();
 #endif
 
+//TODO tabs
+//TODO one argument and return 0 or -1
+
     for(int i=1;i<argc;i++)
     {
         std::string networkFile = argv[i];
         if(CheckClamNetwork::isCorrectNetwork(networkFile))
+	{
             std::cout << "\033[32mCorrect.\033[0m" << std::endl;
-        else
-            std::cout << "\033[31mWrong.\033[0m" << std::endl;
+	    continue;
+	}
+
+        std::cout << "\033[31mWrong.\033[0m" << std::endl;
+	return -1;
     }
 return 0;
 }
