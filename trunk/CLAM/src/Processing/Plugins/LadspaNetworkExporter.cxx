@@ -30,8 +30,6 @@ private:
 	Buffers _sinkBuffers;
 	Buffers _inControlBuffers;
 	Buffers _outControlBuffers;
-	LADSPAInControlList mInControlList;
-	LADSPAOutControlList mOutControlList;
 	unsigned long mClamBufferSize;
 	unsigned long mExternBufferSize;
 public:
@@ -181,32 +179,10 @@ void LadspaNetworkPlayer::LocateConnections()
 {
 	CacheSourcesAndSinks();
 
-	CLAM_ASSERT( mInControlList.empty(), "LadspaNetworkPlayer::LocateConnections() : there are already registered controls");
-	CLAM_ASSERT( mOutControlList.empty(), "LadspaNetworkPlayer::LocateConnections() : there are already registered controls");
-
-	Network::ControlSources controlSources = _network.getOrderedControlSources();
-	Network::ControlSinks controlSinks = _network.getOrderedControlSinks();
-
 	_sourceBuffers.resize(GetNSources());
 	_sinkBuffers.resize(GetNSinks());
-
-	for (Network::ControlSources::const_iterator it=controlSources.begin(); it!=controlSources.end(); it++)
-	{
-		LADSPAInfo<ControlSource> info;
-		info.name = _network.GetNetworkId(*it).c_str();
-		info.processing=*it;
-		mInControlList.push_back(info);
-	}
-	_inControlBuffers.resize(mInControlList.size());
-
-	for (Network::ControlSinks::const_iterator it=controlSinks.begin(); it!=controlSinks.end(); it++)
-	{
-		LADSPAInfo<ControlSink> info;
-		info.name = _network.GetNetworkId( *it ).c_str();
-		info.processing =*it;
-		mOutControlList.push_back(info);
-	}
-	_outControlBuffers.resize(mOutControlList.size());
+	_inControlBuffers.resize(GetNControlSources());
+	_outControlBuffers.resize(GetNControlSinks());
 
 	UpdatePortFrameAndHopSize();
 }
@@ -247,13 +223,13 @@ void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 	}
 
 	//Manage InControls (ExternInControls)
-	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
+	for (unsigned i=0; i<GetNControlSources(); i++)
 	{
 		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL);
-		names[currentport] = LadspaLibrary::dupstr( it->name.c_str() );
+		names[currentport] = LadspaLibrary::dupstr( ControlSourceName(i).c_str() );
 
 		//Obté processingConfig, i defineix cada param
-		ControlSourceConfig conf = dynamic_cast<const ControlSourceConfig&>(it->processing->GetConfig() );
+		ControlSourceConfig conf = dynamic_cast<const ControlSourceConfig&>(_controlSources[i].processing->GetConfig() );
 
 		rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
 		rangehints[currentport].UpperBound=(LADSPA_Data)conf.GetMaxValue();
@@ -273,10 +249,10 @@ void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 
 	//Manage OutControls (ExternOutControls)
 	// (Please note that not all the LADSPA hosts make use of these kind of ports)
-	for (LADSPAOutControlList::iterator it=mOutControlList.begin(); it!=mOutControlList.end(); it++)
+	for (unsigned i=0; i<GetNControlSinks(); i++)
 	{
 		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_CONTROL);
-		names[currentport] = LadspaLibrary::dupstr( it->name.c_str() );
+		names[currentport] = LadspaLibrary::dupstr( ControlSourceName(i).c_str() );
 		rangehints[currentport].LowerBound=(LADSPA_Data)0;
 		rangehints[currentport].UpperBound=(LADSPA_Data)1000;
 		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE);
@@ -297,29 +273,22 @@ void LadspaNetworkPlayer::Run( unsigned long nsamples )
 	}
 
 	ProcessInControlValues();
-
 	EstablishLadspaBuffersToAudioSources(nsamples);
 	EstablishLadspaBuffersToAudioSinks(nsamples);
-	//Do() as much as it is needed
-//	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
-	{
-		_network.Do();
-//		if (stepcount>0) std::cout << "ieeps!" << std::flush;
-	}
-
+	_network.Do();
 	ProcessOutControlValues();
 }
 
 void LadspaNetworkPlayer::ProcessInControlValues()
 {
-	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
-		it->processing->Do( (float) *(it->dataBuffer) );
+	for (unsigned i=0; i<GetNControlSinks(); i++)
+		ReadControlSource(i,_inControlBuffers[i]);
 }
 
 void LadspaNetworkPlayer::ProcessOutControlValues()
 {
-	for (LADSPAOutControlList::iterator it=mOutControlList.begin(); it!=mOutControlList.end(); it++)
-		*(it->dataBuffer)=it->processing->GetControlValue();
+	for (unsigned i=0; i<GetNControlSources(); i++)
+		FeedControlSink(i, _outControlBuffers[i]);
 }
 
 void LadspaNetworkPlayer::EstablishLadspaBuffersToAudioSources(const unsigned long nframes)
@@ -336,11 +305,10 @@ void LadspaNetworkPlayer::EstablishLadspaBuffersToAudioSinks(const unsigned long
 
 void LadspaNetworkPlayer::ConnectTo(unsigned long port, LADSPA_Data * data)
 {
-
 	unsigned nSources  = GetNSources();
 	unsigned nSinks  = GetNSinks();
-	unsigned nInControls  = mInControlList.size();
-	unsigned nOutControls  = mInControlList.size();
+	unsigned nInControls  = GetNControlSources();
+	unsigned nOutControls  = GetNControlSinks();
 
 	if ( port < nSources ) //Input port
 	{
@@ -356,13 +324,13 @@ void LadspaNetworkPlayer::ConnectTo(unsigned long port, LADSPA_Data * data)
 	port-=nSinks;
 	if ( port < nInControls) //Input control
 	{
-		mInControlList.at( port ).dataBuffer=data;
+		_inControlBuffers[port]=data;
 		return;
 	}
 	port-=nInControls;
 	if (port < nOutControls)
 	{
-		mOutControlList.at( port ).dataBuffer=data;
+		_outControlBuffers[port]=data;
 		return;
 	}
 }
@@ -381,7 +349,7 @@ LADSPA_Descriptor * LadspaNetworkPlayer::CreateLADSPADescriptor(
 	CLAM::LadspaNetworkPlayer plugin(label, networkXmlContent);
 
 	unsigned numports = plugin.GetNSources() + plugin.GetNSinks() +
-		plugin.mInControlList.size() + plugin.mOutControlList.size();
+		plugin.GetNControlSources() + plugin.GetNControlSinks();
 
 	if (numports == 0) return 0;
 

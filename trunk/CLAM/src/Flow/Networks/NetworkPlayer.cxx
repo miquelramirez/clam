@@ -24,6 +24,8 @@
 #include "AudioBufferSource.hxx"
 #include "AudioSink.hxx"
 #include "AudioBufferSink.hxx"
+#include "ControlSource.hxx"
+#include "ControlSink.hxx"
 
 namespace CLAM
 {
@@ -37,6 +39,23 @@ std::string NetworkPlayer::SourcesAndSinksToString()
 	for (unsigned i=0; i<_audioSinks.size(); i++)
 		result += " * sink:\t"+SinkName(i)+"\n";
 	return result;
+}
+
+void NetworkPlayer::ReadControlSource(unsigned source, const float * data)
+{
+	if (not data) return;
+	ControlSource * processing =
+		(ControlSource*) _controlSources[source].processing;
+	processing->Do( *data );
+}
+
+void NetworkPlayer::FeedControlSink(unsigned sink, float * data)
+{
+	if (not data) return;
+	ControlSink * processing =
+		(ControlSink*) _controlSinks[sink].processing;
+	*data = processing->GetControlValue();
+	
 }
 
 void NetworkPlayer::SetSourceBuffer(unsigned source, const float * data, unsigned nframes)

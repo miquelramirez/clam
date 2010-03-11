@@ -106,6 +106,8 @@ protected:
 		return *_network;
 	}
 protected:
+	unsigned GetNControlSinks() const { return _controlSinks.size(); }                   
+	unsigned GetNControlSources() const { return _controlSources.size(); }               
 	unsigned GetNSinks() const { return _audioSinks.size(); }                   
 	unsigned GetNSources() const { return _audioSources.size(); }               
 	void CacheSourcesAndSinks()
@@ -140,6 +142,28 @@ protected:
 				_audioSinks.push_back(ExportedPort(processing,i, portName));
 			}
 		}
+		Network::ControlSources controlSources = _network->getOrderedControlSources();
+		for (Network::ControlSources::iterator it=controlSources.begin(); it!=controlSources.end(); it++)
+		{
+			Processing * processing = (Processing*) *it;
+			std::string portName = _network->GetNetworkId(processing);
+			_controlSources.push_back(ExportedPort(processing,0,portName));
+		}
+		Network::ControlSinks controlSinks = _network->getOrderedControlSinks();
+		for (Network::ControlSinks::iterator it=controlSinks.begin(); it!=controlSinks.end(); it++)
+		{
+			Processing * processing = (Processing*) *it;
+			std::string portName = _network->GetNetworkId(processing);
+			_controlSinks.push_back(ExportedPort(processing,0,portName));
+		}
+	}
+	const std::string & ControlSourceName(unsigned source) const
+	{
+		return _controlSources[source].name;
+	}
+	const std::string & ControlSinkName(unsigned sink) const
+	{
+		return _controlSinks[sink].name;
 	}
 	const std::string & SourceName(unsigned source) const
 	{
@@ -151,6 +175,8 @@ protected:
 	}
 	void SetSourceBuffer(unsigned source, const float * data, unsigned nframes);
 	void SetSinkBuffer(unsigned sink, float * data, unsigned nframes);
+	void ReadControlSource(unsigned source, const float * data);
+	void FeedControlSink(unsigned sink, float * data);
 	void SetSinkFrameSize(unsigned sink, unsigned frameSize);
 	void SetSourceFrameSize(unsigned source, unsigned frameSize);
 private:
@@ -199,8 +225,10 @@ private:
 	typedef std::vector <ExportedPort> ExportedPorts;
 	ExportedPorts _audioSources;
 	ExportedPorts _audioSinks;
+protected:
 	ExportedPorts _controlSources;
 	ExportedPorts _controlSinks;
+private:
 	Network *_network;
 	volatile Status _status;
 };
