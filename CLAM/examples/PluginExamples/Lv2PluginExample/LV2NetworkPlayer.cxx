@@ -13,7 +13,7 @@ extern "C"
 	static LV2_Handle Instantiate(const LV2_Descriptor * descriptor, double sampleRate, const char *path, const LV2_Feature * const* features)
 	{
 //		std::cout << "INSTANTIATE"<<std::endl;
-		return new CLAM::LV2NetworkPlayer(descriptor);
+		return new CLAM::LV2NetworkPlayer(descriptor, sampleRate, path, features);
 	}
 
 	// Destruct plugin instance
@@ -27,26 +27,26 @@ extern "C"
 	static void Run(LV2_Handle handle,uint32_t sampleCount)
 	{
 //		std::cout << "RUN" << std::endl;
-		exporter(handle)->RunExporter( sampleCount );
+		exporter(handle)->lv2_Run( sampleCount );
 	}
 	// Activate Plugin
 	static void Activate(LV2_Handle handle)
 	{
 //		std::cout << "ACTIVATE"<<std::endl;
-		exporter(handle)->ActivateExporter();
+		exporter(handle)->lv2_Activate();
 	}
-	
+
 	static void Deactivate(LV2_Handle handle)
 	{
 //		std::cout << "DEACTIVATE"<<std::endl;
-		exporter(handle)->DeactivateExporter();
+		exporter(handle)->lv2_Deactivate();
 	}
 
 	// Connect a port to a data location.
 	static void ConnectTo(LV2_Handle handle, uint32_t port,void* data)
 	{
 //		std::cout << "CONNECT_2"<<std::endl;
-		exporter(handle)->ConnectPortExporter( port, data );
+		exporter(handle)->lv2_ConnectTo( port, data );
 	}
 
 }
@@ -54,10 +54,28 @@ extern "C"
 namespace CLAM
 {
 
-LV2NetworkPlayer::LV2NetworkPlayer(const LV2_Descriptor * descriptor)
+//TODO Delete the networkXmlContent
+LV2_Descriptor * LV2NetworkPlayer::CreateLV2Descriptor(
+	const std::string & networkXmlContent,
+	const std::string & uri
+	)
 {
-	mClamBufferSize=512;
-	mExternBufferSize=mClamBufferSize;
+	LV2_Descriptor * descriptor = new LV2_Descriptor;
+	descriptor->URI            = LV2Library::dupstr(uri.c_str());
+	descriptor->extension_data = NULL;
+	descriptor->instantiate    = ::Instantiate;
+	descriptor->connect_port   = ::ConnectTo;
+	descriptor->activate       = ::Activate;
+	descriptor->run            = ::Run;
+	descriptor->deactivate     = ::Deactivate;
+	descriptor->cleanup        = ::CleanUp;
+
+	return descriptor;
+}
+
+LV2NetworkPlayer::LV2NetworkPlayer(const LV2_Descriptor * descriptor, double sampleRate, const char *path, const LV2_Feature * const* features)
+	: mExternBufferSize(512)
+{
 
 	std::istringstream xmlfile(LV2Library::getNetwork(descriptor->URI));
 
@@ -92,35 +110,27 @@ LV2NetworkPlayer::LV2NetworkPlayer(const LV2_Descriptor * descriptor)
 	// but the network adquires the ownership of the player and, in this case,
 	// the player owns the network.
 	SetNetworkBackLink(_network);
-	LocateConnections();
-}
-
-void LV2NetworkPlayer::LocateConnections()
-{
 	CacheSourcesAndSinks();
 	_sourceBuffers.resize(GetNSources());
 	_sinkBuffers.resize(GetNSinks());
 	_inControlBuffers.resize(GetNControlSources());
 	_outControlBuffers.resize(GetNControlSinks());
-	UpdatePortFrameAndHopSize();
+	ChangeFrameSize(mExternBufferSize);
 }
 
 LV2NetworkPlayer::~LV2NetworkPlayer()
 {
 }
-void LV2NetworkPlayer::ActivateExporter()
+void LV2NetworkPlayer::lv2_Activate()
 {
 	_network.Start();
 }
-void LV2NetworkPlayer::DeactivateExporter()
+void LV2NetworkPlayer::lv2_Deactivate()
 {
 	_network.Stop();
 }
-void LV2NetworkPlayer::InstantiateExporter()
-{
-}
 
-void LV2NetworkPlayer::ConnectPortExporter(uint32_t port, void *data)
+void LV2NetworkPlayer::lv2_ConnectTo(uint32_t port, void *data)
 {
 	if ( port < _inControlBuffers.size() )
 	{
@@ -147,22 +157,22 @@ void LV2NetworkPlayer::ConnectPortExporter(uint32_t port, void *data)
 	}
 	CLAM_ASSERT(true,"Accessing a non-existing port");
 }
-	
-void LV2NetworkPlayer::UpdatePortFrameAndHopSize()
-{	
+
+void LV2NetworkPlayer::ChangeFrameSize(unsigned nframes)
+{
 	for (unsigned i=0; i<GetNSources(); i++)
-		SetSourceFrameSize(i, mExternBufferSize);
+		SetSourceFrameSize(i, nframes);
 	for (unsigned i=0; i<GetNSinks(); i++)
-		SetSinkFrameSize(i, mExternBufferSize);
+		SetSinkFrameSize(i, nframes);
 }
 
-void LV2NetworkPlayer::SetAudioSourceBuffers(const unsigned long nframes)
+void LV2NetworkPlayer::SetAudioSourceBuffers(unsigned long nframes)
 {
 	for (unsigned i=0; i<GetNSources(); i++)
 		SetSourceBuffer(i,_sourceBuffers[i], nframes);
 }
 
-void LV2NetworkPlayer::SetAudioSinkBuffers(const unsigned long nframes)
+void LV2NetworkPlayer::SetAudioSinkBuffers(unsigned long nframes)
 {
 	for (unsigned i=0; i<GetNSinks(); i++)
 		SetSinkBuffer(i,_sinkBuffers[i], nframes);
@@ -178,41 +188,22 @@ void LV2NetworkPlayer::ProcessOutControlValues()
 {
 	for (unsigned i=0; i<GetNControlSinks(); i++)
 		FeedControlSink(i,_outControlBuffers[i]);
-}	
+}
 
 
-void LV2NetworkPlayer::RunExporter(uint32_t nframes)
+void LV2NetworkPlayer::lv2_Run(uint32_t nframes)
 {
 	if(nframes != mExternBufferSize)
 	{
 		mExternBufferSize=nframes;
-		if(nframes == 0) return;		
-		UpdatePortFrameAndHopSize();
+		if(nframes == 0) return;
+		ChangeFrameSize(mExternBufferSize);
 	}
 	ProcessInControlValues();
 	SetAudioSourceBuffers(nframes);
-	SetAudioSinkBuffers(nframes);  		
+	SetAudioSinkBuffers(nframes);
 	_network.Do();
 	ProcessOutControlValues();
-}
-
-//TODO Delete the networkXmlContent
-LV2_Descriptor * LV2NetworkPlayer::CreateLV2Descriptor(
-	const std::string & networkXmlContent,
-	const std::string & uri
-	)
-{
-	LV2_Descriptor * descriptor = new LV2_Descriptor;
-	descriptor->URI            = LV2Library::dupstr(uri.c_str());
-	descriptor->extension_data = NULL;
-	descriptor->instantiate    = ::Instantiate;
-	descriptor->connect_port   = ::ConnectTo;
-	descriptor->activate       = ::Activate;
-	descriptor->run            = ::Run;
-	descriptor->deactivate     = ::Deactivate;
-	descriptor->cleanup        = ::CleanUp;
-
-	return descriptor;
 }
 
 }

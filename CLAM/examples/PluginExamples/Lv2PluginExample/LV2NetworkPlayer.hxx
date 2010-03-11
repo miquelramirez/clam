@@ -36,40 +36,32 @@ private:
 	Buffers _inControlBuffers;
 	Buffers _outControlBuffers;
 
-	typedef std::vector<CLAM::ControlSource*> InControlList;
-	typedef std::vector<CLAM::ControlSink*> OutControlList;
 private:
-	typedef std::vector< LV2Info<CLAM::ControlSource> > LV2InControlList;
-	typedef std::vector< LV2Info<CLAM::ControlSink> > LV2OutControlList;
-
 	CLAM::Network _network;
-	LV2InControlList mInControlList;
-	LV2OutControlList mOutControlList;
-
-	unsigned long mClamBufferSize;
 	unsigned long mExternBufferSize;
-		
 public:
-	LV2NetworkPlayer(const LV2_Descriptor * descriptor);
-	~LV2NetworkPlayer();
-
-	void ActivateExporter();
-	void DeactivateExporter();
-	void CleanupExporter();
-	void InstantiateExporter();
-	void ConnectPortExporter(uint32_t port, void *data);
-	void RunExporter(uint32_t nframes);
 	static LV2_Descriptor * CreateLV2Descriptor(
 		const std::string & networkXmlContent,
 		const std::string & uri
 	);
 
-	void ProcessOutControlValues();
-	void SetAudioSinkBuffers(const unsigned long nframes);
-	void SetAudioSourceBuffers(const unsigned long nframes);
-	void UpdatePortFrameAndHopSize();	
+	LV2NetworkPlayer(
+		const LV2_Descriptor * descriptor,
+		double sampleRate,
+		const char *bundlePath,
+		const LV2_Feature * const* features);
+	~LV2NetworkPlayer();
+
+	void lv2_Activate();
+	void lv2_Deactivate();
+	void lv2_ConnectTo(uint32_t port, void *data);
+	void lv2_Run(uint32_t nframes);
+private:
 	void ProcessInControlValues();
-	void LocateConnections();
+	void ProcessOutControlValues();
+	void SetAudioSinkBuffers(unsigned long nframes);
+	void SetAudioSourceBuffers(unsigned long nframes);
+	void ChangeFrameSize(unsigned nframes);
 public: // NetworkPlayer interface
 	virtual bool IsWorking() { return true; }
 	virtual std::string NonWorkingReason() { return ""; }

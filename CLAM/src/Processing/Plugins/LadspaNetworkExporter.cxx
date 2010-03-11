@@ -47,15 +47,14 @@ public:
 
 	void Activate();
 	void Deactivate();
+	void ConnectTo(unsigned long port, LADSPA_Data * data);
+	void Run( unsigned long nsamples );
 
 	void LocateConnections();
-	void UpdatePortFrameAndHopSize();
+	void ChangeFrameSize(unsigned nFrames);
 	void FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints );
-	void ConnectTo(unsigned long port, LADSPA_Data * data);
-
-	void Run( unsigned long nsamples );
-	void EstablishLadspaBuffersToAudioSources(const unsigned long nframes);
-	void EstablishLadspaBuffersToAudioSinks(const unsigned long nframes);
+	void SetAudioSourceBuffers(unsigned long nframes);
+	void SetAudioSinkBuffers(const unsigned long nframes);
 	void ProcessInControlValues();
 	void ProcessOutControlValues();
 	static LADSPA_Descriptor * CreateLADSPADescriptor(
@@ -68,6 +67,11 @@ public:
 	);
 };
 
+}
+
+static CLAM::LadspaNetworkPlayer * AsPlayer(LADSPA_Handle handle)
+{
+	return (CLAM::LadspaNetworkPlayer*) handle;
 }
 
 // Ladspa Callbacks
@@ -83,36 +87,32 @@ extern "C"
 	static void CleanUp(LADSPA_Handle handle)
 	{
 //		std::cerr << "Network2Ladspa: cleanup " << handle << std::endl;
-		delete (CLAM::LadspaNetworkPlayer*) handle;
+		delete AsPlayer(handle);
 	}
 
 	// Run the plugin
 	static void Run(LADSPA_Handle handle, unsigned long sampleCount)
 	{
-		CLAM::LadspaNetworkPlayer *p = (CLAM::LadspaNetworkPlayer*) handle;
-		p->Run( sampleCount );
+		AsPlayer(handle)->Run( sampleCount );
 	}
 	// Activate Plugin
 	static void Activate(LADSPA_Handle handle)
 	{
 //		std::cerr << "Network2Ladspa: activate " << handle << std::endl;
-		CLAM::LadspaNetworkPlayer *p = (CLAM::LadspaNetworkPlayer*) handle;
-		p->Activate();
+		AsPlayer(handle)->Activate();
 	}
 
 	static void Deactivate(LADSPA_Handle handle)
 	{
 //		std::cerr << "Network2Ladspa: deactivate " << handle << std::endl;
-		CLAM::LadspaNetworkPlayer *p = (CLAM::LadspaNetworkPlayer*) handle;
-		p->Deactivate();
+		AsPlayer(handle)->Deactivate();
 	}
 
 	// Connect a port to a data location.
 	static void ConnectTo(LADSPA_Handle handle, unsigned long port, LADSPA_Data * dataLocation)
 	{
 //		std::cerr << "Network2Ladspa: connect " << port << std::endl;
-		CLAM::LadspaNetworkPlayer *p = (CLAM::LadspaNetworkPlayer*) handle;
-		p->ConnectTo( port, dataLocation );
+		AsPlayer(handle)->ConnectTo( port, dataLocation );
 	}
 }
 
@@ -165,8 +165,7 @@ LadspaNetworkPlayer::~LadspaNetworkPlayer()
 
 void LadspaNetworkPlayer::Activate()
 {
-    
-    CLAM_WARNING(_network.SupportsVariableAudioSize(), "Network don't support variable audio size");
+	CLAM_WARNING(_network.SupportsVariableAudioSize(), "Network don't support variable audio size");
 	_network.Start();
 }
 
@@ -184,20 +183,15 @@ void LadspaNetworkPlayer::LocateConnections()
 	_inControlBuffers.resize(GetNControlSources());
 	_outControlBuffers.resize(GetNControlSinks());
 
-	UpdatePortFrameAndHopSize();
+	ChangeFrameSize(mExternBufferSize);
 }
 
-void LadspaNetworkPlayer::UpdatePortFrameAndHopSize()
+void LadspaNetworkPlayer::ChangeFrameSize(unsigned frameSize)
 {
-	//AudioSources and AudioBufferSource
 	for (unsigned i=0; i<GetNSources(); i++)
-	{
-		SetSourceFrameSize(i, mExternBufferSize);
-	}
+		SetSourceFrameSize(i, frameSize);
 	for (unsigned i=0; i<GetNSinks(); i++)
-	{
-		SetSinkFrameSize(i, mExternBufferSize);
-	}
+		SetSinkFrameSize(i, frameSize);
 }
 
 void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
@@ -269,12 +263,12 @@ void LadspaNetworkPlayer::Run( unsigned long nsamples )
 		mExternBufferSize=nsamples;
 		if (nsamples==0)
 			return; // Seems that in Ardour2.8 it does never runs plugins with 0 samples
-		UpdatePortFrameAndHopSize();
+		ChangeFrameSize(mExternBufferSize);
 	}
 
 	ProcessInControlValues();
-	EstablishLadspaBuffersToAudioSources(nsamples);
-	EstablishLadspaBuffersToAudioSinks(nsamples);
+	SetAudioSourceBuffers(nsamples);
+	SetAudioSinkBuffers(nsamples);
 	_network.Do();
 	ProcessOutControlValues();
 }
@@ -291,13 +285,13 @@ void LadspaNetworkPlayer::ProcessOutControlValues()
 		FeedControlSink(i, _outControlBuffers[i]);
 }
 
-void LadspaNetworkPlayer::EstablishLadspaBuffersToAudioSources(const unsigned long nframes)
+void LadspaNetworkPlayer::SetAudioSourceBuffers(const unsigned long nframes)
 {
 	for (unsigned i=0; i<GetNSources(); i++)
 		SetSourceBuffer(i, _sourceBuffers[i], nframes);
 }
 
-void LadspaNetworkPlayer::EstablishLadspaBuffersToAudioSinks(const unsigned long nframes)
+void LadspaNetworkPlayer::SetAudioSinkBuffers(const unsigned long nframes)
 {
 	for (unsigned i=0; i<GetNSinks(); i++)
 		SetSinkBuffer(i, _sinkBuffers[i], nframes);
