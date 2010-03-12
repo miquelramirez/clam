@@ -10,8 +10,32 @@
 
 namespace CLAM
 {
-//-------------------------------------------------------------------------------------------------------
-class VstNetworkExporter : public AudioEffectX
+
+class VstNetworkPlayer;
+
+class VstNetworkExporter
+{
+public:
+	typedef VstNetworkPlayer Plugin;
+	VstNetworkExporter (
+		const std::string & networkContent,
+		VstInt32 uniqueId,
+		const std::string & effectName,
+		const std::string & productString,
+		const std::string & vendor,
+		VstInt32 version);
+	Plugin * createEffect(audioMasterCallback audioMaster);
+private:
+	VstInt32 _uniqueId;
+	std::string _embeddedNetwork;
+	std::string _effectName;
+	std::string _productString;
+	std::string _vendor;
+	VstInt32 _version;
+};
+
+
+class VstNetworkPlayer : public NetworkPlayer, public AudioEffectX
 {
 	template<class T>
 	class ConnectorInfo
@@ -30,19 +54,10 @@ class VstNetworkExporter : public AudioEffectX
 	};
 
 	typedef std::vector< ExternControlInfo > VSTInControlList;
-	typedef std::vector< ConnectorInfo< CLAM::AudioSource > > VSTInPortList;
-	typedef std::vector< ConnectorInfo< CLAM::AudioSink > > VSTOutPortList;
 
 public:
-	typedef VstNetworkExporter Plugin;
-	VstNetworkExporter (
-		const std::string & networkContent,
-		VstInt32 uniqueId,
-		const std::string & effectName,
-		const std::string & productString,
-		const std::string & vendor,
-		VstInt32 version);
-	VstNetworkExporter (
+	typedef VstNetworkPlayer Plugin;
+	VstNetworkPlayer (
 		audioMasterCallback audioMaster,
 		const std::string & networkContent,
 		VstInt32 uniqueId,
@@ -50,13 +65,11 @@ public:
 		const std::string & productString,
 		const std::string & vendor,
 		VstInt32 version);
-	~VstNetworkExporter ();
+	~VstNetworkPlayer ();
 
-	Plugin * createEffect(audioMasterCallback audioMaster);
 	bool ok() const { return true; }
 
 	// * VST AudioEffectX API *
-
 	// Processes
 	virtual void processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames);
 
@@ -82,9 +95,7 @@ protected:
 	std::string _programName;
 	CLAM::Network _network;
 	VSTInControlList mInControlList;
-	VSTInPortList mReceiverList;
-	VSTOutPortList mSenderList;
-	unsigned mClamBufferSize, mExternBufferSize;
+	unsigned mExternBufferSize;
 
 private:
 	CLAM::Network& GetNetwork() { return _network; }
@@ -99,6 +110,15 @@ private:
 	std::string _productString;
 	std::string _vendor;
 	VstInt32 _version;
+public: // NetworkPlayer interface
+	virtual bool IsWorking() { return true; }
+	virtual std::string NonWorkingReason() { return ""; }
+	virtual void Start() {}
+	virtual void Stop() {}
+//	virtual void Pause() {}
+	virtual bool IsRealTime() const { return true; }
+//	virtual unsigned BackendBufferSize();
+//	virtual unsigned BackendSampleRate();
 };
 
 }
