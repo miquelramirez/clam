@@ -236,7 +236,7 @@ void requireQApp()
 
 ERect defaultRect = {0,0,100,400};
 
-QClamVstEditor::QClamVstEditor(CLAM::VstNetworkExporter * effect, const std::string & uifile)
+QClamVstEditor::QClamVstEditor(CLAM::VstNetworkExporter::Plugin * effect, const std::string & uifile)
 	: AEffEditor(effect)
 	, _uifile(uifile)
 	, _widget(0)

@@ -36,84 +36,6 @@ VstNetworkExporter::Plugin * VstNetworkExporter::createEffect(audioMasterCallbac
 		_version);
 }
 
-// VST interface: Metadata
-
-bool VstNetworkPlayer::getEffectName (char* name)
-{
-	strncpy (name, _effectName.c_str(), kVstMaxEffectNameLen);
-	return true;
-}
-
-bool VstNetworkPlayer::getProductString (char* text)
-{
-	strncpy (text, _productString.c_str(), kVstMaxProductStrLen);
-	return true;
-}
-
-bool VstNetworkPlayer::getVendorString (char* text)
-{
-	strncpy (text, _vendor.c_str(), kVstMaxVendorStrLen);
-	return true;
-}
-
-VstInt32 VstNetworkPlayer::getVendorVersion ()
-{
-	return _version;
-}
-
-// VST interface: Program management
-
-void VstNetworkPlayer::setProgramName (char *name)
-{
-	_programName = name;
-}
-
-void VstNetworkPlayer::getProgramName (char *name)
-{
-	strncpy (name, _programName.c_str(), kVstMaxProgNameLen);
-}
-
-
-// VST interface: Parameter management
-
-void VstNetworkPlayer::setParameter (VstInt32 index, float value)
-{
-	ExternControlInfo & controlInfo = mInControlList[index];
-	float realval = controlInfo.min + value * ( controlInfo.max - controlInfo.min ) ;
-	
-	controlInfo.lastvalue = realval;
-	ReadControlSource(index, &realval);
-	std::cout << "== setParameter " << GetControlSourceName(index) << ": " << value << " -> " << realval << std::endl;
-}
-
-float VstNetworkPlayer::getParameter (VstInt32 index)
-{
-	ExternControlInfo & control = mInControlList[index];
-	float interfaceValue = (control.lastvalue-control.min)/(control.max-control.min);
-	std::cout << "== getParameter " << GetControlSourceName(index) << ": " << control.lastvalue << " -> " << interfaceValue << std::endl;
-	return interfaceValue;
-}
-
-void VstNetworkPlayer::getParameterName (VstInt32 index, char *label)
-{
-	strncpy ( label, GetControlSourceName().c_str(), kVstMaxParamStrLen ); 
-	std::cout << "== getParameterName " << label << std::endl;
-}
-
-void VstNetworkPlayer::getParameterDisplay (VstInt32 index, char *text)
-{
-	float2string ( mInControlList[index].lastvalue, text, kVstMaxParamStrLen);
-	std::cout << "== getParameterDisplay " << text << std::endl;
-}
-
-void VstNetworkPlayer::getParameterLabel(VstInt32 index, char *label)
-{
-	ControlSourceConfig& conf=const_cast<ControlSourceConfig&>(
-		dynamic_cast<const ControlSourceConfig&>(
-			mInControlList[index].processing->GetConfig() ));
-	strncpy (label, conf.GetUnitName().c_str(), kVstMaxParamStrLen);
-}
-
 VstNetworkPlayer::VstNetworkPlayer (
 		audioMasterCallback audioMaster,
 		const std::string & networkXml,
@@ -123,7 +45,7 @@ VstNetworkPlayer::VstNetworkPlayer (
 		const std::string & vendor,
 		int version
 	)
-	: AudioEffectX (audioMaster, 1 /*nPrograms*/, GetNumberOfParameters(networkXml) )
+	: AudioEffectX (audioMaster, 0 /*nPrograms*/, 0 /*nParams, set later*/ )
 	, _uniqueId(uniqueId)
 	, _embeddedNetwork(networkXml)
 	, _effectName(effectName)
@@ -132,6 +54,7 @@ VstNetworkPlayer::VstNetworkPlayer (
 	, _version(version)
 {
 	mExternBufferSize=512;
+	SetNetworkBackLink(_network);
 	std::istringstream xmlfile(networkXml);
 	try
 	{
@@ -158,18 +81,146 @@ VstNetworkPlayer::VstNetworkPlayer (
 		std::cerr << _network.GetUnconnectedInPorts() << std::flush;
 		return;
 	}
-	LocateConnections();
+	CacheSourcesAndSinks();
+	for (unsigned i=0; i<GetNControlSources(); i++)
+	{
+		const ControlSourceConfig & conf = 
+			dynamic_cast<const ControlSourceConfig&>(
+				_controlSources[i].processing->GetConfig() );
+			ExternControlInfo info;
+			info.min=conf.GetMinValue();
+			info.max=conf.GetMaxValue();
+			info.lastvalue=conf.GetDefaultValue();
+			info.units=conf.GetUnitName();
+			mInControlList.push_back(info);
+	}
+	ChangeFrameSize(mExternBufferSize);
 
-	setNumInputs (GetNSources());
-	setNumOutputs (GetNSinks());
-	setUniqueID (_uniqueId);
-	_programName = "Default";
-	_network.Start();
+	AudioEffectX::setUniqueID (_uniqueId);
+	AudioEffectX::setNumInputs (GetNSources());
+	AudioEffectX::setNumOutputs (GetNSinks());
+	// breaks intended vst encapsulation but sending numParams
+	// to the AudioEffectX constructor would imply loading
+	// another network when no derived class vars can be set.
+	AudioEffectX::getAeffect()->numParams = GetNControlSources();
+	setInitialDelay(0); // TODO: Set the real one
 }
 
 VstNetworkPlayer::~VstNetworkPlayer ()
 {
-	_network.Stop();
+}
+
+
+// VST interface: Metadata
+
+bool VstNetworkPlayer::getEffectName (char* name)
+{
+	strncpy (name, _effectName.c_str(), kVstMaxEffectNameLen);
+	return true;
+}
+
+bool VstNetworkPlayer::getProductString (char* text)
+{
+	strncpy (text, _productString.c_str(), kVstMaxProductStrLen);
+	return true;
+}
+
+bool VstNetworkPlayer::getVendorString (char* text)
+{
+	strncpy (text, _vendor.c_str(), kVstMaxVendorStrLen);
+	return true;
+}
+
+VstInt32 VstNetworkPlayer::getVendorVersion ()
+{
+	return _version;
+}
+
+
+// VST interface: Parameter management
+bool VstNetworkPlayer::getParameterProperties (VstInt32 index, VstParameterProperties* p)
+{
+	std::cout << "== getParameterProperties " << index << std::endl;
+	bool result = AudioEffectX::getParameterProperties(index, p);
+	std::cout << p->flags << std::endl;
+	const char * units = mInControlList[index].units.c_str();
+	strncpy(p->label, units, kVstMaxLabelLen);
+	strncpy(p->shortLabel, units, kVstMaxShortLabelLen);
+	p->flags = 0;
+	if (false) // TODO: Detect bool parameters
+	{
+		p->flags |= kVstParameterIsSwitch;
+	}
+	if (true) // TODO: Detect integer parameters
+	{
+		p->flags |= kVstParameterUsesIntegerMinMax;
+		p->minInteger=0;
+		p->maxInteger=1;
+	}
+	if (false) // TODO: When
+	{
+		p->flags |= kVstParameterUsesIntStep;
+		p->stepInteger;
+		p->largeStepInteger;
+	}
+	if (false)
+	{
+		p->flags |= kVstParameterSupportsDisplayIndex;
+		p->displayIndex = index;
+	}
+	if (false)
+	{
+		p->flags |= kVstParameterSupportsDisplayCategory;
+		p->category; // 0 no category or categori index +1
+//		strncpy(p->categoryLabel,"MyCategory",kVstMaxCategLabelLen);
+		p->numParametersInCategory;
+	}
+	if (false)
+	{
+		p->flags |= kVstParameterUsesFloatStep;
+		p->stepFloat; // Normal float step
+		p->smallStepFloat; // small float step
+		p->largeStepFloat;         // large float step
+	}
+	if (false)
+		p->flags |= kVstParameterCanRamp; // parameter value can ramp up/down
+ 	;
+	return true;
+}
+
+void VstNetworkPlayer::setParameter (VstInt32 index, float value)
+{
+	ExternControlInfo & controlInfo = mInControlList[index];
+	float realval = controlInfo.min + value * ( controlInfo.max - controlInfo.min ) ;
+	
+	controlInfo.lastvalue = realval;
+	ReadControlSource(index, &realval);
+	std::cout << "== setParameter " << ControlSourceName(index) << ": " << value << " -> " << realval << std::endl;
+}
+
+float VstNetworkPlayer::getParameter (VstInt32 index)
+{
+	ExternControlInfo & control = mInControlList[index];
+	float interfaceValue = (control.lastvalue-control.min)/(control.max-control.min);
+	std::cout << "== getParameter " << ControlSourceName(index) << ": " << control.lastvalue << " -> " << interfaceValue << std::endl;
+	return interfaceValue;
+}
+
+void VstNetworkPlayer::getParameterName (VstInt32 index, char *label)
+{
+	strncpy ( label, ControlSourceName(index).c_str(), kVstMaxParamStrLen ); 
+	std::cout << "== getParameterName " << label << std::endl;
+}
+
+void VstNetworkPlayer::getParameterDisplay (VstInt32 index, char *text)
+{
+	float2string ( mInControlList[index].lastvalue, text, kVstMaxParamStrLen);
+	std::cout << "== getParameterDisplay " << text << std::endl;
+}
+
+void VstNetworkPlayer::getParameterLabel(VstInt32 index, char *label)
+{
+	strncpy (label, mInControlList[index].units.c_str(), kVstMaxParamStrLen);
 }
 
 
@@ -208,7 +259,7 @@ void VstNetworkPlayer::processReplacing (float **inputs, float **outputs, VstInt
 	{
 		std::cerr << "Switching to "<< sampleFrames <<std::endl;
 		mExternBufferSize=sampleFrames;
-		UpdatePortFrameAndHopSize();
+		ChangeFrameSize(mExternBufferSize);
 	}
 
 	for (unsigned i=0; i<GetNSources(); i++)
@@ -219,29 +270,12 @@ void VstNetworkPlayer::processReplacing (float **inputs, float **outputs, VstInt
 	_network.Do();
 }
 
-void VstNetworkPlayer::LocateConnections()
-{
-	CacheSourcesAndSinks();
-	for (unsigned i=0; i<GetNControlSources(); i++)
-	{
-		const ControlSourceConfig & conf = 
-			dynamic_cast<const ControlSourceConfig&>(
-				_controlSources[i]->GetConfig() );
-			ExternControlInfo info;
-			info.min=conf.GetMinValue();
-			info.max=conf.GetMaxValue();
-			info.lastvalue=conf.GetDefaultValue();
-			mInControlList.push_back(info);
-	}
-	UpdatePortFrameAndHopSize();
-}
-
-void VstNetworkPlayer::UpdatePortFrameAndHopSize()
+void VstNetworkPlayer::ChangeFrameSize(unsigned nframes)
 {
 	for (unsigned i=0; i<GetNSources(); i++)
-		SetSourceFrameSize(i, mExternBufferSize);
+		SetSourceFrameSize(i, nframes);
 	for (unsigned i=0; i<GetNSinks(); i++)
-		SetSinkFrameSize(i, mExternBufferSize);
+		SetSinkFrameSize(i, nframes);
 }
 
 } // CLAM

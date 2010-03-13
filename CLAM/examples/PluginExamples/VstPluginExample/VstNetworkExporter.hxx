@@ -4,6 +4,7 @@
 #include "audioeffectx.h"
 
 #include <CLAM/Network.hxx>
+#include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/ControlSource.hxx>
 #include <CLAM/AudioSource.hxx>
 #include <CLAM/AudioSink.hxx>
@@ -37,20 +38,13 @@ private:
 
 class VstNetworkPlayer : public NetworkPlayer, public AudioEffectX
 {
-	template<class T>
-	class ConnectorInfo
-	{
-	public:
-		std::string name;
-		T* processing;
-	};
-
 	class ExternControlInfo
 	{
 	public:
 		std::string name;
 		ControlSource* processing;
 		float lastvalue, min, max;
+		std::string units;
 	};
 
 	typedef std::vector< ExternControlInfo > VSTInControlList;
@@ -71,18 +65,28 @@ public:
 
 	// * VST AudioEffectX API *
 	// Processes
+	virtual void resume()
+	{
+	}
+	virtual VstInt32 startProcess()
+	{
+		_network.Start();
+		return  1;
+	}
+	virtual VstInt32 stopProcess()
+	{
+		_network.Stop();
+		return  1;
+	}
 	virtual void processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames);
 
-	// Program
-	virtual void setProgramName (char *name);
-	virtual void getProgramName (char *name);
-
 	// Parameters
-	virtual void setParameter (VstInt32 index, float value);
-	virtual float getParameter (VstInt32 index);
+	virtual bool getParameterProperties(VstInt32 index, VstParameterProperties* p);
 	virtual void getParameterLabel (VstInt32 index, char *label);
 	virtual void getParameterDisplay (VstInt32 index, char *text);
 	virtual void getParameterName (VstInt32 index, char *text);
+	virtual void setParameter (VstInt32 index, float value);
+	virtual float getParameter (VstInt32 index);
 
 	// Metadata
 	virtual bool getEffectName (char* name);
@@ -90,6 +94,7 @@ public:
 	virtual bool getProductString (char* text);
 	virtual VstInt32 getVendorVersion ();
 	virtual VstPlugCategory getPlugCategory () { return kPlugCategEffect; }
+
 
 protected:
 	std::string _programName;
@@ -100,9 +105,8 @@ protected:
 private:
 	CLAM::Network& GetNetwork() { return _network; }
 	int GetNumberOfParameters(const std::string & networkXmlContent);
-	void LocateConnections();
 	void ProcessInputControls();
-	void UpdatePortFrameAndHopSize();
+	void ChangeFrameSize(unsigned nFrames);
 
 	VstInt32 _uniqueId;
 	std::string _embeddedNetwork;
@@ -117,8 +121,9 @@ public: // NetworkPlayer interface
 	virtual void Stop() {}
 //	virtual void Pause() {}
 	virtual bool IsRealTime() const { return true; }
-//	virtual unsigned BackendBufferSize();
-//	virtual unsigned BackendSampleRate();
+	// TODO: getBlockSize returns the maximum, not the current
+	virtual unsigned BackendBufferSize() { return getBlockSize(); }
+	virtual unsigned BackendSampleRate() { return getSampleRate(); }
 };
 
 }
