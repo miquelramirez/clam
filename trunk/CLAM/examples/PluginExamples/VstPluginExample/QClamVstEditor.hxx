@@ -5,7 +5,7 @@
 #include <aeffeditor.h>
 #include <iostream>
 #include <windows.h>
-namespace CLAM { class VstNetworkExporter; }
+namespace CLAM { class VstNetworkPlayer; }
 class QClamVstEditor;
 class QCloseEvent;
 class QResizeEvent;
@@ -30,7 +30,7 @@ protected:
 class QClamVstEditor : public AEffEditor
 {
 public:
-	QClamVstEditor(CLAM::VstNetworkExporter * effect, const std::string & uifile);
+	QClamVstEditor(CLAM::VstNetworkPlayer * effect, const std::string & uifile);
 	~QClamVstEditor();
 	/// Open editor, pointer to parent windows is platform-dependent (HWND on Windows, WindowRef on Mac).
 	virtual bool open(void * ptr);
