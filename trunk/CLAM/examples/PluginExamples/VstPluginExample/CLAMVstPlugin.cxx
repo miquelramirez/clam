@@ -2,6 +2,10 @@
 #include "VstNetworkExporter.hxx"
 #include "QClamVstEditor.hxx"
 #include <iostream>
+#include <CLAM/CLAM_windows.h>
+
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/SimpleOscillator.hxx>
 
 // TODO: This cannot be used until mingw is fixed. See 'Files.s'
 //CLAM_EMBEDDED_FILE(embededNetwork,"wire.xml")
@@ -11,8 +15,10 @@ extern const char embededNetwork[];
 
 AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 {
+	CLAM::SimpleOscillator osc; // To load clam_processing
+	CLAM::MonoAudioFileReader reader; // To load clam_audioio
+	
 	static CLAM::VstNetworkExporter exporter(
-		audioMaster,
 		embededNetwork,
 		CCONST('C','L','A','M'),
 		"CLAM effect", // Effect name
@@ -21,7 +27,7 @@ AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 		10 // Version
 	);
 	CLAM::VstNetworkExporter::Plugin * effect = exporter.createEffect(audioMaster);
-	if (!effect) return 0;
+	if (effect==0) return 0;
 	new QClamVstEditor(effect, embededUI);
 	return effect;
 }
