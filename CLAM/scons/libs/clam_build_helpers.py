@@ -263,8 +263,8 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 		env.AppendUnique( SHLINKFLAGS=[
 				'-dynamic',
 				'-Wl,-install_name,%s'%os.path.join(install_dirs.lib,soname),
-				'-compatibility_version %s.%s'%versionnumbers[:2], # TODO: Test this
-				'-current_version %s.%s.%s'%versionnumbers,        # TODO: Test this
+				'-Wl,-compatibility_version,%s.%s'%versionnumbers[:2], # TODO: Test this
+				'-Wl,-current_version,%s.%s.%s'%versionnumbers,        # TODO: Test this
 				] )
 		lib = env.SharedLibrary( 'clam_'+name, sources, SHLIBSUFFIX='.%s.dylib'%version )
 		soname_lib =     env.LinkerNameLink( soname, lib )     # lib***.X.Y.dylib -> lib***.X.Y.Z.dylib
