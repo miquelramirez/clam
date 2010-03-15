@@ -24,7 +24,7 @@ AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 		"CLAM effect", // Effect name
 		"Example of CLAM based VST plugin", // Product string
 		"CLAM Project", // Vendor
-		10 // Version
+		0x0100 // Version
 	);
 	CLAM::VstNetworkExporter::Plugin * effect = exporter.createEffect(audioMaster);
 	if (effect==0) return 0;

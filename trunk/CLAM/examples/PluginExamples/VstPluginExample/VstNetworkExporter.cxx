@@ -150,8 +150,18 @@ bool VstNetworkPlayer::getParameterProperties (VstInt32 index, VstParameterPrope
 	if (false) // TODO: Detect bool parameters
 	{
 		p->flags |= kVstParameterIsSwitch;
+		p->flags |= kVstParameterUsesIntStep;
+		p->stepInteger=1;
+		p->largeStepInteger=1;
 	}
-	if (true) // TODO: Detect integer parameters
+	if (false) // TODO: Detect float parameters
+	{
+		p->flags |= kVstParameterUsesFloatStep;
+		p->stepFloat; // Normal float step
+		p->smallStepFloat; // small float step
+		p->largeStepFloat;         // large float step
+	}
+	if (false) // TODO: Detect integer parameters
 	{
 		p->flags |= kVstParameterUsesIntegerMinMax;
 		p->minInteger=0;
@@ -174,13 +184,6 @@ bool VstNetworkPlayer::getParameterProperties (VstInt32 index, VstParameterPrope
 		p->category; // 0 no category or categori index +1
 //		strncpy(p->categoryLabel,"MyCategory",kVstMaxCategLabelLen);
 		p->numParametersInCategory;
-	}
-	if (false)
-	{
-		p->flags |= kVstParameterUsesFloatStep;
-		p->stepFloat; // Normal float step
-		p->smallStepFloat; // small float step
-		p->largeStepFloat;         // large float step
 	}
 	if (false)
 		p->flags |= kVstParameterCanRamp; // parameter value can ramp up/down
