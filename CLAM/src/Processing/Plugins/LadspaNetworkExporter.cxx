@@ -275,13 +275,13 @@ void LadspaNetworkPlayer::Run( unsigned long nsamples )
 
 void LadspaNetworkPlayer::ProcessInControlValues()
 {
-	for (unsigned i=0; i<GetNControlSinks(); i++)
+	for (unsigned i=0; i<GetNControlSources(); i++)
 		ReadControlSource(i,_inControlBuffers[i]);
 }
 
 void LadspaNetworkPlayer::ProcessOutControlValues()
 {
-	for (unsigned i=0; i<GetNControlSources(); i++)
+	for (unsigned i=0; i<GetNControlSinks(); i++)
 		FeedControlSink(i, _outControlBuffers[i]);
 }
 
