@@ -123,7 +123,7 @@ protected:
 			{
 				std::string portName = processingName;
 				if (nPorts > 1)
-					portName+ "_"+processing->GetOutPort(i).GetName();
+					portName +=  "_"+processing->GetOutPort(i).GetName();
 				_audioSources.push_back(ExportedPort(processing,i, portName));
 			}
 		}
