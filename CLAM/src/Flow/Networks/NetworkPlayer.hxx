@@ -142,6 +142,7 @@ protected:
 				_audioSinks.push_back(ExportedPort(processing,i, portName));
 			}
 		}
+		_controlSources.clear();
 		Network::ControlSources controlSources = _network->getOrderedControlSources();
 		for (Network::ControlSources::iterator it=controlSources.begin(); it!=controlSources.end(); it++)
 		{
@@ -149,6 +150,7 @@ protected:
 			std::string portName = _network->GetNetworkId(processing);
 			_controlSources.push_back(ExportedPort(processing,0,portName));
 		}
+		_controlSinks.clear();
 		Network::ControlSinks controlSinks = _network->getOrderedControlSinks();
 		for (Network::ControlSinks::iterator it=controlSinks.begin(); it!=controlSinks.end(); it++)
 		{
