@@ -22,7 +22,6 @@ LadspaWrapperBuffer::LadspaWrapperBuffer( const Config & cfg)
 	, _descriptor(0)
 	, _sharedObject(0)
 	, _libraryFileName("")
-	, _bufferSize(0)
 {
 	Configure(cfg);
 }
@@ -32,7 +31,6 @@ LadspaWrapperBuffer::LadspaWrapperBuffer( const std::string& libraryFileName, un
 	, _descriptor(0)
 	, _sharedObject(0)
 	, _libraryFileName("")
-	, _bufferSize(0)
 {
 	//std::cout<<"LadspaWrapperBuffer()"<<std::endl;
 	Config cfg;
@@ -120,7 +118,6 @@ bool LadspaWrapperBuffer::LoadLibraryFunction(const std::string& libraryFileName
 }
 bool LadspaWrapperBuffer::ConcreteConfigure(const ProcessingConfig&)
 {
-	_bufferSize = BackendBufferSize();
 	ConfigurePortsAndControls();
 	ConfigureControlsPointers();
 	return true;
