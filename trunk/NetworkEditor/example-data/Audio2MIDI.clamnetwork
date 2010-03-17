@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network clamVersion="1.3.1" id="Unnamed">
+<network clamVersion="1.4.1" id="Unnamed">
 
   <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
@@ -11,13 +11,13 @@ p, li { white-space: pre-wrap; }
     <NSinks>1</NSinks>
   </processing>
 
-  <processing id="Fund2MIDI" position="328,215" size="127,64" type="Fund2MIDI"/>
-
-  <processing id="MIDI Out" position="345,373" size="271,129" type="ControlPrinter">
+  <processing id="Frequency" position="270,407" size="133,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
+
+  <processing id="Fund2MIDI" position="328,215" size="127,64" type="Fund2MIDI"/>
 
   <processing id="MIDISink" position="679,185" size="176,87" type="MIDISink"/>
 
@@ -126,8 +126,8 @@ p, li { white-space: pre-wrap; }
   </port_connection>
 
   <control_connection>
-    <out>Fund2MIDI.MIDI Out</out>
-    <in>MIDI Out.In Control</in>
+    <out>Fund2MIDI.Frequency</out>
+    <in>Frequency.In Control</in>
   </control_connection>
 
   <control_connection>
