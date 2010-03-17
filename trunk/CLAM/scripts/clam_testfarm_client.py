@@ -143,6 +143,10 @@ clam.add_subtask('CLAM Plugins', [
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
+	'cd %(sandbox)s/clam/CLAM/plugins/MIDI/'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+
 	'cd %(sandbox)s/clam/CLAM/plugins/sndfile'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
@@ -207,7 +211,7 @@ clam.add_subtask('Voice2MIDI installation', [
 
 clam.add_subtask('Check Clam Networks Recursively that are inside the NetworkEditor', [
 	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/NetworkEditor'%localDefinitions, INFO: lambda x:x },
+	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/NetworkEditor'%localDefinitions },
 ] )
 
 """
