@@ -204,6 +204,12 @@ clam.add_subtask('Voice2MIDI installation', [
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
 	'scons install',
 ] )
+
+clam.add_subtask('Check Clam Networks Recursively that are inside the NetworkEditor', [
+	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/NetworkEditor'%localDefinitions, INFO: lambda x:x },
+] )
+
 """
 clam.add_subtask('Padova Speech SMS (external repository)', [
 	'cd %(sandbox)s/clam/padova-speech-sms/'%localDefinitions,
