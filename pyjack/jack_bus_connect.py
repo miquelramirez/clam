@@ -51,7 +51,10 @@ def _get_ports_as_list(source, target):
 def connect(source, target) :
 	if monitor_client == None : 
 		_init(True)
-	monitor_client.connect(source,target)
+	try :
+		monitor_client.connect(source,target)
+	except jack.UsageError :
+		return ""
 	time.sleep( connect_wait_time )
 	connected_in_ports = monitor_client.get_connections(source)
 	return target in connected_in_ports
