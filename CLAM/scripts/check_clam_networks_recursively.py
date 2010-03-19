@@ -2,6 +2,7 @@
 
 from diff_audio_files import diff_files
 import os, sys, string,  glob
+import cStringIO
 import subprocess
 
 def run(command) :
@@ -75,17 +76,18 @@ def passCheckClamnetworks(datapath, clamnetworks) :
 	for case in clamnetworks :
 		command="CheckClamNetwork %s"%(case)
 		phase("Test: %s Command: %s"%(case, command))
+		output = cStringIO.StringIO()
+
 		try :
 			process = subprocess.Popen(command, shell=True, 
 														stdout=subprocess.PIPE, 
-														stderr=subprocess.PIPE, 
+														stderr=subprocess.STDOUT, 
 														close_fds = True)
 			
-			stdout_text, stderr_text = process.communicate();
+			stdout_text = process.communicate()[0];
 			output = process.returncode;
 			
 			if output:
-				print >>sys.stderr, stderr_text
 				print stdout_text
 				failedCases.append((case, ["Command failed with return code %i:\n'%s'"%(output,command)]))
 				continue
@@ -108,26 +110,10 @@ def passCheckClamnetworks(datapath, clamnetworks) :
 
 help ="""
 To run the tests call this script without parameters.
-	./back2back
-
-Failed cases will generate *_result.wav and *_diff.wav
-files for each missmatching output, containing the
-obtained output and the difference with the expected one.
-
-If some test fail but you want to accept the new results
-just call:
-	./back2back --accept case1 case2
-where case1 and case2 are the cases to be accepted.
+	./check_clam_networks_recursively directory
 
 To know which are the available cases:
-	./back2back --list
-
-To accept any failing cases (USE IT WITH CARE) call:
-	./back2back --acceptall
-
-To accept some results but just for a given architecture,
-due to floating point missmatches, use:
-	./back2back --arch --accept case1 case2
+	./check_clam_networks_recursively directory --list
 """
 
 def _caseList(cases) :
