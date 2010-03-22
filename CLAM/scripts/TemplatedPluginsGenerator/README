@@ -1,0 +1,7 @@
+1. Use
+
+ $ ./ProcessingCodeGenerator.py
+
+ (will generate base code of a clam plugin at CLAM/plugins/YOURPLUGINNAME)
+
+
