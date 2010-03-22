@@ -1,0 +1,6 @@
+1. Install dependencies
+
+ Debian/Ubuntu
+ (do "sudo apt-get install <packages>")
+
+ Packages: python-qt4
