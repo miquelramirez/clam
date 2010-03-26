@@ -347,7 +347,7 @@ int main()
 			std::cout << "Testing construction" << std::endl;
 			Array<int> intarray;
 			Array<TData> doublearray;
-			Array<ComplexTmpl<TData> > complexarray;
+			Array<Complex > complexarray;
 			Array<SelfRefering > selfarray;
 	
 			// Element addition:
@@ -356,7 +356,7 @@ int main()
 			for (i=25; i<50; i++) {
 				intarray.AddElem(i);
 				doublearray.AddElem(TData(i));
-				complexarray.AddElem(ComplexTmpl<TData>(i,i));
+				complexarray.AddElem(Complex(i,i));
 				selfarray.AddElem(SelfRefering(i));
 				std::cout << '.' << std::flush;
 			}
@@ -366,7 +366,7 @@ int main()
 			for (i=0; i<40; i++) {
 				intarray.InsertElem(i,i);
 				doublearray.InsertElem(i,TData(i));
-				complexarray.InsertElem(i,ComplexTmpl<TData>(i,i));
+				complexarray.InsertElem(i,Complex(i,i));
 				selfarray.InsertElem(i,SelfRefering(i));
 				std::cout << '.' << std::flush;
 			}
@@ -414,7 +414,7 @@ int main()
 			for (i=0; i<50; i++) {
 				if ( intarray[i] != i ||
 					 doublearray[i] != TData(i) ||
-					 complexarray[i] != ComplexTmpl<TData>(i,i) ) {
+					 complexarray[i] != Complex(i,i) ) {
 					std::cout << intarray[i] << 'X';
 					result = 1;
 				}
@@ -451,7 +451,7 @@ int main()
 			}
 			else
 				std::cout << ".";
-			Array<ComplexTmpl<TData> > newcomplex(complexarray);
+			Array<Complex > newcomplex(complexarray);
 			if (! (newcomplex == complexarray) ) {
 				std::cout << "X";
 				result = 1;

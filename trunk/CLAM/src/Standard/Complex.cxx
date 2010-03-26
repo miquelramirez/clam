@@ -19,22 +19,65 @@
  *
  */
 
-
-#include <iostream>
-
 #include "Complex.hxx"
-#include "ComplexTmpl.hxx"
+
+// remove me
+#include <iostream>
 
 namespace CLAM
 {
 
-	template class ComplexTmpl<TData>;
+	std::istream& operator >> (std::istream & is, Complex & a)
+	{
+		if (is.flags() & std::ios::skipws) {
+			char c = '\0';
+			do
+				is.get(c);
+			while (is && isspace(c));
+			if (is) is.putback(c);
+		}
+		char c = '\0';
+		is >> c;
+		if (c!='{') {
+			if (is)	is.putback(c);
+	//			std::cerr << "A complex starting with '" << c << "'" << std::endl;
+			return is;
+		}
+		TData x;
+		TData y;
+		if (!(is >> x)) return is;
+		if (!(is >> y)) return is;
+		if (is.flags() & std::ios::skipws) {
+			char c = '\0';
+			do
+				is.get(c);
+			while (is && isspace(c));
+			if (is) is.putback(c);
+		}
+		if (!is.get(c) || c!='i') return is;
+		if (is.flags() & std::ios::skipws) {
+			char c = '\0';
+			do
+				is.get(c);
+			while (is && isspace(c));
+			if (is) is.putback(c);
+		}
+		if (!is.get(c) || c!='}') return is;
 
-	template 
-	std::istream& operator >> (std::istream &stream, ComplexTmpl<TData> &a);
+		a.SetReal(x);
+		a.SetImag(y);
+		return is;
+	}
 
-	template
-	std::ostream& operator << (std::ostream &stream, const ComplexTmpl<TData> &a);
+	std::ostream& operator << (std::ostream & os, const Complex & a)
+	{
+		return os
+			<< "{"
+			<< a.Real()
+			<< " "
+			<< a.Imag()
+			<< "i}";
+	}
 
-}
+} // namespace CLAM
 
