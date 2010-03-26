@@ -50,15 +50,6 @@ typedef double TTime;
 	typedef float TData;
 #endif
 
-/* the different FFT_Types */
-enum EFFTType
-{
-	eNone,
-	eRFFTW,
-	eFFT_NREC,
-	eFFT_IUA
-};
-
 }
 
 #endif
