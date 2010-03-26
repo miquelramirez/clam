@@ -988,12 +988,12 @@ namespace Hidden
 		// First we check if the abcisas agree
 		CLAM_ASSERT(false,"MultiplyBPF: method not implemented");
 		for (int i=0;i<mSize;i++) {
-			PointTmpl<TData,TData> &pm1=in1.GetMagBPF().GetPointArray()[i];
-			PointTmpl<TData,TData> &pm2=in2.GetMagBPF().GetPointArray()[i];
-			PointTmpl<TData,TData> &pmo=out.GetMagBPF().GetPointArray()[i];
-			PointTmpl<TData,TData> &pf1=in1.GetPhaseBPF().GetPointArray()[i];
-			PointTmpl<TData,TData> &pf2=in2.GetPhaseBPF().GetPointArray()[i];
-			PointTmpl<TData,TData> &pfo=out.GetPhaseBPF().GetPointArray()[i];
+			Point &pm1=in1.GetMagBPF().GetPointArray()[i];
+			Point &pm2=in2.GetMagBPF().GetPointArray()[i];
+			Point &pmo=out.GetMagBPF().GetPointArray()[i];
+			Point &pf1=in1.GetPhaseBPF().GetPointArray()[i];
+			Point &pf2=in2.GetPhaseBPF().GetPointArray()[i];
+			Point &pfo=out.GetPhaseBPF().GetPointArray()[i];
 			CLAM_ASSERT(pm1.GetX() == pm2.GetX(),
 				"MultiplyBPF: input BPF abcisas do not match "
 				 "(and BPF merging not yet iplemented)");

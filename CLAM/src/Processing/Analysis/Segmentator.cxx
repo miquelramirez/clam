@@ -20,7 +20,6 @@
  */
 
 #include "Segmentator.hxx"
-#include "Point.hxx"
 #include "Segment.hxx"
 #include <iostream>
 #include "SegmentDescriptors.hxx"
@@ -31,9 +30,9 @@ namespace CLAM
 	class SegmentBoundaries
 	{
 	public:
-		Array < Array < PointTmpl < int , TData > > > mArray;
-
-		SegmentBoundaries(int size):mArray(size)
+		Array < Array < std::pair < int , TData > > > mArray;
+		SegmentBoundaries(int size)
+			: mArray(size)
 		{
 		}
 	};
@@ -378,7 +377,7 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 
 	for (int z=0;z<nDescriptors;z++)
 	{
-		segmentBoundaries.mArray[z].AddElem(PointTmpl<int,TData>(0,100));//very high value
+		segmentBoundaries.mArray[z].AddElem(std::pair<int,TData>(0,100));//very high value
 	}
 	for (int i=0; i<nFrames-4; i++)
 	{
@@ -408,13 +407,13 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 				if (( x3>x2 && x2>x1 && x1>x0 )||
 				   (  x3<x2 && x2<x1 && x1<x0 ))
 				{
-					PointTmpl<int,TData>  tmpValue(i+3,relevance/ratio);
+					std::pair<int,TData>  tmpValue(i+3,relevance/ratio);
 					segmentBoundaries.mArray[z].AddElem(tmpValue);
 				}
 				else if((x3/x2)>(1+2*ratio)||
 				        (x3/x2)<(1-2*ratio))
 				{
-					PointTmpl<int,TData>  tmpValue(i+3,relevance/ratio);
+					std::pair<int,TData>  tmpValue(i+3,relevance/ratio);
 					segmentBoundaries.mArray[z].AddElem(tmpValue);
 				}
 
@@ -442,7 +441,7 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 			/*
 			if ( x3==0 && x2!=0 )
 			{
-				Point<int,TData>  tmpValue(i,100);
+				std::pair<int,TData>  tmpValue(i,100);
 				segmentBoundaries.mArray[z].AddElem(tmpValue);
 			}
 			*/
@@ -470,7 +469,10 @@ void Segmentator::DataFusion(Segment& s,const SegmentBoundaries& segmentBoundari
 	for (int z=0;z<nDescriptors;z++)
 	{
 		for (int n=0;n<segmentBoundaries.mArray[z].Size();n++)
-			probabilityMatrix.SetAt(segmentBoundaries.mArray[z][n].GetX(),z,segmentBoundaries.mArray[z][n].GetY());
+			probabilityMatrix.SetAt(
+				segmentBoundaries.mArray[z][n].first,
+				z,
+				segmentBoundaries.mArray[z][n].second);
 	}
 
 	// Adding probability values of different descriptors
