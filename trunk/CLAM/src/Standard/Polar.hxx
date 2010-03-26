@@ -20,19 +20,119 @@
  */
 
 
-#ifndef _Polar_
-#define _Polar_
+#ifndef CLAM_Polar_hxx
+#define CLAM_Polar_hxx
 
-#include "DataTypes.hxx"
+#include <iosfwd>
+#include "CLAM_Math.hxx"
 #include "TypeInfo.hxx"
-#include "PolarTmplDec.hxx"
 
 namespace CLAM
 {
-	typedef PolarTmpl<TData> Polar;
 
+	class Polar
+	{
+		typedef TData T;
+	private:
+		T mMag, mAng;
+
+	public:
+		Polar(T mag = 0.0,T ang = 0.0)// constructor
+		{
+			mMag = mag;
+			mAng = ang;
+		};
+
+		const T Mag(void) const {return mMag;}; // accessor 
+		const T Ang(void) const {return mAng;}; // accessor 
+
+		void SetMag(const T& mag) { mMag = mag;}; // accesor
+		void SetAng(const T& ang) { mAng = ang;}; // accesor
+
+		// returns real part
+		const T Real (void) const
+		{
+			return fabs(mMag) * CLAM_cos(mAng);
+		}
+
+		// returns imaginary part
+		const T Imag (void) const
+		{
+			return fabs(mMag) * CLAM_sin(mAng); 
+		}
+
+		// friend function to handle cartesian coordinates
+		friend Polar ToComplex(const T& real, const T& imag)
+		{
+			return Polar (CLAM_sqrt (real*real + imag*imag),CLAM_atan2 (imag,real));
+		};
+
+		// ------   member operators ... ------
+		//  complex '=' operator  (float)
+		const Polar& operator = (const float mag)
+		{
+			mMag = mag;
+			mAng = 0;
+			return *this;
+		}
+
+		// complex '=' operator           
+		const Polar& operator = (const Polar& a) 
+		{
+			mMag = a.mMag;
+			mAng = a.mAng;
+			return *this;
+
+		}
+
+		// complex '+=' operator
+		const Polar& operator += (const Polar& a);
+
+		//  complex '-=' operator 
+		const Polar& operator -= (const Polar& a);
+
+		// polar '-' operator 
+		Polar operator - (const Polar& b) const;
+
+		// polar '+' operator 
+		Polar operator + (const Polar& b) const;
+
+		// complex '*' operator
+		Polar operator * (const Polar& b) const
+		{
+			Polar ret(mMag * b.mMag,mAng + b.mAng);
+			return ret;  
+		}
+
+		// complex '/' operator 
+		Polar operator / (const Polar& b) const
+		{
+			Polar ret(mMag / b.mMag,mAng - b.mAng);
+			return ret;  
+		}
+
+		// complex '==' operator
+		bool operator == (const Polar& b) const
+		{	
+			if ((mMag == b.mMag)&&(mAng == b.mAng)) return true;
+			else return false;
+		}
+
+		// polar '!=' operator
+		bool operator != (const Polar& b) const
+		{	
+			if ((mMag == b.mMag)&&(mAng == b.mAng)) return false;
+			else return true;
+		}
+
+	};
+
+	std::istream& operator >> (std::istream & stream, Polar & a);
+	std::ostream& operator << (std::ostream & stream, const Polar & a);
+	
 	CLAM_TYPEINFOGROUP(BasicCTypeInfo, Polar);
-}
 
-#endif // _Polar_
+} // namespace CLAM
+
+#endif // CLAM_Polar_hxx
 
