@@ -36,6 +36,9 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, ControlSource> reg = metadata;
 }
 
+ControlSource::~ControlSource()
+{
+}
 
 bool ControlSource::Do( const float value )
 {	
@@ -54,6 +57,8 @@ bool ControlSource::ConcreteConfigure(const ProcessingConfig &c)
 	}
 	return true;
 }
+
+
 
 }
 

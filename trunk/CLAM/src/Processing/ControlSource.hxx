@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _EXTERN_IN_CONTROL_
-#define _EXTERN_IN_CONTROL_
+#ifndef ControlSource_hxx
+#define ControlSource_hxx
 
 #include "Processing.hxx"
 #include "OutControl.hxx"
@@ -56,19 +56,15 @@ namespace CLAM{
 		FloatOutControl mOutput;
 		
 	public:
-		ControlSource() 
-		: mOutput("output",this)
-		{
-		}
-		
-		ControlSource(const ControlSourceConfig & c)
+		typedef ControlSourceConfig Config;
+
+		ControlSource(const Config & c= Config())
 		: mOutput("output",this)
 		{
 			ConcreteConfigure(c);
 		}
+		~ControlSource();
 		
-		~ControlSource() {}
-	
 		bool Do()
 		{
 			return true;
@@ -87,5 +83,5 @@ namespace CLAM{
 	};
 } //namespace CLAM
 
-#endif
+#endif//ControlSource_hxx
 
