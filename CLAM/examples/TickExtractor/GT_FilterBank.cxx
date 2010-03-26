@@ -247,8 +247,6 @@ namespace CLAM
 		gain.SetSize(mCentreFreq.Size());
 	
 
-		ComplexTmpl<double> a, b, tempGain;
-
 		double invEarQ = 1.0 / EarQ;
 		double invOrder = 1.0 / (double)order;
 
@@ -280,13 +278,15 @@ namespace CLAM
 			A14[i] = -(2*T*cos_2cfpiT*invExpBiT 
 				   - 2.0*sqrt(3.0-two_1_5)*T*sin_2cfpiT*invExpBiT)/2.0;
 
-			a.SetReal(-2.0*std::cos(2.0* twocfpiT));
-			a.SetImag(-2.0*std::sin(2.0* twocfpiT));
+			Complex a(
+				-2.0*std::cos(2.0* twocfpiT),
+				-2.0*std::sin(2.0* twocfpiT));
 
-			b.SetReal(2.0*exp(-B[i]*T)*cos_2cfpiT);
-			b.SetImag(2.0*exp(-B[i]*T)*sin_2cfpiT);
+			Complex b (
+				2.0*exp(-B[i]*T)*cos_2cfpiT,
+				2.0*exp(-B[i]*T)*sin_2cfpiT);
 
-			tempGain =
+			Complex tempGain =
 				( a*T + b*T*(cos_2cfpiT - sqrt(3.0-two_1_5)*sin_2cfpiT))*
 				( a*T + b*T*(cos_2cfpiT + sqrt(3.0-two_1_5)*sin_2cfpiT))*
 				( a*T + b*T*(cos_2cfpiT - sqrt(3.0+two_1_5)*sin_2cfpiT))*
