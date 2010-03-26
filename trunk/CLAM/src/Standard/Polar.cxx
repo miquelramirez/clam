@@ -90,7 +90,7 @@ namespace CLAM
 		return ret;
 	}
 
-	inline std::istream& operator >> (std::istream & is,
+	std::istream& operator >> (std::istream & is,
 			Polar & a)
 	{
 		if (is.flags() & std::ios::skipws) {
