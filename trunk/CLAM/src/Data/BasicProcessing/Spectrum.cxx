@@ -573,25 +573,25 @@ void Spectrum::SynchronizeTo(const Spectrum& in)
 
 void Spectrum::Complex2Polar(const Spectrum& in)
 {
-	ComplexToPolarCnv_ convert;
+	ComplexToPolarCnv convert;
 	convert.ToPolar(in.GetComplexArray(), GetPolarArray());	
 }
 
 void Spectrum::Complex2Polar() 
 {
-	ComplexToPolarCnv_ convert;
+	ComplexToPolarCnv convert;
 	convert.ToPolar(GetComplexArray(), GetPolarArray());
 }
 
 void Spectrum::Polar2Complex(const Spectrum& in) 
 {
-	ComplexToPolarCnv_ convert;
+	ComplexToPolarCnv convert;
 	convert.ToComplex(in.GetPolarArray(),GetComplexArray());
 }
 
 void Spectrum::Polar2Complex() 
 {
-	ComplexToPolarCnv_ convert;
+	ComplexToPolarCnv convert;
 	convert.ToComplex(GetPolarArray(),GetComplexArray());
 }
 

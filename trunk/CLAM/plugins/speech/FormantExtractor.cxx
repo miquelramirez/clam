@@ -101,7 +101,7 @@ bool FormantExtractor::Do(Audio& in, SpectralPeakArray& out) {
 	DataArray& outBinWidthBuffer=out.GetBinWidthBuffer();
 	unsigned firstBin = 440*nBins/spectralRange;
 
-	ComplexToPolarCnv_ convert;
+	ComplexToPolarCnv convert;
 
 	formants.Resize(roots.Size());
 	formants.SetSize(roots.Size());
