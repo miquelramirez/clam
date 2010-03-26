@@ -20,21 +20,121 @@
  */
 
 
-#include <iostream>
-
 #include "Polar.hxx"
-#include "PolarTmpl.hxx"
+#include <iostream>
+#include <sstream>
 
 namespace CLAM
 {
+	// complex '+=' operator
+	const Polar& Polar::operator += (const Polar& a)
+	{
+		TData r1 = fabs(a.mMag) * CLAM_cos(a.mAng); 
+		TData i1 = fabs(a.mMag) * CLAM_sin(a.mAng); 
+		TData r2 = fabs(mMag) * CLAM_cos(mAng);
+		TData i2 = fabs(mMag) * CLAM_sin(mAng);
+		
+		TData r3 = r1+r2;
+		TData i3 = i1+i2;
+		
+		mMag = sqrt (r3*r3 + i3*i3);
+		mAng = atan2 (i3,r3); 
+	
+		return *this;
+	}
 
-	template class PolarTmpl<TData>;
+	//  complex '-=' operator 
+	const Polar& Polar::operator -= (const Polar& a)
+	{
+		TData r1 = fabs(a.mMag) * CLAM_cos(a.mAng); 
+		TData i1 = fabs(a.mMag) * CLAM_sin(a.mAng); 
+		TData r2 = fabs(mMag) * CLAM_cos(mAng);
+		TData i2 = fabs(mMag) * CLAM_sin(mAng);
+		
+		TData r3 = r2-r1;
+		TData i3 = i2-i1;
+		
+		mMag = CLAM_sqrt (r3*r3 + i3*i3);
+		mAng = CLAM_atan2 (i3,r3); 
+	
+		return *this;
+	}
 
-	template 
-	std::istream& operator >> (std::istream &stream, PolarTmpl<TData> &a);
+	// polar '+' operator 
+	Polar Polar::operator + (const Polar& b) const
+	{
+		TData r1 = fabs(mMag) * CLAM_cos(mAng); 
+		TData i1 = fabs(mMag) * CLAM_sin(mAng); 
+		TData r2 = fabs(b.mMag) * CLAM_cos(b.mAng);
+		TData i2 = fabs(b.mMag) * CLAM_sin(b.mAng);
+		
+		TData r3 = r1+r2;
+		TData i3 = i1+i2;
+		
+		Polar ret(CLAM_sqrt (r3*r3 + i3*i3),CLAM_atan2 (i3,r3)); 
+		return ret;
+	}
 
-	template
-	std::ostream& operator << (std::ostream &stream, const PolarTmpl<TData> &a);
+	 //  polar '-' operator 
+	Polar Polar::operator - (const Polar& b) const
+	{
+		TData r1 = fabs(mMag) * CLAM_cos(mAng); 
+		TData i1 = fabs(mMag) * CLAM_sin(mAng); 
+		TData r2 = fabs(b.mMag) * CLAM_cos(b.mAng);
+		TData i2 = fabs(b.mMag) * CLAM_sin(b.mAng);
+		
+		TData r3 = r1-r2;
+		TData i3 = i1-i2;
+		
+		Polar ret(CLAM_sqrt (r3*r3 + i3*i3),CLAM_atan2 (i3,r3)); 
+		return ret;
+	}
 
-}
+	inline std::istream& operator >> (std::istream & is,
+			Polar & a)
+	{
+		if (is.flags() & std::ios::skipws) {
+			char c = '\0';
+			do
+				is.get(c);
+			while (is && isspace(c));
+			if (is)	is.putback(c);
+		}
+		char c = '\0';
+		is >> c;
+		if (c!='{') {
+			if (is)	is.putback(c);
+//			std::cerr << "A polar starting with '" << c << "'" << std::endl;
+			return is;
+		}
+		TData m;
+		TData p; 
+		if (!(is >> m)) return is;
+		if (!(is >> p)) return is;
+		if (is.flags() & std::ios::skipws) {
+			char c = '\0';
+			do
+				is.get(c);
+			while (is && isspace(c));
+			if (is) is.putback(c);
+		}
+		if (!is.get(c) || c!='}') return is;
+
+		a.SetMag(m);
+		a.SetAng(p);
+		return is;
+	}
+
+	std::ostream& operator << (std::ostream& myStream, const Polar& a)
+	{
+		return myStream 
+			<< "{"
+			<< a.Mag()
+			<< " "
+			<< a.Ang()
+			<< "}";
+	}
+
+} // namespace CLAM
+
 
