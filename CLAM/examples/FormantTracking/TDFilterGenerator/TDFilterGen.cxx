@@ -180,7 +180,7 @@ namespace CLAM
 	void TDFilterGen::CalculateMagnitudeFR( const Array< Complex > &r, DataArray &mag )
 	{
 		int m;
-		ComplexToPolarCnv_ conv;
+		ComplexToPolarCnv conv;
 		Array< Polar > polar;
 		
 		polar.Resize( r.Size() );

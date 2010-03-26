@@ -32,7 +32,7 @@
 
 namespace CLAM {
 
-template <class T> class ComplexToPolarCnv
+class ComplexToPolarCnv
 {
 public:
 
@@ -43,8 +43,8 @@ public:
 /* Converting routines */
 
 	/* Complex To Polar */
-	void ToPolar(const Array<ComplexTmpl<T> > &inputArray, 
-		Array<PolarTmpl<T> > &outputArray) const
+	void ToPolar(const Array<Complex> &inputArray, 
+		Array<Polar> &outputArray) const
 	{
 		CLAM_ASSERT(outputArray.Size() == inputArray.Size(),
 			"ComplexToPolarCnv::Convert: unable to convert buffers with different sizes");
@@ -56,8 +56,8 @@ public:
 	}
 
 	/* Polar To Complex */
-	void ToComplex(const Array<PolarTmpl<T> > &inputArray, 
-		Array<ComplexTmpl<T> > &outputArray) const
+	void ToComplex(const Array<Polar> &inputArray, 
+		Array<Complex> &outputArray) const
 	{
 		CLAM_ASSERT(outputArray.Size() == inputArray.Size(),
 			"ComplexToPolarCnv::Convert: unable to convert buffers with different sizes");
@@ -68,8 +68,6 @@ public:
 		}
 	}
 };
-
-typedef ComplexToPolarCnv<TData> ComplexToPolarCnv_;
 
 }
 
