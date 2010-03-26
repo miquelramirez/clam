@@ -78,18 +78,18 @@ protected:
 
 class OutControlSender : public Processing
 {
-	OutControlSenderConfig mConfig;
-	FloatOutControl mOutput;
-	TControlData mLastValue;
-	bool mFirstDoAfterStart;
+	OutControlSenderConfig _config;
+	FloatOutControl _output;
+	TControlData _lastValue;
+	bool _firstDoAfterStart;
 public:
-	OutControlSender();
-	OutControlSender( const OutControlSenderConfig & );
+	typedef OutControlSenderConfig Config;
+	OutControlSender( const Config & = Config() );
 
 	bool Do();
 	const char * GetClassName() const {return "OutControlSender";}
 
-	const ProcessingConfig &GetConfig() const { return mConfig;}
+	const ProcessingConfig &GetConfig() const { return _config;}
 	void SendControl(TControlData value);
 protected:
 	bool ConcreteConfigure(const ProcessingConfig& c);
