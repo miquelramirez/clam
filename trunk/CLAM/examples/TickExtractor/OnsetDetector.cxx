@@ -20,7 +20,6 @@
  */
 
 #include "OnsetDetector.hxx"
-#include "Point.hxx"
 #include "OD_AudioDecimation.hxx"
 #include "CLAM_Math.hxx"
 #include <libresample.h>
@@ -296,7 +295,7 @@ namespace CLAM
 
 	void OnsetDetector::Smoothing(Array<float>& energy, Array<float>& smoothedEnergy )
 	{
-		int i, j, k;
+		int i, j;
 		double temp;
 
 		double inverseWCSum = 1.0 / mWinCoefSummation;
@@ -718,17 +717,13 @@ namespace CLAM
 
 	void OnsetDetector::CheckOffset( Segment& s, std::list<TimeIndex>& candidates )
 	{
-		int i, j;
-		std::list< PointTmpl<int,int> > offsets;
-		typedef std::list< PointTmpl<int,int> >::iterator PLI;
-
 		Array<float> envelope;
-
 		ExtractAudioEnvelope( envelope );
 
 		// Actual Offset Checking
 
-		PointTmpl<int,int> temp;
+		std::list< std::pair<int,int> > offsets;
+		typedef std::list< std::pair<int,int> >::iterator PLI;
 		double min = 0;
 		LI prev, next;
 		prev = candidates.begin();
@@ -738,9 +733,8 @@ namespace CLAM
 		for ( ; next != candidates.end() ; prev++, next++)
 		{
 			//onset position
-			i=int(next->GetPosition());
-			
-			temp.SetX(int(prev->GetPosition()));
+			int i=int(next->GetPosition());
+			int position = prev->GetPosition();
 
 			//looks for the first min before the onset
 			min = envelope[i];
@@ -762,33 +756,25 @@ namespace CLAM
 				
 				if(i>prev->GetPosition())
 				{
-					temp.SetY(i);
-					offsets.push_back(temp);
+					offsets.push_back(std::make_pair(position,i));
 				}
 			}
 		}
 		
 		//Checking for last offset
-		i=int(candidates.back().GetPosition());
-		
-		temp.SetX(int(candidates.back().GetPosition()));
-		
-		bool found=false;
-		
-		do  
+		int lastOffset = candidates.back().GetPosition();
+		for (int i=lastOffset; i<envelope.Size()-3; i++)
 		{
-			if (envelope[i]< mOffsetThreshold 
-			    && envelope[i]>envelope[i+1] 
-			    && envelope[i+1]>envelope[i+2] 
-			    && envelope[i+2]>envelope[i+3] )
+			if (
+				envelope[i]   < mOffsetThreshold &&
+				envelope[i]   > envelope[i+1] &&
+				envelope[i+1] > envelope[i+2] &&
+				envelope[i+2] > envelope[i+3] )
 			{
-				temp.SetY(i);
-				offsets.push_back(temp);
-				found=true;
+				offsets.push_back(std::make_pair(lastOffset,i));
+				break;
 			}
-			i++;
 		}
-		while(i<envelope.Size()-3 && !found);
 
 		// Onset/Offset information info
 		// A segment start is always an onset
@@ -799,7 +785,6 @@ namespace CLAM
 			return;
 
 		bool hasOffset = false;
-		int  offsetNumber = offsets.size();
 		PLI  offsetIt = offsets.begin();
 		LI   last = candidates.end();
 		last--;
@@ -811,15 +796,15 @@ namespace CLAM
 
 			if ( offsetIt != offsets.end() )
 			{
-				int offOnset = offsetIt->GetX();
+				int offOnset = offsetIt->first;
 				if ( onset == offOnset )
 					hasOffset = true;
 			}
 
 			if ( hasOffset )
 			{
-				tmpSegment.SetBeginTime( (TTime)offsetIt->GetX()/(TTime)mSampleRate );
-				tmpSegment.SetEndTime( (TTime)offsetIt->GetY()/(TTime)mSampleRate );
+				tmpSegment.SetBeginTime( (TTime)offsetIt->first/(TTime)mSampleRate );
+				tmpSegment.SetEndTime( (TTime)offsetIt->second/(TTime)mSampleRate );
 				tmpSegment.SetpParent( &s );
 				s.GetChildren().AddElem( tmpSegment );
 				offsetIt++;
@@ -845,15 +830,15 @@ namespace CLAM
 		
 		if ( offsetIt != offsets.end() )
 		{
-			int offOnset = offsetIt->GetX();
+			int offOnset = offsetIt->first;
 			if ( onset == offOnset )
 				hasOffset = true;
 		}
 		
 		if (hasOffset)
 		{
-			tmpSegment.SetBeginTime((TTime)offsetIt->GetX()/(TTime)mSampleRate);
-			tmpSegment.SetEndTime((TTime)offsetIt->GetY()/(TTime)mSampleRate);
+			tmpSegment.SetBeginTime((TTime)offsetIt->first/(TTime)mSampleRate);
+			tmpSegment.SetEndTime((TTime)offsetIt->second/(TTime)mSampleRate);
 			tmpSegment.SetpParent(&s);
 			s.GetChildren().AddElem(tmpSegment);
 		}
