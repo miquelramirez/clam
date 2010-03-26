@@ -53,17 +53,9 @@ void OutControlSenderConfig::DefaultInit(void)
 	SetStep(1.0);
 }
 
-OutControlSender::OutControlSender()
-	: mOutput("out", this)
-	, mFirstDoAfterStart(true)
-{
-	OutControlSenderConfig cfg;
-	Configure(cfg);
-}
-
 OutControlSender::OutControlSender( const OutControlSenderConfig & cfg)
-	: mOutput( "out", this )
-	, mFirstDoAfterStart(true)
+	: _output( "out", this )
+	, _firstDoAfterStart(true)
 {
 	Configure(cfg);
 }
@@ -71,19 +63,16 @@ OutControlSender::OutControlSender( const OutControlSenderConfig & cfg)
 
 bool OutControlSender::ConcreteStart()
 {
-	mFirstDoAfterStart=true;
-	std::cout << "Start" << std::endl;
+	_firstDoAfterStart=true;
 	return true;
 }
 
 bool OutControlSender::Do()
 {
-	if( !AbleToExecute() ) return true;
-	if (mFirstDoAfterStart)
+	if (_firstDoAfterStart)
 	{
-		std::cout << "First do" << std::endl;
-		mFirstDoAfterStart=false;
-		mOutput.SendControl( mLastValue );
+		_firstDoAfterStart=false;
+		_output.SendControl( _lastValue );
 	}
 	return true;
 }
@@ -91,29 +80,24 @@ bool OutControlSender::Do()
 void OutControlSender::SendControl(TControlData value)
 {
 	// TODO: Solve thread boundary here
-	mLastValue=value;
-	mOutput.SendControl( mLastValue );
+	_lastValue=value;
+	_output.SendControl( _lastValue );
 }
 
 bool OutControlSender::ConcreteConfigure(const ProcessingConfig& c)
 {
-	CopyAsConcreteConfig(mConfig, c);
-	if(mConfig.GetMin() > mConfig.GetMax() )
-	{
-		AddConfigErrorMessage(" min value greater than max");
-		return false;
-	}
-	if((mConfig.GetDefault() > mConfig.GetMax()) || (mConfig.GetDefault() < mConfig.GetMin()))
-	{
-		AddConfigErrorMessage(" default value out of range");
-		return false;
-	}
-	if(mConfig.GetStep() == 0 )
-	{
-		AddConfigErrorMessage(" step value equal to 0");
-		return false;
-	}
-	mLastValue = mConfig.GetDefault();
+	CopyAsConcreteConfig(_config, c);
+
+	if (_config.GetMin() > _config.GetMax() )
+		return AddConfigErrorMessage("Min value greater than max");
+
+	if ((_config.GetDefault() > _config.GetMax()) || (_config.GetDefault() < _config.GetMin()))
+		return AddConfigErrorMessage("Default value out of range");
+
+	if (_config.GetStep() == 0 )
+		return AddConfigErrorMessage("Step value equal to 0");
+
+	_lastValue = _config.GetDefault();
 	return true;
 }
 
