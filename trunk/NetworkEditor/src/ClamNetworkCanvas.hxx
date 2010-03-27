@@ -214,28 +214,28 @@ public: // Actions
 		if (!element) return colorPort();
 		CLAM::Processing * processing = (CLAM::Processing*) element;
 		const std::type_info& porttype = processing->GetInPort(index).GetTypeId();
-		return getConnectorColorByType(porttype);
+		return clamTypeColor(porttype);
 	}
 	virtual QColor outportColor(void * element, unsigned index) const
 	{
 		if (!element) return colorPort();
 		CLAM::Processing * processing = (CLAM::Processing*) element;
 		const std::type_info& porttype = processing->GetOutPort(index).GetTypeId();
-		return getConnectorColorByType(porttype);
+		return clamTypeColor(porttype);
 	}
 	virtual QColor incontrolColor(void * element, unsigned index) const
 	{
 		if (!element) return colorControl();
 		CLAM::Processing * processing = (CLAM::Processing*) element;
 		const std::type_info& controltype = processing->GetInControl(index).GetTypeId();
-		return getConnectorColorByType(controltype);
+		return clamTypeColor(controltype);
 	}
 	virtual QColor outcontrolColor(void * element, unsigned index) const
 	{
 		if (!element) return colorControl();
 		CLAM::Processing * processing = (CLAM::Processing*) element;
 		const std::type_info& controltype = processing->GetOutControl(index).GetTypeId();
-		return getConnectorColorByType(controltype);
+		return clamTypeColor(controltype);
 	}
 	virtual QString inportName(void * processing, unsigned index) const
 	{
@@ -335,15 +335,6 @@ public: // Actions
 		return _network->RenameProcessing(oldName.toStdString(), newName.toStdString());
 	}
 
-
-private:
-	QColor getConnectorColorByType(const std::type_info & type) const
-	{
-		const char * colorstring = CLAM::ProcessingDataPlugin::colorFor(type).c_str();
-		QColor color(colorstring);
-		if (color.isValid()) return color;
-		return colorPort();
-	}
 
 protected:
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
@@ -887,6 +878,14 @@ private:
 		return clamProcessingIcon(className);
 	}
 private:
+	QColor clamTypeColor(const std::type_info & type) const
+	{
+		const char * colorstring = CLAM::ProcessingDataPlugin::colorFor(type).c_str();
+		QColor color(colorstring);
+		if (color.isValid()) return color;
+		return colorPort();
+	}
+
 	QIcon clamProcessingIcon(const std::string & className)
 	{
 		CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
