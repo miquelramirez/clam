@@ -852,10 +852,10 @@ public:
 	virtual unsigned nOutports(void * processing) = 0;
 	virtual unsigned nIncontrols(void * processing) = 0;
 	virtual unsigned nOutcontrols(void * processing) = 0;
-	virtual QColor inportColor(void * processing, unsigned index) const = 0;
-	virtual QColor outportColor(void * processing, unsigned index) const = 0;
-	virtual QColor incontrolColor(void * processing, unsigned index) const = 0;
-	virtual QColor outcontrolColor(void * processing, unsigned index) const = 0;
+	virtual QColor inportColor(void * processing, unsigned index) const { return colorPort(); }
+	virtual QColor outportColor(void * processing, unsigned index) const { return colorPort(); }
+	virtual QColor incontrolColor(void * processing, unsigned index) const { return colorControl(); }
+	virtual QColor outcontrolColor(void * processing, unsigned index) const { return colorControl(); }
 	virtual QString inportName(void * processing, unsigned index) const = 0;
 	virtual QString outportName(void * processing, unsigned index) const = 0;
 	virtual QString incontrolName(void * processing, unsigned index) const = 0;
@@ -939,11 +939,11 @@ public:
 				connectionMap["connectionName"]=peerConnectionName;		//QString
 				listConnectionsMap.push_back(connectionMap);
 			}
-
-			if (listConnectionsMap.empty())
-				continue; // no compatible connections, skip
+			// no compatible connections, skip
+			if (listConnectionsMap.empty()) continue;
 			QIcon icon = processingIcon(peerProcessing);
-			if (listConnectionsMap.size()==1) // one compatible connection
+			// single compatible connection, inline it
+			if (listConnectionsMap.size()==1)
 			{
 				ConnectionMap connectionMap = listConnectionsMap.front();
 				QString connectionName=connectionMap["connectionName"].toString();
@@ -954,7 +954,7 @@ public:
 					this, SLOT(onProcessingsConnectTo()))->setData(connectionMap);
 				continue;
 			}
-			//more than one compatible connection:
+			// many compatible connections, submenu
 			QMenu * submenu=menu->addMenu(icon,
 				tr("Connect to %1").arg(peerProcessing->getName()));
 			QList<ConnectionMap>::const_iterator itConnectionsMaps=listConnectionsMap.constBegin();
