@@ -43,6 +43,8 @@
 
 namespace CLAM
 {	
+	typedef std::pair<double, Processing *> ProcessingAndGeometry;
+
 	Network::Network() :
 		_name("Unnamed Network"),
 		_flowControl(new NaiveFlowControl),
@@ -78,7 +80,7 @@ namespace CLAM
 		{
 			Processing * proc = it->second;
 			const std::string & name = it->first;
-			if (!HasSelectionAndContains(name))
+			if (SelectionAndDoesNotContain(name))
 				continue;
 			std::string processingPosition;
 			std::string processingSize;
@@ -103,7 +105,7 @@ namespace CLAM
 			const std::string & name = it->first;
 			Processing * proc = it->second;
 
-			if (!HasSelectionAndContains(name))
+			if (SelectionAndDoesNotContain(name))
 				continue;
 
 			unsigned nOutPorts = proc->GetNOutPorts();
@@ -120,7 +122,7 @@ namespace CLAM
 				    namesIterator!=namesInPorts.end();
 				    namesIterator++)
 				{
-					if (!HasSelectionAndContains(GetProcessingIdentifier(*namesIterator)))
+					if (SelectionAndDoesNotContain(GetProcessingIdentifier(*namesIterator)))
 						continue;
 					ConnectionDefinitionAdapter connectionDefinition( outPortName, *namesIterator );
 					XMLComponentAdapter xmlAdapter(connectionDefinition, "port_connection", true);
@@ -134,7 +136,7 @@ namespace CLAM
 			const std::string & name = it->first;
 			Processing * proc = it->second;
 
-			if (!HasSelectionAndContains(name))
+			if (SelectionAndDoesNotContain(name))
 				continue;
 
 			unsigned nOutControls = proc->GetNOutControls();
@@ -148,7 +150,7 @@ namespace CLAM
 				    namesIterator!=namesInControls.end();
 				    namesIterator++)
 				{
-					if (!HasSelectionAndContains(GetProcessingIdentifier(*namesIterator)))
+					if (SelectionAndDoesNotContain(GetProcessingIdentifier(*namesIterator)))
 						continue;
 					ConnectionDefinitionAdapter connectionDefinition( outControlName, *namesIterator );
 					XMLComponentAdapter xmlAdapter(connectionDefinition, "control_connection", true);
@@ -264,7 +266,6 @@ namespace CLAM
 		}
 
 		_inPasteMode=false;
-//		OrderSinksAndSources(_processingsGeometries);
 	}
 
 	bool Network::UpdateSelections (const NamesList & processingsNamesList)
@@ -280,48 +281,42 @@ namespace CLAM
 		return false;
 	}
 
-	bool Network::HasSelectionAndContains(const std::string & name) const
+	bool Network::SelectionAndDoesNotContain(const std::string & name) const
 	{
-		NamesSet::const_iterator itFindSelected = _selectedProcessings.find(name);
-		if (!_selectedProcessings.empty() && itFindSelected==_selectedProcessings.end())
-			return false;
-		return true;
+		if (_selectedProcessings.empty()) return false;
+		return _selectedProcessings.count(name)==0;
 	}
 
 
-	const Network::Geometry Network::findProcessingGeometry(Processing* processing) const
+	const Network::Geometry & Network::getProcessingGeometry(const std::string & processingName) const
 	{
-		//TODO: use the map find!!!!
-		for (ProcessingsGeometriesMap::const_iterator it=_processingsGeometries.begin();it!=_processingsGeometries.end();it++)
-		{
-			if ( &GetProcessing(it->first) == processing )
-				return it->second;
-		}
-		Geometry nullGeometry={0,10000,0,0};
+		ProcessingsGeometriesMap::const_iterator it =
+			_processingsGeometries.find(processingName);
+		if (it!=_processingsGeometries.end())
+			return it->second;
+		static Geometry nullGeometry={0,10000,0,0};
 		return nullGeometry;
 	}
 
 	const Network::Processings Network::getOrderedProcessings(const std::string & type, bool horizontalOrder) const
 	{
 		std::list <ProcessingAndGeometry> processingsAndGeometries;
-		Processings orderedProcessings;
 		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
 		{
 			Processing * proc = it->second;
 			const std::string className = proc->GetClassName();
-			if (className!=type)
-				continue;
-			ProcessingAndGeometry item;
-			item.processing = proc;
-			item.geometry = findProcessingGeometry(proc);
-			processingsAndGeometries.push_back(item);
-			processingsAndGeometries.sort(horizontalOrder?compareGeometriesUpperXThan:compareGeometriesUpperYThan);
+			if (className!=type) continue;
+			const Geometry & geometry = getProcessingGeometry(it->first);
+			int position = horizontalOrder ? geometry.x : geometry.y;
+			processingsAndGeometries.push_back(std::make_pair(position, proc));
 		}
+		processingsAndGeometries.sort();
 
+		Processings orderedProcessings;
 		for (std::list<ProcessingAndGeometry>::const_iterator it=processingsAndGeometries.begin();
 			it!=processingsAndGeometries.end();it++)
 		{
-			orderedProcessings.push_back( it->processing );
+			orderedProcessings.push_back( it->second );
 		}
 
 		return orderedProcessings;
@@ -329,83 +324,75 @@ namespace CLAM
 
 	const Network::Processings Network::getOrderedProcessingsByAttribute(const std::string & attribute, bool horizontalOrder) const
 	{
+		ProcessingFactory & factory = ProcessingFactory::GetInstance();
 		std::list <ProcessingAndGeometry> processingsAndGeometries;
-		Processings orderedProcessings;
 		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
 		{
 			Processing * proc = it->second;
 			const std::string className = proc->GetClassName();
-			if (!ProcessingFactory::GetInstance().AttributeExists(className,attribute))
-				continue;
-			ProcessingAndGeometry item;
-			item.processing = proc;
-			item.geometry = findProcessingGeometry(proc);
-			processingsAndGeometries.push_back(item);
-			processingsAndGeometries.sort(horizontalOrder?compareGeometriesUpperXThan:compareGeometriesUpperYThan);
+			if (!factory.AttributeExists(className,attribute)) continue;
+			const Geometry & geometry = getProcessingGeometry(it->first);
+			int position = horizontalOrder? geometry.x : geometry.y;
+			processingsAndGeometries.push_back(std::make_pair(position, proc));
 		}
+		processingsAndGeometries.sort();
 
+		Processings orderedProcessings;
 		for (std::list<ProcessingAndGeometry>::const_iterator it=processingsAndGeometries.begin();
 			it!=processingsAndGeometries.end();it++)
 		{
-			orderedProcessings.push_back( it->processing );
+			orderedProcessings.push_back( it->second );
 		}
-
 		return orderedProcessings;
 	}
 
 	const Network::ControlSinks Network::getOrderedControlSinks() const
 	{
-		std::list <ProcessingAndGeometry> controlSinksAndGeometries;
-		ControlSinks orderedControlSinks;
+		std::list <ProcessingAndGeometry> processingsAndGeometries;
 		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
 		{
 			Processing * proc = it->second;
 			const std::string className = proc->GetClassName();
-			if (className!="ControlSink")
-				continue;
-			ProcessingAndGeometry item;
-			item.processing = proc;
-			item.geometry = findProcessingGeometry(proc);
-			controlSinksAndGeometries.push_back(item);
-			controlSinksAndGeometries.sort(compareGeometriesUpperXThan);
+			if (className!="ControlSink") continue;
+			const Geometry & geometry = getProcessingGeometry(it->first);
+			int position = geometry.x;
+			processingsAndGeometries.push_back(std::make_pair(position, proc));
 		}
+		processingsAndGeometries.sort();
 
-		for (std::list<ProcessingAndGeometry>::const_iterator it=controlSinksAndGeometries.begin();
-			it!=controlSinksAndGeometries.end();it++)
+		ControlSinks orderedControlSinks;
+		for (std::list<ProcessingAndGeometry>::const_iterator it=processingsAndGeometries.begin();
+			it!=processingsAndGeometries.end();it++)
 		{
-			ControlSink* controlSink = dynamic_cast<ControlSink*>(it->processing);
+			ControlSink* controlSink = dynamic_cast<ControlSink*>(it->second);
 			CLAM_ASSERT(controlSink, "Expected an AudioSink");
 			orderedControlSinks.push_back( controlSink );
 		}
-
 		return orderedControlSinks;
 	}
 	
 	const Network::ControlSources Network::getOrderedControlSources() const
 	{
-		std::list <ProcessingAndGeometry> controlSourcesAndGeometries;
-		ControlSources orderedControlSources;
+		std::list <ProcessingAndGeometry> processingsAndGeometries;
 		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
 		{
 			Processing * proc = it->second;
 			const std::string className = proc->GetClassName();
-			if (className!="ControlSource")
-				continue;
-			ProcessingAndGeometry item;
-			item.processing = proc;
-			item.geometry = findProcessingGeometry(proc);
-			controlSourcesAndGeometries.push_back(item);
-			controlSourcesAndGeometries.sort(compareGeometriesUpperXThan);
+			if (className!="ControlSource") continue;
+			const Geometry & geometry = getProcessingGeometry(it->first);
+			int position = geometry.x;
+			processingsAndGeometries.push_back(std::make_pair(position, proc));
 		}
+		processingsAndGeometries.sort();
 
-		for (std::list<ProcessingAndGeometry>::const_iterator it=controlSourcesAndGeometries.begin();
-			it!=controlSourcesAndGeometries.end();it++)
+		ControlSources orderedControlSources;
+		for (std::list<ProcessingAndGeometry>::const_iterator it=processingsAndGeometries.begin();
+			it!=processingsAndGeometries.end();it++)
 		{
-			ControlSource* controlSource = dynamic_cast<ControlSource*>(it->processing);
+			ControlSource* controlSource = dynamic_cast<ControlSource*>(it->second);
 			CLAM_ASSERT(controlSource, "Expected an AudioSink");
 			orderedControlSources.push_back( controlSource );
 		}
-
 		return orderedControlSources;
 	}
 
@@ -424,31 +411,6 @@ namespace CLAM
 		_processingsGeometries.clear();
 		return copyProcessingsGeometry;
 	}
-
-	const bool Network::compareGeometriesUpperYThan (ProcessingAndGeometry & arg1, ProcessingAndGeometry & arg2)
-	{
-		return arg1.geometry.y < arg2.geometry.y ;
-	}
-
-	const bool Network::compareGeometriesUpperXThan (ProcessingAndGeometry & arg1, ProcessingAndGeometry & arg2)
-	{
-		return arg1.geometry.x < arg2.geometry.x ;
-	}
-
-/*	// TODO: use individual geometries loadings/storings??:
-	const Network::Geometry Network::GetAndEraseGeometry(std::string name)
-	{
-		const ProcessingsGeometriesMap::iterator itGeometry =_processingsGeometries.find(name);
-		Geometry geometry=itGeometry->second;
-		if (itGeometry == _processingsGeometries.end())
-		{
-			geometry.width=0;
-			geometry.height=0;
-			return geometry;
-		}
-		_processingsGeometries.erase(name); // if exists, erase geometry from map
-		return geometry;
-	}*/
 
 	void Network::StringPairToInts(const std::string & geometryInString, int & a, int & b)
 	{
@@ -516,7 +478,6 @@ namespace CLAM
 		return *proc;
 	}
 
-	// returns the name that was used so the same one can be used when calling CreateProcessingController (hack)
 	std::string Network::AddProcessing( const std::string & factoryKey )
 	{
 		std::string name = GetUnusedName( factoryKey  ); 
