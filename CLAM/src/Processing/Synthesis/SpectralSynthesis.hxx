@@ -44,7 +44,6 @@
 #include "AudioMultiplier.hxx"
 #include "WindowGenerator.hxx"
 #include "OverlapAdd.hxx"
-#include "AudioCircularBuffer.hxx"
 #include "CircularShift.hxx"
 
 

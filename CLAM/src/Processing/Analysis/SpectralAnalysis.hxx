@@ -107,9 +107,6 @@ private:
  *  @see FFT
  */
 	FFT		mPO_FFT;
-/** Internal Circular Buffer Processing for overlap 
- *  @see AudioCircularBuffer  */
-//	AudioCircularBuffer mCircularBuffer;
 
 //Internal DataObjects
 

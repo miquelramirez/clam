@@ -24,7 +24,6 @@
 
 #include "ProcessingComposite.hxx"
 #include "LPC.hxx"
-#include "MatrixTmpl.hxx"
 #include "DownSampling.hxx"
 #include "Candidates.hxx"
 #include "WindowGenerator.hxx"
