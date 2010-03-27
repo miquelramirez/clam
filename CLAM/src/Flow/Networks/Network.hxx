@@ -113,7 +113,7 @@ public:
 
 	//! methods related to copy&paste processings from canvas
 	bool UpdateSelections (const NamesList & processingsNamesList);
-	void setPasteMode() { _setPasteMode=true; }
+	void setPasteMode() { _inPasteMode=true; }
 
 	//! canvas related geometries
 	bool SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries);
@@ -238,7 +238,7 @@ private:
 
 	// attributes for canvas copy & paste
 	mutable NamesSet _selectedProcessings;
-	bool _setPasteMode;
+	bool _inPasteMode;
 	
 	bool HasSelectionAndContains(const std::string & name) const;
 
