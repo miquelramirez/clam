@@ -47,7 +47,7 @@ namespace CLAM
 		_name("Unnamed Network"),
 		_flowControl(new NaiveFlowControl),
 		_player(0),
-		_setPasteMode(false)
+		_inPasteMode(false)
 	{}
 	
 	Network::~Network()
@@ -173,7 +173,7 @@ namespace CLAM
 	{
 		typedef std::map <std::string, std::string> NamesMap;
 		NamesMap namesMap;
-		if (!_setPasteMode) Clear();
+		if (!_inPasteMode) Clear();
 		XMLAdapter<std::string> strAdapter( _name, "id");
 		storage.Load(strAdapter);
 		_processingsGeometries.clear();
@@ -190,7 +190,7 @@ namespace CLAM
 			const std::string & definitionName = procDefinition.GetName();
 			CLAM::Processing * processing = procDefinition.GetProcessing();
 			std::string finalName = definitionName;
-			if (_setPasteMode)
+			if (_inPasteMode)
 			{
 				finalName = GetUnusedName(definitionName, true);
 				namesMap.insert(std::make_pair(definitionName,finalName));
@@ -214,7 +214,7 @@ namespace CLAM
 			std::string fullOut = connectionDefinition.GetOutName();
 			std::string fullIn = connectionDefinition.GetInName();
 
-			if (_setPasteMode)
+			if (_inPasteMode)
 			{
 				fullOut = namesMap.find(GetProcessingIdentifier(fullOut))->second
 					+"."+GetConnectorIdentifier(fullOut);
@@ -238,7 +238,7 @@ namespace CLAM
 			if (!storage.Load(xmlAdapter)) break;
 			std::string fullOut = connectionDefinition.GetOutName();
 			std::string fullIn = connectionDefinition.GetInName();
-			if (_setPasteMode)
+			if (_inPasteMode)
 			{
 				fullOut = namesMap.find(GetProcessingIdentifier(fullOut))->second
 					+"."+GetConnectorIdentifier(fullOut);
@@ -263,7 +263,7 @@ namespace CLAM
 			_informationTexts.push_back(myInformationText);
 		}
 
-		_setPasteMode=false;
+		_inPasteMode=false;
 //		OrderSinksAndSources(_processingsGeometries);
 	}
 
