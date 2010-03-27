@@ -67,10 +67,8 @@ public:
 	typedef std::vector<InformationText*> InformationTexts;
 
 	typedef struct { int x, y, width, height; } Geometry;
-	typedef struct { Processing* processing; Geometry geometry; } ProcessingAndGeometry;
 	typedef std::map <std::string, Geometry> ProcessingsGeometriesMap;
-	typedef struct { std::string sourceName, sinkName; } Connection;
-	typedef std::list<Connection> ConnectionsList;
+
 	// attributes for canvas copy & paste
 	typedef std::set<std::string> NamesSet;
 public:
@@ -78,13 +76,24 @@ public:
 	Network();
 	virtual ~Network();
 
-	// Methods related to network itself
+	/// Network attributes
+	// @{
 	const std::string& GetName() const { return _name; }
 	void SetName( const std::string& name ) { _name=name; }
 
+	/**
+	 Returns the network description.
+	 The network description is an html fragment or plain text that 
+	 describes the network to someone using it.
+	 @sa SetDescription
+	*/
 	const Text& GetDescription() const {return _description;};
+	/**
+	 Set the network description.
+	 @sa GetDescription
+	*/
 	void SetDescription( const Text& description ) {_description=description;};
-
+	// @}
 	virtual const char * GetClassName() const
 	{
 		return "Network";
@@ -107,53 +116,123 @@ public:
 	unsigned BackendBufferSize();
 	unsigned BackendSampleRate();
 
-	//! serialization methods
+	// serialization methods
 	virtual void StoreOn( Storage & storage) const;
 	virtual void LoadFrom( Storage & storage);
 
-	//! methods related to copy&paste processings from canvas
+	/// @name CopyAndPaste Methods related to copy&paste processings from canvas
+	// @{
+	/**
+	 Marks as selected the processings whose name is in the list
+	*/
 	bool UpdateSelections (const NamesList & processingsNamesList);
+	/**
+	 Sets or unsets the paste mode. If the paste mode is on, when
+	 Loading an xml existing processings are not removed and new
+	 processings allocate new names if their name already exist.
+	*/
 	void setPasteMode() { _inPasteMode=true; }
+	// @}
 
-	//! canvas related geometries
+	/**
+	 Sets canvas related geometries (positions/sizes) using a map of names
+	 geometries.
+	 @sa SetProcessingsGeometries
+	*/
 	bool SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries);
+	/**
+	 Returns a map of processing names to positions/sizes in the canvas
+	 and clears them. That means that they can only be retrieved once.
+	 Canvas positions are significant to determine both, the execution
+	 order and the order in which exported ports (horizontally) and
+	 and exported controls (vertically) are exposed.
+	 @todo clarify that interface, it is not obvious
+	*/
 	const ProcessingsGeometriesMap GetAndClearGeometries();
 
-	//! audio sources and sinks and control sources and sinks  order 
-	const Geometry findProcessingGeometry(Processing* ) const;
+	/**
+	 Returns the geometry in the network of the named processing.
+	 @pre The processing should exist in the network
+	*/
+	const Geometry & getProcessingGeometry(const std::string & processingName ) const;
+	/**
+	 Retrieves a list of processings of the given type by position order.
+	 @arg horizontalOrder if true, ordered left to right; if not, top to bottom
+	*/
 	const Processings getOrderedProcessings(const std::string & type, bool horizontalOrder) const;
+	/**
+	 Retrieves a list of processings whose type have defined the
+	 attribute in the metadata.This is used to retrieve, for example,
+	 processings with the 'port_source_type' or 'control_source_type' attribute.
+	 @arg horizontalOrder if true, ordered left to right; if not, top to bottom
+	*/
 	const Processings getOrderedProcessingsByAttribute(const std::string & attribute, bool horizontalOrder=false) const;
-	const ControlSinks getOrderedControlSinks() const;
-	const ControlSources getOrderedControlSources() const;
-	static const bool compareGeometriesUpperYThan(ProcessingAndGeometry &, ProcessingAndGeometry &);
-	static const bool compareGeometriesUpperXThan(ProcessingAndGeometry &, ProcessingAndGeometry &);
 
-/*// TODO: make individual geometries loadings/storings??
-	const Geometry GetAndEraseGeometry(std::string name);*/
+	/// @deprecated use getOrderedProcessings or getOrderedProcessingsByAttribute instead
+	 const ControlSinks getOrderedControlSinks() const;
+	/// @deprecated should use getOrderedProcessings or getOrderedProcessingsByAttribute instead
+	 const ControlSources getOrderedControlSources() const;
+
 	//! methods related to connect/disconnect interface
 	bool ConnectPorts( const std::string &, const std::string & );
 	bool ConnectControls( const std::string &, const std::string & );
 	bool DisconnectPorts( const std::string &, const std::string & );
 	bool DisconnectControls( const std::string &, const std::string & );
 
-	//! methods used to create processings and get them
+	/**
+	 Retrieves a processing by its name.
+	 @pre there is a processing with such a name @see HasProcessing
+	*/
 	Processing& GetProcessing( const std::string & name ) const;
-	//! add method using a pointer to a new processing
+
+	/**
+	 Adds a processing to the network with the given name, and
+	 optionally providing a configuration.
+	 The network adquires responsability to delete the processing 
+	 when it is done, and it should be created by new.
+	*/
 	void AddProcessing( const std::string & name, Processing* processing, const ProcessingConfig * config=0 );
-	//! add method using a key to get the new processing from factory
-	Processing & AddProcessing( const std::string & name, const std::string & key );
-	std::string AddProcessing( const std::string& key );
+
+	/**
+	 Creates and adds a processing to the network of the given type.
+	 @return A reference to the created processing.
+	 @pre the name does not exist already (use HasProcessing)
+	 @throw ErrFactory when the type does not exist 
+	*/
+	Processing & AddProcessing( const std::string & name, const std::string & type );
+	/**
+	 Creates and adds a processing to the network of the given type,
+	 using a name derived from the type itself which is returned.
+	*/
+	std::string AddProcessing( const std::string & type );
+
+	/** Generates an unused name derived from the provided prefix. */
 	std::string GetUnusedName( const std::string& prefix, const bool cutOnLastSeparator=false, const std::string separator="_") const;
-	void RemoveProcessing ( const std::string & );
+	/**
+	 Removes the named processing
+	 @pre should exist
+	*/
+	void RemoveProcessing ( const std::string & name);
+	/** Returns true if the network has a processing with the given name */
 	bool HasProcessing( const std::string & name ) const;
-	/** It configures the processing with the given processing id and config object and
-	 *  notifies this to the network. So use this method instead of getting the processing
-	 *  with GetProcessing and calling Configure on it. **/
+	/**
+	 Configures the processing with the given processing id and config
+	 object and notifies this to the network.
+	 So use this method instead of getting the processing with GetProcessing
+	 and calling Configure on it. **/
 	bool ConfigureProcessing( const std::string &, const ProcessingConfig & );
 	/** Calls Configure() for each processing with its current configuration  */
 	void ReconfigureAllProcessings();
+	/**
+	 Renames a processing. Returns true if successfull.
+	 Returns false if oldName does not exist in the network or when
+	 the given name is invalid.
+	*/
 	bool RenameProcessing( const std::string & oldName, const std::string & newName );	
-	
+	/**
+	 Returns the id of the given processing.
+	 @pre the processing belongs to the network.
+	*/
 	const std::string & GetNetworkId(const Processing * proc) const;
 	
 	// accessors to nodes and processing
@@ -236,11 +315,16 @@ private:
 	NetworkPlayer* _player;
 	InformationTexts _informationTexts;
 
-	// attributes for canvas copy & paste
+	/// holds the names of the processings that are to be cut
 	mutable NamesSet _selectedProcessings;
+	/// If true changes the behaviour of the Load not removing existing content. 
 	bool _inPasteMode;
-	
-	bool HasSelectionAndContains(const std::string & name) const;
+
+	/**
+	 Returns true if there is no selection or the selection contains 
+	 the named processing. (Then it should be included in a store operation)
+	*/
+	bool SelectionAndDoesNotContain(const std::string & name) const;
 
 	// attributes for canvas processing geometries
 	mutable ProcessingsGeometriesMap _processingsGeometries;
