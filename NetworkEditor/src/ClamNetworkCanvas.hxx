@@ -517,7 +517,7 @@ public:
 			processingGeometry.y=position.y();
 			processingGeometry.width=size.width();
 			processingGeometry.height=size.height();
-			processingsGeometriesMap.insert(CLAM::Network::ProcessingsGeometriesMap::value_type(name,processingGeometry));
+			processingsGeometriesMap.insert(std::make_pair(name,processingGeometry));
 		}
 		return (_network->SetProcessingsGeometries(processingsGeometriesMap));
 	}
@@ -821,12 +821,7 @@ private:
 		{
 			unsigned portindex = processing->portIndexByYPos(cursorPosition);
 			std::string portType = outportTypeId(processing->model(),portindex);
-
-			if (portType==typeid(CLAM::TData).name())
-				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSink");
-			if (portType==typeid(CLAM::Audio).name())
-				addToMenuLinkedProcessing(menu,cursorPosition,"AudioBufferSink");
-
+			addToMenuProcessingsWithKey(menu, cursorPosition, "port_sink_type", portType);
 			addToMenuProcessingsWithKey(menu, cursorPosition, "port_monitor_type", portType);
 		}
 		if (region==ProcessingBox::inportsRegion)
@@ -834,13 +829,9 @@ private:
 			unsigned portindex = processing->portIndexByYPos(cursorPosition);
 			std::string portType=inportTypeId(processing->model(),portindex);
 
-			if (portType==typeid(CLAM::TData).name())
-				addToMenuLinkedProcessing(menu,cursorPosition,"AudioSource");
-			if (portType==typeid(CLAM::Audio).name())
-				addToMenuLinkedProcessing(menu,cursorPosition,"AudioBufferSource");
+			addToMenuProcessingsWithKey(menu, cursorPosition, "port_source_type", portType);
 		}
 	}
-
 
 	virtual void processingContextMenu(QMenu * menu, const QPoint& point, ProcessingBox * processing)
 	{
