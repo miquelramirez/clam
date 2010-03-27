@@ -157,7 +157,6 @@ bool FormantExtrExample::Do()
 	TData downSize = Round( mSize / downFactor );
 
 	TData tf = Round( downSize / mConfig.GetHopSize() );
-	//MatrixTmpl< Formant > candidates( mConfig.GetNCandidates(), tf );
 	Candidates candidates;
 
 	mFileIn.Do( mInputData );
