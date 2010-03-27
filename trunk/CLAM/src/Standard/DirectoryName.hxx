@@ -31,10 +31,7 @@ namespace CLAM {
  * By deriving from Text you have most of the std::string operations available
  * and input serialization supporting spaces on reading.
  * 
- * Use InFilename and OutFilename subclasses to discriminate the serialization
- * direction
- * and subclass them to specify concrete filters and file type family names.
- * @sa DirectoryName
+ * @sa InFilename, OutFilename
  */
 class DirectoryName : public Text
 {
