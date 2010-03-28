@@ -31,6 +31,7 @@ namespace Hidden
 		"key", "ControlSink",
 		"category", "Controls", 
 		"description", "ControlSink",
+		"control_sink_type", typeid(TControlData).name(),
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, ControlSink> reg = metadata;

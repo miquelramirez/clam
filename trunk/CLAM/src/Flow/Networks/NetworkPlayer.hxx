@@ -23,8 +23,6 @@
 #define NetworkPlayer_hxx
 
 #include "Network.hxx"
-#include "AudioSource.hxx"
-#include "AudioSink.hxx"
 
 namespace CLAM
 {
@@ -106,59 +104,12 @@ protected:
 		return *_network;
 	}
 protected:
-	unsigned GetNControlSinks() const { return _controlSinks.size(); }                   
-	unsigned GetNControlSources() const { return _controlSources.size(); }               
-	unsigned GetNSinks() const { return _audioSinks.size(); }                   
-	unsigned GetNSources() const { return _audioSources.size(); }               
-	void CacheSourcesAndSinks()
-	{
-		_audioSources.clear();
-		Network::Processings sources = GetSources();
-		for (Network::Processings::const_iterator it = sources.begin(); it != sources.end(); ++it)
-		{
-			Processing * processing = *it;
-			std::string processingName = _network->GetNetworkId(processing);
-			unsigned nPorts = processing->GetNOutPorts();
-			for (unsigned i=0; i<nPorts; i++)
-			{
-				std::string portName = processingName;
-				if (nPorts > 1)
-					portName +=  "_"+processing->GetOutPort(i).GetName();
-				_audioSources.push_back(ExportedPort(processing,i, portName));
-			}
-		}
-		_audioSinks.clear();
-		Network::Processings sinks = GetSinks();
-		for (Network::Processings::const_iterator it = sinks.begin(); it != sinks.end(); ++it)
-		{
-			Processing * processing = *it;
-			std::string processingName = _network->GetNetworkId(processing);
-			unsigned nPorts = processing->GetNInPorts();
-			for (unsigned i=0; i<nPorts; i++)
-			{
-				std::string portName = processingName;
-				if (nPorts > 1)
-					portName +="_"+processing->GetInPort(i).GetName();
-				_audioSinks.push_back(ExportedPort(processing,i, portName));
-			}
-		}
-		_controlSources.clear();
-		Network::ControlSources controlSources = _network->getOrderedControlSources();
-		for (Network::ControlSources::iterator it=controlSources.begin(); it!=controlSources.end(); it++)
-		{
-			Processing * processing = (Processing*) *it;
-			std::string portName = _network->GetNetworkId(processing);
-			_controlSources.push_back(ExportedPort(processing,0,portName));
-		}
-		_controlSinks.clear();
-		Network::ControlSinks controlSinks = _network->getOrderedControlSinks();
-		for (Network::ControlSinks::iterator it=controlSinks.begin(); it!=controlSinks.end(); it++)
-		{
-			Processing * processing = (Processing*) *it;
-			std::string portName = _network->GetNetworkId(processing);
-			_controlSinks.push_back(ExportedPort(processing,0,portName));
-		}
-	}
+	unsigned GetNControlSinks() const { return _controlSinks.size(); }
+	unsigned GetNControlSources() const { return _controlSources.size(); }
+	unsigned GetNSinks() const { return _audioSinks.size(); }
+	unsigned GetNSources() const { return _audioSources.size(); }
+	/** Updates the sources and sinks lists */
+	void CacheSourcesAndSinks();
 	const std::string & ControlSourceName(unsigned source) const
 	{
 		return _controlSources[source].name;
@@ -190,6 +141,14 @@ private:
 	Network::Processings GetSinks()
 	{
 		return GetNetwork().getOrderedProcessingsByAttribute("port_sink_type");
+	}
+	Network::Processings GetControlSources()
+	{
+		return GetNetwork().getOrderedProcessingsByAttribute("control_source_type", /*horizontal order*/ true);
+	}
+	Network::Processings GetControlSinks()
+	{
+		return GetNetwork().getOrderedProcessingsByAttribute("control_sink_type", /*horizontal order*/ true);
 	}
 	template <typename ProcessingType>
 	void SetFrameAndHopSizeIf(Processing * proc, unsigned bufferSize, unsigned port)

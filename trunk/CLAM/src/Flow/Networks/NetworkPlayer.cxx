@@ -30,6 +30,56 @@
 namespace CLAM
 {
 
+void NetworkPlayer::CacheSourcesAndSinks()
+{
+	_audioSources.clear();
+	Network::Processings sources = GetSources();
+	for (Network::Processings::const_iterator it = sources.begin(); it != sources.end(); ++it)
+	{
+		Processing * processing = *it;
+		std::string processingName = _network->GetNetworkId(processing);
+		unsigned nPorts = processing->GetNOutPorts();
+		for (unsigned i=0; i<nPorts; i++)
+		{
+			std::string portName = processingName;
+			if (nPorts > 1)
+				portName +=  "_"+processing->GetOutPort(i).GetName();
+			_audioSources.push_back(ExportedPort(processing,i, portName));
+		}
+	}
+	_audioSinks.clear();
+	Network::Processings sinks = GetSinks();
+	for (Network::Processings::const_iterator it = sinks.begin(); it != sinks.end(); ++it)
+	{
+		Processing * processing = *it;
+		std::string processingName = _network->GetNetworkId(processing);
+		unsigned nPorts = processing->GetNInPorts();
+		for (unsigned i=0; i<nPorts; i++)
+		{
+			std::string portName = processingName;
+			if (nPorts > 1)
+				portName +="_"+processing->GetInPort(i).GetName();
+			_audioSinks.push_back(ExportedPort(processing,i, portName));
+		}
+	}
+	_controlSources.clear();
+	Network::Processings controlSources = GetControlSources();
+	for (Network::Processings::iterator it=controlSources.begin(); it!=controlSources.end(); it++)
+	{
+		Processing * processing = *it;
+		std::string portName = _network->GetNetworkId(processing);
+		_controlSources.push_back(ExportedPort(processing,0,portName));
+	}
+	_controlSinks.clear();
+	Network::Processings controlSinks = GetControlSinks();
+	for (Network::Processings::iterator it=controlSinks.begin(); it!=controlSinks.end(); it++)
+	{
+		Processing * processing = *it;
+		std::string portName = _network->GetNetworkId(processing);
+		_controlSinks.push_back(ExportedPort(processing,0,portName));
+	}
+}
+
 std::string NetworkPlayer::SourcesAndSinksToString()
 {
 	CacheSourcesAndSinks();
