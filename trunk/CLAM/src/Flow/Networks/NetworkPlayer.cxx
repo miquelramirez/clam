@@ -67,16 +67,30 @@ void NetworkPlayer::CacheSourcesAndSinks()
 	for (Network::Processings::iterator it=controlSources.begin(); it!=controlSources.end(); it++)
 	{
 		Processing * processing = *it;
-		std::string portName = _network->GetNetworkId(processing);
-		_controlSources.push_back(ExportedPort(processing,0,portName));
+		std::string processingName = _network->GetNetworkId(processing);
+		unsigned nControls = processing->GetNInControls();
+		for (unsigned i=0; i<nControls; i++)
+		{
+			std::string portName = processingName;
+			if (nControls > 1)
+				portName +="_"+processing->GetInControl(i).GetName();
+			_controlSources.push_back(ExportedPort(processing,i, portName));
+		}
 	}
 	_controlSinks.clear();
 	Network::Processings controlSinks = GetControlSinks();
 	for (Network::Processings::iterator it=controlSinks.begin(); it!=controlSinks.end(); it++)
 	{
 		Processing * processing = *it;
-		std::string portName = _network->GetNetworkId(processing);
-		_controlSinks.push_back(ExportedPort(processing,0,portName));
+		std::string processingName = _network->GetNetworkId(processing);
+		unsigned nControls = processing->GetNOutControls();
+		for (unsigned i=0; i<nControls; i++)
+		{
+			std::string portName = processingName;
+			if (nControls > 1)
+				portName +="_"+processing->GetOutControl(i).GetName();
+			_controlSinks.push_back(ExportedPort(processing,i,portName));
+		}
 	}
 }
 
