@@ -13,7 +13,7 @@ namespace
 		"key", "AudioSink",
 		"category", "Audio I/O",
 		"description", "AudioSink",
-		"port_sink_type", typeid(float).name(),
+		"port_sink_type", typeid(TData).name(),
 		"icon", "sink.svg",
 		"embedded_svg", "sink.svg",
 		0

@@ -31,6 +31,7 @@ namespace Hidden
 		"key", "ControlSource",
 		"category", "Controls",
 		"description", "ControlSource",
+		"control_source_type", typeid(TControlData).name(),
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, ControlSource> reg = metadata;

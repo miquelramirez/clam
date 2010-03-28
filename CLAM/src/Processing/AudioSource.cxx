@@ -11,7 +11,7 @@ namespace
 		"key", "AudioSource",
 		"category", "Audio I/O",
 		"description", "AudioSource",
-		"port_source_type", typeid(float).name(),
+		"port_source_type", typeid(TData).name(),
 		"icon", "source.svg",
 		"embedded_svg", "source.svg",
 		0
