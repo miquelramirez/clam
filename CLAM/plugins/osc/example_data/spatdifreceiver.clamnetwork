@@ -217,7 +217,7 @@ p, li { white-space: pre-wrap; }
     <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
-  <processing id="lsFilter0" position="784,437" size="82,59" type="lsFilter0" />
+  <processing id="lsFilter0" position="784,437" size="82,59" type="lsFilter" />
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
