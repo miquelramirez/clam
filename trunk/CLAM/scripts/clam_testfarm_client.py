@@ -214,9 +214,12 @@ clam.add_subtask('Check Clam Networks Recursively that are inside the NetworkEdi
 	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/NetworkEditor'%localDefinitions },
 ] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the plugins/continuousExcitationSynthesizer', [
+clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins', [
 	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
 	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions },
+	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/MIDI'%localDefinitions },
+	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/sndfile'%localDefinitions }, 
+	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/speech'%localDefinitions },
 ] )
 
 """
