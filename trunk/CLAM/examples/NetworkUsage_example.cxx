@@ -35,6 +35,7 @@
 #include "SimpleOscillator.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioOut.hxx"
+#include "AudioSink.hxx"
 #include <iostream>
 #include "AudioManager.hxx"
 #include <CLAM/PANetworkPlayer.hxx>
