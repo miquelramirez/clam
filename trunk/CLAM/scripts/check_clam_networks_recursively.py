@@ -75,7 +75,7 @@ def passCheckClamnetworks(datapath, clamnetworks) :
 	failedCases = []
 	for case in clamnetworks :
 		command="CheckClamNetwork %s"%(case)
-		phase("Test: %s Command: %s"%(case, command))
+		phase("Test: %s"%(case))
 		output = cStringIO.StringIO()
 
 		try :

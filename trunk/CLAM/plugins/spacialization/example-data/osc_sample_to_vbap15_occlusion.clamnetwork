@@ -94,7 +94,7 @@ p, li { white-space: pre-wrap; }
     <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
-  <processing id="lpf0" position="-97,679" size="57,59" type="lpf0"/>
+  <processing id="lpf0" position="-97,679" size="57,59" type="lpf"/>
 
   <processing id="source_xyz" position="204,108" size="207,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/source/source0/xyz</OscPath>

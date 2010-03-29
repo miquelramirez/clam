@@ -419,7 +419,7 @@
 
   <processing id="XFadeAndSwitch_5" position="1001,371" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="amp_mono0" position="1426,318" size="134,66" type="amp_mono0" />
+  <processing id="amp_mono0" position="1426,318" size="134,66" type="amp_mono" />
 
   <processing id="directSoundPressure" position="754,513" size="247,100" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>

@@ -214,6 +214,11 @@ clam.add_subtask('Check Clam Networks Recursively that are inside the NetworkEdi
 	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/NetworkEditor'%localDefinitions },
 ] )
 
+clam.add_subtask('Check Clam Networks Recursively that are inside the plugins/continuousExcitationSynthesizer', [
+	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions },
+] )
+
 """
 clam.add_subtask('Padova Speech SMS (external repository)', [
 	'cd %(sandbox)s/clam/padova-speech-sms/'%localDefinitions,

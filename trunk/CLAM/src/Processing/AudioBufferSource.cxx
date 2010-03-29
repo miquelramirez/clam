@@ -54,7 +54,7 @@ bool AudioBufferSource::Do()
 
 void AudioBufferSource::SetExternalBuffer(const float* buf, unsigned nframes, unsigned index)
 {
-    //std::cout << "AudioBufferSink::SetExternalBuffer using float" << std::endl;
+	//std::cout << "AudioBufferSink::SetExternalBuffer using float" << std::endl;
 	CLAM_ASSERT(index < _ports.size(), "OutPort<Audio> index out of range");
 	Port& port = _ports[index];
 	port.mPort->SetSize(1);
@@ -66,7 +66,7 @@ void AudioBufferSource::SetExternalBuffer(const float* buf, unsigned nframes, un
 
 void AudioBufferSource::SetExternalBuffer(const double* buf, unsigned nframes, unsigned index)
 {
-    //std::cout << "AudioBufferSink::SetExternalBuffer using double" << std::endl;
+	//std::cout << "AudioBufferSink::SetExternalBuffer using double" << std::endl;
 	CLAM_ASSERT(index < _ports.size(), "OutPort<Audio> index out of range");
 	Port& port = _ports[index];
 	port.mPort->SetSize(1);

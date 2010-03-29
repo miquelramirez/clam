@@ -61,7 +61,7 @@ int main( int argc, char *argv[] )
 		continue;
 		}
 
-		std::cout << "\033[31mWrong.\033[0m" << std::endl;
+		std::cout << "\033[31mFailed.\033[0m" << std::endl;
 		return -1;
 	}
 	return 0;

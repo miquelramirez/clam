@@ -54,7 +54,7 @@
 
   <processing id="Oscilloscope_2" position="315,304" size="230,255" type="Oscilloscope" />
 
-  <processing id="Sin28_0" position="0,0" size="80,58" type="Sin28" />
+  <processing id="Sin28_0" position="0,0" size="80,58" type="Sin" />
 
   <processing id="SpectrumView_0" position="66,435" size="248,122" type="SpectrumView" />
 
