@@ -109,9 +109,9 @@ clam.add_subtask('CLAM Examples', [
 ] )
 
 clam.add_subtask('BM-Audio Soxsucks', [
-	'cd %(sandbox)s/acustica/soxsucks/'%localDefinitions,
+	'cd %(sandbox)s/acustica/src/soxsucks/'%localDefinitions,
 	'scons',
-	'ln -s %(sandbox)s/acustica/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
+	'ln -s %(sandbox)s/acustica/src/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
 ] )
 
 clam.add_subtask('BM-Audio Raytracing', [
