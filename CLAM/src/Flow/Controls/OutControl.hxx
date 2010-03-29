@@ -73,7 +73,7 @@ namespace CLAM {
 	template<class ControlDataType>
 	bool OutControl<ControlDataType>::IsLinkable(const InControlBase& in)
 	{
-		return GetTypeId() == in.GetTypeId();
+		return SameType(in.GetTypeId(), GetTypeId());
 	}
 
 	typedef OutControl<TControlData> FloatOutControl;
