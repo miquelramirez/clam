@@ -46,13 +46,11 @@ namespace CLAM {
 
 	public:
 		OutControl(const std::string &name = "unnamed typed in control", Processing * proc = 0);
+		virtual bool IsLinkable(const InControlBase& in);
+		virtual const std::type_info & GetTypeId() const { return typeid(ControlDataType); }
 
+		/// Sends the control to the linked InControls
 		void SendControl(const ControlDataType& val);
-		bool IsLinkable(const InControlBase& in);
-		virtual const std::type_info & GetTypeId() const 
-		{
-			return typeid(ControlDataType);
-		};
 	};
 	
 	template<class ControlDataType>
@@ -65,7 +63,6 @@ namespace CLAM {
 	void OutControl<ControlDataType>::SendControl(const ControlDataType& val)
 	{
 		typename std::list< InControlBase * >::iterator it;
-		
 		for (it=mLinks.begin(); it!=mLinks.end(); it++) 
 		{
 			InControl<ControlDataType>* control = static_cast<InControl<ControlDataType>*>(*it);
@@ -76,11 +73,10 @@ namespace CLAM {
 	template<class ControlDataType>
 	bool OutControl<ControlDataType>::IsLinkable(const InControlBase& in)
 	{
-		return typeid(ControlDataType) == in.GetTypeId();
-		
+		return GetTypeId() == in.GetTypeId();
 	}
 
-	typedef OutControl<float> FloatOutControl;
+	typedef OutControl<TControlData> FloatOutControl;
 
 } // END NAMESPACE CLAM
 
