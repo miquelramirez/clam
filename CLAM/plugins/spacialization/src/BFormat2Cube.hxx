@@ -219,8 +219,6 @@ public:
 		for(it=_outputs.begin(); it!=_outputs.end(); it++)
 			delete *it;
 		_outputs.clear();
-		// Delete ports from Processing (base class) register
-		GetOutPorts().Clear();
 	}
 	~BFormat2Cube()
 	{

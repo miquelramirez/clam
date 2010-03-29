@@ -253,7 +253,6 @@ bool ControlTraceWriter::Do()
 void ControlTraceWriter::RemoveOldControls()
 {
 	mInputs.Clear();
-	GetInControls().Clear();
 }
 
 /* ================================================================= */
@@ -345,7 +344,6 @@ bool ControlTraceReader::Do()
 void ControlTraceReader::RemoveOldControls()
 {
 	mOutputs.Clear();
-	GetOutControls().Clear();
 }
 
 /* ================================================================== */

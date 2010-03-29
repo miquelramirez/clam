@@ -65,10 +65,14 @@ public:
 };
 
 
-class ControlPrinterTypedConfig : public ProcessingConfig
+
+class ControlPrinterTyped : public Processing
 {
+public:
+	class Config : public ProcessingConfig
+	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ControlPrinterTypedConfig, 3, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (Config, 3, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Identifier);
 		DYN_ATTRIBUTE (1, public, std::string, TypesMask);
 		DYN_ATTRIBUTE (2, public, bool, GuiOnly );
@@ -76,32 +80,28 @@ class ControlPrinterTypedConfig : public ProcessingConfig
 
 	private:
 		void DefaultInit();
-};
-
-class ControlPrinterTyped : public Processing
-{
-	typedef std::vector<InControlBase*> InControls;
-	ControlPrinterTypedConfig _config;
+	};
+	typedef std::vector<InControlBase * > InControls;
+private:
+	Config _config;
 	InControls mInControls;
 
-	public:
-		const char *GetClassName() const { return "ControlPrinterTyped"; }
-		ControlPrinterTyped();
-		ControlPrinterTyped( const ControlPrinterTypedConfig& cfg ); 
-		~ControlPrinterTyped();
-		bool ConcreteConfigure( const ProcessingConfig& cfg ); 
-		const ProcessingConfig& GetConfig() const { return _config; }
-		bool Do();
-	protected:
-		void RemoveOldControls();
-	private:
-		void ResizeControls(unsigned nInputs, const std::string & baseName);
-		void ResizeControls(unsigned nInputs, const std::list<std::string> & names);
-		
-		const unsigned int GetInputsNumber() const;
+public:
+	ControlPrinterTyped( const Config& cfg = Config() ); 
+	~ControlPrinterTyped();
+	const char *GetClassName() const { return "ControlPrinterTyped"; }
+	bool ConcreteConfigure( const ProcessingConfig& cfg ); 
+	const ProcessingConfig& GetConfig() const { return _config; }
+	bool Do();
+private:
+	void RemoveOldControls();
+	void ResizeControls(unsigned nInputs, const std::string & baseName);
+	void ResizeControls(unsigned nInputs, const std::list<std::string> & names);
 
-		InControlBase * createControl(const std::string & type, const std::string & name);
-		void ClearControls();
+	const unsigned int GetInputsNumber() const;
+
+	InControlBase * createControl(const std::string & type, const std::string & name);
+	void ClearControls();
 };
 
 }

@@ -1,5 +1,10 @@
 2010-??-?? CLAM 1.4.1 SVN $Revision$
-
+ * Removed some deprecated symbols
+   * enum EFFTType
+   * Untemplatized ComplexTmpl/PolarTmpl -> Complex/Polar
+ * NetworkPlayers and backends
+   * Network backends for plugins are NetworkPlayers now
+   * Common Backend code to inspect the network moved to base NetworkPlayer
 
 2010-03-05 CLAM 1.4.0
 '3D molluscs in the space release'

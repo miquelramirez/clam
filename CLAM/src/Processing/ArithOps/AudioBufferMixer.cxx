@@ -98,9 +98,6 @@ void AudioBufferMixer::RemovePortsAndControls()
 	for(itInControl=mInputControls.begin(); itInControl!=mInputControls.end(); itInControl++)
 		delete *itInControl;
 	mInputControls.clear();
-
-	GetInPorts().Clear();
-	GetInControls().Clear();
 }
 
 bool AudioBufferMixer::ConcreteConfigure(const ProcessingConfig& c)

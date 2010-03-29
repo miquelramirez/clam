@@ -132,7 +132,7 @@ namespace Hidden
 
 		InputsRefVector inputsRef;
 
-		for ( VectorOfInputs::iterator i = mInputs.begin();
+		for ( Inputs::iterator i = mInputs.begin();
 		      i!= mInputs.end(); i++ )
 		{
 		    inputsRef.push_back( &((*i)->GetAudio()) );
@@ -161,7 +161,7 @@ namespace Hidden
 		mNativeStream->WriteData( mChannelsToWrite.GetPtr(), mChannelsToWrite.Size(),
 					 mSamplesMatrix.GetPtr(), inputsSize );
 
-		for( VectorOfInputs::iterator i = mInputs.begin();
+		for( Inputs::iterator i = mInputs.begin();
 		     i!=mInputs.end(); i++ )
 		  {
 		    (*i)->Consume();
@@ -260,14 +260,10 @@ namespace Hidden
 
 	void MultiChannelAudioFileWriter::DestroyOldInputs()
 	{
-		for ( VectorOfInputs::iterator i = mInputs.begin();
-		      i != mInputs.end(); i++ )
-		{
+		for ( Inputs::iterator i = mInputs.begin(); i != mInputs.end(); i++ )
 			if ( *i ) delete *i;
-		}
 
 		mInputs.clear();
-		GetInPorts().Clear();
 	}
 }
 

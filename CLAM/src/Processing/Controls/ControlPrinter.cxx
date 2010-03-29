@@ -18,7 +18,7 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, ControlPrinter> reg = metadata;
 }
 
-	void ControlPrinterConfig::DefaultInit()
+	void ControlPrinter::Config::DefaultInit()
 	{
 		AddAll();
 		UpdateData();
@@ -27,12 +27,7 @@ namespace Hidden
 		SetGuiOnly(true);
 	}
 
-	ControlPrinter::ControlPrinter()
-	{
-		Configure( mConfig );	
-	}
-	
-	ControlPrinter::ControlPrinter( const ControlPrinterConfig& cfg )
+	ControlPrinter::ControlPrinter( const ControlPrinter::Config& cfg )
 	{ 
 		Configure( cfg );
 	}
@@ -94,7 +89,6 @@ namespace Hidden
 	void ControlPrinter::RemoveOldControls()
 	{
 		mInControls.Clear();
-		GetInControls().Clear();
 	}
 }
 
