@@ -111,13 +111,13 @@ clam.add_subtask('CLAM Examples', [
 clam.add_subtask('BM-Audio Soxsucks', [
 	'cd %(sandbox)s/acustica/src/soxsucks/'%localDefinitions,
 	'scons',
-	'ln -s %(sandbox)s/acustica/src/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
+	'ln -sf %(sandbox)s/acustica/src/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
 ] )
 
 clam.add_subtask('BM-Audio Raytracing', [
 	'cd %(sandbox)s/acustica/src/raytracing'%localDefinitions,
 	'scons',
-	'ln -s %(sandbox)s/acustica/src/raytracing/raytracing %(installPath)s/bin'%localDefinitions,
+	'ln -sf %(sandbox)s/acustica/src/raytracing/raytracing %(installPath)s/bin'%localDefinitions,
 	'./back2back.py',
 ] )
 
@@ -172,7 +172,7 @@ clam.add_subtask('Back-to-back network tests', [
 ] )
 
 clam.add_subtask('BM-Audio back-to-back tests', [
-	'ln -s %(sandbox)s/acustica/src/rendercoreo/rendercoreo %(installPath)s/bin'%localDefinitions,
+	'ln -sf %(sandbox)s/acustica/src/rendercoreo/rendercoreo %(installPath)s/bin'%localDefinitions,
 	'cd %(sandbox)s/acustica/bformat2binaural'%localDefinitions,
 	'./back2back.py',
 	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
