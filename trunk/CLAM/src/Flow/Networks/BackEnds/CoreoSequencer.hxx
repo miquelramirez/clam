@@ -4,8 +4,8 @@
 
 #include <CLAM/OfflineNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
-#include <CLAM/OutControl.hxx>
-#include <CLAM/BaseNetwork.hxx>
+#include <CLAM/Network.hxx>
+#include <CLAM/ControlSource.hxx>
 
 #include <iostream>
 #include <vector>

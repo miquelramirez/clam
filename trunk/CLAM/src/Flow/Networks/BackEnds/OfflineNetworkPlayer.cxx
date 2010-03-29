@@ -5,6 +5,7 @@
 #include "AudioSink.hxx"
 #include "AudioSource.hxx"
 
+
 #include <iostream>
 #include <sstream>
 
@@ -203,7 +204,13 @@ void OfflineNetworkPlayer::Start()
 			delete[] bufferReader;
 		}
 
-		GetNetwork().Do();
+    if (_coreoSequencer)
+    {
+      //std::cout << "Player iterationIndex="  << iterationIndex << std::endl;
+      _coreoSequencer->UpdateControls(frameSize, sampleRate, iterationIndex, GetNetwork());
+    }
+	  
+    GetNetwork().Do();
 
 		unsigned outAudioIndex = 0;
 		for(SndFileHandles::iterator it = outfiles.begin(); it != outfiles.end(); ++it)
