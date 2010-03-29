@@ -49,10 +49,10 @@ namespace CLAM {
 		/// @returns True if the control is linked to the parameter, an out control.
 		bool IsConnectedTo(InControlBase& in)
 		{
-				Peers::iterator it;
-				for (it=mLinks.begin(); it!=mLinks.end(); it++) 
-					if ((*it) == &in) return true;
-				return false;
+			Peers::iterator it;
+			for (it=mLinks.begin(); it!=mLinks.end(); it++) 
+				if (*it == &in) return true;
+			return false;
 		}
 		virtual const std::type_info& GetTypeId() const = 0;
 		/**
