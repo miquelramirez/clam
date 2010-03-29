@@ -132,11 +132,6 @@ void LadspaWrapper::RemovePortsAndControls()
 	_outputControls.clear();
 
 	_outputControlValues.clear();
-
-	GetInPorts().Clear();
-	GetOutPorts().Clear();
-	GetInControls().Clear();
-	GetOutControls().Clear();
 }
 
 void LadspaWrapper::ConfigurePortsAndControls()

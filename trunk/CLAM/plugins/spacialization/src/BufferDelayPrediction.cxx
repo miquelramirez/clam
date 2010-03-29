@@ -87,10 +87,6 @@ void BufferDelayPrediction::RemovePortsAndControls()
 	for(itInControl=mInputControls.begin(); itInControl!=mInputControls.end(); itInControl++)
 		delete *itInControl;
 	mInputControls.clear();
-		
-	GetInPorts().Clear();
-	GetInControls().Clear();
-	GetOutControls().Clear();
 }
 
 bool BufferDelayPrediction::ConcreteConfigure(const ProcessingConfig& c)

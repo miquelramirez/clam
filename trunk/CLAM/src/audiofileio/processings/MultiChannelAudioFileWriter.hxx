@@ -57,11 +57,11 @@ namespace CLAM
 		void DestroyOldInputs();
 
 	protected:
-		typedef std::vector< AudioInPort* > VectorOfInputs;
+		typedef std::vector< AudioInPort* > Inputs;
 		typedef std::vector< const Audio* > InputsRefVector;
 		
 		MultiChannelAudioFileWriterConfig    mConfig;
-		VectorOfInputs                       mInputs;
+		Inputs                               mInputs;
 		AudioCodecs::Stream*                 mNativeStream;
 		Array<TIndex>                        mChannelsToWrite;
 		Array<TData*>                        mSamplesMatrix;

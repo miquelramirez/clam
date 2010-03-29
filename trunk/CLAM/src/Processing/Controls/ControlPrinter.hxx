@@ -30,33 +30,33 @@
 namespace CLAM
 {
 
-class ControlPrinterConfig : public ProcessingConfig
+class ControlPrinter : public Processing
 {
+public:
+	class Config : public ProcessingConfig
+	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ControlPrinterConfig, 3, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (Config, 3, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Identifier);
 		DYN_ATTRIBUTE (1, public, unsigned, NumberOfInputs);
 		DYN_ATTRIBUTE (2, public, bool, GuiOnly );
 
 	private:
 		void DefaultInit();
-};
-
-class ControlPrinter : public Processing
-{
-	ControlPrinterConfig mConfig;
+	};
+private:
+	Config mConfig;
 	InControlArray mInControls;
 
-	public:
-		const char *GetClassName() const { return "ControlPrinter"; }
-		ControlPrinter();
-		ControlPrinter( const ControlPrinterConfig& cfg ); 
-		~ControlPrinter();
-		bool ConcreteConfigure( const ProcessingConfig& cfg ); 
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-		bool Do();
-	protected:
-		void RemoveOldControls();
+public:
+	const char *GetClassName() const { return "ControlPrinter"; }
+	ControlPrinter( const Config& cfg = Config() ); 
+	~ControlPrinter();
+	bool ConcreteConfigure( const ProcessingConfig& cfg ); 
+	const ProcessingConfig& GetConfig() const { return mConfig; }
+	bool Do();
+protected:
+	void RemoveOldControls();
 };
 
 }
