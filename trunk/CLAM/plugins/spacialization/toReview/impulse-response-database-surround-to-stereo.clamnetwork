@@ -1,112 +1,121 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="2MagPhase" position="376,915" size="107,65" type="Complex2MagPhaseSpectrum" />
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="2MagPhase X" position="368,975" size="118,65" type="Complex2MagPhaseSpectrum" />
+  <processing id="2MagPhase" position="376,915" size="131,65" type="Complex2MagPhaseSpectrum"/>
 
-  <processing id="2Spectrum" position="497,914" size="102,65" type="MagPhaseSpectrum2Spectrum" />
+  <processing id="2MagPhase X" position="368,975" size="144,65" type="Complex2MagPhaseSpectrum"/>
 
-  <processing id="2Spectrum X" position="495,976" size="113,65" type="MagPhaseSpectrum2Spectrum" />
+  <processing id="2Spectrum" position="497,914" size="127,65" type="MagPhaseSpectrum2Spectrum"/>
 
-  <processing id="2StreamR" position="1261,599" size="95,65" type="AudioBuffer2Stream">
+  <processing id="2Spectrum X" position="495,976" size="140,65" type="MagPhaseSpectrum2Spectrum"/>
+
+  <processing id="2StreamR" position="1261,599" size="121,65" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="2streamL" position="1264,448" size="92,65" type="AudioBuffer2Stream">
+  <processing id="2streamL" position="1264,448" size="118,65" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="AudioInput" position="24,795" size="128,108" type="AudioSource" />
+  <processing id="AudioInput" position="24,795" size="128,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
 
-  <processing id="AudioWindowing" position="143,800" size="135,65" type="AudioStream2Buffer">
+  <processing id="AudioWindowing" position="143,800" size="166,65" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="BufferOscilloscope" position="1034,866" size="349,191" type="BufferOscilloscope" />
+  <processing id="BufferOscilloscope" position="1034,866" size="349,191" type="BufferOscilloscope"/>
 
-  <processing id="Conv C" position="1011,519" size="77,65" type="LowLatencyConvolution">
+  <processing id="Conv C" position="1011,519" size="103,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Conv L to L" position="1051,192" size="101,65" type="LowLatencyConvolution">
+  <processing id="Conv L to L" position="1051,192" size="129,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Conv L to R" position="1026,686" size="103,65" type="LowLatencyConvolution">
+  <processing id="Conv L to R" position="1026,686" size="131,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Conv R to L" position="1050,243" size="103,65" type="LowLatencyConvolution">
+  <processing id="Conv R to L" position="1050,243" size="131,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Conv R to R" position="1027,735" size="105,65" type="LowLatencyConvolution">
+  <processing id="Conv R to R" position="1027,735" size="133,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Conv SL to L" position="1049,292" size="110,65" type="LowLatencyConvolution">
+  <processing id="Conv SL to L" position="1049,292" size="137,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Conv SL to R" position="1025,784" size="112,65" type="LowLatencyConvolution">
+  <processing id="Conv SL to R" position="1025,784" size="139,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Conv SR to L" position="1054,342" size="112,65" type="LowLatencyConvolution">
+  <processing id="Conv SR to L" position="1054,342" size="139,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Conv SR to R" position="1023,831" size="114,65" type="LowLatencyConvolution">
+  <processing id="Conv SR to R" position="1023,831" size="141,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_P" position="350,249" size="121,65" type="LowLatencyConvolution">
+  <processing id="Convolution_P" position="350,249" size="150,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_P_old" position="349,294" size="146,65" type="LowLatencyConvolution">
+  <processing id="Convolution_P_old" position="349,294" size="177,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vx" position="347,354" size="127,65" type="LowLatencyConvolution">
+  <processing id="Convolution_Vx" position="347,354" size="159,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vx_old" position="347,400" size="152,65" type="LowLatencyConvolution">
+  <processing id="Convolution_Vx_old" position="347,400" size="186,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vy" position="357,456" size="127,65" type="LowLatencyConvolution">
+  <processing id="Convolution_Vy" position="357,456" size="159,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vy_old" position="350,502" size="152,65" type="LowLatencyConvolution">
+  <processing id="Convolution_Vy_old" position="350,502" size="186,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="DebugImpulseResponse" position="163,919" size="184,65" type="DebugImpulseResponse" />
+  <processing id="DebugImpulseResponse" position="163,919" size="213,65" type="DebugImpulseResponse"/>
 
-  <processing id="DebugImpulseResponse_1" position="150,976" size="198,65" type="DebugImpulseResponse" />
+  <processing id="DebugImpulseResponse_1" position="150,976" size="228,65" type="DebugImpulseResponse"/>
 
-  <processing id="Emitter Position" position="160,21" size="152,195" type="ControlSurface">
+  <processing id="Emitter Position" position="160,21" size="161,195" type="ControlSurface">
     <MinX>0</MinX>
     <DefaultX>0</DefaultX>
     <MaxX>1</MaxX>
@@ -115,120 +124,129 @@
     <MaxY>1</MaxY>
   </processing>
 
-  <processing id="EquidistantSurround" position="560,617" size="163,190" type="NSurround">
+  <processing id="EquidistantSurround" position="560,617" size="188,190" type="NSurround">
     <NChannels>5</NChannels>
   </processing>
 
-  <processing id="FFT C" position="841,560" size="71,65" type="MyFFT">
+  <processing id="FFT C" position="841,560" size="92,65" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="FFT L" position="851,772" size="69,65" type="MyFFT">
+  <processing id="FFT L" position="851,772" size="90,65" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="FFT R" position="839,612" size="71,65" type="MyFFT">
+  <processing id="FFT R" position="839,612" size="92,65" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="FFT SL" position="843,720" size="78,65" type="MyFFT">
+  <processing id="FFT SL" position="843,720" size="98,65" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="FFT SR" position="840,669" size="80,65" type="MyFFT">
+  <processing id="FFT SR" position="840,669" size="100,65" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="IR0" position="859,494" size="54,65" type="ImpulseResponseLoader">
+  <processing id="IR0" position="859,494" size="78,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e000a.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
-  <processing id="IR144" position="907,470" size="69,65" type="ImpulseResponseLoader">
+  <processing id="IR144" position="907,470" size="94,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e145a.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
-  <processing id="IR216" position="900,411" size="69,65" type="ImpulseResponseLoader">
+  <processing id="IR216" position="900,411" size="94,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e215a.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
-  <processing id="IR288" position="905,319" size="69,65" type="ImpulseResponseLoader">
+  <processing id="IR288" position="905,319" size="94,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e290a.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
-  <processing id="IR72" position="906,255" size="61,65" type="ImpulseResponseLoader">
+  <processing id="IR72" position="906,255" size="86,65" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>HRTFs/elev0/L0e070a.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
-  <processing id="ImpulseResponseDatabaseFetcher_P" position="28,281" size="265,65" type="ImpulseResponseDatabaseFetcher">
+  <processing id="ImpulseResponseDatabaseFetcher_P" position="28,281" size="295,65" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>db/</Path>
     <Prefix>p</Prefix>
   </processing>
 
-  <processing id="ImpulseResponseDatabaseFetcher_Vx" position="17,357" size="271,65" type="ImpulseResponseDatabaseFetcher">
+  <processing id="ImpulseResponseDatabaseFetcher_Vx" position="17,357" size="304,65" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>db/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
-  <processing id="ImpulseResponseDatabaseFetcher_Vy" position="37,441" size="271,65" type="ImpulseResponseDatabaseFetcher">
+  <processing id="ImpulseResponseDatabaseFetcher_Vy" position="37,441" size="304,65" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>db/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
-  <processing id="L" position="1367,448" size="128,111" type="AudioSink" />
+  <processing id="L" position="1367,448" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="MyFFT" position="298,800" size="76,65" type="MyFFT">
+  <processing id="MyFFT" position="298,800" size="98,65" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT" position="519,251" size="80,65" type="MyIFFT">
+  <processing id="MyIFFT" position="519,251" size="102,65" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_1" position="509,357" size="94,65" type="MyIFFT">
+  <processing id="MyIFFT_1" position="509,357" size="117,65" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_2" position="512,466" size="94,65" type="MyIFFT">
+  <processing id="MyIFFT_2" position="512,466" size="117,65" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_3" position="507,292" size="94,65" type="MyIFFT">
+  <processing id="MyIFFT_3" position="507,292" size="117,65" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_4" position="510,398" size="94,65" type="MyIFFT">
+  <processing id="MyIFFT_4" position="510,398" size="117,65" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_5" position="515,506" size="94,65" type="MyIFFT">
+  <processing id="MyIFFT_5" position="515,506" size="117,65" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_6" position="1168,449" size="94,65" type="MyIFFT">
+  <processing id="MyIFFT_6" position="1168,449" size="117,65" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_7" position="1163,598" size="94,65" type="MyIFFT">
+  <processing id="MyIFFT_7" position="1163,598" size="117,65" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_8" position="935,903" size="94,65" type="MyIFFT">
+  <processing id="MyIFFT_8" position="935,903" size="117,65" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope" position="724,199" size="131,96" type="Oscilloscope" />
+  <processing id="Oscilloscope" position="724,199" size="139,96" type="Oscilloscope"/>
 
-  <processing id="R" position="1365,599" size="128,111" type="AudioSink" />
+  <processing id="R" position="1365,599" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="Receiver Position" position="25,17" size="152,195" type="ControlSurface">
+  <processing id="Receiver Position" position="25,17" size="169,195" type="ControlSurface">
     <MinX>0</MinX>
     <DefaultX>0</DefaultX>
     <MaxX>1</MaxX>
@@ -237,79 +255,71 @@
     <MaxY>1</MaxY>
   </processing>
 
-  <processing id="SpectrumView" position="635,852" size="237,91" type="SpectrumView" />
+  <processing id="SpectrumView" position="635,852" size="237,91" type="SpectrumView"/>
 
-  <processing id="SpectrumView_1" position="635,941" size="236,93" type="SpectrumView" />
+  <processing id="SpectrumView_1" position="635,941" size="236,93" type="SpectrumView"/>
 
-  <processing id="Sum" position="1154,709" size="61,65" type="ComplexSpectrumSum" />
+  <processing id="Sum" position="1154,709" size="86,65" type="ComplexSpectrumSum"/>
 
-  <processing id="Sum2" position="1152,780" size="69,65" type="ComplexSpectrumSum" />
+  <processing id="Sum2" position="1152,780" size="94,65" type="ComplexSpectrumSum"/>
 
-  <processing id="Sum3" position="1084,596" size="69,65" type="ComplexSpectrumSum" />
+  <processing id="Sum3" position="1084,596" size="94,65" type="ComplexSpectrumSum"/>
 
-  <processing id="Sum4" position="1239,738" size="69,65" type="ComplexSpectrumSum" />
+  <processing id="Sum4" position="1239,738" size="94,65" type="ComplexSpectrumSum"/>
 
-  <processing id="SumL" position="1168,212" size="68,65" type="ComplexSpectrumSum" />
+  <processing id="SumL" position="1168,212" size="93,65" type="ComplexSpectrumSum"/>
 
-  <processing id="SumL2" position="1174,306" size="75,65" type="ComplexSpectrumSum" />
+  <processing id="SumL2" position="1174,306" size="101,65" type="ComplexSpectrumSum"/>
 
-  <processing id="SumL3" position="1262,260" size="75,65" type="ComplexSpectrumSum" />
+  <processing id="SumL3" position="1262,260" size="101,65" type="ComplexSpectrumSum"/>
 
-  <processing id="SumL4" position="1081,451" size="75,65" type="ComplexSpectrumSum" />
+  <processing id="SumL4" position="1081,451" size="101,65" type="ComplexSpectrumSum"/>
 
-  <processing id="XFader_P" position="611,266" size="91,65" type="AudioBufferCrossFader" />
+  <processing id="XFader_P" position="611,266" size="116,65" type="AudioBufferCrossFader"/>
 
-  <processing id="XFader_Vx" position="605,370" size="98,65" type="AudioBufferCrossFader" />
+  <processing id="XFader_Vx" position="605,370" size="125,65" type="AudioBufferCrossFader"/>
 
-  <processing id="XFader_Vy" position="612,475" size="98,65" type="AudioBufferCrossFader" />
+  <processing id="XFader_Vy" position="612,475" size="125,65" type="AudioBufferCrossFader"/>
 
-  <processing id="beta" position="370,35" size="323,88" type="OutControlSender">
-    <Min>-360</Min>
-    <Default>0</Default>
-    <Max>360</Max>
-    <Step>3.6</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  <processing id="toStream P" position="718,272" size="129,65" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <BufferSize>1024</BufferSize>
   </processing>
 
-  <processing id="toStream P" position="718,272" size="104,65" type="AudioBuffer2Stream">
+  <processing id="toStream Vx" position="712,371" size="138,65" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="toStream Vx" position="712,371" size="110,65" type="AudioBuffer2Stream">
+  <processing id="toStream Vy" position="719,475" size="138,65" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="toStream Vy" position="719,475" size="110,65" type="AudioBuffer2Stream">
+  <processing id="win C" position="758,564" size="93,65" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="win C" position="758,564" size="66,65" type="AudioStream2Buffer">
+  <processing id="win L" position="761,767" size="91,65" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="win L" position="761,767" size="64,65" type="AudioStream2Buffer">
+  <processing id="win R" position="756,614" size="93,65" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="win R" position="756,614" size="66,65" type="AudioStream2Buffer">
+  <processing id="win SL" position="755,716" size="99,65" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="win SL" position="755,716" size="73,65" type="AudioStream2Buffer">
+  <processing id="win SR" position="756,666" size="101,65" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
-
-  <processing id="win SR" position="756,666" size="75,65" type="AudioStream2Buffer">
-    <HopSize>512</HopSize>
-    <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
   <port_connection>
     <out>2MagPhase.MagPhaseSpectrum</out>
@@ -834,11 +844,6 @@
   <control_connection>
     <out>Receiver Position.outY</out>
     <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>beta.out</out>
-    <in>EquidistantSurround.beta</in>
   </control_connection>
 
 </network>
