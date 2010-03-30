@@ -35,14 +35,14 @@ class CoreoSequencer
 	coreo_entries_t _coreoEntries;
 	coreo_entries_t::iterator _coreoEvent; //const
 
-	// allows for multiple values, separated by ',', no space!
-	// i.e. '00:00:00:00 /gaincontrol 1.0,2.0,3.0'
+	// allows for multiple values
+	// i.e. '00:00:00:00 /gaincontrol 1.0 2.0 3.0'
 	values_t GetCoreoValues(std::string const& val)
 	{
 		values_t values;
 		std::stringstream ss(val);
 		std::string item;
-		while(std::getline(ss, item, ',')) 
+		while(std::getline(ss, item)) 
 			values.push_back(atof(item.c_str()));
 		return values;
 	}
@@ -93,6 +93,7 @@ class CoreoSequencer
 		return smpte;
 	}
 
+	// Reads lines like '00:00:00:00 /gaincontrol 1.0 2.0 3.0'
 	void PreprocessCoreoFile()
 	{
 		std::ifstream file(_coreoFile.c_str(), std::ifstream::in);
@@ -116,10 +117,10 @@ class CoreoSequencer
 				if (pos == 1)
 					name = tmp;
 				if (pos > 1)
-					values += tmp + ",";
+					values += tmp + " ";
 				++pos;
 			}
-			// remove trailing ',' (nicer when printing)
+			// remove trailing ' '
 	    if (!values.empty()) 
        values = values.substr(0, values.size()-1);
 
@@ -163,11 +164,11 @@ public:
 					 ++_coreoEvent) 
 		{
 			std::string const& controlName = _coreoEvent->name;
-			std::cout << "buffer=" << buffernr
-								<< " smpte=" << MsToSmpte(currentTimeInMillisec)
-								<< " controlname=" << controlName
-								<< " coreo event in samples=" << SmpteToMs(_coreoEvent->mtc) * 48
-								<< " sample=" << buffernr * framesize;
+			//std::cout << "buffer=" << buffernr
+			//					<< " smpte=" << MsToSmpte(currentTimeInMillisec)
+			//					<< " controlname=" << controlName
+			//					<< " coreo event in samples=" << SmpteToMs(_coreoEvent->mtc) * 48
+			//					<< " sample=" << buffernr * framesize;
 		 
 			// check for wrong input
 			if (!net.HasProcessing(controlName))
@@ -178,7 +179,7 @@ public:
 			}
 
 			size_t size = _coreoEvent->values.size();
-			std::cout << " coreo_values_size=" << size;
+			//std::cout << " coreo_values_size=" << size;
 
 			// check for wrong input
 			if (size == 0)
@@ -193,18 +194,18 @@ public:
 			CLAM::Processing& control = net.GetProcessing(controlName);
 			CLAM::ControlSource* controlSource = dynamic_cast<CLAM::ControlSource*>(&control);
 			const double& value = _coreoEvent->values[0];
-			std::cout << " value=" << value;
+			//std::cout << " value=" << value;
 
 			// TODO: multicontrols
 			controlSource->Do(value);
 
-			std::cout << std::endl;
+			//std::cout << std::endl;
 		}
 
-		std::cout << "current_buffer=" << buffernr
-							<< " currentTimeInMillisec=" << currentTimeInMillisec
-							<< " sample=" << buffernr * framesize
-							<< std::endl;
+		//std::cout << "current_buffer=" << buffernr
+		//					<< " currentTimeInMillisec=" << currentTimeInMillisec
+		//					<< " sample=" << buffernr * framesize
+		//					<< std::endl;
 	}
 };
 
