@@ -7,7 +7,7 @@
 #include <fstream>
 #include <sndfile.hh>  
 
-#include "CoreoSequencer.hxx"
+#include "ControlSequencer.hxx"
 
 namespace CLAM
 {
@@ -25,19 +25,20 @@ class OfflineNetworkPlayer : public NetworkPlayer
 	bool _enableLoopInputWavs;
 	float _resultWavsTime;
 
-  CoreoSequencer* _coreoSequencer;
+  ControlSequencer* _controlSequencer;
+  std::string  _controlFile;
 
 public:
 	OfflineNetworkPlayer()
 		: _enableLoopInputWavs(false)
 		, _resultWavsTime(0.0)
-    , _coreoSequencer(0)
+    , _controlSequencer(0)
 	{
 	}
 	
   ~OfflineNetworkPlayer()
   {
-    delete _coreoSequencer;
+    delete _controlSequencer;
   }
 
 	void AddInputFile( const std::string& );
@@ -68,9 +69,9 @@ public:
 		_resultWavsTime=time;
 	}
 
-  void SetCoreoFile(std::string const& coreoFile)
+  void SetControlFile(std::string const& controlFile)
   {
-    _coreoSequencer = new CoreoSequencer(coreoFile);
+    _controlFile = controlFile;
   }
 
 };

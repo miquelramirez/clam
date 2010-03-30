@@ -19,6 +19,7 @@ int usage(const std::string & program)
 		<< " <networkfile> OPTIONS... [<inwave> ...] -o [[-c CHANNELS] <outwave> ...]\n"
 		<< "Executes a CLAM network off-line, by mapping audio sink\n"
 		<< "and audio sources to wave files.\n"
+		<< "  -s FILE      Sequences the network controls with the contents of FILE ('mtc name value').\n"
 		<< "  -t SECONDS   Loops and/or cuts inputs to reach SECONDS seconds long.\n"
 		<< "  -f BITS      Use PCM format of BITS depth for all output waves (16,24,32,64).\n"
 		<< "  -o           Indicates that the next parameters are outputs instead inputs.\n"
@@ -96,6 +97,19 @@ int main( int argc, char *argv[] )
 	}
 
 	int argIndex = 2;
+	if (std::string(argv[argIndex])== "-s")
+	{
+		if (argc==3)
+		{
+			std::cout << "Error: needed a file argument. Example: -s sine.coreo" << std::endl;
+			return -1;
+		}
+		std::string controlFile(argv[++argIndex]);
+		std::cout << "Sequence file: " <<  controlFile << std::endl;
+		player->SetControlFile(controlFile);
+		argIndex++;		
+	}
+
 	if (std::string(argv[argIndex])== "-t")
 	{
 		std::cout << "Resulting wavs time (in seconds) specified Mode" << std::endl;
