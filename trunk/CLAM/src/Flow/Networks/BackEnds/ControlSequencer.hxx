@@ -1,51 +1,38 @@
-// CoreoSequencer
-//
-//
+#ifndef ControlSequencer_hxx
+#define ControlSequencer_hxx
 
-#ifndef COREOSEQUENCER_INCLUDED
-#define COREOSEQUENCER_INCLUDED
-
-#include <CLAM/Network.hxx>
-#include <CLAM/ControlSource.hxx>
+#include "Network.hxx"
+#include "ControlSource.hxx"
 
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <iterator>
 
-//////////////////////////////////////////////////////////////////////////////
+namespace CLAM 
+{
 
-/**
- *
- */
-class CoreoSequencer
+class ControlSequencer
 {
 	std::string _coreoFile;
-	double _frameRate;
+	double _controlRate;
+	int _frameSize;
+	int _sampleRate;
+	CLAM::Network& _net;
 
-	typedef std::vector<double> values_t;
+	typedef std::vector<double> Values;
 
 	struct CoreoEntry
 	{
 		std::string mtc;
 		std::string name;
-		values_t values;
+		Values values;
 	};
 
-	typedef std::vector<CoreoEntry> coreo_entries_t;
-	coreo_entries_t _coreoEntries;
-	coreo_entries_t::iterator _coreoEvent; //const
-
-	// allows for multiple values
-	// i.e. '00:00:00:00 /gaincontrol 1.0 2.0 3.0'
-	values_t GetCoreoValues(std::string const& val)
-	{
-		values_t values;
-		std::stringstream ss(val);
-		std::string item;
-		while(std::getline(ss, item)) 
-			values.push_back(atof(item.c_str()));
-		return values;
-	}
+	typedef std::vector<CoreoEntry> CoreoEntries;
+	CoreoEntries _coreoEntries;
+	CoreoEntries::iterator _coreoEvent; //const
 
 	double SmpteToMs(std::string const& mtc)
 	{
@@ -54,11 +41,16 @@ class CoreoSequencer
 		std::string item;
 		while(std::getline(ss, item, ':')) 
 				elems.push_back(item);
+
+		CLAM_ASSERT(elems.size() == 4, 
+			std::string("Invalid MTC found in sequencefile (not like nn:nn:nn:nn)"
+									" Offending MTC is: \'" + mtc + "\'. Please correct!").c_str());
+
 		int hours = atoi(elems[0].c_str());
 		int minutes = atoi(elems[1].c_str());
 		int seconds = atoi(elems[2].c_str());
 		int frames = atoi(elems[3].c_str());
-		double frame_length = 1000. / _frameRate;
+		double frame_length = 1000. / _controlRate;
 
 		double mtcInMillisec = 
 			(double)hours * 3600000. + (double)minutes * 60000. 
@@ -84,7 +76,7 @@ class CoreoSequencer
 		std::stringstream frames;
 		frames.width(2);
 		frames.fill('0');
-		double frame_length = 1000. / _frameRate;
+		double frame_length = 1000. / _controlRate;
 		frames << int(int(((milliseconds % 3600000)%60000)%1000)/frame_length);
 
 		std::string smpte = 
@@ -106,58 +98,61 @@ class CoreoSequencer
 		while(std::getline(file, line))
 		{
 			std::stringstream is(line);
-			size_t pos = 0;
-			values = "";
+			is >> mtc >> name;
+
+			Values values;
 			while (is && !is.eof())
 			{
-				std::string tmp;
-				is >> tmp;
-				if (pos == 0)
-					mtc = tmp;
-				if (pos == 1)
-					name = tmp;
-				if (pos > 1)
-					values += tmp + " ";
-				++pos;
+				float value;
+				is >> value;
+				values.push_back(value);
 			}
-			// remove trailing ' '
-	    if (!values.empty()) 
-       values = values.substr(0, values.size()-1);
 
-			//std::cout << "mtc=" << mtc << " name=" << name 
-			//	<< " values=" << values << std::endl; 
+			// dont store wrong input
+			if (mtc == "" || name == "" || values.empty())
+				continue;
 
 			if (name.find("FPS") != std::string::npos)
-				_frameRate = atof(values.c_str());
+				_controlRate = values[0];
 
+			// dont store setup
 			if (mtc == "setup")
-				continue; // dont need to store setup values
+				continue;
 				
-			CoreoEntry ce = { mtc, name, GetCoreoValues(values) };
+			//std::cout << "mtc=" << mtc << " name=" << name << " values=";
+			//std::copy(values.begin(), values.end(), std::ostream_iterator<double>(std::cout, " "));
+			//std::cout << std::endl; 
+
+			CoreoEntry ce = { mtc, name, values };
 			_coreoEntries.push_back(ce); 
 		}
-		//std::cout << "framerate=" << _frameRate << std::endl;
+		//std::cout << "framerate=" << _controlRate << std::endl;
 		_coreoEvent = _coreoEntries.begin();
 	}
 
 
 public:
-	explicit CoreoSequencer(std::string const& coreo_file)
+	ControlSequencer(std::string const& coreo_file,	
+									int frameSize, int sampleRate, 
+									CLAM::Network& net)
 	: _coreoFile(coreo_file)
-	, _frameRate(25.000)
+	, _controlRate(25.000)
+	, _frameSize(frameSize)
+	, _sampleRate(sampleRate)
+	, _net(net)
 	{
 		PreprocessCoreoFile();
 	}
 
-	~CoreoSequencer()
+	~ControlSequencer()
 	{
 	}
  
 	// TODO: interpolation between (large) gaps in coreo events
-	void UpdateControls(int framesize, int samplerate, int buffernr, CLAM::Network& net)
+	void UpdateControls(int buffernr)
 	{
 		double currentTimeInMillisec = 
-			((buffernr * (double)framesize) / (double)samplerate) * 1000.;
+			((buffernr * (double)_frameSize) / (double)_sampleRate) * 1000.;
 
 		for (; _coreoEvent != _coreoEntries.end() &&
 					 SmpteToMs(_coreoEvent->mtc) <= currentTimeInMillisec;
@@ -168,10 +163,10 @@ public:
 			//					<< " smpte=" << MsToSmpte(currentTimeInMillisec)
 			//					<< " controlname=" << controlName
 			//					<< " coreo event in samples=" << SmpteToMs(_coreoEvent->mtc) * 48
-			//					<< " sample=" << buffernr * framesize;
+			//					<< " sample=" << buffernr * _framesize;
 		 
 			// check for wrong input
-			if (!net.HasProcessing(controlName))
+			if (!_net.HasProcessing(controlName))
 			{
 				std::cout << "Error! Control named \'" << controlName 
 									<< "\' not found in Network!" << std::endl;
@@ -191,7 +186,7 @@ public:
 				continue;
 			}
 
-			CLAM::Processing& control = net.GetProcessing(controlName);
+			CLAM::Processing& control = _net.GetProcessing(controlName);
 			CLAM::ControlSource* controlSource = dynamic_cast<CLAM::ControlSource*>(&control);
 			const double& value = _coreoEvent->values[0];
 			//std::cout << " value=" << value;
@@ -209,7 +204,6 @@ public:
 	}
 };
 
+}
 #endif
-
-// End Of File
 

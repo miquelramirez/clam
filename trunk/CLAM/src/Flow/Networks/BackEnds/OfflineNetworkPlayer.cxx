@@ -104,6 +104,9 @@ void OfflineNetworkPlayer::Start()
 			"All the input audio files have to have the same sample rate");
 
 		infiles.push_back(infile);
+
+		if (_controlFile != "")
+			_controlSequencer = new ControlSequencer(_controlFile, frameSize, sampleRate, GetNetwork());
 	}
 
 	// Check that the number of input channels matches the number of ports in the network
@@ -204,10 +207,10 @@ void OfflineNetworkPlayer::Start()
 			delete[] bufferReader;
 		}
 
-    if (_coreoSequencer)
+    if (_controlSequencer)
     {
       //std::cout << "Player iterationIndex="  << iterationIndex << std::endl;
-      _coreoSequencer->UpdateControls(frameSize, sampleRate, iterationIndex, GetNetwork());
+      _controlSequencer->UpdateControls(iterationIndex);
     }
 	  
     GetNetwork().Do();
