@@ -222,7 +222,7 @@ clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/
 	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/speech'%localDefinitions },
 	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/osc'%localDefinitions }, 
 	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/sndfile'%localDefinitions }, 
-	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/spacialization/ toReview toRemove'%localDefinitions }, 
+	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions }, 
 ] )
 
 """
