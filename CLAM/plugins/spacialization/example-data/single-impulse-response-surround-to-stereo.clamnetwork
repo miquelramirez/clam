@@ -577,11 +577,6 @@
 
   <control_connection>
     <out>Cartesian2PolarControl.angle</out>
-    <in>Surround.beta</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Cartesian2PolarControl.angle</out>
     <in>ControlPrinter.In Control</in>
   </control_connection>
 

@@ -114,6 +114,12 @@ To run the tests call this script without parameters.
 
 To know which are the available cases:
 	./check_clam_networks_recursively directory --list
+
+To know which are the available cases:
+	./check_clam_networks_recursively subdirectory_excluded1 subdirectory_excluded2 ...
+
+To know which are the available cases:
+	./check_clam_networks_recursively subdirectory_excluded1 subdirectory_excluded2 ... --list
 """
 
 def _caseList(cases) :
@@ -138,6 +144,13 @@ def recursiveDirs(root) :
 ######### Main #########
 	
 data_path= sys.argv[1]
+subdirectories_excluded=[]
+
+if len(sys.argv) > 2:
+	for i in range(2, len(sys.argv)):
+		temp = sys.argv[i]
+		if  temp != "--list":
+			subdirectories_excluded.insert(0, os.path.join(data_path, temp))
 
 os.access( data_path, os.X_OK ) or die(
     "Datapath at '%s' not available. "%data_path +
@@ -146,8 +159,9 @@ os.access( data_path, os.X_OK ) or die(
 clam_networks=set();
 
 for dir in recursiveDirs( data_path ):
-    for net in glob.glob( os.path.join(dir, "*.clamnetwork")):
-        clam_networks.add(net) ;
+	if dir not in subdirectories_excluded:
+		for net in glob.glob( os.path.join(dir, "*.clamnetwork")):
+			clam_networks.add(net) ;
 
 #print clam_networks
 #print len(clam_networks)
