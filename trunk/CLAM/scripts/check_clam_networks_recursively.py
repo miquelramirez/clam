@@ -110,16 +110,16 @@ def passCheckClamnetworks(datapath, clamnetworks) :
 
 help ="""
 To run the tests call this script without parameters.
-	./check_clam_networks_recursively directory
+	./check_clam_networks_recursively.py directory
 
 To know which are the available cases:
-	./check_clam_networks_recursively directory --list
+	./check_clam_networks_recursively.py directory --list
 
 To know which are the available cases:
-	./check_clam_networks_recursively subdirectory_excluded1 subdirectory_excluded2 ...
+	./check_clam_networks_recursively.py directory subdirectory_excluded1 subdirectory_excluded2 ...
 
 To know which are the available cases:
-	./check_clam_networks_recursively subdirectory_excluded1 subdirectory_excluded2 ... --list
+	./check_clam_networks_recursively.py directory subdirectory_excluded1 subdirectory_excluded2 ... --list
 """
 
 def _caseList(cases) :
