@@ -26,17 +26,12 @@
 #include "GT_FilterBank.hxx"
 #include "Audio.hxx"
 #include "OSDefines.hxx"
-#include <libresample.h>
+#include <samplerate.h>
 
 namespace CLAM
 {
 
-	GT_FilterBank::GT_FilterBank()
-	{
-		Configure(GT_FilterBankConfig());
-	}
-
-	GT_FilterBank::GT_FilterBank(GT_FilterBankConfig& c)
+	GT_FilterBank::GT_FilterBank(const GT_FilterBankConfig& c)
 	{
 		Configure(c);
 	}
@@ -68,7 +63,7 @@ namespace CLAM
 	bool GT_FilterBank::Do(Audio &in, Array< Array<float> >& filterBankOutputs )
 	{
 		CLAM_ASSERT( filterBankOutputs.Size() == mnChannels,
-			     "GT_FilterBank::Do() : filterBankOutputs array size is smaller than the number of bands setup on the configuration" );
+		     "GT_FilterBank::Do() : filterBankOutputs array size is smaller than the number of bands setup on the configuration" );
 
 
 		const TSize audiosize = in.GetSize();
@@ -83,8 +78,6 @@ namespace CLAM
 
 		double factor = 245.0 / in.GetSampleRate();
 		TSize  downAudioSize = audioArray.Size()/90;
-
-		void* resamp_handle = resample_open( 1, factor, factor );
 
 		double tempBuffer0[4];
 		double tempBuffer1[4];
@@ -172,24 +165,23 @@ namespace CLAM
 				outputBuffer[j] = fabs(tempBuffer4[j0]);
 			}
 
-				
-			//Decimation to 245 Hz
-			int srcused;
-
-			resample_process( resamp_handle, factor,
-					  audioArray.GetPtr(), audioArray.Size(),
-					  1, &srcused,
-					  filterBankOutputs[i].GetPtr(), downAudioSize + 1000 );
+			// TODO: Is the 1000 samples cue necessary at all?
+			filterBankOutputs[i].SetSize( downAudioSize+1000 );
+			SRC_DATA sampleRateConverter;
+			sampleRateConverter.data_in = audioArray.GetPtr();
+			sampleRateConverter.input_frames = audioArray.Size();
+			sampleRateConverter.data_out = filterBankOutputs[i].GetPtr();
+			sampleRateConverter.output_frames = downAudioSize+1000;
+			sampleRateConverter.src_ratio = factor;
+			int err = src_simple(&sampleRateConverter, SRC_SINC_FASTEST, 1 );
+			if (err)
+				std::cerr << "Error calling Sampler Rate Converter: " << src_strerror(err) << std::endl;
 
 			filterBankOutputs[i].SetSize( downAudioSize );
 
-			for(int k=0 ; k< filterBankOutputs[i].Size() ; k++)
-				filterBankOutputs[i][k] = filterBankOutputs[i][k]*mCentreFreq[i];
-			
-
+			for(int k=0; k<downAudioSize; k++)
+				filterBankOutputs[i][k] *= mCentreFreq[i];
 		}
-
-		resample_close( resamp_handle );
 
 		return true;
 	}

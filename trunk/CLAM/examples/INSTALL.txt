@@ -5,6 +5,6 @@ Change /usr to the path CLAM is installed on.
 Beside the ones needed to compile CLAM you will need a number 
 of extra libraries available such as:
 * aubio (http://aubio.org)
-
+* samplerate (http://www.mega-nerd.com/SRC)
 
 
