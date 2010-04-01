@@ -22,7 +22,7 @@
 #include "OnsetDetector.hxx"
 #include "OD_AudioDecimation.hxx"
 #include "CLAM_Math.hxx"
-#include <libresample.h>
+#include <samplerate.h>
 
 namespace CLAM
 {
@@ -106,17 +106,15 @@ namespace CLAM
 		mAudio.SetSize( downAudioSize + 1000 );
 		mAudio.SetSampleRate(originalSegment.GetAudio().GetSampleRate()/2);
 
-		void* handle = resample_open( 1, 0.5, 0.5 );
-		int srcused;
-
-		resample_process( handle, 0.5,
-				  originalSegment.GetAudio().GetBuffer().GetPtr(),
-				  originalAudioSize,
-				  1, &srcused,
-				  mAudio.GetBuffer().GetPtr(), downAudioSize+1000 );
-				  
-		resample_close( handle );
-
+		SRC_DATA sampleRateConverter;
+		sampleRateConverter.data_in = originalSegment.GetAudio().GetBuffer().GetPtr();
+		sampleRateConverter.input_frames = originalAudioSize;
+		sampleRateConverter.data_out = mAudio.GetBuffer().GetPtr();
+		sampleRateConverter.output_frames = downAudioSize+1000;
+		sampleRateConverter.src_ratio = 0.5;
+		int err = src_simple(&sampleRateConverter, SRC_SINC_FASTEST, 1 );
+		if (err)
+			std::cerr << "Error calling Sampler Rate Converter: " << src_strerror(err) << std::endl;
 		mAudio.SetSize( downAudioSize );
 
 		//Filter bank output computation
@@ -607,15 +605,15 @@ namespace CLAM
 		// Decimation 
 		double factor = 245.0 / 22050.0;
 
-		void* handle = resample_open( 1, factor, factor );
-		int srcused;
-
-		resample_process( handle, factor,
-				  samples.GetPtr(), originalAudioSize,
-				  1, &srcused,
-				  envelope.GetPtr(), downAudioSize+1000 );
-
-		resample_close( handle );
+		SRC_DATA sampleRateConverter;
+		sampleRateConverter.data_in = samples.GetPtr();
+		sampleRateConverter.input_frames = originalAudioSize;
+		sampleRateConverter.data_out = envelope.GetPtr();
+		sampleRateConverter.output_frames = downAudioSize+1000;
+		sampleRateConverter.src_ratio = factor;
+		int err = src_simple(&sampleRateConverter, SRC_SINC_FASTEST, 1 );
+		if (err)
+			std::cerr << "Error calling Sampler Rate Converter: " << src_strerror(err) << std::endl;
 		
 		envelope.SetSize( downAudioSize );
 
