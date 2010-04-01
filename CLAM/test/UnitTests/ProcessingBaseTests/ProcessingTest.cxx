@@ -34,14 +34,14 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testOutControls_GetByName_GetTheRightControl );
 	CPPUNIT_TEST( testOutPorts_GetByName_GetTheRightPort );
 	CPPUNIT_TEST( testInPorts_GetByName_GetTheRightPort );
-	CPPUNIT_TEST( testInControls_Size );
-	CPPUNIT_TEST( testOutControls_Size );
-	CPPUNIT_TEST( testInPorts_Size );
-	CPPUNIT_TEST( testOutPorts_Size );
-	CPPUNIT_TEST( testOutPorts_Delete);
-	CPPUNIT_TEST( testInPorts_Delete);
-	CPPUNIT_TEST( testOutControls_Delete);
-	CPPUNIT_TEST( testInControls_Delete);
+	CPPUNIT_TEST( testNInControls );
+	CPPUNIT_TEST( testNOutControls );
+	CPPUNIT_TEST( testNInPorts );
+	CPPUNIT_TEST( testNOutPorts );
+	CPPUNIT_TEST( testNOutPorts_whenDeleting);
+	CPPUNIT_TEST( testNInPorts_whenDeleting);
+	CPPUNIT_TEST( testNOutControls_whenDeleting);
+	CPPUNIT_TEST( testNInControls_whenDeleting);
 	CPPUNIT_TEST( testUnRegistredOutPorts);
 	CPPUNIT_TEST( testUnRegistredInPorts);
 	CPPUNIT_TEST( testUnRegistredOutControls);
@@ -191,77 +191,79 @@ private:
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 
-	void testInControls_Size()
+	void testNInControls()
 	{
-		CPPUNIT_ASSERT_EQUAL( 3, GetInControls().Size() );
+		CPPUNIT_ASSERT_EQUAL( 3u, GetNInControls() );
 	}
-	void testOutControls_Size()
+	void testNOutControls()
 	{
-		CPPUNIT_ASSERT_EQUAL( 4, GetOutControls().Size() );
+		CPPUNIT_ASSERT_EQUAL( 4u, GetNOutControls() );
 	}
-	void testInPorts_Size()
+	void testNInPorts()
 	{
-		CPPUNIT_ASSERT_EQUAL( 1, GetInPorts().Size() );
+		CPPUNIT_ASSERT_EQUAL( 1u, GetNInPorts() );
 	}
-	void testOutPorts_Size()
+	void testNOutPorts()
 	{
-		CPPUNIT_ASSERT_EQUAL( 2, GetOutPorts().Size() );
+		CPPUNIT_ASSERT_EQUAL( 2u, GetNOutPorts() );
 	}
-	void testOutPorts_Delete()
+	void testNOutPorts_whenDeleting()
 	{
-		int initialNumPorts = GetOutPorts().Size();
+		unsigned initialNumPorts = GetNOutPorts();
 		CLAM::OutPort<int>* port = new CLAM::OutPort<int>( "out", this);
-		CPPUNIT_ASSERT_EQUAL( initialNumPorts+1, GetOutPorts().Size() );
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts+1, GetNOutPorts() );
 		delete port;
-		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetOutPorts().Size() );
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetNOutPorts() );
 
 	}
-	void testInPorts_Delete()
+	void testNInPorts_whenDeleting()
 	{
-		int initialNumPorts = GetInPorts().Size();
+		unsigned initialNumPorts = GetNInPorts();
 		CLAM::InPort<int>* port = new CLAM::InPort<int>( "in", this);
-		CPPUNIT_ASSERT_EQUAL( initialNumPorts+1, GetInPorts().Size() );
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts+1, GetNInPorts() );
 		delete port;
-		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetInPorts().Size() );
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetNInPorts() );
 
 	}
-	void testOutControls_Delete()
+	void testNOutControls_whenDeleting()
 	{
-		int initialNumControls = GetOutControls().Size();
+		unsigned initialNumControls = GetNOutControls();
 		CLAM::OutControlBase* control = new CLAM::FloatOutControl( "outControl", this);
-		CPPUNIT_ASSERT_EQUAL( initialNumControls+1, GetOutControls().Size() );
+		CPPUNIT_ASSERT_EQUAL( initialNumControls+1, GetNOutControls() );
 		delete control;
-		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetOutControls().Size() );
+		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetNOutControls() );
 
 	}
-	void testInControls_Delete()
+	void testNInControls_whenDeleting()
 	{
-		int initialNumControls = GetInControls().Size();
+		unsigned initialNumControls = GetNInControls();
 		CLAM::FloatInControl* control = new CLAM::FloatInControl( "inControl", this);
-		CPPUNIT_ASSERT_EQUAL( initialNumControls+1, GetInControls().Size() );
+		CPPUNIT_ASSERT_EQUAL( initialNumControls+1, GetNInControls() );
 		delete control;
-		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetInControls().Size() );
+		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetNInControls() );
 
 	}
 	void testUnRegistredOutPorts()
-	{	int initialNumPorts = GetOutPorts().Size();
-		new CLAM::OutPort<int>( "out");
-		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetOutPorts().Size() );
+	{
+		unsigned initialNumPorts = GetNOutPorts();
+		CLAM::OutPort<int> temp( "out");
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetNOutPorts() );
 	}	
 	void testUnRegistredInPorts()
-	{	int initialNumPorts = GetInPorts().Size();
-		new CLAM::InPort<int>( "in");
-		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetInPorts().Size() );
+	{	unsigned initialNumPorts = GetNInPorts();
+		CLAM::InPort<int> temp( "in");
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetNInPorts() );
 	}
 	void testUnRegistredOutControls()
-	{	int initialNumControls = GetOutControls().Size();
-		new CLAM::FloatOutControl( "outControl");
-		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetOutControls().Size() );
+	{	unsigned initialNumControls = GetNOutControls();
+		CLAM::FloatOutControl temp( "outControl");
+		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetNOutControls() );
 	}	
 	void testUnRegistredInControls()
-	{	int initialNumControls = GetInControls().Size();
-		new CLAM::FloatInControl( "inControl");
-		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetInControls().Size() );
+	{
+		unsigned initialNumControls = GetNInControls();
+		CLAM::FloatInControl temp( "inControl");
+		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetNInControls() );
 	}
 
 	class DummyIOProcessing : public CLAM::Processing
@@ -317,7 +319,6 @@ private:
 	}
 	void testConnectControls_usingNumbers()
 	{
-
 		DummyIOProcessing sender, receiver;
 		CLAM::ConnectControls(sender, 0, receiver, 0);
 		receiver.inControl.DoControl(666); // A previous value
