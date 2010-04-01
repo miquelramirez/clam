@@ -50,22 +50,18 @@ namespace CLAM
 
 	public:
 
-		GT_FilterBank();
-		GT_FilterBank(GT_FilterBankConfig& c);
+		GT_FilterBank(const GT_FilterBankConfig& c = GT_FilterBankConfig());
 		~GT_FilterBank();
 
 		const char * GetClassName() const {return "GT_FilterBank";}
 
-		bool Do(void);
-
+		bool Do();
 		bool Do(Audio &in, Array< Array<float> >& filterBankOut);
-	
 		void MakeERBFilters();
 	
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
 	};
-	
 }
 
 #endif
