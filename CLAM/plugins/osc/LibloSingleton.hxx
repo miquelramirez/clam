@@ -23,20 +23,20 @@ public:
 	{
 		//TODO: save the processing "this" address too in the sctructure!! (and use on unregistration)
 		OSCInstance() {}
-		OSCInstance(unsigned int initPort,lo_server_thread initThread, std::string initPath, std::string initTypespec)
-		: port(initPort)
-		, thread(initThread)
-		, path(initPath)
-		, typespec(initTypespec)
+		OSCInstance(unsigned int initPort,lo_server_thread initThread, const std::string & initPath, const std::string & initTypespec)
+			: port(initPort)
+			, thread(initThread)
+			, path(initPath)
+			, typespec(initTypespec)
 		{}
 		unsigned int port;
 		lo_server_thread thread;
 		std::string path;
 		std::string typespec;
 	};
-	const std::string GetErrorMessage()
+	std::string GetErrorMessage()
 	{
-		const std::string copy=_errorMessage;
+		std::string copy=_errorMessage;
 		_errorMessage="";
 		return copy;
 	}
@@ -56,25 +56,23 @@ private:
 	LibloSingleton() {}
 	LibloSingleton(const LibloSingleton &) {}
 
-	const lo_server_thread GetServerThread(const unsigned int & port) const
+	lo_server_thread GetServerThread(unsigned port) const
 	{
 		std::list<OSCInstance>::const_iterator it;
 		for (it=_OSCInstances.begin();it!=_OSCInstances.end();it++)
 		{
-			if ((*it).port==port)
-			{
-				return (*it).thread;
-			}
+			if (it->port==port)
+				return it->thread;
 		}
 		return NULL;
 	}
 
-	const bool IsPortUsed(const unsigned int & port) const
+	bool IsPortUsed(unsigned port) const
 	{
-		return (GetServerThread(port)!=NULL);
+		return GetServerThread(port)!=NULL;
 	}
 
-	const lo_server_thread StartServer(const unsigned int & port,const std::string multicastIP="")	
+	lo_server_thread StartServer(unsigned port, const std::string & multicastIP="")	
 	{
 		if (IsPortUsed(port))
 		{
@@ -118,14 +116,12 @@ private:
 	
 public:
 	static LibloSingleton& GetInstance();
-	const bool RegisterOscCallback(const unsigned int & port, const std::string & path,
-				 const std::string & typespec, lo_method_handler callbackMethod,void * instanceData)
-	{
-		return RegisterOscCallback(port,path,typespec,callbackMethod,instanceData,"");
-	}
 
-	const bool RegisterOscCallback(const unsigned int & port, const std::string & path,
-				 const std::string & typespec, lo_method_handler callbackMethod,void * instanceData, const std::string multicastIP)
+	bool RegisterOscCallback(
+		unsigned port, const std::string & path,
+		const std::string & typespec,
+		lo_method_handler callbackMethod,void * instanceData,
+		const std::string & multicastIP="")
 	{
 		bool newServer=false;
 		lo_server_thread thread=GetServerThread(port);
@@ -155,7 +151,8 @@ public:
 		return true;
 	}
 
-	const bool UnregisterOscCallback(const unsigned int & port, const std::string & path, const std::string & typespec)
+	bool UnregisterOscCallback(unsigned port, const std::string & path,
+		const std::string & typespec)
 	{
 		if (not IsPathRegistered(port,path,typespec))
 		{
@@ -174,9 +171,9 @@ public:
 		return true;
 	}
 
-	const bool IsPathRegistered(const unsigned int & port, const std::string & path, const std::string & typespec) const;
+	bool IsPathRegistered(unsigned port, const std::string & path, const std::string & typespec) const;
 private:
-	bool RemoveRegisteredPath(const unsigned int & port, const std::string & path, const std::string & typespec);
+	bool RemoveRegisteredPath(unsigned port, const std::string & path, const std::string & typespec);
 
 	static void error(int num, const char *m, const char *path);
 
