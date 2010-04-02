@@ -48,11 +48,11 @@ class MultiLibloSource : public CLAM::Processing
 
 public:
 	MultiLibloSource(const Config& config = Config()) 
-		: _typespec("")
+		: _registered(false)
+		, _typespec("")
 		, _oscPath(config.GetOscPath())
 		, _port(0)
 		, _libloSingleton(LibloSingleton::GetInstance())
-		, _isConfigured(false)
 	{
 		Configure( config );
 #ifdef __MULTICAST_LIBLO__
@@ -81,38 +81,31 @@ std::cout<<"liblomulticast"<<std::endl;
 	}
 protected:
 
-        void RemoveOldControls()
-        {
+	void RemoveOldControls()
+	{
 		std::vector<OutControlBase *>::iterator it;
 		for (it=_outControls.begin();it!=_outControls.end();it++)
-		{
 			delete *it;
-		}
 		_outControls.clear();
-		GetOutControls().Clear();
 	}
 
-
-//TODO: REFACTOR THE FOLLOWING METHODS!!!!
 
 	OutControlBase * createControl(const std::string & type, const std::string & name)
 	{
-		if (type=="s")
-			return new OutControl<std::string> (name,this);
-		if (type=="f")
-			return new OutControl<float> (name,this);
-		if (type=="d")
-			return new OutControl<double> (name,this);
-		if (type=="i" or type=="h")
-			return new OutControl<int> (name,this);
-		// TODO: Decide whether ASSERTing (contract) or throw (control) 
+		if (type=="s") return new OutControl<std::string> (name,this);
+		if (type=="f") return new OutControl<float> (name,this);
+		if (type=="d") return new OutControl<double> (name,this);
+		if (type=="i") return new OutControl<int> (name,this);
+		if (type=="h") return new OutControl<int> (name,this); // TODO: Should it be long?
 		return 0;
 	}
 
-	static void sendControl(OutControlBase * control, lo_arg * valueToSend)
+	void sendControl(unsigned i, lo_arg * valueToSend)
 	{
+		if (i>=GetNOutControls()) return;
+		OutControlBase * control = &GetOutControl(i);
 		const std::string typeName=control->GetTypeId().name();
-		if (typeName=="Ss")
+		if (typeName=="s")
 			dynamic_cast<OutControl<std::string> *> (control)->SendControl(&(valueToSend->s));
 		if(typeName=="f")
 			dynamic_cast<OutControl<float> *>(control)->SendControl(valueToSend->f);
@@ -120,98 +113,86 @@ protected:
 			dynamic_cast<OutControl<double> *> (control)->SendControl(valueToSend->f32);
 		if(typeName=="i")
 			dynamic_cast<OutControl<int> *> (control)->SendControl(valueToSend->i);
-		return;
-	}
-
-	const unsigned int GetOutputsNumber() const
-	{
-		unsigned nOutputs;
-		std::string typespec;
-		typespec=_config.GetOSCTypeSpec();
-		for (nOutputs=0; nOutputs<typespec.size();nOutputs++)
-		{
-			const char oscType = typespec[nOutputs];
-			if (oscType!='s' and oscType!='i' 
-				and oscType != 'f' and oscType !='d'
-				and oscType != 'h')
-				return 0; // return 0 if there is any non-compatible type
-		}
-		return nOutputs;
 	}
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
-		RemoveOldControls();
-		CopyAsConcreteConfig(_config, config);
-		//set outputs:
-		unsigned nOutputs = GetOutputsNumber();
-		if (nOutputs==0)
+		std::string previousTypes = _config.GetOSCTypeSpec();
+		CLAM_ASSERT(_outControls.size()<=previousTypes.size(),
+			"MultiLibloSource: Allocated controls should be less or equal to the types spec");
+
+		// if exists delete previous method (with previous _port, _oscPath and _typespec)
+		if (_registered)
 		{
-			AddConfigErrorMessage("No proper OSCTypeSpec setup. Use: 'f' for float, 'd' for double, 'i' for integer, 'h' for integer 64.");
-			_isConfigured=false;
-			return false;
+			_libloSingleton.UnregisterOscCallback(_port,_oscPath,_typespec);
+			_registered=false;
 		}
 
-		// multi-port names share user-configured identifier
-		std::string oscPath=_config.GetOscPath();
-		std::replace(oscPath.begin(),oscPath.end(),'/','_');
+		CopyAsConcreteConfig(_config, config);
 
-		for (unsigned i=0;i<nOutputs;i++)
+		//set outputs:
+		const std::string & newTypes = _config.GetOSCTypeSpec();
+		unsigned commonSize = 0;
+		for (; commonSize<newTypes.size(); commonSize++)
+		{
+			if (commonSize==_outControls.size()) break;
+			if (commonSize==previousTypes.size()) break; // Should be redundant (see previous assert)
+			if (newTypes[commonSize]!=previousTypes[commonSize]) break;
+		}
+		for (unsigned i=commonSize; i<_outControls.size(); i++)
+			delete _outControls[i];
+		_outControls.resize(commonSize);
+		for (unsigned i=commonSize; i<newTypes.size(); i++)
 		{
 			std::ostringstream controlName;
 			controlName<<i;
-			std::string type;
-			type=_config.GetOSCTypeSpec()[i];
-			_outControls.push_back(createControl(type,controlName.str()));
+			OutControlBase * control = createControl(
+				newTypes.substr(i,1), controlName.str());
+			if (not control) return AddConfigErrorMessage(
+				"No proper OSCTypeSpec setup. Use: "
+				"'f' for float,\n"
+				"'d' for double,\n"
+				"'i' for integer,\n"
+				"'h' for long integer,\n"
+				"'s' for string.");
+			_outControls.push_back(control);
 		}
 
-		unsigned int port = _config.GetServerPort();
-		/* not defined port */
-		if (port==0)
-		{
-			AddConfigErrorMessage("No port defined");
-			_isConfigured=false;
-			return false;
-		}
-		if (_libloSingleton.IsPathRegistered(_port,_oscPath,_typespec) and _isConfigured) // if exists delete previous method (with previous _port, _oscPath and _typespec)
-		{ 
-			_libloSingleton.UnregisterOscCallback(_port,_oscPath,_typespec);
-		}
+		unsigned port = _config.GetServerPort();
+		if (port==0) return AddConfigErrorMessage("No port defined");
 
 		_typespec=_config.GetOSCTypeSpec();
 		_oscPath=_config.GetOscPath();
 		_port=port;
 
-		bool registered=false;
-		if (_config.GetEnableMulticast() and _config.GetMultiCastIP()!="")
-			registered=_libloSingleton.RegisterOscCallback(_port, _oscPath, _typespec,&controls_handler,this,_config.GetMultiCastIP());
-		else
-			registered=_libloSingleton.RegisterOscCallback(_port, _oscPath, _typespec,&controls_handler,this);
+		std::string multiCastIP = _config.GetEnableMulticast()?
+			_config.GetMultiCastIP() : "";
+		_registered=_libloSingleton.RegisterOscCallback(
+			_port, _oscPath, _typespec,
+			&controls_handler,this,
+			multiCastIP);
 
-		if (registered==false)
-		{
-			AddConfigErrorMessage(_libloSingleton.GetErrorMessage());
-			_isConfigured=false;
-			return false;
-		}
-		_isConfigured=true;
+		if (not _registered) return AddConfigErrorMessage(_libloSingleton.GetErrorMessage());
+
 		return true; // Configuration ok
 	}
 
 protected:
 
-	static int controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
-			 void *data, void *user_data);
+	static int controls_handler(
+		const char *path, const char *types,
+		lo_arg **argv, int argc,
+		void *data, void *user_data);
 
 	// server management related structs, methods, and attributes
-
+	bool _registered;
 	std::string _typespec;
 	std::string _oscPath;
-	unsigned int _port;
+	unsigned _port;
+
 	Config _config;
 	std::vector <OutControlBase *> _outControls;
 	CLAM::LibloSingleton & _libloSingleton;
-	bool _isConfigured;
 };
 
 } //namespace

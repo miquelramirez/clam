@@ -80,11 +80,10 @@ public:
 	void SendOSCMessage()
 	{
 		lo_message message=lo_message_new();
-		for (unsigned i=0;i<_config.GetOSCTypeSpec().size();i++)
+		const std::string & typespec = _config.GetOSCTypeSpec();
+		for (unsigned i=0;i<typespec.size();i++)
 		{
-			std::string typespec;
-			typespec=_config.GetOSCTypeSpec()[i];
-			switch (typespec.c_str()[0])
+			switch (typespec[i])
 			{
 				case 's':
 					lo_message_add_string(message,dynamic_cast<InControl<std::string> *> (_inControls[i])->GetLastValue().c_str());
@@ -117,58 +116,56 @@ public:
 protected:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
-		RemoveOldControls();
+		std::string previousTypes = _config.GetOSCTypeSpec();
+		CLAM_ASSERT(_inControls.size()<=previousTypes.size(),
+			"LibloSink: Allocated controls should be less or equal to the types spec");
 		CopyAsConcreteConfig(_config, config);
 
-		char portCString[10];
-		sprintf(portCString,"%u",_config.GetServerPort());
-	
-		_oscPort = lo_address_new(_config.GetIPAddress().c_str(), portCString);
-		unsigned nInputs = GetInputsNumber();
-		if (nInputs==0)
+		const std::string & newTypes = _config.GetOSCTypeSpec();
+		unsigned commonSize = 0;
+		for (; commonSize<newTypes.size(); commonSize++)
 		{
-			AddConfigErrorMessage("No proper OSCTypeSpec setup. Use: 'f' for float, 'd' for double, 'i' for integer, 'h' for integer 64.");
-			return false;
+			if (commonSize==_inControls.size()) break;
+			if (commonSize==previousTypes.size()) break; // Should be redundant (see previous assert)
+			if (newTypes[commonSize]!=previousTypes[commonSize]) break;
 		}
-
-		// multi-port names share user-configured identifier
-		std::string oscPath=_config.GetOscPath();
-		std::replace(oscPath.begin(),oscPath.end(),'/','_');
-
-		for (unsigned i=0;i<nInputs;i++)
+		for (unsigned i=commonSize; i<_inControls.size(); i++)
+			delete _inControls[i];
+		_inControls.resize(commonSize);
+		for (unsigned i=commonSize; i<newTypes.size(); i++)
 		{
 			std::ostringstream controlName;
 			controlName<<i;
-			std::string type;
-			type=_config.GetOSCTypeSpec()[i];
-			_inControls.push_back(createControl(type,controlName.str()));
+			InControlBase * control = createControl(newTypes[i], controlName.str());
+			if (not control) return AddConfigErrorMessage(
+				"No proper OSCTypeSpec setup. Use: "
+				"'f' for float,\n"
+				"'d' for double,\n"
+				"'i' for integer,\n"
+				"'h' for long integer,\n"
+				"'s' for string.");
+			_inControls.push_back(control);
 		}
 
-		unsigned int port = _config.GetServerPort();
-		/* not defined port */
-		if (port==0)
-		{
-			AddConfigErrorMessage("No port defined");
-			return false;
-		}
+		unsigned port = _config.GetServerPort();
+		if (port==0) return AddConfigErrorMessage("No port defined");
+		std::ostringstream portString;
+		portString << port;
+		_oscPort = lo_address_new(_config.GetIPAddress().c_str(), portString.str().c_str());
 
 		return true; // Configuration ok
 	}
 
-        void RemoveOldControls()
-        {
-		std::vector<InControlBase *>::iterator it;
-		for (it=_inControls.begin();it!=_inControls.end();it++)
-		{
-			delete *it;
-		}
+	void RemoveOldControls()
+	{
+		for (unsigned i=0; i<_inControls.size(); i++)
+			delete _inControls[i];
 		_inControls.clear();
-		GetInControls().Clear();
 	}
 
-	InControlBase * createControl(const std::string & type, const std::string & name)
+	InControlBase * createControl(char type, const std::string & name)
 	{
-		switch (type.c_str()[0])
+		switch (type)
 		{
 			case 's':
 				return new InControl<std::string> (name, this, &LibloSink::InControlCallback<std::string>);
@@ -185,23 +182,6 @@ protected:
 				// TODO: Decide whether ASSERTing (contract) or throw (control) 
 		}
 	}
-
-	const unsigned int GetInputsNumber() const
-	{
-		unsigned nInputs;
-		std::string typespec;
-		typespec=_config.GetOSCTypeSpec();
-		for (nInputs=0; nInputs<typespec.size();nInputs++)
-		{
-			const char oscType = typespec[nInputs];
-			if (oscType!='s' and oscType!='i' 
-				and oscType != 'f' and oscType !='d'
-				and oscType != 'h')
-				return 0; // return 0 if there is any non-compatible type
-		}
-		return nInputs;
-	}
-
 };
 
 } //namespace
