@@ -80,8 +80,9 @@ private:
 			return NULL;
 		}
 
-		char portCString[10];
-		sprintf(portCString,"%u",port);
+		std::ostringstream portString;
+		portString << port;
+		const char * portCString = portString.str().c_str();
 
 		lo_server_thread serverThread;
 		if (multicastIP!="")
