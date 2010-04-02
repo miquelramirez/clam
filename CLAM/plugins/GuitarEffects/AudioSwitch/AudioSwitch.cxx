@@ -37,21 +37,26 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, AudioSwitch> reg = metadata;
 }
 
-AudioSwitch::AudioSwitch() : mOutputPort("Output Audio",this), mSwitch("Switch", this)
+AudioSwitch::AudioSwitch()
+	: mOutputPort("Output Audio",this)
+	, mSwitch("Switch", this)
 {
 	Configure( mConfig );
 }
 
 void AudioSwitch::CreatePortsAndControls()
 {
-	for( int i=0; i<mConfig.GetNumberOfInPorts(); i++ )
+	unsigned oldSize=mInputPorts.size();
+	unsigned newSize=mConfig.GetNumberOfInPorts();
+	for(unsigned i=newSize; i<oldSize; i++)
+		delete mInputPorts[i];
+	mInputPorts.resize(newSize);
+	for(unsigned i=oldSize; i<newSize; i++ )
 	{
 		std::stringstream number("");
 		number << i;
 		AudioInPort * inPort = new AudioInPort( "Input " + number.str(), this );
-		inPort->SetSize( mConfig.GetFrameSize() );
-		inPort->SetHop( mConfig.GetFrameSize() );
-		mInputPorts.push_back( inPort );
+		mInputPorts[i] = inPort;
 	}
 
 	mSwitch.SetBounds(0,mConfig.GetNumberOfInPorts()-1);
@@ -60,22 +65,23 @@ void AudioSwitch::CreatePortsAndControls()
 
 	mOutputPort.SetSize( mConfig.GetFrameSize());
 	mOutputPort.SetHop( mConfig.GetFrameSize());
+	for( int i=0; i<newSize; i++ )
+	{
+		mInputPorts[i]->SetSize( mConfig.GetFrameSize() );
+		mInputPorts[i]->SetHop( mConfig.GetFrameSize() );
+	}
 }
 
 void AudioSwitch::RemovePortsAndControls()
 {
-	std::vector< AudioInPort* >::iterator itInPort;
-	for(itInPort=mInputPorts.begin(); itInPort!=mInputPorts.end(); itInPort++)
-		delete *itInPort;
+	for(unsigned i=0; i< mInputPorts.size(); i++)
+		delete mInputPorts[i];
 	mInputPorts.clear();
-	
-	GetInPorts().Clear();
 }
 
 bool AudioSwitch::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
-	RemovePortsAndControls();
 	CreatePortsAndControls();
 	return true;
 }
