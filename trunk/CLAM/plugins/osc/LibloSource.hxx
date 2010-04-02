@@ -69,10 +69,9 @@ public:
 	}
 protected:
 
-        void RemoveOldControls()
-        {
+	void RemoveOldControls()
+	{
 		_outControls.Clear();
-		GetOutControls().Clear();
 	}
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
