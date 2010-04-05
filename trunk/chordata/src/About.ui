@@ -228,22 +228,18 @@ p, li { white-space: pre-wrap; }
           </sizepolicy>
          </property>
          <property name="text" >
-          <string>&lt;p>The CLAM Team &amp;lt;clam@iua.upf.edu&amp;gt;:&lt;/p>
+          <string>&lt;p>The authors of the application are:&lt;/p>
 &lt;ul>
-&lt;li>Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li>
-&lt;li>David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li>
-&lt;li>Pau Arumí &amp;lt;parumi@iua.upf.edu&amp;gt;&lt;/li>
-&lt;/ul>
-&lt;p>Past developers:&lt;/p>
-&lt;ul>
-&lt;li>Xavier Rubio &amp;lt;xrubio@iua.upf.edu&amp;gt; &lt;/li>
-&lt;li>Ismael Mosquera &amp;lt;imosquera@iua.upf.edu&amp;gt;&lt;/li>
+&lt;li>Pawel Bartkiewicz&amp;lt;tuuresairon@gmail.com&amp;gt; &lt;/li>
+&lt;li>David Garcia Garzón &amp;lt;david.garcia@upf.edu&amp;gt; &lt;/li>
+&lt;li>The CLAM project &amp;lt;clam@clam-project.org&amp;gt;:&lt;/li>
 &lt;/ul>
 &lt;p>Contributors:&lt;/p>
 &lt;ul>
 &lt;li>Christopher Harte &amp;lt;harte@elec.qmul.ac.uk&amp;gt; ("Tonnetz" view, Chord extraction algorithm)&lt;/li>
 &lt;li>Emilia Gómez &amp;lt;egomez@iua.upf.edu&amp;gt; ("Key Space" view)&lt;/li>
 &lt;li>Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; ("Key Space" view)&lt;/li>
+&lt;li>Roman Goj &amp;lt;Roman Goj&amp;gt; (real-time algorithm refinements)&lt;/li>
 &lt;/ul>
 </string>
          </property>
