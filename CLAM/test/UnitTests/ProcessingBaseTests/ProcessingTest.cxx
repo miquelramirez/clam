@@ -107,6 +107,8 @@ private:
 
 	void testGetInControl_GetTheRightControl()
 	{
+CPPUNIT_FAIL("Just testing testfarm mails");
+
 		CPPUNIT_ASSERT_EQUAL( std::string("in"), GetInControl(0).GetName() );
 	}
 	void testGetOutControl_GetTheRightControl()
