@@ -48,17 +48,17 @@ namespace CLAM
 		SDIFDatabase& sdifDatabase, SinusoidalSynthesis& synthesis, 
 		ContinuousExcitationControlSource* aControlScore, MonoAudioFileWriter* audioWriter)
 	{
-        if (audioWriter == NULL)
-            std::cout << "Playing audio to speakers." << std::endl;
-        else
-            std::cout << "Playing audio to speakers and writing audio to file." << std::endl;
+		if (audioWriter == NULL)
+			std::cout << "Playing audio to speakers." << std::endl;
+		else
+			std::cout << "Playing audio to speakers and writing audio to file." << std::endl;
 
 		CLAM_ACTIVATE_FAST_ROUNDING;
 
 		unsigned int buffersize = 1024;
 		int samplerate = 44100;
 
-        AudioManager audioManager(samplerate,2048);
+		AudioManager audioManager(samplerate,2048);
 		AudioIOConfig outLCfg;
 		outLCfg.SetDevice("rtaudio:default");
 		outLCfg.SetChannelID(0);
@@ -75,7 +75,7 @@ namespace CLAM
 		CLAM::AudioOut outR(outRCfg);
 		//CLAM::AudioSink out;
 
-        audioManager.Start();
+		audioManager.Start();
 
 		smsFreqShift.Start();
 		synthesis.Start();
@@ -84,9 +84,9 @@ namespace CLAM
 			audioWriter->Start();
 		}
 
-        outL.Start();
-        outR.Start();
-        
+		outL.Start();
+		outR.Start();
+
 		ControlStreamSegmentator theSegmentator;
 
 		int counter = 0;
@@ -114,16 +114,16 @@ namespace CLAM
 			//std::cout << "counter: " << counter << ", pitch: " << thePitch << ", amplitude: " << theAmplitude << std::endl;
 			bool isSynthesizeSinusoidsAndResidual = false;
 			if ( !synthesis.Do( *aFrame ) )
-                continue;
+				continue;
 
 			if (audioWriter != NULL)
 			{
 				audioWriter->Do( aFrame->GetSynthAudioFrame() );
 			}
 
-            outL.Do( aFrame->GetSynthAudioFrame() );
-            outR.Do( aFrame->GetSynthAudioFrame() );
-            
+			outL.Do( aFrame->GetSynthAudioFrame() );
+			outR.Do( aFrame->GetSynthAudioFrame() );
+			
 			counter++;
 		}
 
@@ -134,8 +134,8 @@ namespace CLAM
 			audioWriter->Stop();
 		}
 
-        outL.Stop();
-        outR.Stop();
+		outL.Stop();
+		outR.Stop();
 
 		synthesis.Stop();
 		smsFreqShift.Stop();
@@ -185,11 +185,11 @@ int version()
 {
 	std::cout << 
 		"ContinuousExcitationSynthesizer version " << CLAM::GetFullVersion() << "\n"
-        "Copyright (C) 2009, Universitat Pompeu Fabra.\n"
-        "This is free software: you are free to change and redistribute it.\n"
-        "There is NO WARRANTY, to the extent permitted by law.\n"
-        "Licence GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl2.html>\n"
-        "\n"
+		"Copyright (C) 2009, Universitat Pompeu Fabra.\n"
+		"This is free software: you are free to change and redistribute it.\n"
+		"There is NO WARRANTY, to the extent permitted by law.\n"
+		"Licence GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl2.html>\n"
+		"\n"
 		"Written by Greg Kellum\n"
 		<< std::endl;
 	return 1;

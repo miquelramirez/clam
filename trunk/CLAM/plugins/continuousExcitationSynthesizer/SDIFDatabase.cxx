@@ -350,7 +350,7 @@ void SDIFDatabase::FindClosestSample(SampleMetadata& argSourceMetadata, SampleMe
 	FindBounds(argSourceMetadata, lowerBoundMetadata, upperBoundMetadata);
 
 	float pitchDifferenceLowerBound = argSourceMetadata.GetPitch() - lowerBoundMetadata.GetPitch();
-	float pitchDifferenceUpperBound = argSourceMetadata.GetPitch() - lowerBoundMetadata.GetPitch();
+	float pitchDifferenceUpperBound = argSourceMetadata.GetPitch() - lowerBoundMetadata.GetPitch(); // TODO: DGG: Shouldn't that be upperBoundMetadata
 
 	if (pitchDifferenceLowerBound < pitchDifferenceUpperBound)
 	{
