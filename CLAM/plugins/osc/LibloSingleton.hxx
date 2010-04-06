@@ -9,6 +9,7 @@
 #include <vector>
 #include <list>
 
+#include <sstream>
 #include <iostream>
 
 #include "lo/lo.h"
