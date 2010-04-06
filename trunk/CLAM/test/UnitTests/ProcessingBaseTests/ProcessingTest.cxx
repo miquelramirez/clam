@@ -107,7 +107,6 @@ private:
 
 	void testGetInControl_GetTheRightControl()
 	{
-CPPUNIT_FAIL("Fail testfarm. Blame on me!");
 		CPPUNIT_ASSERT_EQUAL( std::string("in"), GetInControl(0).GetName() );
 	}
 	void testGetOutControl_GetTheRightControl()
