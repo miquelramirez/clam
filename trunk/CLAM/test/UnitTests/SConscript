@@ -23,7 +23,7 @@ folders = [
 	os.path.join('FactoryTest'),
 	os.path.join('FlowControlTests'),
 	os.path.join('NonComponentData'),
-	os.path.join('PortsTest'),
+	os.path.join('PortsTests'),
 	os.path.join('ProcessingBaseTests'),
 	os.path.join('ProcessingDataTests'),
 	os.path.join('ProcessingsTests'),
@@ -36,6 +36,7 @@ folders = [
 
 blacklist = [
 	os.path.join('.','TestRunnerQt.cxx'),
+	os.path.join('PortsTests','PortsTest.cxx'), # To be updated to current Ports interface TODO
 	os.path.join('FactoryTest','PolymorphicTest.cxx'),
 	os.path.join('ProcessingsTests','AudioMixerTest.cxx'), # Uses old fashioned idioms that don't compil
 	os.path.join('TonalAnalysis','ChordCorrelatorTest.cxx'), # recognized labels not the current ones
@@ -64,7 +65,6 @@ sources = scanFiles('*.cxx', folders)
 headers = scanFiles('*.hxx', folders)
 for blacksheep in blacklist :
 	sources.remove(blacksheep) 
-
 
 unit_tests = env.Program( 'UnitTests', sources )
 test_alias = Alias( 'run_unit_tests', [unit_tests], unit_tests[0].abspath )
