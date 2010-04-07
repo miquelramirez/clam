@@ -158,6 +158,14 @@ clam.add_subtask('CLAM Plugins', [
 	'cd %(sandbox)s/clam/CLAM/plugins/speech'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
+	
+	'cd %(sandbox)s/clam/CLAM/plugins/Filters'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+	
+	'cd %(sandbox)s/clam/CLAM/plugins/resampling'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
 ] )
 
 clam.add_subtask('NetworkEditor installation', [
