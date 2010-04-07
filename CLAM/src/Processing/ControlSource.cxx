@@ -22,10 +22,12 @@
 #include "ControlSource.hxx"
 #include "ProcessingFactory.hxx"
 
+#include <sstream>
 
 namespace CLAM
 {
-namespace Hidden
+
+namespace 
 {
 	static const char * metadata[] = {
 		"key", "ControlSource",
@@ -39,11 +41,17 @@ namespace Hidden
 
 ControlSource::~ControlSource()
 {
+	for (unsigned i = 0; i < _outControls.size();	++i)
+		delete _outControls[i];
 }
 
-bool ControlSource::Do( const float value )
-{	
-	mOutput.SendControl( (TControlData)value);
+bool ControlSource::Do( const float value, unsigned index )
+{
+	CLAM_ASSERT(index < _outControls.size(),
+		"Index of requested controlport out-of-range");
+
+	FloatOutControl* output = _outControls.at(index);
+	output->SendControl((TControlData)value);
 	return true;
 }
 
@@ -56,10 +64,34 @@ bool ControlSource::ConcreteConfigure(const ProcessingConfig &c)
 		mConf.UpdateData();
 		mConf.SetDefaultValue(mConf.GetMinValue());
 	}
+
+	unsigned controls = mConf.GetNrOfControls();
+	ResizeControls(controls);
+
 	return true;
 }
 
+void ControlSource::ResizeControls(unsigned controls)
+{
+	if (controls == _outControls.size())
+		return;
 
+	for (unsigned control = controls; control < _outControls.size(); ++control)
+		delete _outControls[control];
+
+	unsigned oldSize = _outControls.size();
+	_outControls.resize(controls);
+
+	for (unsigned control = oldSize; control < controls; ++control)
+	{
+		std::stringstream ss;
+		if (controls == 1)
+			ss << "output control"; // dont break existing networks
+		else
+			ss << "output_control_" << control;
+		_outControls[control] = new FloatOutControl(ss.str().c_str(), this);
+	}
+}
 
 }
 

@@ -242,8 +242,8 @@ public:
 		CLAM::Network::ConnectionState connectionState = _network.GetConnectionReport();
 		if (connectionState.first)
 		{
-			QMessageBox::warning(this, tr("Old clamnetwork file detected"), 
-				tr("<p>The clamnetwork file is older than 1.3.1, the following connections are broken.<p>" 
+			QMessageBox::warning(this, tr("Broken connections found"), 
+				tr("<p>The following connections are broken.<p>" 
 					"<p><b>%1</b></p>").arg(connectionState.second.c_str()));
 		}
 

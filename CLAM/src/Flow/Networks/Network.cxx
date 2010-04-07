@@ -224,7 +224,7 @@ namespace CLAM
 					+"."+GetConnectorIdentifier(fullIn);
 			}
 
-			if (BrokenConnection(fullOut, fullIn))
+			if (CheckForBrokenConnection(fullOut, fullIn, PORT_CONNECTION))
 				continue;
 
 			if (not ConnectPorts( fullOut, fullIn ))
@@ -247,6 +247,8 @@ namespace CLAM
 				fullIn = namesMap.find(GetProcessingIdentifier(fullIn))->second
 					+"."+GetConnectorIdentifier(fullIn);
 			}
+			if (CheckForBrokenConnection(fullOut, fullIn, CONTROL_CONNECTION))
+				continue;
 			if (not ConnectControls( fullOut, fullIn ))
 				throw XmlStorageErr(std::string("Unable to connect controls '")+fullOut+"->"+fullIn+".");
 		}
@@ -957,21 +959,35 @@ namespace CLAM
 		return errorMessage.str();
 	}
 
-	bool Network::BrokenConnection( const std::string & producer, const std::string & consumer )
+	bool Network::CheckForBrokenConnection( const std::string & producer, const std::string & consumer, ConnectionType const connectionType )
 	{
 		bool brokenConnection = false;
+
+		//std::cout << "Checking port and control connections, producer=" << producer << " consumer=" << consumer << std::endl;
 
 		Processing& prod = GetProcessing( GetProcessingIdentifier(producer) );
 		Processing& cons = GetProcessing( GetProcessingIdentifier(consumer) );
 
-		if (!prod.HasOutPort(GetConnectorIdentifier(producer)))
-			 brokenConnection = true;
+		if (connectionType == PORT_CONNECTION) 
+		{
+			if (!prod.HasOutPort(GetConnectorIdentifier(producer)))
+				 brokenConnection = true;
 
-		if (!cons.HasInPort(GetConnectorIdentifier(consumer)))
-			 brokenConnection = true;
+			if (!cons.HasInPort(GetConnectorIdentifier(consumer)))
+				 brokenConnection = true;
+		}
+		if (connectionType == CONTROL_CONNECTION) 
+		{
+			if (!prod.HasOutControl(GetConnectorIdentifier(producer)))
+				 brokenConnection = true;
+			if (!cons.HasInControl(GetConnectorIdentifier(consumer)))
+				 brokenConnection = true;
+		}
 
 		if (brokenConnection)
+		{
 			_brokenConnections.push_back(producer + " -> " + consumer);
+		}
 
 		return brokenConnection;
 	} 

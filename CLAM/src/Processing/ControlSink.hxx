@@ -25,15 +25,18 @@
 #include "Processing.hxx"
 #include "InControl.hxx"
 
+#include <vector>
+
 namespace CLAM{
 	
 	class ControlSinkConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ControlSinkConfig,3,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (ControlSinkConfig,4,ProcessingConfig);
 		DYN_ATTRIBUTE(0,public,TData, MinValue);
 		DYN_ATTRIBUTE(1,public,TData, MaxValue);
 		DYN_ATTRIBUTE(2,public,TData, Step);
+		DYN_ATTRIBUTE(3,public,int, NrOfControls);
 	protected:
 		void DefaultInit()
 		{
@@ -42,6 +45,18 @@ namespace CLAM{
 			SetMinValue(0.0);
 			SetMaxValue(100.0);
 			SetStep(1.0);
+			SetNrOfControls(1);
+		}
+
+		void LoadFrom(Storage & storage)
+		{
+			ProcessingConfig::LoadFrom(storage);
+			if (!HasNrOfControls())
+			{
+				AddNrOfControls();
+				UpdateData();
+				SetNrOfControls(1);
+			}
 		}
 	};
 
@@ -49,24 +64,27 @@ namespace CLAM{
 	{
 	private:
 		ControlSinkConfig mConf;
-		FloatInControl mInput;
 		
+		typedef std::vector<FloatInControl*> InControls;
+		InControls _inControls;
+
+		void ResizeControls(unsigned controls);
+	
 	public:
-		ControlSink() 
-		: mInput("input",this)
+		ControlSink()
+		: _inControls(1, new FloatInControl("input",this))
 		{
 		}
 		
 		ControlSink(const ControlSinkConfig & c)
-		: mInput("input",this)
 		{
 			ConcreteConfigure(c);
 		}
 		
-		~ControlSink() {}
+		~ControlSink();
 	
 		bool Do();
-		float GetControlValue();
+		float GetControlValue(unsigned index=0);
 		
 		const char* GetClassName() const { return "ControlSink";}
 		
