@@ -107,9 +107,6 @@ namespace CLAMTest
 
 			processing.Configure( processingConfig );
 
-			//(*processing.GetInPorts().Begin())->Attach( smReferenceP2Spectrum );
-			//(*processing.GetOutPorts().Begin())->Attach( actualOutput );
-			
 			processing.Start();
 
 			processing.Do( smReferenceP2Spectrum, actualOutput );
@@ -140,9 +137,6 @@ namespace CLAMTest
 			processingConfig.SetAudioSize( expectedOutput.GetSize() );
 
 			processing.Configure( processingConfig );
-
-			//(*processing.GetInPorts().Begin())->Attach( smReferenceNP2Spectrum );
-			//(*processing.GetOutPorts().Begin())->Attach( actualOutput );
 
 			processing.Start();
 
