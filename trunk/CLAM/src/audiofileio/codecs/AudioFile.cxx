@@ -72,18 +72,18 @@ namespace CLAM
 			return;
 		}
 
-		if ( AudioCodecs::PCMCodec::Instantiate().IsReadable( location ) )
-		{
-			mCodec = EAudioFileCodec::ePCM;
-			mActiveCodec = &AudioCodecs::PCMCodec::Instantiate();
-		}
 #if USE_OGGVORBIS == 1
-		else if ( AudioCodecs::OggVorbisCodec::Instantiate().IsReadable( location ) )
+		if ( AudioCodecs::OggVorbisCodec::Instantiate().IsReadable( location ) )
 		{
 			mCodec = EAudioFileCodec::eOggVorbis;
 			mActiveCodec = &AudioCodecs::OggVorbisCodec::Instantiate();		
 		}
 #endif		
+		else if ( AudioCodecs::PCMCodec::Instantiate().IsReadable( location ) )
+		{
+			mCodec = EAudioFileCodec::ePCM;
+			mActiveCodec = &AudioCodecs::PCMCodec::Instantiate();
+		}
 #if USE_MAD == 1
 		else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( location ) )
 		{
