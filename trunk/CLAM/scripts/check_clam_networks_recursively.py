@@ -142,7 +142,11 @@ def recursiveDirs(root) :
 		[ a[0] for a in os.walk(root)]  )
 
 ######### Main #########
-	
+
+if len(sys.argv) ==1:
+	print help
+	exit()
+
 data_path= sys.argv[1]
 subdirectories_excluded=[]
 
