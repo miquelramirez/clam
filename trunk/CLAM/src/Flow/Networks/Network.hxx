@@ -349,8 +349,10 @@ protected:
 		return '.';
 	}
 private:
-	bool BrokenConnection( const std::string & producer, const std::string & consumer );
-	std::vector<std::string> _brokenConnections;
+	enum ConnectionType { PORT_CONNECTION, CONTROL_CONNECTION };
+	bool CheckForBrokenConnection( const std::string & producer, const std::string & consumer, ConnectionType );
+	typedef std::vector<std::string> BrokenConnections;
+	BrokenConnections _brokenConnections;
 };
 
 }// namespace

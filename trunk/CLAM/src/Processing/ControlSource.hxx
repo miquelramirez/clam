@@ -25,17 +25,20 @@
 #include "Processing.hxx"
 #include "OutControl.hxx"
 
+#include <vector>
+
 namespace CLAM{
 	
 	class ControlSourceConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE ( ControlSourceConfig, 5, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE ( ControlSourceConfig, 6, ProcessingConfig);
 		DYN_ATTRIBUTE(0,public,TData, MinValue);		
 		DYN_ATTRIBUTE(1,public,TData, MaxValue);
 		DYN_ATTRIBUTE(2,public,TData, DefaultValue);
 		DYN_ATTRIBUTE(3,public,TData, Step);
 		DYN_ATTRIBUTE(4,public, std::string, UnitName);
+		DYN_ATTRIBUTE(5,public, int, NrOfControls);
 	protected:
 		void DefaultInit()
 		{
@@ -46,6 +49,18 @@ namespace CLAM{
 			SetDefaultValue(50.0);
 			SetStep(1.0);
 			SetUnitName("-");
+			SetNrOfControls(1);
+		}
+
+		void LoadFrom(Storage & storage)
+		{
+			ProcessingConfig::LoadFrom(storage);
+			if (!HasNrOfControls())
+			{
+				AddNrOfControls();
+				UpdateData();
+				SetNrOfControls(1);
+			}
 		}
 	};
 
@@ -53,13 +68,16 @@ namespace CLAM{
 	{
 	private:
 		ControlSourceConfig mConf;
-		FloatOutControl mOutput;
-		
+
+		typedef std::vector<FloatOutControl*> OutControls;
+		OutControls _outControls;
+
+		void ResizeControls(unsigned controls);
+
 	public:
 		typedef ControlSourceConfig Config;
 
 		ControlSource(const Config & c= Config())
-		: mOutput("output",this)
 		{
 			ConcreteConfigure(c);
 		}
@@ -70,7 +88,7 @@ namespace CLAM{
 			return true;
 		}
 		
-		bool Do( const float value );
+		bool Do( const float value, unsigned index=0);
 		
 		const char* GetClassName() const { return "ControlSource";}
 		

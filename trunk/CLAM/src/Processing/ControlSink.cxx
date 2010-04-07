@@ -22,10 +22,11 @@
 #include "ControlSink.hxx"
 #include "ProcessingFactory.hxx"
 
+#include <sstream>
 
 namespace CLAM
 {
-namespace Hidden
+namespace
 {
 	static const char * metadata[] = {
 		"key", "ControlSink",
@@ -37,20 +38,54 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, ControlSink> reg = metadata;
 }
 	
+ControlSink::~ControlSink()
+{
+	for (unsigned i = 0; i < _inControls.size();	++i)
+		delete _inControls[i];
+}
+
 bool ControlSink::Do( )
 {
 	return true;
 }
 
-float ControlSink::GetControlValue()
+float ControlSink::GetControlValue(unsigned index)
 {
-	return (float)mInput.GetLastValue();
+	CLAM_ASSERT(index < _inControls.size(),
+		"Index of requested controlport out-of-range");
+
+	FloatInControl* input = _inControls.at(index);
+	return (float)input->GetLastValue();
 }
 
 bool ControlSink::ConcreteConfigure(const ProcessingConfig &c)
 {
 	CopyAsConcreteConfig(mConf,c);
+	unsigned controls = mConf.GetNrOfControls();
+	ResizeControls(controls);
 	return true;
+}
+
+void ControlSink::ResizeControls(unsigned controls)
+{
+	if (controls == _inControls.size())
+		return;
+
+	for (unsigned control = controls; control < _inControls.size(); ++control)
+		delete _inControls[control];
+
+	unsigned oldSize = _inControls.size();
+	_inControls.resize(controls);
+
+	for (unsigned control = oldSize; control < controls; ++control)
+	{
+		std::stringstream ss;
+		if (controls == 1)
+			ss << "input control"; // dont break existng networks
+		else
+			ss << "input_control_" << control;
+		_inControls[control] = new FloatInControl(ss.str().c_str(), this);
+	}
 }
 
 }
