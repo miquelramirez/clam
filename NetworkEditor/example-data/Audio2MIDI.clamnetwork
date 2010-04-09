@@ -22,7 +22,7 @@ p, li { white-space: pre-wrap; }
   <processing id="MIDISink" position="679,185" size="176,87" type="MIDISink"/>
 
   <processing id="MonoAudioFileReader" position="22,37" size="226,64" type="MonoAudioFileReader">
-    <SourceFile>example-data/jaume-voice.mp3</SourceFile>
+    <SourceFile>/usr/local/share/clam/jaume-voice.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>

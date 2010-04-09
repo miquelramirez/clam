@@ -1,10 +1,19 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="AudioSink_0" position="954,78" size="141,111" type="AudioSink" />
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="Input 1" position="4,380" size="268,106" type="Oscilloscope" />
+  <processing id="AudioSink_0" position="954,78" size="141,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="Input 2" position="3,472" size="274,128" type="Oscilloscope" />
+  <processing id="Input 1" position="4,380" size="268,106" type="Oscilloscope"/>
+
+  <processing id="Input 2" position="3,472" size="274,128" type="Oscilloscope"/>
 
   <processing id="Interpolation Factor" position="455,41" size="207,91" type="OutControlSender">
     <Min>0</Min>
@@ -15,22 +24,22 @@
   </processing>
 
   <processing id="MonoAudioFileReader_0" position="-49,54" size="246,64" type="MonoAudioFileReader">
-    <SourceFile>example-data/jaume-voice.mp3</SourceFile>
+    <SourceFile>/usr/local/share/clam/jaume-voice.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>0</Loop>
   </processing>
 
   <processing id="MonoAudioFileReader_1" position="-43,268" size="246,64" type="MonoAudioFileReader">
-    <SourceFile>../../clam-test-data/Elvis44k.wav</SourceFile>
+    <SourceFile>/usr/local/share/clam/Elvis.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
 
-  <processing id="Oscilloscope_1" position="496,468" size="278,129" type="Oscilloscope" />
+  <processing id="Oscilloscope_1" position="496,468" size="278,129" type="Oscilloscope"/>
 
-  <processing id="PeakView_0" position="3,586" size="272,123" type="PeakView" />
+  <processing id="PeakView_0" position="3,586" size="272,123" type="PeakView"/>
 
-  <processing id="PeakView_1" position="496,583" size="276,128" type="PeakView" />
+  <processing id="PeakView_1" position="496,583" size="276,128" type="PeakView"/>
 
   <processing id="SMSAnalysisCore_0" position="164,29" size="207,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
