@@ -3,7 +3,7 @@
   <processing id="AudioSink_0" position="856,19" size="141,111" type="AudioSink" />
 
   <processing id="MonoAudioFileReader_0" position="33,37" size="246,64" type="MonoAudioFileReader">
-    <SourceFile>example-data/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
+    <SourceFile>/usr/local/share/clam/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>

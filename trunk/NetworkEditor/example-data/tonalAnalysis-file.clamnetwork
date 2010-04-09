@@ -7,7 +7,7 @@
   <processing id="KeySpace_0" position="88,289" size="439,246" type="KeySpace" />
 
   <processing id="MonoAudioFileReader_0" position="-223,-28" size="246,64" type="MonoAudioFileReader">
-    <SourceFile>example-data/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
+    <SourceFile>/usr/local/share/clam/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>

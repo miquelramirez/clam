@@ -1,7 +1,7 @@
 <network id="Unnamed">
 
   <processing id="AudioFileMemoryLoader" position="65,158" size="249,64" type="AudioFileMemoryLoader">
-    <SourceFile>example-data/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
+    <SourceFile>/usr/local/share/clam/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
