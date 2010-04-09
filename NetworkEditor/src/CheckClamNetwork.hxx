@@ -35,7 +35,13 @@ public:
 		{
 			CLAM::Network _network;
 			CLAM::XMLStorage::Restore(_network, _networkFile);
-			return true;
+			bool correct = _network.IsReady();
+			if (not correct) 
+			{
+				std::cout << "The network can not be configured. See the following errors " << std::endl;
+				std::cout << _network.GetConfigurationErrors() << std::endl;
+			}
+			return correct;
 		}
 		catch (CLAM::XmlStorageErr & e)
 		{
