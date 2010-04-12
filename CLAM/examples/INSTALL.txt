@@ -7,4 +7,7 @@ of extra libraries available such as:
 * aubio (http://aubio.org)
 * samplerate (http://www.mega-nerd.com/SRC)
 
+ Debian/Ubuntu
+ (do "sudo apt-get install <packages>")
+ libsamplerate0-dev libaubio-dev
 
