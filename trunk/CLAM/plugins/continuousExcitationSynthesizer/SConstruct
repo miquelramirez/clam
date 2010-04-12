@@ -77,10 +77,7 @@ install, default = env.ClamModule(
 	otherDependencies = otherDependencies,
 	)
 
-examples = [
-	'synth_with_osc.clamnetwork',
-	'synth_with_sliders.clamnetwork',
-	]
+examples = env.scanFiles('*.clamnetwork', ".")
 
 # TODO: Execute that command as part of the scons
 # help2man -N -n 'OSC controlled synthesizer based on Spectral Modelling techniques' ./ContinuousExcitationSynthesizer > ContinuousExcitationSynthesizer.1
