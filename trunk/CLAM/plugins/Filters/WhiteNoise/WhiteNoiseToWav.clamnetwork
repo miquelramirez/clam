@@ -2,7 +2,7 @@
 <network clamVersion="1.4.0" id="Unnamed Network">
 
   <processing id="MonoAudioFileWriter" position="479,249" size="190,58" type="MonoAudioFileWriter">
-    <TargetFile></TargetFile>
+    <TargetFile>./output.wav</TargetFile>
     <SampleRate>44100</SampleRate>
   </processing>
 
