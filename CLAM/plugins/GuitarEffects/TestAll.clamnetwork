@@ -59,7 +59,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="MonoAudioFileReader" position="18,172" size="196,59" type="MonoAudioFileReader">
-    <SourceFile>../../../clam-test-data/StereoTestFile.wav</SourceFile>
+    <SourceFile>../../../../clam-test-data/StereoTestFile.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
