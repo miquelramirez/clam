@@ -1,0 +1,8 @@
+
+To run the example clamnetworks you might need to change some processing configuration or, in Linux, just install this wav file at /usr/local/share/clam:
+
+sudo mkdir /usr/local/share/clam
+cd /usr/local/share/clam
+sudo wget http://clam-project.org/clam_data/trunk/RythmDescription/Data -l 1
+
+
