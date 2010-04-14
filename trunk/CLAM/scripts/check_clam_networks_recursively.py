@@ -73,7 +73,13 @@ def removeIfExists(filename) :
 
 def passCheckClamnetworks(datapath, clamnetworks) :
 	failedCases = []
+	myDirectory=os.getcwd() # save current directory
+	
 	for case in clamnetworks :
+		
+		newDirectory=os.path.dirname(case);
+		os.chdir(newDirectory);	#change to the  network directory 
+		
 		command="CheckClamNetwork %s"%(case)
 		phase("Test: %s"%(case))
 		output = cStringIO.StringIO()
@@ -89,13 +95,14 @@ def passCheckClamnetworks(datapath, clamnetworks) :
 			
 			if output:
 				print stdout_text
-				failedCases.append((case, ["Command failed with return code %i:\n'%s'"%(output,command)]))
+				failedCases.append((case, ["Command: %s"%(command)]))
 				continue
 
 		except OSError, e :
 			failedCases.append((case, ["Unable to run command: '%s'"%(command)]))
 			continue
-
+	os.chdir(myDirectory);
+	
 	print "Summary:"
 	print '\033[32m%i passed cases\033[0m'%(len(clamnetworks)-len(failedCases))
 
@@ -103,9 +110,8 @@ def passCheckClamnetworks(datapath, clamnetworks) :
 
 	print '\033[31m%i failed cases!\033[0m'%len(failedCases)
 	for case, msgs in failedCases :
-		print case, ":"
 		for msg in msgs :
-			print "\t%s"%msg
+			print " %s"%msg
 	return False
 
 help ="""
