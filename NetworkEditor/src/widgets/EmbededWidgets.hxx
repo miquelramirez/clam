@@ -43,6 +43,9 @@ public:
 	}
 };
 
+// Temporary duplication of classes with EmbededMonitorCreator as there are two 
+// creation interfaces, passing the monitor on construction or in the setDataSource
+
 template <typename WidgetType, typename MonitorType>
 class EmbededMonitorCreator : public EmbededWidgetCreatorBase
 {
@@ -57,6 +60,21 @@ public:
 		WidgetType * widget = new WidgetType(parent);
 		widget->setDataSource(*monitor);
 		return widget;
+	}
+};
+
+template <typename WidgetType, typename MonitorType>
+class EmbededMonitorCreator2 : public EmbededWidgetCreatorBase
+{
+public:
+	EmbededMonitorCreator2(const Key & type)
+		: EmbededWidgetCreatorBase(type)
+	{}
+	virtual QWidget * concreteCreate(CLAM::Processing * processing, QWidget * parent)
+	{
+		MonitorType * monitor = dynamic_cast<MonitorType*>(processing);
+		if (not monitor) return 0;
+		return new WidgetType(parent,monitor);
 	}
 };
 

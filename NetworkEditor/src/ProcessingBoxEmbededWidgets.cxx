@@ -48,21 +48,24 @@
 #include <QtCore/QFileInfo> // added to check if embbeded file exists as external without console error message
 
 
-namespace a {
-	static CLAM::EmbededMonitorCreator <PeakView, PeakViewMonitor> reg("PeakView");
-} namespace b{
-	static CLAM::EmbededMonitorCreator <PolarChromaPeaks, PolarChromaPeaksMonitor> reg("PolarChromaPeaks");
-} namespace c{
-	static CLAM::EmbededMonitorCreator <CLAM::VM::Tonnetz, TonnetzMonitor> reg("Tonnetz");
-} namespace d{
-	static CLAM::EmbededMonitorCreator <CLAM::VM::KeySpace, KeySpaceMonitor> reg("KeySpace");
-} namespace e{
-	static CLAM::EmbededMonitorCreator <CLAM::VM::Spectrogram, SpectrogramMonitor> reg("Spectrogram");
-} namespace f{
-	static CLAM::EmbededMonitorCreator <CLAM::VM::ChordRanking,ChordRankingMonitor> reg("ChordRanking");
-} namespace g{
-	static CLAM::EmbededMonitorCreator <Tunner,TunnerMonitor> reg("Tunner");
-}
+namespace { static CLAM::EmbededMonitorCreator <PeakView, PeakViewMonitor> regPeakView("PeakView"); } 
+namespace { static CLAM::EmbededMonitorCreator <PolarChromaPeaks, PolarChromaPeaksMonitor> regPolarChromaPeaks("PolarChromaPeaks"); }
+namespace { static CLAM::EmbededMonitorCreator <CLAM::VM::Tonnetz, TonnetzMonitor> regTonnetz("Tonnetz"); }
+namespace { static CLAM::EmbededMonitorCreator <CLAM::VM::KeySpace, KeySpaceMonitor> regKeySpace("KeySpace"); }
+namespace { static CLAM::EmbededMonitorCreator <CLAM::VM::Spectrogram, SpectrogramMonitor> regSpectrogram("Spectrogram"); }
+namespace { static CLAM::EmbededMonitorCreator <CLAM::VM::ChordRanking,ChordRankingMonitor> regChordRanking("ChordRanking"); }
+namespace { static CLAM::EmbededMonitorCreator <Tunner,TunnerMonitor> regTunner("Tunner"); }
+namespace { static CLAM::EmbededMonitorCreator2 <Vumeter,VumeterMonitor> regVumeter("Vumeter"); }
+namespace { static CLAM::EmbededMonitorCreator2 <Oscilloscope,OscilloscopeMonitor> regOscilloscop("Oscilloscope"); }
+namespace { static CLAM::EmbededMonitorCreator2 <BufferOscilloscope,BufferOscilloscopeMonitor> regBufferOscilloscope("BufferOscilloscope"); }
+namespace { static CLAM::EmbededMonitorCreator2 <SpectrumView,SpectrumViewMonitor> regSpectrumView("SpectrumView"); }
+namespace { static CLAM::EmbededMonitorCreator2 <CLAM::VM::LPModelView,LPModelViewMonitor> regLPModelView("LPModelView"); }
+namespace { static CLAM::EmbededMonitorCreator2 <CLAM::VM::MelSpectrumView,MelSpectrumViewMonitor> regMelSpectrumView("MelSpectrumView"); }
+namespace { static CLAM::EmbededMonitorCreator2 <CLAM::VM::MelCepstrumView,MelCepstrumViewMonitor> regMelCepstrumView("MelCepstrumView"); }
+namespace { static CLAM::EmbededMonitorCreator2 <CLAM::VM::VectorView,VectorViewMonitor> regVectorView("VectorView"); }
+namespace { static CLAM::EmbededMonitorCreator2 <CLAM::VM::HistogramView,HistogramViewMonitor> regHistogramView("HistogramView"); }
+namespace { static CLAM::EmbededMonitorCreator2 <SegmentationView,SegmentationViewMonitor> regSegmentationView("SegmentationView"); }
+
 
 QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 {
@@ -73,36 +76,6 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 	if (myWidget) return myWidget;
 
 	std::string className = processing->GetClassName();
-
-	if (className=="Vumeter")
-		return new Vumeter( this, dynamic_cast<VumeterMonitor*>(processing) );
-
-	if (className=="Oscilloscope")
-		return new Oscilloscope( 0, dynamic_cast<OscilloscopeMonitor*>(processing) );
-
-	if (className=="BufferOscilloscope")
-		return new BufferOscilloscope( 0, dynamic_cast<BufferOscilloscopeMonitor*>(processing) );
-
-	if (className=="SpectrumView")
-		return new SpectrumView(this, dynamic_cast<SpectrumViewMonitor*>(processing) );
-
-	if (className=="LPModelView")
-		return new CLAM::VM::LPModelView(this, dynamic_cast<LPModelViewMonitor*>(processing));
-
-	if (className=="MelSpectrumView")
-		return new CLAM::VM::MelSpectrumView(this, dynamic_cast<MelSpectrumViewMonitor*>(processing));
-
-	if (className=="MelCepstrumView")
-		return new CLAM::VM::MelCepstrumView(this, dynamic_cast<MelCepstrumViewMonitor*>(processing));
-
-	if (className=="VectorView")
-		return new CLAM::VM::VectorView(this, dynamic_cast<VectorViewMonitor*>(processing));
-
-	if (className=="HistogramView")
-		return new CLAM::VM::HistogramView(this, dynamic_cast<HistogramViewMonitor*>(processing));
-
-	if (className=="SegmentationView")
-		return new SegmentationView(this, dynamic_cast<SegmentationViewMonitor*>(processing));
 
 	// SVG embedding. TODO: replace embedded_svg for embedded_logo (requires load in QLabel? on QWidget, instead using QSvgWidget)
 	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
