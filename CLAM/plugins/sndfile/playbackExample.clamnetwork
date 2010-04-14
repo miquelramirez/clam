@@ -13,7 +13,7 @@
   <processing id="ProgressControl" position="13,-46" size="403,69" type="ProgressControl" />
 
   <processing id="SndfilePlayer" position="35,108" size="114,62" type="SndfilePlayer">
-    <SourceFile>/home/vokimon/CajitasDeArena/acustica/wavs/InLanguageAnecoic-cut_48000.wav</SourceFile>
+    <SourceFile>/usr/local/share/clam/Elvis.wav</SourceFile>
     <Loop>1</Loop>
     <SavedNumberOfChannels>1</SavedNumberOfChannels>
   </processing>
