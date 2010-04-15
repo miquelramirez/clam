@@ -37,7 +37,7 @@
   </processing>
 
   <processing id="ChoreoSequencerViaControl" position="354,59" size="226,58" type="ChoreoSequencerViaControl">
-    <Filename>/home/parumi/data_acustica/coreo_examples/room_acoustics/exported_coreo.data</Filename>
+    <Filename>../../../../../data_acustica/coreo_examples/room_acoustics/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <ControlsPerSecond>25</ControlsPerSecond>
     <UseSpiralIfNoFilename>0</UseSpiralIfNoFilename>
