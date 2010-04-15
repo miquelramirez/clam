@@ -1,15 +1,26 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="AudioMixer_0" position="667,319" size="115,58" type="AudioMixer">
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioMixer_0" position="667,319" size="145,58" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    </processing>
+  </processing>
 
-  <processing id="AudioSink_0" position="809,258" size="128,111" type="AudioSink" />
+  <processing id="AudioSink_0" position="809,258" size="137,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="AudioSource_0" position="-167,184" size="128,108" type="AudioSource" />
+  <processing id="AudioSource_0" position="-167,184" size="153,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
 
-  <processing id="ConstantSpectrum_0" position="37,126" size="165,62" type="ConstantSpectrum">
-    <AudioFile>Carnel_3P.wav</AudioFile>
+  <processing id="ConstantSpectrum_0" position="37,126" size="192,62" type="ConstantSpectrum">
+    <AudioFile>/usr/local/share/clam/ElvisStereo.wav</AudioFile>
     <FrameSize>65536</FrameSize>
   </processing>
 
@@ -21,15 +32,15 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="MagPhaseSpectrumProduct_0" position="333,134" size="222,62" type="MagPhaseSpectrumProduct" />
+  <processing id="MagPhaseSpectrumProduct_0" position="333,134" size="249,62" type="MagPhaseSpectrumProduct"/>
 
-  <processing id="Oscilloscope_0" position="816,387" size="217,163" type="Oscilloscope" />
+  <processing id="Oscilloscope_0" position="816,387" size="217,163" type="Oscilloscope"/>
 
-  <processing id="OverlapAdd_0" position="515,322" size="119,58" type="OverlapAdd">
+  <processing id="OverlapAdd_0" position="515,322" size="148,58" type="OverlapAdd">
     <FrameSize>1024</FrameSize>
   </processing>
 
-  <processing id="SpectralAnalysis_0" position="1,184" size="150,58" type="SpectralAnalysis">
+  <processing id="SpectralAnalysis_0" position="1,184" size="180,58" type="SpectralAnalysis">
     <WindowGenerator>
       <Type>None</Type>
       <Size>65537</Size>
@@ -52,7 +63,7 @@
     <prWindowType>None</prWindowType>
   </processing>
 
-  <processing id="SpectralSynthesis_0" position="705,154" size="160,58" type="SpectralSynthesis">
+  <processing id="SpectralSynthesis_0" position="705,154" size="188,58" type="SpectralSynthesis">
     <AnalWindowGenerator>
       <Type>BlackmanHarris92</Type>
       <Size>65537</Size>
@@ -83,17 +94,17 @@
     <prHopSize>1024</prHopSize>
   </processing>
 
-  <processing id="SpectrumView_0" position="268,390" size="287,154" type="SpectrumView" />
+  <processing id="SpectrumView_0" position="268,390" size="287,154" type="SpectrumView"/>
 
-  <processing id="SpectrumView_1" position="543,390" size="287,156" type="SpectrumView" />
+  <processing id="SpectrumView_1" position="543,390" size="287,156" type="SpectrumView"/>
 
-  <processing id="SpectrumView_2" position="-9,389" size="266,152" type="SpectrumView" />
+  <processing id="SpectrumView_2" position="-9,389" size="266,152" type="SpectrumView"/>
 
-  <processing id="magphase" position="189,176" size="100,58" type="Spectrum2MagPhaseSpectrum" />
+  <processing id="magphase" position="189,176" size="125,58" type="Spectrum2MagPhaseSpectrum"/>
 
-  <processing id="tocompl" position="-121,396" size="84,58" type="MagPhaseSpectrum2Spectrum" />
+  <processing id="tocompl" position="-121,396" size="110,58" type="MagPhaseSpectrum2Spectrum"/>
 
-  <processing id="tocomplex" position="574,134" size="98,58" type="MagPhaseSpectrum2Spectrum" />
+  <processing id="tocomplex" position="574,134" size="126,58" type="MagPhaseSpectrum2Spectrum"/>
 
   <port_connection>
     <out>AudioMixer_0.Output Audio</out>
