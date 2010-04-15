@@ -27,7 +27,6 @@ CLAM_EMBEDDED_FILE(dummyControls_embededNetwork,"dummy_azimuth_elevation_control
 CLAM_EMBEDDED_FILE(bformat_to_15_embededNetwork,"../example-data/bformat2fifteen.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat_to_22_embededNetwork,"../example-data/bformat_to_22.clamnetwork")
 
-CLAM_EMBEDDED_FILE(bformat06,"bformat06.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat14,"bformat14.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat15,"bformat15.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat16,"bformat16.clamnetwork")
@@ -143,9 +142,6 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"id_vbap_22", "vbap22",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
-	static CLAM::LadspaNetworkExporter n2006(library, bformat06, 2006,
-			"id_bformat_06", "bformat06",
-			"BarcelonaMedia-Audio", "GNU GPL");
 	static CLAM::LadspaNetworkExporter n2014(library, bformat14, 2014,
 			"id_bformat_14", "bformat14",
 			"BarcelonaMedia-Audio", "GNU GPL");
