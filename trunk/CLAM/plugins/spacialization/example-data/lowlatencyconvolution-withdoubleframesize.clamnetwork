@@ -1,28 +1,39 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="AudioBuffer2Stream_0" position="195,318" size="197,60" type="AudioBuffer2Stream">
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioBuffer2Stream_0" position="195,318" size="203,60" type="AudioBuffer2Stream">
     <HopSize>1024</HopSize>
     <BufferSize>2048</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="AudioMixer_0" position="415,323" size="132,60" type="AudioMixer">
+  <processing id="AudioMixer_0" position="415,323" size="145,60" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    </processing>
+  </processing>
 
-  <processing id="AudioSink_0" position="585,329" size="128,111" type="AudioSink" />
+  <processing id="AudioSink_0" position="585,329" size="137,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="AudioSource_0" position="11,8" size="141,108" type="AudioSource" />
+  <processing id="AudioSource_0" position="11,8" size="153,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
 
-  <processing id="AudioWindowing_0" position="182,18" size="171,60" type="AudioStream2Buffer">
+  <processing id="AudioWindowing_0" position="182,18" size="181,60" type="AudioStream2Buffer">
     <HopSize>1024</HopSize>
     <BufferSize>2048</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="BufferOscilloscope_0" position="380,66" size="150,108" type="BufferOscilloscope" />
+  <processing id="BufferOscilloscope_0" position="380,66" size="193,108" type="BufferOscilloscope"/>
 
-  <processing id="BufferOscilloscope_1" position="613,20" size="150,149" type="BufferOscilloscope" />
+  <processing id="BufferOscilloscope_1" position="613,20" size="193,149" type="BufferOscilloscope"/>
 
-  <processing id="Gain 0" position="395,233" size="200,77" type="OutControlSender">
+  <processing id="Gain 0" position="395,233" size="201,78" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>200</Max>
@@ -30,31 +41,32 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="ImpulseResponseLoader" position="14,194" size="186,58" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader" position="14,194" size="215,58" type="ImpulseResponseLoader">
     <FrameSize>1024</FrameSize>
-    <ImpulseResponse>Carnel_3P.wav</ImpulseResponse>
-  <IsBFormatFile>0</IsBFormatFile></processing>
+    <ImpulseResponse>/usr/local/share/clam/ElvisStereo.wav</ImpulseResponse>
+    <IsBFormatFile>0</IsBFormatFile>
+  </processing>
 
-  <processing id="LowLatencyConvolution_0" position="95,109" size="224,62" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_0" position="95,109" size="227,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>1024</FrameSize>
   </processing>
 
-  <processing id="MyFFT_0" position="373,17" size="97,60" type="MyFFT">
+  <processing id="MyFFT_0" position="373,17" size="113,60" type="MyFFT">
     <AudioSize>2048</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_0" position="53,274" size="101,60" type="MyIFFT">
+  <processing id="MyIFFT_0" position="53,274" size="117,60" type="MyIFFT">
     <AudioSize>2048</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope_0" position="729,199" size="161,222" type="Oscilloscope" />
+  <processing id="Oscilloscope_0" position="729,199" size="161,222" type="Oscilloscope"/>
 
-  <processing id="SpectrumView_0" position="341,427" size="590,173" type="SpectrumView" />
+  <processing id="SpectrumView_0" position="341,427" size="590,173" type="SpectrumView"/>
 
-  <processing id="toMP" position="91,436" size="71,60" type="Complex2MagPhaseSpectrum" />
+  <processing id="toMP" position="91,436" size="89,60" type="Complex2MagPhaseSpectrum"/>
 
-  <processing id="toSpectrum" position="186,433" size="119,60" type="MagPhaseSpectrum2Spectrum" />
+  <processing id="toSpectrum" position="186,433" size="132,60" type="MagPhaseSpectrum2Spectrum"/>
 
   <port_connection>
     <out>AudioBuffer2Stream_0.Audio stream</out>
@@ -84,11 +96,6 @@
   <port_connection>
     <out>AudioWindowing_0.Audio buffer</out>
     <in>BufferOscilloscope_0.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>ImpulseResponseLoader.W</out>
-    <in>LowLatencyConvolution_0.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
