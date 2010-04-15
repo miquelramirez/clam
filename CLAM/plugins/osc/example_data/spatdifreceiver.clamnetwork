@@ -122,7 +122,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="MultiSampler" position="557,165" size="143,59" type="MultiSampler">
     <LoopDefaultState>1</LoopDefaultState>
-    <BasePath>/usr/local/share/clam/clam-project.org/clam_data/trunk/RythmDescription/Data</BasePath>
+    <BasePath>/usr/local/share/clam/</BasePath>
     <Samples>Amsterdam.wav, elecpiano-drums.wav, drums-electronic-guit.wav, AmourEnPoudre.wav</Samples>
   </processing>
 

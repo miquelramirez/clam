@@ -3,6 +3,11 @@ To run the example clamnetworks you might need to change some processing configu
 
 sudo mkdir /usr/local/share/clam
 cd /usr/local/share/clam
-sudo wget http://clam-project.org/clam_data/trunk/RythmDescription/Data -r -l 1
+sudo wget http://clam-project.org/clam_data/trunk/RythmDescription/Data/Amsterdam.wav
+sudo wget http://clam-project.org/clam_data/trunk/RythmDescription/Data/blue_monday.wav
+sudo wget http://clam-project.org/clam_data/trunk/RythmDescription/Data/elecpiano-drums.wav
+sudo wget http://clam-project.org/clam_data/trunk/RythmDescription/Data/drums-electronic-guit.wav
+sudo wget http://clam-project.org/clam_data/trunk/RythmDescription/Data/AmourEnPoudre.wav
+
 
 
