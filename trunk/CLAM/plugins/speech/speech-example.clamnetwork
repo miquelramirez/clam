@@ -1,23 +1,32 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="AudioSink_0" position="465,66" size="128,111" type="AudioSink" />
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="AudioWindowing_0" position="-24,73" size="141,58" type="AudioStream2Buffer">
+  <processing id="AudioSink_0" position="465,66" size="137,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="AudioWindowing_0" position="-24,73" size="181,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="FormantExtractor_0" position="-24,144" size="141,58" type="FormantExtractor" />
+  <processing id="FormantExtractor_0" position="-24,144" size="185,58" type="FormantExtractor"/>
 
-  <processing id="MonoAudioFileReader_0" position="-56,16" size="172,58" type="MonoAudioFileReader">
-    <SourceFile>/home/abe/media/audio/vowels/uw_8k.wav</SourceFile>
+  <processing id="MonoAudioFileReader_0" position="-56,16" size="211,58" type="MonoAudioFileReader">
+    <SourceFile>/usr/local/share/clam/ElvisStereo.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
 
-  <processing id="PeakView_0" position="179,238" size="345,272" type="PeakView" />
+  <processing id="PeakView_0" position="179,238" size="345,272" type="PeakView"/>
 
-  <processing id="SMSSynthesis_0" position="297,27" size="127,110" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" position="297,27" size="162,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>8000</SamplingRate>
@@ -70,14 +79,14 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
-  <processing id="SimpleOscillator_0" position="170,179" size="137,58" type="SimpleOscillator">
+  <processing id="SimpleOscillator_0" position="170,179" size="179,58" type="SimpleOscillator">
     <Frequency>440</Frequency>
     <Amplitude>1</Amplitude>
     <Phase>0</Phase>
     <SamplingRate>8000</SamplingRate>
   </processing>
 
-  <processing id="SpectralAnalysis_0" position="282,144" size="139,58" type="SpectralAnalysis">
+  <processing id="SpectralAnalysis_0" position="282,144" size="180,58" type="SpectralAnalysis">
     <WindowGenerator>
       <Type>BlackmanHarris92</Type>
       <Size>1025</Size>
