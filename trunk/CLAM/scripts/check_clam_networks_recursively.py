@@ -4,6 +4,7 @@ from diff_audio_files import diff_files
 import os, sys, string,  glob
 import cStringIO
 import subprocess
+import getopt
 
 def run(command) :
 	print '\033[32m:: ', command, '\033[0m'
@@ -71,14 +72,18 @@ def removeIfExists(filename) :
 	try: os.remove(filename)
 	except: pass
 
-def passCheckClamnetworks(datapath, clamnetworks) :
+def passCheckClamnetworks(datapath, clamnetworks, mode) :
 	failedCases = []
 	myDirectory=os.getcwd() # save current directory
 	
+	if(mode==2):
+		os.chdir(datapath);	#change to the  path
+	
 	for case in clamnetworks :
 		
-		newDirectory=os.path.dirname(case);
-		os.chdir(newDirectory);	#change to the  network directory 
+		if(mode==0):
+			newDirectory=os.path.dirname(case);
+			os.chdir(newDirectory);	#change to the  network directory 
 		
 		command="CheckClamNetwork %s"%(case)
 		phase("Test: %s"%(case))
@@ -101,6 +106,7 @@ def passCheckClamnetworks(datapath, clamnetworks) :
 		except OSError, e :
 			failedCases.append((case, ["Unable to run command: '%s'"%(command)]))
 			continue
+			
 	os.chdir(myDirectory);
 	
 	print "Summary:"
@@ -131,16 +137,9 @@ To know which are the available cases:
 def _caseList(cases) :
 	return "".join(["\t"+case+"\n" for case in cases])
 
-def runCheckClamnetworksProgram(datapath, argv, clamnetworks) :
+def runCheckClamnetworksProgram(datapath, clamnetworks, mode) :
 
-	availableCases = clamnetworks
-
-	if "--list" in argv :
-		for case in availableCases :
-			print case
-		sys.exit()
-
-	passCheckClamnetworks(datapath, clamnetworks) or die("Tests not passed")
+	passCheckClamnetworks(datapath, clamnetworks, mode) or die("Tests not passed")
 
 def recursiveDirs(root) :
 	return filter( 
@@ -149,32 +148,79 @@ def recursiveDirs(root) :
 
 ######### Main #########
 
-if len(sys.argv) ==1:
-	print help
-	exit()
+def main():
+    # parse command line options
 
-data_path= sys.argv[1]
-subdirectories_excluded=[]
+	showList=0;
+	args =  sys.argv[1:]
+	subdirectories_excluded=list()
+	try:
+		optlist1, args1 = getopt.getopt(args, "bcshl",  ["basedir", "localdir", "staticdir", "help", "list"])
+	except getopt.error, msg:
+		print "[1] for help use --help"
+		sys.exit(2)
 
-if len(sys.argv) > 2:
-	for i in range(2, len(sys.argv)):
-		temp = sys.argv[i]
-		if  temp != "--list":
-			subdirectories_excluded.insert(0, os.path.join(data_path, temp))
+	# process options
+	mode = 0; 
+	for o, a in optlist1:
+		if o in ("-c", "--localdir"):	# Run directory network = network directory 
+			mode = 0		
+		if o in ("-s", "--staticdir"):	# Run directory network = actual directory 
+			mode = 1
+		if o in ("-b", "--basedir"):		# Run directory network = path 
+			mode = 2
+		if o in ("-h", "--help"):
+			print help
+			sys.exit(0)
+		if o in ("-l", "--list"):
+			showList=1;
 
-os.access( data_path, os.X_OK ) or die(
-    "Datapath at '%s' not available. "%data_path +
-    "Check the check clam networks recursively script on information on how to obtain it.")
+	if len(args1) ==0:
+		print help
+		exit(0)
 
-clam_networks=set();
+	data_path= args1[0]
+#	print "Path: ", data_path
+	
+	if len(args1) >1:
+		try:
+			optlist2, args2 = getopt.getopt(args1[1:], "k",  ["blacklist"])
+		except getopt.error, msg:
+			print "[2] for help use --help"
+			sys.exit(2)
+		
+		for o, a in optlist2:
+			if o in ("-k", "--blacklist"):
+				for dir in args2:
+					subdirectories_excluded.insert(0, os.path.join(data_path, dir))
+			
+#	print "Excluded: ", subdirectories_excluded
 
-for dir in recursiveDirs( data_path ):
-	if dir not in subdirectories_excluded:
-		for net in glob.glob( os.path.join(dir, "*.clamnetwork")):
-			clam_networks.add(net) ;
+	os.access( data_path, os.X_OK ) or die(
+		"Datapath at '%s' not available. "%data_path +
+		"Check the check clam networks recursively script on information on how to obtain it.")
 
-#print clam_networks
-#print len(clam_networks)
+	clam_networks=set();
 
-runCheckClamnetworksProgram(data_path, sys.argv, clam_networks)
+	for dir in recursiveDirs( data_path ):
+		valid=1;
+		for excluded in subdirectories_excluded:
+			if excluded.find(dir) ==0:
+				valid=0;
+				break;
+		if(valid==1):
+			for net in glob.glob( os.path.join(dir, "*.clamnetwork")):
+				clam_networks.add(net) ;
+
+	if(showList==1):
+		for case in clam_networks :
+			print case
+	else:
+		runCheckClamnetworksProgram(data_path, clam_networks,  mode)
+
+if __name__ == "__main__":
+    main()
+
+
+
 
