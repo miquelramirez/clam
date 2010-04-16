@@ -224,12 +224,12 @@ clam.add_subtask('Check Clam Networks Recursively that are inside the NetworkEdi
 
 clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins', [
 	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/GuitarEffects/'%localDefinitions },
-	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/osc/'%localDefinitions },
-	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/sndfile/'%localDefinitions },
-	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/Filters/'%localDefinitions },
-	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/MIDI/'%localDefinitions },
-	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/CLAM/plugins/resampling/'%localDefinitions },
+	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/GuitarEffects/'%localDefinitions },
+	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/osc/'%localDefinitions },
+	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/sndfile/'%localDefinitions },
+	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/Filters/'%localDefinitions },
+	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/MIDI/'%localDefinitions },
+	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/resampling/'%localDefinitions },
 ] )
 
 """
