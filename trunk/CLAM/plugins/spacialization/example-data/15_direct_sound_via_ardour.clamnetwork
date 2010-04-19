@@ -1,43 +1,80 @@
-<network clamVersion="1.3.1" id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="1 mid back" position="1133,223" size="128,111" type="AudioSink" />
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="10 mid back right" position="1593,656" size="128,111" type="AudioSink" />
+  <processing id="1 mid back" position="1133,223" size="129,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="11 up back left" position="1140,750" size="128,111" type="AudioSink" />
+  <processing id="10 mid back right" position="1593,656" size="171,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="12 up back right" position="1256,776" size="128,111" type="AudioSink" />
+  <processing id="11 up back left" position="1140,750" size="154,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="13 up front right" position="1373,805" size="128,111" type="AudioSink" />
+  <processing id="12 up back right" position="1256,776" size="162,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="14 up front left" position="1501,819" size="128,111" type="AudioSink" />
+  <processing id="13 up front right" position="1373,805" size="162,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="15 Top" position="1029,855" size="128,111" type="AudioSink" />
+  <processing id="14 up front left" position="1501,819" size="154,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="2 down rear left" position="1141,332" size="128,111" type="AudioSink" />
+  <processing id="15 Top" position="1029,855" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="3 down rear right" position="1250,350" size="128,111" type="AudioSink" />
+  <processing id="2 down rear left" position="1141,332" size="160,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="4 down front left" position="1361,369" size="128,111" type="AudioSink" />
+  <processing id="3 down rear right" position="1250,350" size="168,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="5 down front right" position="1472,396" size="130,111" type="AudioSink" />
+  <processing id="4 down front left" position="1361,369" size="165,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="6 mid front" position="1114,527" size="128,111" type="AudioSink" />
+  <processing id="5 down front right" position="1472,396" size="173,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="7 mid front left" position="1232,547" size="128,111" type="AudioSink" />
+  <processing id="6 mid front" position="1114,527" size="129,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="8 mid front right" position="1349,574" size="128,111" type="AudioSink" />
+  <processing id="7 mid front left" position="1232,547" size="155,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="9 mid back left" position="1466,594" size="128,111" type="AudioSink" />
+  <processing id="8 mid front right" position="1349,574" size="163,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="AbsoluteCoordinates2RelativeAngles" position="390,209" size="239,58" type="AbsoluteCoordinates2RelativeAngles" />
+  <processing id="9 mid back left" position="1466,594" size="155,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="AudioMixer" position="79,681" size="107,62" type="AudioMixer">
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="390,209" size="297,58" type="AbsoluteCoordinates2RelativeAngles"/>
+
+  <processing id="AudioMixer" position="79,681" size="130,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
   </processing>
 
-  <processing id="ChoreoSequencerViaControl" position="354,59" size="226,58" type="ChoreoSequencerViaControl">
-    <Filename>../../../../../data_acustica/coreo_examples/room_acoustics/exported_coreo.data</Filename>
+  <processing id="ChoreoSequencerViaControl" position="354,59" size="239,58" type="ChoreoSequencerViaControl">
+    <Filename>../../../../data_acustica/coreo_examples/room_acoustics/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <ControlsPerSecond>25</ControlsPerSecond>
     <UseSpiralIfNoFilename>0</UseSpiralIfNoFilename>
@@ -49,19 +86,21 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="GainBecauseOfDistance" position="399,358" size="168,58" type="GainBecauseOfDistance">
-    <DistanceExponent>1.0</DistanceExponent>
+  <processing id="GainBecauseOfDistance" position="399,358" size="214,58" type="GainBecauseOfDistance">
+    <DistanceExponent>1</DistanceExponent>
     <MinimumDistance>1</MinimumDistance>
     <DistanceThreshold>0</DistanceThreshold>
   </processing>
 
-  <processing id="MTCReceiver" position="152,29" size="109,58" type="MTCReceiver" />
+  <processing id="MTCReceiver" position="152,29" size="140,58" type="MTCReceiver"/>
 
-  <processing id="Source" position="34,340" size="128,108" type="AudioSource" />
+  <processing id="Source" position="34,340" size="128,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
 
-  <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D">
-    <SpeakerLayout />
-    <Triangulation />
+  <processing id="Vbap3D" position="367,150" size="108,270" type="Vbap3D">
+    <SpeakerLayout></SpeakerLayout>
+    <Triangulation></Triangulation>
   </processing>
 
   <port_connection>
@@ -150,13 +189,13 @@
   </port_connection>
 
   <control_connection>
-    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
-    <in>Vbap3D.elevation</in>
+    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
+    <in>Vbap3D.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
-    <in>Vbap3D.azimuth</in>
+    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
+    <in>Vbap3D.elevation</in>
   </control_connection>
 
   <control_connection>
