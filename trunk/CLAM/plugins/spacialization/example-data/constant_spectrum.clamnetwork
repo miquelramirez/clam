@@ -1,26 +1,35 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="AudioBuffer2Stream" position="274,4" size="159,58" type="AudioBuffer2Stream">
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioBuffer2Stream" position="274,4" size="188,58" type="AudioBuffer2Stream">
     <HopSize>32768</HopSize>
     <BufferSize>65536</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="AudioSink_0" position="365,111" size="128,111" type="AudioSink" />
+  <processing id="AudioSink_0" position="365,111" size="137,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="BufferOscilloscope" position="46,54" size="284,120" type="BufferOscilloscope" />
+  <processing id="BufferOscilloscope" position="46,54" size="284,120" type="BufferOscilloscope"/>
 
-  <processing id="ConstantSpectrum" position="3,4" size="151,62" type="ConstantSpectrum">
-    <AudioFile>Carnel_3P.wav</AudioFile>
+  <processing id="ConstantSpectrum" position="3,4" size="177,62" type="ConstantSpectrum">
+    <AudioFile>/usr/local/share/clam/ElvisStereo.wav</AudioFile>
     <FrameSize>32768</FrameSize>
   </processing>
 
-  <processing id="MagPhaseSpectrum2Spectrum_0" position="163,161" size="241,58" type="MagPhaseSpectrum2Spectrum" />
+  <processing id="MagPhaseSpectrum2Spectrum_0" position="163,161" size="270,58" type="MagPhaseSpectrum2Spectrum"/>
 
-  <processing id="MyIFFT" position="174,2" size="74,58" type="MyIFFT">
+  <processing id="MyIFFT" position="174,2" size="102,58" type="MyIFFT">
     <AudioSize>65536</AudioSize>
   </processing>
 
-  <processing id="SpectrumView_0" position="113,203" size="351,121" type="SpectrumView" />
+  <processing id="SpectrumView_0" position="113,203" size="351,121" type="SpectrumView"/>
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
