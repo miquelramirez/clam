@@ -1,4 +1,5 @@
-<network clamVersion="1.3.1" id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
   <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
@@ -6,50 +7,52 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="-180" position="299,446" size="110,58" type="ControlSum">
+  <processing id="-180" position="162,603" size="110,58" type="ControlSum">
     <RightTerm>-180</RightTerm>
   </processing>
 
-  <processing id="AbsoluteCoordinates2RelativeAngles" position="320,803" size="274,59" type="AbsoluteCoordinates2RelativeAngles" />
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="320,803" size="297,59" type="AbsoluteCoordinates2RelativeAngles"/>
 
-  <processing id="AudioBuffer2Stream" position="1026,1000" size="165,59" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream" position="1026,1000" size="188,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="AudioBuffer2Stream_1" position="1026,1095" size="180,59" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream_1" position="1026,1095" size="203,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="AudioBuffer2Stream_2" position="1029,1046" size="180,59" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream_2" position="1029,1046" size="203,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="AudioBuffer2Stream_3" position="1024,1139" size="180,59" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream_3" position="1024,1139" size="203,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="AudioMixer" position="272,1243" size="107,62" type="AudioMixer">
+  <processing id="AudioMixer" position="272,1243" size="130,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
     <DefaultGains size="1">1</DefaultGains>
   </processing>
 
-  <processing id="AudioStream2Buffer" position="348,1329" size="165,58" type="AudioStream2Buffer">
+  <processing id="AudioStream2Buffer" position="348,1329" size="188,58" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
   </processing>
 
-  <processing id="Azimuth" position="515,365" size="113,58" type="ControlSource">
+  <processing id="Azimuth" position="517,493" size="113,58" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>360</MaxValue>
+    <DefaultValue>0</DefaultValue>
     <Step>0.1</Step>
     <UnitName>degrees</UnitName>
+    <NrOfControls>1</NrOfControls>
   </processing>
 
-  <processing id="Binaural_Output" position="1647,839" size="139,111" type="AudioSink">
+  <processing id="Binaural_Output" position="1647,839" size="162,111" type="AudioSink">
     <NSinks>2</NSinks>
   </processing>
 
@@ -59,7 +62,7 @@ p, li { white-space: pre-wrap; }
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="ControlPrinter_1" position="333,1165" size="148,87" type="ControlPrinter">
+  <processing id="ControlPrinter_1" position="333,1165" size="162,87" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
@@ -71,43 +74,49 @@ p, li { white-space: pre-wrap; }
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="Distance" position="619,365" size="113,58" type="ControlSource">
+  <processing id="Distance" position="621,493" size="114,58" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>1000</MaxValue>
+    <DefaultValue>0</DefaultValue>
     <Step>0.1</Step>
     <UnitName>meters</UnitName>
+    <NrOfControls>1</NrOfControls>
   </processing>
 
-  <processing id="Elevation" position="735,362" size="113,58" type="ControlSource">
+  <processing id="Elevation" position="737,490" size="118,58" type="ControlSource">
     <MinValue>-89.99</MinValue>
     <MaxValue>89.99</MaxValue>
+    <DefaultValue>-89.99</DefaultValue>
     <Step>0.1</Step>
     <UnitName>degrees</UnitName>
+    <NrOfControls>1</NrOfControls>
   </processing>
 
-  <processing id="ExponentForDistance" position="839,363" size="172,58" type="ControlSource">
+  <processing id="ExponentForDistance" position="841,491" size="195,58" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>2</MaxValue>
+    <DefaultValue>0</DefaultValue>
     <Step>0.1</Step>
     <UnitName>u</UnitName>
+    <NrOfControls>1</NrOfControls>
   </processing>
 
-  <processing id="GainBecauseOfDistance" position="424,912" size="191,59" type="GainBecauseOfDistance">
+  <processing id="GainBecauseOfDistance" position="424,912" size="214,59" type="GainBecauseOfDistance">
     <DistanceExponent>1.5</DistanceExponent>
     <MinimumDistance>1</MinimumDistance>
     <DistanceThreshold>0</DistanceThreshold>
   </processing>
 
-  <processing id="HRTFDatabaseFetcher2" position="167,1026" size="184,94" type="HRTFDatabaseFetcher">
+  <processing id="HRTFDatabaseFetcher2" position="167,1026" size="207,94" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <HrtfDatabase>/home/acustica/acustica/HRTFs/ircam1017L.hrtfs</HrtfDatabase>
+    <HrtfDatabase>../../../../acustica/HRTFs/ircam1017L.hrtfs</HrtfDatabase>
   </processing>
 
-  <processing id="IRSwappingDelay" position="386,998" size="148,62" type="IRSwappingDelay" />
+  <processing id="IRSwappingDelay" position="386,998" size="171,62" type="IRSwappingDelay"/>
 
-  <processing id="IRSwappingDelay_1" position="383,1094" size="163,62" type="IRSwappingDelay" />
+  <processing id="IRSwappingDelay_1" position="383,1094" size="186,62" type="IRSwappingDelay"/>
 
-  <processing id="Init as 0" position="220,241" size="185,78" type="OutControlSender">
+  <processing id="Init as 0" position="222,369" size="185,78" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>0</Max>
@@ -116,53 +125,53 @@ p, li { white-space: pre-wrap; }
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="LowLatencyConvolution" position="697,983" size="189,62" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution" position="697,983" size="212,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_1" position="691,1112" size="204,62" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_1" position="691,1112" size="227,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_2" position="688,1048" size="204,62" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_2" position="688,1048" size="227,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_3" position="688,1164" size="204,62" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_3" position="688,1164" size="227,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="MyFFT" position="500,1276" size="75,59" type="MyFFT">
+  <processing id="MyFFT" position="500,1276" size="98,59" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT" position="924,996" size="79,59" type="MyIFFT">
+  <processing id="MyIFFT" position="924,996" size="102,59" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_1" position="922,1093" size="94,59" type="MyIFFT">
+  <processing id="MyIFFT_1" position="922,1093" size="117,59" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_2" position="921,1044" size="94,59" type="MyIFFT">
+  <processing id="MyIFFT_2" position="921,1044" size="117,59" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_3" position="922,1144" size="94,59" type="MyIFFT">
+  <processing id="MyIFFT_3" position="922,1144" size="117,59" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Spherical2CartesianControl" position="523,562" size="211,58" type="Spherical2CartesianControl" />
+  <processing id="Spherical2CartesianControl" position="525,690" size="234,58" type="Spherical2CartesianControl"/>
 
-  <processing id="XFadeAndSwitch" position="717,872" size="141,94" type="XFadeAndSwitch" />
+  <processing id="XFadeAndSwitch" position="717,872" size="164,94" type="XFadeAndSwitch"/>
 
-  <processing id="XFadeAndSwitch_1" position="713,1235" size="156,94" type="XFadeAndSwitch" />
+  <processing id="XFadeAndSwitch_1" position="713,1235" size="179,94" type="XFadeAndSwitch"/>
 
-  <processing id="listener position" position="7,250" size="139,59" type="MultiLibloSource">
+  <processing id="listener position" position="9,378" size="162,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/0/xyz</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
@@ -170,7 +179,7 @@ p, li { white-space: pre-wrap; }
     <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
-  <processing id="listener rotation" position="356,339" size="138,59" type="MultiLibloSource">
+  <processing id="listener rotation" position="358,467" size="161,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/0/ypr</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>fff</OSCTypeSpec>
@@ -182,7 +191,7 @@ p, li { white-space: pre-wrap; }
     <NSources>1</NSources>
   </processing>
 
-  <processing id="output gain because of distance" position="668,786" size="242,87" type="ControlPrinter">
+  <processing id="output gain because of distance" position="668,786" size="265,87" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
@@ -374,22 +383,22 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>Azimuth.output</out>
+    <out>Azimuth.output control</out>
     <in>Spherical2CartesianControl.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>Distance.output</out>
+    <out>Distance.output control</out>
     <in>Spherical2CartesianControl.module</in>
   </control_connection>
 
   <control_connection>
-    <out>Elevation.output</out>
+    <out>Elevation.output control</out>
     <in>Spherical2CartesianControl.elevation</in>
   </control_connection>
 
   <control_connection>
-    <out>ExponentForDistance.output</out>
+    <out>ExponentForDistance.output control</out>
     <in>GainBecauseOfDistance.inverse exponent to calculate gain</in>
   </control_connection>
 
