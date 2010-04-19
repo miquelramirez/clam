@@ -54,7 +54,7 @@
 
   <processing id="Hoa2RegularSpeakerArray" position="257,290" size="128,270" type="Hoa2RegularSpeakerArray">
 	<Order>1</Order>
-	<SpeakerLayout>../layouts/15_audiolab.layout</SpeakerLayout>
+	<SpeakerLayout>layouts/15_audiolab.layout</SpeakerLayout>
   </processing>
 
   <port_connection>
