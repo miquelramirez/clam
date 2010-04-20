@@ -6,6 +6,10 @@ import cStringIO
 import subprocess
 import getopt
 
+RunFromLocalDir=0
+RunFromCurrentDir=1
+RunFromBaseDir=2
+
 def run(command) :
 	print '\033[32m:: ', command, '\033[0m'
 	errorCode = os.system(command)
@@ -76,12 +80,12 @@ def passCheckClamnetworks(datapath, clamnetworks, mode) :
 	failedCases = []
 	myDirectory=os.getcwd() # save current directory
 	
-	if(mode==2):
+	if(mode==RunFromBaseDir):
 		os.chdir(datapath);	#change to the  path
 	
 	for case in clamnetworks :
 		
-		if(mode==0):
+		if mode==RunFromLocalDir :
 			newDirectory=os.path.dirname(case);
 			os.chdir(newDirectory);	#change to the  network directory 
 		
@@ -121,17 +125,23 @@ def passCheckClamnetworks(datapath, clamnetworks, mode) :
 	return False
 
 help ="""
-To run the tests call this script without parameters.
+To run the tests call this script with directory.
 	./check_clam_networks_recursively.py directory
 
 To know which are the available cases:
-	./check_clam_networks_recursively.py directory --list
+	./check_clam_networks_recursively.py [options]... directory
 
-To know which are the available cases:
-	./check_clam_networks_recursively.py directory subdirectory_excluded1 subdirectory_excluded2 ...
+To know which are the available cases usiong blacklist:
+	./check_clam_networks_recursively.py [options]... directory [-k subdirectory_excluded1 subdirectory_excluded2...]
 
-To know which are the available cases:
-	./check_clam_networks_recursively.py directory subdirectory_excluded1 subdirectory_excluded2 ... --list
+By default the network will be run from the current directory. But you can change the run dir with following options:
+	-b	--basedir	to run the networks found recursively from the given directory
+	-c	--localdir	to run the networks found recursively from the directory of each network
+Other options:
+	-h	--help		
+	-l	--list		list network into de directory
+	
+
 """
 
 def _caseList(cases) :
@@ -155,20 +165,18 @@ def main():
 	args =  sys.argv[1:]
 	subdirectories_excluded=list()
 	try:
-		optlist1, args1 = getopt.getopt(args, "bcshl",  ["basedir", "localdir", "staticdir", "help", "list"])
+		optlist1, args1 = getopt.getopt(args, "bchl",  ["basedir", "localdir", "help", "list"])
 	except getopt.error, msg:
 		print "[1] for help use --help"
 		sys.exit(2)
 
 	# process options
-	mode = 0; 
+	mode = RunFromCurrentDir 
 	for o, a in optlist1:
 		if o in ("-c", "--localdir"):	# Run directory network = network directory 
-			mode = 0		
-		if o in ("-s", "--staticdir"):	# Run directory network = actual directory 
-			mode = 1
-		if o in ("-b", "--basedir"):		# Run directory network = path 
-			mode = 2
+			mode = RunFromLocalDir		
+		if o in ("-b", "--basedir"):	# Run directory network = path 
+			mode = RunFromBaseDir
 		if o in ("-h", "--help"):
 			print help
 			sys.exit(0)
