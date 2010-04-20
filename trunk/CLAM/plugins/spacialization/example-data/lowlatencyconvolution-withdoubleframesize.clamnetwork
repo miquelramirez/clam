@@ -99,6 +99,11 @@ p, li { white-space: pre-wrap; }
   </port_connection>
 
   <port_connection>
+    <out>ImpulseResponseLoader.W</out>
+    <in>LowLatencyConvolution_0.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
     <out>LowLatencyConvolution_0.Output</out>
     <in>MyIFFT_0.Complex Spectrum</in>
   </port_connection>
