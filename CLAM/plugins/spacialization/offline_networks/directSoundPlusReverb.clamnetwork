@@ -176,7 +176,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="HRTFDatabaseFetcher2" position="237,999" size="207,94" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <HrtfDatabase>HRTFs/kreuzerDatabase.hrtfs</HrtfDatabase>
+    <HrtfDatabase>../../../../acustica/HRTFs/ircam1017L.hrtfs</HrtfDatabase>
   </processing>
 
   <processing id="IRSwappingDelay" position="434,979" size="171,62" type="IRSwappingDelay"/>
