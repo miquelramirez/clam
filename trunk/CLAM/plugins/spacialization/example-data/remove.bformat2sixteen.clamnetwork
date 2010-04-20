@@ -1,38 +1,39 @@
-<network clamVersion="1.3.1" id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="AudioAmplifier" position="246,118" size="114,58" type="AudioAmplifier">
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioAmplifier" position="246,118" size="153,58" type="AudioAmplifier">
     <MaxGain>1</MaxGain>
     <InitGain>0</InitGain>
   </processing>
 
-  <processing id="AudioAmplifier_1" position="228,226" size="128,58" type="AudioAmplifier">
+  <processing id="AudioAmplifier_1" position="228,226" size="168,58" type="AudioAmplifier">
     <MaxGain>1</MaxGain>
     <InitGain>0</InitGain>
   </processing>
 
-  <processing id="AudioAmplifier_2" position="231,335" size="128,58" type="AudioAmplifier">
+  <processing id="AudioAmplifier_2" position="231,335" size="168,58" type="AudioAmplifier">
     <MaxGain>1</MaxGain>
     <InitGain>0</InitGain>
   </processing>
 
-  <processing id="AudioAmplifier_3" position="242,444" size="128,58" type="AudioAmplifier">
+  <processing id="AudioAmplifier_3" position="242,444" size="168,58" type="AudioAmplifier">
     <MaxGain>1</MaxGain>
     <InitGain>0</InitGain>
   </processing>
 
-  <processing id="BFormat2Sixteen" position="499,233" size="128,222" type="BFormat2Sixteen" />
+  <processing id="AudioSink" position="761,234" size="128,286" type="AudioSink">
+    <NSinks>15</NSinks>
+  </processing>
 
-  <processing id="Base Back Left" position="796,257" size="128,111" type="AudioSink" />
+  <processing id="BFormat2Sixteen" position="499,233" size="169,270" type="BFormat2Sixteen"/>
 
-  <processing id="Base Back Right" position="793,353" size="128,111" type="AudioSink" />
-
-  <processing id="Base Front Left" position="796,60" size="128,111" type="AudioSink" />
-
-  <processing id="Base Front Right" position="797,155" size="128,111" type="AudioSink" />
-
-  <processing id="Front horizontal" position="791,456" size="138,111" type="AudioSink" />
-
-  <processing id="Gain" position="191,-27" size="177,78" type="OutControlSender">
+  <processing id="Gain" position="191,-27" size="185,78" type="OutControlSender">
     <Min>0</Min>
     <Default>1</Default>
     <Max>2</Max>
@@ -41,7 +42,7 @@
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="Gain_1" position="461,54" size="177,78" type="OutControlSender">
+  <processing id="Gain_1" position="461,54" size="185,78" type="OutControlSender">
     <Min>0</Min>
     <Default>0.7</Default>
     <Max>2</Max>
@@ -50,27 +51,21 @@
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="Left horizontal" position="921,456" size="138,111" type="AudioSink" />
+  <processing id="W" position="-2,108" size="128,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
 
-  <processing id="Rear Horizontal" position="788,557" size="138,111" type="AudioSink" />
+  <processing id="X" position="-5,196" size="128,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
 
-  <processing id="Right horizontal" position="924,562" size="138,111" type="AudioSink" />
+  <processing id="Y" position="-4,298" size="128,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
 
-  <processing id="Top Back Left" position="923,254" size="128,111" type="AudioSink" />
-
-  <processing id="Top Back Right" position="923,355" size="128,111" type="AudioSink" />
-
-  <processing id="Top Front Left" position="932,58" size="128,111" type="AudioSink" />
-
-  <processing id="Top Front Right" position="927,156" size="128,111" type="AudioSink" />
-
-  <processing id="W" position="-2,108" size="128,108" type="AudioSource" />
-
-  <processing id="X" position="-5,196" size="128,108" type="AudioSource" />
-
-  <processing id="Y" position="-4,298" size="128,108" type="AudioSource" />
-
-  <processing id="Z" position="-2,395" size="128,108" type="AudioSource" />
+  <processing id="Z" position="-2,395" size="128,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
 
   <processing id="out" position="631,127" size="111,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
@@ -105,63 +100,78 @@
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Base Front Left</out>
-    <in>Base Front Left.1</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Base Front Right</out>
-    <in>Base Front Right.1</in>
+    <out>BFormat2Sixteen.Back Horizontal</out>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Base Back Left</out>
-    <in>Base Back Left.1</in>
+    <in>AudioSink.2</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Base Back Right</out>
-    <in>Base Back Right.1</in>
+    <in>AudioSink.3</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Front Left</out>
-    <in>Top Front Left.1</in>
+    <out>BFormat2Sixteen.Base Front Left</out>
+    <in>AudioSink.4</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Front Right</out>
-    <in>Top Front Right.1</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Top Back Left</out>
-    <in>Top Back Left.1</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Top Back Right</out>
-    <in>Top Back Right.1</in>
+    <out>BFormat2Sixteen.Base Front Right</out>
+    <in>AudioSink.5</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Front Horizontal</out>
-    <in>Front horizontal.1</in>
+    <in>AudioSink.6</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Left Horizontal</out>
-    <in>Left horizontal.1</in>
+    <out>BFormat2Sixteen.Front Left Horizontal</out>
+    <in>AudioSink.7</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Rear Horizontal</out>
-    <in>Rear Horizontal.1</in>
+    <out>BFormat2Sixteen.Front Right Horizontal</out>
+    <in>AudioSink.8</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Right Horizontal</out>
-    <in>Right horizontal.1</in>
+    <out>BFormat2Sixteen.Rear Left Horizontal</out>
+    <in>AudioSink.9</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Rear Right Horizontal</out>
+    <in>AudioSink.10</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Top Back Left</out>
+    <in>AudioSink.11</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Top Back Right</out>
+    <in>AudioSink.12</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Top Front Right</out>
+    <in>AudioSink.13</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Top Front Left</out>
+    <in>AudioSink.14</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Top</out>
+    <in>AudioSink.15</in>
   </port_connection>
 
   <port_connection>
