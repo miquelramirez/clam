@@ -1,4 +1,5 @@
 beVerbose
+renameConnector ControlSource outcontrol 'output control' 'output'
 renameClass HRTFDatabaseFetcher2 HRTFDatabaseFetcher
 removeConfig HRTFDatabaseFetcher Prefix
 renameConnector Surround inport p W

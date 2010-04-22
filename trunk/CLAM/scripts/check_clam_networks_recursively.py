@@ -210,12 +210,13 @@ def main():
 
 	clam_networks=set();
 
+	print subdirectories_excluded
+
 	for dir in recursiveDirs( data_path ):
 		valid=1;
 		for excluded in subdirectories_excluded:
-			if excluded.find(dir) ==0:
+			if dir.find(excluded) != -1 or excluded.find(dir) != -1:
 				valid=0;
-				break;
 		if(valid==1):
 			for net in glob.glob( os.path.join(dir, "*.clamnetwork")):
 				clam_networks.add(net) ;

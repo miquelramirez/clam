@@ -86,9 +86,9 @@ void ControlSource::ResizeControls(unsigned controls)
 	{
 		std::stringstream ss;
 		if (controls == 1)
-			ss << "output control"; // dont break existing networks
+			ss << "output"; // dont break networks from the pre-multi-control era
 		else
-			ss << "output_control_" << control;
+			ss << "output_" << control;
 		_outControls[control] = new FloatOutControl(ss.str().c_str(), this);
 	}
 }
