@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.4.1" id="Unnamed">
 
   <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
@@ -11,7 +10,7 @@ p, li { white-space: pre-wrap; }
     <RightTerm>-180</RightTerm>
   </processing>
 
-  <processing id="AbsoluteCoordinates2RelativeAngles" position="320,803" size="297,59" type="AbsoluteCoordinates2RelativeAngles"/>
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="320,803" size="297,59" type="AbsoluteCoordinates2RelativeAngles" />
 
   <processing id="AudioBuffer2Stream" position="1026,1000" size="188,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -112,9 +111,9 @@ p, li { white-space: pre-wrap; }
     <HrtfDatabase>../../../../acustica/HRTFs/ircam1017L.hrtfs</HrtfDatabase>
   </processing>
 
-  <processing id="IRSwappingDelay" position="386,998" size="171,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay" position="386,998" size="171,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_1" position="383,1094" size="186,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_1" position="383,1094" size="186,62" type="IRSwappingDelay" />
 
   <processing id="Init as 0" position="222,369" size="185,78" type="OutControlSender">
     <Min>0</Min>
@@ -165,11 +164,11 @@ p, li { white-space: pre-wrap; }
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Spherical2CartesianControl" position="525,690" size="234,58" type="Spherical2CartesianControl"/>
+  <processing id="Spherical2CartesianControl" position="525,690" size="234,58" type="Spherical2CartesianControl" />
 
-  <processing id="XFadeAndSwitch" position="717,872" size="164,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch" position="717,872" size="164,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_1" position="713,1235" size="179,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_1" position="713,1235" size="179,94" type="XFadeAndSwitch" />
 
   <processing id="listener position" position="9,378" size="162,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/0/xyz</OscPath>
@@ -383,22 +382,22 @@ p, li { white-space: pre-wrap; }
   </control_connection>
 
   <control_connection>
-    <out>Azimuth.output control</out>
+    <out>Azimuth.output</out>
     <in>Spherical2CartesianControl.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>Distance.output control</out>
+    <out>Distance.output</out>
     <in>Spherical2CartesianControl.module</in>
   </control_connection>
 
   <control_connection>
-    <out>Elevation.output control</out>
+    <out>Elevation.output</out>
     <in>Spherical2CartesianControl.elevation</in>
   </control_connection>
 
   <control_connection>
-    <out>ExponentForDistance.output control</out>
+    <out>ExponentForDistance.output</out>
     <in>GainBecauseOfDistance.inverse exponent to calculate gain</in>
   </control_connection>
 
