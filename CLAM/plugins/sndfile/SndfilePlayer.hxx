@@ -231,6 +231,8 @@ namespace CLAM
 //				std::cout << "L" << std::flush;
 				_infile->seek(0, SEEK_SET);
 				_numReadFrames = 0;
+				unsigned readNewItems = _infile->read(buffer + readItems, nItems-readItems);
+				readItems+=readNewItems;
 			}
 			if (not readItems) return false;
 
