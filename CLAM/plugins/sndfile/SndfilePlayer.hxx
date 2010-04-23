@@ -220,24 +220,26 @@ namespace CLAM
 //			std::cout << "D" << std::flush;
 
 			unsigned readItems = _infile->read(buffer, nItems);
+			unsigned bufferedItems = readItems;
 
 			if (readItems)
 			{
 				_positionsBuffer->write(&_numReadFrames, 1);
 			}
 
-			if (readItems<nItems and _inControlLoop.GetLastValue()>0.5)
+			while (bufferedItems<nItems and _inControlLoop.GetLastValue()>0.5)
 			{
 //				std::cout << "L" << std::flush;
 				_infile->seek(0, SEEK_SET);
-				_numReadFrames = 0;
-				unsigned readNewItems = _infile->read(buffer + readItems, nItems-readItems);
-				readItems+=readNewItems;
+				readItems = _infile->read(buffer + readItems, nItems-readItems);
+				bufferedItems+=readItems;
+				if (not readItems) break;
 			}
-			if (not readItems) return false;
+
+			if (not bufferedItems) return false;
 
 			// Missing frames to zero
-			for (unsigned i = readItems; i<nItems; i++)
+			for (unsigned i = bufferedItems; i<nItems; i++)
 				buffer[i]=0.;
 			_ringBuffer->advanceWrite(nItems);
 			_numReadFrames+=readItems/_numChannels;
