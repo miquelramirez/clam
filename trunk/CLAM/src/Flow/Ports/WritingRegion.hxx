@@ -34,7 +34,7 @@ template< typename Token, template <class> class DataStructure = PhantomBuffer>
 class WritingRegion : public Region
 {
 public:
-	typedef StreamImpl< Token, DataStructure > ProperStream;
+	typedef StreamImpl< Token> ProperStream;
 	typedef Token ProperToken;
 	typedef ReadingRegion< WritingRegion<Token,DataStructure> > ProperReadingRegion;
 
