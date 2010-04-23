@@ -23,7 +23,7 @@
 #define ReadingRegion_hxx
 
 #include "Region.hxx"
-#include "StreamImpl.hxx"
+#include "Assert.hxx"
 
 namespace CLAM
 {
