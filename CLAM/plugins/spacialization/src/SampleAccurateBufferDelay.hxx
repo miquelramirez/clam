@@ -58,6 +58,13 @@ public:
 		std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);
 		_delayControl.DoControl(0.);
 
+		/*const unsigned buffersize = BackendBufferSize();
+		_in1.SetSize(buffersize);
+		_in1.SetHop(buffersize);
+		_out1.SetSize(buffersize);
+		_out1.SetHop(buffersize);*/
+
+		
 		return true;
 	}
 	
