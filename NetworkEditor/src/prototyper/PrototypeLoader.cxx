@@ -693,7 +693,7 @@ void PrototypeLoader::ConnectWidgetsUsingControlBounds()
 			aWidget->setProperty("minimum", QVariant(0));
 		if (aWidget->metaObject()->indexOfProperty("maximum") >= 0)
 			aWidget->setProperty("maximum", QVariant(200));
-		if (aWidget->metaObject()->indexOfProperty("maximum") >= 0)
+		if (aWidget->metaObject()->indexOfProperty("singleStep") >= 0)
 			aWidget->setProperty("singleStep", QVariant(1));
 		if (aWidget->metaObject()->indexOfProperty("pageStep") >= 0)
 			aWidget->setProperty("pageStep", QVariant(5));
