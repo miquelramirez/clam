@@ -42,9 +42,11 @@ public:
 	class Config : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (Config , 2, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (Config , 4, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, float, MaxDelayInSeconds);
-		DYN_ATTRIBUTE (1, public, unsigned, SampleRate);
+		DYN_ATTRIBUTE (1, public, float, Width);
+		DYN_ATTRIBUTE (2, public, float, FreqMod);
+		DYN_ATTRIBUTE (3, public, float, CenterTap);
 
 	protected:
 		void DefaultInit()
@@ -52,7 +54,9 @@ public:
 			AddAll();
 			UpdateData();
 			SetMaxDelayInSeconds(1.3653125);  //65535
-			SetSampleRate(48000);
+			SetWidth(1);
+			SetFreqMod(5);
+			SetCenterTap(2);
 		}
 	};
 	
@@ -169,8 +173,8 @@ public:
 
 	bool ConcreteConfigure(const ProcessingConfig& c)
 	{
-		CopyAsConcreteConfig(_config, c);	
-		_sampleRate = _config.GetSampleRate();
+		CopyAsConcreteConfig(_config, c);
+		_sampleRate = BackendSampleRate();
 		
 		_crossFadeBuffer.resize(CROSSFADESIZE);
 		std::fill(_crossFadeBuffer.begin(), _crossFadeBuffer.end(), 0.);
@@ -186,7 +190,7 @@ public:
 		_pastModelayLine1=0;
 		_pastModelayLine2=0;
 		_modIndex=0;		
-		_width.DoControl(0.);
+		_width.DoControl(0);
 		_freqMod.DoControl(0.);
 		_centerTap.DoControl(0.);
 
