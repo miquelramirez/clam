@@ -68,12 +68,12 @@ protected:
 	InPort<Audio> _in1;
 	OutPort<Audio> _out1;
 	OutPort<Audio> _out2;
-	DelayBuffer _delayBuffer1;
-	DelayBuffer _delayBuffer2;
-	Index _sampleRate, _delayBufferSize, _readIndex1, _writeIndex1, _modIndex;
-	Index _readIndex2, _writeIndex2;
-	enum { CROSSFADESIZE = 150};
-	TData _pastModelayLine1,_pastModelayLine2;
+	DelayBuffer _delayBuffers[2];
+	Index _readIndexes[2];
+	Index _writeIndexes[2];
+	Index _sampleRate, _delayBufferSize, _modIndex;
+	enum { CROSSFADESIZE = 150};	
+	TData _pastModelayLine[2];
 		
 
 	DelayBuffer _crossFadeBuffer;
@@ -83,7 +83,8 @@ protected:
 	FloatInControl _freqMod;
 	FloatInControl _centerTap;
 	
-	void setDelay1(float delaySamples) 
+
+	void setDelay(float delaySamples,unsigned i) 
 	{
 		CLAM_ASSERT(_delayBufferSize, "setDelay: Zero delay delay is not allowed!");
 		Index delayInSamples = round(delaySamples);
@@ -91,70 +92,26 @@ protected:
 		if (delayInSamples > _delayBufferSize) 
 			return;
 		
-		Index readIndex1 = (_writeIndex1 - delayInSamples) % _delayBufferSize ;
+		Index readIndex = (_writeIndexes[i] - delayInSamples) % _delayBufferSize ;
 
-		if (_readIndex1 % _delayBufferSize == readIndex1)
+		if (_readIndexes[i] % _delayBufferSize == readIndex)
 			return;
 		
-		_readIndex1 = readIndex1;		
-		/*_crossFadeIndex = CROSSFADESIZE;
-		
-		for (Index i = 0; i < CROSSFADESIZE; i++) 
-			_crossFadeBuffer[i] = _delayBuffer[readIndex++ % _delayBufferSize] * (1./(CROSSFADESIZE-i));*/				
+		_readIndexes[i] = readIndex;					
 		return;
 	}
 
-	void setDelay2(float delaySamples) 
-	{
-		CLAM_ASSERT(_delayBufferSize, "setDelay: Zero delay delay is not allowed!");
-		Index delayInSamples = round(delaySamples);
-		
-		if (delayInSamples > _delayBufferSize) 
-			return;
-		
-		Index readIndex2 = (_writeIndex2 - delayInSamples) % _delayBufferSize ;
-
-		if (_readIndex2 % _delayBufferSize == readIndex2)
-			return;
-		
-		_readIndex2 = readIndex2;		
-		/*_crossFadeIndex = CROSSFADESIZE;
-		
-		for (Index i = 0; i < CROSSFADESIZE; i++) 
-			_crossFadeBuffer[i] = _delayBuffer[readIndex++ % _delayBufferSize] * (1./(CROSSFADESIZE-i));*/				
-		return;
-	}
-	
-	TData delayLine1(TData x1, float frac1)
+	TData delayLine(TData x, float frac,unsigned i)
 	{	
-		CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
-		Index writeindex1 = _writeIndex1++ % _delayBufferSize;
-		Index readindex1 = _readIndex1++ % _delayBufferSize;			
-		
-		_delayBuffer1[writeindex1] = x1;
-		
-		TData y1 = _delayBuffer1[readindex1-1] + (1-frac1)*_delayBuffer1[readindex1]- (1-frac1)*_pastModelayLine1;
+		CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");		
+		Index writeindex = _writeIndexes[i]++ % _delayBufferSize;
+		Index readindex = _readIndexes[i]++ % _delayBufferSize;		
 				
-		
-		//if (_crossFadeIndex > 0)  y *= (1./_crossFadeIndex) + _crossFadeBuffer[--_crossFadeIndex];
-						
-		return y1;
-	}
-
-	TData delayLine2(TData x2, float frac2)
-	{	
-		CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
-		Index writeindex2 = _writeIndex2++ % _delayBufferSize;
-		Index readindex2 = _readIndex2++ % _delayBufferSize;		
-				
-		_delayBuffer2[writeindex2] = x2;
-		//TData y2 = frac2*_delayBuffer2[readindex2-1] + (1-frac2)*_delayBuffer2[readindex2];	
-		TData y2 = _delayBuffer2[readindex2-1] + (1-frac2)*_delayBuffer2[readindex2]- (1-frac2)*_pastModelayLine2;
-
-		
-            		
-						
-		return y2;
+		_delayBuffers[i][writeindex] = x;
+		//TData y2 = frac2*_delayBuffer2[readindex2-1] + (1-frac2)*_delayBuffer2[readindex2];
+		TData y = _delayBuffers[i][readindex-1] + (1-frac) * _delayBuffers[i][readindex] - (1-frac)*_pastModelayLine[i];
+								
+		return y;
 	}
 
 
@@ -179,20 +136,19 @@ public:
 		_crossFadeBuffer.resize(CROSSFADESIZE);
 		std::fill(_crossFadeBuffer.begin(), _crossFadeBuffer.end(), 0.);
 		
-		_delayBuffer1.resize(_config.GetMaxDelayInSeconds() * _sampleRate);
-		_delayBuffer2.resize(_config.GetMaxDelayInSeconds() * _sampleRate);
-		_delayBufferSize = _delayBuffer1.size(); 
-		_readIndex1 = _writeIndex1 = (_delayBufferSize-1); 
-		_readIndex2 = _writeIndex2 = (_delayBufferSize-1);
-		std::fill(_delayBuffer1.begin(), _delayBuffer1.end(), 0.);
-		std::fill(_delayBuffer2.begin(), _delayBuffer2.end(), 0.);
-		
-		_pastModelayLine1=0;
-		_pastModelayLine2=0;
+		for (unsigned i=0;i<2;i++){
+			_delayBuffers[i].resize(_config.GetMaxDelayInSeconds() * _sampleRate);
+			_delayBufferSize = _delayBuffers[i].size();
+			_readIndexes[i] = _writeIndexes[i] = (_delayBufferSize-1); 
+			std::fill(_delayBuffers[i].begin(), _delayBuffers[i].end(), 0.);
+			_pastModelayLine[i]=0;
+		}		
+	
 		_modIndex=0;		
-		_width.DoControl(0);
-		_freqMod.DoControl(0.);
-		_centerTap.DoControl(0.);
+
+		_width.DoControl(_config.GetWidth());
+		_freqMod.DoControl(_config.GetFreqMod());
+		_centerTap.DoControl(_config.GetCenterTap());
 
 		return true;
 	}
@@ -229,30 +185,29 @@ public:
 		out2.SetSize(size);
 		TData* outpointer2 = out2.GetBuffer().GetPtr();	
 
-		for (unsigned i = 0; i < size; ++i){
-			//TControlData delay = _delayControl.GetLastValue();
+		for (unsigned j = 0; j < size; ++j){
+			float delay[2];
+			TData FixDelayLine[2];
+			TData ModelayLine[2];
+			TData x[2];
 			
-			float delay1=1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex));
-			float delay2=1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex));  //change to cos when using chorus
-			float D1=floor(delay1);
-			float D2=floor(delay2);			
-			float frac1=delay1-D1;
-			float frac2=delay2-D2;			
-			setDelay1(centerTap);
-			setDelay2(centerTap);
-			TData FixdelayLine1=_delayBuffer1[_readIndex1];
-			TData FixdelayLine2=_delayBuffer2[_readIndex2];
-			TData x1=inpointer[i]-FB*FixdelayLine1;
-			TData x2=inpointer[i]-FB*FixdelayLine2;
-			setDelay1(D1);
-			setDelay2(D2);
-			TData ModelayLine1 = delayLine1(x1,frac1);
-			TData ModelayLine2 = delayLine2(x2,frac2);
-			outpointer1[i] = FF*ModelayLine1 + B*x1;
-			outpointer2[i] = FF*ModelayLine2 + B*x2;
-			_pastModelayLine1=ModelayLine1;
-        		_pastModelayLine2=ModelayLine2;
+			delay[0]=1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex));
+			delay[1]=1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex));  //change to cos when using chorus
+			
+			for (unsigned i=0;i<2;i++){
+				float D=floor(delay[i]);
+				float frac=delay[i]-D;
+				setDelay(centerTap,i);
+				FixDelayLine[i]=_delayBuffers[i][_readIndexes[i]];
+				x[i]=inpointer[j]-FB*FixDelayLine[i];
+				setDelay(D,i);
+				ModelayLine[i] = delayLine(x[i],frac,i);
+				_pastModelayLine[i]=ModelayLine[i];
+			}
+			outpointer1[j] = FF*ModelayLine[0] + B*x[0];
+			outpointer2[j] = FF*ModelayLine[1] + B*x[1];
 			_modIndex++;
+			
 		}
 		
 		_in1.Consume();
