@@ -30,6 +30,14 @@ protected:
 		{
 			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
 			const char* id = descriptor->Label;
+			if (factory.KeyExists(id))
+			{
+				std::cout << "The LADSPA plugin '" << id 
+				<< "' is contained by two libraries. Uninstall one: \n1) " 
+				<< pluginFullFilename << "\n2) " << factory.GetValueFromAttribute(id, "library")
+				<< std::endl;
+
+			}
 			factory.AddCreatorWarningRepetitions(id,
 					new CLAM::LadspaWrapperCreator(pluginFullFilename,
 						i,
