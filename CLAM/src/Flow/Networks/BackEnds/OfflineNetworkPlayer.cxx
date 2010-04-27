@@ -207,13 +207,13 @@ void OfflineNetworkPlayer::Start()
 			delete[] bufferReader;
 		}
 
-    if (_controlSequencer)
-    {
-      //std::cout << "Player iterationIndex="  << iterationIndex << std::endl;
-      _controlSequencer->UpdateControls(iterationIndex);
-    }
-	  
-    GetNetwork().Do();
+		if (_controlSequencer)
+		{
+			//std::cout << "Player iterationIndex="  << iterationIndex << std::endl;
+			_controlSequencer->UpdateControls(iterationIndex);
+		}
+
+		GetNetwork().Do();
 
 		unsigned outAudioIndex = 0;
 		for(SndFileHandles::iterator it = outfiles.begin(); it != outfiles.end(); ++it)

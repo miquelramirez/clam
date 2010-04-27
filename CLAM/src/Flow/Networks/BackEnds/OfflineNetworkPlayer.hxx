@@ -32,14 +32,14 @@ public:
 	OfflineNetworkPlayer()
 		: _enableLoopInputWavs(false)
 		, _resultWavsTime(0.0)
-    , _controlSequencer(0)
+		, _controlSequencer(0)
 	{
 	}
 	
-  ~OfflineNetworkPlayer()
-  {
-    delete _controlSequencer;
-  }
+	~OfflineNetworkPlayer()
+	{
+		delete _controlSequencer;
+	}
 
 	void AddInputFile( const std::string& );
 	void AddOutputFile( const std::string& );
@@ -69,10 +69,10 @@ public:
 		_resultWavsTime=time;
 	}
 
-  void SetControlFile(std::string const& controlFile)
-  {
-    _controlFile = controlFile;
-  }
+	void SetControlFile(std::string const& controlFile)
+	{
+		_controlFile = controlFile;
+	}
 
 };
 
