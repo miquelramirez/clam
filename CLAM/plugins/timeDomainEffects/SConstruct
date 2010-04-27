@@ -41,7 +41,7 @@ env.EnableClamModules(clamDependencies, CLAMInstallDir)
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 # Sources and headers
-sourcePaths = ["src"]
+sourcePaths = ["."]
 sources = env.scanFiles('*.cxx', sourcePaths)
 headers = env.scanFiles('*.hxx', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)

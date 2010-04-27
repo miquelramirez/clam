@@ -75,6 +75,7 @@ protected:
 	Index _sampleRate, _delayBufferSize, _modIndex;
 	enum { CROSSFADESIZE = 150};	
 	TData _pastModelayLine[_nChannels];
+
 		
 
 	DelayBuffer _crossFadeBuffer;
@@ -83,6 +84,9 @@ protected:
 	FloatInControl _width;
 	FloatInControl _freqMod;
 	FloatInControl _centerTap;
+	float _blend;
+	float _feedback;	
+	float _feedForward;
 	
 	virtual std::vector<float> getFractionalDelayValue (TControlData & width,TControlData & freqMod, TControlData & centerTap) 
 	{
@@ -123,10 +127,14 @@ protected:
 		return y;
 	}
 
-	virtual void SetControlBounds(){
+	virtual void _initSpecificParameters(){
 		_width.SetBounds(0,30);
 		_freqMod.SetBounds(0,10);
 		_centerTap.SetBounds(0,30);
+		_blend=0.7071;
+		_feedback=-0.7071;
+		_feedForward=0.7071;
+		
 	}
 
 
@@ -139,11 +147,14 @@ public:
 		, _width("width in msecs", this)
 		, _freqMod("freq in Hz", this)
 		, _centerTap("centerTap msecs", this)
+		, _blend(0)
+		, _feedback(0)
+		, _feedForward(0)
 	{
 		Configure( config );
 	}
 
-	bool ConcreteConfigure(const ProcessingConfig& c)
+	virtual bool ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(_config, c);
 		_sampleRate = BackendSampleRate();
@@ -165,7 +176,7 @@ public:
 		_freqMod.DoControl(_config.GetFreqMod());
 		_centerTap.DoControl(_config.GetCenterTap());
 
-		SetControlBounds();
+		_initSpecificParameters();
 
 		return true;
 	}
@@ -177,11 +188,8 @@ public:
 		
 	const ProcessingConfig & GetConfig() const { return _config; }
 	
-	bool Do()
+	virtual bool Do()
 	{
-		const float Blend=0.7071;
-		const float FeedBack=-0.7071;	
-		const float FeedForward=0.7071;
 
 		TControlData width = _width.GetLastValue();
 		TControlData freqMod = _freqMod.GetLastValue();
@@ -213,13 +221,13 @@ public:
 				float frac=delay[i]-D;
 				setDelay(centerTap,i);
 				FixDelayLine[i]=_delayBuffers[i][_readIndexes[i]];
-				x[i]=inpointer[j]-FeedBack*FixDelayLine[i];
+				x[i]=inpointer[j]-_feedback*FixDelayLine[i];
 				setDelay(D,i);
 				ModelayLine[i] = delayLine(x[i],frac,i);
 				_pastModelayLine[i]=ModelayLine[i];
 			}
-			outpointer1[j] = FeedForward*ModelayLine[0] + Blend*x[0];
-			outpointer2[j] = FeedForward*ModelayLine[1] + Blend*x[1];
+			outpointer1[j] = _feedForward*ModelayLine[0] + _blend*x[0];
+			outpointer2[j] = _feedForward*ModelayLine[1] + _blend*x[1];
 			
 			
 		}

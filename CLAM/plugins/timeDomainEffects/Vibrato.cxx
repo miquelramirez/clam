@@ -18,7 +18,7 @@
  *
  */
 
-#include "FractionalDelayModulation.hxx"
+#include "Vibrato.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
 namespace CLAM
@@ -27,12 +27,12 @@ namespace CLAM
 namespace
 {
 	static const char* metadata[] = {
-		"key", "FractionalDelayModulation",
+		"key", "Vibrato",
 		"category", "[plugin] Time Domain Effects",
-		"description", "FractionalDelayModulation",
+		"description", "Vibrato",
 		0
 	};
-	static FactoryRegistrator<ProcessingFactory, FractionalDelayModulation> reg = metadata;
+	static FactoryRegistrator<ProcessingFactory, Vibrato> reg = metadata;
 }
 
 }
