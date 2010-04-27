@@ -84,6 +84,14 @@ protected:
 	FloatInControl _freqMod;
 	FloatInControl _centerTap;
 	
+	virtual std::vector<float> getFractionalDelayValue (TControlData & width,TControlData & freqMod, TControlData & centerTap) 
+	{
+		std::vector<float> delay;
+		delay.push_back(1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex)));
+		delay.push_back(1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex))); 
+		_modIndex++;
+		return delay;
+	}
 
 	void setDelay(float delaySamples,unsigned i) 
 	{
@@ -113,6 +121,12 @@ protected:
 		TData y = _delayBuffers[i][readindex-1] + (1-frac) * _delayBuffers[i][readindex] - (1-frac)*_pastModelayLine[i];
 								
 		return y;
+	}
+
+	virtual void SetControlBounds(){
+		_width.SetBounds(0,30);
+		_freqMod.SetBounds(0,10);
+		_centerTap.SetBounds(0,30);
 	}
 
 
@@ -151,6 +165,8 @@ public:
 		_freqMod.DoControl(_config.GetFreqMod());
 		_centerTap.DoControl(_config.GetCenterTap());
 
+		SetControlBounds();
+
 		return true;
 	}
 	
@@ -163,9 +179,9 @@ public:
 	
 	bool Do()
 	{
-		const float B=0.7071;
-		const float FB=-0.7071;	
-		const float FF=0.7071;
+		const float Blend=0.7071;
+		const float FeedBack=-0.7071;	
+		const float FeedForward=0.7071;
 
 		TControlData width = _width.GetLastValue();
 		TControlData freqMod = _freqMod.GetLastValue();
@@ -187,27 +203,24 @@ public:
 		TData* outpointer2 = out2.GetBuffer().GetPtr();	
 
 		for (unsigned j = 0; j < size; ++j){
-			float delay[_nChannels];
+			std::vector<float> delay=getFractionalDelayValue(width,freqMod,centerTap);
 			TData FixDelayLine[_nChannels];
 			TData ModelayLine[_nChannels];
 			TData x[_nChannels];
-			
-			delay[0]=1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex));
-			delay[1]=1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex));  //change to cos when using chorus
 			
 			for (unsigned i=0;i<_nChannels;i++){
 				float D=floor(delay[i]);
 				float frac=delay[i]-D;
 				setDelay(centerTap,i);
 				FixDelayLine[i]=_delayBuffers[i][_readIndexes[i]];
-				x[i]=inpointer[j]-FB*FixDelayLine[i];
+				x[i]=inpointer[j]-FeedBack*FixDelayLine[i];
 				setDelay(D,i);
 				ModelayLine[i] = delayLine(x[i],frac,i);
 				_pastModelayLine[i]=ModelayLine[i];
 			}
-			outpointer1[j] = FF*ModelayLine[0] + B*x[0];
-			outpointer2[j] = FF*ModelayLine[1] + B*x[1];
-			_modIndex++;
+			outpointer1[j] = FeedForward*ModelayLine[0] + Blend*x[0];
+			outpointer2[j] = FeedForward*ModelayLine[1] + Blend*x[1];
+			
 			
 		}
 		
