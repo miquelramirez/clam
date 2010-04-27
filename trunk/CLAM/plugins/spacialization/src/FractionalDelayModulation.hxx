@@ -61,6 +61,7 @@ public:
 	};
 	
 //private: //TODO debugging	
+	static const unsigned _nChannels=2;
 protected:
 	Config _config;
 	typedef long long unsigned Index;
@@ -68,12 +69,12 @@ protected:
 	InPort<Audio> _in1;
 	OutPort<Audio> _out1;
 	OutPort<Audio> _out2;
-	DelayBuffer _delayBuffers[2];
-	Index _readIndexes[2];
-	Index _writeIndexes[2];
+	DelayBuffer _delayBuffers[_nChannels];
+	Index _readIndexes[_nChannels];
+	Index _writeIndexes[_nChannels];
 	Index _sampleRate, _delayBufferSize, _modIndex;
 	enum { CROSSFADESIZE = 150};	
-	TData _pastModelayLine[2];
+	TData _pastModelayLine[_nChannels];
 		
 
 	DelayBuffer _crossFadeBuffer;
@@ -108,7 +109,7 @@ protected:
 		Index readindex = _readIndexes[i]++ % _delayBufferSize;		
 				
 		_delayBuffers[i][writeindex] = x;
-		//TData y2 = frac2*_delayBuffer2[readindex2-1] + (1-frac2)*_delayBuffer2[readindex2];
+		//TData y = frac*_delayBuffers[i][readindex-1] + (1-frac)*_delayBuffers[i][readindex];
 		TData y = _delayBuffers[i][readindex-1] + (1-frac) * _delayBuffers[i][readindex] - (1-frac)*_pastModelayLine[i];
 								
 		return y;
@@ -136,7 +137,7 @@ public:
 		_crossFadeBuffer.resize(CROSSFADESIZE);
 		std::fill(_crossFadeBuffer.begin(), _crossFadeBuffer.end(), 0.);
 		
-		for (unsigned i=0;i<2;i++){
+		for (unsigned i=0;i<_nChannels;i++){
 			_delayBuffers[i].resize(_config.GetMaxDelayInSeconds() * _sampleRate);
 			_delayBufferSize = _delayBuffers[i].size();
 			_readIndexes[i] = _writeIndexes[i] = (_delayBufferSize-1); 
@@ -186,15 +187,15 @@ public:
 		TData* outpointer2 = out2.GetBuffer().GetPtr();	
 
 		for (unsigned j = 0; j < size; ++j){
-			float delay[2];
-			TData FixDelayLine[2];
-			TData ModelayLine[2];
-			TData x[2];
+			float delay[_nChannels];
+			TData FixDelayLine[_nChannels];
+			TData ModelayLine[_nChannels];
+			TData x[_nChannels];
 			
 			delay[0]=1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex));
 			delay[1]=1+centerTap+(width*sin(2*M_PI*freqMod*_modIndex));  //change to cos when using chorus
 			
-			for (unsigned i=0;i<2;i++){
+			for (unsigned i=0;i<_nChannels;i++){
 				float D=floor(delay[i]);
 				float frac=delay[i]-D;
 				setDelay(centerTap,i);
