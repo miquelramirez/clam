@@ -1,16 +1,33 @@
-<network clamVersion="1.3.1" id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="1 Sintetic input" position="265,366" size="128,108" type="AudioSource" />
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'DejaVu Sans'; font-size:8pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="1 W" position="835,167" size="128,111" type="AudioSink" />
+  <processing id="1 Sintetic input" position="265,366" size="128,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
 
-  <processing id="2 X" position="842,276" size="128,111" type="AudioSink" />
+  <processing id="1 W" position="835,167" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="3 Y" position="848,388" size="128,111" type="AudioSink" />
+  <processing id="2 X" position="842,276" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="4 Z" position="840,512" size="128,111" type="AudioSink" />
+  <processing id="3 Y" position="848,388" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="Spherical2CartesianControl" position="99,207" size="205,58" type="Spherical2CartesianControl" />
+  <processing id="4 Z" position="840,512" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="Spherical2CartesianControl" position="99,207" size="205,58" type="Spherical2CartesianControl"/>
 
   <processing id="amp_W" position="504,203" size="114,58" type="AudioAmplifier">
     <MaxGain>1</MaxGain>
@@ -35,22 +52,28 @@
   <processing id="azimuth" position="8,105" size="127,58" type="ControlSource">
     <MinValue>-360</MinValue>
     <MaxValue>360</MaxValue>
+    <DefaultValue>-360</DefaultValue>
     <Step>0.1</Step>
     <UnitName>degrees</UnitName>
+    <NrOfControls>1</NrOfControls>
   </processing>
 
   <processing id="elevation" position="125,100" size="127,58" type="ControlSource">
     <MinValue>-90</MinValue>
     <MaxValue>90</MaxValue>
+    <DefaultValue>-90</DefaultValue>
     <Step>0.01</Step>
     <UnitName>degrees</UnitName>
+    <NrOfControls>1</NrOfControls>
   </processing>
 
-  <processing id="gain directionality" position="249,107" size="130,58" type="ControlSource">
-    <MinValue>0</MinValue>
-    <MaxValue>2</MaxValue>
-    <Step>0.01</Step>
+  <processing id="gain directionality" position="249,107" size="137,58" type="ControlSource">
+    <MinValue>1</MinValue>
+    <MaxValue>1</MaxValue>
+    <DefaultValue>1</DefaultValue>
+    <Step>1</Step>
     <UnitName>-</UnitName>
+    <NrOfControls>1</NrOfControls>
   </processing>
 
   <processing id="x" position="81,283" size="162,84" type="ControlPrinter">
