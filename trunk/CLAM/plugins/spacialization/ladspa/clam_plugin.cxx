@@ -143,8 +143,8 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"id_vbap_22", "vbap22",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
-	static CLAM::LadspaNetworkExporter n7622(library, vbap22_simplfied, 7622,
-			"id_vbap_22_simplfied", "vbap22_simplified",
+	static CLAM::LadspaNetworkExporter n7622(library, vbap22_simplified, 7622,
+			"id_vbap_22_simplified", "vbap22_simplified",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
 	static CLAM::LadspaNetworkExporter n2014(library, bformat14, 2014,
