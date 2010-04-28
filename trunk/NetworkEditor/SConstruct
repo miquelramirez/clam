@@ -6,7 +6,7 @@ import sys
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('prefix', 'The prefix where the application will be installed', '/usr/local'))
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
-options.Add(PathVariable('prefix_for_packaging', 'Install location when packaging (just for .deb creation)', '.'))
+options.Add(PathVariable('prefix_for_packaging', 'Install location when packaging. Use "." for same as prefix.', '.'))
 options.Add(BoolVariable('release', 'Enabling compiler optimizations', 'no') )
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
@@ -39,9 +39,6 @@ isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
-# if prefix_for_packaging not set, set it to prefix
-if env['prefix_for_packaging'] == '.':
-	env['prefix_for_packaging'] = env['prefix']
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
