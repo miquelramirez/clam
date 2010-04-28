@@ -8,6 +8,7 @@ libraryName='plugins_'+baseName
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
+options.Add(PathVariable('prefix_for_packaging', 'Install location when packaging. Use "." for same as prefix.', '.'))
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'yes') )
 
