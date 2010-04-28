@@ -100,11 +100,12 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="Azimuth" position="57,9" size="113,58" type="ControlSource">
-    <MinValue>0</MinValue>
+    <MinValue>-360</MinValue>
     <MaxValue>360</MaxValue>
-    <DefaultValue>-360</DefaultValue>
+    <DefaultValue>0</DefaultValue>
     <Step>0.1</Step>
     <UnitName>degrees</UnitName>
+    <NrOfControls>1</NrOfControls>
   </processing>
 
   <processing id="Elevation" position="270,9" size="118,58" type="ControlSource">
@@ -113,6 +114,7 @@ p, li { white-space: pre-wrap; }
     <DefaultValue>-89.99</DefaultValue>
     <Step>0.1</Step>
     <UnitName>degrees</UnitName>
+    <NrOfControls>1</NrOfControls>
   </processing>
 
   <processing id="Vbap3D" position="367,150" size="108,382" type="Vbap3D">
