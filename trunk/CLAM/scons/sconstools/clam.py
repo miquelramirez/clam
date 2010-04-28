@@ -126,19 +126,19 @@ def ClamModule(env, moduleName, version,
 		localLinkName = env.LinkerNameLink( linkname, lib ) # lib***.dylib     -> lib***.X.Y.Z.dylib
 		libraries = [lib, localSoName, localLinkName]
 
-	installedLib = env.Install(os.path.join(env['prefix'],'lib'), lib)
+	installedLib = env.Install(os.path.join(env['prefix_for_packaging'],'lib'), lib)
 	install+= [
-		env.Install(os.path.join(env['prefix'],'lib','clam'), plugin),
-		env.Install(os.path.join(env['prefix'],'lib','pkgconfig'), pcfile),
-		env.Install(os.path.join(env['prefix'],'include','CLAM',moduleName), headers),
+		env.Install(os.path.join(env['prefix_for_packaging'],'lib','clam'), plugin),
+		env.Install(os.path.join(env['prefix_for_packaging'],'lib','pkgconfig'), pcfile),
+		env.Install(os.path.join(env['prefix_for_packaging'],'include','CLAM',moduleName), headers),
 		installedLib,
 		]
 	if sys.platform == 'win32' or crosscompiling :
 		return install, (libraries, plugin, pcfile)
 
 	install+= [
-		env.LinkerNameLink( os.path.join(env['prefix'],'lib',linkname), installedLib),
-		env.SonameLink( os.path.join(env['prefix'],'lib',soname), installedLib),
+		env.LinkerNameLink( os.path.join(env['prefix_for_packaging'],'lib',linkname), installedLib),
+		env.SonameLink( os.path.join(env['prefix_for_packaging'],'lib',soname), installedLib),
 		]
 	return install, (libraries, plugin, pcfile)
 
