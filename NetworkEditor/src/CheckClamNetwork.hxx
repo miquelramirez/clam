@@ -3,6 +3,8 @@
 
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/Network.hxx>
+#include <CLAM/DummyNetworkPlayer.hxx>
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -36,11 +38,16 @@ public:
 			CLAM::Network _network;
 			CLAM::XMLStorage::Restore(_network, _networkFile);
 			bool correct = _network.IsReady();
-			if (not correct) 
+			if (not correct)
 			{
 				std::cout << "The network can not be configured. See the following errors " << std::endl;
 				std::cout << _network.GetConfigurationErrors() << std::endl;
 			}
+
+			CLAM::DummyNetworkPlayer *player=new CLAM::DummyNetworkPlayer();
+			_network.SetPlayer( player );
+			_network.Start();
+			_network.Stop();
 			return correct;
 		}
 		catch (CLAM::XmlStorageErr & e)
