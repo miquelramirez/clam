@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Fundació Barcelona Media Universitat Pompeu Fabra
+ * Copyright (c) 2010 Fundació Barcelona Media Universitat Pompeu Fabra
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -98,11 +98,13 @@ protected:
 	TData delayLine(TData x, float frac)	
 	{	
 		CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
-		Index writeindex = _writeIndex++ % _delayBufferSize;
-		Index readindex = _readIndex++ % _delayBufferSize;		
+		Index writeindex = _writeIndex++ % _delayBufferSize;		
+		Index readindex = _readIndex++ % _delayBufferSize;					
 		
 		_delayBuffer[writeindex] = x;
-		TData y = frac*_delayBuffer[readindex-1] + (1-frac)*_delayBuffer[readindex];			
+		TData y;
+		if (readindex==0) y = frac*_delayBuffer.back() + (1-frac)*_delayBuffer[readindex];
+		else y = frac*_delayBuffer[readindex-1] + (1-frac)*_delayBuffer[readindex];			
 		
 		//if (_crossFadeIndex > 0)  y *= (1./_crossFadeIndex) + _crossFadeBuffer[--_crossFadeIndex];
 						
