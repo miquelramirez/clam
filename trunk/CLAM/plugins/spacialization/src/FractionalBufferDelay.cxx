@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Fundació Barcelona Media Universitat Pompeu Fabra
+ * Copyright (c) 2010 Fundació Barcelona Media Universitat Pompeu Fabra
  *
  *
  * This program is free software; you can redistribute it and/or modify
