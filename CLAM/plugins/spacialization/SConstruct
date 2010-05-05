@@ -30,6 +30,9 @@ options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
+# if prefix_for_packaging not set, set it to prefix.
+if env['prefix_for_packaging'] == '.':
+	env['prefix_for_packaging'] = env['prefix']
 CLAMInstallDir = env['clam_prefix']
 if not env['prefix'] : env['prefix'] = env['clam_prefix']
 
