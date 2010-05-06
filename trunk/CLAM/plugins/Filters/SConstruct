@@ -27,6 +27,8 @@ env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
 if not env['prefix'] : env['prefix'] = env['clam_prefix']
+#TODO: CHECK THIS
+if env['prefix_for_packaging'] == '.' : env['prefix_for_packaging'] = env['prefix']
 
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if not os.access(os.path.join(clam_sconstoolspath,"clam.py"),os.R_OK):
