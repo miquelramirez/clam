@@ -122,8 +122,13 @@ protected:
 				
 		_delayBuffers[i][writeindex] = x;
 		//TData y = frac*_delayBuffers[i][readindex-1] + (1-frac)*_delayBuffers[i][readindex];
-		TData y = _delayBuffers[i][readindex-1] + (1-frac) * _delayBuffers[i][readindex] - (1-frac)*_pastModelayLine[i];
-								
+		//TData y = _delayBuffers[i][readindex-1] + (1-frac) * _delayBuffers[i][readindex] - (1-frac)*_pastModelayLine[i];
+		
+		TData y;
+		if (readindex==0) y =_delayBuffers[i].back()+(1-frac)*_delayBuffers[i][readindex]-(1-frac)*_pastModelayLine[i];				
+		else y = _delayBuffers[i][readindex-1] + (1-frac) * _delayBuffers[i][readindex] - (1-frac)*_pastModelayLine[i];
+
+						
 		return y;
 	}
 
