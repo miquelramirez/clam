@@ -106,8 +106,10 @@ protected:
 
 		//TData y = frac*_delayBuffer[readindex2] + (1-frac)*_delayBuffer[readindex];	
 		TData y;
-		if (readindex==0) y = frac*_delayBuffer.back() + (1-frac)*_delayBuffer[readindex];				
+		if (readindex==0) y = _delayBuffer.back() + (1-frac) * _delayBuffer[readindex]-(1-frac)*_pastModelayLine;				
 		else y = _delayBuffer[readindex-1] + (1-frac) * _delayBuffer[readindex] - (1-frac)*_pastModelayLine;		
+
+		
 
 		return y;
 	}
