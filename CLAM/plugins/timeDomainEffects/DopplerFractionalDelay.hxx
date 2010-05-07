@@ -42,10 +42,11 @@ public:
 	class Config : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (Config , 3, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (Config , 2, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, float, MaxDelayInSeconds);
-		DYN_ATTRIBUTE (1, public, float, SourcePosition);
-		DYN_ATTRIBUTE (2, public, float, ListenerPosition);
+		//DYN_ATTRIBUTE (1, public, float, SourcePosition);
+		//DYN_ATTRIBUTE (2, public, float, ListenerPosition);
+		DYN_ATTRIBUTE (1, public, float, Distance);
 
 	protected:
 		void DefaultInit()
@@ -53,8 +54,9 @@ public:
 			AddAll();
 			UpdateData();
 			SetMaxDelayInSeconds(1.3653125);  //65535
-			SetSourcePosition(0);
-			SetListenerPosition(25);
+			//SetSourcePosition(0);
+			//SetListenerPosition(25);
+			SetDistance(0);
 		}
 	};
 //private: //TODO debugging	
@@ -74,8 +76,9 @@ protected:
 	bool _notInitialized;
 
 protected:
-	FloatInControl _lPosition;
-	FloatInControl _sPosition;
+	//FloatInControl _lPosition;
+	//FloatInControl _sPosition;
+	FloatInControl _distance;
 		
 	void setDelay(float delaySamples) 
 	{
@@ -114,8 +117,9 @@ public:
 		: _in1("InputBuffer", this)
 		, _out1("OutputBuffer", this)
 		, _delayBufferSize(1)  	
-		, _lPosition("ListenerPosition in mts", this)
-		, _sPosition("SourcePosition in mts", this)
+		//, _lPosition("ListenerPosition in mts", this)
+		//, _sPosition("SourcePosition in mts", this)
+		,_distance("relative distance in mts", this)
 	{
 		Configure( config );
 	}
@@ -131,10 +135,12 @@ public:
 		_readIndex = (_delayBufferSize-1);		
 		std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);
 
-		_lPosition.DoControl(_config.GetListenerPosition());
-		_sPosition.DoControl(_config.GetSourcePosition());
-		_lPosition.SetBounds(0,500);
-		_sPosition.SetBounds(0,500);
+		//_lPosition.DoControl(_config.GetListenerPosition());
+		//_sPosition.DoControl(_config.GetSourcePosition());
+		//_lPosition.SetBounds(0,500);
+		//_sPosition.SetBounds(0,500);
+		_distance.DoControl(_config.GetDistance());
+		_distance.SetBounds(0,500);
 		_pastModelayLine=0;
 		_pastDist=0;
 		_step=0;
@@ -152,8 +158,9 @@ public:
 	
 	bool Do()
 	{
-		bool newS_ControlArrived = not _sPosition.HasBeenRead();
-		bool newL_ControlArrived = not _lPosition.HasBeenRead();
+		//bool newS_ControlArrived = not _sPosition.HasBeenRead();
+		//bool newL_ControlArrived = not _lPosition.HasBeenRead();
+		bool newControlArrived = not _distance.HasBeenRead();
 		//std::cout<< (newControlArrived ? "newcontrol" : "noNewControl") << std::endl;
 			
 		const float C=340.0;
@@ -166,8 +173,10 @@ public:
 		out.SetSize(size);
 		TData* outpointer = out.GetBuffer().GetPtr();	
 	
-		if (newS_ControlArrived or newL_ControlArrived){			
-			TControlData distance = _lPosition.GetLastValue()-_sPosition.GetLastValue();
+		if (newControlArrived)// or newL_ControlArrived)
+			{			
+			//TControlData distance = _lPosition.GetLastValue()-_sPosition.GetLastValue();
+			TControlData distance = _distance.GetLastValue();
 			if (_notInitialized){ 
 				_pastDist=distance;
 				_interpDist=_pastDist;
@@ -180,7 +189,7 @@ public:
 			}
 			else{			
 				_step=(distance-_pastDist)*FPS/_sampleRate;
-				if (distance > 0) _step=-_step;		
+				//if (distance > 0) _step=-_step;		
 				_pastDist=distance;
 			}
 		}
@@ -201,7 +210,6 @@ public:
 			//std::cout << _pastDist << " " << distance <<std::endl;				
 		}
 		
-		//_pastDist=distance;
 		_in1.Consume();
 		_out1.Produce();
 		return true;
