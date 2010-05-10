@@ -166,7 +166,7 @@ public:
 		//std::cout<< (newControlArrived ? "newcontrol" : "noNewControl") << std::endl;
 			
 		const float C=340.0;
-		const float shiftGain=1000.0;		
+		const float shiftGain=5000.0;		
 		const CLAM::Audio& in = _in1.GetData();
 		const TData* inpointer = in.GetBuffer().GetPtr();		
 		unsigned size = in.GetSize();
