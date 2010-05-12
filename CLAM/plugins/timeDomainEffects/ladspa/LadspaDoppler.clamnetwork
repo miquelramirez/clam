@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.0" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioBufferSink" position="401,364" size="161,111" type="AudioBufferSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="AudioBufferSource" position="-87,365" size="177,108" type="AudioBufferSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="DopplerFractionalDelay" position="142,364" size="209,58" type="DopplerFractionalDelay">
+    <MaxDelayInSeconds>1.36531</MaxDelayInSeconds>
+    <Distance>0</Distance>
+    <ShiftGain>1</ShiftGain>
+  </processing>
+
+  <processing id="freqShiftScale" position="155,286" size="148,58" type="ControlSource">
+    <MinValue>1</MinValue>
+    <MaxValue>10</MaxValue>
+    <DefaultValue>1</DefaultValue>
+    <Step>1</Step>
+    <UnitName>Adimensional</UnitName>
+  </processing>
+
+  <processing id="relativeDistance" position="135,159" size="164,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>500</MaxValue>
+    <DefaultValue>0</DefaultValue>
+    <Step>0.0001</Step>
+    <UnitName>meters</UnitName>
+  </processing>
+
+  <port_connection>
+    <out>AudioBufferSource.1</out>
+    <in>DopplerFractionalDelay.InputBuffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DopplerFractionalDelay.OutputBuffer</out>
+    <in>AudioBufferSink.1</in>
+  </port_connection>
+
+  <control_connection>
+    <out>freqShiftScale.output</out>
+    <in>DopplerFractionalDelay.freq shift scaler</in>
+  </control_connection>
+
+  <control_connection>
+    <out>relativeDistance.output</out>
+    <in>DopplerFractionalDelay.relative distance in mts</in>
+  </control_connection>
+
+</network>
