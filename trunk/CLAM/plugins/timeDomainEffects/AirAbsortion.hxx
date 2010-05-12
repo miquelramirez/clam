@@ -42,8 +42,9 @@ public:
 	class Config : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (Config , 1, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (Config , 2, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, float, Distance);
+		DYN_ATTRIBUTE (1, public, float, ScaleAttenuation);
 
 	protected:
 		void DefaultInit()
@@ -51,6 +52,7 @@ public:
 			AddAll();
 			UpdateData();
 			SetDistance(0);
+			SetScaleAttenuation(1);
 		}
 	};
 //private: //TODO debugging	
@@ -64,6 +66,7 @@ protected:
 
 protected:
 	FloatInControl _distance;
+	FloatInControl _scaleAttenuation;
 			
 
 public:
@@ -71,6 +74,7 @@ public:
 		: _in1("InputBuffer", this)
 		, _out1("OutputBuffer", this)	
 		,_distance("relative distance in mts", this)
+		,_scaleAttenuation("scale attenuation factor", this)
 	{
 		Configure( config );
 	}
@@ -82,6 +86,8 @@ public:
 
 		_distance.DoControl(_config.GetDistance());
 		_distance.SetBounds(0,500);
+		_scaleAttenuation.DoControl(_config.GetScaleAttenuation());
+		_scaleAttenuation.SetBounds(1,10);
 		_xN=0.0f;
 		_xNmin1=0.0f;
 		_xNmin2=0.0f;
@@ -111,10 +117,10 @@ public:
 		const float S=1.0f;
 		const float freqHz=10000.0f;
 		float distance = _distance.GetLastValue();			
-		float dBgain=-0.05*distance;
+		float dBgain=-0.05*distance*_scaleAttenuation.GetLastValue();
 		//std::cout << gain << "*************************************** " <<std::endl;
 		float A  = pow(10,dBgain/40);
-		float w0 = 2*M_PI*freqHz/_sampleRate;  
+		float w0 = 2*M_PI*(2*freqHz)/_sampleRate;  
 		//float alpha = sin(w0)/2 * sqrt( (A + 1/A)*(1/S - 1) + 2 );		
 		float two_sqrtA_alpha  =  sin(w0) * sqrt( (pow(A,2) + 1)*(1/S - 1) + 2*A );
 		
