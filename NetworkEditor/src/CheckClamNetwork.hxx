@@ -42,6 +42,7 @@ public:
 			{
 				std::cout << "The network can not be configured. See the following errors " << std::endl;
 				std::cout << _network.GetConfigurationErrors() << std::endl;
+				return correct;
 			}
 
 			CLAM::DummyNetworkPlayer *player=new CLAM::DummyNetworkPlayer();
