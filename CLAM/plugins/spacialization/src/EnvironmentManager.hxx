@@ -30,12 +30,13 @@ class EnvironmentManager : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 5, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 6, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, InFilename, EnvironmentImpulseResponsesFile);
 		DYN_ATTRIBUTE( 1, public, unsigned, FrameSize);
 		DYN_ATTRIBUTE( 2, public, unsigned, SampleRate);
 		DYN_ATTRIBUTE( 3, public, InFilename, EnvironmentsGeometryFile);
 		DYN_ATTRIBUTE( 4, public, InFilename, DefaultIR);
+		DYN_ATTRIBUTE( 5, public, float, EnvironmentFadeTimeInMs);
 	protected:
 		void DefaultInit()
 		{
@@ -46,6 +47,7 @@ class EnvironmentManager : public CLAM::Processing
 			SetSampleRate(44100);
 			SetEnvironmentsGeometryFile("");
 			SetDefaultIR("");
+			SetEnvironmentFadeTimeInMs(100.);
 		};
 	};
 
