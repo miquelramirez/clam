@@ -101,11 +101,20 @@ bool SMSMorph::Do( const SpectralPeakArray& inPeaks1,
 bool SMSMorph::ConcreteConfigure(const ProcessingConfig& config)
 {
 	CopyAsConcreteConfig( mConfig, config );
-
 	mInterpolationFactor.SetBounds(0.,1.);
 	mInterpolationFactor.SetDefaultValue(0.5);
-
 	return true;
 }
-
+bool SMSMorph::ConcreteStart()
+{
+	mPeaksInterpolator.Start();
+	mSpectrumInterpolator.Start();
+	return true;
+}
+bool SMSMorph::ConcreteStop()
+{
+	mPeaksInterpolator.Stop();
+	mSpectrumInterpolator.Stop();
+	return true;
+}
 }

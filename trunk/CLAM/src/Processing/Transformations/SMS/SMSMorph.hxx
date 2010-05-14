@@ -138,6 +138,8 @@ namespace CLAM{
 
 	protected:
 		bool ConcreteConfigure(const ProcessingConfig& c);
+		bool ConcreteStart();
+		bool ConcreteStop();
 
 
 		/** Child processings **/
