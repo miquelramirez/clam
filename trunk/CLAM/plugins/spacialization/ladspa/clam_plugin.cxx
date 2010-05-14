@@ -29,23 +29,23 @@ CLAM_EMBEDDED_FILE(bformat_to_22_embededNetwork,"../example-data/bformat_to_22.c
 
 CLAM_EMBEDDED_FILE(bformat14,"bformat14.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat15,"bformat15.clamnetwork")
-CLAM_EMBEDDED_FILE(bformat16,"bformat16.clamnetwork")
-CLAM_EMBEDDED_FILE(bformat17,"bformat17.clamnetwork")
-CLAM_EMBEDDED_FILE(bformat18,"bformat18.clamnetwork")
-CLAM_EMBEDDED_FILE(bformat19,"bformat19.clamnetwork")
-CLAM_EMBEDDED_FILE(bformat20,"bformat20.clamnetwork")
-CLAM_EMBEDDED_FILE(bformat21,"bformat21.clamnetwork")
+//CLAM_EMBEDDED_FILE(bformat16,"bformat16.clamnetwork")
+//CLAM_EMBEDDED_FILE(bformat17,"bformat17.clamnetwork")
+//CLAM_EMBEDDED_FILE(bformat18,"bformat18.clamnetwork")
+//CLAM_EMBEDDED_FILE(bformat19,"bformat19.clamnetwork")
+//CLAM_EMBEDDED_FILE(bformat20,"bformat20.clamnetwork")
+//CLAM_EMBEDDED_FILE(bformat21,"bformat21.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat22,"bformat22.clamnetwork")
 
 CLAM_EMBEDDED_FILE(vbap14,"vbap14.clamnetwork")
 CLAM_EMBEDDED_FILE(vbap15,"vbap15.clamnetwork")
 CLAM_EMBEDDED_FILE(vbap15_shorter_distance,"vbap15_shorter_distance.clamnetwork")
-CLAM_EMBEDDED_FILE(vbap16,"vbap16.clamnetwork")
-CLAM_EMBEDDED_FILE(vbap17,"vbap17.clamnetwork")
-CLAM_EMBEDDED_FILE(vbap18,"vbap18.clamnetwork")
-CLAM_EMBEDDED_FILE(vbap19,"vbap19.clamnetwork")
-CLAM_EMBEDDED_FILE(vbap20,"vbap20.clamnetwork")
-CLAM_EMBEDDED_FILE(vbap21,"vbap21.clamnetwork")
+//CLAM_EMBEDDED_FILE(vbap16,"vbap16.clamnetwork")
+//CLAM_EMBEDDED_FILE(vbap17,"vbap17.clamnetwork")
+//CLAM_EMBEDDED_FILE(vbap18,"vbap18.clamnetwork")
+//CLAM_EMBEDDED_FILE(vbap19,"vbap19.clamnetwork")
+//CLAM_EMBEDDED_FILE(vbap20,"vbap20.clamnetwork")
+//CLAM_EMBEDDED_FILE(vbap21,"vbap21.clamnetwork")
 CLAM_EMBEDDED_FILE(vbap22,"vbap22.clamnetwork")
 CLAM_EMBEDDED_FILE(vbap22_simplified,"vbap22_simplified.clamnetwork")
 
@@ -121,6 +121,7 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 	static CLAM::LadspaNetworkExporter n1015(library, vbap15, 1015,
 			"id_vbap_15", "vbap15",
 			"BarcelonaMedia-Audio", "GNU GPL");
+	/*
 	static CLAM::LadspaNetworkExporter n1016(library, vbap16, 1016,
 			"id_vbap_16", "vbap16",
 			"BarcelonaMedia-Audio", "GNU GPL");
@@ -139,6 +140,7 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 	static CLAM::LadspaNetworkExporter n1021(library, vbap21, 1021,
 			"id_vbap_21", "vbap21",
 			"BarcelonaMedia-Audio", "GNU GPL");
+	*/
 	static CLAM::LadspaNetworkExporter n1022(library, vbap22, 1022,
 			"id_vbap_22", "vbap22",
 			"BarcelonaMedia-Audio", "GNU GPL");
@@ -153,6 +155,7 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 	static CLAM::LadspaNetworkExporter n2015(library, bformat15, 2015,
 			"id_bformat_15", "bformat15",
 			"BarcelonaMedia-Audio", "GNU GPL");
+	/*
 	static CLAM::LadspaNetworkExporter n2016(library, bformat16, 2016,
 			"id_bformat_16", "bformat16",
 			"BarcelonaMedia-Audio", "GNU GPL");
@@ -171,6 +174,7 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 	static CLAM::LadspaNetworkExporter n2021(library, bformat21, 2021,
 			"id_bformat_21", "bformat21",
 			"BarcelonaMedia-Audio", "GNU GPL");
+	*/
 	static CLAM::LadspaNetworkExporter n2022(library, bformat22, 2022,
 			"id_bformat_22", "bformat22",
 			"BarcelonaMedia-Audio", "GNU GPL");
