@@ -67,7 +67,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="HRTFDatabaseFetcher2" position="15,168" size="207,62" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <HrtfDatabase>/home/angelo.scorza/acustica/HRTFs/ircam1017L.hrtfs</HrtfDatabase>
+    <HrtfDatabase>/usr/local/share/clam/layouts/hrtf_database.hrtfs</HrtfDatabase>
   </processing>
 
   <processing id="IRSwappingDelay_L" position="228,156" size="185,62" type="IRSwappingDelay"/>
