@@ -9,8 +9,9 @@ namespace CLAM
 
 class EmbededWidgetCreatorBase
 {
-private:
+protected:
 	typedef std::string Key;
+private:
 	typedef std::map<Key, EmbededWidgetCreatorBase*> Creators;
 	static Creators & creators();
 protected:
