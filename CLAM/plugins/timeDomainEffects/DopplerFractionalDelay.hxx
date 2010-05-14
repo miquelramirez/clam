@@ -117,8 +117,8 @@ public:
 		: _in1("InputBuffer", this)
 		, _out1("OutputBuffer", this)
 		, _delayBufferSize(1)  		
-		,_distance("relative distance in mts", this)
-		,_shiftGain("freq shift scaler", this)
+		, _distance("relative distance in mts", this)
+		, _shiftGain("freq shift scaler", this)
 	{
 		Configure( config );
 	}
