@@ -137,7 +137,7 @@ public:
 		_distance.DoControl(_config.GetDistance());
 		_distance.SetBounds(0,500);
 		_shiftGain.DoControl(_config.GetShiftGain());
-		_shiftGain.SetBounds(1,10);
+		_shiftGain.SetBounds(1,20);  //////////////////////added to exagerate the effect/////////////////////////
 		_pastModelayLine=0;
 		_pastDist=0;
 		_step=0;

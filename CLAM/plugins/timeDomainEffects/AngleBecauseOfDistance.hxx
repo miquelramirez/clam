@@ -81,7 +81,7 @@ public:
 		CopyAsConcreteConfig(_config, c);
 		
 		_sourceSize.SetBounds(0.001, 100.0);
-		_sourceDistance.SetBounds(0.0, 500.0);
+		_sourceDistance.SetBounds(0.0, 50.0);
 
 		_sourceSize.DoControl( _config.GetSourceSize() );		
 		_sourceDistance.DoControl( _config.GetSourceDistance() );
