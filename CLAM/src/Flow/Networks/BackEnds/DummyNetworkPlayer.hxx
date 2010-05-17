@@ -21,7 +21,7 @@ namespace CLAM
 
 
 		virtual bool IsWorking() 				{return true;}
-		virtual std::string NonWorkingReason()	{return "ejemplo";}
+		virtual std::string NonWorkingReason()	{return "Non available.";}
 
 	};
 
