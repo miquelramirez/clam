@@ -60,7 +60,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="freqShiftScale" position="155,286" size="148,58" type="ControlSource">
     <MinValue>1</MinValue>
-    <MaxValue>10</MaxValue>
+    <MaxValue>20</MaxValue>
     <DefaultValue>1</DefaultValue>
     <Step>1</Step>
     <UnitName>Adimensional</UnitName>
