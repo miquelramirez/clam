@@ -52,17 +52,19 @@ private:
 	Config _config;
 	FloatInControl _sourceSize;
 	FloatInControl _sourceDistance;
-	FloatOutControl _sourceThickness;
+	FloatOutControl _angularDecay;
 	
 	void InControlCallback(const TControlData & value)
 	{
 		TControlData size = _sourceSize.GetLastValue();
 		TControlData distance = _sourceDistance.GetLastValue();
 		if (distance == 0) return;
-		float angle=(180.0/M_PI)*(size/distance);
+		float angle=2*(180.0/M_PI)*atan(size/(2*distance));
+		float angularDecay = (-2.1/180)*angle + 2.5;
+		_angularDecay.SendControl(angularDecay);
 		//distance < 0.001 ? angle=(180.0/M_PI)*(size/0.001) : angle=(180.0/M_PI)*(size/distance);
-		if (angle < 4.5)  angle=4.5;		
-		(angle > 360) ? _sourceThickness.SendControl(360.0):_sourceThickness.SendControl(angle);		
+		//if (angle < 4.5)  angle=4.5;		
+		//(angle > 360) ? _sourceThickness.SendControl(360.0):_sourceThickness.SendControl(angle);		
 	}
 
 public:
@@ -71,7 +73,7 @@ public:
 	AngleBecauseOfDistance(const Config& config = Config()) 
 		: _sourceSize("source Size in mts", this, &AngleBecauseOfDistance::InControlCallback) 
 		, _sourceDistance("source Distance in mts", this, &AngleBecauseOfDistance::InControlCallback) 
-		, _sourceThickness("source thickness", this)
+		, _angularDecay("source thickness", this)
 	{
 		Configure( config );
 	}
