@@ -16,6 +16,11 @@ struct Vector3D
 	float x;
 	float y;
 	float z;
+public:
+	std::ostream & operator<<(std::ostream & os)
+	{
+		return os << x << ", " << y << ", " << z;
+	}
 };
 
 struct SphericalHarmonicsDefinition
