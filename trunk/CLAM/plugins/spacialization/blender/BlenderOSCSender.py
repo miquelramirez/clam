@@ -49,28 +49,17 @@ import re
 
 SendObjectsNames=False
 
-
 SourcesSubstring='source'
 ListenersSubstring='listener'
 
-
 def isSource (object):
-	return (object.name.lower().find(SourcesSubstring)!=-1)
+	return SourcesSubstring in object.name.lower()
 def getSources(scene=Blender.Scene.GetCurrent()):
-	sources=list()
-	for object in scene.objects:
-		if isSource(object):
-			sources.append(object)
-	return sources
-
+	return [ object for object in scene.objects if isSource(object) ] 
 def isListener (object):
-	return (object.name.lower().find(ListenersSubstring)!=-1)
+	return ListenersSubstring in object.name.lower()
 def getListeners(scene=Blender.Scene.GetCurrent()):
-	listeners=list()
-	for object in scene.objects:
-		if isListener(object):
-			listeners.append(object)
-	return listeners
+	return [ object for object in scene.objects if isListener(object) ]
 
 # use OSC client module for python - by Stefan Kersten
 home=getenv("HOME")
