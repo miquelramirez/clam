@@ -63,7 +63,7 @@ def getListeners(scene=Blender.Scene.GetCurrent()):
 
 # use OSC client module for python - by Stefan Kersten
 home=getenv("HOME")
-pathToOSCList=["../../osc/oscpython","%s/src/liblo" % home, "%s/acustica/realtime_blender_demo" % home, "%s/clam/CLAM/plugins/osc/oscpython"%home]
+pathToOSCList=["../../osc/oscpython", "%s/src/liblo" % home, "%s/acustica/realtime_blender_demo" % home, "%s/clam/CLAM/plugins/osc/oscpython" % home]
 configured=0
 for testpath in pathToOSCList:
 	if Blender.sys.exists(testpath+"/OSC.py"):
@@ -74,15 +74,13 @@ for testpath in pathToOSCList:
 if configured==0:
 	print "Can't found OSC.py. Aborting."
 	
-
 def sendObjectValue(objectId,typeName,typeValue,value,port):
 	message="/SpatDIF/%s/%i/%s" % (typeName,objectId,typeValue)
 	Message(message,value).sendlocal(port)
 
 def main():
-	typename=None
-	if (configured==0):
-		return
+	if not configured: return
+
 	if Blender.event=='FrameChanged':
 		frame=Blender.Get('curframe')
 		Message("/SpatDIF/sync/FrameChanged",[frame]).sendlocal(7000)
@@ -103,28 +101,22 @@ def main():
 				ports.append(int(portString))
 
 		objectId=object.name.replace(".","_")
+		typename=None
 		if isSource(object):
 			typename='source'
 			sources=getSources()
 			if not SendObjectsNames:
 				objectId=sources.index(object)
-			for port in ports:
-				sendObjectValue(objectId,typename,"xyz",location,port)
-				sendObjectValue(objectId,typename,"ypr",rotation,port)
-#			print "UPDATE L Source "+str(objectNumber)+" Port"+str(port)+" "+str(location)
-			return
 		if isListener(object):
 			listeners=getListeners()
 			typename='listener'
 			if not SendObjectsNames:
 				objectId=listeners.index(object)
-			for port in ports:
-				sendObjectValue(objectId,typename,"xyz",location,port)
-				sendObjectValue(objectId,typename,"ypr",rotation,port)
-#			print "UPDATE L Listener "+str(objectNumber)+" Port"+str(port)+" "+str(location)
-			return
-		if not typename:
-			return
+
+		if not typename: return
+		for port in ports:
+			sendObjectValue(objectId,typename,"xyz",location,port)
+			sendObjectValue(objectId,typename,"ypr",rotation,port)
 
 # This lets you can import the script without running it
 if __name__ == '__main__':
