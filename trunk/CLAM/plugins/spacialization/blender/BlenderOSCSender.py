@@ -63,7 +63,7 @@ def getListeners(scene=Blender.Scene.GetCurrent()):
 
 # use OSC client module for python - by Stefan Kersten
 home=getenv("HOME")
-pathToOSCList=["../../osc/oscpython", "%s/src/liblo" % home, "%s/acustica/realtime_blender_demo" % home, "%s/clam/CLAM/plugins/osc/oscpython" % home]
+pathToOSCList=["../../osc/oscpython", "%s/src/liblo" % home, "%s/clam/CLAM/plugins/osc/oscpython" % home]
 configured = False
 for testpath in pathToOSCList:
 	if Blender.sys.exists(testpath+"/OSC.py"):
