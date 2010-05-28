@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.0" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioBufferSink" position="614,274" size="161,382" type="AudioBufferSink">
+    <NSinks>22</NSinks>
+  </processing>
+
+  <processing id="AudioBufferSource" position="-34,274" size="177,108" type="AudioBufferSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="RotatingFlanger" position="180,273" size="159,58" type="RotatingFlanger">
+    <MaxDelayInSeconds>1.36531</MaxDelayInSeconds>
+    <Width>1</Width>
+    <FreqMod>5</FreqMod>
+    <CenterTap>2</CenterTap>
+  </processing>
+
+  <processing id="Vbap3DBuffer" position="397,273" size="147,382" type="Vbap3DBuffer">
+    <SpeakerLayout>/usr/local/share/clam/layouts/22.layout</SpeakerLayout>
+    <Triangulation>/usr/local/share/clam/layouts/22.triangulation</Triangulation>
+    <IgnoreLabels>1</IgnoreLabels>
+  </processing>
+
+  <processing id="center_Tap" position="208,168" size="163,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>15</MaxValue>
+    <DefaultValue>5</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="mod_Freq" position="183,122" size="163,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>10</MaxValue>
+    <DefaultValue>5</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="width" position="163,80" size="148,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>3</MaxValue>
+    <DefaultValue>1</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <port_connection>
+    <out>AudioBufferSource.1</out>
+    <in>RotatingFlanger.InputBuffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>RotatingFlanger.OutputBuffer</out>
+    <in>Vbap3DBuffer.W</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.01</out>
+    <in>AudioBufferSink.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.02</out>
+    <in>AudioBufferSink.2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.03</out>
+    <in>AudioBufferSink.3</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.04</out>
+    <in>AudioBufferSink.4</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.05</out>
+    <in>AudioBufferSink.5</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.06</out>
+    <in>AudioBufferSink.6</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.07</out>
+    <in>AudioBufferSink.7</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.08</out>
+    <in>AudioBufferSink.8</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.09</out>
+    <in>AudioBufferSink.9</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.10</out>
+    <in>AudioBufferSink.10</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.11</out>
+    <in>AudioBufferSink.11</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.12</out>
+    <in>AudioBufferSink.12</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.13</out>
+    <in>AudioBufferSink.13</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.14</out>
+    <in>AudioBufferSink.14</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.15</out>
+    <in>AudioBufferSink.15</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.16</out>
+    <in>AudioBufferSink.16</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.17</out>
+    <in>AudioBufferSink.17</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.18</out>
+    <in>AudioBufferSink.18</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.19</out>
+    <in>AudioBufferSink.19</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.20</out>
+    <in>AudioBufferSink.20</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.21</out>
+    <in>AudioBufferSink.21</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3DBuffer.22</out>
+    <in>AudioBufferSink.22</in>
+  </port_connection>
+
+  <control_connection>
+    <out>RotatingFlanger.flanger rotation</out>
+    <in>Vbap3DBuffer.azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>center_Tap.output</out>
+    <in>RotatingFlanger.centerTap msecs</in>
+  </control_connection>
+
+  <control_connection>
+    <out>mod_Freq.output</out>
+    <in>RotatingFlanger.freq in Hz</in>
+  </control_connection>
+
+  <control_connection>
+    <out>width.output</out>
+    <in>RotatingFlanger.width in msecs</in>
+  </control_connection>
+
+</network>
