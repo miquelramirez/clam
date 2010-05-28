@@ -9,6 +9,9 @@
 CLAM_EMBEDDED_FILE(doppler_distance,"LadspaDopplerAndDistance.clamnetwork")
 CLAM_EMBEDDED_FILE(doppler,"LadspaDoppler.clamnetwork")
 CLAM_EMBEDDED_FILE(distanceAttenuation,"LadspaDistance.clamnetwork")
+CLAM_EMBEDDED_FILE(chorus_15,"3d_chorus_15.clamnetwork")
+CLAM_EMBEDDED_FILE(chorus_22,"3d_chorus_22.clamnetwork")
+CLAM_EMBEDDED_FILE(rotatingFlanger_22,"LadspaRotatingFlanger.clamnetwork")
 
 
 #include <iostream>
@@ -31,9 +34,22 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"doppler", "doppler for a moving source",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
-	static CLAM::LadspaNetworkExporter n4003(library, distanceAttenuation, 4004,
+	static CLAM::LadspaNetworkExporter n4003(library, distanceAttenuation, 4003,
 			"distanceAttenuation", "distanceAtten for a moving source",
 			"BarcelonaMedia-Audio", "GNU GPL");
+
+	static CLAM::LadspaNetworkExporter n4004(library, chorus_15, 4004,
+			"chorus_15", "3d chorus_15",
+			"BarcelonaMedia-Audio", "GNU GPL");
+
+	static CLAM::LadspaNetworkExporter n4005(library, chorus_22, 4005,
+			"chorus_22", "3d chorus_22",
+			"BarcelonaMedia-Audio", "GNU GPL");
+
+	static CLAM::LadspaNetworkExporter n4006(library, rotatingFlanger_22, 4006,
+			"rotatingFlanger_22", "3d rotating Flanger",
+			"BarcelonaMedia-Audio", "GNU GPL");
+
 
 	return library.pluginAt(index);
 }

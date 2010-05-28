@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.0" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioBufferSink" position="660,210" size="161,111" type="AudioBufferSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="AudioBufferSource" position="-165,213" size="177,108" type="AudioBufferSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="MonoFractionalDelayModulation_0" position="136,210" size="280,58" type="MonoFractionalDelayModulation">
+    <MaxDelayInSeconds>1.36531</MaxDelayInSeconds>
+    <Width>1</Width>
+    <FreqMod>5</FreqMod>
+    <CenterTap>2</CenterTap>
+    <PhaseOffset>0</PhaseOffset>
+    <ParamVariability>1</ParamVariability>
+  </processing>
+
+  <processing id="PhaseOffset_0" position="182,112" size="201,78" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>360</Max>
+    <Step>1.8</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="center_Tap" position="166,51" size="163,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>30</MaxValue>
+    <DefaultValue>10</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="mod_Frequency" position="148,11" size="163,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>1</MaxValue>
+    <DefaultValue>0.01</DefaultValue>
+    <Step>1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="param_Variability_0" position="359,113" size="187,58" type="ControlSource">
+    <MinValue>0.5</MinValue>
+    <MaxValue>1.5</MaxValue>
+    <DefaultValue>1</DefaultValue>
+    <Step>0.01</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="width" position="125,-34" size="148,58" type="ControlSource">
+    <MinValue>1</MinValue>
+    <MaxValue>10</MaxValue>
+    <DefaultValue>2</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <port_connection>
+    <out>AudioBufferSource.1</out>
+    <in>MonoFractionalDelayModulation_0.InputBuffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MonoFractionalDelayModulation_0.OutputBuffer</out>
+    <in>AudioBufferSink.1</in>
+  </port_connection>
+
+  <control_connection>
+    <out>PhaseOffset_0.out</out>
+    <in>MonoFractionalDelayModulation_0.offset in degrees</in>
+  </control_connection>
+
+  <control_connection>
+    <out>center_Tap.output</out>
+    <in>MonoFractionalDelayModulation_0.centerTap msecs</in>
+  </control_connection>
+
+  <control_connection>
+    <out>mod_Frequency.output</out>
+    <in>MonoFractionalDelayModulation_0.freq in Hz</in>
+  </control_connection>
+
+  <control_connection>
+    <out>param_Variability_0.output</out>
+    <in>MonoFractionalDelayModulation_0.variability of parameters</in>
+  </control_connection>
+
+  <control_connection>
+    <out>width.output</out>
+    <in>MonoFractionalDelayModulation_0.width in msecs</in>
+  </control_connection>
+
+</network>
