@@ -218,6 +218,13 @@ def generate(env) :
 	env.AddMethod(moveIntermediateInto)
 	env.AddMethod(activateColorCommandLine)
 
+	if (
+		not env.has_key('prefix_for_packaging') or
+		not env['prefix_for_packaging']  or
+		env['prefix_for_packaging']=='.' 
+	) :
+		env['prefix_for_packaging'] = env['prefix']
+
 def exists(env):
 	return True
 
