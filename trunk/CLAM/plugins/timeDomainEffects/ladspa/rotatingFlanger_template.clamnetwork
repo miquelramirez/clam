@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.0" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioBufferAmplifier_0" position="392,273" size="207,58" type="AudioBufferAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>1</InitGain>
+    <PortsNumber>1</PortsNumber>
+  </processing>
+
+  <processing id="AudioBufferSink" position="771,275" size="161,382" type="AudioBufferSink">
+    <NSinks>22</NSinks>
+  </processing>
+
+  <processing id="AudioBufferSource" position="-34,274" size="177,108" type="AudioBufferSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="ProximityBasedAmplitudePanning" position="460,165" size="386,58" type="ProximityBasedAmplitudePanning">
+    <SpeakerLayout>/usr/local/share/clam/layouts/22.layout</SpeakerLayout>
+    <IgnoreLayoutLabels>0</IgnoreLayoutLabels>
+    <InitialAzimuth>0</InitialAzimuth>
+    <InitialElevation>0</InitialElevation>
+    <InitialAngularDecay>1</InitialAngularDecay>
+    <InitialAngularThickness>360</InitialAngularThickness>
+  </processing>
+
+  <processing id="RotatingFlanger" position="180,273" size="159,58" type="RotatingFlanger">
+    <MaxDelayInSeconds>1.36531</MaxDelayInSeconds>
+    <Width>1</Width>
+    <FreqMod>5</FreqMod>
+    <CenterTap>2</CenterTap>
+  </processing>
+
+  <processing id="angular_Decay" position="484,36" size="154,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>5</MaxValue>
+    <DefaultValue>1</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="angular_Thickness" position="508,85" size="178,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>360</MaxValue>
+    <DefaultValue>360</DefaultValue>
+    <Step>1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="center_Tap" position="208,168" size="163,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>15</MaxValue>
+    <DefaultValue>5</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="mod_Freq" position="183,122" size="163,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>10</MaxValue>
+    <DefaultValue>5</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="width" position="163,80" size="148,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>3</MaxValue>
+    <DefaultValue>1</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <port_connection>
+    <out>AudioBufferAmplifier_0.Audio Output</out>
+    <in>AudioBufferSink.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBufferSource.1</out>
+    <in>RotatingFlanger.InputBuffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>RotatingFlanger.OutputBuffer</out>
+    <in>AudioBufferAmplifier_0.Input Audio</in>
+  </port_connection>
+
+  <control_connection>
+    <out>ProximityBasedAmplitudePanning.00</out>
+    <in>AudioBufferAmplifier_0.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>RotatingFlanger.flanger rotation</out>
+    <in>ProximityBasedAmplitudePanning.azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>angular_Decay.output</out>
+    <in>ProximityBasedAmplitudePanning.angular decay</in>
+  </control_connection>
+
+  <control_connection>
+    <out>angular_Thickness.output</out>
+    <in>ProximityBasedAmplitudePanning.angular thickness</in>
+  </control_connection>
+
+  <control_connection>
+    <out>center_Tap.output</out>
+    <in>RotatingFlanger.centerTap msecs</in>
+  </control_connection>
+
+  <control_connection>
+    <out>mod_Freq.output</out>
+    <in>RotatingFlanger.freq in Hz</in>
+  </control_connection>
+
+  <control_connection>
+    <out>width.output</out>
+    <in>RotatingFlanger.width in msecs</in>
+  </control_connection>
+
+</network>
