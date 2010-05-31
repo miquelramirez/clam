@@ -3,7 +3,7 @@ import os
 import sys
 # shared paths
 base_path = os.path.expanduser("~")
-base_path = os.path.abspath(os.path.join(os.path.dirname(__file__),"../../.."))
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__),"../../../../.."))
 clam_path = os.path.join(base_path, "clam")
 sys.path.append(os.path.join(clam_path,"CLAM/scripts"))
 import clamrefactor
@@ -46,6 +46,6 @@ def generate_3d_chorus_network(layoutfile):
 	network.dump(file(filename,"w"))
 
 
-layoutfiles = ["/usr/local/share/clam/layouts/14.layout", "/usr/local/share/clam/layouts/15.layout", "/usr/local/share/clam/layouts/22.layout"]
+layoutfiles = ["/usr/local/share/clam/layouts/15.layout", "/usr/local/share/clam/layouts/22.layout"]
 for layoutfile in layoutfiles:
 	generate_3d_chorus_network( layoutfile )
