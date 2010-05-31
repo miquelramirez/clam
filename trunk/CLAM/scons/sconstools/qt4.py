@@ -162,8 +162,8 @@ class _Automoc:
 				if h:
 					if debug:
 						print "scons: qt: Scanning '%s' (header of '%s')" % (str(h), str(cpp))
-					#h_contents = comment.sub('', h.get_text_contents())
-					h_contents = h.get_text_contents()
+					#h_contents = comment.sub('', h.get_contents())
+					h_contents = h.get_contents()
 					break
 			if not h and debug:
 				print "scons: qt: no header for '%s'." % (str(cpp))
