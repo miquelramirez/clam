@@ -8,6 +8,7 @@ clamToolPath="../scons/sconstools"
 options = Variables('options.cache')
 
 options.Add( PathVariable( 'clam_prefix', 'Prefix were CLAM was installed', '') )
+options.Add( PathVariable( 'prefix', 'Prefix were CLAM was installed', '/usr/local') )
 if sys.platform == 'darwin' :
 	options.Add( PathVariable( 'cppunit_prefix', 'Prefix were cppunit was installed', '/opt/local' ))
 else:
