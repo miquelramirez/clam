@@ -9,12 +9,10 @@ options = Variables('options.cache')
 
 options.Add( PathVariable( 'clam_prefix', 'Prefix were CLAM was installed', '') )
 options.Add( PathVariable( 'prefix', 'Prefix were CLAM was installed', '/usr/local') )
-if sys.platform == 'darwin' :
-	options.Add( PathVariable( 'cppunit_prefix', 'Prefix were cppunit was installed', '/opt/local' ))
-else:
-	options.Add( PathVariable( 'cppunit_prefix', 'Prefix were cppunit was installed', '/usr' ))
 options.Add( BoolVariable( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
 options.Add( PathVariable( 'test_data_path', 'Path to the TestDataPrefix', '') )
+options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
+
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode in linux', 'no') )
 
 toolchain='default'
@@ -26,10 +24,15 @@ options.Update(env)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 
-env['project'] = 'CLAMTests'
-
-
 env.SConsignFile() # Single signature file
+
+env['project'] = 'CLAMTests'
+env['CXXFILESUFFIX'] = '.cxx'
+env['QT4_UICDECLSUFFIX'] = '.hxx'
+env.moveIntermediateInto('generated')
+env.activateColorCommandLine()
+if not env['verbose']: env.ClamQuietCompilation()
+
 
 crosscompiling = env["crossmingw"]
 if crosscompiling :
