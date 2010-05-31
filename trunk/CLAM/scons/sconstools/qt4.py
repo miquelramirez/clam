@@ -74,7 +74,7 @@ def checkMocIncluded(target, source, env):
 	cpp = source[0]
 	# looks like cpp.includes is cleared before the build stage :-(
 	# not really sure about the path transformations (moc.cwd? cpp.cwd?) :-/
-	path = SCons.Defaults.CScan.path_function(env, moc.cwd)
+	path = SCons.Defaults.CScan.path(env, moc.cwd)
 	includes = SCons.Defaults.CScan(cpp, env, path)
 	if not moc in includes:
 		SCons.Warnings.warn(
@@ -162,8 +162,8 @@ class _Automoc:
 				if h:
 					if debug:
 						print "scons: qt: Scanning '%s' (header of '%s')" % (str(h), str(cpp))
-					#h_contents = comment.sub('', h.get_contents())
-					h_contents = h.get_contents()
+					#h_contents = comment.sub('', h.get_text_contents())
+					h_contents = h.get_text_contents()
 					break
 			if not h and debug:
 				print "scons: qt: no header for '%s'." % (str(cpp))
@@ -368,8 +368,8 @@ def generate(env):
 
 	# er... no idea what that was for
 	static_obj, shared_obj = SCons.Tool.createObjBuilders(env)
-	static_obj.src_builder.append('Uic4')
-	shared_obj.src_builder.append('Uic4')
+	static_obj.add_src_builder('Uic4')
+	shared_obj.add_src_builder('Uic4')
 
 	# We use the emitters of Program / StaticLibrary / SharedLibrary
 	# to scan for moc'able files
@@ -431,14 +431,14 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 
 	moduleDefines = {
 		'QtScript'   : ['QT_SCRIPT_LIB'],
-		'QtSvg'      : ['QT_SVG_LIB'],
+		'QtSvg'	  : ['QT_SVG_LIB'],
 		'Qt3Support' : ['QT_QT3SUPPORT_LIB','QT3_SUPPORT'],
-		'QtSql'      : ['QT_SQL_LIB'],
-		'QtXml'      : ['QT_XML_LIB'],
+		'QtSql'	  : ['QT_SQL_LIB'],
+		'QtXml'	  : ['QT_XML_LIB'],
 		'QtOpenGL'   : ['QT_OPENGL_LIB'],
-		'QtGui'      : ['QT_GUI_LIB'],
+		'QtGui'	  : ['QT_GUI_LIB'],
 		'QtNetwork'  : ['QT_NETWORK_LIB'],
-		'QtCore'     : ['QT_CORE_LIB'],
+		'QtCore'	 : ['QT_CORE_LIB'],
 	}
 	for module in modules :
 		try : self.AppendUnique(CPPDEFINES=moduleDefines[module])
@@ -460,6 +460,8 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 			pcmodules.remove("QtAssistant")
 			pcmodules.append("QtAssistantClient")
 		self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
+		# TODO: using pkg-config QtCore --variable=moc_location
+		# TODO: using pkg-config QtCore --variable=uic_location
 		self["QT4_MOCCPPPATH"] = self["CPPPATH"]
 		return
 	if sys.platform == "win32" or crosscompiling :
@@ -522,3 +524,9 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 
 def exists(env):
 	return _detect(env)
+
+# Local Variables:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
+# vim: set expandtab tabstop=4 shiftwidth=4:
