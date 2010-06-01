@@ -46,7 +46,7 @@ public:
 		xercesc::DOMImplementation * imp = 
 			xercesc::DOMImplementation::getImplementation();
 		mDocument = imp->createDocument(
-			U("2003-04.clam05.iua.mtg.upf.es"), // root element namespace URI.
+			0, // U("2003-04.clam05.iua.mtg.upf.es"), // root element namespace URI.
 			U("TestDoc"), // root element name
 			0  // document type object (DTD).
 		);
@@ -164,7 +164,7 @@ private:
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
-			"<TestDoc xmlns=\"2003-04.clam05.iua.mtg.upf.es\"/>"		
+			"<TestDoc/>"		
 			), mTargetStream.str());
 	}
 
@@ -183,7 +183,7 @@ private:
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
-			"<TestDoc xmlns=\"2003-04.clam05.iua.mtg.upf.es\">"
+			"<TestDoc>"
 				"<Element attribute=\"Attribute value\">"
 					"Content"
 					"<InnerElement/>"
@@ -210,7 +210,7 @@ private:
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n"
-			"<TestDoc xmlns=\"2003-04.clam05.iua.mtg.upf.es\">\n\n"
+			"<TestDoc>\n\n"
 			"  <Element attribute=\"Attribute value\">"
 				"Content\n"
 			"    <InnerElement/>\n"
