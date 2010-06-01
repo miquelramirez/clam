@@ -30,17 +30,8 @@ namespace CLAM
 		SetDownSamplingRate(0);
 	}
 
-	DownSampling::DownSampling():
-	mDownSamplingRate(0)
-	{
-		DownSamplingConfig cfg;
-
-		AttachChildren();
-		Configure( cfg );
-	}
-
-	DownSampling::DownSampling( DownSamplingConfig &cfg ):
-	mDownSamplingRate(0)
+	DownSampling::DownSampling(const Config &cfg)
+		: mDownSamplingRate(0)
 	{
 		AttachChildren();
 		Configure( cfg );
@@ -51,39 +42,21 @@ namespace CLAM
 
 	bool DownSampling::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
-		bool res = true;
 		CopyAsConcreteConfig(mConfig, cfg);
-		try{
-			if( !mConfig.HasDownSamplingRate() ) return true;
+		try
+		{
+			if( !mConfig.HasDownSamplingRate() ) return false;
 			mDownSamplingRate = mConfig.GetDownSamplingRate();
 
 			if( !ConfigureChildren() )
-			{
-				AddConfigErrorMessage( "Failed to configure children: ");
-				res = false;
-			}
+				return AddConfigErrorMessage(
+					"Failed to configure children: ");
 		}
 		catch( std::exception &e )
 		{
 			AddConfigErrorMessage("Failed to configure children: ");
-			AddConfigErrorMessage( e.what() );
-			return false;
+			return AddConfigErrorMessage( e.what() );
 		}
-		
-		return res;
-	}
-
-	bool DownSampling::ConcreteStart(void)
-	{
-		ProcessingComposite::ConcreteStart();
-
-		return true;
-	}
-
-	bool DownSampling::ConcreteStop(void)
-	{
-		ProcessingComposite::ConcreteStop();
-
 		return true;
 	}
 
@@ -219,7 +192,7 @@ namespace CLAM
 
 		if( !mTDFilterGenerator.Configure( GenCfg ) )
 		{
-			AddConfigErrorMessage("mTDFilterGenerator: ");
+			AddConfigErrorMessage("TDFilterGenerator: ");
 			AddConfigErrorMessage( mTDFilterGenerator.GetConfigErrorMessage() );
 			return false;
 		}
@@ -227,7 +200,7 @@ namespace CLAM
 		return true;
 	}
 
-	inline void DownSampling::CheckTypes( const Audio &in, const Audio &out )
+	inline void DownSampling::CheckTypes( const Audio &in, const Audio &out ) const
 	{
 		CLAM_BEGIN_CHECK
 
