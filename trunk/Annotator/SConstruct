@@ -59,19 +59,9 @@ versionInfo.generateVersionSources(os.path.join('src','MusicAnnotatorVersion'), 
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
-env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
-env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
-env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
-if not env['verbose']:
-	env['CXXCOMSTR'] = '== Compiling $SOURCE'
-	env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
-	env['LINKCOMSTR'] = '== Linking $TARGET'
-	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
-	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
-	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
-	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
-	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
-	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
+env.moveIntermediateInto('generated')
+env.activateColorCommandLine()
+if not env['verbose']: env.ClamQuietCompilation()
 
 env.EnableClamModules([
 	'clam_core',
