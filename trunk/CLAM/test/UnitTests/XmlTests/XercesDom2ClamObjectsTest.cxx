@@ -380,7 +380,7 @@ private:
 		std::string expected= 
 			"\nXML Parser Errors:\n"
 			"Fatal Error at file CLAMParser, line 1, col 8:\n"
-			"expected end of tag 'Doc'\n";
+			"Expected end of tag 'Doc'\n";
 		std::string parsed= "";
 
 		assertErrorGiven(expected, toLoad, xml, parsed);
