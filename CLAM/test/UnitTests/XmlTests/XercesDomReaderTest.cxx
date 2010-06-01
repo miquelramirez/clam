@@ -91,7 +91,7 @@ private:
 					"\n"
 					"XML Parser Errors:\n"
 					"Fatal Error at file CLAMParser, line 1, col 1:\n"
-					"Invalid document structure\n"
+					"invalid document structure\n"
 					),
 			std::string(e.what()));
 		}
@@ -153,7 +153,7 @@ private:
 			"\n"
 			"XML Parser Errors:\n"
 			"Fatal Error at file CLAMParser, line 1, col 71:\n"
-			"The attribute 'attribute' is already used in element 'Element'\n"
+			"attribute 'attribute' is already specified for element 'Element'\n"
 			), std::string(e.what()));
 		}
 	}
@@ -182,7 +182,7 @@ private:
 			"\n"
 			"XML Parser Errors:\n"
 			"Fatal Error at file CLAMParser, line 1, col 81:\n"
-			"Expected end of tag 'Unclosed'\n"
+			"expected end of tag 'Unclosed'\n"
 			), std::string(e.what()));
 		}
 	}
@@ -211,7 +211,7 @@ private:
 			"\n"
 			"XML Parser Errors:\n"
 			"Fatal Error at file CLAMParser, line 1, col 71:\n"
-			"Expected end of tag 'Element'\n"
+			"expected end of tag 'Element'\n"
 			), std::string(e.what()));
 		}
 	}

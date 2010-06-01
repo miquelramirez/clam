@@ -137,7 +137,7 @@ private:
 			std::string expected =
 				"\nXML Parser Errors:\n"
 				"Fatal Error at file CLAMParser, line 1, col 31:\n"
-				"Expected end of tag 'UnclossedChild'\n";
+				"expected end of tag 'UnclossedChild'\n";
 			CPPUNIT_ASSERT_EQUAL(expected,std::string(err.what()));
 		}
 		CPPUNIT_ASSERT_EQUAL((xercesc::DOMElement*)0,doc.getSelection());
