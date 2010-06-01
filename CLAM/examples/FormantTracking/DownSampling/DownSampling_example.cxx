@@ -30,13 +30,11 @@ using namespace CLAM;
 class DownSamplingExampleConfig : public ProcessingConfig {
 public:
 
-		DYNAMIC_TYPE_USING_INTERFACE (DownSamplingExampleConfig, 5, ProcessingConfig);
-
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, std::string, FilenameIn);
-		DYN_ATTRIBUTE (2, public, std::string, FilenameOut);
-		DYN_ATTRIBUTE (3, public, TData, DownSamplingRate);
-		DYN_ATTRIBUTE (4, public, TData, SamplingRate);
+		DYNAMIC_TYPE_USING_INTERFACE (DownSamplingExampleConfig, 4, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, std::string, FilenameIn);
+		DYN_ATTRIBUTE (1, public, std::string, FilenameOut);
+		DYN_ATTRIBUTE (2, public, TData, DownSamplingRate);
+		DYN_ATTRIBUTE (3, public, TData, SamplingRate);
 
 private:
 	void DefaultInit();
@@ -50,7 +48,8 @@ void DownSamplingExampleConfig::DefaultInit()
 }
 
 
-class DownSamplingExample : public ProcessingComposite {
+class DownSamplingExample : public ProcessingComposite
+{
 	DownSamplingExampleConfig mConfig;
 	TSize mSizeIn;
 	TSize mSizeOut;
@@ -65,7 +64,6 @@ class DownSamplingExample : public ProcessingComposite {
 	void AttachChildren();
 	bool ConfigureChildren();
 	bool ConfigureData();
-	void ConfigureAudio();
 
 	const char* GetClassName() const {return "DownSamplingExample";}
 
@@ -101,19 +99,18 @@ bool DownSamplingExample::ConfigureChildren()
 {
 	MonoAudioFileReaderConfig inConfig;
 	inConfig.SetSourceFile(mConfig.GetFilenameIn());
-	mFileIn.Configure(inConfig);
+	if (!mFileIn.Configure(inConfig))
+		return AddConfigErrorMessage(mFileIn.GetConfigErrorMessage());
 	mSizeIn = mFileIn.GetHeader().GetSamples();
-	mSizeOut = Round( mSizeIn / 
-						Round( mConfig.GetSamplingRate() / mConfig.GetDownSamplingRate() ) );
+	mSizeOut = Round( mSizeIn / Round( mConfig.GetSamplingRate() / mConfig.GetDownSamplingRate() ) );
 
 	MonoAudioFileWriterConfig outConfig;
 	outConfig.SetTargetFile(mConfig.GetFilenameOut());
 	outConfig.SetSampleRate(mConfig.GetDownSamplingRate() );
-	mFileOut.Configure(outConfig);
-
+	if (!mFileOut.Configure(outConfig))
+		return AddConfigErrorMessage(mFileOut.GetConfigErrorMessage());
 
 	DownSamplingConfig DownSampling_cfg;
-	DownSampling_cfg.SetName( "DownSampling" );
 	DownSampling_cfg.SetDownSamplingRate( mConfig.GetDownSamplingRate() );
 
 	mDownSampling.Configure( DownSampling_cfg );
@@ -121,27 +118,21 @@ bool DownSamplingExample::ConfigureChildren()
 	return true;
 }
 
-void DownSamplingExample::ConfigureAudio()
+
+bool DownSamplingExample::ConfigureData()
 {
 	mInputData.SetSize(mSizeIn);
 	mInputData.SetSampleRate(mConfig.GetSamplingRate());
 
 	mOutputData.SetSize( mSizeOut);
 	mOutputData.SetSampleRate( mConfig.GetDownSamplingRate() );
-}
-
-
-bool DownSamplingExample::ConfigureData()
-{
-	ConfigureAudio();
 	return true;
 }
 
 bool DownSamplingExample::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig,c);
-	ConfigureData();
-	return true;
+	return ConfigureChildren() && ConfigureData();
 }
 
 DownSamplingExample::DownSamplingExample(const DownSamplingExampleConfig &cfg)
@@ -152,28 +143,37 @@ DownSamplingExample::DownSamplingExample(const DownSamplingExampleConfig &cfg)
 
 bool DownSamplingExample::Do()
 {
-		mFileIn.Do(mInputData);
-		mDownSampling.Do( mInputData,mOutputData);
-//		CLAMVM::plot( mOutputData, "Audio de salida" ); //DGGPORT
-		mFileOut.Do(mOutputData);
+	mFileIn.Do(mInputData);
+	mDownSampling.Do( mInputData,mOutputData);
+//	CLAMVM::plot( mOutputData, "Audio de salida" ); //DGGPORT
+	mFileOut.Do(mOutputData);
 
-	  return true;
+	return true;
 }
 
-int main()
+int main(int argc, char** argv)
 {
 	try {
-		TData SamplingRate = 44100.;
-		TData downSR = 10000.;
+		if (argc != 3)
+		{
+			std::cerr << "Usage: " << argv[0] << "<infile.wav> <outfile.wav>" << std::endl;
+			return -1;
+		}
+		TData samplingRate = 22050.;
+		TData downSR = 11025.;
 
 		DownSamplingExampleConfig cfg;
-		cfg.SetName("DownSampling_Example");
-		cfg.SetSamplingRate(SamplingRate );
+		cfg.SetSamplingRate(samplingRate );
 		cfg.SetDownSamplingRate( downSR );
-		cfg.SetFilenameIn("foo.wav");
-		cfg.SetFilenameOut("C:\\out_46.wav");
+		cfg.SetFilenameIn(argv[1]);
+		cfg.SetFilenameOut(argv[2]);
 
 		DownSamplingExample app(cfg);
+		if (not app.IsConfigured())
+		{
+			std::cerr << "Error found: " << app.GetConfigErrorMessage() << std::endl;
+			return -1;
+		}
 
 		app.Start();
 
@@ -184,6 +184,6 @@ int main()
 	}
 	catch (Err &e) {
 		e.Print();
-		return 1;
+		return -1;
 	}
 }

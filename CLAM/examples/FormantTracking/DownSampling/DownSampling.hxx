@@ -60,14 +60,10 @@ namespace CLAM
 		};*/
 
 	public:
-		DownSampling();
-
-		DownSampling( DownSamplingConfig& cfg );
-
+		typedef DownSamplingConfig Config;
+		DownSampling(const Config& cfg = Config());
 		~DownSampling();
-
 		const char *GetClassName() const { return "DownSampling"; }
-
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
 		/** Supervised mode execution **/
@@ -81,7 +77,7 @@ namespace CLAM
 	protected:
 
 		/** Configuration data **/
-		DownSamplingConfig		mConfig;
+		Config		mConfig;
 
 		/** Down Sampling rate  **/
 		TData					mDownSamplingRate;
@@ -91,16 +87,9 @@ namespace CLAM
 		TDFilter				mTDFilter;
 
 		bool ConcreteConfigure( const ProcessingConfig& );
-
-		bool ConcreteStart();
-
-		bool ConcreteStop();
-
 		void AttachChildren(void);
-
 		bool ConfigureChildren();
-
-		inline void CheckTypes( const Audio &in, const Audio &out );
+		inline void CheckTypes( const Audio &in, const Audio &out ) const;
 
 		void Filter( const Audio &in, Audio &out );
 		
