@@ -221,9 +221,10 @@ def generate(env) :
 	if (
 		not env.has_key('prefix_for_packaging') or
 		not env['prefix_for_packaging']  or
-		env['prefix_for_packaging']=='.' 
+		env['prefix_for_packaging']=='.'
 	) :
-		env['prefix_for_packaging'] = env['prefix']
+		if env.has_key('prefix') :
+			env['prefix_for_packaging'] = env['prefix']
 
 def exists(env):
 	return True
