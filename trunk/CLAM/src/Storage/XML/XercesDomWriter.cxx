@@ -26,7 +26,8 @@
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationLS.hpp>
 #include <xercesc/dom/DOMImplementationRegistry.hpp>
-#include <xercesc/dom/DOMWriter.hpp>
+#include <xercesc/dom/DOMLSSerializer.hpp>
+#include <xercesc/dom/DOMLSOutput.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 #include <string>
 #include <sstream>
@@ -38,23 +39,31 @@ namespace CLAM
 		XercesInitializer::require();
 		const XMLCh * propertyCanonical = xercesc::XMLUni::fgDOMWRTCanonicalForm;
 		const XMLCh * propertyPrettyPrint = xercesc::XMLUni::fgDOMWRTFormatPrettyPrint;
-		xercesc::DOMImplementation *impl = 
+		xercesc::DOMImplementationLS *impl = 
+			(xercesc::DOMImplementationLS*)
 			xercesc::DOMImplementationRegistry::getDOMImplementation(U("LS"));
-		xercesc::DOMWriter *xercesWriter = 
-			((xercesc::DOMImplementationLS*)impl)->createDOMWriter();
 
-		if (xercesWriter->canSetFeature(propertyPrettyPrint, mShouldIndent))
-			xercesWriter->setFeature(propertyPrettyPrint, mShouldIndent);
-		if (xercesWriter->canSetFeature(propertyCanonical, mShouldCanonicalize))
-			xercesWriter->setFeature(propertyCanonical, mShouldCanonicalize);
+		xercesc::DOMLSSerializer *serializer = impl->createLSSerializer();
+		xercesc::DOMLSOutput     *output     = impl->createLSOutput();
 
-		xercesc::MemBufFormatTarget * xercesTarget = new xercesc::MemBufFormatTarget();
-		xercesWriter->writeNode(xercesTarget, *node);
-		const char * buffer = (char *) xercesTarget->getRawBuffer();
-		const unsigned bufferLen = xercesTarget->getLen();
+		output->setEncoding(U("UTF-8"));
+
+		xercesc::DOMConfiguration* serializerConfig = serializer->getDomConfig();
+
+		if (serializerConfig->canSetParameter(propertyPrettyPrint, mShouldIndent))
+			serializerConfig->setParameter(propertyPrettyPrint, mShouldIndent);
+		if (serializerConfig->canSetParameter(propertyCanonical, mShouldCanonicalize))
+			serializerConfig->setParameter(propertyCanonical, mShouldCanonicalize);
+
+		xercesc::MemBufFormatTarget formatTarget;
+		output->setByteStream(&formatTarget);
+		serializer->write(node, output);
+
+		const char * buffer = (char *) formatTarget.getRawBuffer();
+		const unsigned bufferLen = formatTarget.getLen();
 		target << std::string(buffer,bufferLen);
-		delete xercesWriter;
-		delete xercesTarget;
+		serializer->release();
+		output->release();
 	}
 
 }
