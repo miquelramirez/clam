@@ -80,9 +80,6 @@ namespace CLAMTest
 
 			processing.Configure( processingConfig );
 
-	//		(*processing.GetInPorts().Begin())->Attach( smReferenceSpectrum );
-	//		(*processing.GetOutPorts().Begin())->Attach( detectedPeaks );
-			
 			processing.Start();
 
 			processing.Do( smReferenceSpectrum, detectedPeaks );
@@ -106,25 +103,6 @@ namespace CLAMTest
 			// our confidence interval
 			if ( smSimilarityThreshold > similarity )
 			{
-				/*
-				CLAMVM::SpectrumAndPeaksPlot refDataPlot( "plot_1" );
-				refDataPlot.SetPosition( 0, 100 );
-				refDataPlot.SetSize( 300, 300 );
-				refDataPlot.SetYRange( -80, 500 );
-				refDataPlot.SetLabel( "Reference dataset results" );
-				refDataPlot.SetData( smReferenceSpectrum, 
-						     smReferenceSpectralPeakArray );
-
-				CLAMVM::SpectrumAndPeaksPlot actualDataPlot( "plot_2" );
-				actualDataPlot.SetPosition( 320, 100 );
-				actualDataPlot.SetSize( 300, 300 );
-				actualDataPlot.SetYRange( -80, 500 );
-				actualDataPlot.SetLabel( "Obtained peaks" );
-				actualDataPlot.SetData( smReferenceSpectrum,
-							detectedPeaks );
-
-				CLAMVM::SystemPlots::DisplayAll();
-				*/
 				CLAM::XMLStorage::Dump( detectedPeaks,
 						   "PeaksFailedToPassTest",
 						   "detectedPeaks_ProofOfConcept.xml" );
