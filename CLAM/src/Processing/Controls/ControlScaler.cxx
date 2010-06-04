@@ -21,22 +21,6 @@ void ControlScalerConfig::DefaultInit()
 	SetAmount( 1.0 );
 }
 
-ControlScaler::ControlScaler()
-	: mInControl( "Control In", this , &ControlScaler::InControlCallback )
-	, mGainControl( "Gain Amount", this , &ControlScaler::InControlCallback )
-	, mOutControl( "Control Out", this )
-{
-	Configure( mConfig );	
-}
-
-ControlScaler::ControlScaler( const ControlScalerConfig& cfg ) 
-	: mInControl( "Control In", this , &ControlScaler::InControlCallback )
-	, mGainControl( "Gain Amount", this , &ControlScaler::InControlCallback )
-	, mOutControl( "Control Out", this )
-{ 
-	Configure( cfg );
-}
-
 bool ControlScaler::ConcreteConfigure( const ProcessingConfig& cfg )
 {
 	CopyAsConcreteConfig( mConfig, cfg );
