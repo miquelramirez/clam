@@ -54,8 +54,14 @@ class ControlScaler : public Processing
 		const char *GetClassName() const { return "ControlScaler"; }
 
 
-		ControlScaler();
-		ControlScaler( const ControlScalerConfig& cfg );
+		ControlScaler( const ControlScalerConfig& cfg = ControlScalerConfig() ) 
+			: mInControl( "Control In", this , &ControlScaler::InControlCallback )
+			, mGainControl( "Gain Amount", this , &ControlScaler::InControlCallback )
+			, mOutControl( "Control Out", this )
+		{ 
+			Configure( cfg );
+		}
+
 
 		bool ConcreteConfigure( const ProcessingConfig& cfg ); 
 
