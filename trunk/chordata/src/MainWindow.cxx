@@ -517,6 +517,17 @@ void MainWindow::setBackend(QString &backend)
 	if (_networkPlayer) delete _networkPlayer;
 	_networkPlayer = 0;
 
+	#ifdef USE_PORTAUDIO
+	if (backend=="PortAudio" || backend=="Auto")
+	{
+		if (! _networkPlayer)
+		{
+			backend = "PortAudio";
+			_networkPlayer = new CLAM::PANetworkPlayer();
+		}
+	}
+	#endif
+
 	#ifdef USE_JACK
 	if (backend=="JACK" || backend=="Auto")
 	{
@@ -528,17 +539,6 @@ void MainWindow::setBackend(QString &backend)
 		}
 		else
 			delete jackPlayer;
-	}
-	#endif
-
-	#ifdef USE_PORTAUDIO
-	if (backend=="PortAudio" || backend=="Auto")
-	{
-		if (! _networkPlayer)
-		{
-			backend = "PortAudio";
-			_networkPlayer = new CLAM::PANetworkPlayer();
-		}
 	}
 	#endif
 

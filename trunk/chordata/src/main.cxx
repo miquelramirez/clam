@@ -42,12 +42,6 @@ void usage(const std::string & program)
 
 int main( int argc, char ** argv )
 {
-
-#ifdef _MSVC_VER
-	CLAM::ProcessingModule::init();
-	CLAM::AudioIOModule::init();
-#endif
-	
 	QApplication app( argc, argv );
 
 	QString backendName = "Auto";
