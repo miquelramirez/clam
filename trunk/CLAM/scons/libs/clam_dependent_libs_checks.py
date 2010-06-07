@@ -300,6 +300,7 @@ package_checks = dict()
 
 # xerces-c package check
 xerces_test_code = """
+#include <xercesc/dom/DOMLSSerializer.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 int main( int argc, char** argv )
 {
