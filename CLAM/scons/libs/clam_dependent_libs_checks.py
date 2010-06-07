@@ -145,6 +145,9 @@ def test_jack ( env, conf ) :
 	return True
 
 def test_portaudio( env, conf ) :
+	if conf.CheckPkgConfigFile('portaudio-2.0') :
+		return True
+
 	if not conf.CheckCHeader( 'portaudio.h' ) :
 		return config_error( "Could not find portaudio header! Please check your portaudio installation" )
 	if not conf.CheckLib( library='portaudio', symbol='Pa_GetHostApiInfo' ) :
@@ -235,14 +238,14 @@ def test_xml_backend( env, conf ) :
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 
 	if env['xmlbackend'] in ('both','xercesc') :
+		if not conf.CheckPkgConfigFile("xerces-c"):
+			return config_error( "Error: pkg-config could not find xerces-c options." )
 		if not conf.CheckCXXHeader('xercesc/util/PlatformUtils.hpp') :
-			return config_error( "Could not find xerces c headers! Defaulting to the null xml backend" )
-		env.Append(ENV=os.environ)
-		print('path of app: ' + env['ENV']['PATH'])
+			return config_error( "Could not find xerces c headers! Try disabling the xerces-c backend" )
 		if not conf.CheckLibrarySample('xerces-c', 'c++', 'xerces-c', xerces_test_code, 'libxerces-c2_8_0' ) :
 			return config_error( "xerces c code compile/link/run test failed!" )
 
-		env.Append( CPPFLAGS=['-DUSE_XERCES=1', '-DCLAM_USE_XML'] )
+		env.AppendUnique( CPPFLAGS=['-DUSE_XERCES=1', '-DCLAM_USE_XML'] )
 
 	if env['xmlbackend'] in ('both','xmlpp') :
 		if env['pkg_config_available'] :
@@ -250,7 +253,7 @@ def test_xml_backend( env, conf ) :
 				return config_error( "Error: pkg-config could not find libxml options." )
 		if not conf.CheckLibrarySample( 'libxml++', 'c++', None, xmlpp_test_code ) :
 			return config_error( "libxml++ code compile/link/run test failed!" )
-		env.Append( CPPFLAGS=['-DUSE_XMLPP=1','-DCLAM_USE_XML'] )
+		env.AppendUnique( CPPFLAGS=['-DUSE_XMLPP=1','-DCLAM_USE_XML'] )
 	return True
 
 def test_ladspa ( env, conf ) :
