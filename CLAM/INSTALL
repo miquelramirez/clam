@@ -80,7 +80,7 @@ Checkout the subversion repository
  (do "sudo apt-get install <packages>")
 
  * Packages to compile clam libs:
-   build-essential scons ladspa-sdk  libfftw3-dev libjack-dev libmad0-dev libogg-dev libsndfile1-dev libvorbis-dev libid3-3.8.3-dev libasound2-dev portaudio19-dev libxerces-c2-dev
+   build-essential scons ladspa-sdk  libfftw3-dev libjack-dev libmad0-dev libogg-dev libsndfile1-dev libvorbis-dev libid3-3.8.3-dev libasound2-dev portaudio19-dev libxerces-c-dev
 
 NOTE about libxerces: devel package to be installed for versions of Ubuntu < 8.10 is libxerces27-dev
 libxerces27-dev
