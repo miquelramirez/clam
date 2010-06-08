@@ -144,9 +144,9 @@ def get_added_client(old_clients, new_clients) :
 		print 'WARNING: found more than one added client. Found ', len(l)
 	return l[0]
 
-def run_jack_client(cmd, wait=max_tries_in_seconds, path=".") :
+def run_jack_client(cmd, wait=max_tries_in_seconds, path=".", env=os.environ) :
 	previous_clients = clients()
-	pid = subprocess.Popen(cmd.split(' '), stdout=subprocess.PIPE, env=os.environ, cwd=path)
+	pid = subprocess.Popen(cmd, env=env, cwd=path, shell=True)
 	new_client = ""
 	tries=0
 	max_tries = float(wait) / run_client_wait_time
