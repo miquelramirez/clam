@@ -4,6 +4,7 @@
 #include "AudioBufferSource.hxx"
 #include "AudioBufferSink.hxx"
 #include "NetworkPlayer.hxx"
+#include <cmath>
 
 namespace CLAM
 {
@@ -238,6 +239,10 @@ void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		else if (conf.GetDefaultValue() == 440) defaultHintValue = LADSPA_HINT_DEFAULT_440;
 
 		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | defaultHintValue);
+		bool isInteger = std::fabs(conf.GetStep()-1)<1e-5;
+		if (isInteger) 
+			rangehints[currentport].HintDescriptor |= LADSPA_HINT_INTEGER;
+
 		currentport++;
 	}
 
