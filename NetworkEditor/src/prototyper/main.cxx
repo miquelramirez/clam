@@ -47,9 +47,6 @@ int main( int argc, char *argv[] )
 	faustLoader.Load();
 #endif
 
-
-	QApplication app( argc, argv );
-
 	std::string networkFile;
 	std::string uiFile;
 	std::list<std::string> backends;
@@ -106,16 +103,17 @@ int main( int argc, char *argv[] )
 	undottedName.truncate(undottedName.indexOf("."));
 
 	CLAM::PrototypeLoader prototype;
-
 	if (! prototype.ChooseBackend( backends, undottedName.toLocal8Bit().constData() ) ) return -1;
 	if (! prototype.LoadNetwork( networkFile ) ) return -1;
 	if (!isInteractive) 
 	{
+		QCoreApplication app( argc, argv );
+
 		std::cout << QObject::tr("Non interface mode set. Press Ctrl-C to end.").toLocal8Bit().constData() << std::endl;
 		prototype.Start();
-		while (true) 
-			sleep(1); // Until Ctrl-C
+		return app.exec();
 	}
+	QApplication app( argc, argv); 
 	if (! prototype.LoadInterface( uiFile.c_str() ) ) return -1;
 	prototype.Show();
 	prototype.ConnectWithNetwork();
