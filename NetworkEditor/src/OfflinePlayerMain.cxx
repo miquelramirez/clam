@@ -137,13 +137,15 @@ int main( int argc, char *argv[] )
 	while(std::string(argv[argIndex]) != "-o")
 	{
 		if(!isWavFile(std::string(argv[argIndex])))
-		{	std::cout << "Found bad input file. The input files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
+		{
+			std::cout << "Found bad input file. The input files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
 			return -1;			
 		}
 		player->AddInputFile(argv[argIndex]);
 		argIndex++;
 		if(argc<=argIndex)
-		{	std::cout << "There are not output files. The output files are separated by -o" << std::endl;
+		{
+			std::cout << "There are not output files. The output files are separated by -o" << std::endl;
 			return -1;
 		}		
 	}
@@ -174,7 +176,8 @@ int main( int argc, char *argv[] )
 		}
 	}
 	else
-	{	player->SetFormat(SF_FORMAT_WAV | SF_FORMAT_FLOAT);
+	{
+		player->SetFormat(SF_FORMAT_WAV | SF_FORMAT_FLOAT);
 	}
 
 	int channel;
@@ -195,7 +198,8 @@ int main( int argc, char *argv[] )
 			channel = 1;
 		}
 		if(!isWavFile(std::string(argv[argIndex])))
-		{	std::cout << "The output files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
+		{
+			std::cout << "The output files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
 			return -1;			
 		}
 		player->AddNumChannels(channel);			
@@ -203,7 +207,8 @@ int main( int argc, char *argv[] )
 	}
 
 	if(argIndex != argc)
-	{	std::cout << "There are so many arguments" << std::endl;
+	{
+		std::cout << "There are so many arguments" << std::endl;
 		return -1;
 	}
 
