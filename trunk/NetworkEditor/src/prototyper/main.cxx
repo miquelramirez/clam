@@ -111,7 +111,9 @@ int main( int argc, char *argv[] )
 
 		std::cout << QObject::tr("Non interface mode set. Press Ctrl-C to end.").toLocal8Bit().constData() << std::endl;
 		prototype.Start();
-		return app.exec();
+		int result = app.exec();
+		prototype.Stop();
+		return result;
 	}
 	QApplication app( argc, argv); 
 	if (! prototype.LoadInterface( uiFile.c_str() ) ) return -1;
@@ -119,11 +121,9 @@ int main( int argc, char *argv[] )
 	prototype.ConnectWithNetwork();
 
 	prototype.Start();
-	if (startPaused)
-		prototype.Pause();
+	if (startPaused) prototype.Pause();
 	int result = app.exec();
 	prototype.Stop();
-
 	return result;
 }
 
