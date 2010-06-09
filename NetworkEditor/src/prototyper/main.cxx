@@ -5,7 +5,6 @@
 
 #include "PrototypeLoader.hxx"
 #include <QtGui/QApplication>
-#include <QtCore/QScopedPointer>
 #include <iostream>
 
 #ifdef USE_LADSPA
@@ -104,7 +103,9 @@ int main( int argc, char *argv[] )
 	undottedName.truncate(undottedName.indexOf("."));
 
 
-	QScopedPointer<QCoreApplication> app( isInteractive ? 
+	// TODO: QScopedPointer is available only since 4.6 :-( karmic has 4.5
+//	QScopedPointer<QCoreApplication> app( isInteractive ? 
+	QCoreApplication * app( isInteractive ? 
 		new QApplication(argc,argv):
 		new QCoreApplication(argc,argv));
 	CLAM::PrototypeLoader prototype;
@@ -123,6 +124,8 @@ int main( int argc, char *argv[] )
 	if (isInteractive && startPaused) prototype.Pause();
 	int result = app->exec();
 	prototype.Stop();
+	// TODO: To remove once QScopedPointer is widely available (error cases imply leaks)
+	delete app;
 	return result;
 }
 
