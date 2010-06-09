@@ -5,6 +5,7 @@
 
 #include "PrototypeLoader.hxx"
 #include <QtGui/QApplication>
+#include <QtCore/QScopedPointer>
 #include <iostream>
 
 #ifdef USE_LADSPA
@@ -102,27 +103,25 @@ int main( int argc, char *argv[] )
 	undottedName= undottedName.mid(undottedName.lastIndexOf("/")+1, -1);
 	undottedName.truncate(undottedName.indexOf("."));
 
+
+	QScopedPointer<QCoreApplication> app( isInteractive ? 
+		new QApplication(argc,argv):
+		new QCoreApplication(argc,argv));
 	CLAM::PrototypeLoader prototype;
+	prototype.UseGUI(isInteractive);
 	if (! prototype.ChooseBackend( backends, undottedName.toLocal8Bit().constData() ) ) return -1;
 	if (! prototype.LoadNetwork( networkFile ) ) return -1;
-	if (!isInteractive) 
+	if (isInteractive)
 	{
-		QCoreApplication app( argc, argv );
-
-		std::cout << QObject::tr("Non interface mode set. Press Ctrl-C to end.").toLocal8Bit().constData() << std::endl;
-		prototype.Start();
-		int result = app.exec();
-		prototype.Stop();
-		return result;
+		if (! prototype.LoadInterface( uiFile.c_str() ) ) return -1;
+		prototype.Show();
+		prototype.ConnectUiWithNetwork();
 	}
-	QApplication app( argc, argv); 
-	if (! prototype.LoadInterface( uiFile.c_str() ) ) return -1;
-	prototype.Show();
-	prototype.ConnectWithNetwork();
-
+	else
+		std::cout << QObject::tr("Non interface mode set. Press Ctrl-C to end.").toLocal8Bit().constData() << std::endl;
 	prototype.Start();
-	if (startPaused) prototype.Pause();
-	int result = app.exec();
+	if (isInteractive && startPaused) prototype.Pause();
+	int result = app->exec();
 	prototype.Stop();
 	return result;
 }

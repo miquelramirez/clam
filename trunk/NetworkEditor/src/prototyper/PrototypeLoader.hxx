@@ -28,6 +28,7 @@ private:
 	Network _network;
 	NetworkPlayer * _player;
 	QWidget * _interface;
+	bool _useGui;
 	QPushButton * _playButton;
 	QPushButton * _pauseButton;
 	QPushButton * _stopButton;
@@ -36,11 +37,12 @@ private:
 public:
 	PrototypeLoader();
 	~PrototypeLoader();
+	void UseGUI(bool useIt) { _useGui=useIt; }
 	bool LoadNetwork(std::string networkFile);
 	bool ChooseBackend( std::list<std::string> backends, const std::string & name);
 	QWidget * LoadInterface(QString uiFile);
 	
-	void ConnectWithNetwork();
+	void ConnectUiWithNetwork();
 	void Show();
 	typedef std::list<PrototypeBinder*> Binders;
 	static Binders & binders();
@@ -64,9 +66,9 @@ private:
 	template < typename PlotClass, typename MonitorType >
 	void ConnectWidgetsWithPorts(char* prefix, char* plotClassName);
 
-	bool reportMissingProcessing(const std::string & processingName);
-	bool reportMissingInControl(const std::string & fullControlName);
-	bool reportMissingOutPort(const std::string & fullControlName);
+	bool reportIfMissingProcessing(const std::string & processingName);
+	bool reportIfMissingInControl(const std::string & fullControlName);
+	bool reportIfMissingOutPort(const std::string & fullControlName);
 	void reportError(const QString & title, const QString & message);
 	void reportWarning(const QString & title, const QString & message);
 
