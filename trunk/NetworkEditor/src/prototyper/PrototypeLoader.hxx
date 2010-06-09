@@ -64,9 +64,11 @@ private:
 	template < typename PlotClass, typename MonitorType >
 	void ConnectWidgetsWithPorts(char* prefix, char* plotClassName);
 
-	bool ReportMissingProcessing(const std::string & processingName);
-	bool ReportMissingInControl(const std::string & fullControlName);
-	bool ReportMissingOutPort(const std::string & fullControlName);
+	bool reportMissingProcessing(const std::string & processingName);
+	bool reportMissingInControl(const std::string & fullControlName);
+	bool reportMissingOutPort(const std::string & fullControlName);
+	void reportError(const QString & title, const QString & message);
+	void reportWarning(const QString & title, const QString & message);
 
 	void UpdatePlayStatus();
 private slots:

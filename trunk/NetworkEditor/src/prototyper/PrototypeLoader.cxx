@@ -102,7 +102,7 @@ protected:
 		Substitute(networkName,"__", ".");
 		return networkName;
 	}
-	bool ReportMissingProcessing(const std::string & processingName, Network & network, QWidget * userInterface)
+	bool reportMissingProcessing(const std::string & processingName, Network & network, QWidget * userInterface)
 	{
 		if (network.HasProcessing(processingName))
 			return false;
@@ -112,10 +112,10 @@ protected:
 				.arg(processingName.c_str()));
 		return true;
 	}
-	bool ReportMissingOutPort(const std::string & portName, Network & network, QWidget * userInterface)
+	bool reportMissingOutPort(const std::string & portName, Network & network, QWidget * userInterface)
 	{
 		std::string processingName = network.GetProcessingIdentifier(portName);
-		if (ReportMissingProcessing(processingName,network,userInterface)) return true;
+		if (reportMissingProcessing(processingName,network,userInterface)) return true;
 		std::string shortPortName = network.GetConnectorIdentifier(portName);
 		if (network.GetProcessing(processingName).HasOutPort(shortPortName))
 			return false; // no problem :-)
@@ -127,10 +127,10 @@ protected:
 				));
 		return true;
 	}
-	bool ReportMissingInControl(const std::string & controlName, Network & network, QWidget * userInterface)
+	bool reportMissingInControl(const std::string & controlName, Network & network, QWidget * userInterface)
 	{
 		std::string processingName = network.GetProcessingIdentifier(controlName);
-		if (ReportMissingProcessing(processingName,network,userInterface)) return true;
+		if (reportMissingProcessing(processingName,network,userInterface)) return true;
 		std::string shortControlName = network.GetConnectorIdentifier(controlName);
 		if (network.GetProcessing(processingName).HasInControl(shortControlName))
 			return false; // no problem :-)
@@ -167,7 +167,7 @@ public:
 			std::string portName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(9).toAscii());
 			std::cout << "* " << _plotClassName << " connected to port " << portName << std::endl;
 
-			if (ReportMissingOutPort(portName,network,userInterface)) continue;
+			if (reportMissingOutPort(portName,network,userInterface)) continue;
 
 			MonitorType * portMonitor = new MonitorType;
 			std::string monitorName = network.GetUnusedName("PrototyperMonitor");
@@ -294,7 +294,7 @@ public:
 			std::cout << "Action: " << (*it)->objectName().toLocal8Bit().constData() << std::endl;
 			if (not pattern.exactMatch((*it)->objectName())) continue;
 			std::string processing = GetNetworkNameFromWidgetName(pattern.cap(1).toStdString().c_str());
-			if (ReportMissingProcessing(processing,network,userInterface)) continue;
+			if (reportMissingProcessing(processing,network,userInterface)) continue;
 	//		QObject::connect(*it, SIGNAL(triggered()), this, SLOT(lauchDialog()));
 		}
 	}
@@ -316,6 +316,27 @@ PrototypeLoader::Binders & PrototypeLoader::binders()
 {
 	static Binders theBinders;
 	return theBinders;
+}
+void PrototypeLoader::reportWarning(const QString & title, const QString & message)
+{
+	if (_interface)
+	{
+		QMessageBox::warning(_interface, title, message);
+		return;
+	}
+	std::cout << "ERROR! " << title.toLocal8Bit().data() << std::endl;
+	std::cout << message.toLocal8Bit().data() << std::endl;
+}
+
+void PrototypeLoader::reportError(const QString & title, const QString & message)
+{
+	if (_interface)
+	{
+		QMessageBox::critical(_interface, title, message);
+		return;
+	}
+	std::cout << "WARNING! " << title.toLocal8Bit().data() << std::endl;
+	std::cout << message.toLocal8Bit().data() << std::endl;
 }
 
 bool PrototypeLoader::LoadNetwork(std::string networkFile)
@@ -344,8 +365,9 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 				"<p><b>%2</b></p>").arg(_networkFile.c_str()).arg(e.what()) :
 			tr("<p>Network file '%1' not found.</p>").arg(_networkFile.c_str());
 	}
-	QMessageBox::critical(_interface,
-			tr("Error loading the network"), errorMessage);
+	reportError(
+		tr("Error loading the network"),
+		errorMessage);
 	_network.Clear();
 	return false;
 }
@@ -402,7 +424,7 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends, const std:
 		std::cout << "Backend '" << *it << "' selected." << std::endl;
 		return true;
 	}
-	QMessageBox::critical(_interface,
+	reportError(
 		tr("Error chosing a backend"),
 		tr("No audio backend was available."));
 	return false;
@@ -448,7 +470,7 @@ QWidget * PrototypeLoader::LoadInterface(QString uiFile)
 	QString error = FileExists(uiFile.toLocal8Bit().constData()) ?
 		tr("Interface file '%1' had errors."):
 		tr("Interface file '%1' not found.") ;
-	QMessageBox::warning(_interface,
+	QMessageBox::warning(0,
 		tr("Error loading the interface"),
 		tr("<p><b>%1</b></p>"
 			"<p>Using a default interface.</p>").arg(error.arg(uiFile)));
@@ -520,35 +542,35 @@ void PrototypeLoader::Start()
 	UpdatePlayStatus();
 	if (  !_player )
 	{
-		QMessageBox::critical(_interface,
-				tr("Unable to play the network"), 
-				tr("<p><b>Audio output unavailable or busy.</b></p>"));
+		reportError(
+			tr("Unable to play the network"), 
+			tr("<p><b>Audio output unavailable or busy.</b></p>"));
 		return;
 	}
 	
 	if (  _network.IsEmpty() )
 	{
-		QMessageBox::critical(_interface,
-				tr("Unable to play the network"), 
-				tr("<p><b>A network without processings is not playable.</b></p>"));
+		reportError(
+			tr("Unable to play the network"), 
+			tr("<p><b>A network without processings is not playable.</b></p>"));
 		return;
 	}
 	if (_network.HasMisconfiguredProcessings())
 	{
-		QMessageBox::critical(_interface,
-				tr("Unable to play the network"), 
-				tr("<p><b>Not all the processings are properly configured.</b></p><pre>%1</pre>"
-				).arg(_network.GetConfigurationErrors().c_str()));
+		reportError(
+			tr("Unable to play the network"), 
+			tr("<p><b>Not all the processings are properly configured.</b></p><pre>%1</pre>"
+			).arg(_network.GetConfigurationErrors().c_str()));
 		return;
 	}
 	// TODO: Activate this once it works
 	if ( false && _network.HasUnconnectedInPorts() )
 	{
-		QMessageBox::critical(_interface,
-				tr("Unable to play the network"), 
-				tr("<p><b>The network has some in ports which are not connected.</b></p>"
-				"<p>All in ports must be feeded in order to play the network</p>"
-				));
+		reportError(
+			tr("Unable to play the network"), 
+			tr("<p><b>The network has some in ports which are not connected.</b></p>"
+			"<p>All in ports must be feeded in order to play the network</p>"
+			));
 		return;
 	}
 	std::cout << "Starting..." << std::endl;
@@ -601,24 +623,24 @@ std::string PrototypeLoader::GetNetworkNameFromWidgetName(const char * widgetNam
 	return networkName;
 }
 
-bool PrototypeLoader::ReportMissingProcessing(const std::string & processingName)
+bool PrototypeLoader::reportMissingProcessing(const std::string & processingName)
 {
 	if (_network.HasProcessing(processingName))
 		return false;
-	QMessageBox::warning(_interface,
+	reportWarning(
 		tr("Error connecting controls"),
 		tr("The interface asked to connect to the processing '%1' which is not in the network.")
 			.arg(processingName.c_str()));
 	return true;
 }
-bool PrototypeLoader::ReportMissingOutPort(const std::string & portName)
+bool PrototypeLoader::reportMissingOutPort(const std::string & portName)
 {
 	std::string processingName = _network.GetProcessingIdentifier(portName);
-	if (ReportMissingProcessing(processingName)) return true;
+	if (reportMissingProcessing(processingName)) return true;
 	std::string shortPortName = _network.GetConnectorIdentifier(portName);
 	if (_network.GetProcessing(processingName).HasOutPort(shortPortName))
 		return false; // no problem :-)
-	QMessageBox::warning(_interface,
+	reportWarning(
 		tr("Error connecting controls"),
 		tr("The interface asked to connect to a port '%1' not available in the processing '%2'.") // TODO: Try with...
 			.arg(shortPortName.c_str())
@@ -626,14 +648,14 @@ bool PrototypeLoader::ReportMissingOutPort(const std::string & portName)
 			));
 	return true;
 }
-bool PrototypeLoader::ReportMissingInControl(const std::string & controlName)
+bool PrototypeLoader::reportMissingInControl(const std::string & controlName)
 {
 	std::string processingName = _network.GetProcessingIdentifier(controlName);
-	if (ReportMissingProcessing(processingName)) return true;
+	if (reportMissingProcessing(processingName)) return true;
 	std::string shortControlName = _network.GetConnectorIdentifier(controlName);
 	if (_network.GetProcessing(processingName).HasInControl(shortControlName))
 		return false; // no problem :-)
-	QMessageBox::warning(_interface,
+	reportWarning(
 		tr("Error connecting controls"),
 		tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
 			.arg(shortControlName.c_str())
@@ -651,7 +673,7 @@ void PrototypeLoader::ConnectWidgetsWithIntegerControls()
 		std::string controlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(18).toAscii());
 		std::cout << "* Control: " << controlName << std::endl;
 
-		if (ReportMissingInControl(controlName)) continue;
+		if (reportMissingInControl(controlName)) continue;
 		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(controlName);
 		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str()); // TODO: Memory leak here
 		notifier->linkControl(receiver);
@@ -669,7 +691,7 @@ void PrototypeLoader::ConnectWidgetsWithMappedControls()
 		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(16).toAscii());
 		std::cout << "* Mapped Control (100:1): " << fullControlName << std::endl;
 
-		if (ReportMissingInControl(fullControlName)) continue;
+		if (reportMissingInControl(fullControlName)) continue;
 		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(fullControlName);
 		QtSlot2Control * notifier = new QtSlot2Control(fullControlName.c_str()); // TODO: Memory leak here
 		notifier->linkControl(receiver);
@@ -687,7 +709,7 @@ void PrototypeLoader::ConnectWidgetsUsingControlBounds()
 		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(11).toAscii());
 		std::cout << "* Widget using control bounds (map: 100:1->bounds): " << fullControlName << std::endl;
 
-		if (ReportMissingInControl(fullControlName)) continue;
+		if (reportMissingInControl(fullControlName)) continue;
 
 		if (aWidget->metaObject()->indexOfProperty("minimum") >= 0)
 			aWidget->setProperty("minimum", QVariant(0));
@@ -721,7 +743,7 @@ void PrototypeLoader::ConnectWidgetsWithBooleanControls()
 		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(15).toAscii());
 		std::cout << "* Bool Control (100:1): " << fullControlName << std::endl;
 
-		if (ReportMissingInControl(fullControlName)) continue;
+		if (reportMissingInControl(fullControlName)) continue;
 		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(fullControlName);
 		QtSlot2Control * notifier = new QtSlot2Control(fullControlName.c_str()); // TODO: Memory leak here
 		notifier->linkControl(receiver);
@@ -740,7 +762,7 @@ void PrototypeLoader::ConnectWidgetsWithAudioFileReaders()
 		QWidget * loadButton = *it;
 		std::string processingName = loadButton->objectName().mid(12).toStdString();
 		std::cout << "* Load Audio File Button connected to Audio file reader '" << processingName << "'" << std::endl;
-		if (ReportMissingProcessing(processingName)) continue;
+		if (reportMissingProcessing(processingName)) continue;
 		connect(loadButton, SIGNAL(clicked()), this, SLOT(OpenAudioFile()));
 	}
 }
@@ -775,7 +797,7 @@ void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 		std::string portName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(9).toAscii());
 		std::cout << "* " << plotClassName << " connected to port " << portName << std::endl;
 
-		if (ReportMissingOutPort(portName)) continue;
+		if (reportMissingOutPort(portName)) continue;
 
 		MonitorType * portMonitor = new MonitorType;
 		std::string monitorName = _network.GetUnusedName("PrototyperMonitor");
