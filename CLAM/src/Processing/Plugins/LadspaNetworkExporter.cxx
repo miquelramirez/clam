@@ -249,7 +249,7 @@ void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 
 		//! This is a very specific logic for LADSPAs: 
 		//! (Step==1 and Bounds -0.5, 0.5) means toggled/bool
-		bool isBool = isInteger and areEquals(conf.GetMinValue(), -0.5) and areEquals(conf.GetMaxValue(), 0.5);
+		bool isBool = areEquals(conf.GetStep(), 1.) and areEquals(conf.GetMinValue(), -0.5) and areEquals(conf.GetMaxValue(), 0.5);
 		if (isBool) 
 			rangehints[currentport].HintDescriptor |= LADSPA_HINT_TOGGLED;
 
