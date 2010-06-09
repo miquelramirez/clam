@@ -195,6 +195,13 @@ void LadspaNetworkPlayer::ChangeFrameSize(unsigned frameSize)
 		SetSinkFrameSize(i, frameSize);
 }
 
+
+
+bool areEquals(float arg1, float arg2)
+{
+	return std::fabs(arg1-arg2)<1e-5;
+}
+
 void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
 {
 	int currentport=0;
@@ -239,8 +246,14 @@ void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		else if (conf.GetDefaultValue() == 440) defaultHintValue = LADSPA_HINT_DEFAULT_440;
 
 		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | defaultHintValue);
-		bool isInteger = std::fabs(conf.GetStep()-1)<1e-5;
-		if (isInteger) 
+
+		//! This is a very specific logic for LADSPAs: Config parm Step==1 means integer 
+		//! and (Step==1 and Bounds -0.5, 0.5) means toggled/bool
+		bool isInteger = areEquals(conf.GetStep(), 1.);
+		bool isBool = isInteger and areEquals(conf.GetMinValue(), -0.5) and areEquals(conf.GetMaxValue(), 0.5);
+		if (isBool) 
+			rangehints[currentport].HintDescriptor |= LADSPA_HINT_TOGGLED;
+		else if (isInteger) 
 			rangehints[currentport].HintDescriptor |= LADSPA_HINT_INTEGER;
 
 		currentport++;
