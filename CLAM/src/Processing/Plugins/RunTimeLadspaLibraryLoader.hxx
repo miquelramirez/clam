@@ -14,9 +14,17 @@ class RunTimeLadspaLibraryLoader : public RunTimeLibraryLoader
 
 protected:
 
-	virtual const bool needReleaseHandlerOnReload() const { return false;} 
+	virtual const bool needReleaseHandlerOnReload() const { return false;}
+
 	void SetupLibrary(void* handle, const std::string & pluginFullFilename) const
 	{
+
+typedef void (*CLAM_Descriptor)(void)
+
+CLAM_Descriptor clam_descriptor = (CLAM_Descriptor)GetSymbol(handle, "clam_descriptor");
+std::cout << "---------------" << std::endl;
+std::cout << pluginFullFilename << " gives CLAM Descriptor "<< clam_descriptor << std::endl;
+
 		LADSPA_Descriptor_Function descriptorTable = 0;
 		descriptorTable = (LADSPA_Descriptor_Function)GetSymbol(handle, "ladspa_descriptor");
 		if (!descriptorTable)
