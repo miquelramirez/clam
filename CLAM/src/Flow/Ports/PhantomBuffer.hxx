@@ -207,8 +207,7 @@ namespace CLAM {
 		CLAM_ASSERT(PhantomSize() <= mLogicalSize,
 		           "PhantomBuffer<T>::FulfilsInvariant(): "
 		           "Phantom size biger than logical size");
-		unsigned int i;
-		for (i=0; i<PhantomSize(); i++)
+		for (unsigned i=0; i<PhantomSize(); i++)
 			CLAM_ASSERT(mBuffer[i] == mBuffer[i+mLogicalSize],
 			            "PhantomBuffer<T>::FulfilsInvariant(): "
 			            "Phantom data is unconsistent!");
