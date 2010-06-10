@@ -131,7 +131,7 @@ int main( int argc, char ** argv )
 	app.installTranslator(&translator);
 
 	QCoreApplication::setOrganizationName("CLAM");
-	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
+	QCoreApplication::setOrganizationDomain("clam-project.org");
 	QCoreApplication::setApplicationName("Network Editor");
 	MainWindow w;
 	w.show();
