@@ -11,7 +11,16 @@
 
 class RunTimeLadspaLibraryLoader : public RunTimeLibraryLoader
 {
-
+	bool _disableLoadingClamLadspas;
+public:
+	RunTimeLadspaLibraryLoader() 
+		: _disableLoadingClamLadspas(false)
+	{
+	}
+	void DisableLoadingClamLadspas()
+	{
+		_disableLoadingClamLadspas = true;
+	}
 protected:
 
 	virtual const bool needReleaseHandlerOnReload() const { return false;}
@@ -19,11 +28,14 @@ protected:
 	void SetupLibrary(void* handle, const std::string & pluginFullFilename) const
 	{
 
-typedef void (*CLAM_Descriptor)(void);
-
-CLAM_Descriptor clam_descriptor = (CLAM_Descriptor)GetSymbol(handle, "clam_descriptor");
-std::cout << "---------------" << std::endl;
-std::cout << pluginFullFilename << " gives CLAM Descriptor "<< clam_descriptor << std::endl;
+		void * clam_marker= GetSymbol(handle, "clam_library_marker");
+		std::cout << "---------------" << std::endl;
+		std::cout << pluginFullFilename << " gives CLAM Descriptor "<< clam_marker<< std::endl;
+		if (clam_marker and _disableLoadingClamLadspas)
+		{
+			std::cout<<"Skipping clam-ladspa plugin "<<pluginFullFilename<<std::endl;
+			return;
+		}
 
 		LADSPA_Descriptor_Function descriptorTable = 0;
 		descriptorTable = (LADSPA_Descriptor_Function)GetSymbol(handle, "ladspa_descriptor");
