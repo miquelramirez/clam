@@ -19,7 +19,7 @@ protected:
 	void SetupLibrary(void* handle, const std::string & pluginFullFilename) const
 	{
 
-typedef void (*CLAM_Descriptor)(void)
+typedef void (*CLAM_Descriptor)(void);
 
 CLAM_Descriptor clam_descriptor = (CLAM_Descriptor)GetSymbol(handle, "clam_descriptor");
 std::cout << "---------------" << std::endl;
