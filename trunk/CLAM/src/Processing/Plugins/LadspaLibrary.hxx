@@ -19,6 +19,7 @@ namespace CLAM
 class LadspaLibrary
 {
 	std::vector<LADSPA_Descriptor * > _descriptors;
+
 	static void CleanUpDescriptor(LADSPA_Descriptor *& descriptor)
 	{
 		if (not descriptor) return;
