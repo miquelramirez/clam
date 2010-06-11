@@ -12,11 +12,11 @@ class RunTimeFaustLibraryLoader : public RunTimeLibraryLoader
 {
 
 public:
-	virtual void Load() const
+	virtual void Load() 
 	{
 		std::string examplesDir = CompletePathFor("examples/ladspadir");
 		LoadLibrariesFromPath(examplesDir);
-		RunTimeLibraryLoader::Load(); // needed??
+		RunTimeLibraryLoader::Load(); 
 	}
 	void LoadPlugin(const std::string & pluginFullPath) const
 	{

@@ -9,8 +9,14 @@ namespace CLAM
 
 class ProcessingFactory : public Factory<Processing>
 {
+	bool _ladspasFullyLoaded;
 public:
+	ProcessingFactory() : _ladspasFullyLoaded(false) {}
+
 	static ProcessingFactory& GetInstance();
+
+	bool areLadspasFullyLoaded() const { return _ladspasFullyLoaded; }
+	void setLadspasFullyLoaded() { _ladspasFullyLoaded = true; }
 };
 
 } //namespace CLAM
