@@ -12,7 +12,7 @@ class RunTimeLibraryLoader
 public:
 
 	virtual ~RunTimeLibraryLoader() {}
-	void Load() const;
+	void Load();
 	void ReLoad();
 
 	const std::string CompletePathFor(const std::string & subpathAndName) const; // if subpathAndName exists on environment paths, returns full path
@@ -38,7 +38,14 @@ protected:
 				":";
 			#endif
 	}
+	
 	// to implement by subclasses (ex. Ladspa, CLAM processings, etc)
+
+	virtual bool alreadyLoaded() const
+	{
+		return false;
+	}
+	virtual void loadFinished() {}
 	virtual const char ** standardPaths() const = 0;
 	virtual const char * homePath() const = 0;
 	virtual const char * pathEnvironmentVar() const = 0;

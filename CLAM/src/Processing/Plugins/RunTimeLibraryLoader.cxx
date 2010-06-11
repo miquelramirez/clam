@@ -68,8 +68,10 @@ bool RunTimeLibraryLoader::IsOnPath(const std::string & path) const
 	return false;
 }
 
-void RunTimeLibraryLoader::Load() const
+void RunTimeLibraryLoader::Load() 
 {
+	if ( alreadyLoaded() ) return;
+
 	std::string path = GetPaths();
 	// for each path, load libraries
 	std::vector <std::string> environmentPaths = SplitPathVariable(path);
@@ -78,6 +80,7 @@ void RunTimeLibraryLoader::Load() const
 		debug && std::cout << "RunTimeLibraryLoader: Scanning for libraries in " << environmentPaths[i] << std::endl;
 		LoadLibrariesFromPath(environmentPaths[i]);
 	}
+	loadFinished();
 }
 void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 {
