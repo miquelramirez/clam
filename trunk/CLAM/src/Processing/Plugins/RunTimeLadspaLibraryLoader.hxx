@@ -29,11 +29,9 @@ protected:
 	{
 
 		void * clam_marker= GetSymbol(handle, "clam_library_marker");
-		std::cout << "---------------" << std::endl;
-		std::cout << pluginFullFilename << " gives CLAM Descriptor "<< clam_marker<< std::endl;
 		if (clam_marker and _disableLoadingClamLadspas)
 		{
-			std::cout<<"Skipping clam-ladspa plugin "<<pluginFullFilename<<std::endl;
+			std::cout << "[LADSPA Plugin] Skipping clam-ladspa plugin: " << pluginFullFilename << std::endl;
 			return;
 		}
 
