@@ -13,7 +13,7 @@
 
   <processing id="Oscilloscope" position="303,117" size="193,266" type="Oscilloscope" />
 
-  <processing id="noise_white0" position="153,192" size="107,58" type="noise_white" />
+  <processing id="noise_white0" position="153,192" size="107,58" type="ladspa_noise_white_1050" />
 
   <port_connection>
     <out>noise_white0.Output</out>
