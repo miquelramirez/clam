@@ -161,7 +161,7 @@ p, li { white-space: pre-wrap; }
     <MultiCastIP>224.0.0.1</MultiCastIP>
   </processing>
 
-  <processing id="lpf0" position="102,584" size="82,59" type="lpf" />
+  <processing id="lpf0" position="102,584" size="82,59" type="ladspa_lpf_1041" />
 
   <processing id="source_xyz" position="759,22" size="130,59" type="MultiLibloSource">
     <OscPath>/SpatDIF/source/source/xyz</OscPath>

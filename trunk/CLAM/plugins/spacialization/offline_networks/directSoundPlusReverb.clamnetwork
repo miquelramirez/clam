@@ -437,7 +437,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="XFadeAndSwitch_5" position="1001,371" size="179,94" type="XFadeAndSwitch"/>
 
-  <processing id="amp_mono0" position="1426,318" size="138,66" type="amp_mono"/>
+  <processing id="amp_mono0" position="1426,318" size="138,66" type="ladspa_amp_mono_1048"/>
 
   <processing id="directSoundPressure" position="754,513" size="247,100" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
