@@ -1,4 +1,5 @@
 #include "RunTimeLibraryLoader.hxx"
+#include "ProcessingFactory.hxx"
 
 #include <iostream>
 #include <cstdlib>
@@ -41,6 +42,7 @@ void RunTimeLibraryLoader::ReLoad()
 	Load();
 }
 
+
 std::list<std::string> RunTimeLibraryLoader::GetUsedLibraries()
 {
 	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
@@ -70,8 +72,6 @@ bool RunTimeLibraryLoader::IsOnPath(const std::string & path) const
 
 void RunTimeLibraryLoader::Load() 
 {
-	if ( alreadyLoaded() ) return;
-
 	std::string path = GetPaths();
 	// for each path, load libraries
 	std::vector <std::string> environmentPaths = SplitPathVariable(path);
@@ -80,19 +80,47 @@ void RunTimeLibraryLoader::Load()
 		debug && std::cout << "RunTimeLibraryLoader: Scanning for libraries in " << environmentPaths[i] << std::endl;
 		LoadLibrariesFromPath(environmentPaths[i]);
 	}
-	loadFinished();
 }
-void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
+
+bool isDynamicLibrary(const std::string & file)
 {
+	std::size_t found = file.rfind(".");
+	if (found == std::string::npos) 
+		return true;
+
+	std::string extension = file.substr( file.rfind(".")); 
+	bool result = ( false 
+		#ifdef WIN32
+			|| extension==".dll"
+		#else
+			|| extension==".so" 
+			|| extension==".dylib"
+		#endif
+		);
+	return result;
+
+}
+
+void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path)
+{
+
 	DIR* dir = opendir(path.c_str());
 	if (!dir) return;
+	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 	while ( struct dirent * dirEntry = readdir(dir) )
 	{
 		std::string pluginFilename(dirEntry->d_name);
-		if(pluginFilename == "." || pluginFilename == "..")
+		if(pluginFilename == "." || pluginFilename == ".." || not isDynamicLibrary(pluginFilename))
 			continue;
 		debug && std::cout << "RunTimeLibraryLoader: Found file " << pluginFilename << std::endl;
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
+
+		if (factory.isLibraryLoaded( pluginFullFilename ))
+		{
+			continue;
+		}
+		factory.setLibraryAsLoaded( pluginFullFilename );
+
 		void * handle = FullyLoadLibrary(pluginFullFilename);
 
 		// TODO: throw exception and have catch in main()
