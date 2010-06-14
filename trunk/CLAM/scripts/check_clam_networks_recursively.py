@@ -103,7 +103,7 @@ def passCheckClamnetworks(datapath, clamnetworks, mode) :
 			output = process.returncode;
 			
 			if output:
-				print stdout_text
+				print stdout_text[-200:]
 				failedCases.append((case, ["Command: %s"%(command)]))
 				continue
 
@@ -215,7 +215,8 @@ def main():
 	for dir in recursiveDirs( data_path ):
 		valid=1;
 		for excluded in subdirectories_excluded:
-			if dir.find(excluded) != -1 or excluded.find(dir) != -1:
+			#print (dir+'/').find(excluded) 
+			if (dir+'/').find(excluded) ==0:
 				valid=0;
 		if(valid==1):
 			for net in glob.glob( os.path.join(dir, "*.clamnetwork")):
