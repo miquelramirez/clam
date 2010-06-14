@@ -9,14 +9,24 @@ namespace CLAM
 
 class ProcessingFactory : public Factory<Processing>
 {
-	bool _ladspasFullyLoaded;
+	typedef std::list<std::string> Libs;
+	Libs _loadedLibs;
 public:
-	ProcessingFactory() : _ladspasFullyLoaded(false) {}
-
 	static ProcessingFactory& GetInstance();
+	bool isLibraryLoaded(const std::string & path) const
+	{
 
-	bool areLadspasFullyLoaded() const { return _ladspasFullyLoaded; }
-	void setLadspasFullyLoaded() { _ladspasFullyLoaded = true; }
+		for (Libs::const_iterator lib=_loadedLibs.begin(); lib!=_loadedLibs.end(); lib++)
+		{
+			if (*lib==path) return true;
+		}
+		return false;
+	}
+	void setLibraryAsLoaded (const std::string & path)
+	{
+		_loadedLibs.push_back(path);
+	}
+	
 };
 
 } //namespace CLAM

@@ -3,10 +3,11 @@
 
 #include "LadspaWrapper.hxx"
 #include "LadspaWrapperBuffer.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM {
 
-class LadspaWrapperCreator : public CLAM::Factory<Processing>::Creator
+class LadspaWrapperCreator : public CLAM::ProcessingFactory::Creator
 {
 private:
 	std::string _libraryFileName;
@@ -31,7 +32,7 @@ public:
 	}
 };
 
-class LadspaWrapperBufferCreator : public CLAM::Factory<Processing>::Creator
+class LadspaWrapperBufferCreator : public CLAM::ProcessingFactory::Creator
 {
 private:
 	std::string _libraryFileName;

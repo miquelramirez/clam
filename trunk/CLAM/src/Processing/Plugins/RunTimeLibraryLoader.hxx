@@ -26,7 +26,7 @@ public:
 	static void * GetSymbol(void * libraryHandler, const std::string & symbolName);
 
 protected:
-	void LoadLibrariesFromPath(const std::string & path) const;
+	void LoadLibrariesFromPath(const std::string & path);
 	std::vector<std::string> SplitPathVariable(const std::string & pathVariable) const;
 	void * GetLibraryHandler(const std::string & libraryPath) const;
 	const char * pathSeparator() const
@@ -41,11 +41,6 @@ protected:
 	
 	// to implement by subclasses (ex. Ladspa, CLAM processings, etc)
 
-	virtual bool alreadyLoaded() const
-	{
-		return false;
-	}
-	virtual void loadFinished() {}
 	virtual const char ** standardPaths() const = 0;
 	virtual const char * homePath() const = 0;
 	virtual const char * pathEnvironmentVar() const = 0;
