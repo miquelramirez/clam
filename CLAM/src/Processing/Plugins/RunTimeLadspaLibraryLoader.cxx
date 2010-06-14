@@ -22,34 +22,50 @@ void RunTimeLadspaLibraryLoader::SetupLibrary(void* handle, const std::string & 
 	for (unsigned long i=0; descriptorTable(i); i++)
 	{
 		LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
-		const char* id = descriptor->Label;
+		std::ostringstream oss;
+		oss << descriptor->UniqueID;
+		const std::string uniqueId = oss.str();
+		oss.str("");
+		oss << "ladspa_" << descriptor->Label << "_" << uniqueId;
+		std::string pluginName = oss.str();
 		CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
-		if (factory.KeyExists(id))
+		if (factory.KeyExists(pluginName))
 		{
-			std::cout << "The LADSPA plugin '" << id 
+			std::cout << "The LADSPA plugin '" << pluginName 
 			<< "' is contained by two libraries. Uninstall one: \n1) " 
-			<< pluginFullFilename << "\n2) " << factory.GetValueFromAttribute(id, "library")
+			<< pluginFullFilename << "\n2) " << factory.GetValueFromAttribute(pluginName, "library")
 			<< std::endl;
-
+			continue;
 		}
-		factory.AddCreatorWarningRepetitions(id,
+		
+		if (factory.GetKeys("ladspa_id",uniqueId).size() != 0)
+		{
+			std::cout << "The LADSPA id " << uniqueId
+			<< " is contained by two libraries. Uninstall one: \n1) " 
+			<< pluginFullFilename << "\n2) " << factory.GetValueFromAttribute(factory.GetKeys("ladspa_id",uniqueId).front(),"library")
+			<< std::endl;
+		}
+
+
+		factory.AddCreatorWarningRepetitions(pluginName,
 				new CLAM::LadspaWrapperCreator(pluginFullFilename,
 					i,
-					id));
-		factory.AddAttribute(id, "category", "LADSPA");
-		factory.AddAttribute(id, "description", descriptor->Name);
-		factory.AddAttribute(id, "library", pluginFullFilename);
+					pluginName));
+		factory.AddAttribute(pluginName, "category", "LADSPA");
+		factory.AddAttribute(pluginName, "description", descriptor->Name);
+		factory.AddAttribute(pluginName, "library", pluginFullFilename);
+		factory.AddAttribute(pluginName, "ladspa_id", uniqueId); 
 
-		std::ostringstream oss;
-		oss << descriptor->Label << "_buffer" << i;
-		std::string id2=oss.str();
-		factory.AddCreatorWarningRepetitions(id2,
+		oss << "_buffer";
+		pluginName = oss.str();
+		factory.AddCreatorWarningRepetitions(pluginName,
 				new CLAM::LadspaWrapperBufferCreator(pluginFullFilename,
 					i,
-					id2));
-		factory.AddAttribute(id2, "category", "LADSPA_BUFFER");
-		factory.AddAttribute(id2, "description", descriptor->Name);
-		factory.AddAttribute(id2, "library", pluginFullFilename);
+					pluginName));
+		factory.AddAttribute(pluginName, "category", "LADSPA_BUFFER");
+		factory.AddAttribute(pluginName, "description", descriptor->Name);
+		factory.AddAttribute(pluginName, "library", pluginFullFilename);
+		factory.AddAttribute(pluginName, "ladspa_id",uniqueId); 
 
 		//std::cout << "[LADSPA] added \"" << plugin.factoryID << "\" to the Factory" << std::endl;
 	}
