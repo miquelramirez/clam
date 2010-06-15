@@ -118,9 +118,6 @@ extern "C"
 	}
 }
 
-//! This "dummy" variable is used to check if loaded ladspa plugins are clam-based ones.
-extern "C" int clam_library_marker = 1;
-
 namespace CLAM
 {
 
@@ -131,7 +128,6 @@ LadspaNetworkPlayer::LadspaNetworkPlayer(const std::string & name, const std::st
 	mExternBufferSize=mClamBufferSize;
 
 	RunTimeLadspaLibraryLoader ladspaLoader;
-	ladspaLoader.DisableLoadingClamLadspas();
 	ladspaLoader.Load();
 
 	std::istringstream xmlfile(networkXmlContent);

@@ -3,14 +3,6 @@
 void RunTimeLadspaLibraryLoader::SetupLibrary(void* handle, const std::string & pluginFullFilename) const
 {
 
-
-	void * clam_marker= GetSymbol(handle, "clam_library_marker");
-	if (clam_marker and _disableLoadingClamLadspas)
-	{
-		//std::cout << "[LADSPA Plugin] Skipping clam-ladspa plugin: " << pluginFullFilename << std::endl;
-		return;
-	}
-
 	LADSPA_Descriptor_Function descriptorTable = 0;
 	descriptorTable = (LADSPA_Descriptor_Function)GetSymbol(handle, "ladspa_descriptor");
 	if (!descriptorTable)
