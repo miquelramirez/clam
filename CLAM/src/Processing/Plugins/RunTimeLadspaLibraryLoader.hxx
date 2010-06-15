@@ -11,6 +11,16 @@
 
 class RunTimeLadspaLibraryLoader : public RunTimeLibraryLoader
 {
+	bool _disableLoadingClamLadspas;
+public:
+	RunTimeLadspaLibraryLoader() 
+		: _disableLoadingClamLadspas(false)
+	{
+	}
+	void DisableLoadingClamLadspas()
+	{
+		_disableLoadingClamLadspas = true;
+	}
 protected:
 
 	virtual const bool needReleaseHandlerOnReload() const { return false;}
