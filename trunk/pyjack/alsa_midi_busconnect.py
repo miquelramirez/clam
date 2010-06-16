@@ -3,7 +3,7 @@ import re
 import os
 
 def _getClients(typeOfClient):
-	lines=[line.strip() for line in os.popen("aconnect -%s" % typeOfClient).readlines()]
+	lines=[line.strip() for line in os.popen("LANG=C aconnect -%s" % typeOfClient).readlines()]
 	listOfClients=[]
 	temporalList=[]
 	for line in lines:
