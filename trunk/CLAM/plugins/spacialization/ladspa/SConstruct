@@ -3,7 +3,7 @@
 import os, glob, sys
 libraryName='clam_ladspas.so'
 print 'Building', libraryName
-options = Variables('../options.cache', ARGUMENTS)
+options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', '', validator=PathVariable.PathAccept))
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
