@@ -45,7 +45,8 @@
 #define DATA_EXAMPLES_PATH "example-data"
 #endif
 
-#include <QtXmlPatterns>
+#include <QtXmlPatterns/QXmlQuery>
+#include <QtCore/QStringList>
 
 class PlaybackIndicator : public QLabel
 {
@@ -217,21 +218,19 @@ public:
 		return _canvas->isChanged()? abort : goOn;;
 	}
 
-	void versionTokenizer(std::vector<int>& numbers, std::string version)
+	int compareVersions(const QString & versio1, const QString & versio2)
 	{
-		int firstDot = version.find(".");
-		numbers.push_back( atoi(version.substr(0, firstDot).c_str()) );
-	
-		int secondDot = version.find(".", firstDot + 1);
-		numbers.push_back( atoi(version.substr(firstDot + 1, secondDot - firstDot - 1).c_str()) );
-
-		int lastDot = version.find(".", secondDot + 1);
-		numbers.push_back( atoi(version.substr(secondDot + 1, lastDot - secondDot - 1).c_str()) );
+		QStringList list1 = versio1.split(".");
+		QStringList list2 = versio2.split(".");
+		for (int i=0; i<list1.size(); i++)
+		{
+			if (list1[i].toInt()<list2[i].toInt()) return -1;
+			if (list1[i].toInt()>list2[i].toInt()) return +1;
+		}
+		return 0;
 	}
-
 	void load(const QString & filename)
 	{
-		QXmlQuery query;
 		QFile file(filename);
 		if( !file.exists() )
 		{
@@ -239,9 +238,9 @@ public:
 					tr("<p>The file you selected doesn't exist.<p>"));
 			return;
 		}
-		std::string currentVersion = CLAM::GetVersion();
-
 		file.open(QIODevice::ReadOnly);
+
+		QXmlQuery query;
 		query.bindVariable("document", &file);
 		query.setQuery("doc($document)/network/@clamVersion/string()");	
 
@@ -249,22 +248,37 @@ public:
 		query.evaluateTo(&readClamVersion);
 		readClamVersion = readClamVersion.trimmed();
 
-		std::vector<int> numbersCurrentVersion;
-		versionTokenizer(numbersCurrentVersion, currentVersion);
+		int comparision = compareVersions(readClamVersion, CLAM::GetVersion());
 
-		std::vector<int> numbersFileVersion;
-		versionTokenizer(numbersFileVersion, qPrintable(readClamVersion) );
-
-		for(unsigned int i = 0; i < numbersFileVersion.size(); i++)
-		{		
-			if( numbersCurrentVersion[i] != numbersFileVersion[i] )
+		if (comparision==-1)
+		{
+			int response = QMessageBox::question(this,
+				tr("NetworkEditor"),
+				tr("This network was created with a older version of NetworkEditor.\n"
+				"Do you want to update it before loading?"),
+				QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
+			if (response == QMessageBox::Cancel) return;
+			if (response == QMessageBox::Yes)
 			{
-				QMessageBox::warning(this, tr("NetworkEditor update."),
-						tr("This network was created with a different version of NetworkEditor.\n"
-						"Maybe you should update."),
-						QMessageBox::Ok, QMessageBox::Ok);
+				QMessageBox::warning(this,
+					tr("Network Editor"),
+					tr("Feature not implemented"));
+				// TODO: Updating the script
+				return;
 			}
+			
 		}
+		if (comparision==+1)
+		{
+			int response = QMessageBox::question(this,
+				tr("NetworkEditor"),
+				tr("This network was created with a newer version of NetworkEditor.\n"
+				"Do you want to load it anyway?"),
+				QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes);
+			if (response == QMessageBox::No) return;
+		}
+		
+
 		loadVersionChecked(filename);
 	}
 	void loadVersionChecked(const QString & filename)
