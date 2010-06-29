@@ -45,6 +45,8 @@
 #define DATA_EXAMPLES_PATH "example-data"
 #endif
 
+#include <QtXmlPatterns>
+
 class PlaybackIndicator : public QLabel
 {
 Q_OBJECT
@@ -214,7 +216,58 @@ public:
 		on_action_Save_triggered();
 		return _canvas->isChanged()? abort : goOn;;
 	}
+
+	void versionTokenizer(std::vector<int>& numbers, std::string version)
+	{
+		int firstDot = version.find(".");
+		numbers.push_back( atoi(version.substr(0, firstDot).c_str()) );
+	
+		int secondDot = version.find(".", firstDot + 1);
+		numbers.push_back( atoi(version.substr(firstDot + 1, secondDot - firstDot - 1).c_str()) );
+
+		int lastDot = version.find(".", secondDot + 1);
+		numbers.push_back( atoi(version.substr(secondDot + 1, lastDot - secondDot - 1).c_str()) );
+	}
+
 	void load(const QString & filename)
+	{
+		QXmlQuery query;
+		QFile file(filename);
+		if( !file.exists() )
+		{
+			QMessageBox::critical(this, tr("Error loading the network"), 
+					tr("<p>The file you selected doesn't exist.<p>"));
+			return;
+		}
+		std::string currentVersion = CLAM::GetVersion();
+
+		file.open(QIODevice::ReadOnly);
+		query.bindVariable("document", &file);
+		query.setQuery("doc($document)/network/@clamVersion/string()");	
+
+		QString readClamVersion;
+		query.evaluateTo(&readClamVersion);
+		readClamVersion = readClamVersion.trimmed();
+
+		std::vector<int> numbersCurrentVersion;
+		versionTokenizer(numbersCurrentVersion, currentVersion);
+
+		std::vector<int> numbersFileVersion;
+		versionTokenizer(numbersFileVersion, qPrintable(readClamVersion) );
+
+		for(unsigned int i = 0; i < numbersFileVersion.size(); i++)
+		{		
+			if( numbersCurrentVersion[i] != numbersFileVersion[i] )
+			{
+				QMessageBox::warning(this, tr("NetworkEditor update."),
+						tr("This network was created with a different version of NetworkEditor.\n"
+						"Maybe you should update."),
+						QMessageBox::Ok, QMessageBox::Ok);
+			}
+		}
+		loadVersionChecked(filename);
+	}
+	void loadVersionChecked(const QString & filename)
 	{
 		_network.ResetConnectionReport();
 
