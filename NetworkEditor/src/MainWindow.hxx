@@ -249,7 +249,7 @@ public:
 		// TODO: Remove this code when Qt<4.5 are not supported anymore
 		QStringList queryResult;
 		query.evaluateTo(&queryResult);
-		readClamVersion = queryResult.join();
+		readClamVersion = queryResult.join("");
 #else
 		query.evaluateTo(&readClamVersion);
 #endif
