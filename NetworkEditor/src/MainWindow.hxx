@@ -245,7 +245,14 @@ public:
 		query.setQuery("doc($document)/network/@clamVersion/string()");	
 
 		QString readClamVersion;
+#if QT_VERSION<0x040500
+		// TODO: Remove this code when Qt<4.5 are not supported anymore
+		QStringList queryResult;
+		query.evaluateTo(&queryResult);
+		readClamVersion = queryResult.join();
+#else
 		query.evaluateTo(&readClamVersion);
+#endif
 		readClamVersion = readClamVersion.trimmed();
 
 		int comparision = compareVersions(readClamVersion, CLAM::GetVersion());
