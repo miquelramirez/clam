@@ -261,8 +261,11 @@ public:
 		{
 			int response = QMessageBox::question(this,
 				tr("NetworkEditor"),
-				tr("This network was created with a older version of NetworkEditor.\n"
-				"Do you want to update it before loading?"),
+				tr("This network was created with an older version, %1, of NetworkEditor.\n"
+				"Do you want to update it to version %2 before loading?")
+					.arg(readClamVersion)
+					.arg(CLAM::GetVersion())
+					,
 				QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
 			if (response == QMessageBox::Cancel) return;
 			if (response == QMessageBox::Yes)
@@ -279,8 +282,12 @@ public:
 		{
 			int response = QMessageBox::question(this,
 				tr("NetworkEditor"),
-				tr("This network was created with a newer version of NetworkEditor.\n"
-				"Do you want to load it anyway?"),
+				tr("This network was created with version %1 which is newer than the one you are using %2.\n"
+				"This could give you problems on loading.\n"
+				"Do you want to load it anyway?")
+					.arg(readClamVersion)
+					.arg(CLAM::GetVersion())
+					,
 				QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes);
 			if (response == QMessageBox::No) return;
 		}
