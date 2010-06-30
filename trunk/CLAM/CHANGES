@@ -1,3 +1,4 @@
+
 2010-??-?? CLAM 1.4.1 SVN $Revision$
  * Dependencies:
    * xerces-c 2.8 -> xerces-c 3.0 (requires pkg-config file)
