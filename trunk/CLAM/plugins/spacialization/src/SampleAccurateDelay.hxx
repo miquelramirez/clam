@@ -41,9 +41,10 @@ public:
 	class Config : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (Config , 2, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (Config , 3, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, float, MaxDelayInSeconds);
 		DYN_ATTRIBUTE (1, public, unsigned, SampleRate);
+		DYN_ATTRIBUTE (2, public, unsigned, InitialDelayInSamples);
 
 	protected:
 		void DefaultInit()
@@ -52,6 +53,7 @@ public:
 			UpdateData();
 			SetMaxDelayInSeconds(1.3653125);  //65535
 			SetSampleRate(48000);
+			SetInitialDelayInSamples(0);
 		}
 	};
 	
