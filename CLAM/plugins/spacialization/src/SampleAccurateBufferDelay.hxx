@@ -56,13 +56,13 @@ public:
 		_delayBufferSize = _delayBuffer.size(); 
 		_readIndex = _writeIndex = (_delayBufferSize-1); 
 		std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);
-		_delayControl.DoControl(0.);
-
-		/*const unsigned buffersize = BackendBufferSize();
-		_in1.SetSize(buffersize);
-		_in1.SetHop(buffersize);
-		_out1.SetSize(buffersize);
-		_out1.SetHop(buffersize);*/
+		if ( not _config.HasInitialDelayInSamples() )
+		{
+			_config.AddInitialDelayInSamples();
+			_config.UpdateData();
+			_config.SetInitialDelayInSamples(0);
+		}
+		_delayControl.DoControl( (float)_config.GetInitialDelayInSamples() );
 
 		
 		return true;
