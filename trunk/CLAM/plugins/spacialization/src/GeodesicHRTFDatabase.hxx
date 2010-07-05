@@ -51,10 +51,6 @@ public:
 	GeodesicHRTFDatabase()
 	{
 	}
-	unsigned NAzimuth(unsigned elevation) 
-	{
-		return _storage[elevation].size();
-	}
 	std::string baseDir(const std::string & path)
 	{
 		size_t lastBarPos = path.rfind('/');
@@ -124,7 +120,11 @@ public:
 		return _orientations[index].elevation;
 	}
 	
-	ImpulseResponse & get(unsigned index) { return _storage[index]; }
+	ImpulseResponse & get(unsigned index)
+	{
+		CLAM_ASSERT(_storage[index].size() != 0, "The requested impulse response has not been loaded");
+		return _storage[index]; 
+	}
 	unsigned getIndex(double elevation, double azimuth)
 	{
 		Orientation target(azimuth, elevation);
