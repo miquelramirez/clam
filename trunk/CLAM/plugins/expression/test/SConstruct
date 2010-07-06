@@ -1,0 +1,58 @@
+#! /usr/bin/python
+
+import glob
+
+import os,sys
+base_path = os.path.expanduser("~")
+
+bindir = base_path+'/local/bin'
+incdir = base_path+'/local/include'
+libdir = base_path+'/local/lib',
+
+cppflags=[
+'-Wall',
+'-g',
+]
+
+cpppath=[
+".",
+'../mini',
+incdir,
+'/usr/local/include',
+]
+
+libpath=[
+".",
+libdir,
+'/usr/local/lib',
+]
+
+paths=[
+"./",
+"../mini/",
+]
+
+sources = []
+for path in paths :
+	sources += glob.glob(path+"*.cxx")
+	sources += glob.glob(path+"*.cpp")
+
+sources = [s for s in sources if "main.cpp" not in s]
+
+print "sources without main", sources
+
+Program("unittests", sources, CPPPATH=cpppath, CXXFLAGS=cppflags, LIBPATH=libpath)
+
+# after http://www.scons.org/wiki/UnitTests
+def runUnitTest(env,target,source):
+   import subprocess
+   app = str(source[0].abspath)
+   if not subprocess.call(app):
+      open(str(target[0]),'w').write("PASSED\n")
+
+runTest = Command("test.passed",'unittests',runUnitTest)
+
+Default(runTest)
+
+AlwaysBuild(runTest)
+

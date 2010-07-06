@@ -1,0 +1,37 @@
+
+import os,sys
+base_path = os.path.expanduser("~")
+
+bindir = base_path+'/local/bin'
+incdir = base_path+'/local/include'
+libdir = base_path+'/local/lib',
+
+cppflags=[
+'-Wall',
+'-g',
+]
+
+cpppath=[
+incdir,
+'/usr/local/include',
+]
+
+libpath=[
+os.getcwd(),
+libdir,
+'/usr/local/lib',
+]
+
+libs=[
+'boost_program_options',
+]
+
+minilibname='minilib'
+libs+=[minilibname]
+
+VariantDir('build', '.', duplicate=1)
+env = Environment(CPPFLAGS=cppflags, CPPPATH=cpppath, LIBPATH=libpath, LIBS=libs)
+
+mini = env.Library(minilibname, ['build/vm.cpp', 'build/expression.cpp', 'build/statement.cpp', 'build/program.cpp'])
+mini = env.Program('mini', ['build/main.cpp'])
+
