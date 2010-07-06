@@ -34,8 +34,9 @@ class ControlSequencer
 	CoreoEntries _coreoEntries;
 	CoreoEntries::iterator _coreoEvent; //const
 
-	double SmpteToMs(std::string const& mtc)
+	double SmpteToMs(const std::string& mtc)
 	{
+std::cout << "--------"<< mtc<< std::endl;
 		std::vector<std::string> elems;
 		std::stringstream ss(mtc);
 		std::string item;
@@ -44,7 +45,7 @@ class ControlSequencer
 
 		CLAM_ASSERT(elems.size() == 4, 
 			std::string("Invalid MTC found in sequencefile (not like nn:nn:nn:nn)"
-									" Offending MTC is: \'" + mtc + "\'. Please correct!").c_str());
+				" Offending MTC is: \'" + mtc + "\'. Please correct!").c_str());
 
 		int hours = atoi(elems[0].c_str());
 		int minutes = atoi(elems[1].c_str());
@@ -118,10 +119,12 @@ class ControlSequencer
 			// dont store setup
 			if (mtc == "setup")
 				continue;
-				
-			//std::cout << "mtc=" << mtc << " name=" << name << " values=";
-			//std::copy(values.begin(), values.end(), std::ostream_iterator<double>(std::cout, " "));
-			//std::cout << std::endl; 
+			
+			#if 1
+			std::cout << "mtc=" << mtc << " name=" << name << " values=";
+			std::copy(values.begin(), values.end(), std::ostream_iterator<double>(std::cout, " "));
+			std::cout << std::endl; 
+			#endif
 
 			CoreoEntry ce = { mtc, name, values };
 			_coreoEntries.push_back(ce); 
@@ -132,9 +135,7 @@ class ControlSequencer
 
 
 public:
-	ControlSequencer(std::string const& coreo_file,	
-									int frameSize, int sampleRate, 
-									CLAM::Network& net)
+	ControlSequencer(std::string const& coreo_file,	int frameSize, int sampleRate, CLAM::Network& net)
 	: _coreoFile(coreo_file)
 	, _controlRate(25.000)
 	, _frameSize(frameSize)
@@ -148,12 +149,11 @@ public:
 	{
 	}
  
-	// TODO: interpolation between (large) gaps in coreo events
+	// maybe TODO: interpolation between (large) gaps in coreo events
 	void UpdateControls(int buffernr)
 	{
 		double currentTimeInMillisec = 
 			((buffernr * (double)_frameSize) / (double)_sampleRate) * 1000.;
-
 		for (; _coreoEvent != _coreoEntries.end() &&
 					 SmpteToMs(_coreoEvent->mtc) <= currentTimeInMillisec;
 					 ++_coreoEvent) 
@@ -168,8 +168,8 @@ public:
 			// check for wrong input
 			if (!_net.HasProcessing(controlName))
 			{
-				std::cout << "Error! Control named \'" << controlName 
-									<< "\' not found in Network!" << std::endl;
+				std::cout << "Error! ControlSource named \'" << controlName 
+						<< "\' not found in Network!" << std::endl;
 				continue;
 			}
 
@@ -189,9 +189,9 @@ public:
 			CLAM::Processing& control = _net.GetProcessing(controlName);
 			CLAM::ControlSource* controlSource = dynamic_cast<CLAM::ControlSource*>(&control);
 			const double& value = _coreoEvent->values[0];
-			//std::cout << " value=" << value;
+			std::cout << " value=" << value;
 
-			// TODO: multicontrols
+			// TODO: support sources with multiple out controls
 			controlSource->Do(value);
 
 			//std::cout << std::endl;
