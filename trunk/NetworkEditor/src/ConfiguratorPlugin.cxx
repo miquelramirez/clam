@@ -33,6 +33,32 @@ ConfiguratorPlugin & ConfiguratorPlugin::GetPlugin(const CLAM::DynamicType & obj
 	return nullPlugin;
 }
 
+#include <CLAM/TextBlock.hxx>
+#include <QtGui/QPlainTextEdit>
+template <typename ConcreteString>
+class BlockConfiguratorPlugin : public ConfiguratorPlugin
+{
+public:
+	virtual bool accepts(const CLAM::DynamicType & object, unsigned attribute)
+	{
+		// TODO: not compare on name()
+		return object.GetTypeId(attribute).name() == std::string(typeid(ConcreteString).name());
+	}
+	virtual QWidget * editorWidget(const CLAM::DynamicType & object, unsigned attribute)
+	{
+		const ConcreteString & value = *(ConcreteString *)object.GetAttributeAsVoidPtr(attribute);
+		return new QPlainTextEdit(QString::fromLocal8Bit(value.c_str()));
+	}
+	virtual void takeFromWidget(const CLAM::DynamicType & object, unsigned attribute, QWidget * editorWidget)
+	{
+		QPlainTextEdit * input = dynamic_cast<QPlainTextEdit*>(editorWidget);
+		ConcreteString & value = *(ConcreteString *)object.GetAttributeAsVoidPtr(attribute);
+		value = input->toPlainText().toLocal8Bit().constData();
+	}
+};
+static BlockConfiguratorPlugin<CLAM::TextBlock> textBlockRegistrator;
+
+
 // TODO: It has more sense to use UTF-8 as internal representation but actual XML converts to local 8 bits
 #include <CLAM/Text.hxx>
 #include <QtGui/QLineEdit>
@@ -58,7 +84,6 @@ public:
 };
 static StringConfiguratorPlugin<std::string> stringRegistrator;
 static StringConfiguratorPlugin<CLAM::Text> textRegistrator;
-
 
 #include <QtGui/QDoubleSpinBox>
 template <typename ConcreteFloat>
