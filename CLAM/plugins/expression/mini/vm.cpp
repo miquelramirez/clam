@@ -49,7 +49,7 @@ operand_t vmachine::execute(
 
             case op_mul:
                 --stack_ptr;				
-#ifdef 0					
+#if 0					
                 std::cout << "a=" << stack_ptr[-1] << " b=" << stack_ptr[0] << " a*b=" << operand_t(stack_ptr[-1] * stack_ptr[0]) << std::endl;
 #endif								
                 stack_ptr[-1] = operand_t(stack_ptr[-1] * stack_ptr[0]);
