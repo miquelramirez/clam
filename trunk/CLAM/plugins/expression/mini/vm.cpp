@@ -49,7 +49,7 @@ operand_t vmachine::execute(
 
             case op_mul:
                 --stack_ptr;				
-#ifdef DEBUG						
+#ifdef 0					
                 std::cout << "a=" << stack_ptr[-1] << " b=" << stack_ptr[0] << " a*b=" << operand_t(stack_ptr[-1] * stack_ptr[0]) << std::endl;
 #endif								
                 stack_ptr[-1] = operand_t(stack_ptr[-1] * stack_ptr[0]);
@@ -102,16 +102,16 @@ operand_t vmachine::execute(
 
             case op_sin:
                 --stack_ptr;
-#if 1						
-                std::cout << "val=" << stack_ptr[0] << " code=" <<  *(pc + 1)<< " frame=" << frame_ptr[*(pc + 1)] << std::endl;
+#if 0						
+                std::cout << "val=" << stack_ptr[0] << " sin=" << sin(stack_ptr[0]) << " code=" <<  *(pc)<< " frame=" << frame_ptr[*(pc)] << std::endl;
 #endif		
                 stack_ptr[-1] = sin(stack_ptr[0]);
                 break;
 
             case op_cos:
                 --stack_ptr;
-#if 1
-                std::cout << "val=" << stack_ptr[0] << " code=" <<  *(pc + 1)<< " frame=" << frame_ptr[*(pc + 1)] << std::endl;
+#if 0
+                std::cout << "val=" << stack_ptr[0] << " cos=" << cos(stack_ptr[0]) << " code=" <<  *(pc)<< " frame=" << frame_ptr[*(pc)] << std::endl;
 #endif		
                 stack_ptr[-1] = cos(stack_ptr[0]);
                 break;
