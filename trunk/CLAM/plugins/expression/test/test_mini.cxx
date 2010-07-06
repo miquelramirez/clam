@@ -26,6 +26,7 @@ public:
 		//TEST_CASE( test_cosine );
 		//TEST_CASE( test_sin_cos );
 		//TEST_CASE( test_simple );
+		//TEST_CASE( test_ternary );
 	}
 	
 	float get_computed_value(std::string const& source_code, input_t const& in)
@@ -189,15 +190,26 @@ public:
   }
 	
 	void test_simple()
-  {
+  {		
+		typedef std::string::const_iterator iterator_type;
+    symbols<char, function_info> functions;
+    std::vector<int> code;
+    statement<iterator_type> prog(code, functions);
+
 		std::string source_code =
 		"	return cos(0) + 1;"
 		;
 		
+		ASSERT(compile(prog, source_code));
+			
 		input_t input;
 		input += 1,0,0; 
+		
+		vmachine mach;  
+		mach.stack = input;
 
-		float r = get_computed_value(source_code, input);
+		float r = mach.execute(code, code.begin(), mach.stack.begin());
+		std::cout << "r=" << r << std::endl;
 		
 		ASSERT(2.0 == r);
   }
@@ -216,7 +228,7 @@ public:
 		input_t input;
 		input += 1,0,0; 
 
-		float r = get_computed_value(source_code_three_params, input);
+		float r = get_computed_value(source_code, input);
 		
 		ASSERT(0. == r);
   }
