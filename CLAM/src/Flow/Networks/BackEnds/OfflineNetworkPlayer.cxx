@@ -129,7 +129,7 @@ void OfflineNetworkPlayer::Start()
 		}
 
 		SndfileHandle* outfile = new SndfileHandle(_outFileNames[fileIndex].c_str(), SFM_WRITE,
-												   _format,_outChannelsFiles[fileIndex],sampleRate);
+			_format,_outChannelsFiles[fileIndex],sampleRate);
 		CLAM_ASSERT(*outfile, "Can not create the outfile ");
 		outputChannelsCount +=_outChannelsFiles[fileIndex];
 		outfiles.push_back(outfile);
