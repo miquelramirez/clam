@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 namespace CLAM
 {
@@ -69,6 +70,12 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(const SndFileHandle
 	return result.str();
 }
 
+bool fileExists( const std::string& filename)
+{
+	std::fstream file(filename.c_str());
+	return file.is_open();
+}
+
 void OfflineNetworkPlayer::Start()
 {
 	if ( IsPlaying() )
@@ -105,8 +112,17 @@ void OfflineNetworkPlayer::Start()
 
 		infiles.push_back(infile);
 
-		if (_controlFile != "")
-			_controlSequencer = new ControlSequencer(_controlFile, frameSize, sampleRate, GetNetwork());
+		if (_controlFile == "") continue;
+		if (not fileExists(_controlFile))
+		{
+			std::cout << "The controls file provided '" << _controlFile 
+			<<"' does not exist so it will be ignored." << std::endl;
+			_controlFile = "";
+			continue;
+		}
+			
+		_controlSequencer = new ControlSequencer(_controlFile, frameSize, sampleRate, GetNetwork());
+		
 	}
 
 	// Check that the number of input channels matches the number of ports in the network
