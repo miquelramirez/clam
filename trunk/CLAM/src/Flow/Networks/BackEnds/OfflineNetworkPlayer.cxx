@@ -110,9 +110,13 @@ void OfflineNetworkPlayer::Start()
 	}
 
 	// Check that the number of input channels matches the number of ports in the network
-	CLAM_ASSERT(inputChannelsCount == GetNSources(),
-	 	"The number of input channels is different than the number of sourceports in the provided network.");
-
+	if (inputChannelsCount != GetNSources())
+	{
+		std::cout << "Number of input channels (summing multiple channels in input files) : " << inputChannelsCount << std::endl;
+		std::cout << "Number of network sources: " << GetNSources() << std::endl;
+		CLAM_ASSERT(false,
+	 		"The number of input channels is different than the number of sourceports in the provided network.");
+	}
 	//Open the files and get the total number of channels
 	unsigned outputChannelsCount=0;
 	SndFileHandles outfiles;
