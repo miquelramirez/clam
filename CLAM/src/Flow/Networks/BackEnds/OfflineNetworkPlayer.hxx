@@ -25,8 +25,8 @@ class OfflineNetworkPlayer : public NetworkPlayer
 	bool _enableLoopInputWavs;
 	float _resultWavsTime;
 
-  ControlSequencer* _controlSequencer;
-  std::string  _controlFile;
+	ControlSequencer* _controlSequencer;
+	std::string  _controlFile;
 
 public:
 	OfflineNetworkPlayer()
@@ -52,7 +52,7 @@ public:
 	
 	typedef std::vector<SndfileHandle*> SndFileHandles;
 	std::string listOfSourcesSinksAndFiles(const SndFileHandles & infiles, 
-										   const SndFileHandles & outfiles);
+		const SndFileHandles & outfiles);
 	
 	virtual void Start();
 	virtual void Stop();
