@@ -2,6 +2,24 @@ Note:
 - with -O3 and no -g size will be ~800K
 
 Expression depends on boost.spirit v2.3 from boost_1_43_0
+So you need a newer version that the one in Ubuntu Lucid.
+You can either A. use a backport or B. install from source.
+
+A. Use a Ubuntu backport
+---------------------------
+
+
+add in your /etc/apt/source.list (or via synaptic or similar tool)
+deb http://clam-project.org/download/linux-ubuntu-lucid/backports/ ./
+
+TODO: add arch 64 bits (now only 32)
+
+sudo apt-get update
+sudo apt-get install libboost1.42-dev
+
+
+B. Install boost from source
+----------------------------
 
 Install it in for instance $HOME/local/include by running the following as script
 
