@@ -62,7 +62,7 @@ private:
 	OutControls _outControls;	
 
 	vmachine _mach;             
-	std::vector<int> _code;   
+	code_t _code;   
 
 public:
 	ControlExpression( const Config& cfg = Config());
