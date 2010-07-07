@@ -79,13 +79,14 @@ enum byte_code
     op_return,      //  return from function
 		op_sin,
 		op_cos,
+		op_pow,
 };
 
 class vmachine
 {
 public:
 
-    vmachine(unsigned stackSize = 16)
+    vmachine(unsigned stackSize = 4096) // lower this to 16 or so to for redeable debugging
       : stack(stackSize)
     {
     }
@@ -300,7 +301,8 @@ struct expression : grammar<Iterator, white_space<Iterator> >
       , unary_expr, primary_expr, variable
     ;
 
-    rule<Iterator, white_space_> sine_function, cosine_function;
+    rule<Iterator, white_space_> sine_function, cosine_function, pow_function
+		;
 
     rule<Iterator, locals<function_info, int>, white_space_> function_call;
 

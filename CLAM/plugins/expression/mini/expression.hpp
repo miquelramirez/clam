@@ -78,6 +78,7 @@ expression<Iterator>::expression(
         |   function_call
         |   sine_function										[op(op_sin)]
         |   cosine_function									[op(op_cos)]
+        |   pow_function										[op(op_pow)]
         |   lit("true")                     [op(op_true)]
         |   lit("false")                    [op(op_false)]
         |   '(' > expr > ')'
@@ -108,6 +109,9 @@ expression<Iterator>::expression(
 		cosine_function =	lit("cos") >> '(' > expr > lit(')')   												
         ;
 
+		pow_function =	lit("pow") >> '(' > expr > ',' > expr > lit(')')   												
+        ;
+
     expr.name("expression");
     equality_expr.name("equality-expression");
     relational_expr.name("relational-expression");
@@ -120,6 +124,7 @@ expression<Iterator>::expression(
     function_call.name("function-call");
 		sine_function.name("sine_function");
 		cosine_function.name("cosine_function");
+		pow_function.name("pow_function");
 
     on_error<fail>(expr, ::error_handler(_4, _3, _2)); // $$$ fix!
 

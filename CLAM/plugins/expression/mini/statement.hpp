@@ -145,13 +145,14 @@ statement<Iterator>::statement(
 
     on_error<fail>(statement_list, ::error_handler(_4, _3, _2));
 
-#if 0
+#if 1
 		debug(identifier);
 		debug(var_decl);
 		debug(var_ref);
 		debug(assignment);
 		debug(assignment_rhs);
 		debug(compound_statement);
+		debug(return_statement);
 		debug(statement_list);
 		debug(statement_);
 #endif
