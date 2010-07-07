@@ -72,13 +72,14 @@ expression<Iterator>::expression(
         ;
 
     primary_expr =
-        //uint_                              [op(op_int, _1)]
         float_                              [op(op_float, _1)]
         |   variable
         |   function_call
         |   sine_function										[op(op_sin)]
         |   cosine_function									[op(op_cos)]
         |   pow_function										[op(op_pow)]
+        |   log_function										[op(op_log)]
+        |   floor_function									[op(op_floor)]
         |   lit("true")                     [op(op_true)]
         |   lit("false")                    [op(op_false)]
         |   '(' > expr > ')'
@@ -111,6 +112,12 @@ expression<Iterator>::expression(
 
 		pow_function =	lit("pow") >> '(' > expr > ',' > expr > lit(')')   												
         ;
+				
+		log_function =	lit("log") >> '(' > expr > lit(')')   												
+        ;
+
+		floor_function =	lit("floor") >> '(' > expr > lit(')')   												
+        ;
 
     expr.name("expression");
     equality_expr.name("equality-expression");
@@ -125,6 +132,8 @@ expression<Iterator>::expression(
 		sine_function.name("sine_function");
 		cosine_function.name("cosine_function");
 		pow_function.name("pow_function");
+		log_function.name("log_function");
+		floor_function.name("floor_function");
 
     on_error<fail>(expr, ::error_handler(_4, _3, _2)); // $$$ fix!
 

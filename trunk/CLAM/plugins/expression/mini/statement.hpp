@@ -38,7 +38,6 @@ statement<Iterator>::statement(
 
     var_decl =
             lexeme[
-                //"int"
                 "float"
                 >>  !(alnum | '_')  // make sure we have whole words
             ]
@@ -145,7 +144,7 @@ statement<Iterator>::statement(
 
     on_error<fail>(statement_list, ::error_handler(_4, _3, _2));
 
-#if 1
+#if 0
 		debug(identifier);
 		debug(var_decl);
 		debug(var_ref);
