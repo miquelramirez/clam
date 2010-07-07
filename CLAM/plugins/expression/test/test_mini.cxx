@@ -22,9 +22,9 @@ public:
 		TEST_CASE( test_assignment );
 		TEST_CASE( test_if );
 		TEST_CASE( test_while );
-		//TEST_CASE( test_sine );
-		//TEST_CASE( test_cosine );
-		//TEST_CASE( test_sin_cos );
+		TEST_CASE( test_sine );
+		TEST_CASE( test_cosine );
+		TEST_CASE( test_sin_cos );
 		//TEST_CASE( test_simple );
 		//TEST_CASE( test_ternary );
 	}
@@ -176,7 +176,7 @@ public:
 		"float my_function(a, b, c)"
 		"{"
 		""
-		"	return cos(0) + 1;"
+		"	return (1+2+3+cos(b)+cos(c))*sin(a);"
 		""
 		"}"
 		;
@@ -186,7 +186,7 @@ public:
 
 		float r = get_computed_value(source_code, input);
 		
-		ASSERT(1.0 == r);
+		ASSERT(0.0 == r);
   }
 	
 	void test_simple()

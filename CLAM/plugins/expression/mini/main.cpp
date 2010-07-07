@@ -75,7 +75,7 @@ int main(int argc, char **argv)
         for (int i = 0; i < nargs; ++i)
             mach.stack[i] = boost::lexical_cast<operand_t>(argv[i+2]);
 
-        int r = mach.execute(
+        float r = mach.execute(
             code                                // code
           , code.begin() + f->address           // pc
           , mach.stack.begin()                  // frame_ptr
