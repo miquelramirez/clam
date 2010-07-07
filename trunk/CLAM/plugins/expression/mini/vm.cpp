@@ -196,7 +196,23 @@ operand_t vmachine::execute(
 								++stack_ptr;
 								break;
 						}
-						
+
+            case op_pow:
+						{	
+								operand_t exponent = *--stack_ptr;
+								operand_t base = *--stack_ptr;
+								*stack_ptr = pow(base, exponent);
+#if 0
+								std::cout << "val=" << *stack_ptr
+									<< " exponent=" << exponent
+									<< " base=" << base 
+									<< " code=" <<  *(pc-1) 
+									<< std::endl;
+#endif		
+								++stack_ptr;
+								break;
+						}
+												
             case op_load:
                 *stack_ptr++ = frame_ptr[*pc++];
                 break;

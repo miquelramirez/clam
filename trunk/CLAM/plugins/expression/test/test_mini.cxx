@@ -37,6 +37,7 @@ public:
 		TEST_CASE( test_cosine );
 		TEST_CASE( test_sin_cos );
 		TEST_CASE( test_sin_cos_float );
+		TEST_CASE( test_pow );
 		//TEST_CASE( test_simple );
 		//TEST_CASE( test_ternary );
 	}
@@ -220,7 +221,25 @@ public:
 		ASSERT(equal(2.47942554, r));
   }
 	
-#if 0
+	void test_pow()
+  {
+		std::string source_code =
+		"float my_function(a, b)"
+		"{"
+		""
+		"	return pow(a,b);"
+		""
+		"}"
+		;
+		
+		input_t input;
+		input += 2,2; 
+
+		float r = get_computed_value(source_code, input);
+		
+		ASSERT(equal(4, r));
+  }
+	
 	void test_simple()
   {		
 		typedef std::string::const_iterator iterator_type;
@@ -229,7 +248,7 @@ public:
     statement<iterator_type> prog(code, functions);
 
 		std::string source_code =
-		"	return cos(0) + 1;"
+		"{1 + 1;}"
 		;
 		
 		ASSERT(compile(prog, source_code));
@@ -241,11 +260,11 @@ public:
 		mach.stack = input;
 
 		float r = mach.execute(code, code.begin(), mach.stack.begin());
-		std::cout << "r=" << r << std::endl;
 		
-		ASSERT(2.0 == r);
+		ASSERT(equal(2, r));
   }
-	
+
+#if 0
 	void test_ternary()
   {
 		std::string source_code =
