@@ -9,24 +9,86 @@
 #include <cmath>
 #include <algorithm>
 
-# pragma warning(disable: 4800) // forcing value to bool 'true' or 'false'
-                                // (performance warning)
+#ifdef _WIN32
+#pragma warning(disable: 4800) // forcing value to bool 'true' or 'false'  (performance warning)
+#endif
+
+/*
+Some notes on the added sin/cos
+
+model expression:
+
+    return (1+2+3+cos(0)+cos(0))*sin(0);
+		
+-------------------------
+Parsing succeeded
+-------------------------
+
+good!
+
+bytecode:
+
+code=21 0 16 1 16 2 1 16 3 1 16 0 25 1 16 0 25 1 16 0 24 3 23 
+
+stack:
+
+stack=1.02295e-43 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 1 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 3 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 6 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+val=0 cos=1 code=25
+stack=1.02295e-43 6 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 7 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+val=0 cos=1 code=25
+stack=1.02295e-43 7 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 8 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+val=0 sin=0 code=24
+stack=1.02295e-43 8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+stack=1.02295e-43 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+-------------------------
+Result: 0
+-------------------------
+
+correct!
+
+The trick is to adjust the stack correctly: 
+- after each op_float ('16') which  loads a float from the code to the stack we lower the stack_ptr
+- then we do sin/cos in place, cos we want to alter the value
+- then we raise the stack_ptr so the next op_add ('1') or op_mul ('3') can lower it and perform their ops
+
+*/
 
 operand_t vmachine::execute(
-    std::vector<int> const& code
-  , std::vector<int>::const_iterator pc
-  , std::vector<operand_t>::iterator frame_ptr
+    code_t const& code
+  , code_t::const_iterator pc
+  , frame_t::iterator frame_ptr
 )
 {
+#if 0
+		std::cout << "code=";
+		std::copy(code.begin(),code.end(),std::ostream_iterator<operand_t>(std::cout," "));
+		std::cout << std::endl;
+#endif
 	
-		//std::copy(v.begin(),v.end(),std::ostream_iterator<T>(std::cout,"\n"))
-	
-    std::vector<operand_t>::iterator stack_ptr = frame_ptr;
+    frame_t::iterator stack_ptr = frame_ptr;
 
     while (true)
     {
         BOOST_ASSERT(pc != code.end());
 
+#if 0
+				std::cout << "stack=";
+				std::copy(stack.begin()-1,stack.end(),std::ostream_iterator<operand_t>(std::cout," "));
+				std::cout << std::endl;
+#endif
+			
         switch (*pc++)
         {
             case op_neg:
@@ -39,20 +101,23 @@ operand_t vmachine::execute(
 
             case op_add:
                 --stack_ptr;
-                stack_ptr[-1] = operand_t(stack_ptr[-1] + stack_ptr[0]);
+                stack_ptr[-1] = stack_ptr[-1] + stack_ptr[0];
                 break;
 
             case op_sub:
                 --stack_ptr;
-                stack_ptr[-1] = operand_t(stack_ptr[-1] - stack_ptr[0]);
+                stack_ptr[-1] = stack_ptr[-1] - stack_ptr[0];
                 break;
 
             case op_mul:
                 --stack_ptr;				
 #if 0					
-                std::cout << "a=" << stack_ptr[-1] << " b=" << stack_ptr[0] << " a*b=" << operand_t(stack_ptr[-1] * stack_ptr[0]) << std::endl;
+                std::cout << "a=" << stack_ptr[-1] 
+									<< " b=" << stack_ptr[0] 
+									<< " a*b=" << stack_ptr[-1] * stack_ptr[0] 
+									<< std::endl;
 #endif								
-                stack_ptr[-1] = operand_t(stack_ptr[-1] * stack_ptr[0]);
+                stack_ptr[-1] = stack_ptr[-1] * stack_ptr[0];
                 break;
 
             case op_div:
@@ -99,21 +164,27 @@ operand_t vmachine::execute(
                 --stack_ptr;
                 stack_ptr[-1] = bool(stack_ptr[-1]) || bool(stack_ptr[0]);
                 break;
-
+						
             case op_sin:
                 --stack_ptr;
 #if 0						
-                std::cout << "val=" << stack_ptr[0] << " sin=" << sin(stack_ptr[0]) << " code=" <<  *(pc)<< " frame=" << frame_ptr[*(pc)] << std::endl;
+                std::cout << "val=" << *stack_ptr
+									<< " sin=" << sin(*stack_ptr) 
+									<< " code=" <<  *(pc-1)
+									<< std::endl;
 #endif		
-                stack_ptr[-1] = sin(stack_ptr[0]);
+                *stack_ptr++ = sin(*stack_ptr);
                 break;
 
             case op_cos:
                 --stack_ptr;
 #if 0
-                std::cout << "val=" << stack_ptr[0] << " cos=" << cos(stack_ptr[0]) << " code=" <<  *(pc)<< " frame=" << frame_ptr[*(pc)] << std::endl;
+                std::cout << "val=" << *stack_ptr
+									<< " cos=" << cos(*stack_ptr) 
+									<< " code=" <<  *(pc-1) 
+									<< std::endl;
 #endif		
-                stack_ptr[-1] = cos(stack_ptr[0]);
+                *stack_ptr++ = cos(*stack_ptr);
                 break;
 
             case op_load:
@@ -160,7 +231,7 @@ operand_t vmachine::execute(
                     int jump = *pc++;
 
                     // a function call is a recursive call to execute
-                    int r = execute(
+                    operand_t r = execute(
                         code
                       , code.begin() + jump
                       , stack_ptr - nargs

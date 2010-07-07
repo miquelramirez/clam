@@ -13,7 +13,7 @@
 //  Our program grammar and compiler
 ///////////////////////////////////////////////////////////////////////////////
 template <typename Iterator>
-program<Iterator>::program(std::vector<int>& code)
+program<Iterator>::program(code_t& code)
   : program::base_type(start)
   , code(code)
   , statement_(code, functions)
