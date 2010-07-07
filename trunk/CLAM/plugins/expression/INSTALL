@@ -1,0 +1,42 @@
+Note:
+- with -O3 and no -g size will be ~800K
+
+Expression depends on boost.spirit v2.3 from boost_1_43_0
+
+Install it in for instance $HOME/local/include by running the following as script
+
+#!/bin/bash
+
+wget http://downloads.sourceforge.net/project/boost/boost/1.43.0/boost_1_43_0.tar.gz?use_mirror=mesh
+tar zxf boost_1_43_0.tar.gz
+
+cd boost_1_43_0
+pwd
+./bootstrap.sh
+
+# note: we only want spirit, not any compiled lib
+
+./bjam variant=release \
+	--prefix=$HOME/local \
+    --without-date-time \
+    --without-filesystem \
+    --without-graph \
+    --without-graph_parallel \
+    --without-iostreams \
+    --without-math \
+    --without-mpi \
+    --without-program_options \
+    --without-python \
+    --without-random \
+    --without-regex \
+    --without-serialization \
+    --without-signals \
+    --without-test \
+    --without-thread \
+    --without-wave \
+		install
+
+cd ..
+rm -rf boost/log boost_1_43_0
+rm -rf *.zip
+rm -rf *.gz
