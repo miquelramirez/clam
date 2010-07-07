@@ -80,6 +80,8 @@ enum byte_code
 		op_sin,
 		op_cos,
 		op_pow,
+		op_log,
+		op_floor,
 };
 
 class vmachine
@@ -301,7 +303,8 @@ struct expression : grammar<Iterator, white_space<Iterator> >
       , unary_expr, primary_expr, variable
     ;
 
-    rule<Iterator, white_space_> sine_function, cosine_function, pow_function
+    rule<Iterator, white_space_> sine_function, cosine_function, pow_function,
+			log_function, floor_function
 		;
 
     rule<Iterator, locals<function_info, int>, white_space_> function_call;

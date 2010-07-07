@@ -38,6 +38,8 @@ public:
 		TEST_CASE( test_sin_cos );
 		TEST_CASE( test_sin_cos_float );
 		TEST_CASE( test_pow );
+		TEST_CASE( test_log );
+		TEST_CASE( test_floor );
 		//TEST_CASE( test_simple );
 		//TEST_CASE( test_ternary );
 	}
@@ -238,6 +240,44 @@ public:
 		float r = get_computed_value(source_code, input);
 		
 		ASSERT(equal(4, r));
+  }
+	
+	void test_log()
+  {
+		std::string source_code =
+		"float my_function(a)"
+		"{"
+		""
+		"	return log(a);"
+		""
+		"}"
+		;
+		
+		input_t input;
+		input += 2.3; 
+
+		float r = get_computed_value(source_code, input);
+		
+		ASSERT(equal(0.832909123, r));
+  }
+	
+	void test_floor()
+  {
+		std::string source_code =
+		"float my_function(a)"
+		"{"
+		""
+		"	return floor(a);"
+		""
+		"}"
+		;
+		
+		input_t input;
+		input += 2.832909123; 
+
+		float r = get_computed_value(source_code, input);
+		
+		ASSERT(equal(2, r));
   }
 	
 	void test_simple()

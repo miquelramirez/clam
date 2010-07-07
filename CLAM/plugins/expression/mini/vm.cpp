@@ -212,6 +212,24 @@ operand_t vmachine::execute(
 								++stack_ptr;
 								break;
 						}
+						
+						case op_log:
+						{	
+								operand_t val = *--stack_ptr;
+								*stack_ptr = log(val);
+
+								++stack_ptr;
+								break;
+						}
+						
+						case op_floor:
+						{	
+								operand_t val = *--stack_ptr;
+								*stack_ptr = floor(val);
+
+								++stack_ptr;
+								break;
+						}
 												
             case op_load:
                 *stack_ptr++ = frame_ptr[*pc++];
