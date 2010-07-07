@@ -50,7 +50,7 @@ int main(int argc, char **argv)
     typedef program<iterator_type> program;
 
     vmachine mach;              //  Our virtual machine
-    std::vector<int> code;      //  Our VM code
+    code_t code;      //  Our VM code
     program prog(code);         //  Our grammar definition
 
     if (::compile(prog, source_code))

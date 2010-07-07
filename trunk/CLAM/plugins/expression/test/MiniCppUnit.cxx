@@ -61,7 +61,7 @@ void TestsListener::testHasThrown()
 std::string TestsListener::summary()
 {
 	std::ostringstream os;
-	os	<< "\nSummari:\n"
+	os	<< "\nSummary:\n"
 		<< "\033[" "1m\tExecuted Tests:         " 
 		<< _executed << "\033[0m\n"
 		<< "\033[32;1m\tPassed Tests:           " 
