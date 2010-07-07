@@ -38,12 +38,12 @@ using namespace boost::spirit::qi;
  */
 typedef float operand_t;
 
-typedef std::vector<int> code_t;
+typedef std::vector<operand_t> code_t;
 
 typedef std::vector<operand_t> frame_t;
 typedef std::vector<operand_t> stack_t;
 
-typedef symbols<char, int> vars_t;
+typedef symbols<char, operand_t> vars_t;
 
 struct function_info;
 typedef symbols<char, function_info> functions_t;
@@ -129,11 +129,10 @@ struct compile_op
         code.push_back(b);
 		}
 
-		// TODO: not truncate (change to code<T>)
     void operator()(int a, float b) const
     {
         code.push_back(a);
-        code.push_back(int(b));
+        code.push_back(b);
     }
 
     void operator()(int a, int b, int c) const

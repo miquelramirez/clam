@@ -78,7 +78,7 @@ operand_t vmachine::execute(
 #endif
 	
     frame_t::iterator stack_ptr = frame_ptr;
-
+	
     while (true)
     {
         BOOST_ASSERT(pc != code.end());
@@ -89,7 +89,7 @@ operand_t vmachine::execute(
 				std::cout << std::endl;
 #endif
 			
-        switch (*pc++)
+        switch ((int)*pc++)
         {
             case op_neg:
                 stack_ptr[-1] = -stack_ptr[-1];
@@ -166,6 +166,7 @@ operand_t vmachine::execute(
                 break;
 						
             case op_sin:
+						{
                 --stack_ptr;
 #if 0						
                 std::cout << "val=" << *stack_ptr
@@ -173,20 +174,29 @@ operand_t vmachine::execute(
 									<< " code=" <<  *(pc-1)
 									<< std::endl;
 #endif		
-                *stack_ptr++ = sin(*stack_ptr);
-                break;
-
+								operand_t val = sin(*stack_ptr);
+								*stack_ptr = val;
+						
+								++stack_ptr;
+								break;
+						}
+						
             case op_cos:
-                --stack_ptr;
+						{	
+								--stack_ptr;
 #if 0
-                std::cout << "val=" << *stack_ptr
+								std::cout << "val=" << *stack_ptr
 									<< " cos=" << cos(*stack_ptr) 
 									<< " code=" <<  *(pc-1) 
 									<< std::endl;
 #endif		
-                *stack_ptr++ = cos(*stack_ptr);
-                break;
-
+								operand_t val = cos(*stack_ptr);
+								*stack_ptr = val;
+				
+								++stack_ptr;
+								break;
+						}
+						
             case op_load:
                 *stack_ptr++ = frame_ptr[*pc++];
                 break;

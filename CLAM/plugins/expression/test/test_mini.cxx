@@ -13,6 +13,17 @@ using namespace boost::assign;
 
 typedef std::vector<operand_t> input_t;
 
+#include <cmath>
+#include <limits>
+
+namespace {
+	
+bool equal(operand_t a, operand_t b) {
+    return fabs(a - b) < std::numeric_limits<operand_t>::epsilon();
+}
+
+} // anon.
+
 class mini_test : public TestFixture<mini_test>
 {
 public:
@@ -25,6 +36,7 @@ public:
 		TEST_CASE( test_sine );
 		TEST_CASE( test_cosine );
 		TEST_CASE( test_sin_cos );
+		TEST_CASE( test_sin_cos_float );
 		//TEST_CASE( test_simple );
 		//TEST_CASE( test_ternary );
 	}
@@ -35,7 +47,7 @@ public:
 		typedef program<iterator_type> program;
 
 		vmachine mach;              //  Our virtual machine
-		std::vector<int> code;      //  Our VM code
+		code_t code;      //  Our VM code
 		program prog(code);         //  Our grammar definition
 
 		ASSERT(compile(prog, source_code));
@@ -64,7 +76,7 @@ public:
 
 		float r = get_computed_value(source_code, input);
 		
-		ASSERT(0 == r);
+		ASSERT(equal(0, r));
   }
 	
   void test_assignment()
@@ -84,7 +96,7 @@ public:
 
 		float r = get_computed_value(source_code, input);
 		
-		ASSERT(3.0 == r);
+		ASSERT(equal(3, r));
   }
 	
 	void test_if()
@@ -107,7 +119,7 @@ public:
 
 		float r = get_computed_value(source_code, input);
 
-		ASSERT(1.5 == r);
+		ASSERT(equal(1.5, r));
   }
 	
 	void test_while()
@@ -128,7 +140,7 @@ public:
 		input_t input;
 		float r = get_computed_value(source_code, input);
 
-		ASSERT(10.0 == r);
+		ASSERT(equal(10, r));
   }
 	
   void test_sine()
@@ -147,7 +159,7 @@ public:
 
 		float r = get_computed_value(source_code, input);
 		
-		ASSERT(2. == r);
+		ASSERT(equal(2, r));
   }
 
 	void test_cosine()
@@ -166,7 +178,7 @@ public:
 
 		float r = get_computed_value(source_code, input);
 		
-		ASSERT(2.5 == r);
+		ASSERT(equal(2.5, r));
 		
   }
 	
@@ -182,18 +194,38 @@ public:
 		;
 		
 		input_t input;
-		input += 1,0,0; 
+		input += 0,0,0; 
 
 		float r = get_computed_value(source_code, input);
 		
-		ASSERT(0.0 == r);
+		ASSERT(equal(0, r));
+  }
+
+	void test_sin_cos_float()
+  {
+		std::string source_code =
+		"float my_function(a, b)"
+		"{"
+		""
+		"	return cos(a)*sin(0.5)+b;"
+		""
+		"}"
+		;
+		
+		input_t input;
+		input += 0,2; 
+
+		float r = get_computed_value(source_code, input);
+		
+		ASSERT(equal(2.47942554, r));
   }
 	
+#if 0
 	void test_simple()
   {		
 		typedef std::string::const_iterator iterator_type;
     symbols<char, function_info> functions;
-    std::vector<int> code;
+    code_t code;
     statement<iterator_type> prog(code, functions);
 
 		std::string source_code =
@@ -232,6 +264,8 @@ public:
 		
 		ASSERT(0. == r);
   }
+#endif
+	
 };
 
 REGISTER_FIXTURE(mini_test)
