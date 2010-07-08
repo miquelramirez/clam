@@ -18,7 +18,7 @@ program<Iterator>::program(code_t& code)
   , code(code)
   , statement_(code, functions)
   , add_function(function_adder(functions))
-  , state_reset(function_state_reset(code, statement_.vars, statement_.nvars))
+  , state_reset(function_state_reset(code, statement_.vars, statement_.nvars, names))
   , op(code)
 {
     bool& has_return = statement_.has_return;
@@ -32,7 +32,6 @@ program<Iterator>::program(code_t& code)
     function =
             (
                 lit("void")                     [ref(has_return) = false]
-            //|   lit("int")                      [ref(has_return) = true]
             |   lit("float")                      [ref(has_return) = true]
             )
         >>  !functions                          // no duplicate functions!
