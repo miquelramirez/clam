@@ -64,6 +64,8 @@ int main(int argc, char **argv)
             return 1;
         }
 
+				std::cout << "nvars=" << prog.get_nvars() << std::endl;
+				
         int nargs = argc-2;
         if (f->arity != nargs)
         {

@@ -44,6 +44,7 @@ typedef std::vector<operand_t> frame_t;
 typedef std::vector<operand_t> stack_t;
 
 typedef symbols<char, operand_t> vars_t;
+typedef std::vector<std::string> var_names_t;
 
 struct function_info;
 typedef symbols<char, function_info> functions_t;
@@ -246,15 +247,38 @@ struct function_state_reset
     function_state_reset(
         code_t& code
       , vars_t& vars
-      , int& nvars)
+      , int& nvars
+			, var_names_t& names)
       : code(code)
       , vars(vars)
       , nvars(nvars)
+			, names(names)
     {
     }
+		
+		// add all var names for later reference
+		struct get
+		{
+				get(var_names_t& names)
+				: names(names)
+				{
+				}
+
+				template <typename String, typename Data>
+				void operator()(String const& s, Data const& data)
+				{
+						//std::cout << "var=" << s << std::endl;
+						names.push_back(s);
+				}
+
+				var_names_t& names;
+		};
+
 
     void operator()(int address) const
     {
+				vars.for_each(get(names));
+			
         code[address+1] = nvars;
         nvars = 0; // reset
         vars.clear(); // reset
@@ -263,6 +287,7 @@ struct function_state_reset
     code_t& code;
     vars_t& vars;
     int& nvars;
+		var_names_t& names;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -345,6 +370,7 @@ struct statement : grammar<Iterator, white_space<Iterator> >
 
     function<var_adder> add_var;
     function<compile_op> op;
+		
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -375,6 +401,9 @@ struct program : grammar<Iterator, white_space<Iterator> >
     boost::phoenix::function<function_adder> add_function;
     boost::phoenix::function<function_state_reset> state_reset;
     boost::phoenix::function<compile_op> op;
+		
+		var_names_t names;
+		var_names_t const& get_var_names()  const { return names; }
 };
 
 #endif

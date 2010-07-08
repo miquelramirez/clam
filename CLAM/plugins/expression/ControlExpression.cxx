@@ -22,18 +22,22 @@
 #include <CLAM/ProcessingFactory.hxx>
 
 #include "main.hpp"
+#include <vector>
 
 namespace CLAM
 {
-namespace Hidden
+	
+namespace 
 {
-	static const char * metadata[] = {
-		"key", "ControlExpression",
-		"category", "[plugin] Expression compiler",
-		"description", "ControlExpression",
-		0
-	};
-	static FactoryRegistrator<ProcessingFactory, ControlExpression> reg = metadata;
+	
+static const char * metadata[] = {
+	"key", "ControlExpression",
+	"category", "[plugin] Expression compiler",
+	"description", "ControlExpression",
+	0
+};
+static FactoryRegistrator<ProcessingFactory, ControlExpression> reg = metadata;
+
 }
 
 ControlExpression::ControlExpression( const Config& cfg ) 
@@ -60,28 +64,15 @@ bool ControlExpression::ConcreteConfigure( const ProcessingConfig& cfg )
 	// assign the new byte code stack so we can use it in Do()
 	_code = code;
 	
-	// use arity (and variable names??) from expression for portnr and name
-	std::string fmain("main");
-	std::string::iterator fbegin = fmain.begin();
-	function_info* f = prog.functions.lookup->find(fbegin, fmain.end());
-	if (f == 0)
-	{
-		return AddConfigErrorMessage("Error: there has to be a function called 'main' ");
-	}
-		
+	// use arity and variable names from expression for portnr and name
+	var_names_t names = prog.get_var_names();
+	
 	_inControls.clear();
-	for (int i = 0; i < f->arity; ++i)
-	{
-		char id = 97 + i; // start with 'a'
-		std::stringstream ss;
-		ss << id;
-		_inControls.push_back(InControlPtr(new FloatInControl(ss.str(), this)));
-	}
+	for (int i = 0; i < names.size(); ++i)
+		_inControls.push_back(InControlPtr(new FloatInControl(names[i], this)));
 
-	_outControls.clear();
-	std::stringstream ss;
-	ss << "result";
-	_outControls.push_back(OutControlPtr(new FloatOutControl(ss.str(), this)));
+	if (_outControls.size() == 0)
+		_outControls.push_back(OutControlPtr(new FloatOutControl("result", this)));
 	
 	return true; 		
 }
