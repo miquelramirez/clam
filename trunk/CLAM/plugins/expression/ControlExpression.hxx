@@ -28,8 +28,6 @@ private:
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (Config, 1, ProcessingConfig);
-		//DYN_ATTRIBUTE ( 0, public, unsigned int, NrOfInports);
-		//DYN_ATTRIBUTE ( 1, public, unsigned int, NrOfOutports);
 		DYN_ATTRIBUTE ( 0, public, TextBlock, Expression);
 
 	protected:
@@ -37,8 +35,6 @@ private:
 		{
 			AddAll();
 			UpdateData();
-			//SetNrOfInports( 3 );
-			//SetNrOfOutports( 1 );
 			SetExpression( 
 				"float main(a, b, c)\n"
 				"{\n"
@@ -54,8 +50,6 @@ private:
 	typedef boost::shared_ptr<FloatInControl> InControlPtr;
 	typedef std::vector<InControlPtr> InControls;
 	InControls _inControls;
-	typedef std::vector<TData> InControlValues;
-	InControlValues _inControlValues;
 	
 	typedef boost::shared_ptr<FloatOutControl> OutControlPtr;
 	typedef std::vector<OutControlPtr> OutControls;
@@ -64,6 +58,9 @@ private:
 	vmachine _mach;             
 	code_t _code;   
 
+protected:
+	bool ConcreteConfigure( const ProcessingConfig& cfg ); 
+
 public:
 	ControlExpression( const Config& cfg = Config());
 
@@ -71,9 +68,6 @@ public:
 	const ProcessingConfig& GetConfig() const { return _config; }
 	
 	bool Do();
-		
-protected:
-	bool ConcreteConfigure( const ProcessingConfig& cfg ); 
 };
 
 }

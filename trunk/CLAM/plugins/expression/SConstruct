@@ -54,7 +54,7 @@ if sys.platform == "win32" or env['crossmingw'] :
 	env.AppendUnique(LIBS=['pthread'])
 	env.ParseConfig('PKG_CONFIG_PATH=%s pkg-config --cflags --libs sndfile'%os.path.join(env['sandbox_path'],'local','lib','pkgconfig'))
 
-env.Append( CCFLAGS=['-g','-Wall'] )
+env.Append( CCFLAGS=['-O3','-Wall'] )
 
 sources = [s for s in sources if "main.cpp" not in s]
 sources += ["ControlExpression.cxx"]

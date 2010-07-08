@@ -29,14 +29,14 @@ bool compile(Grammar const& prog, std::string const& expr)
     if (r && iter == end)
     {
         std::cout << "-------------------------\n";
-        std::cout << "Parsing succeeded\n";
+        std::cout << "Parsing succeeded\n\n" << expr;
         std::cout << "-------------------------\n";
         return true;
     }
     else
     {
         std::cout << "-------------------------\n";
-        std::cout << "Parsing failed\n";
+        std::cout << "Parsing failed\n\n" << expr;
         std::cout << "-------------------------\n";
         return false;
     }
