@@ -88,8 +88,8 @@ class vmachine
 {
 public:
 
-    vmachine(unsigned stackSize = 4096) // lower this to 16 or so to for redeable debugging
-      : stack(stackSize)
+    vmachine(unsigned stack_size = 4096) // lower this to 16 or so to for redeable debugging
+		: stack(stack_size)
     {
     }
 
@@ -98,7 +98,7 @@ public:
       , code_t::const_iterator pc     // program counter
       , frame_t::iterator frame_ptr   // start of arguments and locals
     );
-
+		
     stack_t stack;
 };
 

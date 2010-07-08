@@ -28,47 +28,40 @@ bool ControlExpression::ConcreteConfigure( const ProcessingConfig& cfg )
 	typedef std::string::const_iterator iterator_type;
 	typedef program<iterator_type> program;
 	
-	program prog(_code); 
+	code_t code;
+	program prog(code); 
 	std::string const& source_code = _config.GetExpression();
 	
 	if (!compile(prog, source_code))
 	{
-		return AddConfigErrorMessage(
-			"Sorry, could not compile your function: "
-			+ source_code);
+		return AddConfigErrorMessage("Sorry, could not compile your function");
 	}
+	
+	// assign the new byte code stack so we can use it in Do()
+	_code = code;
 	
 	// use arity (and variable names??) from expression for portnr and name
 	std::string fmain("main");
 	std::string::iterator fbegin = fmain.begin();
 	function_info* f = prog.functions.lookup->find(fbegin, fmain.end());
 	if (f == 0)
-		return AddConfigErrorMessage("Error: main function not defined");
-	
-	//int nrOfInPorts = _config.GetNrOfInports();
-	int nrOfInPorts = f->arity;
-	
+	{
+		return AddConfigErrorMessage("Error: there has to be a function called 'main' ");
+	}
+		
 	_inControls.clear();
-	for (int i = 0; i < nrOfInPorts; ++i)
+	for (int i = 0; i < f->arity; ++i)
 	{
 		char id = 97 + i; // start with 'a'
 		std::stringstream ss;
 		ss << id;
 		_inControls.push_back(InControlPtr(new FloatInControl(ss.str(), this)));
 	}
-	
-	_inControlValues.resize(nrOfInPorts);
-	
-	//int nrOfOutPorts = _config.GetNrOfOutports();
-	int nrOfOutPorts = 1;
 
 	_outControls.clear();
-	for (int i = 0; i < nrOfOutPorts; ++i)
-	{
-		std::stringstream ss;
-		ss << "result";
-		_outControls.push_back(OutControlPtr(new FloatOutControl(ss.str(), this)));
-	}
+	std::stringstream ss;
+	ss << "result";
+	_outControls.push_back(OutControlPtr(new FloatOutControl(ss.str(), this)));
 	
 	return true; 		
 }
@@ -76,11 +69,10 @@ bool ControlExpression::ConcreteConfigure( const ProcessingConfig& cfg )
 bool ControlExpression::Do()
 {
 	for (unsigned i = 0; i < _inControls.size(); ++i)
-		_inControlValues[i] = _inControls[i]->GetLastValue();
-	
-	_mach.stack = _inControlValues;
+		_mach.stack[i] = _inControls[i]->GetLastValue();
+
 	float r = _mach.execute(_code, _code.begin(), _mach.stack.begin());
-	
+
 	_outControls[0]->SendControl(r);
 	
 	return true;
