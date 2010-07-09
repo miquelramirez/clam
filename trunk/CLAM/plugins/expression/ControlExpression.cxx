@@ -67,12 +67,18 @@ bool ControlExpression::ConcreteConfigure( const ProcessingConfig& cfg )
 	// use arity and variable names from expression for portnr and name
 	var_names_t names = prog.get_var_names();
 	
-	_inControls.clear();
-	for (int i = 0; i < names.size(); ++i)
-		_inControls.push_back(InControlPtr(new FloatInControl(names[i], this)));
-
+	//  we might use the (main) function name as out port name
 	if (_outControls.size() == 0)
 		_outControls.push_back(OutControlPtr(new FloatOutControl("result", this)));
+	
+	if (_inControls.size() == names.size()) // what if the names changed?
+		return true;
+	
+	unsigned oldSize = _inControls.size();
+	_inControls.resize(names.size());
+
+	for (unsigned port = oldSize; port < names.size(); ++port)
+		_inControls[port] = InControlPtr(new FloatInControl(names[port], this));
 	
 	return true; 		
 }
