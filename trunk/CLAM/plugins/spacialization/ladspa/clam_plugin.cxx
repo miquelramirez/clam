@@ -48,6 +48,7 @@ CLAM_EMBEDDED_FILE(vbap15_shorter_distance,"vbap15_shorter_distance.clamnetwork"
 //CLAM_EMBEDDED_FILE(vbap21,"vbap21.clamnetwork")
 CLAM_EMBEDDED_FILE(vbap22,"vbap22.clamnetwork")
 CLAM_EMBEDDED_FILE(vbap22_simplified,"vbap22_simplified.clamnetwork")
+CLAM_EMBEDDED_FILE(vbap22_pressure,"vbap22_pressure.clamnetwork")
 
 CLAM_EMBEDDED_FILE(decoded_bformat15,"decoded_bformat15.clamnetwork")
 
@@ -147,6 +148,10 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 
 	static CLAM::LadspaNetworkExporter n7622(library, vbap22_simplified, 7622,
 			"id_vbap_22_simplified", "vbap22_simplified",
+			"BarcelonaMedia-Audio", "GNU GPL");
+
+	static CLAM::LadspaNetworkExporter n8622(library, vbap22_pressure, 8622,
+			"id_vbap_22_pressure", "vbap22_pressure",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
 	static CLAM::LadspaNetworkExporter n2014(library, bformat14, 2014,
