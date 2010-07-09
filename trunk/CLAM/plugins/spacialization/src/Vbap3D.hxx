@@ -449,6 +449,10 @@ public:
 				+ zs*ce2*sin(a1-a2)
 				)
 			;
+
+		// WARNING: the gains would be all negative. It should be divided by a negative denominator making them positive, 
+		// but as the denominator dissapeared after a simplification, then the final gains are the absolute value of these.
+		
 		float normalization = 1. / sqrt(g1*g1 + g2*g2 + g3*g3);
 		g1 = fabs(g1) * normalization;
 		g2 = fabs(g2) * normalization;

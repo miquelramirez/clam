@@ -454,6 +454,9 @@ public:
 				+ zs*ce2*sin(a1-a2)
 				)
 			;
+
+		// WARNING: the gains would be all negative. It should be divided by a negative denominator making them positive, 
+		// but as the denominator dissapeared after a simplification, then the final gains are the absolute value of these.
 		g1 = fabs(g1);
 		g2 = fabs(g2);
 		g3 = fabs(g3);
