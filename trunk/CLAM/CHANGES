@@ -8,6 +8,12 @@
  * NetworkPlayers and backends
    * Network backends for plugins are NetworkPlayers now
    * Common Backend code to inspect the network moved to base NetworkPlayer
+ * OfflinePlayer accepts a control sequence script, containing in each line: 
+   SMPTE controlSourceName and value.
+ * Added In/OutControl/PortBase::SetName to be able to change the name of a 
+   connection without disconnecting it.
+ * New plugins:
+   * Expression: Tranforms float control values using functions in C-like syntax.
 
 2010-03-05 CLAM 1.4.0
 '3D molluscs in the space release'
