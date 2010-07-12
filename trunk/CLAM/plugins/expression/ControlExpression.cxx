@@ -23,6 +23,7 @@
 
 #include "main.hpp"
 #include <vector>
+#include <cmath>
 
 namespace CLAM
 {
@@ -57,9 +58,7 @@ bool ControlExpression::ConcreteConfigure( const ProcessingConfig& cfg )
 	std::string const& source_code = _config.GetExpression();
 	
 	if (!compile(prog, source_code))
-	{
 		return AddConfigErrorMessage("Sorry, could not compile your function");
-	}
 	
 	// assign the new byte code stack so we can use it in Do()
 	_code = code;
@@ -71,16 +70,19 @@ bool ControlExpression::ConcreteConfigure( const ProcessingConfig& cfg )
 	if (_outControls.size() == 0)
 		_outControls.push_back(OutControlPtr(new FloatOutControl("result", this)));
 	
-	if (_inControls.size() == names.size()) // what if the names changed?
-		return true;
-	
 	unsigned oldSize = _inControls.size();
 	_inControls.resize(names.size());
 
+	// rename re-used ports
+	unsigned reusedPorts = std::min(oldSize, (unsigned)names.size());
+	for (unsigned port = 0; port < reusedPorts; ++port)
+		_inControls[port]->SetName(names[port]);
+
+	// create the new ones
 	for (unsigned port = oldSize; port < names.size(); ++port)
 		_inControls[port] = InControlPtr(new FloatInControl(names[port], this));
-	
-	return true; 		
+
+	return true; 			
 }
 
 bool ControlExpression::Do()

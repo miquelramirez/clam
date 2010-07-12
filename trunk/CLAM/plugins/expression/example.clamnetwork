@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed Network">
+
+  <processing id="ControlExpression" position="125,171" size="174,57" type="ControlExpression">
+    <Expression>float main(a, b, c)
+{
+    return (a + b) - c;
+}
+</Expression>
+  </processing>
+
+</network>
