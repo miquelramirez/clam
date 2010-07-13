@@ -41,6 +41,7 @@ public:
 	OutPortBase( const std::string & name = "unnamed out port", Processing * proc = 0 );
 	virtual ~OutPortBase();
 	const std::string & GetName();
+	void SetName(const std::string & name);
 	Processing * GetProcessing();
 	InPortsList::iterator BeginVisuallyConnectedInPorts();
 	InPortsList::iterator EndVisuallyConnectedInPorts();

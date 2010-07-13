@@ -43,7 +43,7 @@ void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
 		mSources.push_back( &added );
 		return;
 	}
-	if (added.GetNInPorts()==0 && added.GetNOutPorts()==0) //isolated processings
+	if (added.GetNInPorts()==0 && added.GetNOutPorts()==0) // port-less, for example ControlSource/Sink
 	{
 		mSources.push_back( &added);
 		return;
@@ -70,7 +70,7 @@ void NaiveFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 		mSources.remove( &removed );
 		return;
 	}
-	if (removed.GetNInPorts()==0 && removed.GetNOutPorts()==0) //isolated processings
+	if (removed.GetNInPorts()==0 && removed.GetNOutPorts()==0) // port-less, for example ControlSource/Sink
 	{
 		mSources.remove( &removed );
 		return;

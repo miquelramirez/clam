@@ -42,6 +42,8 @@ namespace CLAM {
 		virtual ~OutControlBase();
 		/// @returns The unique name that the control takes within the processing.
 		const std::string& GetName() const { return mName; }
+		/// Sets the unique name of a control.
+		void SetName(const std::string & name) { mName=name; }
 		/// @returns The hosting processing
 		Processing * GetProcessing() const { return mProcessing; }
 		/// @returns True if there is any linked out control

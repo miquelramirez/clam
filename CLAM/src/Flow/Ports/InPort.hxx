@@ -41,6 +41,7 @@ public:
 	OutPortBase * GetVisuallyConnectedOutPort(); 
 	void SetVisuallyConnectedOutPort( OutPortBase* );
 	const std::string & GetName();
+	void SetName(const std::string & name);
 	bool HasProcessing();
 	Processing * GetProcessing();
 	virtual bool CanConsume()=0;

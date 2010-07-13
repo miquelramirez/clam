@@ -36,7 +36,6 @@ class ControlSequencer
 
 	double SmpteToMs(const std::string& mtc)
 	{
-std::cout << "--------"<< mtc<< std::endl;
 		std::vector<std::string> elems;
 		std::stringstream ss(mtc);
 		std::string item;
@@ -149,7 +148,6 @@ public:
 	{
 	}
  
-	// maybe TODO: interpolation between (large) gaps in coreo events
 	void UpdateControls(int buffernr)
 	{
 		double currentTimeInMillisec = 
@@ -189,14 +187,12 @@ public:
 			CLAM::Processing& control = _net.GetProcessing(controlName);
 			CLAM::ControlSource* controlSource = dynamic_cast<CLAM::ControlSource*>(&control);
 			const double& value = _coreoEvent->values[0];
-			std::cout << " value=" << value;
+			//std::cout << " value=" << value;
 
 			// TODO: support sources with multiple out controls
 			controlSource->Do(value);
-
 			//std::cout << std::endl;
 		}
-
 		//std::cout << "current_buffer=" << buffernr
 		//					<< " currentTimeInMillisec=" << currentTimeInMillisec
 		//					<< " sample=" << buffernr * framesize
