@@ -46,6 +46,10 @@ const std::string & OutPortBase::GetName()
 {
 	return mName;
 }
+void OutPortBase::SetName(const std::string & name) 
+{ 
+	mName=name; 
+}
 
 Processing * OutPortBase::GetProcessing()
 {

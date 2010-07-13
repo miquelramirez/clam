@@ -55,6 +55,10 @@ const std::string & InPortBase::GetName()
 {
 	return mName;
 }
+void InPortBase::SetName(const std::string & name)
+{ 
+	mName=name; 
+}
 
 bool InPortBase::HasProcessing()
 {
