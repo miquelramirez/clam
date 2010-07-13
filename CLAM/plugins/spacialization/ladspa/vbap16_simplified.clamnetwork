@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans'; font-size:10pt;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="01" position="600,80" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="02" position="664,86" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="03" position="728,92" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="04" position="792,98" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="05" position="856,104" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="06" position="920,110" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="07" position="600,175" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="08" position="664,181" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="09" position="728,187" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="1 Audio Input" position="-51,163" size="143,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="10" position="792,193" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="11" position="856,199" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="12" position="920,205" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="13" position="600,270" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="14" position="664,276" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="15" position="728,282" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="16" position="792,296" size="128,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="Amuth" position="57,9" size="113,58" type="ControlSource">
+    <MinValue>-360</MinValue>
+    <MaxValue>360</MaxValue>
+    <DefaultValue>0</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+    <NrOfControls>1</NrOfControls>
+  </processing>
+
+  <processing id="Elevation" position="270,9" size="118,58" type="ControlSource">
+    <MinValue>-89.99</MinValue>
+    <MaxValue>89.99</MaxValue>
+    <DefaultValue>-89.99</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+    <NrOfControls>1</NrOfControls>
+  </processing>
+
+  <processing id="Vbap3D" position="367,150" size="108,382" type="Vbap3D">
+    <SpeakerLayout>/usr/local/share/clam/layouts/16.layout</SpeakerLayout>
+    <Triangulation>/usr/local/share/clam/layouts/16.triangulation</Triangulation>
+    <IgnoreLabels>1</IgnoreLabels>
+  </processing>
+
+  <port_connection>
+    <out>1 Audio Input.1</out>
+    <in>Vbap3D.W</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.01</out>
+    <in>01.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.02</out>
+    <in>02.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.03</out>
+    <in>03.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.04</out>
+    <in>04.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.05</out>
+    <in>05.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.06</out>
+    <in>06.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.07</out>
+    <in>07.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.08</out>
+    <in>08.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.09</out>
+    <in>09.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.10</out>
+    <in>10.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.11</out>
+    <in>11.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.12</out>
+    <in>12.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.13</out>
+    <in>13.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.14</out>
+    <in>14.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.15</out>
+    <in>15.1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Vbap3D.16</out>
+    <in>16.1</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Amuth.output</out>
+    <in>Vbap3D.azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Elevation.output</out>
+    <in>Vbap3D.elevation</in>
+  </control_connection>
+
+</network>
