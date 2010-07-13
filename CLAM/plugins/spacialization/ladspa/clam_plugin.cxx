@@ -29,7 +29,7 @@ CLAM_EMBEDDED_FILE(bformat_to_22_embededNetwork,"../example-data/bformat_to_22.c
 
 CLAM_EMBEDDED_FILE(bformat14,"bformat14.clamnetwork")
 CLAM_EMBEDDED_FILE(bformat15,"bformat15.clamnetwork")
-//CLAM_EMBEDDED_FILE(bformat16,"bformat16.clamnetwork")
+CLAM_EMBEDDED_FILE(bformat16,"bformat16.clamnetwork")
 //CLAM_EMBEDDED_FILE(bformat17,"bformat17.clamnetwork")
 //CLAM_EMBEDDED_FILE(bformat18,"bformat18.clamnetwork")
 //CLAM_EMBEDDED_FILE(bformat19,"bformat19.clamnetwork")
@@ -112,7 +112,6 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"bformat2cube", "BFormat to Cube for 8 speakers",
 			"BarcelonaMedia-Audio", "GNU GPL");
 */
-
 	static CLAM::LadspaNetworkExporter n1115(library, vbap15_shorter_distance, 1115,
 			"id_vbap_15_shorter_distance", "vbap15_shorter_distance",
 			"BarcelonaMedia-Audio", "GNU GPL");
@@ -165,10 +164,10 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 	static CLAM::LadspaNetworkExporter n2015(library, bformat15, 2015,
 			"id_bformat_15", "bformat15",
 			"BarcelonaMedia-Audio", "GNU GPL");
-	/*
 	static CLAM::LadspaNetworkExporter n2016(library, bformat16, 2016,
 			"id_bformat_16", "bformat16",
 			"BarcelonaMedia-Audio", "GNU GPL");
+	/*
 	static CLAM::LadspaNetworkExporter n2017(library, bformat17, 2017,
 			"id_bformat_17", "bformat17",
 			"BarcelonaMedia-Audio", "GNU GPL");
