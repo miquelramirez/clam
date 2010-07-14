@@ -4,8 +4,8 @@
   <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans'; font-size:10pt;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
   <processing id="01" position="600,80" size="128,111" type="AudioSink">
     <NSinks>1</NSinks>
@@ -117,11 +117,20 @@ p, li { white-space: pre-wrap; }
     <NrOfControls>1</NrOfControls>
   </processing>
 
-  <processing id="Vbap3DExperimental" position="367,150" size="108,382" type="Vbap3DExperimental">
+  <processing id="NormalizationExponent" position="374,20" size="182,54" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>10</MaxValue>
+    <DefaultValue>1</DefaultValue>
+    <Step>0.1</Step>
+    <UnitName>-</UnitName>
+    <NrOfControls>1</NrOfControls>
+  </processing>
+
+  <processing id="Vbap3DExperimental" position="367,150" size="170,382" type="Vbap3DExperimental">
     <SpeakerLayout>/usr/local/share/clam/layouts/22.layout</SpeakerLayout>
     <Triangulation>/usr/local/share/clam/layouts/22.triangulation</Triangulation>
     <IgnoreLabels>1</IgnoreLabels>
-    <NormalizationExponent>1.</NormalizationExponent>
+    <NormalizationExponent>1</NormalizationExponent>
   </processing>
 
   <port_connection>
@@ -247,6 +256,11 @@ p, li { white-space: pre-wrap; }
   <control_connection>
     <out>Elevation.output</out>
     <in>Vbap3DExperimental.elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>NormalizationExponent.output</out>
+    <in>Vbap3DExperimental.normalization_exponent</in>
   </control_connection>
 
 </network>
