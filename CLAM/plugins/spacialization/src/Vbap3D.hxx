@@ -401,7 +401,7 @@ public:
 		// change triangle
 		if (_currentTriangle != newTriangle) // changed triangle
 		{
-			std::cout << " changing triangle: " << _currentTriangle << "->" << newTriangle << " " << std::flush;
+//			std::cout << " changing triangle: " << _currentTriangle << "->" << newTriangle << " " << std::flush;
 			_currentTriangle = newTriangle;
 //std::cout << " speakers: "
 //	<< _triangulation.triangle(_currentTriangle)[0] << " " 
