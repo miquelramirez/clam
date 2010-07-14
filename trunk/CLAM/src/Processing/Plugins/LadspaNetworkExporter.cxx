@@ -269,7 +269,7 @@ void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 	for (unsigned i=0; i<GetNControlSinks(); i++)
 	{
 		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_CONTROL);
-		names[currentport] = LadspaLibrary::dupstr( ControlSourceName(i).c_str() );
+		names[currentport] = LadspaLibrary::dupstr( ControlSinkName(i).c_str() );
 		rangehints[currentport].LowerBound=(LADSPA_Data)0;
 		rangehints[currentport].UpperBound=(LADSPA_Data)1000;
 		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE);
