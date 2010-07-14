@@ -14,6 +14,10 @@
    connection without disconnecting it.
  * New plugins:
    * Expression: Tranforms float control values using functions in C-like syntax.
+ * Examples:
+   * TickExtractor fixed assert failures when using in controls as out controls
+   * TickExtractor now depends on libsamplerate instead of the ancient 
+     unavailable libresample 0.13 that had to be included in the sources.
 
 2010-03-05 CLAM 1.4.0
 '3D molluscs in the space release'
