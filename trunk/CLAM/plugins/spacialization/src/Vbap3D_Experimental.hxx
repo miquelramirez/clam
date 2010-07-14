@@ -58,6 +58,7 @@ private:
 	OutPorts _outputs;
 	CLAM::FloatInControl _azimuth;
 	CLAM::FloatInControl _elevation;
+	CLAM::FloatInControl _controlNormalizationExponent;
 	Config _config;
 	std::vector<Vector3D> _speakersPositions;
 	int _currentTriangle;
@@ -158,6 +159,7 @@ public:
 		, _w("W", this)
 		, _azimuth("azimuth", this) // angle in degrees
 		, _elevation("elevation", this) // angle in degrees
+		, _controlNormalizationExponent("normalization_exponent",this)
 		, _currentTriangle(0)
 		, _triangulation(_layout, _speakersPositions)
 	{
@@ -328,6 +330,7 @@ public:
 
 		_elevation.DoControl(0.);
 		_azimuth.DoControl(0.);
+		_controlNormalizationExponent.DoControl(_normalizationExponent);
 		_w.SetSize(buffersize);
 		_w.SetHop(buffersize);
 		return true;
@@ -384,6 +387,8 @@ public:
 
 	bool Do()
 	{
+
+		if (not _controlNormalizationExponent.HasBeenRead()) _normalizationExponent = _controlNormalizationExponent.GetLastValue();
 		CLAM::Orientation ori = CLAM::Orientation(_azimuth.GetLastValue(), _elevation.GetLastValue());
 		ori.normalize();
 		const float azimuthDegrees = ori.azimuth;
