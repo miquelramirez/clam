@@ -217,7 +217,10 @@ def generate(env):
     """Add Builders and construction variables for qt to an Environment."""
 
     def locateQt4Command(env, command) :
-        # TODO 'pkg-config --variable %s_location QtCore'%command
+        fullpath = env.backtick(
+            'pkg-config --variable %s_location QtCore'%command).strip()
+        if fullpath and os.access(fullpath, os.X_OK) :
+                return fullpath
         qtdir = env.subst(env['QTDIR'])
         suffixes = [
             '-qt4',
@@ -461,8 +464,6 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
             pcmodules.remove("QtAssistant")
             pcmodules.append("QtAssistantClient")
         self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
-        # TODO: using pkg-config QtCore --variable=moc_location
-        # TODO: using pkg-config QtCore --variable=uic_location
         self["QT4_MOCCPPPATH"] = self["CPPPATH"]
         return
     if sys.platform == "win32" or crosscompiling :
