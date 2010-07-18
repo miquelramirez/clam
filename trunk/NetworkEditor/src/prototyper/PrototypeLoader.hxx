@@ -33,7 +33,6 @@ private:
 	QPushButton * _pauseButton;
 	QPushButton * _stopButton;
 
-//	std::list<CLAM::VM::NetPlot * > mPortMonitors; //QT4PORT
 public:
 	PrototypeLoader();
 	~PrototypeLoader();
@@ -61,11 +60,7 @@ private:
 	void ConnectWidgetsUsingControlBounds();
 	void ConnectWidgetsWithAudioFileReaders();
 	void ConnectWidgetsWithBooleanControls();
-	void ConnectWidgetsWithProgressControls();
 	
-	template < typename PlotClass, typename MonitorType >
-	void ConnectWidgetsWithPorts(char* prefix, char* plotClassName);
-
 	bool reportIfMissingProcessing(const std::string & processingName);
 	bool reportIfMissingInControl(const std::string & fullControlName);
 	bool reportIfMissingOutPort(const std::string & fullControlName);
