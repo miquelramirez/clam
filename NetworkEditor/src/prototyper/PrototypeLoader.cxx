@@ -88,12 +88,20 @@ namespace CLAM
 class PrototypeBinder
 {
 public:
+	typedef std::list<PrototypeBinder*> Binders;
+	static Binders & binders()
+	{
+		static Binders theBinders;
+		return theBinders;
+	}
+
 	PrototypeBinder()
 	{
-		PrototypeLoader::binders().push_back(this);
+		binders().push_back(this);
 	}
 	virtual ~PrototypeBinder() {}
 	virtual void bindWidgets(Network & network, QWidget * userInterface) =0;
+
 protected:
 	std::string GetNetworkNameFromWidgetName(const char * widgetName)
 	{
@@ -179,36 +187,6 @@ public:
 	}
 };
 
-template <typename PlotClass, typename MonitorType>
-class ProgressControlBinder : public PrototypeBinder
-{
-	const char * _prefix;
-	const char * _plotClassName;
-public:
-	ProgressControlBinder(const char* prefix, const char* plotClassName)
-		: _prefix(prefix)
-		, _plotClassName(plotClassName)
-	{}
-	
-	virtual void bindWidgets(Network & network, QWidget * userInterface)
-	{
-		std::cout << "Looking for " << _plotClassName << " widgets..." << std::endl;
-		QList<QWidget*> widgets = userInterface->findChildren<QWidget*>(QRegExp(_prefix));
-		for (typename QList<QWidget*>::Iterator it=widgets.begin();
-			it!=widgets.end();
-			it++)
-		{
-			QWidget * aWidget = *it;
-			if (aWidget->metaObject()->className() != std::string(_plotClassName)) continue;
-			
-			MonitorType * portMonitor = new MonitorType;
-			std::string monitorName = network.GetUnusedName("PrototyperProgressControl");
-			network.AddProcessing(monitorName, portMonitor);
-			((PlotClass*) aWidget)->SetProcessing(portMonitor);
-		}
-	}	
-};
-
 void ControlSourceSender::send(int value)
 {
 	_source->Do(value/100.);
@@ -277,9 +255,6 @@ static MonitorBinder<CLAM::VM::MelSpectrumView,MelSpectrumViewMonitor> melSpectr
 static MonitorBinder<SegmentationView,SegmentationViewMonitor> segmentationBinder
 	("OutPort__.*", "SegmentationView");
 
-static ProgressControlBinder<ProgressControlWidget, ProgressControl> progressControlBinder
-	("ProgressControl__.*", "ProgressControlWidget");
-
 
 class ConfigurationBinder : public PrototypeBinder
 {
@@ -301,6 +276,60 @@ public:
 };
 static ConfigurationBinder configurationBinder;
 
+template <typename PlotClass, typename MonitorType>
+class ProgressControlBinder : public PrototypeBinder
+{
+	const char * _prefix;
+	const char * _plotClassName;
+public:
+	ProgressControlBinder(const char* prefix, const char* plotClassName)
+		: _prefix(prefix)
+		, _plotClassName(plotClassName)
+	{}
+	
+	virtual void bindWidgets(Network & network, QWidget * userInterface)
+	{
+		std::cout << "Looking for " << _plotClassName << " widgets..." << std::endl;
+		QList<QWidget*> widgets = userInterface->findChildren<QWidget*>(QRegExp(_prefix));
+		for (typename QList<QWidget*>::Iterator it=widgets.begin();
+			it!=widgets.end();
+			it++)
+		{
+			QWidget * aWidget = *it;
+			if (aWidget->metaObject()->className() != std::string(_plotClassName)) continue;
+
+			MonitorType * portMonitor = new MonitorType;
+			std::string monitorName = network.GetUnusedName("PrototyperProgressControl");
+			network.AddProcessing(monitorName, portMonitor);
+			dynamic_cast<PlotClass*>(aWidget)->SetProcessing(portMonitor);
+		}
+	}	
+};
+static ProgressControlBinder<ProgressControlWidget, ProgressControl> progressControlBinder
+	("ProgressControl__.*", "ProgressControlWidget");
+
+
+class ProgressControlBinder2 : public PrototypeBinder
+{
+public:
+	virtual void bindWidgets(Network & network, QWidget * userInterface)
+	{
+		QList<QWidget*> widgets = userInterface->findChildren<QWidget*>(QRegExp("ProgressControl__.*"));
+		for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
+		{
+			QWidget * aWidget = *it;
+			std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(17).toAscii());
+			std::cout << "* Progress Control: " << fullControlName << std::endl;
+
+			CLAM::Processing * sender = ((ProgressControlWidget *) aWidget)->GetProcessing();
+			CLAM::Processing & receiver = network.GetProcessing(fullControlName);
+			ConnectControls(*sender, "Progress Jump", receiver, "Current Time Position (%)");
+			ConnectControls(receiver, "Current Time Position", *sender, "Progress Update");
+		}
+	}
+};
+static ProgressControlBinder2 progressControlBinder2;
+
 
 PrototypeLoader::PrototypeLoader()
 	: _player(0)
@@ -315,8 +344,7 @@ PrototypeLoader::PrototypeLoader()
 
 PrototypeLoader::Binders & PrototypeLoader::binders()
 {
-	static Binders theBinders;
-	return theBinders;
+	return PrototypeBinder::binders();
 }
 void PrototypeLoader::reportWarning(const QString & title, const QString & message)
 {
@@ -490,7 +518,6 @@ void PrototypeLoader::ConnectUiWithNetwork()
 	ConnectWidgetsUsingControlBounds();
 	ConnectWidgetsWithBooleanControls();
 	ConnectWidgetsWithAudioFileReaders();
-	ConnectWidgetsWithProgressControls();
 
 	for (Binders::iterator it=binders().begin(); it!=binders().end(); it++)
 		(*it)->bindWidgets(_network, _interface);
@@ -768,46 +795,6 @@ void PrototypeLoader::ConnectWidgetsWithAudioFileReaders()
 	}
 }
 
-void PrototypeLoader::ConnectWidgetsWithProgressControls()
-{
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("ProgressControl__.*"));
-	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
-	{
-		QWidget * aWidget = *it;
-		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(17).toAscii());
-		std::cout << "* Progress Control: " << fullControlName << std::endl;
 
-		CLAM::Processing * sender = ((ProgressControlWidget *) aWidget)->GetProcessing();
-		CLAM::Processing & receiver = _network.GetProcessing(fullControlName);
-		ConnectControls(*sender, "Progress Jump", receiver, "Current Time Position (%)");
-		ConnectControls(receiver, "Current Time Position", *sender, "Progress Update");
-	}
-}
-
-template < typename PlotClass, typename MonitorType>
-void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
-{
-	std::cout << "Looking for " << plotClassName << " widgets..." << std::endl;
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp(prefix));
-	for (typename QList<QWidget*>::Iterator it=widgets.begin();
-			it!=widgets.end();
-		   	it++)
-	{
-		QWidget * aWidget = *it;
-		if (aWidget->metaObject()->className() != std::string(plotClassName)) continue;
-		std::string portName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(9).toAscii());
-		std::cout << "* " << plotClassName << " connected to port " << portName << std::endl;
-
-		if (reportIfMissingOutPort(portName)) continue;
-
-		MonitorType * portMonitor = new MonitorType;
-		std::string monitorName = _network.GetUnusedName("PrototyperMonitor");
-		_network.AddProcessing(monitorName, portMonitor);
-		_network.ConnectPorts(portName, monitorName+".Input");
-		PlotClass * plot = (PlotClass*) aWidget;
-		plot->setDataSource(*portMonitor);
-	}
-}
-	
 } //end namespace CLAM
 
