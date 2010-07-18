@@ -48,6 +48,8 @@
 #include <QtXmlPatterns/QXmlQuery>
 #include <QtCore/QStringList>
 
+//#define AFTER13RELEASE
+
 class PlaybackIndicator : public QLabel
 {
 Q_OBJECT
@@ -89,9 +91,9 @@ public:
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
 #ifdef AFTER13RELEASE
-		QTabWidget * centralTab = new QTabWidget(this);
-		setCentralWidget(centralTab);
-		centralTab->setTabPosition(QTabWidget::South);
+		_centralTab = new QTabWidget(this);
+		setCentralWidget(_centralTab);
+		_centralTab->setTabPosition(QTabWidget::South);
 #endif//AFTER13RELEASE
 //		QScrollArea * scroll = new QScrollArea(this);
 		_canvas = new ClamNetworkCanvas;
@@ -99,9 +101,7 @@ public:
 //		scroll->setWidget(_canvas);
 
 #ifdef AFTER13RELEASE
-		QScrollArea * backendScroll = new QScrollArea(this);
-		centralTab->addTab(scroll, "Network");
-		centralTab->addTab(backendScroll, "Jack");
+		_centralTab->addTab(scroll, "Network");
 #else
 		setCentralWidget(scroll);
 #endif//AFTER13RELEASE
@@ -205,8 +205,8 @@ public:
 
 	bool askUserSaveChanges()
 	{
-		bool goOn = true;
-		bool abort = false;
+		const bool goOn = true;
+		const bool abort = false;
 		if (! _canvas->isChanged()) return goOn;
 		int reply = QMessageBox::question(this, tr("Unsaved changes"),
 				tr("The network has been modified. Do you want to save it?"),
@@ -375,7 +375,7 @@ public:
 				_networkPlayer = jackPlayer;
 #ifdef AFTER13RELEASE
 				_jackCanvas = new ClamNetworkCanvas; // TODO: This should be a JackNetworkCanvas
-				backendScroll->setWidget(_jackCanvas);
+				_centralTab->addTab(_jackCanvas, "Jack");
 #endif//AFTER13RELEASE
 			}
 			else
@@ -660,5 +660,8 @@ private:
 	
 	QDockWidget * _processingTreeDock;
 	NetworkGUI::ProcessingTree * _processingTree;
+#ifdef AFTER13RELEASE
+	QTabWidget * _centralTab;
+#endif//AFTER13RELEASE
 };
 
