@@ -216,7 +216,9 @@ def _detect(env):
 def generate(env):
     """Add Builders and construction variables for qt to an Environment."""
 
-    def locateQt4Command(env, command, qtdir) :
+    def locateQt4Command(env, command) :
+        # TODO 'pkg-config --variable %s_location QtCore'%command
+        qtdir = env.subst(env['QTDIR'])
         suffixes = [
             '-qt4',
             '-qt4.exe',
@@ -248,13 +250,12 @@ def generate(env):
 #    env.SetDefault(
     env.Replace(
         QTDIR  = _detect(env),
-        QT4_BINPATH = os.path.join('$QTDIR', 'bin'),
         # TODO: This is not reliable to QTDIR value changes but needed in order to support '-qt4' variants
-        QT4_MOC = locateQt4Command(env,'moc', env['QTDIR']),
-        QT4_UIC = locateQt4Command(env,'uic', env['QTDIR']),
-        QT4_RCC = locateQt4Command(env,'rcc', env['QTDIR']),
-        QT4_LUPDATE = locateQt4Command(env,'lupdate', env['QTDIR']),
-        QT4_LRELEASE = locateQt4Command(env,'lrelease', env['QTDIR']),
+        QT4_MOC = locateQt4Command(env,'moc'),
+        QT4_UIC = locateQt4Command(env,'uic'),
+        QT4_RCC = locateQt4Command(env,'rcc'),
+        QT4_LUPDATE = locateQt4Command(env,'lupdate'),
+        QT4_LRELEASE = locateQt4Command(env,'lrelease'),
 
         QT4_AUTOSCAN = 1, # Should the qt tool try to figure out, which sources are to be moc'ed?
 
