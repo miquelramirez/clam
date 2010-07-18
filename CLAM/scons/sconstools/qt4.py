@@ -116,7 +116,7 @@ class _Automoc(object):
         # some shortcuts used in the scanner
         splitext = SCons.Util.splitext
         objBuilder = getattr(env, self.objBuilderName)
-
+  
         # some regular expressions:
         # Q_OBJECT detection
         q_object_search = re.compile(r'[^A-Za-z0-9]Q_OBJECT[^A-Za-z0-9]') 
@@ -149,9 +149,9 @@ class _Automoc(object):
                     print "scons: qt: '%s' is no cxx file. Discarded." % str(cpp) 
                 # c or fortran source
                 continue
-            #cpp_contents = comment.sub('', cpp.get_contents())
+            #cpp_contents = comment.sub('', cpp.get_text_contents())
             try:
-                cpp_contents = cpp.get_contents()
+                cpp_contents = cpp.get_text_contents()
             except: continue # may be an still not generated source
             h=None
             for h_ext in header_extensions:
@@ -162,8 +162,8 @@ class _Automoc(object):
                 if h:
                     if debug:
                         print "scons: qt: Scanning '%s' (header of '%s')" % (str(h), str(cpp))
-                    #h_contents = comment.sub('', h.get_contents())
-                    h_contents = h.get_contents()
+                    #h_contents = comment.sub('', h.get_text_contents())
+                    h_contents = h.get_text_contents()
                     break
             if not h and debug:
                 print "scons: qt: no header for '%s'." % (str(cpp))
