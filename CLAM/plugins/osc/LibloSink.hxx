@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cmath>
 #include "lo/lo.h"
+#include <time.h>
 #undef GetClassName
 
 
@@ -35,22 +36,18 @@ protected:
 	SetIPAddress("127.0.0.1");
     };
 };
-class X
-{
-  X(const LibloSinkConfig& = LibloSinkConfig())
-  {
-  }
-};
 
 class LibloSink : public CLAM::Processing
 {
 	typedef LibloSinkConfig Config;
-	lo_address _oscPort;
 	Config _config;
+	FloatInControl _portControlChange;
 	std::vector <InControlBase *> _inControls;
 public:
 
 	LibloSink(const Config& config = Config()) 
+		: _portControlChange("OSC port",this)
+		, maxLatency(0.)
 	{
 		Configure( config );
 	}
@@ -79,6 +76,10 @@ public:
 
 	void SendOSCMessage()
 	{
+		std::ostringstream portString;
+		portString << _portControlChange.GetLastValue();
+		lo_address oscLibloAddress = lo_address_new(_config.GetIPAddress().c_str(), portString.str().c_str());
+
 		lo_message message=lo_message_new();
 		const std::string & typespec = _config.GetOSCTypeSpec();
 		for (unsigned i=0;i<typespec.size();i++)
@@ -102,9 +103,9 @@ public:
 					break;
 			}
 		}
-		if (lo_send_message(_oscPort,_config.GetOscPath().c_str(),message) == -1)
+		if (lo_send_message(oscLibloAddress,_config.GetOscPath().c_str(),message) == -1)
 		{
-			printf("OSC error %d: %s\n", lo_address_errno(_oscPort), lo_address_errstr(_oscPort));
+			printf("OSC error %d: %s\n", lo_address_errno(oscLibloAddress), lo_address_errstr(oscLibloAddress));
 		}
 
 	}
@@ -149,10 +150,7 @@ protected:
 
 		unsigned port = _config.GetServerPort();
 		if (port==0) return AddConfigErrorMessage("No port defined");
-		std::ostringstream portString;
-		portString << port;
-		_oscPort = lo_address_new(_config.GetIPAddress().c_str(), portString.str().c_str());
-
+		_portControlChange.DoControl(port);
 		return true; // Configuration ok
 	}
 
