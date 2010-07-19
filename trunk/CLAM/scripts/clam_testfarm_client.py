@@ -69,7 +69,7 @@ clam.add_subtask( 'List of new commits', [
 		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:x }
 		for repo in repositories if repo not in private_repositories
 	] + [
-		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:'' }
+		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:'No available' }
 		for repo in private_repositories
 	] )
 
