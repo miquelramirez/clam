@@ -8,6 +8,7 @@
  * NetworkPlayers and backends
    * Network backends for plugins are NetworkPlayers now
    * Common Backend code to inspect the network moved to base NetworkPlayer
+   * ControlSources and ControlSinks with multiple controls
  * OfflinePlayer accepts a control sequence script, containing in each line: 
    SMPTE controlSourceName and value.
  * Added In/OutControl/PortBase::SetName to be able to change the name of a 
