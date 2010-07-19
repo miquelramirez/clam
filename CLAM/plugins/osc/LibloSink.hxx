@@ -47,7 +47,6 @@ public:
 
 	LibloSink(const Config& config = Config()) 
 		: _portControlChange("OSC port",this)
-		, maxLatency(0.)
 	{
 		Configure( config );
 	}
