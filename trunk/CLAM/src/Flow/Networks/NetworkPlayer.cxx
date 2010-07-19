@@ -110,7 +110,8 @@ void NetworkPlayer::ReadControlSource(unsigned source, const float * data)
 	if (not data) return;
 	ControlSource * processing =
 		(ControlSource*) _controlSources[source].processing;
-	processing->Do( *data );
+	unsigned port = _controlSources[source].port;
+	processing->Do( *data , port);
 }
 
 void NetworkPlayer::FeedControlSink(unsigned sink, float * data)
@@ -118,7 +119,8 @@ void NetworkPlayer::FeedControlSink(unsigned sink, float * data)
 	if (not data) return;
 	ControlSink * processing =
 		(ControlSink*) _controlSinks[sink].processing;
-	*data = processing->GetControlValue();
+	unsigned port = _controlSinks[sink].port;
+	*data = processing->GetControlValue(port);
 	
 }
 
