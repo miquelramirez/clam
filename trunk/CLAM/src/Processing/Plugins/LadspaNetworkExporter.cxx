@@ -260,6 +260,10 @@ void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		bool isBool = areEquals(conf.GetStep(), 1.) and areEquals(conf.GetMinValue(), -0.5) and areEquals(conf.GetMaxValue(), 0.5);
 		if (isBool) 
 			rangehints[currentport].HintDescriptor |= LADSPA_HINT_TOGGLED;
+		bool isInteger = areEquals(conf.GetStep(), 1.) and areEquals(conf.GetDefaultValue(),int(conf.GetDefaultValue()));
+		if (isInteger)
+			rangehints[currentport].HintDescriptor |= LADSPA_HINT_INTEGER;
+			
 
 		currentport++;
 	}
