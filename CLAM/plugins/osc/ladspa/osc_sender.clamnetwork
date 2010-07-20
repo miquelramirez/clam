@@ -15,7 +15,9 @@ p, li { white-space: pre-wrap; }
     <NSources>1</NSources>
   </processing>
 
-  <processing id="Controls" position="201,54" size="134,54" type="ControlSource">
+  <processing id="Float2IntegerControl" position="161,185" size="168,54" type="Float2IntegerControl"/>
+
+  <processing id="FloatControls" position="353,49" size="134,54" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>300</MaxValue>
     <DefaultValue>0</DefaultValue>
@@ -24,10 +26,19 @@ p, li { white-space: pre-wrap; }
     <NrOfControls>3</NrOfControls>
   </processing>
 
-  <processing id="LibloSink" position="145,407" size="103,54" type="LibloSink">
+  <processing id="IntControl" position="176,51" size="147,54" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>100</MaxValue>
+    <DefaultValue>0</DefaultValue>
+    <Step>1</Step>
+    <UnitName>-</UnitName>
+    <NrOfControls>1</NrOfControls>
+  </processing>
+
+  <processing id="LibloSink" position="145,407" size="114,54" type="LibloSink">
     <OscPath>/clam/target</OscPath>
     <ServerPort>7000</ServerPort>
-    <OSCTypeSpec>fff</OSCTypeSpec>
+    <OSCTypeSpec>ifff</OSCTypeSpec>
     <IPAddress>127.0.0.1</IPAddress>
   </processing>
 
@@ -46,18 +57,28 @@ p, li { white-space: pre-wrap; }
   </port_connection>
 
   <control_connection>
-    <out>Controls.output</out>
+    <out>Float2IntegerControl.Output</out>
     <in>LibloSink.0</in>
   </control_connection>
 
   <control_connection>
-    <out>Controls.output_1</out>
+    <out>FloatControls.output</out>
     <in>LibloSink.1</in>
   </control_connection>
 
   <control_connection>
-    <out>Controls.output_2</out>
+    <out>FloatControls.output_1</out>
     <in>LibloSink.2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>FloatControls.output_2</out>
+    <in>LibloSink.3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>IntControl.output</out>
+    <in>Float2IntegerControl.Input</in>
   </control_connection>
 
   <control_connection>
