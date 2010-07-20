@@ -43,6 +43,8 @@ class LibloSink : public CLAM::Processing
 	Config _config;
 	FloatInControl _portControlChange;
 	std::vector <InControlBase *> _inControls;
+	lo_address _oscLibloAddress;
+	
 public:
 
 	LibloSink(const Config& config = Config()) 
@@ -77,7 +79,8 @@ public:
 	{
 		std::ostringstream portString;
 		portString << _portControlChange.GetLastValue();
-		lo_address oscLibloAddress = lo_address_new(_config.GetIPAddress().c_str(), portString.str().c_str());
+		lo_address_free(_oscLibloAddress); // Free memory
+		_oscLibloAddress = lo_address_new(_config.GetIPAddress().c_str(), portString.str().c_str());
 
 		lo_message message=lo_message_new();
 		const std::string & typespec = _config.GetOSCTypeSpec();
@@ -102,10 +105,11 @@ public:
 					break;
 			}
 		}
-		if (lo_send_message(oscLibloAddress,_config.GetOscPath().c_str(),message) == -1)
+		if (lo_send_message(_oscLibloAddress,_config.GetOscPath().c_str(),message) == -1)
 		{
-			printf("OSC error %d: %s\n", lo_address_errno(oscLibloAddress), lo_address_errstr(oscLibloAddress));
+			printf("OSC error %d: %s\n", lo_address_errno(_oscLibloAddress), lo_address_errstr(_oscLibloAddress));
 		}
+		lo_message_free(message); // Free memory
 
 	}
 
@@ -150,6 +154,9 @@ protected:
 		unsigned port = _config.GetServerPort();
 		if (port==0) return AddConfigErrorMessage("No port defined");
 		_portControlChange.DoControl(port);
+		std::ostringstream portString;
+		portString << port;
+		_oscLibloAddress = lo_address_new(_config.GetIPAddress().c_str(), portString.str().c_str());
 		return true; // Configuration ok
 	}
 
