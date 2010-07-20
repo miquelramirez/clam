@@ -4,7 +4,6 @@
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
 #include "Geometry.hxx"
-//#include <cmath>
 
 class Cartesian2SphericalControl : public CLAM::Processing
 { 
@@ -32,10 +31,8 @@ public:
  
 	bool Do()
 	{
-		const CLAM::TControlData& x = _x.GetLastValue();
-		const CLAM::TControlData& y = _y.GetLastValue();
-		const CLAM::TControlData& z = _z.GetLastValue();
-		SphericalCoords sphericalCoords=SphericalCoords(CartesianCoords(x,y,z));
+		
+		SphericalCoords sphericalCoords(CartesianCoords(_x.GetLastValue(), _y.GetLastValue(), _z.GetLastValue()));
 		_azimuth.SendControl(sphericalCoords.a);
 		_elevation.SendControl(sphericalCoords.e);
 		_module.SendControl(sphericalCoords.d);
