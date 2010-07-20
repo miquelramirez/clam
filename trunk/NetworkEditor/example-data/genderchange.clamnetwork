@@ -1,10 +1,26 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="AudioSink_0" position="519,175" size="141,111" type="AudioSink" />
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'DejaVu Sans'; font-size:11pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;Voice effect example based on SMS technology which changes the gender of the incomming voice.&lt;/p&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;The effect alters the formants and pitch of the harmonic component while maintaining the stochastic component.&lt;/p&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;For more information on SMS see: http://en.wikipedia.org/wiki/Spectral_modeling_synthesis&lt;/p&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="AudioSource_0" position="27,22" size="165,108" type="AudioSource" />
+  <processing id="AudioSink_0" position="322,317" size="145,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
 
-  <processing id="Control" position="473,8" size="199,91" type="OutControlSender">
+  <processing id="AudioSource_0" position="27,22" size="166,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="Control" position="299,196" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>1</Max>
@@ -12,9 +28,9 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="PeakView_0" position="284,86" size="186,100" type="PeakView" />
+  <processing id="PeakView_0" position="305,100" size="186,100" type="PeakView"/>
 
-  <processing id="PeakView_1" position="286,-1" size="187,97" type="PeakView" />
+  <processing id="PeakView_1" position="306,17" size="187,97" type="PeakView"/>
 
   <processing id="SMSAnalysisCore_0" position="37,115" size="207,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
@@ -99,11 +115,11 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSGenderChange_0" position="50,229" size="225,78" type="SMSGenderChange">
+  <processing id="SMSGenderChange_0" position="47,234" size="225,78" type="SMSGenderChange">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="SMSSynthesis_0" position="325,186" size="177,110" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" position="69,323" size="178,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
