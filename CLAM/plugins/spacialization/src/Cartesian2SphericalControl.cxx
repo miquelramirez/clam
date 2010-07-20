@@ -5,7 +5,7 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "Cartesian2SphericalControl",
-		"category", "[plugin] 3D Audio",
+		"category", "Controls",
 		"description", "Cartesian2SphericalControl",
 		0
 	};

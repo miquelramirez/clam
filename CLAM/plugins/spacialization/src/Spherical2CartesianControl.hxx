@@ -3,8 +3,7 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
-#include <cmath>
-
+#include "Geometry.hxx"
 
 /**
  Processing that converts spherical coordinates in \ref AmbisonicsConventions
@@ -39,12 +38,10 @@ public:
  
 	bool Do()
 	{
-		const CLAM::TControlData& azimuth = _azimuth.GetLastValue()*M_PI/180;
-		const CLAM::TControlData& elevation = _elevation.GetLastValue()*M_PI/180;
-		const CLAM::TControlData& module = _module.GetLastValue();
-		_x.SendControl(module * std::cos(elevation) * std::cos(azimuth));
-		_y.SendControl(module * std::cos(elevation) * std::sin(azimuth));
-		_z.SendControl(module * std::sin(elevation));
+		CartesianCoords cartesianCoords(SphericalCoords(_azimuth.GetLastValue(), _elevation.GetLastValue(),_module.GetLastValue()));
+		_x.SendControl(cartesianCoords.x);
+		_y.SendControl(cartesianCoords.y);
+		_z.SendControl(cartesianCoords.z);
 		return true;
 	}
 
