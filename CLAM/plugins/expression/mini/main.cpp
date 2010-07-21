@@ -64,7 +64,7 @@ int main(int argc, char **argv)
             return 1;
         }
 
-				std::cout << "nvars=" << prog.get_nvars() << std::endl;
+	//std::cout << "nvars=" << prog.get_nvars() << std::endl;
 				
         int nargs = argc-2;
         if (f->arity != nargs)
@@ -83,11 +83,10 @@ int main(int argc, char **argv)
           , mach.stack.begin()                  // frame_ptr
         );
 
-        std::cout << "-------------------------\n";
-        std::cout << "Result: " << r << std::endl;
-        std::cout << "-------------------------\n\n";
+//        std::cout << "-------------------------\n";
+//        std::cout << "Result: " << r << std::endl;
+//        std::cout << "-------------------------\n\n";
     }
 
-    std::cout << "Bye... :-) \n\n";
     return 0;
 }
