@@ -44,16 +44,16 @@ import SCons.Scanner
 import SCons.Tool
 import SCons.Util
 
-class ToolQtWarning(SCons.Warnings.Warning):
+class ToolQt4Warning(SCons.Warnings.Warning):
     pass
 
-class GeneratedMocFileNotIncluded(ToolQtWarning):
+class GeneratedMocFileNotIncluded(ToolQt4Warning):
     pass
 
-class QtdirNotFound(ToolQtWarning):
+class QtdirNotFound(ToolQt4Warning):
     pass
 
-SCons.Warnings.enableWarningClass(ToolQtWarning)
+SCons.Warnings.enableWarningClass(ToolQt4Warning)
 
 qrcinclude_re = re.compile(r'<file>([^<]*)</file>', re.M)
 
@@ -217,10 +217,12 @@ def generate(env):
     """Add Builders and construction variables for qt to an Environment."""
 
     def locateQt4Command(env, command) :
-        fullpath = env.backtick(
-            'pkg-config --variable %s_location QtCore'%command).strip()
-        if fullpath and os.access(fullpath, os.X_OK) :
-                return fullpath
+        try :
+            fullpath = env.backtick(
+                'pkg-config --variable %s_location QCore'%command).strip()
+            if fullpath and os.access(fullpath, os.X_OK) :
+                    return fullpath
+        except OSError: pass
         qtdir = env.subst(env['QTDIR'])
         suffixes = [
             '-qt4',
@@ -241,7 +243,6 @@ def generate(env):
         if not (fullpath is None) : return fullpath
 
         raise Exception("Qt4 command '" + command + "' not found. Tried: " + ', '.join(triedPaths))
-        
 
     CLVar = SCons.Util.CLVar
     Action = SCons.Action.Action
