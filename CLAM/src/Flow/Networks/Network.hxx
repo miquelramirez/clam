@@ -186,6 +186,12 @@ public:
 	Processing& GetProcessing( const std::string & name ) const;
 
 	/**
+	 Retrieves a processing name by a given processing object.
+	 @pre there is such a processing in the network @see HasProcessing
+	*/
+	std::string GetProcessingName( Processing & processing ) const;
+
+	/**
 	 Adds a processing to the network with the given name, and
 	 optionally providing a configuration.
 	 The network adquires responsability to delete the processing 
