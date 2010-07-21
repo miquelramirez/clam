@@ -43,8 +43,12 @@ public:
 	void Do();
 
 private:
+	double GetProcessingYPos(Processing & proc);
 	typedef std::list< Processing* > ProcessingList;
+	typedef std::pair<double, Processing *> ProcessingAndPos;
+	typedef std::list< ProcessingAndPos > ProcessingAndPosList;
 	ProcessingList mSources;
+	ProcessingAndPosList mPortless;
 	ProcessingList mSinks;
 	ProcessingList mGenerators;
 	ProcessingList mNormalProcessings; // not Sources not Sinks

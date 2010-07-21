@@ -33,6 +33,13 @@ NaiveFlowControl::NaiveFlowControl()
 {
 }
 
+double NaiveFlowControl::GetProcessingYPos(Processing & proc)
+{
+		CLAM_ASSERT(mNetwork, "The mNetwork pointer should not be 0");
+		const std::string & name = mNetwork->GetProcessingName( proc );
+		return mNetwork->getProcessingGeometry( name ).y;
+}
+
 void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
 {
 	NetworkTopologyChanged();
@@ -45,7 +52,8 @@ void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
 	}
 	if (added.GetNInPorts()==0 && added.GetNOutPorts()==0) // port-less, for example ControlSource/Sink
 	{
-		mSources.push_back( &added);
+		mPortless.push_back( std::make_pair(GetProcessingYPos(added), &added) );
+		mPortless.sort();
 		return;
 	}
 	if (added.GetNInPorts()==0 && added.GetNOutPorts()!=0)
@@ -72,7 +80,14 @@ void NaiveFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 	}
 	if (removed.GetNInPorts()==0 && removed.GetNOutPorts()==0) // port-less, for example ControlSource/Sink
 	{
-		mSources.remove( &removed );
+		for (ProcessingAndPosList::iterator i=mPortless.begin(); i!=mPortless.end(); i++)
+		{
+			if (i->second == &removed)
+			{
+				mPortless.erase(i);
+				return;
+			}
+		}
 		return;
 	}
 	if (removed.GetNInPorts()==0 && removed.GetNOutPorts()!=0)
@@ -93,6 +108,14 @@ void NaiveFlowControl::Do()
 	// by now it have nothing of pulling
 	// a naive approach: do sources, do normal processings, do sinks
 	ProcessingList pendingSinks(mSinks);
+	for (ProcessingAndPosList::iterator it=mPortless.begin(); it!=mPortless.end(); it++ )
+	{
+		Processing* proc = it->second;
+		if (proc->CanConsumeAndProduce())
+		{
+			proc->Do();
+		}
+	}
 	for (ProcessingList::iterator it=mSources.begin(); it!=mSources.end(); it++ )
 	{
 		Processing* proc = *it;

@@ -47,10 +47,12 @@ namespace CLAM
 
 	Network::Network() :
 		_name("Unnamed Network"),
-		_flowControl(new NaiveFlowControl),
+		_flowControl(0),
 		_player(0),
 		_inPasteMode(false)
-	{}
+	{
+		AddFlowControl( new NaiveFlowControl );
+	}
 	
 	Network::~Network()
 	{
@@ -432,7 +434,7 @@ namespace CLAM
 	{
 		if (_flowControl) delete _flowControl;
 		_flowControl = flowControl;
-		_flowControl->AttachToNetwork((CLAM::Network*)this);
+		_flowControl->AttachToNetwork(this);
 	}
 	void Network::SetPlayer(NetworkPlayer* player)
 	{
@@ -460,6 +462,16 @@ namespace CLAM
 
 		ProcessingsMap::const_iterator it = _processings.find( name );
 		return *it->second;
+	}
+	std::string Network::GetProcessingName( Processing & processing ) const
+	{
+		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
+		{
+			if (it->second == &processing)
+				return it->first;
+		}
+		CLAM_ASSERT(false, "Network::GetProcessingName the processing provided as argument is not in the network");
+		return "";
 	}
 
 	void Network::AddProcessing( const std::string & name, Processing* proc, const ProcessingConfig * config)
