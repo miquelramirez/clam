@@ -11,9 +11,9 @@ options.Add( PathVariable( 'clam_prefix', 'Prefix were CLAM was installed', '') 
 options.Add( PathVariable( 'prefix', 'Prefix were CLAM was installed', '/usr/local') )
 options.Add( BoolVariable( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
 options.Add( PathVariable( 'test_data_path', 'Path to the TestDataPrefix', '') )
-options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
 
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode in linux', 'no') )
+options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
 
 toolchain='default'
 if sys.platform == 'win32': toolchain = 'mingw'
@@ -38,13 +38,16 @@ crosscompiling = env["crossmingw"]
 if crosscompiling :
 	env.Tool('crossmingw', toolpath=[clamToolPath])
 
+env.moveIntermediateInto('generated')
+env.activateColorCommandLine()
+if not env['verbose']: env.ClamQuietCompilation()
+
 env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing'
 	], env['clam_prefix'] )
 
-env.Append( CCFLAGS=['-O3', '-fomit-frame-pointer', '-g','-Wall'] )
 env.Append( CPPFLAGS = ['-DTEST_DATA_PATH="\\"%s\\""' % env['test_data_path'] ] )
 env.Append( CPPFLAGS = ['-DCLAM_MODULE="\\"tests\\""'] )
 
