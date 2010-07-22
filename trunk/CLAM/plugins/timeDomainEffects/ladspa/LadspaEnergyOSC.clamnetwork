@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="AudioBufferSink" position="608,42" size="161,111" type="AudioBufferSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="AudioBufferSource" position="270,27" size="177,108" type="AudioBufferSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="EnergyFeatures" position="495,221" size="157,58" type="EnergyFeatures">
+    <SourceID>0</SourceID>
+  </processing>
+
+  <processing id="Float2IntegerControl" position="267,247" size="190,58" type="Float2IntegerControl"/>
+
+  <processing id="LibloSink" position="285,342" size="116,58" type="LibloSink">
+    <OscPath>/energy</OscPath>
+    <ServerPort>6999</ServerPort>
+    <OSCTypeSpec>iffi</OSCTypeSpec>
+    <IPAddress>127.0.0.1</IPAddress>
+  </processing>
+
+  <processing id="Source ID" position="262,175" size="148,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>10</MaxValue>
+    <DefaultValue>0</DefaultValue>
+    <Step>1</Step>
+    <UnitName></UnitName>
+    <NrOfControls>1</NrOfControls>
+  </processing>
+
+  <port_connection>
+    <out>AudioBufferSource.1</out>
+    <in>EnergyFeatures.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBufferSource.1</out>
+    <in>AudioBufferSink.1</in>
+  </port_connection>
+
+  <control_connection>
+    <out>EnergyFeatures.Energy Output</out>
+    <in>LibloSink.1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>EnergyFeatures.delta Energy Output</out>
+    <in>LibloSink.2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>EnergyFeatures.Frames between Onsets</out>
+    <in>LibloSink.3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Float2IntegerControl.Output</out>
+    <in>LibloSink.0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Source ID.output</out>
+    <in>Float2IntegerControl.Input</in>
+  </control_connection>
+
+</network>
