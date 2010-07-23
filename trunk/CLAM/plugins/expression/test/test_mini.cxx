@@ -32,6 +32,7 @@ public:
 		TEST_CASE( test_three_params );
 		TEST_CASE( test_assignment );
 		TEST_CASE( test_if );
+		TEST_CASE( test_if_and );
 		TEST_CASE( test_while );
 		TEST_CASE( test_sine );
 		TEST_CASE( test_cosine );
@@ -124,8 +125,43 @@ public:
 
 		ASSERT(equal(1.5, r));
   }
-	
+	void test_if_and()
+  {
+		std::string source_code =
+		"float my_function(a,b)"
+		"{"
+		""
+		"	if (a && b)"
+		"		return 1;"
+		"	else"
+		"		return 0;"
+		""
+		"}"
+		;
+		
+		input_t input;
+		input += 0, 0;
+ 		float r = get_computed_value(source_code, input);
+		ASSERT(equal(0, r));
+
+		input.clear();
+		input += 0, 1;
+		r=get_computed_value(source_code, input);
+		ASSERT(equal(0, r));
+
+		input.clear();
+		input += 1, 0;
+		r=get_computed_value(source_code, input);
+		ASSERT(equal(0, r));
+
+		input.clear();
+		input += 1, 1;
+		r=get_computed_value(source_code, input);
+		ASSERT(equal(1, r));
+
+  }
 	void test_while()
+		
   {
 		std::string source_code =
 		"float my_function()"
