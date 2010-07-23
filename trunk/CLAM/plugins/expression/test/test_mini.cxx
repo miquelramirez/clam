@@ -33,6 +33,7 @@ public:
 		TEST_CASE( test_assignment );
 		TEST_CASE( test_if );
 		TEST_CASE( test_if_and );
+		TEST_CASE( test_operator_precedence );
 		TEST_CASE( test_while );
 		TEST_CASE( test_sine );
 		TEST_CASE( test_cosine );
@@ -125,7 +126,7 @@ public:
 
 		ASSERT(equal(1.5, r));
   }
-	void test_if_and()
+  void test_if_and()
   {
 		std::string source_code =
 		"float my_function(a,b)"
@@ -159,6 +160,25 @@ public:
 		r=get_computed_value(source_code, input);
 		ASSERT(equal(1, r));
 
+  }
+  void test_operator_precedence()
+  {
+		std::string source_code =
+		"float my_function(a)"
+		"{"
+		""
+		"	if (a>0 && a<1)"
+		"		return 1;"
+		"	else"
+		"		return 0;"
+		""
+		"}"
+		;
+		
+		input_t input;
+		input += 0.5;
+ 		float r = get_computed_value(source_code, input);
+		ASSERT(equal(1, r));
   }
 	void test_while()
 		
