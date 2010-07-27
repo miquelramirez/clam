@@ -187,11 +187,9 @@ public:
 			CLAM::Processing& control = _net.GetProcessing(controlName);
 			CLAM::ControlSource* controlSource = dynamic_cast<CLAM::ControlSource*>(&control);
 			const double& value = _coreoEvent->values[0];
-			//std::cout << " value=" << value;
 
 			// TODO: support sources with multiple out controls
 			controlSource->Do(value);
-			//std::cout << std::endl;
 		}
 		//std::cout << "current_buffer=" << buffernr
 		//					<< " currentTimeInMillisec=" << currentTimeInMillisec

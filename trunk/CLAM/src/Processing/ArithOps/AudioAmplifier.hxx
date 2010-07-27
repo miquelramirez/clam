@@ -37,14 +37,16 @@ namespace CLAM{
 	class AudioAmplifierConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE( AudioAmplifierConfig, 3, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( AudioAmplifierConfig, 4, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, double, MaxGain );
 		DYN_ATTRIBUTE( 1, public, double, InitGain);
 		DYN_ATTRIBUTE( 2, public, int, PortsNumber);
+		DYN_ATTRIBUTE( 3, public, bool, DoesGainInterpolation);
 
 	protected:
 		void DefaultInit();
 	};
+
 
 
 	/**	\brief Time-domain audio gain
@@ -85,24 +87,27 @@ namespace CLAM{
 			for (unsigned i=0; i<_inputs.size(); i++)
 			{
 				result &= Do( _inputs[i]->GetAudio(), _outputs[i]->GetAudio(), gain );
-				_inputs[i]->Consume(); 
+				_inputs[i]->Consume();
 				_outputs[i]->Produce();
 			}
 			_previousGain = gain;
 			return result;
 		}
-	
+
 		bool Do(const Audio& in, Audio& out, float gain)
 		{
+			// if does not have the "does gain interpolation" param lets default at true for historical reasons
+			bool interpolate = _config.HasDoesGainInterpolation() ? _config.GetDoesGainInterpolation() : true;
 			int size = in.GetSize();
 			const TData * inb = in.GetBuffer().GetPtr();
 			TData * outb = out.GetBuffer().GetPtr();
 			TData gainDelta=(gain-_previousGain)/size;
-			TData rampedGain = _previousGain;
+			TData rampedGain = interpolate ? _previousGain : gain;
 
-			for (int i=0;i<size;i++) 
+			for (int i=0;i<size;i++)
 			{
 				outb[i] = inb[i]*rampedGain;
+				if (not interpolate) continue;
 				rampedGain+=gainDelta;
 			}
 			return true;
@@ -130,8 +135,8 @@ namespace CLAM{
 
 		Config _config;
 		TData _previousGain;
-	};	
-	
+	};
+
 };//namespace CLAM
 
 #endif // _AudioAmplifier_
