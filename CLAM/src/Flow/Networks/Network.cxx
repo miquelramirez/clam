@@ -199,7 +199,6 @@ namespace CLAM
 				finalName = GetUnusedName(definitionName, true);
 				namesMap.insert(std::make_pair(definitionName,finalName));
 			}
-			AddProcessing(finalName, processing, procDefinition.GetConfiguration());
 			// if exists canvas geometries, restore them
 			if (procDefinition.GetPosition()!="" && procDefinition.GetSize()!="")
 			{
@@ -208,6 +207,7 @@ namespace CLAM
 				StringPairToInts(procDefinition.GetSize(),geometry.width,geometry.height);
 				_processingsGeometries.insert(ProcessingsGeometriesMap::value_type(finalName,geometry));
 			}
+			AddProcessing(finalName, processing, procDefinition.GetConfiguration());
 		}
 
 		while(1)

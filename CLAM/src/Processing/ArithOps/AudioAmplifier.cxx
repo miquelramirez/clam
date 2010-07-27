@@ -43,6 +43,7 @@ namespace Hidden
 		SetMaxGain(1.);
 		SetPortsNumber(1);
 		SetInitGain(1.);
+		SetDoesGainInterpolation(true);
 	}
 
 	void AudioAmplifier::ResizePorts(unsigned newSize)

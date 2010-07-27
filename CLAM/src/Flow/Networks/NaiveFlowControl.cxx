@@ -35,9 +35,9 @@ NaiveFlowControl::NaiveFlowControl()
 
 double NaiveFlowControl::GetProcessingYPos(Processing & proc)
 {
-		CLAM_ASSERT(mNetwork, "The mNetwork pointer should not be 0");
-		const std::string & name = mNetwork->GetProcessingName( proc );
-		return mNetwork->getProcessingGeometry( name ).y;
+	CLAM_ASSERT(mNetwork, "The mNetwork pointer should not be 0");
+	const std::string & name = mNetwork->GetProcessingName( proc );
+	return mNetwork->getProcessingGeometry( name ).y;
 }
 
 void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
