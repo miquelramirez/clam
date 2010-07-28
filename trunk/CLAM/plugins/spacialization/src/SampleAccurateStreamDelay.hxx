@@ -33,29 +33,38 @@ namespace CLAM
  */
 class SampleAccurateStreamDelay : public SampleAccurateDelay
 {
-	AudioInPort _in;
-	AudioOutPort _out;
+	std::vector<AudioInPort*> _inputs;
+	std::vector<AudioOutPort*> _outputs;
 
 public:
 	SampleAccurateStreamDelay(const Config& config = Config()) 
-		: _in("InputStream", this)
-		, _out("OutputStream", this)
 	{
 		Configure( config );
 	}
-
-	bool ConcreteConfigure(const ProcessingConfig& c)
+	~SampleAccurateStreamDelay()
 	{
-		CopyAsConcreteConfig(_config, c);	
+		ResizePorts(0);
+	}
+
+	bool ConcreteConfigure(const ProcessingConfig& config)
+	{
+		CopyAsConcreteConfig(_config, config);	
 		_sampleRate = _config.GetSampleRate();
+		unsigned channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
 		
-		_crossFadeBuffer.resize(CROSSFADESIZE);
-		std::fill(_crossFadeBuffer.begin(), _crossFadeBuffer.end(), 0.);
+		_crossFadeBuffer.resize(channels);
+		_delayBuffer.resize(channels);
+		for (unsigned channel=0; channel<channels;channel++)
+		{
+			_crossFadeBuffer[channel].resize(CROSSFADESIZE);
+			std::fill(_crossFadeBuffer[channel].begin(), _crossFadeBuffer[channel].end(), 0.);
 		
-		_delayBuffer.resize(_config.GetMaxDelayInSeconds() * _sampleRate);
-		_delayBufferSize = _delayBuffer.size(); 
-		_readIndex = _writeIndex = (_delayBufferSize-1); 
-		std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);
+			_delayBuffer[channel].resize(_config.GetMaxDelayInSeconds() * _sampleRate);
+			std::fill(_delayBuffer[channel].begin(), _delayBuffer[channel].end(), 0.);
+
+			_delayBufferSize = _delayBuffer[channel].size(); ////// TODO: remove on refactor (Nael)
+			_readIndex = _writeIndex = (_delayBufferSize-1); ////// TODO: remove on refactor (Nael)
+		}
 		if ( not _config.HasInitialDelayInSamples() )
 		{
 			_config.AddInitialDelayInSamples();
@@ -65,11 +74,14 @@ public:
 		_delayControl.DoControl( (float)_config.GetInitialDelayInSamples() );
 
 		const unsigned buffersize = BackendBufferSize();
-		_in.SetSize(buffersize);
-		_in.SetHop(buffersize);
-		_out.SetSize(buffersize);
-		_out.SetHop(buffersize);
-
+		ResizePorts(channels);
+		for (unsigned channel=0; channel<channels; channel++)
+		{
+			_inputs[channel]->SetSize(buffersize);
+			_inputs[channel]->SetHop(buffersize);
+			_outputs[channel]->SetSize(buffersize);
+			_outputs[channel]->SetHop(buffersize);
+		}
 		
 		return true;
 	}
@@ -78,23 +90,65 @@ public:
 	
 	bool Do()
 	{
+		unsigned channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
+
 		TControlData delay = _delayControl.GetLastValue();
 		setDelay(delay);
-		
-		const CLAM::Audio& in = _in.GetAudio();
-		const TData* inpointer = in.GetBuffer().GetPtr();		
-		CLAM::Audio& out = _out.GetAudio();
-		TData* outpointer = out.GetBuffer().GetPtr();
 
-		unsigned insize = in.GetSize();
-		
-		for (unsigned i = 0; i < insize; ++i) 
-			outpointer[i] = delayLine(inpointer[i]);
-		
-		_in.Consume();
-		_out.Produce();
+		std::vector<const TData*> inpointers(channels);
+		std::vector<TData*> outpointers(channels);
+		std::vector<unsigned> inSizes(channels);
+
+		for (unsigned channel=0; channel<channels; channel++)
+		{
+			const CLAM::Audio & in = _inputs[channel]->GetAudio();
+			inSizes[channel]=in.GetSize();
+			inpointers[channel]=in.GetBuffer().GetPtr();
+			CLAM::Audio & out = _outputs[channel]->GetAudio();
+			outpointers[channel]=out.GetBuffer().GetPtr();
+		}
+
+		for (unsigned i = 0; i < inSizes[0]; ++i)  //// TODO: remove on refactor (Nael)
+		{
+			for (unsigned channel=0; channel<channels;channel++)
+			{
+				outpointers[channel][i] = delayLine(inpointers[channel][i], channel);
+			}
+			_writeIndex++;
+			_readIndex++;
+			if (_crossFadeIndex > 0) _crossFadeIndex--;
+		}
+	
+		for (unsigned channel=0; channel<channels; channel++)
+		{
+			_inputs[channel]->Consume();
+			_outputs[channel]->Produce();
+		}
 		return true;
 	}
+	private: 
+	void ResizePorts(unsigned newSize)
+	{
+		unsigned oldSize = _inputs.size();
+		CLAM_ASSERT(_inputs.size()==_outputs.size(),
+			"SampleAccurateStreamDelay had different number of inputs and outputs");
+		for (unsigned i = newSize; i<oldSize; i++)
+		{
+			delete _inputs[i];
+			delete _outputs[i];
+		}
+		_inputs.resize(newSize);
+		_outputs.resize(newSize);
+		for (unsigned i = oldSize; i<newSize; i++)
+		{
+			std::ostringstream number;
+			if (i>0) number << " " << i;
+			_inputs[i] = new AudioInPort("Input Audio" + number.str(), this );
+			_outputs[i] = new AudioOutPort ( "Audio Output" + number.str(), this);
+		}
+	}
+//		Config _config;
+		
 };
 
 } // namespace CLAM
