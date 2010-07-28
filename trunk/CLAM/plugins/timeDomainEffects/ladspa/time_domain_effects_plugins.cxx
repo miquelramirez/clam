@@ -14,6 +14,7 @@ CLAM_EMBEDDED_FILE(chorus_22,"3d_chorus_22.clamnetwork")
 CLAM_EMBEDDED_FILE(rotatingFlanger_22,"LadspaRotatingFlanger.clamnetwork")
 CLAM_EMBEDDED_FILE(flanger_pbap_15,"rotatingFlanger_15.clamnetwork")
 CLAM_EMBEDDED_FILE(flanger_pbap_22,"rotatingFlanger_22.clamnetwork")
+CLAM_EMBEDDED_FILE(energyOSC,"LadspaEnergyOSC.clamnetwork")
 
 
 #include <iostream>
@@ -58,6 +59,10 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 
 	static CLAM::LadspaNetworkExporter n4008(library, flanger_pbap_22, 4008,
 			"flanger_pbap_22", "3d sized Flanger_22",
+			"BarcelonaMedia-Audio", "GNU GPL");
+
+	static CLAM::LadspaNetworkExporter n4009(library, energyOSC, 4009,
+			"energyOSC", "energy descriptors sent using OSC",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
 	return library.pluginAt(index);
