@@ -41,10 +41,11 @@ public:
 	class Config : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (Config , 3, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (Config , 4, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, float, MaxDelayInSeconds);
 		DYN_ATTRIBUTE (1, public, unsigned, SampleRate);
 		DYN_ATTRIBUTE (2, public, unsigned, InitialDelayInSamples);
+		DYN_ATTRIBUTE( 3, public, int, PortsNumber);
 
 	protected:
 		void DefaultInit()
@@ -54,6 +55,7 @@ public:
 			SetMaxDelayInSeconds(1.3653125);  //65535
 			SetSampleRate(48000);
 			SetInitialDelayInSamples(0);
+			SetPortsNumber(1);
 		}
 	};
 	
@@ -62,12 +64,12 @@ protected:
 	Config _config;
 	typedef long long unsigned Index;
 	typedef std::vector<TData> DelayBuffer;
-	DelayBuffer _delayBuffer;
+	std::vector<DelayBuffer> _delayBuffer;
 	
 	Index _sampleRate, _delayBufferSize, _readIndex, _writeIndex, _crossFadeIndex;
 	
 	enum { CROSSFADESIZE = 150 };
-	DelayBuffer _crossFadeBuffer;
+	std::vector<DelayBuffer> _crossFadeBuffer;
 
 protected:
 	FloatInControl _delayControl;
@@ -89,22 +91,28 @@ protected:
 		_crossFadeIndex = CROSSFADESIZE;
 		
 		for (Index i = 0; i < CROSSFADESIZE; i++) 
-			_crossFadeBuffer[i] = _delayBuffer[readIndex++ % _delayBufferSize] * (1./(CROSSFADESIZE-i));
+		{
+			for (unsigned channel=0; channel<_delayBuffer.size(); channel++)
+			{
+				_crossFadeBuffer[channel][i] = _delayBuffer[channel][readIndex % _delayBufferSize] * (1./(CROSSFADESIZE-i));
+			}
+			readIndex++;
+		}
 						
 		return;
 	}
 	
-	TData delayLine(TData x)
+	TData delayLine(TData x, unsigned channel=0) //TODO: remove default val when BufferDelay updated
 	{	
 		CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
-		Index writeindex = _writeIndex++ % _delayBufferSize;
-		Index readindex = _readIndex++ % _delayBufferSize;
+		Index writeindex = _writeIndex % _delayBufferSize;
+		Index readindex = _readIndex % _delayBufferSize;
 
-		_delayBuffer[writeindex] = x;
-		TData y = _delayBuffer[readindex];
-			
-		if (_crossFadeIndex > 0)  y *= (1./_crossFadeIndex) + _crossFadeBuffer[--_crossFadeIndex];
-						
+		_delayBuffer[channel][writeindex] = x;
+		TData y = _delayBuffer[channel][readindex];
+		if (_crossFadeIndex > 0)
+			y *= (1./(_crossFadeIndex)) + _crossFadeBuffer[channel][_crossFadeIndex-1];
+		
 		return y;
 	}
 		
