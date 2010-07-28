@@ -105,7 +105,7 @@ public:
 		const CLAM::Audio& in = _in.GetData();
 		const TData* inpointer = in.GetBuffer().GetPtr();		
 		unsigned size = in.GetSize();				
-		
+
 		for (unsigned i=0; i<size; i++)
 		{
 			const CLAM::TData & current = inpointer[i];
