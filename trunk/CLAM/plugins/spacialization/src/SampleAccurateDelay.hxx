@@ -67,6 +67,8 @@ protected:
 	std::vector<DelayBuffer> _delayBuffer;
 	
 	Index _sampleRate, _delayBufferSize, _readIndex, _writeIndex, _crossFadeIndex;
+
+	unsigned _channels;
 	
 	enum { CROSSFADESIZE = 150 };
 	std::vector<DelayBuffer> _crossFadeBuffer;
@@ -93,7 +95,7 @@ protected:
 		for (Index i = 0; i < CROSSFADESIZE; i++) 
 		{
 			double scaler = 1./(CROSSFADESIZE-i);
-			for (unsigned channel=0; channel<_delayBuffer.size(); channel++)
+			for (unsigned channel=0; channel<_channels; channel++)
 			{
 				_crossFadeBuffer[channel][i] = _delayBuffer[channel][readIndex % _delayBufferSize] * scaler;
 			}
@@ -102,7 +104,7 @@ protected:
 						
 		return;
 	}
-	void delayLine(const CLAM::Audio & in, CLAM::Audio & out, unsigned channel, unsigned totalChannels) 
+	void delayLine(const CLAM::Audio & in, CLAM::Audio & out, unsigned channel) 
 	{	
 		unsigned inSize = in.GetSize();
 		const TData* inpointer = in.GetBuffer().GetPtr();
@@ -124,7 +126,7 @@ protected:
 			writeIndexTemp++;
 			readIndexTemp++;
 
-			if (channel == totalChannels-1) // if is the last channel update the indexes
+			if (channel == _channels-1) // if is the last channel update the indexes
 			{
 				_writeIndex=writeIndexTemp;
 				_readIndex=readIndexTemp;
@@ -138,6 +140,7 @@ public:
 	SampleAccurateDelay(const Config& config = Config()) 
 		: _delayBufferSize(1)
 		, _crossFadeIndex(0)
+		, _channels(1)
 		, _delayControl("Delay in Samples", this)
 	{
 		Configure( config );

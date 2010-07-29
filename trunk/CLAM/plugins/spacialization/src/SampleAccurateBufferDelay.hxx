@@ -50,15 +50,15 @@ public:
 	{
 		CopyAsConcreteConfig(_config, config);	
 		_sampleRate = _config.GetSampleRate();
-		unsigned channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
+		_channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
 		
-		_crossFadeBuffer.resize(channels);
-		_delayBuffer.resize(channels);
+		_crossFadeBuffer.resize(_channels);
+		_delayBuffer.resize(_channels);
 
 		_delayBufferSize = _config.GetMaxDelayInSeconds() * _sampleRate; 
 		_readIndex = _writeIndex = (_delayBufferSize-1); 
 
-		for (unsigned channel=0; channel<channels;channel++)
+		for (unsigned channel=0; channel<_channels;channel++)
 		{
 			_crossFadeBuffer[channel].resize(CROSSFADESIZE);
 			std::fill(_crossFadeBuffer[channel].begin(), _crossFadeBuffer[channel].end(), 0.);
@@ -75,7 +75,7 @@ public:
 		}
 		_delayControl.DoControl( (float)_config.GetInitialDelayInSamples() );
 
-		ResizePorts(channels);
+		ResizePorts(_channels);
 
 		return true;
 	}
@@ -84,18 +84,16 @@ public:
 	
 	bool Do()
 	{
-		unsigned channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
-
 		TControlData delay = _delayControl.GetLastValue();
 		setDelay(delay);
 
-		for (unsigned channel=0; channel<channels; channel++)
+		for (unsigned channel=0; channel<_channels; channel++)
 		{
 			const CLAM::Audio & in = _inputs[channel]->GetData();
 			CLAM::Audio & out = _outputs[channel]->GetData();
 			out.SetSize(in.GetSize());
 
-			delayLine(in, out, channel, channels);
+			delayLine(in, out, channel);
 
 			_inputs[channel]->Consume();
 			_outputs[channel]->Produce();
@@ -123,8 +121,6 @@ public:
 			_outputs[i] = new OutPort<Audio> ( "Audio Output" + number.str(), this);
 		}
 	}
-//		Config _config;
-		
 };
 
 } // namespace CLAM

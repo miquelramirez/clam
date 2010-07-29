@@ -50,22 +50,14 @@ public:
 	{
 		CopyAsConcreteConfig(_config, config);	
 		_sampleRate = _config.GetSampleRate();
-		unsigned channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
+		_channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
 		
-		_crossFadeBuffer.resize(channels);
-		_delayBuffer.resize(channels);
+		_crossFadeBuffer.resize(_channels);
+		_delayBuffer.resize(_channels);
 
 		_delayBufferSize = _config.GetMaxDelayInSeconds() * _sampleRate; 
 		_readIndex = _writeIndex = (_delayBufferSize-1); 
 
-		for (unsigned channel=0; channel<channels;channel++)
-		{
-			_crossFadeBuffer[channel].resize(CROSSFADESIZE);
-			std::fill(_crossFadeBuffer[channel].begin(), _crossFadeBuffer[channel].end(), 0.);
-		
-			_delayBuffer[channel].resize(_delayBufferSize);
-			std::fill(_delayBuffer[channel].begin(), _delayBuffer[channel].end(), 0.);
-		}
 		if ( not _config.HasInitialDelayInSamples() )
 		{
 			_config.AddInitialDelayInSamples();
@@ -75,9 +67,16 @@ public:
 		_delayControl.DoControl( (float)_config.GetInitialDelayInSamples() );
 
 		const unsigned buffersize = BackendBufferSize();
-		ResizePorts(channels);
-		for (unsigned channel=0; channel<channels; channel++)
+		ResizePorts(_channels);
+
+		for (unsigned channel=0; channel<_channels;channel++)
 		{
+			_crossFadeBuffer[channel].resize(CROSSFADESIZE);
+			std::fill(_crossFadeBuffer[channel].begin(), _crossFadeBuffer[channel].end(), 0.);
+		
+			_delayBuffer[channel].resize(_delayBufferSize);
+			std::fill(_delayBuffer[channel].begin(), _delayBuffer[channel].end(), 0.);
+
 			_inputs[channel]->SetSize(buffersize);
 			_inputs[channel]->SetHop(buffersize);
 			_outputs[channel]->SetSize(buffersize);
@@ -91,17 +90,15 @@ public:
 	
 	bool Do()
 	{
-		unsigned channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
-
 		TControlData delay = _delayControl.GetLastValue();
 		setDelay(delay);
 
-		for (unsigned channel=0; channel<channels; channel++)
+		for (unsigned channel=0; channel<_channels; channel++)
 		{
 			const CLAM::Audio & in = _inputs[channel]->GetAudio();
 			CLAM::Audio & out = _outputs[channel]->GetAudio();
 		
-			delayLine(in, out, channel, channels);	
+			delayLine(in, out, channel);	
 				
 			_inputs[channel]->Consume();
 			_outputs[channel]->Produce();
@@ -130,8 +127,6 @@ public:
 			_outputs[i] = new AudioOutPort ( "Audio Output" + number.str(), this);
 		}
 	}
-//		Config _config;
-		
 };
 
 } // namespace CLAM
