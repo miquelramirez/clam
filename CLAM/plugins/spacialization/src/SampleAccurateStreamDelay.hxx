@@ -143,7 +143,7 @@ public:
 		{
 			std::ostringstream number;
 			if (i>0) number << " " << i;
-			_inputs[i] = new AudioInPort("Input Audio" + number.str(), this );
+			_inputs[i] = new AudioInPort("Audio Input" + number.str(), this );
 			_outputs[i] = new AudioOutPort ( "Audio Output" + number.str(), this);
 		}
 	}

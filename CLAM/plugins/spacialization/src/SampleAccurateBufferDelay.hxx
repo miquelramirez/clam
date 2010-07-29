@@ -136,7 +136,7 @@ public:
 		{
 			std::ostringstream number;
 			if (i>0) number << " " << i;
-			_inputs[i] = new InPort<Audio>("Input Audio" + number.str(), this );
+			_inputs[i] = new InPort<Audio>("Audio Input" + number.str(), this );
 			_outputs[i] = new OutPort<Audio> ( "Audio Output" + number.str(), this);
 		}
 	}

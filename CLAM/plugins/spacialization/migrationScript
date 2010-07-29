@@ -91,3 +91,13 @@ removeConfig AudioBuffer2Stream WindowType
 removeConfig AudioBuffer2Stream DoHalfWindowShift
 
 addConfig EnvironmentManager EnvironmentTimeInMs 100.
+
+addConfig SampleAccurateBufferDelay InitialDelayInSamples 0
+addConfig SampleAccurateBufferDelay PortsNumber 1
+renameConnector SampleAccurateBufferDelay inport 'InputBuffer' 'Audio Input'
+renameConnector SampleAccurateBufferDelay inport 'OutputBuffer' 'Audio Output'
+
+addConfig SampleAccurateStreamDelay InitialDelayInSamples 0
+addConfig SampleAccurateStreamDelay PortsNumber 1
+renameConnector SampleAccurateStreamDelay inport 'InputStream' 'Audio Input'
+renameConnector SampleAccurateStreamDelay inport 'OutputStream' 'Audio Output'
