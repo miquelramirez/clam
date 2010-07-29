@@ -59,7 +59,7 @@ public:
 		}
 	};
 
-	bool ConcreteConfigure()
+	bool CommonConfigure()
 	{
 		_sampleRate = _config.GetSampleRate();
 		_delayBufferSize = _config.GetMaxDelayInSeconds() * _sampleRate; 
@@ -88,8 +88,6 @@ public:
 		
 		return true;
 	}
-protected:
-	virtual void ResizePorts(unsigned newSize) = 0;
 //private: //TODO debugging	
 protected:
 	Config _config;
