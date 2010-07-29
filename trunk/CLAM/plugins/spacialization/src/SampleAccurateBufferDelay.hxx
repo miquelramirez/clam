@@ -52,20 +52,8 @@ public:
 		_sampleRate = _config.GetSampleRate();
 		_channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
 		
-		_crossFadeBuffer.resize(_channels);
-		_delayBuffer.resize(_channels);
-
 		_delayBufferSize = _config.GetMaxDelayInSeconds() * _sampleRate; 
 		_readIndex = _writeIndex = (_delayBufferSize-1); 
-
-		for (unsigned channel=0; channel<_channels;channel++)
-		{
-			_crossFadeBuffer[channel].resize(CROSSFADESIZE);
-			std::fill(_crossFadeBuffer[channel].begin(), _crossFadeBuffer[channel].end(), 0.);
-		
-			_delayBuffer[channel].resize(_delayBufferSize);
-			std::fill(_delayBuffer[channel].begin(), _delayBuffer[channel].end(), 0.);
-		}
 
 		if ( not _config.HasInitialDelayInSamples() )
 		{
@@ -76,6 +64,17 @@ public:
 		_delayControl.DoControl( (float)_config.GetInitialDelayInSamples() );
 
 		ResizePorts(_channels);
+		_crossFadeBuffer.resize(_channels);
+		_delayBuffer.resize(_channels);
+
+		for (unsigned channel=0; channel<_channels;channel++)
+		{
+			_crossFadeBuffer[channel].resize(CROSSFADESIZE);
+			std::fill(_crossFadeBuffer[channel].begin(), _crossFadeBuffer[channel].end(), 0.);
+		
+			_delayBuffer[channel].resize(_delayBufferSize);
+			std::fill(_delayBuffer[channel].begin(), _delayBuffer[channel].end(), 0.);
+		}
 
 		return true;
 	}

@@ -101,7 +101,6 @@ protected:
 			}
 			readIndex++;
 		}
-						
 		return;
 	}
 	void delayLine(const CLAM::Audio & in, CLAM::Audio & out, unsigned channel) 
@@ -132,9 +131,7 @@ protected:
 				_readIndex=readIndexTemp;
 				_crossFadeIndex=crossFadeIndexTemp;
 			}
-
 		}
-
 	}
 public:
 	SampleAccurateDelay(const Config& config = Config()) 
