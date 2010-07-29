@@ -92,30 +92,48 @@ protected:
 		
 		for (Index i = 0; i < CROSSFADESIZE; i++) 
 		{
+			double scaler = 1./(CROSSFADESIZE-i);
 			for (unsigned channel=0; channel<_delayBuffer.size(); channel++)
 			{
-				_crossFadeBuffer[channel][i] = _delayBuffer[channel][readIndex % _delayBufferSize] * (1./(CROSSFADESIZE-i));
+				_crossFadeBuffer[channel][i] = _delayBuffer[channel][readIndex % _delayBufferSize] * scaler;
 			}
 			readIndex++;
 		}
 						
 		return;
 	}
-	
-	TData delayLine(TData x, unsigned channel=0) //TODO: remove default val when BufferDelay updated
+	void delayLine(const CLAM::Audio & in, CLAM::Audio & out, unsigned channel, unsigned totalChannels) 
 	{	
-		CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
-		Index writeindex = _writeIndex % _delayBufferSize;
-		Index readindex = _readIndex % _delayBufferSize;
+		unsigned inSize = in.GetSize();
+		const TData* inpointer = in.GetBuffer().GetPtr();
+		TData* outpointer = out.GetBuffer().GetPtr();
 
-		_delayBuffer[channel][writeindex] = x;
-		TData y = _delayBuffer[channel][readindex];
-		if (_crossFadeIndex > 0)
-			y *= (1./(_crossFadeIndex)) + _crossFadeBuffer[channel][_crossFadeIndex-1];
-		
-		return y;
+		Index writeIndexTemp(_writeIndex);
+		Index readIndexTemp(_readIndex);
+		Index crossFadeIndexTemp(_crossFadeIndex);
+
+		for (unsigned i = 0; i < inSize; ++i)
+		{
+			Index writeindex = writeIndexTemp % _delayBufferSize;
+			Index readindex = readIndexTemp % _delayBufferSize;
+
+			_delayBuffer[channel][writeindex] = inpointer[i];
+			outpointer[i] = _delayBuffer[channel][readindex];
+			if (crossFadeIndexTemp > 0)
+				outpointer[i] *= (1./(crossFadeIndexTemp)) + _crossFadeBuffer[channel][--crossFadeIndexTemp];
+			writeIndexTemp++;
+			readIndexTemp++;
+
+			if (channel == totalChannels-1) // if is the last channel update the indexes
+			{
+				_writeIndex=writeIndexTemp;
+				_readIndex=readIndexTemp;
+				_crossFadeIndex=crossFadeIndexTemp;
+			}
+
+		}
+
 	}
-		
 public:
 	SampleAccurateDelay(const Config& config = Config()) 
 		: _delayBufferSize(1)
