@@ -52,8 +52,6 @@ public:
 		_sampleRate = _config.GetSampleRate();
 		_channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
 		
-		_crossFadeBuffer.resize(_channels);
-		_delayBuffer.resize(_channels);
 
 		_delayBufferSize = _config.GetMaxDelayInSeconds() * _sampleRate; 
 		_readIndex = _writeIndex = (_delayBufferSize-1); 
@@ -64,10 +62,14 @@ public:
 			_config.UpdateData();
 			_config.SetInitialDelayInSamples(0);
 		}
+
 		_delayControl.DoControl( (float)_config.GetInitialDelayInSamples() );
 
-		const unsigned buffersize = BackendBufferSize();
 		ResizePorts(_channels);
+		_crossFadeBuffer.resize(_channels);
+		_delayBuffer.resize(_channels);
+
+		const unsigned buffersize = BackendBufferSize();
 
 		for (unsigned channel=0; channel<_channels;channel++)
 		{
