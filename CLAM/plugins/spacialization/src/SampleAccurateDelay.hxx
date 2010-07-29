@@ -58,7 +58,38 @@ public:
 			SetPortsNumber(1);
 		}
 	};
-	
+
+	bool ConcreteConfigure()
+	{
+		_sampleRate = _config.GetSampleRate();
+		_delayBufferSize = _config.GetMaxDelayInSeconds() * _sampleRate; 
+		_readIndex = _writeIndex = (_delayBufferSize-1); 
+
+		if ( not _config.HasInitialDelayInSamples() )
+		{
+			_config.AddInitialDelayInSamples();
+			_config.UpdateData();
+			_config.SetInitialDelayInSamples(0);
+		}
+
+		_delayControl.DoControl( (float)_config.GetInitialDelayInSamples() );
+
+		_crossFadeBuffer.resize(_channels);
+		_delayBuffer.resize(_channels);
+
+		for (unsigned channel=0; channel<_channels;channel++)
+		{
+			_crossFadeBuffer[channel].resize(CROSSFADESIZE);
+			std::fill(_crossFadeBuffer[channel].begin(), _crossFadeBuffer[channel].end(), 0.);
+		
+			_delayBuffer[channel].resize(_delayBufferSize);
+			std::fill(_delayBuffer[channel].begin(), _delayBuffer[channel].end(), 0.);
+		}
+		
+		return true;
+	}
+protected:
+	virtual void ResizePorts(unsigned newSize) = 0;
 //private: //TODO debugging	
 protected:
 	Config _config;

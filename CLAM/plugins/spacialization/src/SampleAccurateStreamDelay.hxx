@@ -37,57 +37,25 @@ class SampleAccurateStreamDelay : public SampleAccurateDelay
 	std::vector<AudioOutPort*> _outputs;
 
 public:
+
 	SampleAccurateStreamDelay(const Config& config = Config()) 
 	{
 		Configure( config );
 	}
+
 	~SampleAccurateStreamDelay()
 	{
 		ResizePorts(0);
 	}
-
+	
 	bool ConcreteConfigure(const ProcessingConfig& config)
 	{
 		CopyAsConcreteConfig(_config, config);	
-		_sampleRate = _config.GetSampleRate();
-		_channels = _config.HasPortsNumber()?_config.GetPortsNumber():1;
-		
-
-		_delayBufferSize = _config.GetMaxDelayInSeconds() * _sampleRate; 
-		_readIndex = _writeIndex = (_delayBufferSize-1); 
-
-		if ( not _config.HasInitialDelayInSamples() )
-		{
-			_config.AddInitialDelayInSamples();
-			_config.UpdateData();
-			_config.SetInitialDelayInSamples(0);
-		}
-
-		_delayControl.DoControl( (float)_config.GetInitialDelayInSamples() );
-
+		_channels = _config.HasPortsNumber() ? _config.GetPortsNumber() : 1;
 		ResizePorts(_channels);
-		_crossFadeBuffer.resize(_channels);
-		_delayBuffer.resize(_channels);
-
-		const unsigned buffersize = BackendBufferSize();
-
-		for (unsigned channel=0; channel<_channels;channel++)
-		{
-			_crossFadeBuffer[channel].resize(CROSSFADESIZE);
-			std::fill(_crossFadeBuffer[channel].begin(), _crossFadeBuffer[channel].end(), 0.);
-		
-			_delayBuffer[channel].resize(_delayBufferSize);
-			std::fill(_delayBuffer[channel].begin(), _delayBuffer[channel].end(), 0.);
-
-			_inputs[channel]->SetSize(buffersize);
-			_inputs[channel]->SetHop(buffersize);
-			_outputs[channel]->SetSize(buffersize);
-			_outputs[channel]->SetHop(buffersize);
-		}
-		
-		return true;
+		return SampleAccurateDelay::ConcreteConfigure();
 	}
-	
+
 	const char* GetClassName() const { return "SampleAccurateStreamDelay"; }
 	
 	bool Do()
@@ -128,6 +96,16 @@ public:
 			_inputs[i] = new AudioInPort("Audio Input" + number.str(), this );
 			_outputs[i] = new AudioOutPort ( "Audio Output" + number.str(), this);
 		}
+		const unsigned buffersize = BackendBufferSize();
+
+		for (unsigned channel = 0; channel<newSize; channel++)
+		{
+			_inputs[channel]->SetSize(buffersize);
+			_inputs[channel]->SetHop(buffersize);
+			_outputs[channel]->SetSize(buffersize);
+			_outputs[channel]->SetHop(buffersize);
+		}
+			
 	}
 };
 
