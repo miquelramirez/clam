@@ -54,17 +54,19 @@ public:
 		
 		_crossFadeBuffer.resize(channels);
 		_delayBuffer.resize(channels);
+
+		_delayBufferSize = _config.GetMaxDelayInSeconds() * _sampleRate; 
+		_readIndex = _writeIndex = (_delayBufferSize-1); 
+
 		for (unsigned channel=0; channel<channels;channel++)
 		{
 			_crossFadeBuffer[channel].resize(CROSSFADESIZE);
 			std::fill(_crossFadeBuffer[channel].begin(), _crossFadeBuffer[channel].end(), 0.);
 		
-			_delayBuffer[channel].resize(_config.GetMaxDelayInSeconds() * _sampleRate);
+			_delayBuffer[channel].resize(_delayBufferSize);
 			std::fill(_delayBuffer[channel].begin(), _delayBuffer[channel].end(), 0.);
-
-			_delayBufferSize = _delayBuffer[channel].size(); ////// TODO: remove on refactor (Nael)
-			_readIndex = _writeIndex = (_delayBufferSize-1); ////// TODO: remove on refactor (Nael)
 		}
+
 		if ( not _config.HasInitialDelayInSamples() )
 		{
 			_config.AddInitialDelayInSamples();
@@ -87,33 +89,14 @@ public:
 		TControlData delay = _delayControl.GetLastValue();
 		setDelay(delay);
 
-		std::vector<const TData*> inpointers(channels);
-		std::vector<TData*> outpointers(channels);
-		std::vector<unsigned> inSizes(channels);
-
 		for (unsigned channel=0; channel<channels; channel++)
 		{
 			const CLAM::Audio & in = _inputs[channel]->GetData();
-			inSizes[channel]=in.GetSize();
-			inpointers[channel]=in.GetBuffer().GetPtr();
 			CLAM::Audio & out = _outputs[channel]->GetData();
-			out.SetSize(inSizes[channel]);
-			outpointers[channel]=out.GetBuffer().GetPtr();
-		}
+			out.SetSize(in.GetSize());
 
-		for (unsigned i = 0; i < inSizes[0]; ++i)  //// TODO: remove on refactor (Nael)
-		{
-			for (unsigned channel=0; channel<channels;channel++)
-			{
-				outpointers[channel][i] = delayLine(inpointers[channel][i], channel);
-			}
-			_writeIndex++;
-			_readIndex++;
-			if (_crossFadeIndex > 0) _crossFadeIndex--;
-		}
-	
-		for (unsigned channel=0; channel<channels; channel++)
-		{
+			delayLine(in, out, channel, channels);
+
 			_inputs[channel]->Consume();
 			_outputs[channel]->Produce();
 		}
