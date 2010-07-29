@@ -52,7 +52,7 @@ public:
 		CopyAsConcreteConfig(_config, config);	
 		_channels = _config.HasPortsNumber() ? _config.GetPortsNumber() : 1;
 		ResizePorts(_channels);
-		return SampleAccurateDelay::ConcreteConfigure();
+		return SampleAccurateDelay::CommonConfigure();
 	}
 
 	const char* GetClassName() const { return "SampleAccurateBufferDelay"; }
