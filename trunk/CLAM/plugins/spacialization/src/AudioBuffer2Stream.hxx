@@ -46,15 +46,13 @@ namespace CLAM
 
 class AudioBuffer2Stream : public Processing
 {
-	// TODO: Use that configuration instead AudioWindowingConfig
-	/// The configuration for that
+public:
 	class Config : public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, unsigned, HopSize);
 		DYN_ATTRIBUTE( 1, public, unsigned, BufferSize);
     	protected:
-		/// Booo
 		void DefaultInit()
 		{
 			AddAll();
@@ -63,12 +61,13 @@ class AudioBuffer2Stream : public Processing
 			SetBufferSize(1024);
 		}
 	};
-
+private:
 	InPort<Audio> _in;
 	AudioOutPort _out;
 	unsigned _hopSize;
 	unsigned _bufferSize;
 	Config _config;
+
 public:
 	const char* GetClassName() const { return "AudioBuffer2Stream"; }
 	AudioBuffer2Stream(const Config& config = Config()) 
