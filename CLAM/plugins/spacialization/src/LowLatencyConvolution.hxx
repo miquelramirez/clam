@@ -121,6 +121,15 @@ public:
 		const ComplexSpectrum & input = _input.GetData();
 		ComplexSpectrum & output = _output.GetData();
 		std::vector<ComplexSpectrum> & impulseResponse = *_impulseResponse.GetData();
+		bool toReturn = Do(input, impulseResponse, output);
+		// Tell the ports this is done
+		_input.Consume();
+		_impulseResponse.Consume();
+		_output.Produce();
+		return toReturn;
+	}
+	bool Do(const ComplexSpectrum & input, const std::vector<ComplexSpectrum> & impulseResponse, ComplexSpectrum & output)
+	{
 		const unsigned nBlocks = GetLimitedFrames(impulseResponse.size());
 		const unsigned nBins = input.bins.size();
 		CLAM_ASSERT(nBins == impulseResponse[0].bins.size(), "LowLatencyConvolution: Input doesn't match ImpulseResponse frame size.");
@@ -150,10 +159,6 @@ public:
 		{
 			_current=0;
 		}
-		// Tell the ports this is done
-		_input.Consume();
-		_impulseResponse.Consume();
-		_output.Produce();
 		return true;
 	}
 };
