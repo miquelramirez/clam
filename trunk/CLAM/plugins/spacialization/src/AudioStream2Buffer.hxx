@@ -44,7 +44,6 @@ private:
 		CopyAsConcreteConfig(_config, c);
 		_bufferSize = _config.GetBufferSize();
 		_hopSize = _config.GetHopSize();
-//		_in.SetSize( _config.GetBufferSize() );
 		_in.SetSize( _hopSize );
 		_in.SetHop( _hopSize );
 		return true;
@@ -55,7 +54,13 @@ public:
 	{
 		const CLAM::Audio& in = _in.GetAudio();
 		CLAM::Audio& out = _out.GetData();
-
+		bool toReturn = Do(in, out);
+		_in.Consume();
+		_out.Produce();
+		return toReturn;
+	}
+	bool Do(const CLAM::Audio & in, CLAM::Audio & out)
+	{
 		CLAM_ASSERT(_hopSize==unsigned(in.GetSize()),
 			"AudioBuffer2Stream: Input does not provide the configured hop size"); 
 
@@ -63,9 +68,6 @@ public:
 		out.SetSize(_bufferSize);
 		CLAM::TData* outpointer = out.GetBuffer().GetPtr();
 		std::memcpy(outpointer, inpointer, sizeof(CLAM::TData)*_hopSize);
-
-		_in.Consume();
-		_out.Produce();
 		return true;
 	}
 

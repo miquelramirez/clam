@@ -94,16 +94,20 @@ public:
 		CLAM_ASSERT(_bufferSize==in.GetSize(),
 			"AudioBuffer2Stream: Input does not provide the configured window size"); 
 		Audio& out = _out.GetAudio();
+		bool toReturn = Do(in, out);
+		// Tell the ports this is done
+		_in.Consume();
+		_out.Produce();
+		return toReturn;
+	}
+	bool Do(const CLAM::Audio & in, CLAM::Audio & out)
+	{
 		const TData* inpointer = in.GetBuffer().GetPtr();
 		TData* outpointer = out.GetBuffer().GetPtr();
 		// Zero fill the new incomming hopSize
 		std::fill(outpointer+_bufferSize-_hopSize, outpointer+_bufferSize, 0.0);
 		// Add the input on the full window
 		std::transform(inpointer, inpointer+_bufferSize, outpointer, outpointer, std::plus<TData>());
-		
-		// Tell the ports this is done
-		_in.Consume();
-		_out.Produce();
 		return true;
 	}
 
