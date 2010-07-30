@@ -87,8 +87,8 @@ private:
 		_out.SetHop( _hopSize );
 		return true;
 	}
-	const ProcessingConfig & GetConfig() const { return _config; }
 public: 
+	const ProcessingConfig & GetConfig() const { return _config; }
 	bool Do()
 	{
 		const Audio& in = _in.GetData();
