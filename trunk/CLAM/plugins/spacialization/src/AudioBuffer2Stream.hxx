@@ -91,8 +91,6 @@ public:
 	bool Do()
 	{
 		const Audio& in = _in.GetData();
-		CLAM_ASSERT(_bufferSize==in.GetSize(),
-			"AudioBuffer2Stream: Input does not provide the configured window size"); 
 		Audio& out = _out.GetAudio();
 		bool toReturn = Do(in, out);
 		// Tell the ports this is done
@@ -102,6 +100,8 @@ public:
 	}
 	bool Do(const CLAM::Audio & in, CLAM::Audio & out)
 	{
+		CLAM_ASSERT(_bufferSize==in.GetSize(),
+			"AudioBuffer2Stream: Input does not provide the configured window size"); 
 		const TData* inpointer = in.GetBuffer().GetPtr();
 		TData* outpointer = out.GetBuffer().GetPtr();
 		// Zero fill the new incomming hopSize

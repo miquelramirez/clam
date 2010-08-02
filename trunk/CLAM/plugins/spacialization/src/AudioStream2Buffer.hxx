@@ -63,7 +63,6 @@ public:
 	{
 		CLAM_ASSERT(_hopSize==unsigned(in.GetSize()),
 			"AudioBuffer2Stream: Input does not provide the configured hop size"); 
-
 		const CLAM::TData* inpointer = in.GetBuffer().GetPtr();
 		out.SetSize(_bufferSize);
 		CLAM::TData* outpointer = out.GetBuffer().GetPtr();
