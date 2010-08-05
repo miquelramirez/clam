@@ -104,6 +104,9 @@ If you are a Ubuntu 8.04 (Hardy) user you can enable the hardy-backports reposit
    qt4-devel, qt4 
 
 
+ Gentoo packages list:
+ * for libclam: scons fftw jack-audio-connection-kit ladspa-sdk xerces-c libvorbis libmad libogg libsndfile id3lib alsa-lib portaudio 
+
 
 2.2 Install CLAM dependencies on Mac OSX
 
