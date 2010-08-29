@@ -39,8 +39,8 @@ namespace Hidden
 }
 	
 
-// TonalAnalysisConfig method definition
-void TonalAnalysisConfig::DefaultInit(void)
+// TonalAnalysis::Config method definition
+void TonalAnalysis::Config::DefaultInit(void)
 {
 	AddAll();
 
@@ -54,7 +54,7 @@ void TonalAnalysisConfig::DefaultInit(void)
 }
 
 
-TonalAnalysis::TonalAnalysis( const TonalAnalysisConfig& cfg )
+TonalAnalysis::TonalAnalysis( const TonalAnalysis::Config& cfg )
 	: _input("Audio Input",this)
 	, _pcp("Pitch Profile",this)
 	, _chordCorrelation("Chord Correlation",this)
