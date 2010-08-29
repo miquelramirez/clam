@@ -16,24 +16,26 @@ namespace Simac { class ChordExtractor; }
 namespace CLAM
 {
 
-class TonalAnalysisConfig : public ProcessingConfig
-{
-public:
-	DYNAMIC_TYPE_USING_INTERFACE (TonalAnalysisConfig, 5, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, double, FilterInertia);
-	DYN_ATTRIBUTE (1, public, bool, TunningEnabled);
-	DYN_ATTRIBUTE (2, public, bool, PeakWindowingEnabled);
-	DYN_ATTRIBUTE (3, public, double, HopRatio);
-	DYN_ATTRIBUTE (4, public, unsigned, SegmentationMethod);
-protected:
-	void DefaultInit(void);
-};
 
 class TonalAnalysis : public Processing
 {
+public:
+	class Config : public ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (Config, 5, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, double, FilterInertia);
+		DYN_ATTRIBUTE (1, public, bool, TunningEnabled);
+		DYN_ATTRIBUTE (2, public, bool, PeakWindowingEnabled);
+		DYN_ATTRIBUTE (3, public, double, HopRatio);
+		DYN_ATTRIBUTE (4, public, unsigned, SegmentationMethod);
+	protected:
+		void DefaultInit(void);
+	};
+
 private:
 	
-	TonalAnalysisConfig _config;
+	Config _config;
 	AudioInPort _input;
 	OutPort<std::vector<CLAM::TData> > _pcp;
 	OutPort<std::vector<CLAM::TData> > _chordCorrelation;
@@ -42,7 +44,7 @@ private:
 	OutPort<std::pair<CLAM::TData, CLAM::TData> > _tunning;
 
 public:
-	TonalAnalysis( const TonalAnalysisConfig & config = TonalAnalysisConfig() );
+	TonalAnalysis( const Config & config = Config() );
 
 	bool Do();
 	virtual ~TonalAnalysis();
@@ -56,8 +58,9 @@ private:
 	Simac::ChordExtractor * _implementation;
 	std::vector<float> _floatBuffer;
 	CLAM::TData _currentTime;
-
 };
+
+typedef TonalAnalysis::Config TonalAnalysisConfig;
 
 } //namespace CLAM
 
