@@ -3,9 +3,9 @@ import os, re
 
 # private methods:
 
-def _svnRevisionOf( whatToCheck ):
+def _svnRevisionOf( whatToCheck, revisionOption="" ):
 	os.environ['LANG']='C'
-	output = os.popen("svn info "+whatToCheck)
+	output = os.popen("svn info "+revisionOption+" "+whatToCheck)
 	revisionLocator = re.compile(r'^Revision:(?P<revision>.*)')
 	for line in output :
 		match = revisionLocator.match(line)
@@ -45,12 +45,12 @@ def versionFromLocalInfo( product='CLAM', changesFile="CHANGES" ):
 		pass
 	return version, _svnVersion(version, revision)
 
-def versionFromRemoteSvn( product="CLAM" ) :
+def versionFromRemoteSvn( product="CLAM", revisionOption="" ) :
 	os.system("rm CHANGES*" )
-	os.system("svn export "+ remoteRepository + product + "/CHANGES" )
+	os.system("svn export "+revisionOption+" "+remoteRepository + product + "/CHANGES" )
 	version, revision = _parseChangesFile( "CHANGES", product ) 
 	if not revision : return version, version
-	revision = _svnRevisionOf( remoteRepository )
+	revision = _svnRevisionOf( remoteRepository, revisionOption )
 	return version, _svnVersion(version, revision)
 	
 def generateVersionSources(fileBase, namespace, versionString, fullVersionString=None) :

@@ -9,6 +9,7 @@ from versionInfo import versionFromRemoteSvn
 
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
+revisionOption="-r14035 " # empty for current, -r34 for revision 34
 distributions = [
 #	('debian', 'lenny',   "http://ftp.de.debian.org/debian/", ['main']),
 #	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
@@ -16,16 +17,17 @@ distributions = [
 #	('ubuntu', 'hardy', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('ubuntu', 'intrepid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
-	('ubuntu', 'karmic', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+#	('ubuntu', 'karmic', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'lucid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 ]
 repositoryBase = "http://clam-project.org/clam/trunk/"
 repositories = [
 	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[1] ),
-#	( 'CLAM/plugins',  'clam-plugins',       versionFromRemoteSvn('CLAM')[1] ),
-#	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
+	( 'CLAM/plugins',  'clam-plugins',       versionFromRemoteSvn('CLAM')[1] ),
+	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
 #	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
 #	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
-#	( 'chordata',      'clam-chordata',      versionFromRemoteSvn('chordata')[1] ),
+	( 'chordata',      'clam-chordata',      versionFromRemoteSvn('chordata')[1] ),
 ]
 
 hooks = {
@@ -61,6 +63,7 @@ def phase(desc) :
 
 phase( "Setting up the environment" )
 run ("echo 'Remember: run this as root, and configure proxy settings (both in the script and ~/.subversion/servers)'")
+run ("ssh-add")
 run ("mkdir -p hooks")
 run ("mkdir -p aptcache")
 run ("mkdir -p apt.config/apt.conf.d")
@@ -85,10 +88,10 @@ for package, srcpackage, version in repositories :
 	modulePackaging = module + '/debian'
 	srcdir = srcpackage + "-" + version
 	tarball = srcpackage + "_" + version + ".orig.tar.gz"
-	run( "svn export --force %s %s"%(module, srcdir) )
+	run( "svn export %s --force %s %s"%(revisionOption, module, srcdir) )
 	run( "rm -rf  %s/debian"%(srcdir) )
 	run( "tar cvfz %s %s"%(tarball, srcdir) )
-	run( "svn export --force %s %s/debian"%(modulePackaging, srcdir) )
+	run( "svn export %s --force %s %s/debian"%(revisionOption, modulePackaging, srcdir) )
 	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='developers@clam-project.org' dch -d 'Autobuilt package' --distribution='unstable' --force-distribution"%(srcdir) )
 	run( "dpkg-source -b %s"%(srcdir))
 
