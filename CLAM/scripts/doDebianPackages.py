@@ -163,6 +163,10 @@ for (maindistro, distribution, mirror, components) in distributions :
 			'resultdir': resultdir,
 		})
 		run("gzip -c %s/Packages > %s/Packages.gz" %( resultdir, resultdir ) )
+		run("cd %(resultdir)s; /usr/bin/dpkg-scansources . /dev/null > Sources; cd -" %{
+			'resultdir': resultdir,
+		})
+		run("gzip -c %s/Sources > %s/Sources.gz" %( resultdir, resultdir ) )
 
 	if '--noupload' in sys.argv : continue
 	phase( "Uploading packages for '%s'"%distribution )
