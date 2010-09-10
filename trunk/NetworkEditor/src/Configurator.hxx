@@ -8,6 +8,8 @@
 #include <QtGui/QLabel>
 #include <QtGui/QDialogButtonBox>
 #include "ConfiguratorPlugin.hxx"
+#include "FocusPropertyFollower.hxx"
+
 #include <map>
 
 class Configurator : public QDialog
@@ -42,6 +44,7 @@ private:
 
 	void AddButtons()
 	{
+		mLayout->addWidget(new FocusPropertyFollower(this));
 		QDialogButtonBox * buttonBox = new QDialogButtonBox(
 			QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
 			Qt::Horizontal, this);
@@ -69,6 +72,7 @@ private:
 			mLayout->addLayout(cell);
 			cell->addWidget(new QLabel(name));
 			QWidget * editorWidget = plugin.editorWidget(*_data,i);
+			editorWidget->setWhatsThis(QString("No documentation for attribute <b>%1</b>").arg(name));
 			cell->addWidget(editorWidget);
 			PushWidget(name, editorWidget);
 		}
