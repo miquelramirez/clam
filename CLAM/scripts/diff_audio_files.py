@@ -43,7 +43,7 @@ def diff_files_wav(expected, result, diffbase) :
 	if 'OK' in substractResult : return None
 	substractResult= [line for line in substractResult.split("\n") if line.find("there is a different sample (")!=-1]
 	if substractResult==[]:
-		print "files substraction with soxsucks failed. They might not be comparable: (different lenght or sample-rate: %s %s)" % (expected, result)
+		print "Files substraction with soxsucks failed. Check that soxsucks is in the path and that the 2 wav files are comparable: (different lenght or sample-rate: %s %s)" % (expected, result)
 		return "Non comparable waves (different lenght, channels or sample-rate)"
 	substractResult="".join(substractResult)
 # TODO: REFACTOR, and use wrapper python of soxsucks compare function!!
