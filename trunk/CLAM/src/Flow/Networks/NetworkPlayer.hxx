@@ -62,6 +62,7 @@ public:
 	virtual void Init() {}
 
 	/// Redefine to make the backend ready to process and start the network.
+	/// Here you need to call GetNetwork().Start()
 	/// If IsPlaying() should do nothing.
 	/// If it IsPaused() you should consider just call BePlaying()
 	/// without starting the processings.

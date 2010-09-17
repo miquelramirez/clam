@@ -73,6 +73,10 @@ public:
 	{
 		_controlFile = controlFile;
 	}
+	unsigned BackendBufferSize() 
+	{
+		return 512;
+	}
 
 };
 
