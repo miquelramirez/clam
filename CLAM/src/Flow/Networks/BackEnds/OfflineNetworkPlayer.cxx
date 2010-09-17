@@ -85,7 +85,7 @@ void OfflineNetworkPlayer::Start()
 
 	CacheSourcesAndSinks();
 
-	const int frameSize = 512;
+	const int frameSize = BackendBufferSize();
 
 	//Open the files, get the total number of channels and the sample rate
 	int sampleRate = 0;
