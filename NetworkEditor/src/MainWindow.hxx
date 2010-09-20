@@ -19,6 +19,9 @@
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
 #include "RichTextEditor.hxx"
+//#include <CLAM/EmbeddedFile.hxx>
+//CLAM_EMBEDDED_FILE(genderChange,"PluginExamples/ClamLadspaPluginExample/genderChange.clamnetwork")
+
 
 // copied from Annotator:
 #include "TaskRunner.hxx"
@@ -229,19 +232,14 @@ public:
 		}
 		return 0;
 	}
-	void load(const QString & filename)
+	QString readNetworkVersion(const QString & networkFileName)
 	{
-		QFile file(filename);
-		if( !file.exists() )
-		{
-			QMessageBox::critical(this, tr("Error loading the network"), 
-					tr("<p>The file you selected doesn't exist.<p>"));
-			return;
-		}
-		file.open(QIODevice::ReadOnly);
+		QFile networkFile(networkFileName);
+		if( !networkFile.exists() ) return QString();
+		networkFile.open(QIODevice::ReadOnly);
 
 		QXmlQuery query;
-		query.bindVariable("document", &file);
+		query.bindVariable("document", &networkFile);
 		query.setQuery("doc($document)/network/@clamVersion/string()");	
 
 		QString readClamVersion;
@@ -253,49 +251,61 @@ public:
 #else
 		query.evaluateTo(&readClamVersion);
 #endif
-		readClamVersion = readClamVersion.trimmed();
-
-		int comparision = compareVersions(readClamVersion, CLAM::GetVersion());
-
-		if (comparision==-1)
+		return readClamVersion.trimmed();
+	}
+	void load(const QString & filename)
+	{
+		QString networkVersion = readNetworkVersion(filename);
+		if (networkVersion.isNull())
 		{
-			int response = QMessageBox::question(this,
+			QMessageBox::critical(this,
+				tr("Error loading the network"), 
+				tr("<p>'%1' doesn't exist.<p>")
+					.arg(filename));
+			return;
+		}
+		int comparison = compareVersions(networkVersion, CLAM::GetVersion());
+
+		// Fake to disable upgrades while they depend on file locations
+		if (comparison==-1) comparison=0;
+
+		if (comparison==-1) // Older version
+		{
+			int response = QMessageBox::warning(this,
 				tr("NetworkEditor"),
 				tr("This network was created with an older version, %1, of NetworkEditor.\n"
-				"Do you want to update it to version %2 before loading?")
-					.arg(readClamVersion)
+				"It will be updated to version %2 when saved.")
+					.arg(networkVersion)
 					.arg(CLAM::GetVersion())
 					,
-				QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
-			if (response == QMessageBox::Cancel) return;
-			if (response == QMessageBox::Yes)
+				QMessageBox::Ok);
+			const char * translatedNetwork = updatedNetworkVersion(qPrintable(filename));
+			if (translatedNetwork)
 			{
-				QMessageBox::warning(this,
-					tr("Network Editor"),
-					tr("Feature not implemented"));
-				// TODO: Updating the script
+				loadFromString(translatedNetwork, filename);
 				return;
 			}
-			
+			QMessageBox::warning(this,
+				tr("NetworkEditor"),
+				tr("Updating procedure failed, trying to load old version file."));
 		}
-		if (comparision==+1)
+		if (comparison==+1) // Newer version
 		{
 			int response = QMessageBox::question(this,
 				tr("NetworkEditor"),
 				tr("This network was created with version %1 which is newer than the one you are using %2.\n"
 				"This could give you problems on loading.\n"
 				"Do you want to load it anyway?")
-					.arg(readClamVersion)
+					.arg(networkVersion)
 					.arg(CLAM::GetVersion())
 					,
 				QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes);
 			if (response == QMessageBox::No) return;
 		}
-		
-
-		loadVersionChecked(filename);
+		loadFromFile(filename);
 	}
-	void loadVersionChecked(const QString & filename)
+	const char * updatedNetworkVersion(const std::string & filename);
+	void loadFromFile(const QString & filename)
 	{
 		_network.ResetConnectionReport();
 
@@ -305,6 +315,42 @@ public:
 		try
 		{
 			CLAM::XMLStorage::Restore(_network, localFilename);
+		}
+		catch(CLAM::XmlStorageErr &e)
+		{
+			QMessageBox::critical(this, tr("Error loading the network"), 
+					tr("<p>An occurred while loading the network file.<p>"
+						"<p><b>%1</b></p>").arg(e.what()));
+			clear();
+			return;
+		}
+		_textDescriptionEdit->setText(QString::fromLocal8Bit(_network.GetDescription().c_str()));
+
+		_playingLabel->setNetwork(&_network);
+		_canvas->loadNetwork(&_network);
+		_canvas->loadGeometriesFromXML();
+
+		CLAM::Network::ConnectionState connectionState = _network.GetConnectionReport();
+		if (connectionState.first)
+		{
+			QMessageBox::warning(this, tr("Broken connections found"), 
+				tr("<p>The following connections are broken.<p>" 
+					"<p><b>%1</b></p>").arg(connectionState.second.c_str()));
+		}
+
+		appendRecentFile(filename);
+		_networkFile = filename;
+		updateCaption();
+	}
+	void loadFromString(const char *strNetwork, const QString & filename)
+	{
+		_network.ResetConnectionReport();
+
+		std::cout << "Loading " << qPrintable(filename) << "..." << std::endl;
+		std::istringstream istrNetwork(strNetwork);
+		try
+		{
+			CLAM::XMLStorage::Restore(_network, istrNetwork);
 		}
 		catch(CLAM::XmlStorageErr &e)
 		{

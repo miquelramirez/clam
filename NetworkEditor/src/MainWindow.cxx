@@ -1,6 +1,8 @@
 #include <QtCore/QTemporaryFile>
 #include "ui_LadspaMetadataEditor.hxx"
 #include "LadspaPluginCompilationTask.hxx"
+#include "Python.h"
+#include <fstream>
 
 MainWindow::~MainWindow()
 {
@@ -102,3 +104,77 @@ void MainWindow::on_action_Reload_Faust_Modules_triggered()
 }
 
 
+//CLAM_EMBEDEDFILE(migrationScript, "migrationScript");
+
+const char * MainWindow::updatedNetworkVersion(const std::string & filename)
+{
+	PyObject *pClamNetwork, *pInstanceClamNetwork, *pValue;
+
+	Py_Initialize();
+	PyObject * pModule = PyImport_ImportModule("clamrefactor");
+	if (pModule == NULL)
+	{
+		PyErr_Print();
+		return 0;
+	}
+	PyObject * pDict = PyModule_GetDict(pModule);
+	// Build the name of a callable class 
+	PyObject * pClassClamNetwork = PyDict_GetItemString(pDict, "ClamNetwork");
+	// Create an instance of the class
+	if (! PyCallable_Check(pClassClamNetwork))
+	{
+		//TODO Manage error
+		return 0;
+	}
+	PyObject * pClamNetwork = Py_BuildValue( "(s)", filename.c_str() );
+	PyObject * pInstanceClamNetwork = PyObject_CallObject(pClassClamNetwork, pClamNetwork); 
+	Py_DECREF(pClamNetwork);
+
+	if (pInstanceClamNetwork == NULL)
+	{
+		PyErr_Print();
+		return 0;
+	}
+	std::ifstream ifs( "migrationScript" );
+	std::string command;
+	while( getline(ifs, command) )
+	{
+		pValue = PyObject_CallMethod( pInstanceClamNetwork, "runCommand", "(s)", command.c_str() );
+	}
+
+	PyObject *pModule2, *pDict2, *pClassStringIO, *pStringIO, *pInstanceStringIO;
+	pModule2 = PyImport_ImportModule("StringIO");
+	if (pModule2 == NULL)
+	{
+		PyErr_Print();
+		return 0;
+	}
+	pDict2 = PyModule_GetDict(pModule2);
+	pClassStringIO = PyDict_GetItemString(pDict2, "StringIO");
+	if (PyCallable_Check(pClassStringIO))
+	{
+		pStringIO = Py_BuildValue( "(s)", "" );
+		pInstanceStringIO = PyObject_CallObject(pClassStringIO, pStringIO); 
+	}
+
+	PyObject_CallMethod(pInstanceClamNetwork, "dump", "(O)", pInstanceStringIO);
+	pValue = PyObject_CallMethod(pInstanceStringIO, "getvalue", NULL);
+
+	char *cstring;
+	if (pValue == NULL)
+	{
+		PyErr_Print();
+		return 0;
+	}
+
+	PyArg_Parse(pValue, "s", &cstring);
+	Py_DECREF(pModule);
+	Py_DECREF(pModule2);
+	Py_DECREF(pStringIO);
+	Py_DECREF(pInstanceClamNetwork);
+	Py_DECREF(pInstanceStringIO);
+	Py_DECREF(pValue);
+	Py_Finalize();
+
+	return cstring;
+}
