@@ -42,6 +42,8 @@ isDarwinPlatform = sys.platform=='darwin'
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
+env.ParseConfig("python-config --cflags")
+env.ParseConfig("python-config --libs")
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
@@ -55,7 +57,6 @@ version, fullVersion = versionInfo.versionFromLocalInfo("NetworkEditor")
 print "Version: ", version
 print "Package version: ", fullVersion
 versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "NetworkEditor", version, fullVersion)
-
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
