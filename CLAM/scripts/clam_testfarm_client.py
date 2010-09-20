@@ -26,7 +26,7 @@ def ellapsedTime():
 	return time.time() - startTime
 
 localDefinitions = dict(
-	name= 'BM_hardy',
+	name= 'BM_lucid_32',
 	description= '<img src="http://clam-project.org/images/linux_icon.png"/> <img src="http://clam-project.org/images/ubuntu_icon.png"/>',
 #	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
 	repositories = "clam acustica data_acustica clam/testdata",
@@ -55,10 +55,13 @@ clam = Task(
 	task_name='svn up|DEBUG' 
 	)
 
+clam.set_repositories_to_keep_state_of(repositories + localDefinitions['private_repositories'].split())
+
 clam.set_check_for_new_commits( 
 	checking_cmd='for a in %(repositories)s; do ( cd %(sandbox)s/$a && svn status -u); done | grep \'[*!]\''%localDefinitions,
 	minutes_idle=15
 )
+
 clam.add_subtask( 'List of new commits', [
 	'cd %(sandbox)s/'%localDefinitions,
 	] + [
@@ -66,13 +69,12 @@ clam.add_subtask( 'List of new commits', [
 		{CMD: 'true ; cd %s; svn log -r BASE:HEAD; cd -'%repo, INFO: lambda x:x }
 		for repo in repositories if repo not in private_repositories
 	] + [
-		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:x }
+		{CMD: '(cd %s ; svn up --accept postpone )'%repo, INFO: lambda x:x }
 		for repo in repositories if repo not in private_repositories
 	] + [
-		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:'No available' }
+		{CMD: '(cd %s ; svn up --accept postpone )'%repo, INFO: lambda x:'No available' }
 		for repo in private_repositories
 	] )
-
 clam.add_subtask('count lines of code', [
 	{CMD:'echo %(sandbox)s/clam/CLAM'%localDefinitions, STATS: lambda x: {'clam_loc': countLines(x) } },
 	{CMD:'echo %(sandbox)s/clam/SMSTools'%localDefinitions, STATS: lambda x: {'smstools_loc': countLines(x) } },
@@ -217,6 +219,7 @@ clam.add_subtask('Voice2MIDI installation', [
 	'scons install',
 ] )
 
+"""
 clam.add_subtask('Check Clam Networks Recursively that are inside the NetworkEditor', [
 	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
 	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/NetworkEditor'%localDefinitions },
@@ -271,7 +274,7 @@ clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/
 	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
 	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/speech/'%localDefinitions },
 ] )
-
+"""
 """
 clam.add_subtask('Padova Speech SMS (external repository)', [
 	'cd %(sandbox)s/clam/padova-speech-sms/'%localDefinitions,
