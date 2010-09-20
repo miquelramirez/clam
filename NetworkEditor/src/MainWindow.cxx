@@ -108,8 +108,6 @@ void MainWindow::on_action_Reload_Faust_Modules_triggered()
 
 const char * MainWindow::updatedNetworkVersion(const std::string & filename)
 {
-	PyObject *pClamNetwork, *pInstanceClamNetwork, *pValue;
-
 	Py_Initialize();
 	PyObject * pModule = PyImport_ImportModule("clamrefactor");
 	if (pModule == NULL)
@@ -137,6 +135,7 @@ const char * MainWindow::updatedNetworkVersion(const std::string & filename)
 	}
 	std::ifstream ifs( "migrationScript" );
 	std::string command;
+	PyObject *pValue;
 	while( getline(ifs, command) )
 	{
 		pValue = PyObject_CallMethod( pInstanceClamNetwork, "runCommand", "(s)", command.c_str() );
