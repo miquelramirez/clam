@@ -187,6 +187,8 @@ clam.add_subtask('BM-Audio back-to-back tests', [
 	'./back2back.py',
 	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
 	'./back2back.py',
+	'cd %(sandbox)s/acustica/src/bm_clam_plugin'%localDefinitions,
+	'./back2back.py',
 ] )
 
 clam.add_subtask('SMSTools installation', [
@@ -219,61 +221,62 @@ clam.add_subtask('Voice2MIDI installation', [
 	'scons install',
 ] )
 
+if '--slow-tests' in sys.argv :
+	
+	clam.add_subtask('Check Clam Networks Recursively that are inside the NetworkEditor', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/NetworkEditor'%localDefinitions },
+	] )
 """
-clam.add_subtask('Check Clam Networks Recursively that are inside the NetworkEditor', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py %(sandbox)s/clam/NetworkEditor'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/continuousExcitationSynthesizer', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/continuousExcitationSynthesizer/'%localDefinitions },
+	] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/continuousExcitationSynthesizer', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/continuousExcitationSynthesizer/'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/GuitarEffects/', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/GuitarEffects/'%localDefinitions },
+	] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/GuitarEffects/', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/GuitarEffects/'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/osc/', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/osc/'%localDefinitions },
+	] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/osc/', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/osc/'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/sndfile/', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/sndfile/'%localDefinitions },
+	] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/sndfile/', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/sndfile/'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/Filters/', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/Filters/'%localDefinitions },
+	] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/Filters/', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/Filters/'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/MIDI/', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/MIDI/'%localDefinitions },
+	] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/MIDI/', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/MIDI/'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/resampling/', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/resampling/'%localDefinitions },
+	] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/resampling/', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/resampling/'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/samplebysample/', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/samplebysample/'%localDefinitions },
+	] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/samplebysample/', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/samplebysample/'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/spacialization/', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/spacialization/'%localDefinitions },
+	] )
 
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/spacialization/', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/spacialization/'%localDefinitions },
-] )
-
-clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/speech/', [
-	'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
-	{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/speech/'%localDefinitions },
-] )
+	clam.add_subtask('Check Clam Networks Recursively that are inside the clam/CLAM/plugins/speech/', [
+		'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
+		{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/clam/CLAM/plugins/speech/'%localDefinitions },
+	] )
 """
 """
 clam.add_subtask('Padova Speech SMS (external repository)', [
