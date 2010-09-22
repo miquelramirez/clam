@@ -256,15 +256,12 @@ if '--slow-tests' in sys.argv :
 		'clam/CLAM/plugins/spacialization',
 		'clam/CLAM/plugins/speech',
 		]
-
-	]
 	for d in dirs :
 		clam.add_subtask('Check Clam Networks Recursively in %s' % d, [
 			'cd %(sandbox)s/clam/CLAM/scripts'%localDefinitions,
 			{CMD: './check_clam_networks_recursively.py -b %(sandbox)s/'%localDefinitions + d },
 		] )
 
-"""
 forceRun = len(sys.argv)>1
 print "force Run: ", forceRun
 
