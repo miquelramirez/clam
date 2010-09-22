@@ -479,7 +479,8 @@ namespace CLAM
 		if (!IsStopped()) Stop();
 
 		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
-			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
+			CLAM_ASSERT(false, 
+			("Network::AddProcessing() Trying to add a processing with a repeated name (key): '"+name+"'." ).c_str() );
 		proc->SetNetworkBackLink((CLAM::Network*)this);
 		proc->Configure(config ? *config : proc->GetConfig());
 		_flowControl->ProcessingAddedToNetwork(*proc);
