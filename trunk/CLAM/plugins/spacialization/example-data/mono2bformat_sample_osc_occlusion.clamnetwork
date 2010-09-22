@@ -18,7 +18,7 @@ p, li { white-space: pre-wrap; }
     <MinValue>0</MinValue>
     <MaxValue>100</MaxValue>
     <DefaultValue>0</DefaultValue>
-    <Step>1</Step>
+    <Step>0.1</Step>
     <UnitName>-</UnitName>
     <NrOfControls>1</NrOfControls>
   </processing>
@@ -57,7 +57,7 @@ p, li { white-space: pre-wrap; }
     <MinValue>0</MinValue>
     <MaxValue>100</MaxValue>
     <DefaultValue>0</DefaultValue>
-    <Step>1</Step>
+    <Step>0.1</Step>
     <UnitName>-</UnitName>
     <NrOfControls>1</NrOfControls>
   </processing>
@@ -97,7 +97,7 @@ p, li { white-space: pre-wrap; }
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
-    <Step>1</Step>
+    <Step>0.1</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
     <Mapping>Linear</Mapping>
   </processing>

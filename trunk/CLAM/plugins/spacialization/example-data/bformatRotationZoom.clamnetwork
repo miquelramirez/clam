@@ -19,7 +19,7 @@
   <processing id="Azimuth" position="249,95" size="127,58" type="ControlSource">
     <MinValue>-360</MinValue>
     <MaxValue>360</MaxValue>
-    <Step>1</Step>
+    <Step>0.1</Step>
     <UnitName>degrees</UnitName>
   </processing>
 
@@ -35,14 +35,14 @@
   <processing id="Elevation" position="298,148" size="127,58" type="ControlSource">
     <MinValue>-90</MinValue>
     <MaxValue>90</MaxValue>
-    <Step>1</Step>
+    <Step>0.1</Step>
     <UnitName>degrees</UnitName>
   </processing>
 
   <processing id="Roll" position="182,31" size="113,58" type="ControlSource">
     <MinValue>-360</MinValue>
     <MaxValue>360</MaxValue>
-    <Step>1</Step>
+    <Step>0.1</Step>
     <UnitName>degrees</UnitName>
   </processing>
 
