@@ -1,5 +1,6 @@
 #include "ControlFade.hxx"
 #include "ProcessingFactory.hxx"
+#include <cmath>
 
 namespace CLAM
 {
@@ -63,6 +64,7 @@ void ControlFade::InControlDelayCallback(const TControlData & value)
 }
 void ControlFade::InControlValueCallback(const TControlData & value)
 {
+	if (std::abs(_inControlValue.GetLastValue() - _lastValue) < 0.001) return;
 	_counterTime=0;
 	_initValue=_lastValue;
 	_lastValue=_inControlValue.GetLastValue();
@@ -70,8 +72,8 @@ void ControlFade::InControlValueCallback(const TControlData & value)
 
 bool ControlFade::Do()
 {
-	if (_initValue==_lastValue)
-		return true;
+	if (_initValue==_lastValue) return true;
+
 	double a=(_inControlValue.GetLastValue() - _initValue)/_delayTime;
 	float newValue=a * _counterTime + _initValue;
 	_counterTime += _bufferTime;
