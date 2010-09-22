@@ -47,7 +47,7 @@ namespace CLAM{
 			SetMinValue(0.0);
 			SetMaxValue(100.0);
 			SetDefaultValue(50.0);
-			SetStep(1.0);
+			SetStep(0.1);
 			SetUnitName("-");
 			SetNrOfControls(1);
 		}
