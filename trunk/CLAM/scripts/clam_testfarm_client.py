@@ -229,20 +229,20 @@ clam.add_subtask('Padova Speech SMS (external repository)', [
 	{CMD: 'svn up', INFO: lambda x:x },
 	'make',
 ] )
-"""
 
 clam.add_subtask('pyCLAM update', [
-	'cd %(sandbox)s/clam/CLAM/pyclam'%localDefinitions,
+	'cd %(sandbox)s/clam/pyclam'%localDefinitions,
 	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
 	 './generate_bindings.py && scons',
 ] )
 clam.add_subtask('pyCLAM Unit Tests', [
-	'cd %(sandbox)s/clam/CLAM/pyclam'%localDefinitions,
+	'cd %(sandbox)s/clam/pyclam'%localDefinitions,
 	'cd test',
 	{INFO : lambda x:startTimer() },
 	{CMD: './UnitTestsSuite.py'},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ])
+"""
 
 if '--slow-tests' in sys.argv :
 	dirs = [
