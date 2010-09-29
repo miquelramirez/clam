@@ -238,7 +238,6 @@ void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL);
 		names[currentport] = LadspaLibrary::dupstr( ControlSourceName(i).c_str() );
 
-		//Obté processingConfig, i defineix cada param
 		ControlSourceConfig conf = dynamic_cast<const ControlSourceConfig&>(_controlSources[i].processing->GetConfig() );
 
 		rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
@@ -273,10 +272,12 @@ void LadspaNetworkPlayer::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 	// (Please note that not all the LADSPA hosts make use of these kind of ports)
 	for (unsigned i=0; i<GetNControlSinks(); i++)
 	{
+		ControlSinkConfig conf = dynamic_cast<const ControlSinkConfig&>(_controlSinks[i].processing->GetConfig() );
+
 		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_CONTROL);
 		names[currentport] = LadspaLibrary::dupstr( ControlSinkName(i).c_str() );
-		rangehints[currentport].LowerBound=(LADSPA_Data)0;
-		rangehints[currentport].UpperBound=(LADSPA_Data)1000;
+		rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
+		rangehints[currentport].UpperBound=(LADSPA_Data)conf.GetMaxValue();
 		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE);
 		currentport++;
 	}
