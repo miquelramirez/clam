@@ -74,7 +74,8 @@ private:
 	OutPorts _outputs;
 	InPorts _inputs;
 	Config _config;
-	double _decoding[4];
+	enum {MaxSupportedOrder=3};
+	double _decoding[MaxSupportedOrder+1];
 
 public:
 	const char* GetClassName() const { return "Hoa2RegularSpeakerArrayBuffer"; }
@@ -97,23 +98,26 @@ public:
 			_config.UpdateData();
 			_config.SetDecodingCriteria(DecodingCriteria::eInPhase2D);
 		}
-		bool errorHappened = false;
-		if (order>3)
+		bool ok = true;
+		if (order>MaxSupportedOrder)
 		{
 			// If never configured just initialize a sane default to keep connections
 			if (_inputs.size() == 0) ResizePortsToOrder(1);
-			errorHappened |= AddConfigErrorMessage("Ambisonics orders beyond 3rd are not supported");
+			ok = AddConfigErrorMessage("Ambisonics orders beyond 3rd are not supported");
 			// Don't exit yet, we want to keep outports connections when loading from a network
 		}
-		else ResizePortsToOrder(order);
-		ComputeDecoding(order);
+		else
+		{
+			ResizePortsToOrder(order);
+			ComputeDecoding(order);
+		}
 
 		std::string errorMessage;
 		if (not _layout.load(_config.GetSpeakerLayout(), errorMessage))
 			return AddConfigErrorMessage(errorMessage);
 		else ResizePortsToLayout();
 
-		return not errorHappened;
+		return ok;
 	}
 	bool Do()
 	{
@@ -122,21 +126,24 @@ public:
 		const unsigned nComponents = _inputs.size();
 		const unsigned nSpeakers = _outputs.size();
 		const CLAM::TData* components[nComponents];
-
 		for (unsigned component=0; component<nComponents; component++)
 			components[component] = &_inputs[component]->GetData().GetBuffer()[0];
+		CLAM::TData* speakers[nSpeakers];
+		for (unsigned speaker=0; speaker<nSpeakers; speaker++)
+		{
+			CLAM::Audio & audio = _outputs[speaker]->GetData();
+			audio.SetSize(nSamples);
+			speakers[speaker] = &audio.GetBuffer()[0];
+		}
 
 		double componentWeight[nComponents];
 		CLAM::SphericalHarmonicsDefinition * sh = CLAM::Orientation::sphericalHarmonics();
-
 		for (unsigned speaker=0; speaker<nSpeakers; speaker++)
 		{
 			for (unsigned hoaComponent=0; hoaComponent<nComponents; hoaComponent++)
 				componentWeight[hoaComponent] = _decoding[sh[hoaComponent].zProjection] * _layout.orientation(speaker).sphericalHarmonic(sh[hoaComponent]) / nSpeakers;
 
-            _outputs[speaker]->GetData().SetSize(nSamples); // it is necessary for resize buffer
-			CLAM::TData * speakerBuffer = &_outputs[speaker]->GetData().GetBuffer()[0];
-
+			CLAM::TData * speakerBuffer = speakers[speaker];
 			for (unsigned sample=0; sample<nSamples; sample++)
 			{
 				double sampleValue = 0;
@@ -235,7 +242,7 @@ private:
 
 		for (unsigned i=0; i<=order; i++)
 			_decoding[i] = decodingFunction(order, i);
-		for (unsigned i=order+1; i<4; i++)
+		for (unsigned i=order+1; i<= MaxSupportedOrder; i++)
 			_decoding[i] = 0;
 	}
 	static double inphaseDecoding2D(unsigned maxOrder, unsigned order)
@@ -247,7 +254,6 @@ private:
 		for (unsigned i=maxOrder-order+1; i<=maxOrder; i++) g *= i;
 		for (unsigned i=maxOrder+1; i<=maxOrder+order; i++) g /= i;
 		if (order) g *= 2;
-//		std::cout << "Inphase decoding " << maxOrder << "," << order << " " << g << std::endl;
 		return g;
 	}
 	static double inphaseDecoding3D(unsigned maxOrder, unsigned order)
