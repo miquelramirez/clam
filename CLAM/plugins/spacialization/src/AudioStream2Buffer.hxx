@@ -67,6 +67,7 @@ public:
 		out.SetSize(_bufferSize);
 		CLAM::TData* outpointer = out.GetBuffer().GetPtr();
 		std::memcpy(outpointer, inpointer, sizeof(CLAM::TData)*_hopSize);
+		std::memset(outpointer+_hopSize, 0, sizeof(CLAM::TData)*(_bufferSize-_hopSize));
 		return true;
 	}
 
