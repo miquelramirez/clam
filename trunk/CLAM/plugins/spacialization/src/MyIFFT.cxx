@@ -111,7 +111,7 @@ bool MyIFFT::Do()
 bool MyIFFT::Do( const ComplexSpectrum& in, Audio &out) const
 {
 	CLAM_ASSERT(IsRunning() ,"MyIFFT: Do(): Not in execution mode");
-	const std::vector<std::complex<TData> > & inbuffer = in.bins;
+	const ComplexSpectrum::Bins & inbuffer = in.bins;
 	CLAM_ASSERT(inbuffer.size() == _size/2+1, "MyIFFT: input data size doesn't match configuration.");
 	for (int i=0; i< inbuffer.size(); i++)
 	{
