@@ -24,7 +24,7 @@
 #include <vector>
 #include <complex>
 #include <CLAM/DataTypes.hxx>
-#include "AlignedAllocator.hxx"
+//#include "AlignedAllocator.hxx"
 
 namespace CLAM
 {
