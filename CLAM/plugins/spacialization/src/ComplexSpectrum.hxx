@@ -24,6 +24,7 @@
 #include <vector>
 #include <complex>
 #include <CLAM/DataTypes.hxx>
+#include "AlignedAllocator.hxx"
 
 namespace CLAM
 {
@@ -38,7 +39,10 @@ namespace CLAM
 class ComplexSpectrum
 {
 public:
-	std::vector<std::complex<TData> > bins;
+	typedef std::complex<TData> Bin;
+//	typedef std::vector<Bin, AlignedAllocator<Bin> > Bins;
+	typedef std::vector<Bin> Bins;
+	Bins bins;
 	virtual ~ComplexSpectrum();
 	TData spectralRange;
 	void dump(std::ostream & os)
