@@ -27,7 +27,7 @@
  @see AmbisonicsConventions
 */
 class Hoa2RegularSpeakerArray : public CLAM::Processing
-{ 
+{
 public:
 	class DecodingCriteria : public CLAM::Enum
 	{
@@ -74,7 +74,8 @@ private:
 	OutPorts _outputs;
 	InPorts _inputs;
 	Config _config;
-	double _decoding[4];
+	enum {MaxSupportedOrder=3};
+	double _decoding[MaxSupportedOrder+1];
 
 public:
 	const char* GetClassName() const { return "Hoa2RegularSpeakerArray"; }
@@ -98,23 +99,26 @@ public:
 			_config.UpdateData();
 			_config.SetDecodingCriteria(DecodingCriteria::eInPhase2D);
 		}
-		bool errorHappened = false;
-		if (order>3)
+		bool ok = true;
+		if (order>MaxSupportedOrder)
 		{
 			// If never configured just initialize a sane default to keep connections
 			if (_inputs.size() == 0) ResizePortsToOrder(1, buffersize);
-			errorHappened |= AddConfigErrorMessage("Ambisonics orders beyond 3rd are not supported");
+			ok = AddConfigErrorMessage("Ambisonics orders beyond 3rd are not supported");
 			// Don't exit yet, we want to keep outports connections when loading from a network
 		}
-		else ResizePortsToOrder(order, buffersize);
-		ComputeDecoding(order);
+		else
+		{
+			ResizePortsToOrder(order, buffersize);
+			ComputeDecoding(order);
+		}
 
 		std::string errorMessage;
 		if (not _layout.load(_config.GetSpeakerLayout(), errorMessage))
 			return AddConfigErrorMessage(errorMessage);
 		else ResizePortsToLayout(buffersize);
 
-		return not errorHappened;
+		return ok;
 	}
 	bool Do()
 	{
@@ -127,7 +131,10 @@ public:
 			components[component] = &_inputs[component]->GetAudio().GetBuffer()[0];
 		CLAM::TData* speakers[nSpeakers];
 		for (unsigned speaker=0; speaker<nSpeakers; speaker++)
-			speakers[speaker] = &_outputs[speaker]->GetAudio().GetBuffer()[0];
+		{
+			CLAM::Audio & audio = _outputs[speaker]->GetAudio();
+			speakers[speaker] = &audio.GetBuffer()[0];
+		}
 
 		double componentWeight[nComponents];
 		CLAM::SphericalHarmonicsDefinition * sh = CLAM::Orientation::sphericalHarmonics();
@@ -219,7 +226,7 @@ private:
 	{
 		for (unsigned speaker = 0; speaker<_layout.size(); speaker++)
 		{
-			if (speaker>=_outputs.size()) return speaker; 
+			if (speaker>=_outputs.size()) return speaker;
 			if (_outputs[speaker]->GetName() != portName(speaker)) return speaker;
 		}
 		return _layout.size();
@@ -227,14 +234,14 @@ private:
 	void ComputeDecoding(unsigned order)
 	{
 		DecodingCriteria criteria = _config.GetDecodingCriteria();
-		double (*decodingFunction)(unsigned, unsigned) = 
+		double (*decodingFunction)(unsigned, unsigned) =
 			(criteria==DecodingCriteria::eInPhase2D ? &inphaseDecoding2D :
 			(criteria==DecodingCriteria::eInPhase3D ? &inphaseDecoding3D :
 			/* default */ &inphaseDecoding2D ));
-			
+
 		for (unsigned i=0; i<=order; i++)
 			_decoding[i] = decodingFunction(order, i);
-		for (unsigned i=order+1; i<4; i++)
+		for (unsigned i=order+1; i<= MaxSupportedOrder; i++)
 			_decoding[i] = 0;
 	}
 	static double inphaseDecoding2D(unsigned maxOrder, unsigned order)
@@ -246,7 +253,6 @@ private:
 		for (unsigned i=maxOrder-order+1; i<=maxOrder; i++) g *= i;
 		for (unsigned i=maxOrder+1; i<=maxOrder+order; i++) g /= i;
 		if (order) g *= 2;
-//		std::cout << "Inphase decoding " << maxOrder << "," << order << " " << g << std::endl;
 		return g;
 	}
 	static double inphaseDecoding3D(unsigned maxOrder, unsigned order)
@@ -259,7 +265,7 @@ private:
 		for (unsigned i=1; i<=maxOrder-order; i++) g/=i;
 		return g;
 	}
- 
+
 };
 #endif
 
