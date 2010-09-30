@@ -137,7 +137,7 @@ public:
 		{
 			InitialitzeDelaySpectrums( nBlocks, nBins, impulseResponse[0].spectralRange );
 		}
-        CLAM_ASSERT(nBins == _delayedSpectrums[0].bins.size(), "LowLatencyConvolution: Spectrum number of bins changed on run time.");
+		CLAM_ASSERT(nBins == _delayedSpectrums[0].bins.size(), "LowLatencyConvolution: Spectrum number of bins changed on run time.");
 
 		output.bins.resize( nBins );
 		output.spectralRange = input.spectralRange;
