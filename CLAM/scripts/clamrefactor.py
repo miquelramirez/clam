@@ -154,6 +154,7 @@ class ClamNetwork() :
 			'processing',
 			'port_connection',
 			'control_connection',
+			'information',
 			]
 		children = self.document.getroot().getchildren()
 		tagOrder = order.index(tag)
