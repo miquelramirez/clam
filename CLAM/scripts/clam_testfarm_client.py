@@ -188,7 +188,8 @@ clam.add_subtask('BM-Audio back-to-back tests', [
 	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
 	'./back2back.py',
 	'cd %(sandbox)s/acustica/src/bm_clam_plugin'%localDefinitions,
-	'./back2back.py',
+	'./back2back_decoders.py',
+	'./back2back_upmix.py',
 ] )
 
 clam.add_subtask('SMSTools installation', [
