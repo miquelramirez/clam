@@ -36,6 +36,7 @@ public:
 			AddAll();
 			UpdateData();
 			SetOrder(1);
+			SetNSpeakers(0);
 		}
 	};
 private:
@@ -154,8 +155,7 @@ private:
 		// adding new speakers
 		for (unsigned speaker=previousSize; speaker<nSpeakers; speaker++)
 		{
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( portName(speaker), this);
-			_outputs.push_back( port );
+			_outputs[speaker]= new CLAM::AudioOutPort( portName(speaker), this);
 		}
 		for (unsigned speaker=0; speaker<nSpeakers; speaker++)
 		{
