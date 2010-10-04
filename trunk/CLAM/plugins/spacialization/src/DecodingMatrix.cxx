@@ -26,14 +26,13 @@ bool DecodingMatrix::load(unsigned nInputs, unsigned nOutputs, const std::string
 		getline(file,line);
 		if (file.eof()) break;
 		if (line[0]=='#') continue;
-		parsedRows++;
 		std::ostringstream os;
 		os << row;
 		std::string rowString = os.str();
 		std::istringstream is(line);
 		for (unsigned column = 0; column<nInputs; column++)
 		{
-			float & weight = _weights[row*nOutputs+column];
+			float & weight = _weights[parsedRows*nInputs+column];
 			if (not (is >> weight))
 				return error(errorMsg, "Missing or wrong weight at line "+rowString);
 			is >> std::ws;
@@ -42,6 +41,7 @@ bool DecodingMatrix::load(unsigned nInputs, unsigned nOutputs, const std::string
 			if (not name.empty())
 				return error(errorMsg, "Too many columns at line "+rowString);
 		}
+		parsedRows++;
 	}
 	if (parsedRows!=nOutputs)
 		error(errorMsg, "The decoding matrix has not the required number of rows for the configured number of speakers");
