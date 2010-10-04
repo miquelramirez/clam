@@ -2,6 +2,7 @@
 #define DecodingMatrix_hxx
 
 #include <string>
+#include <CLAM/Assert.hxx>
 
 class DecodingMatrix
 {
@@ -20,7 +21,12 @@ public:
 		if (_weights) delete [] _weights;
 	}
 	bool load(unsigned nInputs, unsigned nOutputs, const std::string & filePath, std::string & errorMsg);
-	float weight(unsigned input, unsigned output) const { return _weights[input*_nOutputs+output]; }
+	float weight(unsigned input, unsigned output) const
+	{
+		CLAM_ASSERT(input<_nInputs,"Accessing to an input beyond limit");
+		CLAM_ASSERT(output<_nOutputs,"Accessing to an output beyond limit");
+		return _weights[output*_nInputs+input];
+	}
 };
 
 #endif
