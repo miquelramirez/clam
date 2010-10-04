@@ -20,7 +20,7 @@ public:
 		if (_weights) delete [] _weights;
 	}
 	bool load(unsigned nInputs, unsigned nOutputs, const std::string & filePath, std::string & errorMsg);
-	float weight(unsigned input, unsigned output) const { return _weights[output*_nInputs+output]; }
+	float weight(unsigned input, unsigned output) const { return _weights[input*_nOutputs+output]; }
 };
 
 #endif
