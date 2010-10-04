@@ -4,11 +4,9 @@
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
-#include <CLAM/InControl.hxx>
 #include <CLAM/Filename.hxx>
-#include <CLAM/Enum.hxx>
 #include "Orientation.hxx"
-#include "SpeakerLayout.hxx"
+#include "DecodingMatrix.hxx"
 #include <cmath>
 
 /**
@@ -26,27 +24,6 @@
 class Hoa2IrregularSpeakerArray : public CLAM::Processing
 {
 public:
-	class DecodingMatrix
-	{
-		unsigned _nInputs;
-		unsigned _nOutputs;
-		float * _weights;
-	public:
-		DecodingMatrix()
-			: _nInputs(0)
-			, _nOutputs(0)
-			, _weights(0)
-		{
-		}
-		~DecodingMatrix()
-		{
-			if (_weights) delete [] _weights;
-		}
-		bool load(unsigned nInputs, unsigned nOutputs, const std::string & filePath, std::string & errorMsg);
-		float weight(unsigned input, unsigned output) const { return _weights[output*_nInputs+output]; }
-	};
-
-
 	class Config : public CLAM::ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
@@ -88,6 +65,8 @@ public:
 		unsigned buffersize = BackendBufferSize();
 		unsigned order = _config.GetOrder();
 		unsigned nSpeakers = _config.GetNSpeakers();
+		if (order>MaxSupportedOrder)
+			return AddConfigErrorMessage("Order beyond 3rd still not supported");
 		ResizePortsToOrder(order, buffersize);
 		ResizePortsToLayout(nSpeakers, buffersize);
 		std::string errorMessage;
