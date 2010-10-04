@@ -33,7 +33,7 @@ bool DecodingMatrix::load(unsigned nInputs, unsigned nOutputs, const std::string
 		std::istringstream is(line);
 		for (unsigned column = 0; column<nInputs; column++)
 		{
-			float & weight = _weights[row*nInputs+column];
+			float & weight = _weights[row*nOutputs+column];
 			if (not (is >> weight))
 				return error(errorMsg, "Missing or wrong weight at line "+rowString);
 			is >> std::ws;
