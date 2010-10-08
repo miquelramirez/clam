@@ -119,7 +119,7 @@ class ControlSequencer
 			if (mtc == "setup")
 				continue;
 			
-			#if 1
+			#if 0
 			std::cout << "mtc=" << mtc << " name=" << name << " values=";
 			std::copy(values.begin(), values.end(), std::ostream_iterator<double>(std::cout, " "));
 			std::cout << std::endl; 
