@@ -10,37 +10,37 @@ namespace CLAM
 {
 class InControlPublisher : public FloatInControl
 {
-	FloatInControl* mPublished; //TODO should be a list, in the future
+	FloatInControl* _published; //TODO should be a list, in the future
 
 public:
 	InControlPublisher() 
 		: FloatInControl( "InControlPublisher", 0 ) 
 	{
-		mPublished=NULL;
+		_published=NULL;
 	} 
 
 	InControlPublisher( const std::string& name, Processing* father )
 		: FloatInControl( name, father ) 
 	{
-		mPublished=NULL;
+		_published=NULL;
 	}
 
 	void PublishInControl( FloatInControl& in )
 	{
-		mPublished = &in;
+		_published = &in;
 	}
 	void DoControl(const TControlData & val)
 	{
-		if(mPublished)
-			mPublished->DoControl(val);
+		if(_published)
+			_published->DoControl(val);
 		else
 			FloatInControl::DoControl(val);
 	}
 	const TControlData& GetLastValue() const 
 	{ 
-		if(mPublished)
-			return mPublished->GetLastValue();
-		return mLastValue; 
+		if(_published)
+			return _published->GetLastValue();
+		return _lastValue; 
 	}
 
 };

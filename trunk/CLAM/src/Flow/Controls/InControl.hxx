@@ -49,13 +49,14 @@ namespace CLAM {
 	private:
 		Callback * _callback;
 	protected:
-		ControlDataType mLastValue;
+		ControlDataType _lastValue;
 		
 	public:
 		/// Constructor to use when no callback is used
 		InControl(const std::string &name = "unnamed in control", Processing * proc = 0)
 			: InControlBase(name,proc)
 			, _callback(new NullCallback)
+			, _lastValue() 
 		{
 		}
 		/// Constructor to use a callback by const reference
@@ -63,6 +64,7 @@ namespace CLAM {
 		InControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(const ParameterType&))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallback<ProcessingType,ParameterType>(proc, callback))
+			, _lastValue() 
 		{
 		}
 		/// Constructor to use a callback by const reference plus a port id to distinguish different caller controls in a single serving callback
@@ -70,6 +72,7 @@ namespace CLAM {
 		InControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, const ParameterType&))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallbackWithId<ProcessingType,ParameterType>(proc, callback, id))
+			, _lastValue() 
 		{
 		}
 		/// Constructor to use a callback by copy
@@ -77,6 +80,7 @@ namespace CLAM {
 		InControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(ParameterType))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallbackByCopy<ProcessingType,ParameterType>(proc, callback))
+			, _lastValue() 
 		{
 		}
 		/// Constructor to use a callback by copy plus a port id to distinguish different caller controls in a single serving callback
@@ -84,6 +88,7 @@ namespace CLAM {
 		InControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, ParameterType))
 			: InControlBase(name,proc)
 			, _callback(new MethodCallbackByCopyWithId<ProcessingType,ParameterType>(proc, callback, id))
+			, _lastValue() 
 		{
 		}
 
@@ -99,7 +104,7 @@ namespace CLAM {
 		/// called directly, for example to set the initial value.
 		virtual void DoControl(const ControlDataType& val) 
 		{
-			mLastValue = val;
+			_lastValue = val;
 			_hasBeenRead=false;
 			_callback->DoControl(val);
 		};
@@ -108,7 +113,7 @@ namespace CLAM {
 		virtual const ControlDataType& GetLastValue() const 
 		{
 			_hasBeenRead=true;
-			return mLastValue; 
+			return _lastValue; 
 		};
 		/// Convenience method to get the string representation of the last value.
 		/// This just works if the token is storable as XML leaf, if not a "Not printable"
