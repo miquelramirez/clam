@@ -166,8 +166,9 @@ public:
 			// check for wrong input
 			if (!_net.HasProcessing(controlName))
 			{
-				std::cout << "Error! ControlSource named \'" << controlName 
-						<< "\' not found in Network!" << std::endl;
+				std::cout 
+					<< "Error! ControlSource named \'" << controlName 
+					<< "\' not found in Network!" << std::endl;
 				continue;
 			}
 
@@ -177,15 +178,26 @@ public:
 			// check for wrong input
 			if (size == 0)
 			{
-				std::cout << "Error!	No value found for timecode \'" 
-									<< MsToSmpte(currentTimeInMillisec) << "\'"
-									<< " with MTC path \'" << _coreoEvent->name << "\'"
-									<< std::endl;
+				std::cout
+					<< "Error!\tNo value found for timecode \'" 
+					<< MsToSmpte(currentTimeInMillisec) << "\'"
+					<< " with MTC path \'" << _coreoEvent->name << "\'"
+					<< std::endl;
 				continue;
 			}
 
 			CLAM::Processing& control = _net.GetProcessing(controlName);
 			CLAM::ControlSource* controlSource = dynamic_cast<CLAM::ControlSource*>(&control);
+
+			if (!controlSource )
+			{
+				std::cout
+					<< "Error\tControlSequencer: '" 
+					<< controlName << "' is not a ControlSource"
+					<< std::endl;
+				continue;
+			}
+
 			const double& value = _coreoEvent->values[0];
 
 			// TODO: support sources with multiple out controls
