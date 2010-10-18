@@ -136,6 +136,11 @@ env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
 if env['release'] :
 	env.Append( CCFLAGS=['-fomit-frame-pointer'] )
 
+env.Depends("src/generated/MainWindow.o", [
+	"migrationScript",
+	"../CLAM/scripts/clamrefactor.py",
+	])
+
 qtmonitorDirs = env.recursiveDirs(os.path.join('src','widgets')) + env.recursiveDirs(os.path.join('src','monitors'))
 qtmonitorSources = env.scanFiles('*.cxx', qtmonitorDirs,
 	patternblacklist=[ 'moc_', 'qrc_', ],
