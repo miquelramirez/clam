@@ -1,12 +1,133 @@
+#include "Python.h"
 #include <QtCore/QTemporaryFile>
 #include "ui_LadspaMetadataEditor.hxx"
 #include "LadspaPluginCompilationTask.hxx"
-#include "Python.h"
+
 #include <fstream>
+
+#include <CLAM/EmbeddedFile.hxx>
+CLAM_EMBEDDED_FILE(migrationScript,"migrationScript")
+CLAM_EMBEDDED_FILE(clamrefactor,"../CLAM/scripts/clamrefactor.py")
 
 MainWindow::~MainWindow()
 {
 }
+
+
+static std::string pythonString(PyObject * object)
+{
+	PyObject * pythonString = PyObject_Str(object);
+	std::string result = PyString_AsString(pythonString);
+	Py_DECREF(pythonString);
+	std::cout << "cString " << result << std::endl;
+	return result;
+}
+static std::string pythonClassName(PyObject * object)
+{
+	PyObject * pystring = PyObject_GetAttrString(object,"__name__");
+	std::string result = PyString_AsString(pystring);
+	Py_DECREF(pystring);
+	return result;
+}
+
+static void throwPythonError()
+{
+/*
+	PyObject * exception = PyErr_Occurred();
+	if (not exception) 
+	{
+		std::cout << "Warning: Failed but no exception found" << std::endl;
+		return;
+	}
+*/
+	PyObject *pType=0;
+	PyObject *pValue=0;
+	PyObject *pTrace=0;
+	PyErr_Fetch(&pType, &pValue, &pTrace);
+	CLAM_ASSERT(pType,"pType es zero");
+	CLAM_ASSERT(pValue,"pValue es zero");
+	std::string message = 
+		pythonClassName(pType) + 
+		": " +
+		pythonString(pValue);
+//		(pTrace? pythonString(pTrace):"");
+
+	PyErr_Print();
+	if (pTrace) Py_DECREF(pTrace);
+	Py_DECREF(pValue);
+	Py_DECREF(pType);
+	Py_Finalize();
+	throw ClamrefactorException(message.c_str());
+}
+
+const char * MainWindow::updatedNetworkVersion(const std::string & filename)
+{
+	Py_Initialize();
+	PyObject * pModule = PyImport_ImportModule("__main__");
+	if (not pModule)
+		throwPythonError();
+
+	PyObject * pDict = PyModule_GetDict(pModule);
+	// Hack to avoid __main__ exectuion
+	PyDict_SetItemString(pDict, "__name__", Py_BuildValue("s","boo"));
+
+	int clamrefactorExecutionError = PyRun_SimpleString(clamrefactor);
+	if (clamrefactorExecutionError)
+		throw ClamrefactorException("Error loading clamrefactor python script");
+
+	PyObject * pClassClamNetwork = PyDict_GetItemString(pDict, "ClamNetwork");
+	if (!PyCallable_Check(pClassClamNetwork))
+	{
+		throwPythonError();
+	}
+	PyObject * pClamNetwork = Py_BuildValue( "(s)", filename.c_str() );
+	PyObject * pInstanceClamNetwork = PyObject_CallObject(pClassClamNetwork, pClamNetwork); 
+	Py_DECREF(pClamNetwork);
+	if (pInstanceClamNetwork == NULL)
+	{
+		throwPythonError();
+	}
+
+	PyObject * pValue = PyObject_CallMethod(
+		pInstanceClamNetwork, "runScript", "(s)", migrationScript );
+	if (not pValue)
+		throwPythonError();
+
+	PyObject * pModule2 = PyImport_ImportModule("StringIO");
+	if (pModule2 == NULL)
+	{
+		throwPythonError();
+		return 0;
+	}
+	PyObject * pDict2 = PyModule_GetDict(pModule2);
+	PyObject * pClassStringIO = PyDict_GetItemString(pDict2, "StringIO");
+	PyObject * pStringIO = Py_BuildValue( "(s)", "" );
+	PyObject * pInstanceStringIO = PyObject_CallObject(pClassStringIO, pStringIO);
+	if (!PyCallable_Check(pClassStringIO))
+	{
+		throwPythonError(); 
+	}
+	PyObject_CallMethod(pInstanceClamNetwork, "dump", "(O)", pInstanceStringIO);
+	pValue = PyObject_CallMethod(pInstanceStringIO, "getvalue", NULL);
+
+	char * cstring;
+	if (pValue == NULL)
+	{
+		throwPythonError();
+	}
+
+	PyArg_Parse(pValue, "s", &cstring);
+	Py_DECREF(pModule);
+	Py_DECREF(pModule2);
+	Py_DECREF(pStringIO);
+	Py_DECREF(pInstanceClamNetwork);
+	Py_DECREF(pInstanceStringIO);
+	Py_DECREF(pValue);
+	Py_Finalize();
+
+	return cstring;
+}
+
 
 void MainWindow::on_action_CompileAsLadspaPlugin_triggered()
 {
@@ -101,79 +222,4 @@ void MainWindow::on_action_Reload_Faust_Modules_triggered()
 	if (_processingTree)
 		_processingTree->RePopulateTree();
 #endif
-}
-
-
-//CLAM_EMBEDEDFILE(migrationScript, "migrationScript");
-
-const char * MainWindow::updatedNetworkVersion(const std::string & filename)
-{
-	Py_Initialize();
-	PyObject * pModule = PyImport_ImportModule("clamrefactor");
-	if (pModule == NULL)
-	{
-		PyErr_Print();
-		return 0;
-	}
-	PyObject * pDict = PyModule_GetDict(pModule);
-	// Build the name of a callable class 
-	PyObject * pClassClamNetwork = PyDict_GetItemString(pDict, "ClamNetwork");
-	// Create an instance of the class
-	if (! PyCallable_Check(pClassClamNetwork))
-	{
-		//TODO Manage error
-		return 0;
-	}
-	PyObject * pClamNetwork = Py_BuildValue( "(s)", filename.c_str() );
-	PyObject * pInstanceClamNetwork = PyObject_CallObject(pClassClamNetwork, pClamNetwork); 
-	Py_DECREF(pClamNetwork);
-
-	if (pInstanceClamNetwork == NULL)
-	{
-		PyErr_Print();
-		return 0;
-	}
-	std::ifstream ifs( "migrationScript" );
-	std::string command;
-	PyObject *pValue;
-	while( getline(ifs, command) )
-	{
-		pValue = PyObject_CallMethod( pInstanceClamNetwork, "runCommand", "(s)", command.c_str() );
-	}
-
-	PyObject *pModule2, *pDict2, *pClassStringIO, *pStringIO, *pInstanceStringIO;
-	pModule2 = PyImport_ImportModule("StringIO");
-	if (pModule2 == NULL)
-	{
-		PyErr_Print();
-		return 0;
-	}
-	pDict2 = PyModule_GetDict(pModule2);
-	pClassStringIO = PyDict_GetItemString(pDict2, "StringIO");
-	if (PyCallable_Check(pClassStringIO))
-	{
-		pStringIO = Py_BuildValue( "(s)", "" );
-		pInstanceStringIO = PyObject_CallObject(pClassStringIO, pStringIO); 
-	}
-
-	PyObject_CallMethod(pInstanceClamNetwork, "dump", "(O)", pInstanceStringIO);
-	pValue = PyObject_CallMethod(pInstanceStringIO, "getvalue", NULL);
-
-	char *cstring;
-	if (pValue == NULL)
-	{
-		PyErr_Print();
-		return 0;
-	}
-
-	PyArg_Parse(pValue, "s", &cstring);
-	Py_DECREF(pModule);
-	Py_DECREF(pModule2);
-	Py_DECREF(pStringIO);
-	Py_DECREF(pInstanceClamNetwork);
-	Py_DECREF(pInstanceStringIO);
-	Py_DECREF(pValue);
-	Py_Finalize();
-
-	return cstring;
 }
