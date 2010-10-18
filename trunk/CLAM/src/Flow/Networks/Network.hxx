@@ -290,7 +290,7 @@ public:
 	 */
 	bool HasSyncSource() const;
 
-    /** This method reports whether the network supports dynamic buffer-size host.*/
+	/** This method reports whether the network supports dynamic buffer-size host.*/
 	bool SupportsVariableAudioSize() const;
 
 	/**
