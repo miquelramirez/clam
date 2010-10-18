@@ -30,6 +30,13 @@ class NotACommand(Exception) :
 		return "'%s' is not an available command. Try with: %s"%(
 			self.command, ", ".join(self.available))
 
+class ScriptException(Exception) :
+	def __init__(self, line, exception) :
+		self.line = line
+		self.embeded = exception
+	def __str__(self) : 
+		return "Error in clam refactor script line %s:\n%s"%(self.line, self.embeded)
+
 class ClamNetwork() :
 
 	def __init__ (self, networkfile) :
@@ -287,6 +294,13 @@ class ClamNetwork() :
 	def commands(self) :
 		print "Available commands:", ", ".join(self._availableCommands())
 
+	def runScript(self, script) :
+		for line, command in enumerate(script.splitlines()) :
+			if not command.strip() or command.strip()[0]=='#' :
+				continue
+			try : self.runCommand(command)
+			except Exception, e:
+				raise ScriptException(line, e)
 
 def test() :
 	testInput = "../../NetworkEditor/example-data/FilePlayer.clamnetwork"
@@ -322,6 +336,7 @@ def test() :
 	network.dump()
 	network.commands()
 	sys.exit(0)
+
 
 if __name__ == "__main__" :
 	from optparse import OptionParser
