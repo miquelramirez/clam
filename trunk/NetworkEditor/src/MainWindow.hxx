@@ -19,9 +19,6 @@
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
 #include "RichTextEditor.hxx"
-//#include <CLAM/EmbeddedFile.hxx>
-//CLAM_EMBEDDED_FILE(genderChange,"PluginExamples/ClamLadspaPluginExample/genderChange.clamnetwork")
-
 
 // copied from Annotator:
 #include "TaskRunner.hxx"
@@ -50,6 +47,16 @@
 
 #include <QtXmlPatterns/QXmlQuery>
 #include <QtCore/QStringList>
+
+class ClamrefactorException : public std::exception {
+public:
+	ClamrefactorException(const char * msg) : _msg(msg) {}
+	const char * what() const throw () {
+		return _msg;
+	}
+private:
+	const char * _msg;
+};
 
 //#define AFTER13RELEASE
 
@@ -265,13 +272,9 @@ public:
 			return;
 		}
 		int comparison = compareVersions(networkVersion, CLAM::GetVersion());
-
-		// Fake to disable upgrades while they depend on file locations
-		if (comparison==-1) comparison=0;
-
-		if (comparison==-1) // Older version
+		if (comparison==-1)
 		{
-			int response = QMessageBox::warning(this,
+			QMessageBox::warning(this,
 				tr("NetworkEditor"),
 				tr("This network was created with an older version, %1, of NetworkEditor.\n"
 				"It will be updated to version %2 when saved.")
@@ -279,17 +282,25 @@ public:
 					.arg(CLAM::GetVersion())
 					,
 				QMessageBox::Ok);
-			const char * translatedNetwork = updatedNetworkVersion(qPrintable(filename));
-			if (translatedNetwork)
-			{
-				loadFromString(translatedNetwork, filename);
+			try {
+				const char * translatedNetwork = updatedNetworkVersion(qPrintable(filename));
+				if (translatedNetwork)
+				{
+					loadFromString(translatedNetwork, filename);
+					return;
+				}
+			}
+			catch(ClamrefactorException & e) {
+				QMessageBox::warning(this,
+				tr("NetworkEditor"),
+				tr(qPrintable(QString("An error ocurred while updating the network:\n") +
+				e.what()))
+				,
+				QMessageBox::Ok);
 				return;
 			}
-			QMessageBox::warning(this,
-				tr("NetworkEditor"),
-				tr("Updating procedure failed, trying to load old version file."));
 		}
-		if (comparison==+1) // Newer version
+		if (comparison==+1)
 		{
 			int response = QMessageBox::question(this,
 				tr("NetworkEditor"),
@@ -342,7 +353,7 @@ public:
 		_networkFile = filename;
 		updateCaption();
 	}
-	void loadFromString(const char *strNetwork, const QString & filename)
+	void loadFromString(const char * strNetwork, const QString & filename)
 	{
 		_network.ResetConnectionReport();
 
