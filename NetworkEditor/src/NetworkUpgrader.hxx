@@ -9,8 +9,8 @@ class NetworkUpgrader
 	Impl * _impl;
 public:
 	NetworkUpgrader();
-	~NetworkUpgrader();
 //	NetworkUpgrader(std::string & migrationScript);
+	~NetworkUpgrader();
 	const char * run(const std::string & networkContents);
 	const char * errorMessage() const;
 };

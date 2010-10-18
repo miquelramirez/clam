@@ -9,21 +9,65 @@ CLAM_EMBEDDED_FILE(migrationScript,"migrationScript")
 CLAM_EMBEDDED_FILE(clamrefactor,"../CLAM/scripts/clamrefactor.py")
 
 
+/**
+	Scoped python initialization and finalization
+*/
+class PyContext
+{
+public:
+	PyContext() { Py_Initialize(); }
+	~PyContext() { Py_Finalize(); }
+};
+
+/**
+	Wraps a PyObject borrowed reference (no need to Py_DECREF)
+*/
+typedef PyObject * PyBorrowed;
+
+/**
+	Wraps a PyObject* new reference which must be Py_DECREF.
+*/
+class PyReference
+{
+	typedef PyObject * Pointer;
+	Pointer _obj;
+public:
+	PyReference(Pointer obj, bool skipCheck=false)
+		: _obj(obj)
+	{
+	}
+	~PyReference()
+	{
+		if (_obj) { Py_DECREF(_obj);}
+	}
+	operator bool()
+	{
+		return _obj!=0;
+	}
+	operator Pointer()
+	{
+		CLAM_ASSERT(_obj,"Accessing a null python object");
+		return _obj;
+	}
+	PyObject & operator*()
+	{
+		CLAM_ASSERT(_obj,"Accessing a null python object");
+		return *_obj;
+	}
+};
 
 static std::string pythonString(PyObject * object)
 {
-	PyObject * pythonString = PyObject_Str(object);
-	std::string result = PyString_AsString(pythonString);
-	Py_DECREF(pythonString);
-	return result;
+	PyReference pythonString = PyObject_Str(object);
+	return PyString_AsString(pythonString);
 }
+
 static std::string pythonClassName(PyObject * object)
 {
-	PyObject * pystring = PyObject_GetAttrString(object,"__name__");
-	std::string result = PyString_AsString(pystring);
-	Py_DECREF(pystring);
-	return result;
+	PyReference pystring = PyObject_GetAttrString(object,"__name__");
+	return PyString_AsString(pystring);
 }
+
 
 class NetworkUpgrader::Impl
 {
@@ -32,7 +76,13 @@ public:
 	std::string _errorMessage;
 	const char * run(const std::string & networkContents);
 	const char * takePythonError();
+	const char * setError(const std::string & error)
+	{
+		_errorMessage = error;
+		return 0;
+	}
 };
+
 
 NetworkUpgrader::NetworkUpgrader()
 	: _impl(new Impl)
@@ -54,87 +104,78 @@ const char * NetworkUpgrader::errorMessage() const
 }
 
 
+
 const char * NetworkUpgrader::Impl::takePythonError()
 {
+	std::cout << "Taking error" << std::endl;
 	PyObject *pType=0;
 	PyObject *pValue=0;
 	PyObject *pTrace=0;
 	PyErr_Fetch(&pType, &pValue, &pTrace);
 	CLAM_ASSERT(pType,"pType es zero");
 	CLAM_ASSERT(pValue,"pValue es zero");
+	PyReference type = pType;
+	PyReference value = pValue;
+//	PyReference trace = pTrace;
 	_errorMessage = 
 		pythonClassName(pType) + ": " +
 		pythonString(pValue);
 //		(pTrace? pythonString(pTrace):"");
 
-	std::cout << _errorMessage << std::endl;
-	
-	if (pTrace) Py_DECREF(pTrace);
-	Py_DECREF(pValue);
-	if (pType) Py_DECREF(pType);
-	Py_Finalize();
+	std::cerr << _errorMessage << std::endl;
 	return 0;
 }
 
 const char * NetworkUpgrader::Impl::run(const std::string & filename)
 {
-	Py_Initialize();
-	PyObject * pModule = PyImport_ImportModule("__main__");
-	if (not pModule)
+	PyContext context;
+	PyReference main = PyImport_ImportModule("__main__");
+	if (not main)
 		return takePythonError();
 
-	PyObject * pDict = PyModule_GetDict(pModule);
+	PyBorrowed mainDict = PyModule_GetDict(main);
 	// Hack to avoid __main__ exectuion
-	PyDict_SetItemString(pDict, "__name__", Py_BuildValue("s","boo"));
+	{
+		PyReference boo =  Py_BuildValue("s","boo");
+		PyDict_SetItemString(mainDict, "__name__", boo);
+	}
 
 	int error = PyRun_SimpleString(clamrefactor);
 	if (error)
-	{
-		_errorMessage = "Error loading clamrefactor python script";
-		return 0;
-	}
+		return setError("Error loading clamrefactor python script");
 
-	PyObject * pClassClamNetwork = PyDict_GetItemString(pDict, "ClamNetwork");
-	if (!PyCallable_Check(pClassClamNetwork))
+	PyBorrowed clamNetworkClass = PyDict_GetItemString(mainDict, "ClamNetwork");
+	if (!clamNetworkClass)
+		return setError("Bad clamrefactor script: No ClamNetwork class found");
+	if (!PyCallable_Check(clamNetworkClass))
+		return setError("Bad clamrefactor script: ClamNetwork is not callable");
+
+	PyReference networkFilename = Py_BuildValue( "(s)", filename.c_str() );
+	PyReference network = PyObject_CallObject(clamNetworkClass, networkFilename); 
+	if (not network)
 		return takePythonError();
 
-	PyObject * pClamNetwork = Py_BuildValue( "(s)", filename.c_str() );
-	PyObject * pInstanceClamNetwork = PyObject_CallObject(pClassClamNetwork, pClamNetwork); 
-	Py_DECREF(pClamNetwork);
-	if (pInstanceClamNetwork == NULL)
+	PyReference runScriptResult = PyObject_CallMethod(
+		network, "runScript", "(s)", migrationScript );
+	if (not runScriptResult)
 		return takePythonError();
 
-	PyObject * pValue = PyObject_CallMethod(
-		pInstanceClamNetwork, "runScript", "(s)", migrationScript );
-	if (not pValue)
-		return takePythonError();
+	PyReference stringIOModule = PyImport_ImportModule("StringIO");
+	if (!stringIOModule)
+		return setError("Unexpected error: No StringIO module found");
+	PyBorrowed stringIODict = PyModule_GetDict(stringIOModule);
+	PyBorrowed stringIOClass = PyDict_GetItemString(stringIODict, "StringIO");
+	if (!stringIOClass)
+		return setError("Unexpected error: No StringIO class found");
+	if (!PyCallable_Check(stringIOClass))
+		return setError("Unexpected error: StringIO is not callable");
 
-	PyObject * pModule2 = PyImport_ImportModule("StringIO");
-	if (pModule2 == NULL)
-		return takePythonError();
+	PyReference initStreamValue = Py_BuildValue( "(s)", "" );
+	PyReference stream = PyObject_CallObject(stringIOClass, initStreamValue);
+	PyReference(PyObject_CallMethod(network, "dump", "(O)", &*stream));
+	PyReference result = PyObject_CallMethod(stream, "getvalue", NULL);
+	_result = pythonString(result);
 
-	PyObject * pDict2 = PyModule_GetDict(pModule2);
-	PyObject * pClassStringIO = PyDict_GetItemString(pDict2, "StringIO");
-	PyObject * pStringIO = Py_BuildValue( "(s)", "" );
-	PyObject * pInstanceStringIO = PyObject_CallObject(pClassStringIO, pStringIO);
-	if (!PyCallable_Check(pClassStringIO))
-		return takePythonError(); 
-	PyObject_CallMethod(pInstanceClamNetwork, "dump", "(O)", pInstanceStringIO);
-	pValue = PyObject_CallMethod(pInstanceStringIO, "getvalue", NULL);
-
-	char * cstring;
-	if (pValue == NULL)
-		return takePythonError();
-
-	PyArg_Parse(pValue, "s", &cstring);
-	Py_DECREF(pModule);
-	Py_DECREF(pModule2);
-	Py_DECREF(pStringIO);
-	Py_DECREF(pInstanceClamNetwork);
-	Py_DECREF(pInstanceStringIO);
-	Py_DECREF(pValue);
-	Py_Finalize();
-	_result = cstring;
 	return _result.c_str();
 }
 
