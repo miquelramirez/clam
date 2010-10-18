@@ -48,14 +48,26 @@
 #include <QtXmlPatterns/QXmlQuery>
 #include <QtCore/QStringList>
 
+
+class NetworkUpgrader
+{
+	class Impl;
+	Impl * _impl;
+public:
+	NetworkUpgrader();
+	~NetworkUpgrader();
+//	NetworkUpgrader(std::string & migrationScript);
+	const char * run(const std::string & networkContents);
+	const char * errorMessage() const;
+};
+
 class ClamrefactorException : public std::exception {
 public:
-	ClamrefactorException(const char * msg) : _msg(msg) {}
-	const char * what() const throw () {
-		return _msg;
-	}
+	ClamrefactorException(const std::string & msg) : _msg(msg) {}
+	~ClamrefactorException() throw () {}
+	const char * what() const throw () { return _msg.c_str(); }
 private:
-	const char * _msg;
+	std::string _msg;
 };
 
 //#define AFTER13RELEASE
@@ -275,35 +287,32 @@ public:
 		if (comparison==-1)
 		{
 			QMessageBox::warning(this,
-				tr("NetworkEditor"),
+				tr("Loading network"),
 				tr("This network was created with an older version, %1, of NetworkEditor.\n"
-				"It will be updated to version %2 when saved.")
+					"It will be updated to version %2 when saved.")
 					.arg(networkVersion)
-					.arg(CLAM::GetVersion())
-					,
+					.arg(CLAM::GetVersion()
+					),
 				QMessageBox::Ok);
-			try {
-				const char * translatedNetwork = updatedNetworkVersion(qPrintable(filename));
-				if (translatedNetwork)
-				{
-					loadFromString(translatedNetwork, filename);
-					return;
-				}
-			}
-			catch(ClamrefactorException & e) {
+
+			NetworkUpgrader upgrader;
+			const char * translatedNetwork = upgrader.run(
+				filename.toLocal8Bit().data());
+			if (not translatedNetwork)
+			{
 				QMessageBox::warning(this,
-				tr("NetworkEditor"),
-				tr(qPrintable(QString("An error ocurred while updating the network:\n") +
-				e.what()))
-				,
-				QMessageBox::Ok);
+					tr("Network upgrade error"),
+					tr(upgrader.errorMessage()),
+					QMessageBox::Ok);
 				return;
 			}
+			loadFromString(translatedNetwork, filename);
+			return;
 		}
 		if (comparison==+1)
 		{
 			int response = QMessageBox::question(this,
-				tr("NetworkEditor"),
+				tr("Loading network"),
 				tr("This network was created with version %1 which is newer than the one you are using %2.\n"
 				"This could give you problems on loading.\n"
 				"Do you want to load it anyway?")
@@ -320,7 +329,7 @@ public:
 	{
 		_network.ResetConnectionReport();
 
-		std::string localFilename = filename.toLocal8Bit().constData();
+		std::string localFilename = filename.toLocal8Bit().data();
 		std::cout << "Loading " << localFilename << "..." << std::endl;
 		clear();
 		try
