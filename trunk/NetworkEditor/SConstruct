@@ -136,7 +136,7 @@ env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
 if env['release'] :
 	env.Append( CCFLAGS=['-fomit-frame-pointer'] )
 
-env.Depends("src/generated/MainWindow.o", [
+env.Depends("src/generated/NetworkUpgrader.o", [
 	"migrationScript",
 	"../CLAM/scripts/clamrefactor.py",
 	])
