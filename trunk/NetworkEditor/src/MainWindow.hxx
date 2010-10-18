@@ -19,6 +19,7 @@
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
 #include "RichTextEditor.hxx"
+#include "NetworkUpgrader.hxx"
 
 // copied from Annotator:
 #include "TaskRunner.hxx"
@@ -48,27 +49,6 @@
 #include <QtXmlPatterns/QXmlQuery>
 #include <QtCore/QStringList>
 
-
-class NetworkUpgrader
-{
-	class Impl;
-	Impl * _impl;
-public:
-	NetworkUpgrader();
-	~NetworkUpgrader();
-//	NetworkUpgrader(std::string & migrationScript);
-	const char * run(const std::string & networkContents);
-	const char * errorMessage() const;
-};
-
-class ClamrefactorException : public std::exception {
-public:
-	ClamrefactorException(const std::string & msg) : _msg(msg) {}
-	~ClamrefactorException() throw () {}
-	const char * what() const throw () { return _msg.c_str(); }
-private:
-	std::string _msg;
-};
 
 //#define AFTER13RELEASE
 
