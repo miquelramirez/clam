@@ -12,6 +12,7 @@ from xml.sax.handler import ContentHandler
 from xml.sax import make_parser
 import cStringIO
 import sys
+import re
 
 
 exampleNetwork = """\
@@ -104,7 +105,7 @@ void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
 
 	def description(self) : pass
 
-	def _formatId(self, id) : return id
+	def _formatId(self, id) : return re.sub('\W', '_',id.strip())
 
 	def processing(self, id, type, position, size) :
 		formattedId = self._formatId(id)
@@ -186,8 +187,14 @@ print network._result
 if __name__ == "__main__" :
 	import unittest
 	class TestClamNetwork2Code(unittest.TestCase) :
-		def test_whatever(self) :
-			self.assertEquals("expected", "whatever")
+		def test_formatId1(self) :
+			n = NetworkHandler()
+			mangled = n._formatId("Audio_Processing")
+			self.assertEquals("Audio_Processing", mangled)
 
+		def test_formatId2(self) :
+			n = NetworkHandler()
+			mangled = n._formatId("Audio(Processing.01)")
+			self.assertEquals("Audio_Processing_01_", mangled)
 	unittest.main()
 
