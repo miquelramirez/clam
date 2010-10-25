@@ -3,7 +3,6 @@
 # This script generates equivalent code to the load of a given network xml.
 
 # TODO: 
-# - scape weird characters as '_'
 # - scons minimo i ver que linka
 # - 
 
@@ -87,21 +86,31 @@ class NetworkHandler(ContentHandler) :
 #include <sstream>
 #include <CLAM/XMLStorage.hxx>
 
+namespace CLAM {
+
 void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
 {
-	std::ostringstrem os(xmlContent);
+	std::istringstream os(xmlContent);
 	CLAM::XMLStorage::Restore(config, os);
 }
+
+class NetworkFiler
+{
+public:
+	NetworkFiler(){}
+
+	void setUp(Network &net)
+	{
 """
-		self._result += "\nNetwork network;\n"
+		self._result += "\n\tNetwork network;\n"
 		self._currentPath = []
 		self._connectionIn = None
 		self._connectionOut = None
 		self._processingName = None
 
 	def network(self, clamVersion, id) :
-		self._result += "network.SetName(\"" + id + "\");\n"
-		print "Network:", id, "version", clamVersion
+		self._result += "\tnetwork.SetName(\"" + id + "\");\n"
+#		print "Network:", id, "version", clamVersion
 
 	def description(self) : pass
 
@@ -109,24 +118,24 @@ void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
 
 	def processing(self, id, type, position, size) :
 		formattedId = self._formatId(id)
-		self._result += 'Processing & _%s = network.AddProcessing("%s", "%s");\n'%(
+		self._result += '\tProcessing & _%s = network.AddProcessing("%s", "%s");\n'%(
 			formattedId, id, type)
-		self._result += 'ProcessingConfig * _%s_config = _%s.GetConfig().DeepCopy() ;\n'%(
+		self._result += '\tProcessingConfig * _%s_config = dynamic_cast<ProcessingConfig *>( _%s.GetConfig().DeepCopy()) ;\n'%(
 			formattedId, formattedId)
-		self._result += 'LoadConfig(*_%s_config,\n'%formattedId
-		self._result += '\t"<Configuration>\\n"\n'
+		self._result += '\tLoadConfig(*_%s_config,\n'%formattedId
+		self._result += '\t\t"<Configuration>\\n"\n'
 		self._processingName = id
 
 	def end_processing(self) :
 		formattedId = self._formatId(self._processingName)
-		self._result += '\t"</Configuration>\\n");\n'
-		self._result += '_%s.Configure(*_%s_config);\n' % (
+		self._result += '\t\t"</Configuration>\\n");\n'
+		self._result += '\t_%s.Configure(*_%s_config);\n' % (
 			formattedId, formattedId)
-		self._result += 'delete _%s_config;\n' % (formattedId)
+		self._result += '\tdelete _%s_config;\n\n' % (formattedId)
 		self._processingName = None
 
 	def end_control_connection(self) :
-		self._result += "network.ConnectControls(\"%s\", \"%s\");\n"%(
+		self._result += "\tnetwork.ConnectControls(\"%s\", \"%s\");\n"%(
 			self._connectionIn,
 			self._connectionOut,
 			)
@@ -134,7 +143,7 @@ void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
 		self._connectionIn = None
 
 	def end_port_connection(self) :
-		self._result += "network.ConnectPorts(\"%s\", \"%s\");\n"%(
+		self._result += "\tnetwork.ConnectPorts(\"%s\", \"%s\");\n"%(
 			self._connectionIn,
 			self._connectionOut,
 			)
@@ -142,7 +151,7 @@ void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
 		self._connectionIn = None
 
 	def startElement(self, name, attrs) :
-		print "Start:", name
+#		print "Start:", name
 		self._currentPath.append(name)
 		if not self._processingName :
 			try : getattr(self,name)(**attrs)
@@ -152,12 +161,12 @@ void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
 
 	def endElement(self, name) :
 		if self._processingName and name != "processing" :
-			self._result += '\t\t"<%s>%s</%s>\\n"\n' % (
+			self._result += '\t\t\t"<%s>%s</%s>\\n"\n' % (
 				name, self._content.strip(), name)
 		self._currentPath.pop()
 		try : getattr(self, "end_"+name)()
 		except AttributeError : pass
-		print "End:", name
+#		print "End:", name
 #		self.finalize(name)
 
 	def characters(self, content) :
@@ -170,7 +179,7 @@ void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
 		if self._processingName :
 			self._content+=content
 
-		print "Content:", content
+#		print "Content:", content
 
 network = NetworkHandler()
 saxparser = make_parser()
@@ -179,9 +188,8 @@ saxparser.setContentHandler(network)
 datasource = cStringIO.StringIO(exampleNetwork)
 saxparser.parse(datasource)
 
+network._result += "\t}\n};\n}"
 print network._result
-
-
 
 
 if __name__ == "__main__" :
