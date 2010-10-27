@@ -3,17 +3,10 @@
 # This script generates equivalent code to the load of a given network xml.
 
 # TODO: 
-# - test processing
-# - test processing with config
-# - description
-# - texts
-# - processing size and positon
-# - command line interface
-# - read network from file
 # - change the class name from command line
 # - take the class name from the file name
-# - solve the problem of parsing xmlentities surrounded by spaces (spaces get striped by sax)
 # LIMITATIONS:
+# - Spaces are stripped by sax (there might be a problem when parsing xmlentities surrounded by spaces)
 # - Works just with configuration parameters that are plain data (no subelements, no attributes)
 # - Processing names may colide when having non alphanumeric chars in the same positions
 
