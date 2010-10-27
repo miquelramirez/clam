@@ -4,11 +4,13 @@
 
 # TODO: 
 # - scons minimo i ver que linka
-# - 
+# - description
+# LIMITATIONS:
+# - Works just with configuration parameters that are plain data (no subelements, no attributes)
+# - Does 
 
 
-from xml.sax.handler import ContentHandler
-from xml.sax import make_parser
+import xml.sax
 import cStringIO
 import sys
 import re
@@ -79,30 +81,9 @@ p, li { white-space: pre-wrap; }
 """
 
 
-class NetworkHandler(ContentHandler) :
+class NetworkHandler(xml.sax.handler.ContentHandler) :
 	def __init__(self) :
-		self._result = """\
-#include <CLAM/Network.hxx>
-#include <sstream>
-#include <CLAM/XMLStorage.hxx>
-
-namespace CLAM {
-
-void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
-{
-	std::istringstream os(xmlContent);
-	CLAM::XMLStorage::Restore(config, os);
-}
-
-class NetworkFiller
-{
-public:
-	NetworkFiller(){}
-
-	void setUp(Network &net)
-	{
-"""
-		self._result += "\n\tNetwork network;\n"
+		self._result = "\n\tNetwork network;\n"
 		self._currentPath = []
 		self._connectionIn = None
 		self._connectionOut = None
@@ -166,8 +147,6 @@ public:
 		self._currentPath.pop()
 		try : getattr(self, "end_"+name)()
 		except AttributeError : pass
-#		print "End:", name
-#		self.finalize(name)
 
 	def characters(self, content) :
 		strippedContent = content.strip()
@@ -179,30 +158,82 @@ public:
 		if self._processingName :
 			self._content+=content
 
-#		print "Content:", content
+	def getCode(self, name="NetworkFiller") :
+		return ("""\
+#include <CLAM/Network.hxx>
+#include <sstream>
+#include <CLAM/XMLStorage.hxx>
 
-network = NetworkHandler()
-saxparser = make_parser()
-saxparser.setContentHandler(network)
+namespace CLAM {
 
-datasource = cStringIO.StringIO(exampleNetwork)
-saxparser.parse(datasource)
+void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
+{
+	std::istringstream os(xmlContent);
+	CLAM::XMLStorage::Restore(config, os);
+}
 
-network._result += "\t}\n};\n}"
-print network._result
+class %(name)s
+{
+public:
+	%(name)s(){}
+
+	void setUp(Network &net)
+	{
+""" + 
+	self._result + 
+"""\
+	}
+};""")%dict(name=name)
+
+	def setupCode(self) :
+		return self._result
+
+
 
 
 if __name__ == "__main__" :
-	import unittest
-	class TestClamNetwork2Code(unittest.TestCase) :
-		def test_formatId1(self) :
-			n = NetworkHandler()
-			mangled = n._formatId("Audio_Processing")
-			self.assertEquals("Audio_Processing", mangled)
+	if "--test" not in sys.argv :
+		network = NetworkHandler()
+		saxparser = xml.sax.make_parser()
+		saxparser.setContentHandler(network)
 
-		def test_formatId2(self) :
-			n = NetworkHandler()
-			mangled = n._formatId("Audio(Processing.01)")
-			self.assertEquals("Audio_Processing_01_", mangled)
-	unittest.main()
+		datasource = cStringIO.StringIO(exampleNetwork)
+		saxparser.parse(datasource)
+
+		print network.getCode()
+
+
+	else :
+		import unittest
+		sys.argv.remove("--test")
+		class TestClamNetwork2Code(unittest.TestCase) :
+			def parse(self, xmlContent, handler) :
+				saxparser = xml.sax.make_parser()
+				saxparser.setContentHandler(handler)
+				saxparser.parse(cStringIO.StringIO(xmlContent))
+				
+			def test_formatId1(self) :
+				n = NetworkHandler()
+				mangled = n._formatId("Audio_Processing")
+				self.assertEquals("Audio_Processing", mangled)
+
+			def test_formatId2(self) :
+				n = NetworkHandler()
+				mangled = n._formatId("Audio(Processing.01)")
+				self.assertEquals("Audio_Processing_01_", mangled)
+			def test_emptyNetwork(self) :
+				n = NetworkHandler()
+				xml = """\
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.0" id="Unnamed">
+</network>
+"""
+				result = self.parse(xml,n)
+				self.assertEquals(u"""
+	Network network;
+	network.SetName("Unnamed");
+""",n.setupCode())
+				
+		sys.exit(unittest.main())
+
 
