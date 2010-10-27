@@ -94,10 +94,10 @@ void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
 	CLAM::XMLStorage::Restore(config, os);
 }
 
-class NetworkFiler
+class NetworkFiller
 {
 public:
-	NetworkFiler(){}
+	NetworkFiller(){}
 
 	void setUp(Network &net)
 	{
