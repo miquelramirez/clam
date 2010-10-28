@@ -26,7 +26,7 @@ class NetworkHandler(xml.sax.handler.ContentHandler) :
 		self._connectionOut = None
 		self._processingName = None
 
-	def network(self, clamVersion, id) :
+	def network(self, clamVersion="1.4.1", id="Unnamed") :
 		self._result += "\tnetwork.SetName(\"" + id + "\");\n"
 #		print "Network:", id, "version", clamVersion
 
@@ -132,6 +132,9 @@ public:
 if __name__ == "__main__" :
 	if "--test" not in sys.argv :
 		networkfile = sys.argv[1]
+	
+		print "networkfile: ",networkfile
+	
 		exampleNetwork = file(networkfile).read()
 		network = NetworkHandler()
 		saxparser = xml.sax.make_parser()
@@ -140,9 +143,11 @@ if __name__ == "__main__" :
 		datasource = cStringIO.StringIO(exampleNetwork)
 		saxparser.parse(datasource)
 
-		print network.getCode()
+		nameClass = networkfile.partition(".clamnetwork")[0]
+		nameClass = "SetupNetwork_"+nameClass.rpartition("/")[2]
+		print network.getCode(nameClass)
 		open("original.clamnetwork","w").write(exampleNetwork)
-
+		
 
 	else :
 		import unittest
@@ -281,6 +286,88 @@ if __name__ == "__main__" :
 
 """,n.setupCode())
     
+			def test_classGenerated(self) :
+				network = NetworkHandler()
+				saxparser = xml.sax.make_parser()
+				saxparser.setContentHandler(network)
+
+				exampleNetwork = """\
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.0" id="Unnamed">
+</network>
+"""
+				datasource = cStringIO.StringIO(exampleNetwork)
+				saxparser.parse(datasource)
+
+				result= network.getCode()
+				n = NetworkHandler()
+				
+				self.assertEquals("""\
+#include <CLAM/Network.hxx>
+#include <sstream>
+#include <CLAM/XMLStorage.hxx>
+
+namespace CLAM {
+
+void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
+{
+	std::istringstream os(xmlContent);
+	CLAM::XMLStorage::Restore(config, os);
+}
+
+class NetworkFiller
+{
+public:
+	NetworkFiller(){}
+
+	void setUp(Network &network)
+	{
+	network.SetName("Unnamed");
+	}
+};
+}""", result)
+
+
+			def test_classGeneratedUsingSpecificName(self) :
+				network = NetworkHandler()
+				saxparser = xml.sax.make_parser()
+				saxparser.setContentHandler(network)
+
+				exampleNetwork = """\
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.0" id="Unnamed">
+</network>
+"""
+				datasource = cStringIO.StringIO(exampleNetwork)
+				saxparser.parse(datasource)
+
+				result= network.getCode("MyClassName")
+				n = NetworkHandler()
+				
+				self.assertEquals("""\
+#include <CLAM/Network.hxx>
+#include <sstream>
+#include <CLAM/XMLStorage.hxx>
+
+namespace CLAM {
+
+void LoadConfig(ProcessingConfig & config, const std::string & xmlContent)
+{
+	std::istringstream os(xmlContent);
+	CLAM::XMLStorage::Restore(config, os);
+}
+
+class MyClassName
+{
+public:
+	MyClassName(){}
+
+	void setUp(Network &network)
+	{
+	network.SetName("Unnamed");
+	}
+};
+}""", result)
 
 		sys.exit(unittest.main())
 
