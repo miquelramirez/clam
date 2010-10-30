@@ -25,7 +25,7 @@ def moveIntermediateInto(env, subfolder) :
 
 def activateColorCommandLine(env) :
 	def print_cmd_line(commandline, target, source, env) :
-		sys.stdout.write("\033[32;1m%s\033[0m\n"%commandline)
+		sys.stdout.write(u"\033[32;1m%s\033[0m\n"%commandline)
 		sys.stdout.flush()
 	env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
 
@@ -39,7 +39,7 @@ def ClamModule(env, moduleName, version,
 		headers=[],
 		) :
 	try: env.PkgConfigFile
-	except : env.Tool('pc', toolpath=[os.path.dirname(__file__)])
+	except : env.Tool('pkgconfig', toolpath=[os.path.dirname(__file__)])
 
 	crosscompiling = env.get('crossmingw')
 	windowsTarget = sys.platform == 'win32' or crosscompiling
@@ -50,7 +50,7 @@ def ClamModule(env, moduleName, version,
 	env.PrependUnique(LIBPATH=['.'])
 
 	libraryName = 'clam_'+moduleName
-	if not env['verbose'] : env.ClamQuietCompilation()
+	if not env.get('verbose',True) : env.ClamQuietCompilation()
 
 	env.activateColorCommandLine()
 
@@ -64,7 +64,7 @@ def ClamModule(env, moduleName, version,
 	else:
 		plugin = envPlugin.LoadableModule(target=libraryName+'_plugin', source = [])
 	if windowsTarget :
-		plugin = [plugin[0]]
+		plugin = [plugin[0]] # windows targets include the dll the lib and the def file
 
 	# pkg-config file
 	pcfile = env.PkgConfigFile(
@@ -126,21 +126,21 @@ def ClamModule(env, moduleName, version,
 		localLinkName = env.LinkerNameLink( linkname, lib ) # lib***.dylib     -> lib***.X.Y.Z.dylib
 		libraries = [lib, localSoName, localLinkName]
 
-	installedLib = env.Install(os.path.join(env['prefix_for_packaging'],'lib'), lib)
+	installedLib = env.Install(os.path.join(env['prefix'],'lib'), lib)
 	install+= [
-		env.Install(os.path.join(env['prefix_for_packaging'],'lib','clam'), plugin),
-		env.Install(os.path.join(env['prefix_for_packaging'],'lib','pkgconfig'), pcfile),
-		env.Install(os.path.join(env['prefix_for_packaging'],'include','CLAM',moduleName), headers),
+		env.Install(os.path.join(env['prefix'],'lib','clam'), plugin),
+		env.Install(os.path.join(env['prefix'],'lib','pkgconfig'), pcfile),
+		env.Install(os.path.join(env['prefix'],'include','CLAM',moduleName), headers),
 		installedLib,
 		]
 	if sys.platform == 'win32' or crosscompiling :
 		return install, (libraries, plugin, pcfile)
 
 	install+= [
-		env.LinkerNameLink( os.path.join(env['prefix_for_packaging'],'lib',linkname), installedLib),
-		env.SonameLink( os.path.join(env['prefix_for_packaging'],'lib',soname), installedLib),
+		env.LinkerNameLink( os.path.join(env['prefix'],'lib',linkname), installedLib),
+		env.SonameLink( os.path.join(env['prefix'],'lib',soname), installedLib),
 		]
-	return install, (libraries, plugin, pcfile)
+	return install, libraries #, plugin, pcfile)
 
 	
 
@@ -218,13 +218,6 @@ def generate(env) :
 	env.AddMethod(moveIntermediateInto)
 	env.AddMethod(activateColorCommandLine)
 
-	if (
-		not env.has_key('prefix_for_packaging') or
-		not env['prefix_for_packaging']  or
-		env['prefix_for_packaging']=='.'
-	) :
-		if env.has_key('prefix') :
-			env['prefix_for_packaging'] = env['prefix']
 
 def exists(env):
 	return True
