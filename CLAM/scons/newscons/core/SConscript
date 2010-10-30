@@ -1,0 +1,74 @@
+import sys, os
+
+Variables = [
+	BoolVariable(
+		"debug",
+		help="Activate debug flags",
+		default = 'yes',
+		),
+	PackageVariable(
+		"xmlpp",
+		help = "Enable xmlpp as xml backend",
+		default = 'yes',
+		),
+	EnumVariable(
+		'xml_backend',
+		help = 'Sets the backend for xml output',
+		default = 'xerces-c',
+		allowed_values = (
+			'xerces-c',
+			'xmlpp',
+			'both',
+			'none',
+			),
+		),
+]
+
+def die(message) :
+	print >> sys.stderr, message
+	sys.exit()
+
+Dependencies = [
+	]
+
+def CustomTests() :
+	return {}
+
+def Configure(sconf) :
+	sconf.CheckPkgConfigModule("libxml++-2.6", minimum_version="2.9") or die(
+		"libxml++ library required")
+	return
+	sconf.CheckPkgConfigModule("gl") or die(
+		"opengl library required")
+	sconf.CheckPkgConfigModule("QtCore", minimum_version="4.5") or die(
+		"QtCore library required")
+	sconf.CheckPkgConfigModule("QtOpenGL", minimum_version="4.5") or die(
+		"QtOpenGL library required")
+
+def Targets(env) :
+	headers = env.scanFiles("*.hxx", ["core"], recursive=True)
+	sources = env.scanFiles("*.cxx", ["core"], recursive=True)
+	env.AppendUnique(CPPPATH = [ os.path.dirname(header) for header in headers ])
+
+	return env.ClamModule(
+		"core",
+		version = "1.5.0",
+		description = "C++ Library for Audio and Music, core functionality",
+		clamDependencies = Dependencies,
+		otherDependencies = [],
+		sources = sources,
+		headers = headers,
+		)
+
+Import("Module")
+module = Module(
+	Variables = Variables,
+	Dependencies = Dependencies,
+	CustomTests = CustomTests,
+	Configure = Configure,
+	Targets = Targets,
+	)
+
+Return("module")
+
+
