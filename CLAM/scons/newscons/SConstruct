@@ -44,6 +44,7 @@ variables.AddVariables(
 		"prefix",
 		help = "Installation prefix",
 		default='/usr/local',
+		validator=PathVariable.PathAccept,
 		),
 	)
 for name, sconf in sconfs.items() :
@@ -53,6 +54,7 @@ for name, sconf in sconfs.items() :
 env = Environment(tools=["default"], ENV=os.environ, variables=variables)
 Help(variables.GenerateHelpText(env))
 variables.Save(".options.cache", env)
+env.Tool("install")
 env.Tool("pkgconfig", toolpath=["."])
 env.Tool("clam", toolpath=["."])
 
@@ -88,7 +90,13 @@ installTargets, buildTargets = [list(x) for x in zip(*[list(sconf.Targets(env)) 
 program = env.Program("myprogram", ["a.cxx"])
 buildTargets.append(program)
 
-env.Command("uninstall", [], [ Delete(file) for file in FindInstalledFiles()])
+env.Command("uninstall", [], [
+#	Delete(file) # fails to delete symlinks http://scons.tigris.org/issues/show_bug.cgi?id=2708
+	Action(
+		"rm -f %s"%file,
+		"== Uninstalling %s"%file
+		)
+	for file in FindInstalledFiles()])
 Alias("install", installTargets)
 Default(buildTargets)
 
