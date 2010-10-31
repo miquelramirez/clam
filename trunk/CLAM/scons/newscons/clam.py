@@ -102,7 +102,7 @@ def ClamModule(env, moduleName, version,
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( libraryName, sources,
 			SHLIBSUFFIX='.so.%s.%s.%s'%versionNumbers )
-		localSoName   = env.LinkerNameLink( soname, lib )   # lib***.so.XY -> lib***.so.XY.Z
+		localSoName   = env.SonameLink( soname, lib )   # lib***.so.XY -> lib***.so.XY.Z
 		localLinkName = env.LinkerNameLink( linkname, lib ) # lib***.so    -> lib***.so.XY.Z
 		libraries = [lib, localSoName, localLinkName]
 	else : #darwin
@@ -136,9 +136,11 @@ def ClamModule(env, moduleName, version,
 	if sys.platform == 'win32' or crosscompiling :
 		return install, (libraries, plugin, pcfile)
 
+	env.Depends(installedLib, localLinkName)
+	env.Depends(installedLib, localSoName)
 	install+= [
-		env.LinkerNameLink( os.path.join(env['prefix'],'lib',linkname), installedLib),
-		env.SonameLink( os.path.join(env['prefix'],'lib',soname), installedLib),
+		env.InstallLink( os.path.join(env['prefix'],'lib',linkname), installedLib),
+		env.InstallLink( os.path.join(env['prefix'],'lib',soname), installedLib),
 		]
 	return install, libraries #, plugin, pcfile)
 
@@ -183,25 +185,38 @@ def enable_modules( self, libs, path) :
 
 
 def generate(env) :
-	def generate_so_name( target, source, env ) :
-		source_dir = os.path.dirname( str(source[0]) )
-		cwd = os.getcwd()
-		os.chdir( source_dir )
-		if sys.platform == 'linux2' :
-			os.system( "/sbin/ldconfig -n ." )
-		os.chdir(cwd)
 
-	bld = Builder( action=Action(generate_so_name,
-		"== Generating soname $TARGET") )
-	env.Append( BUILDERS={'SonameLink' : bld} )
+	import SCons.Tool.install
+	install_sandbox = env.GetOption('install_sandbox')
+	if install_sandbox:
+		target_factory = SCons.Tool.install.DESTDIR_factory(env, install_sandbox).Entry
+	else : 
+		target_factory = env.fs.Entry
+	env.Append( BUILDERS=dict(
+		SonameLink = Builder(
+			action = Action(
+				"/sbin/ldconfig -n ${SOURCE.dir}",
+				"== Generating soname $TARGET",
+				),
+			),
+		LinkerNameLink = Builder(
+			action = Action(
+				'ln -sf ${SOURCE.name} ${TARGET} ',
+#				generate_linker_name,
+				"== Generating linker name $TARGET to $SOURCE",
+				),
+			),
+		InstallLink = Builder(
+			action = Action(
+				'ln -sf ${SOURCE.name} ${TARGET} ',
+				"== Installing link $TARGET to $SOURCE",
+				),
+			target_factory = target_factory,
+			emitter = [ SCons.Tool.install.add_targets_to_INSTALLED_FILES, ],
+			)
+		))
 
-	def generate_linker_name( target, source, env ) :
-		source_file = os.path.basename( str(source[0]) )
-		os.system( "ln -sf %s %s"%(source_file,str(target[0]) ))
 
-	bld = Builder( action=Action(generate_linker_name,
-		"== Generating linker name $TARGET to $SOURCE") )
-	env.Append( BUILDERS={'LinkerNameLink' : bld} )
 
 	import shutil
 	bld = Builder( action =Action( 
