@@ -11,7 +11,9 @@ import glob
 
 sandbox = os.path.expanduser("~/CajitasDeArena/mingw2")
 target = "i586-mingw32msvc"
-sfmirror = "kent.dl.sourceforge.net"
+sfmirror = "http://kent.dl.sourceforge.net"
+apachemirror = "http://www.apache.org/dist"
+apachemirror = "http://apache.rediris.es/"
 prefix = os.path.join(sandbox,"local")
 
 def die(message) :
@@ -81,17 +83,18 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		prefix = prefix,
 		target = target,
 		sfmirror = sfmirror,
+		apachemirror = apachemirror,
 		name = name,
 		pinned = pinnedVersion if pinnedVersion else "None",
 	)
 	availableVersion = output(checkVersion).strip()
 	availableVersion or die("No online version found for the package\n Command used:\n%s" % checkVersion)
+	print "Found version: '%s'" % availableVersion
+	if (pinnedVersion and pinnedVersion != availableVersion) :
+		warning("Package: Pinning to version %s, although version %s is available" % (pinnedVersion, availableVersion))
 	subst.update (
 		version = pinnedVersion if pinnedVersion else availableVersion
 	)
-	print "Found version: %s" % availableVersion
-	if (pinnedVersion and pinnedVersion != availableVersion) :
-		warning("Package: Pinning to version %s, although version %s is available" % (pinnedVersion, availableVersion))
 
 	subst.update(
 		tarball = tarballName % subst,
@@ -162,7 +165,7 @@ if 0 : buildPackage( 'libmad',
 		""" sed -n 's,.*libmad-\([0-9][^>]*\)\.tar.*,\\1,p' | """
 		""" tail -1 """,
 	tarballName = "libmad-%(version)s.tar.gz",
-	downloadUri = "http://%(sfmirror)s/sourceforge/mad/%(tarball)s",
+	downloadUri = "%(sfmirror)s/sourceforge/mad/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" sed -i '/-fforce-mem/d' configure.ac && """
@@ -179,7 +182,7 @@ if 0 : buildPackage( "id3lib",
 		sfcheck("id3lib", "id3lib") +
 		""" sed -n 's,.*id3lib-\([0-9][^>]*\)\.tar.*,\\1,p' | """
 		""" tail -1 """,
-	downloadUri = "http://%(sfmirror)s/sourceforge/id3lib/%(tarball)s",
+	downloadUri = "%(sfmirror)s/sourceforge/id3lib/%(tarball)s",
 	tarballName = "id3lib-%(version)s.tar.gz",
 	buildCommand =
 		""" cd %(sandbox)s/src/id3lib-%(version)s && """
@@ -286,7 +289,7 @@ if 0 : buildPackage( "liblo",
 		""" sed -n 's,.*liblo-\([0-9][^>]*\)\.tar.*,\\1,p' | """
 		""" tail -1 """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "http://%(sfmirror)s/sourceforge/liblo/%(tarball)s",
+	downloadUri = "%(sfmirror)s/sourceforge/liblo/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" ./autogen.sh  --host=%(target)s --prefix=%(prefix)s LDFLAGS="-L%(prefix)s/lib/" CPPFLAGS="-I%(prefix)s/include/" && """
@@ -300,7 +303,7 @@ if 0 : buildPackage( "cppunit",
 		""" sed -n 's,.*cppunit-\([0-9][^>]*\)\.tar.*,\\1,p' | """
 		""" tail -1 """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "http://%(sfmirror)s/sourceforge/cppunit/%(tarball)s",
+	downloadUri = "%(sfmirror)s/sourceforge/cppunit/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" ./configure --host=%(target)s --prefix=%(prefix)s  --enable-doxygen=no && """
@@ -327,7 +330,7 @@ if 0 : buildPackage( "dlfcn-win32",
 		""" make install """
 	)
 
-if 1 : buildPackage( "ladspa-sdk", # TODO: still not working for binaries
+if 0 : buildPackage( "ladspa-sdk",
 	uri = "http://www.ladspa.org/",
 	deps = "dlfcn-win32",
 	checkVersion =
@@ -341,21 +344,39 @@ if 1 : buildPackage( "ladspa-sdk", # TODO: still not working for binaries
 	buildCommand = 
 		""" cd %(srcdir)s/src && """
 		""" sed -i 's,-fPIC,,' makefile && """
-		""" sed -i 's,^\(LIBRARIES.*\),\\1 -L%(prefix)s\\/lib,' makefile && """
 		""" sed -i 's,\(mkdirhier\),mkdir -p,' makefile && """
 		""" make install """
 			""" CC=%(target)s-gcc """
 			""" CPP=%(target)s-g++ """
 			""" LD=%(target)s-g++  """
-			""" INCLUDES="-I. -I%(prefix)s/include" """
-#			""" INSTALL_PLUGINS_DIR=%(prefix)s/lib/ladspa """
-#			""" INSTALL_INCLUDE_DIR=%(prefix)s/include """
-#			""" INSTALL_BINARY_DIR=%(prefix)s/bin """
 			""" PREFIX=%(prefix)s """
-			""" PROGRAMS="../bin/analyseplugin ../bin/listplugins" """ # TODO: applyplugin depends on endian.h, not in mingw
+			""" INCLUDES:='-I. -I%(prefix)s/include' """
+			""" LIBRARIES:='-lm -ldl -L%(prefix)s/lib' """
+			# TODO: applyplugin depends on endian.h, not in mingw
+			""" PROGRAMS="../bin/analyseplugin ../bin/listplugins" """
 	)
 
 
+if 1 : buildPackage( "xerces-c",
+	uri = "http://xerces.apache.org/xerces-c/",
+	deps = "", # TODO
+	checkVersion =
+		""" wget -q -O- 'http://www.apache.org/dist/xerces/c/3/sources/?C=M;O=D' | """
+		""" sed -n 's,.*<a href="xerces-c-\([0-9][^"]*\)\.tar.*,\\1,p' | """
+		""" grep -v rc | """
+		""" head -1 """,
+	tarballName = "xerces-c-%(version)s.tar.gz",
+	downloadUri = "%(apachemirror)s/xerces/c/3/sources/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+#		""" autoconf && """
+		""" ./configure """
+			""" --prefix='%(prefix)s' """
+			""" --host='%(target)s' """
+			""" && """
+		""" make && """
+		""" make install """
+	)
 
 
 
