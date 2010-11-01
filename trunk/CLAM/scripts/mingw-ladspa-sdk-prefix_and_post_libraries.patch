@@ -1,0 +1,46 @@
+diff -ru ladspa_sdk-orig//src/makefile ladspa_sdk/src/makefile
+--- ladspa_sdk-orig//src/makefile	2007-11-06 11:42:45.000000000 +0100
++++ ladspa_sdk/src/makefile	2010-11-01 17:26:10.000000000 +0100
+@@ -4,9 +4,10 @@
+ #
+ # Change these if you want to install somewhere else.
+ 
+-INSTALL_PLUGINS_DIR	=	/usr/lib/ladspa/
+-INSTALL_INCLUDE_DIR	=	/usr/include/
+-INSTALL_BINARY_DIR	=	/usr/bin/
++PREFIX = /usr
++INSTALL_PLUGINS_DIR	=	$(PREFIX)/lib/ladspa
++INSTALL_INCLUDE_DIR	=	$(PREFIX)/include
++INSTALL_BINARY_DIR	=	$(PREFIX)/bin
+ 
+ ###############################################################################
+ #
+@@ -90,19 +91,22 @@
+ #
+ 
+ ../bin/applyplugin:	applyplugin.o load.o default.o
+-	$(CC) $(CFLAGS) $(LIBRARIES)					\
++	$(CC) $(CFLAGS) 						\
+ 		-o ../bin/applyplugin					\
+-		applyplugin.o load.o default.o
++		applyplugin.o load.o default.o				\
++		$(LIBRARIES)
+ 
+ ../bin/analyseplugin:	analyseplugin.o load.o default.o
+-	$(CC) $(CFLAGS) $(LIBRARIES)					\
++	$(CC) $(CFLAGS) 						\
+ 		-o ../bin/analyseplugin 				\
+-		analyseplugin.o load.o default.o
++		analyseplugin.o load.o default.o			\
++		$(LIBRARIES)
+ 
+ ../bin/listplugins:	listplugins.o search.o
+-	$(CC) $(CFLAGS) $(LIBRARIES)					\
++	$(CC) $(CFLAGS) 					\
+ 		-o ../bin/listplugins	 				\
+-		listplugins.o search.o
++		listplugins.o search.o					\
++		$(LIBRARIES)
+ 
+ ###############################################################################
+ #
