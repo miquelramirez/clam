@@ -51,10 +51,20 @@ def extractSource(tarball) :
 			('.tar.gz',  "tar xvfz %(sandbox)s/downloads/%(tarball)s -C %(sandbox)s/src"),
 			('.tgz',     "tar xvfz %(sandbox)s/downloads/%(tarball)s -C %(sandbox)s/src"),
 			('.tar.bz2', "tar xvfj %(sandbox)s/downloads/%(tarball)s -C %(sandbox)s/src"),
+			('.zip',     "unzip -xo %(sandbox)s/downloads/%(tarball)s -d %(sandbox)s/src/%(basename)s"),
 			] :
-			if tarball.endswith(extension) : return command
+			if tarball.endswith(extension) : return extension, command
 		die("Unsuported compressed file extension: %s" % tarball)
-	run( extractCommand(tarball) % dict(sandbox=sandbox,tarball=tarball), "Uncompressing %s"%tarball)
+	extension, command = extractCommand(tarball)
+	basename = tarball[:-len(extension)]
+	print basename
+	run( 
+		command % dict(
+			sandbox=sandbox,
+			tarball=tarball,
+			basename=basename,
+		),
+		"Uncompressing %s"%tarball)
 
 def ensureDir(adir) :
 	try: os.makedirs(adir)
@@ -108,6 +118,10 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	for patch in patches :
 		applyPatch(subst['srcdir'], patch, level=1)
 	run(buildCommand % subst)
+
+
+
+
 
 
 ensureDir(os.path.join(sandbox, "src"))
@@ -357,7 +371,48 @@ if 0 : buildPackage( "ladspa-sdk",
 	)
 
 
-if 1 : buildPackage( "xerces-c",
+
+if 0 : buildPackage( "directx",
+	uri = "http://www.microsoft.com",
+	checkVersion = "echo 8.0",
+	tarballName = "dx80_mgw.zip",
+	downloadUri = "http://alleg.sourceforge.net/files/%(tarball)s",
+	srcdir = "dx80_mgw",
+	buildCommand = 
+		""" cd %(srcdir)s && """
+		# binaries are already provided by mingw, missing the includes
+		""" cp include/dinput.h include/dsound.h %(prefix)s/include """
+	)
+
+
+
+if 1 : buildPackage( "portaudio",
+	uri = "http://www.portaudio.com",
+	deps = "directx",
+	checkVersion =
+		""" wget -q -O- 'http://www.portaudio.com/download.html' | """
+		""" sed -n 's,.*pa_stable_v\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" head -1 """,
+	tarballName = "pa_stable_v%(version)s.tar.gz",
+	downloadUri = "http://www.portaudio.com/archives/%(tarball)s",
+	srcdir = "portaudio",
+	buildCommand = 
+		""" cd %(srcdir)s && """
+		""" sed -i '57a#define bzero(b,len) (memset((b), 0, (len)), (void) 0)' test/patest_read_write_wire.c  && """
+		""" autoconf && """
+		""" ./configure """
+			""" --prefix='%(prefix)s' """
+			""" --host='%(target)s' """
+			""" --with-winapi=directx """
+			""" --with-dxdir=%(prefix)s """
+			""" CFLAGS='-I%(prefix)s/include ' """ # to find dx headers
+			""" && """
+		""" make && """
+		""" make install """
+	)
+
+
+if 0 : buildPackage( "xerces-c",
 	uri = "http://xerces.apache.org/xerces-c/",
 	deps = "", # TODO
 	checkVersion =
@@ -377,9 +432,5 @@ if 1 : buildPackage( "xerces-c",
 		""" make && """
 		""" make install """
 	)
-
-
-
-
 
 
