@@ -10,17 +10,33 @@ sudo apt-get install gcc-mingw32 mingw32-binutils mingw32-runtime \
 	wget sed
 
 Please, update the list of packages if you find any missing one.
-Note that 'ming32' package is legaci 3.2.1 gcc, do not install it.
+Note that 'ming32' package is legacy 3.2.1 gcc, do not install it.
 
+While in development, most targets will be disabled with 'if 0 :'.
+Enable them changing them to 'if 1 :'.
 
-
-TODO:
+Package TODO: ( - todo, * working on it, + done, child means dependency )
 - libid3 lacks a pkg-config file
 - libsndfile lacks dependencies: sqlite flac ogg vorbis
-- Asio, Vst
-- USe DX9 instead of DX8
+- USe DX9 or DX10 instead of DX8
 - properly support flac (does not link in sndfile)
+- ladspa-sdk::applyplugin binary had to be disabled
+- libxml++
+	* glibmm
+		+ libsigc++
+		* glib
+			* gettext !!!
+	- libxml2
+* boost
+- libpython
+- qt: supported by mingw-cross-env
+- Asio, Vst
 
+Script TODO:
+- Target by command line
+- Options for prefix, target...
+- Config file
+- Declarative + dependencies
 """
 
 
