@@ -1,4 +1,21 @@
 #!/usr/bin/python
+
+"""
+This scripts setups clam dependencies to generated Windows
+mingw compatible binaries from a Linux box (crosscompilation).
+
+Non complete list of requirements (Ubuntu):
+sudo apt-get install gcc-mingw32 mingw32-binutils mingw32-runtime \
+	nsis wine automake autoconf-archive libtool pkg-config \
+	wget sed
+
+Please, update the list of packages if you find any missing one.
+Note that 'ming32' package is legaci 3.2.1 gcc, do not install it.
+
+
+"""
+
+
 import subprocess
 import sys
 import os
@@ -7,9 +24,17 @@ import glob
 # TODO:
 # libid3 lacks a pkg-config file
 # libsndfile lacks dependencies: sqlite flac ogg vorbis
+# Asio, Vst
+# USe DX9 instead of DX8
+# properly support flac (does not link in sndfile)
 
 
-sandbox = os.path.expanduser("~/CajitasDeArena/mingw2")
+
+
+if os.path.exist(os.path.expanduser("~/CajitasDeArena")) :
+	sandbox = os.path.expanduser("~/CajitasDeArena/mingw32")
+else:
+	sandbox = os.path.expanduser("~/mingw32")
 target = "i586-mingw32msvc"
 sfmirror = "http://kent.dl.sourceforge.net"
 apachemirror = "http://www.apache.org/dist"
@@ -254,13 +279,18 @@ if 0 : buildPackage( "flac",
 	downloadUri = "http://downloads.xiph.org/releases/flac/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
-		""" ./autogen.sh --host='%(target)s' --prefix='%(prefix)s' PKG_CONFIG_PATH=$PKG_CONFIG_PATH --disable-xmms-plugin --enable-ogg --disable-oggtest && """
+		""" ./autogen.sh --host='%(target)s' --prefix='%(prefix)s' """
+			""" PKG_CONFIG_PATH=$PKG_CONFIG_PATH """
+			""" --disable-xmms-plugin """
+			""" --enable-ogg """
+			""" --disable-oggtest """
+			""" && """
 #		""" ./configure --host='%(target)s' --prefix='%(prefix)s' --disable-xmms-plugin --enable-ogg --disable-oggtest && """
 		""" make && """
 		""" make install """
 	)
 
-if 0 : buildPackage( "libsndfile",
+if 1 : buildPackage( "libsndfile",
 	uri = "http://www.mega-nerd.com/libsndfile/",
 	deps = "flac ogg vorbis",
 	pinnedVersion = "1.0.21",
@@ -274,7 +304,13 @@ if 0 : buildPackage( "libsndfile",
 	buildCommand = 
 		""" cd %(srcdir)s && """
 #		""" autoconf && """
-		""" ./configure mingw32 --host=%(target)s --prefix=%(prefix)s --enable-external-libs --disable-flac --disable-sqlite --disable-octave --disable-alsa && """
+		""" ./configure mingw32 --host=%(target)s --prefix=%(prefix)s """
+			""" --disable-external-libs """
+			""" --disable-flac """
+			""" --disable-sqlite """
+			""" --disable-octave """
+			""" --disable-alsa """
+			""" && """
 		""" make install """
 	)
 
@@ -290,7 +326,9 @@ if 0 : buildPackage( "speex",
 	downloadUri = "http://downloads.xiph.org/releases/speex/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
-		"""  ./configure  --host=%(target)s --prefix=%(prefix)s --with-ogg-dir=%(prefix)s && """ # TODO: --enable-sse not supported by arch
+		"""  ./configure  --host=%(target)s --prefix=%(prefix)s """
+			""" --with-ogg-dir=%(prefix)s """
+			""" && """ # TODO: --enable-sse not supported by arch
 		""" make && """
 		""" make install """
 	)
@@ -306,7 +344,10 @@ if 0 : buildPackage( "liblo",
 	downloadUri = "%(sfmirror)s/sourceforge/liblo/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
-		""" ./autogen.sh  --host=%(target)s --prefix=%(prefix)s LDFLAGS="-L%(prefix)s/lib/" CPPFLAGS="-I%(prefix)s/include/" && """
+		""" ./autogen.sh  --host=%(target)s --prefix=%(prefix)s """
+			""" LDFLAGS="-L%(prefix)s/lib/" """
+			""" CPPFLAGS="-I%(prefix)s/include/" """
+			""" && """
 		""" make && """
 		""" make install """
 	)
@@ -320,13 +361,16 @@ if 0 : buildPackage( "cppunit",
 	downloadUri = "%(sfmirror)s/sourceforge/cppunit/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
-		""" ./configure --host=%(target)s --prefix=%(prefix)s  --enable-doxygen=no && """
+		""" ./configure --host=%(target)s --prefix=%(prefix)s  """
+			""" --enable-doxygen=no """
+			""" && """
 		""" make && """
 		""" make install """
 #		""" cp src/cppunit/.libs/libcppunit-1-12-0.dll ../../dlls""" # TODO: Needed?
 	)
 	# TODO: From the wiki: To get some extra autoconf macros and libtool do: 
 	# sudo apt-get install autoconf-archive libtool automake
+
 
 if 0 : buildPackage( "dlfcn-win32",
 	uri = "http://code.google.com/p/dlfcn-win32/",
@@ -339,7 +383,13 @@ if 0 : buildPackage( "dlfcn-win32",
 	buildCommand = ""
 		""" cd %(srcdir)s && """
 		""" sed -i '$aecho Done\\n' configure &&  """
-		""" ./configure --prefix='%(prefix)s' --cross-prefix='%(target)s-' --incdir='%(prefix)s/include' --libdir='%(prefix)s/lib' --enable-shared && """
+		""" ./configure """
+			""" --prefix='%(prefix)s' """
+			""" --cross-prefix='%(target)s-' """
+			""" --incdir='%(prefix)s/include' """
+			""" --libdir='%(prefix)s/lib' """
+			""" --enable-shared """
+			""" && """
 		""" make && """
 		""" make install """
 	)
@@ -386,7 +436,7 @@ if 0 : buildPackage( "directx",
 
 
 
-if 1 : buildPackage( "portaudio",
+if 0 : buildPackage( "portaudio",
 	uri = "http://www.portaudio.com",
 	deps = "directx",
 	checkVersion =
@@ -400,9 +450,7 @@ if 1 : buildPackage( "portaudio",
 		""" cd %(srcdir)s && """
 		""" sed -i '57a#define bzero(b,len) (memset((b), 0, (len)), (void) 0)' test/patest_read_write_wire.c  && """
 		""" autoconf && """
-		""" ./configure """
-			""" --prefix='%(prefix)s' """
-			""" --host='%(target)s' """
+		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
 			""" --with-winapi=directx """
 			""" --with-dxdir=%(prefix)s """
 			""" CFLAGS='-I%(prefix)s/include ' """ # to find dx headers
@@ -425,12 +473,14 @@ if 0 : buildPackage( "xerces-c",
 	buildCommand =
 		""" cd %(srcdir)s && """
 #		""" autoconf && """
-		""" ./configure """
-			""" --prefix='%(prefix)s' """
-			""" --host='%(target)s' """
+		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
 			""" && """
 		""" make && """
 		""" make install """
 	)
+
+
+
+
 
 
