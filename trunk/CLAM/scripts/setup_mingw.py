@@ -13,6 +13,14 @@ Please, update the list of packages if you find any missing one.
 Note that 'ming32' package is legaci 3.2.1 gcc, do not install it.
 
 
+
+TODO:
+- libid3 lacks a pkg-config file
+- libsndfile lacks dependencies: sqlite flac ogg vorbis
+- Asio, Vst
+- USe DX9 instead of DX8
+- properly support flac (does not link in sndfile)
+
 """
 
 
@@ -21,17 +29,8 @@ import sys
 import os
 import glob
 
-# TODO:
-# libid3 lacks a pkg-config file
-# libsndfile lacks dependencies: sqlite flac ogg vorbis
-# Asio, Vst
-# USe DX9 instead of DX8
-# properly support flac (does not link in sndfile)
 
-
-
-
-if os.path.exist(os.path.expanduser("~/CajitasDeArena")) :
+if os.path.exists(os.path.expanduser("~/CajitasDeArena")) :
 	sandbox = os.path.expanduser("~/CajitasDeArena/mingw32")
 else:
 	sandbox = os.path.expanduser("~/mingw32")
@@ -143,9 +142,6 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	for patch in patches :
 		applyPatch(subst['srcdir'], patch, level=1)
 	run(buildCommand % subst)
-
-
-
 
 
 
