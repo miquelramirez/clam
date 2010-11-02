@@ -41,13 +41,13 @@ networks = glob.glob("*.clamnetwork")
 env['LV2BASEURI'] = "http://clam-project.org/examples/lv2"
 
 manifest = env.Command("manifest.ttl", networks,
-	"./generateFilesToCompile.py --manifest ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
+	"./clamlv2generator --manifest ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
 
 mainSource = env.Command("clam_plugin.cxx", networks,
-	"./generateFilesToCompile.py --main ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
+	"./clamlv2generator --main ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
 ttls = [
 	env.Command(os.path.splitext(os.path.basename(network))[0]+".ttl", network,
-	"./generateFilesToCompile.py --ttl ${LV2BASEURI} ${SOURCE} > ${TARGET}" )
+	"./clamlv2generator --ttl ${LV2BASEURI} ${SOURCE} > ${TARGET}" )
 	for network in networks ]
 
 
@@ -60,6 +60,7 @@ libraries = [
 
 install = env.Install(bundlePath, [libraries,ttls,manifest])
 env.Alias('install', install)
+env.Command('uninstall', [], Delete(FindInstalledFiles()))
 env.Default(libraries, ttls, manifest)
 
 
