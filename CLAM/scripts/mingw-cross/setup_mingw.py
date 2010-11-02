@@ -286,7 +286,7 @@ if 0 : buildPackage( "flac",
 		""" make install """
 	)
 
-if 1 : buildPackage( "libsndfile",
+if 0 : buildPackage( "libsndfile",
 	uri = "http://www.mega-nerd.com/libsndfile/",
 	deps = "flac ogg vorbis",
 	pinnedVersion = "1.0.21",
@@ -347,6 +347,7 @@ if 0 : buildPackage( "liblo",
 		""" make && """
 		""" make install """
 	)
+
 if 0 : buildPackage( "cppunit",
 	uri = "http://liblo.sourceforge.net/",
 	checkVersion =
@@ -464,7 +465,7 @@ if 0 : buildPackage( "xerces-c",
 		""" sed -n 's,.*<a href="xerces-c-\([0-9][^"]*\)\.tar.*,\\1,p' | """
 		""" grep -v rc | """
 		""" head -1 """,
-	tarballName = "xerces-c-%(version)s.tar.gz",
+	tarballName = "%(name)s-%(version)s.tar.gz",
 	downloadUri = "%(apachemirror)s/xerces/c/3/sources/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
@@ -476,6 +477,125 @@ if 0 : buildPackage( "xerces-c",
 	)
 
 
+def gnomeCheckVersion(name, majorVersion) :
+	return (
+		""" wget -q -O- 'http://git.gnome.org/browse/%(name)s/refs/tags' | """
+		""" grep '<a href=' | sed -n 's,.*<a[^>]*>\([0-9][^<]*\)<.*,\\1,p' | """
+		""" grep %(majorVersion)s | """ # downloadUri limits us 
+		""" sort | """
+		""" tail -1 """
+		% locals() )
+
+if 0 : buildPackage( "libsigc++",
+	uri = "http://libsigc.sourceforge.net/",
+	deps = "",
+	checkVersion = gnomeCheckVersion("libsigc++2", "2.2"),
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/%(name)s/2.2/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
+			""" && """
+		""" make && """
+		""" make install """
+	)
+
+
+# TODO: Blocked here with libxml++ goal
+if 0 : buildPackage( "gettext",
+	uri = "http://www.gnu.org/software/gettext/",
+	checkVersion = 
+		""" wget -q -O- 'http://www.gnu.org/software/gettext/' | """
+		""" grep 'gettext-' | """
+		""" sed -n 's,.*gettext-\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" head -1 """,
+	pinnedVersion = "0.17",
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "ftp://ftp.gnu.org/pub/gnu/gettext/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" ./configure """
+			""" --host='%(target)s' """
+			""" --prefix='%(prefix)s' """
+			""" --enable-threads=win32 """
+			""" --disable-java """
+			""" --without-git """
+			""" --without-libexpat-prefix """
+			""" --without-libxml2-prefix """
+			""" CONFIG_SHELL=/bin/bash """
+			""" && """
+		""" make install """
+	)
+
+
+if 0 : buildPackage( "glib",
+	uri = "http://www.gtk.org",
+	deps = "gettext",
+	checkVersion = gnomeCheckVersion("glib", "2.26"),
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/%(name)s/2.26/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
+			""" && """
+		""" make && """
+		""" make install """
+	)
+
+if 0 : buildPackage( "glibmm",
+	uri = "http://www.gtkmm.org/",
+	deps = "libsigc++ glib",
+	checkVersion = gnomeCheckVersion("glibmm", "2.24"),
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/%(name)s/2.24/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" ./autogen.sh  --prefix='%(prefix)s'  --host='%(target)s' """
+			""" && """
+		""" make && """
+		""" make install """
+	)
+	
+if 0 : buildPackage( "libxml++",
+	uri = "http://libxmlplusplus.sourceforge.net/",
+	deps = "glibmm libxml2",
+	checkVersion =
+		""" wget -q -O- 'http://git.gnome.org/browse/libxml++/refs/tags' | """
+		""" grep '<a href=' | sed -n 's,.*<a[^>]*>\([0-9][^<]*\)<.*,\\1,p' | """
+		""" grep 2.32 | """ # downloadUri limits us
+		""" sort | """
+		""" tail -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/libxml++/2.32/libxml++-%(version)s.tar.gz",
+	buildCommand =
+		""" cd %(srcdir)s && """
+#		""" autoconf && """
+		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
+			""" && """
+		""" make && """
+		""" make install """
+	)
+
+if 1 : buildPackage( "boost",
+	uri = "http://www.boost.org/",
+	checkVersion =
+		sfcheck("boost", "boost") +
+		""" sed -n 's,.*boost_\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" grep -v beta | """
+		""" sort -g | """
+		""" tail -1 """,
+	tarballName = "%(name)s_%(version)s.tar.gz",
+	downloadUri = "%(sfmirror)s/sourceforge/boost/%(tarball)s",
+	srcdir = "%(name)s_%(version)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+#		""" ./configure --host=%(target)s --prefix=%(prefix)s  """
+#			""" --enable-doxygen=no """
+#			""" && """
+#		""" make && """
+#		""" make install """
+	"echo vale"
+	)
 
 
 
