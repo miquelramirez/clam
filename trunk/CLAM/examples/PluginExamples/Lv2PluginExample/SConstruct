@@ -1,12 +1,18 @@
 #! /usr/bin/python
 
 import os, glob, sys
-libraryName='clam_lv2'
-print 'Building', libraryName
+
+bundlename = "clam_lv2_example.lv2"
+
+libraryName='clam_lv2_example'
+
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', '', validator=PathVariable.PathAccept))
+options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
+#options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', '', validator=PathVariable.PathAccept))
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+
+bundlePath=os.path.expanduser(os.path.join("~/.lv2",bundlename))
 
 toolChain = 'default'
 if sys.platform == 'win32': toolChain = 'mingw'
@@ -16,11 +22,13 @@ Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
-InstallDir = env['prefix'] or env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.moveIntermediateInto('generated')
+env.activateColorCommandLine()
+if not env['verbose']: env.ClamQuietCompilation()
 env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
@@ -29,18 +37,18 @@ env.EnableClamModules([
 	] , CLAMInstallDir)
 
 networks = glob.glob("*.clamnetwork")
+
+env['LV2BASEURI'] = "http://clam-project.org/examples/lv2"
+
+manifest = env.Command("manifest.ttl", networks,
+	"./generateFilesToCompile.py --manifest ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
+
 mainSource = env.Command("clam_plugin.cxx", networks,
-	"cat ${SOURCES} > ${TARGET}",
-	URI="" )
-	# clamlv2helper --main net1 net2 > miplugin.cxx
-ttls = env.Command("clam_plugin.cxx", networks,
-	"cat ${SOURCES} > ${TARGET}"  )
-
-# clamlv2helper --ttl net1 uri binary name > plugin1.ttl
-# clamlv2helper --ttl net1 param1 param2  > manifest.ttl
-
-
-env = Program("miprograma", ["source.cxx"], LIBS=["m", "stl"])
+	"./generateFilesToCompile.py --main ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
+ttls = [
+	env.Command(os.path.splitext(os.path.basename(network))[0]+".ttl", network,
+	"./generateFilesToCompile.py --ttl ${LV2BASEURI} ${SOURCE} > ${TARGET}" )
+	for network in networks ]
 
 
 sources = Glob("*.cxx")
@@ -49,7 +57,11 @@ env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources, SHLIBPREFIX=''),
 	]
-install = env.Install(os.path.join(InstallDir,'lib','ladspa'), libraries)
+
+install = env.Install(bundlePath, [libraries,ttls,manifest])
 env.Alias('install', install)
-env.Default(libraries)
+env.Default(libraries, ttls, manifest)
+
+
+
 

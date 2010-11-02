@@ -13,7 +13,8 @@ class AudioPort():
 	def setNumPorts(self,theNumPorts):
 		self.numPorts = theNumPorts
 	def getNumPorts(self):
-		return int(self.numPorts)
+		# if not specified by default one port
+		return 1 if not self.numPorts else int(self.numPorts)
 
 	def getSymbol(self) :
 		return self.name.strip().replace(" ","_")
@@ -118,7 +119,7 @@ class ExporterHandler(ContentHandler):
 	def printTTL(self,clamnetwork,uri,name):
 
 		#TODO change the static PATH for Dynamic PATH
-		f = open(name.lower()+'.ttl', 'w')
+		f = sys.stdout
 		f.write("""\
 @prefix lv2:  <http://lv2plug.in/ns/lv2core#>.
 @prefix doap: <http://usefulinc.com/ns/doap#>.
@@ -146,11 +147,10 @@ class ExporterHandler(ContentHandler):
 		for port in sorted(self.outputAudio, key=lambda p:p.pos) :
 			ports += port.ttl("Output", len(ports))
 		f.write(",\n".join(ports) + ".\n")
-		f.close()
 
 
 def printCLAM_PLUGIN(clamnetworks,uris):
-	f = open('clam_plugin.cxx', 'w')
+	f = sys.stdout
 	source = """\
 #include "LV2NetworkExporter.hxx"
 #include "LV2Library.hxx"
@@ -177,66 +177,10 @@ const LV2_Descriptor * lv2_descriptor(uint32_t index)
 			for i, uri in enumerate(uris) )),
 	)
 	f.write(source)
-	f.close()
-
-def openConfigFile():
-	networks = []
-	uris = []
-	names = []
-	f = open('network_and_URI.config',"r")
-	lines = f.readlines()
-	bundle = lines[0].strip()
-	for line in lines[1:]:
-		network,uri,name = line.split("\t")
-		network = network.strip()
-		uri = uri.strip()
-		name = name.strip()
-		uris.append(uri)
-		networks.append(network)
-		names.append(name)
-
-	f.close()
-	return bundle,networks,uris,names
-
-
-def printMakeFile(bundle, names):
-	f = open('Makefile', 'w')
-	sorules = "".join([ """\
-%(so)s.so: LV2NetworkPlayer.cxx clam_plugin.cxx LV2NetworkExporter.cxx
-	g++ -shared -fPIC -DPIC clam_plugin.cxx LV2NetworkExporter.cxx LV2NetworkPlayer.cxx `pkg-config --cflags --libs lv2core clam_core clam_processing clam_audioio` -o %(so)s.so  -l asound
-"""%dict(so=name.lower().capitalize()) for name in names ])
-
-	f.write("""\
-BUNDLE = %(bundle)s.lv2
-INSTALL_DIR = /usr/local/lib/lv2
-
-
-$(BUNDLE): manifest.ttl %(ttls)s %(sos)s
-	rm -rf $(BUNDLE)
-	mkdir $(BUNDLE)
-	cp manifest.ttl %(ttls)s %(sos)s $(BUNDLE)
-
-
-%(sorules)s
-install: $(BUNDLE)
-	mkdir -p $(INSTALL_DIR)
-	rm -rf $(INSTALL_DIR)/$(BUNDLE)
-	cp -R $(BUNDLE) $(INSTALL_DIR)
-
-clean:
-	rm -rf $(BUNDLE) %(sos)s %(ttls)s  clam_plugin.cxx Makefile
-"""%dict(
-	bundle = bundle,
-	ttls = " ".join(["%(name)s.ttl"%dict(name=name.lower()) for name in names]),
-	sos = " ".join(["%(name)s.so"%dict(name=name.lower().capitalize()) for name in names]),
-	sorules = sorules,
-	))
-
-	f.close()
 
 
 def printManifest(uris,names):
-	f = open('manifest.ttl', 'w')
+	f = sys.stdout
 	f.write("""\
 @prefix lv2:  <http://lv2plug.in/ns/lv2core#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
@@ -248,22 +192,39 @@ def printManifest(uris,names):
 
 """%(uri, name) for uri, name in zip(uris, names)]))
 
-	f.close()
+
+import os
+
+def parseCommandLine() :
+	uribase = sys.argv[2]
+	networks = sys.argv[3:]
+	names = [os.path.splitext(os.path.basename(network))[0]
+		for network in networks]
+	uris = [os.path.join(uribase,name) for name in names ]
+	return uribase, networks, names, uris
 
 def main():
-	bundle,clamnetworks,uris,names = openConfigFile()
 
-	printCLAM_PLUGIN(clamnetworks,uris)
+	command = sys.argv[1]
+	if command == "--manifest" :
+		uribase, networks, names, uris = parseCommandLine()
+		printManifest(uris,names)
+		return
+	if command == "--main" :
+		uribase, networks, names, uris = parseCommandLine()
+		printCLAM_PLUGIN(networks,uris)
+		return
+	if command == "--ttl" :
+		uribase, networks, names, uris = parseCommandLine()
+		for network, uri, name in zip(networks, uris, names) :
+			parser = make_parser()   
+			curHandler = ExporterHandler()
+			parser.setContentHandler(curHandler)
+			parser.parse(open(network))
+			curHandler.printTTL(network,uri,name)
+	else :
+		raise Exception("Invalid command %s"%command)
 
-	for i in range(0,len(clamnetworks)):
-		parser = make_parser()   
-		curHandler = ExporterHandler()
-		parser.setContentHandler(curHandler)
-		parser.parse(open(clamnetworks[i]))
-		curHandler.printTTL(clamnetworks[i],uris[i],names[i])
-	
-	printManifest(uris,names)
-	printMakeFile(bundle, names)
 
 
 if __name__ == '__main__' :
