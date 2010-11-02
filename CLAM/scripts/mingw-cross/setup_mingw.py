@@ -15,6 +15,12 @@ Note that 'ming32' package is legacy 3.2.1 gcc, do not install it.
 While in development, most targets will be disabled with 'if 0 :'.
 Enable them changing them to 'if 1 :'.
 
+Add packages by adding calls to buildPackage. Patches dropped in
+the same directory than this script are applied automatically
+and in alphabetical order after download and extracting the 
+package if their name matches mingw-<packagename>*.patch
+
+
 Package TODO: ( - todo, * working on it, + done, child means dependency )
 - libid3 lacks a pkg-config file
 - libsndfile lacks dependencies: sqlite flac ogg vorbis
