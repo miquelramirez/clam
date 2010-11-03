@@ -41,13 +41,13 @@ networks = glob.glob("*.clamnetwork")
 env['LV2BASEURI'] = "http://clam-project.org/examples/lv2"
 
 manifest = env.Command("manifest.ttl", networks,
-	"./clamlv2generator --manifest ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
+	"./clam_lv2_generator.py --manifest ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
 
 mainSource = env.Command("clam_plugin.cxx", networks,
-	"./clamlv2generator --main ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
+	"./clam_lv2_generator.py --main ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
 ttls = [
 	env.Command(os.path.splitext(os.path.basename(network))[0]+".ttl", network,
-	"./clamlv2generator --ttl ${LV2BASEURI} ${SOURCE} > ${TARGET}" )
+	"./clam_lv2_generator.py --ttl ${LV2BASEURI} ${SOURCE} > ${TARGET}" )
 	for network in networks ]
 
 
