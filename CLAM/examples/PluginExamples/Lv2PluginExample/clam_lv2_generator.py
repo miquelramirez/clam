@@ -196,26 +196,24 @@ def printManifest(uris,names):
 import os
 
 def parseCommandLine() :
+	command = sys.argv[1]
 	uribase = sys.argv[2]
 	networks = sys.argv[3:]
 	names = [os.path.splitext(os.path.basename(network))[0]
 		for network in networks]
 	uris = [os.path.join(uribase,name) for name in names ]
-	return uribase, networks, names, uris
+	return command, None, uribase, networks, names, uris
 
 def main():
 
-	command = sys.argv[1]
+	command, uribase, library, networks, names, uris = parseCommandLine()
 	if command == "--manifest" :
-		uribase, networks, names, uris = parseCommandLine()
 		printManifest(uris,names)
 		return
 	if command == "--main" :
-		uribase, networks, names, uris = parseCommandLine()
 		printCLAM_PLUGIN(networks,uris)
 		return
 	if command == "--ttl" :
-		uribase, networks, names, uris = parseCommandLine()
 		for network, uri, name in zip(networks, uris, names) :
 			parser = make_parser()   
 			curHandler = ExporterHandler()
