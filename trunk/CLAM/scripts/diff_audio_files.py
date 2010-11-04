@@ -4,6 +4,8 @@
 # svn checkout http://wav2png.googlecode.com/svn/trunk/ wav2png-read-only
 
 import os, sys, numpy
+import math
+
 def run(command) :
 	print "\033[32m:: ", command, "\033[0m"
 	lines = []
@@ -27,18 +29,15 @@ def norun(command) :
 threshold_dBs = -80.0 # dB
 threshold_amplitude = 10**(threshold_dBs/20)
 
-import math
-def diff_files(expected, result, diffbase) :
-	if not os.access(result, os.R_OK):
-		print "Result file not found: ", result
-		return "Result was not generated: '%s'"%result
-	if not os.access(expected, os.R_OK):
-		print "Expected file not found: ", result
-		return "No expectation for the output. Check the results and accept them with the --accept option."
-	return diff_files_wav(expected, result, diffbase)
+def diff_files_txt(expected, result, diffbase) :
+	extension = os.path.splitext(result)[-1]
+	difftxt = diffbase+extension
+	are_equal = os.system("diff %s %s > %s" % (expected, result, difftxt) ) == 0
+	return are_equal
 
 def diff_files_wav(expected, result, diffbase) :
-	diffwav = diffbase+'.wav'
+	extension = os.path.splitext(result)[-1]
+	diffwav = diffbase+extension
 	substractResult = silentrun('soxsucks --compare %f %s %s 2>&1 && echo OK '%(threshold_amplitude, expected, result))
 	if 'OK' in substractResult : return None
 	substractResult= [line for line in substractResult.split("\n") if line.find("there is a different sample (")!=-1]
@@ -69,6 +68,24 @@ def diff_files_wav(expected, result, diffbase) :
 			max_dBs, threshold_dBs, timeErrorString, sampleString)
 	return None
 
+
+
+diff_for_type = {
+	".wav" : diff_files_wav,
+	".txt" : diff_files_txt,
+	".clamnetwork" : diff_files_txt,
+	".xml" : diff_files_txt,
+	".ttl" : diff_files_txt,
+}
+def diff_files(expected, result, diffbase) :
+	if not os.access(result, os.R_OK):
+		print "Result file not found: ", result
+		return "Result was not generated: '%s'"%result
+	if not os.access(expected, os.R_OK):
+		print "Expected file not found: ", result
+		return "No expectation for the output. Check the results and accept them with the --accept option."
+	extension = os.path.splitext(result)[-1]
+	return diff_for_type[extension](expected, result, diffbase)
 
 if __name__=="__main__" :
 		equals = diff_files(*sys.argv[1:])
