@@ -33,7 +33,8 @@ def diff_files_txt(expected, result, diffbase) :
 	extension = os.path.splitext(result)[-1]
 	difftxt = diffbase+extension
 	are_equal = os.system("diff %s %s > %s" % (expected, result, difftxt) ) == 0
-	return are_equal
+	if are_equal: return None
+	return "The result file \033[31m%s\033[0m is different to the expected \033[31m%s\033[0m"%(result,expected)
 
 def diff_files_wav(expected, result, diffbase) :
 	extension = os.path.splitext(result)[-1]
@@ -85,7 +86,12 @@ def diff_files(expected, result, diffbase) :
 		print "Expected file not found: ", result
 		return "No expectation for the output. Check the results and accept them with the --accept option."
 	extension = os.path.splitext(result)[-1]
-	return diff_for_type[extension](expected, result, diffbase)
+
+	if extension in diff_for_type:
+		return diff_for_type[extension](expected, result, diffbase)
+	else:
+		extension = '.txt'
+		return diff_for_type[extension](expected, result, diffbase)
 
 if __name__=="__main__" :
 		equals = diff_files(*sys.argv[1:])
