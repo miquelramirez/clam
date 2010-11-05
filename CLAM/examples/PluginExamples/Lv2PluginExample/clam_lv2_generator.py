@@ -21,15 +21,15 @@ class AudioPort():
 	def getName(self) :
 		return self.name.strip().capitalize()
 
-	def ttl(self, direction, firstIndex) :
+	def ttl(self, port_type, firstIndex) :
 		return [ """\
 	[
-		a lv2:AudioPort, lv2:%(direction)sPort;
+		a lv2:%(port_type)s, lv2:AudioPort;
 		lv2:index %(index)s;
 		lv2:symbol "%(symbol)s";
 		lv2:name "%(name)s";
 	]""" % dict(
-			direction = direction,
+			port_type = port_type,
 			index = firstIndex+i,
 			symbol = self.getSymbol()+"_%s"%(i+1),
 			name = self.getName()+"_%s"%(i+1),
@@ -40,13 +40,13 @@ class ControlPort(AudioPort):
 	def __init__ (self, id, pos):
 		AudioPort.__init__(self, id, pos)
 		self.MinValue = ""
-		self.Maximum = ""
+		self.MaxValue = ""
 		self.DefaultValue = ""
 
-	def ttl(self, direction, firstIndex) :
+	def ttl(self, port_type, firstIndex) :
 		return [ """\
 	[
-		a lv2:ControlPort, lv2:%(direction)sPort;
+		a lv2:%(port_type)s, lv2:ControlPort;
 		lv2:index %(index)s;
 		lv2:symbol "%(symbol)s";
 		lv2:name "%(name)s";
@@ -54,7 +54,7 @@ class ControlPort(AudioPort):
 		lv2:minimum %(minimum)s;
 		lv2:maximum %(maximum)s;
 	]""" % dict(
-			direction = direction,
+			port_type = port_type,
 			index = firstIndex,
 			symbol = self.getSymbol(),
 			name = self.getName(),
