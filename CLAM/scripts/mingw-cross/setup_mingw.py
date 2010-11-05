@@ -57,6 +57,7 @@ if os.path.exists(os.path.expanduser("~/CajitasDeArena")) :
 	sandbox = os.path.expanduser("~/CajitasDeArena/mingw32")
 else:
 	sandbox = os.path.expanduser("~/mingw32")
+sandbox = os.path.expanduser("~/mingw32")
 target = "i586-mingw32msvc"
 sfmirror = "http://kent.dl.sourceforge.net"
 apachemirror = "http://www.apache.org/dist"
@@ -178,6 +179,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	for patch in patches :
 		applyPatch(subst['srcdir'], patch, level=1)
 	run(buildCommand % subst)
+	run("touch finnished-%(name)s-%(version)s"%subst)
 
 
 
@@ -185,12 +187,12 @@ ensureDir(os.path.join(sandbox, "src"))
 ensureDir(os.path.join(sandbox, "downloads"))
 
 os.environ.update(
-	PKG_CONFIG_LIBDIR = "/usr/%s/lib/pkgconfig"%target
-	PKG_CONFIG_PATH = os.path.join(prefix, 'lib', 'pkgconfig'),
+	PKG_CONFIG_LIBDIR = "/usr/%s/lib/pkgconfig"%target, # default debian installation
+	PKG_CONFIG_PATH = os.path.join(prefix, 'lib', 'pkgconfig'), # our prefix installation
 	)
 
 
-if 0 : buildPackage( "pthread",
+if 1 : buildPackage( "pthread",
 	uri = "http://sourceware.org/pthreads-win32/",
 	checkVersion = ""
 		""" wget -q -O- 'ftp://sourceware.org/pub/pthreads-win32/Release_notes' | """
@@ -211,7 +213,7 @@ if 0 : buildPackage( "pthread",
 	)
 
 
-if 0 : buildPackage( "fftw",
+if 1 : buildPackage( "fftw",
 	uri = "http://www.fftw.org",
 	deps = "pthread",
 	checkVersion =
@@ -230,7 +232,7 @@ if 0 : buildPackage( "fftw",
 	)
 
 
-if 0 : buildPackage( 'libmad',
+if 1 : buildPackage( 'libmad',
 	uri = "??",
 	checkVersion =
 		sfCheckVersion("mad","libmad") +
@@ -248,7 +250,7 @@ if 0 : buildPackage( 'libmad',
 	)
 
 
-if 0 : buildPackage( "id3lib",
+if 1 : buildPackage( "id3lib",
 	uri = "http://id3lib.sourceforge.net/",
 	checkVersion =
 		sfCheckVersion("id3lib", "id3lib") +
@@ -265,7 +267,7 @@ if 0 : buildPackage( "id3lib",
 	)
 
 
-if 0 : buildPackage( "libogg",
+if 1 : buildPackage( "libogg",
 	uri = 'http://www.xiph.org/ogg/',
 	checkVersion =
 		""" wget -q -O- 'http://www.xiph.org/downloads/' | """
@@ -282,7 +284,7 @@ if 0 : buildPackage( "libogg",
 	)
 
 
-if 0 : buildPackage( "libvorbis",
+if 1 : buildPackage( "libvorbis",
 	uri = "http://www.vorbis.com/",
 	deps = "libogg",
 	checkVersion =
@@ -298,7 +300,7 @@ if 0 : buildPackage( "libvorbis",
 		""" make install """
 	)
 
-if 0 : buildPackage( "libiconv",
+if 1 : buildPackage( "libiconv",
 	uri = "http://www.gnu.org/software/libiconv/",
 	checkVersion =
 		""" wget -O- -q 'http://ftp.gnu.org/pub/gnu/libiconv/?C=M;O=A' | """
@@ -322,7 +324,7 @@ if 0 : buildPackage( "libiconv",
 
 	
 # TODO: flac dll has missing symbols when linking it against sndfile
-if 0 : buildPackage( "flac",
+if 1 : buildPackage( "flac",
 	uri = "http://flac.sourceforge.net/",
 	deps = "libiconv libogg pthread",
 	checkVersion =
@@ -346,7 +348,7 @@ if 0 : buildPackage( "flac",
 		""" make install """
 	)
 
-if 0 : buildPackage( "libsndfile",
+if 1 : buildPackage( "libsndfile",
 	uri = "http://www.mega-nerd.com/libsndfile/",
 	deps = "flac ogg vorbis",
 	pinnedVersion = "1.0.21",
@@ -370,7 +372,7 @@ if 0 : buildPackage( "libsndfile",
 		""" make install """
 	)
 
-if 0 : buildPackage( "speex",
+if 1 : buildPackage( "speex",
 	uri = "http://www.speex.org/",
 	deps = "libogg",
 	checkVersion = 
@@ -390,7 +392,7 @@ if 0 : buildPackage( "speex",
 		""" make install """
 	)
 
-if 0 : buildPackage( "liblo",
+if 1 : buildPackage( "liblo",
 	uri = "http://liblo.sourceforge.net/",
 	deps = "pthreads",
 	checkVersion =
@@ -409,7 +411,7 @@ if 0 : buildPackage( "liblo",
 		""" make install """
 	)
 
-if 0 : buildPackage( "cppunit",
+if 1 : buildPackage( "cppunit",
 	uri = "http://liblo.sourceforge.net/",
 	checkVersion =
 		sfCheckVersion("cppunit", "cppunit") +
@@ -430,7 +432,7 @@ if 0 : buildPackage( "cppunit",
 	# sudo apt-get install autoconf-archive libtool automake
 
 
-if 0 : buildPackage( "dlfcn-win32",
+if 1 : buildPackage( "dlfcn-win32",
 	uri = "http://code.google.com/p/dlfcn-win32/",
 	checkVersion =
 		""" wget -q -O- 'http://code.google.com/p/dlfcn-win32/downloads/list' | """
@@ -452,7 +454,7 @@ if 0 : buildPackage( "dlfcn-win32",
 		""" make install """
 	)
 
-if 0 : buildPackage( "boost",
+if 1 : buildPackage( "boost",
 	uri = "http://www.boost.org/",
 	checkVersion =
 		sfCheckVersion("boost", "boost") +
@@ -491,7 +493,7 @@ if 0 : buildPackage( "boost",
 	)
 
 
-if 0 : buildPackage( "ladspa-sdk",
+if 1 : buildPackage( "ladspa-sdk",
 	uri = "http://www.ladspa.org/",
 	deps = "dlfcn-win32",
 	checkVersion =
@@ -519,7 +521,7 @@ if 0 : buildPackage( "ladspa-sdk",
 
 
 
-if 0 : buildPackage( "directx",
+if 1 : buildPackage( "directx",
 	uri = "http://www.microsoft.com",
 	checkVersion = "echo 8.0",
 	tarballName = "dx80_mgw.zip",
@@ -533,7 +535,7 @@ if 0 : buildPackage( "directx",
 
 
 
-if 0 : buildPackage( "portaudio",
+if 1 : buildPackage( "portaudio",
 	uri = "http://www.portaudio.com",
 	deps = "directx",
 	checkVersion =
@@ -557,7 +559,7 @@ if 0 : buildPackage( "portaudio",
 	)
 
 
-if 0 : buildPackage( "xerces-c",
+if 1 : buildPackage( "xerces-c",
 	uri = "http://xerces.apache.org/xerces-c/",
 	deps = "", # TODO
 	checkVersion =
@@ -577,7 +579,7 @@ if 0 : buildPackage( "xerces-c",
 	)
 
 
-if 0 : buildPackage( "libsigc++",
+if 1 : buildPackage( "libsigc++",
 	uri = "http://libsigc.sourceforge.net/",
 	deps = "",
 	checkVersion = gnomeCheckVersion("libsigc++2", "2.2"),
@@ -591,7 +593,7 @@ if 0 : buildPackage( "libsigc++",
 		""" make install """
 	)
 
-if 0 : buildPackage( "gettext",
+if 1 : buildPackage( "gettext",
 	uri = "http://www.gnu.org/software/gettext/",
 	checkVersion = 
 		""" wget -q -O- 'http://www.gnu.org/software/gettext/' | """
@@ -616,7 +618,7 @@ if 0 : buildPackage( "gettext",
 		""" make install """
 	)
 
-if 0 : buildPackage( "libxml2",
+if 1 : buildPackage( "libxml2",
 	uri = "http://xmlsoft.org/",
 	deps = "",
 	checkVersion = # gnomeCheckVersion("libxml2",".") but with a 'v' in the version :-P
@@ -643,7 +645,7 @@ if 0 : buildPackage( "libxml2",
 # Modules below this line are work in progress
 #############################################################################
 
-if 0 : buildPackage( "zlib",
+if 1 : buildPackage( "zlib",
 	uri = "http://zlib.net/",
 	deps = "",
 	checkVersion = 
