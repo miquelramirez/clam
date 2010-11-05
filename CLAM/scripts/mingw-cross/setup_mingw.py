@@ -7,7 +7,7 @@ mingw compatible binaries from a Linux box (crosscompilation).
 Non complete list of requirements (Ubuntu):
 sudo apt-get install gcc-mingw32 mingw32-binutils mingw32-runtime \
 	nsis wine automake autoconf-archive libtool pkg-config \
-	wget sed
+	wget sed autogen
 
 Please, update the list of packages if you find any missing one.
 Note that 'ming32' package is legacy 3.2.1 gcc, do not install it.
@@ -21,7 +21,8 @@ and in alphabetical order after download and extracting the
 package if their name matches mingw-<packagename>*.patch
 
 
-Package TODO: ( - todo, * working on it, + done, child means dependency )
+Package TODO:
+Legend: - todo, * working on it, + done, x failed, child means dependency
 - libid3 lacks a pkg-config file
 - libsndfile lacks dependencies: sqlite flac ogg vorbis
 - USe DX9 or DX10 instead of DX8
@@ -31,10 +32,10 @@ Package TODO: ( - todo, * working on it, + done, child means dependency )
 	* glibmm
 		+ libsigc++
 		* glib
-			* gettext !!!
-	- libxml2
-* boost
-- libpython
+			+ gettext
+	+ libxml2
++ boost
+X libpython
 - qt: supported by mingw-cross-env
 - Asio, Vst
 
@@ -119,7 +120,7 @@ def ensureDir(adir) :
 def scriptRelative(path) :
 	return os.path.join(os.path.dirname(os.path.abspath(__file__)), path)
 
-def sfcheck(project, package) :
+def sfCheckVersion(project, package) :
 	return (
 		""" wget -q -O- 'http://sourceforge.net/projects/%s/files/%s/' | """
 		""" grep 'title="/' | """
@@ -127,6 +128,15 @@ def sfcheck(project, package) :
 		""" sort | """
 		""" sed 's,^[^ ]* ,,' | """
 		)%(project, package)
+
+def gnomeCheckVersion(name, majorVersion) :
+	return (
+		""" wget -q -O- 'http://git.gnome.org/browse/%(name)s/refs/tags' | """
+		""" grep '<a href=' | sed -n 's,.*<a[^>]*>\([0-9][^<]*\)<.*,\\1,p' | """
+		""" grep %(majorVersion)s | """ # downloadUri limits us 
+		""" sort | """
+		""" tail -1 """
+		% locals() )
 
 def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand,
 		srcdir=None,
@@ -148,8 +158,11 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	print "Found version: '%s'" % availableVersion
 	if (pinnedVersion and pinnedVersion != availableVersion) :
 		warning("Package: Pinning to version %s, although version %s is available" % (pinnedVersion, availableVersion))
+	version = pinnedVersion if pinnedVersion else availableVersion
 	subst.update (
-		version = pinnedVersion if pinnedVersion else availableVersion
+		version = version,
+		majorversion = ".".join(version.split(".")[:1]),
+		minorversion = ".".join(version.split(".")[:2]),
 	)
 
 	subst.update(
@@ -160,6 +173,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	download(downloadUri % subst)
 	extractSource(subst['tarball'])
 	patches = glob.glob(scriptRelative("mingw-"+name+"*"))
+	patches.sort()
 	print patches
 	for patch in patches :
 		applyPatch(subst['srcdir'], patch, level=1)
@@ -171,6 +185,7 @@ ensureDir(os.path.join(sandbox, "src"))
 ensureDir(os.path.join(sandbox, "downloads"))
 
 os.environ.update(
+	PKG_CONFIG_LIBDIR = "/usr/%s/lib/pkgconfig"%target
 	PKG_CONFIG_PATH = os.path.join(prefix, 'lib', 'pkgconfig'),
 	)
 
@@ -218,7 +233,7 @@ if 0 : buildPackage( "fftw",
 if 0 : buildPackage( 'libmad',
 	uri = "??",
 	checkVersion =
-		sfcheck("mad","libmad") +
+		sfCheckVersion("mad","libmad") +
 		""" sed -n 's,.*libmad-\([0-9][^>]*\)\.tar.*,\\1,p' | """
 		""" tail -1 """,
 	tarballName = "libmad-%(version)s.tar.gz",
@@ -236,7 +251,7 @@ if 0 : buildPackage( 'libmad',
 if 0 : buildPackage( "id3lib",
 	uri = "http://id3lib.sourceforge.net/",
 	checkVersion =
-		sfcheck("id3lib", "id3lib") +
+		sfCheckVersion("id3lib", "id3lib") +
 		""" sed -n 's,.*id3lib-\([0-9][^>]*\)\.tar.*,\\1,p' | """
 		""" tail -1 """,
 	downloadUri = "%(sfmirror)s/sourceforge/id3lib/%(tarball)s",
@@ -282,11 +297,34 @@ if 0 : buildPackage( "libvorbis",
 		""" make && """
 		""" make install """
 	)
+
+if 0 : buildPackage( "libiconv",
+	uri = "http://www.gnu.org/software/libiconv/",
+	checkVersion =
+		""" wget -O- -q 'http://ftp.gnu.org/pub/gnu/libiconv/?C=M;O=A' | """
+		""" sed -n 's,.*libiconv-\([0-9][^<]*\)\.tar.*,\\1,p' | """
+		""" tail -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://ftp.gnu.org/pub/gnu/%(name)s/%(tarball)s",
+	buildCommand = 
+		""" cd %(srcdir)s && """
+		""" sed -i 's, sed , sed ,g' 'windows/windres-options'  && """
+		""" ./configure --host='%(target)s' --prefix='%(prefix)s' """
+#			""" --disable-nls """
+			""" && """
+		""" make install """
+		# cross-mingw-env uses this:
+#		""" make -C 'libcharset' install && """
+#		""" make -C 'lib'        install && """
+#		""" $(INSTALL) -d '%(prefix)s/include' && """
+#		""" $(INSTALL) -m644 'include/iconv.h.inst' '%(prefix)s/include/iconv.h' && """
+	)
+
 	
 # TODO: flac dll has missing symbols when linking it against sndfile
 if 0 : buildPackage( "flac",
 	uri = "http://flac.sourceforge.net/",
-	deps = "libiconv libogg pthread", # TODO What about libiconv?
+	deps = "libiconv libogg pthread",
 	checkVersion =
 		""" wget -q -O- 'http://flac.cvs.sourceforge.net/viewvc/flac/flac/' | """
 		""" grep '<option>FLAC_RELEASE_' | """
@@ -346,7 +384,8 @@ if 0 : buildPackage( "speex",
 		""" cd %(srcdir)s && """
 		"""  ./configure  --host=%(target)s --prefix=%(prefix)s """
 			""" --with-ogg-dir=%(prefix)s """
-			""" && """ # TODO: --enable-sse not supported by arch
+#			""" --enable-sse && """ # TODO: says 'not supported by arch'
+			""" && """
 		""" make && """
 		""" make install """
 	)
@@ -355,7 +394,7 @@ if 0 : buildPackage( "liblo",
 	uri = "http://liblo.sourceforge.net/",
 	deps = "pthreads",
 	checkVersion =
-		sfcheck("liblo", "liblo") +
+		sfCheckVersion("liblo", "liblo") +
 		""" sed -n 's,.*liblo-\([0-9][^>]*\)\.tar.*,\\1,p' | """
 		""" tail -1 """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
@@ -373,7 +412,7 @@ if 0 : buildPackage( "liblo",
 if 0 : buildPackage( "cppunit",
 	uri = "http://liblo.sourceforge.net/",
 	checkVersion =
-		sfcheck("cppunit", "cppunit") +
+		sfCheckVersion("cppunit", "cppunit") +
 		""" sed -n 's,.*cppunit-\([0-9][^>]*\)\.tar.*,\\1,p' | """
 		""" tail -1 """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
@@ -412,6 +451,45 @@ if 0 : buildPackage( "dlfcn-win32",
 		""" make && """
 		""" make install """
 	)
+
+if 0 : buildPackage( "boost",
+	uri = "http://www.boost.org/",
+	checkVersion =
+		sfCheckVersion("boost", "boost") +
+		""" sed -n 's,.*boost_\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" grep -v beta | """
+		""" sort -g | """
+		""" tail -1 """,
+	tarballName = "%(name)s_%(version)s.tar.gz",
+	downloadUri = "%(sfmirror)s/sourceforge/boost/%(tarball)s",
+	srcdir = "%(name)s_%(version)s",
+	deps = "zlib bzip2 expat",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" echo 'using gcc : : %(target)s-g++ : <rc>%(target)s-windres <archiver>%(target)s-ar ;' > 'user-config.jam' && """
+		""" sed -i 's,<target-os>windows : lib ;,<target-os>windows : a ;,' '%(srcdir)s/tools/build/v2/tools/types/lib.jam' && """
+		""" cd 'tools/jam/src' && ./build.sh && """
+		""" cd %(srcdir)s && """
+ 		""" tools/jam/src/bin.*/bjam """
+			""" --ignore-site-config """
+			""" --user-config=user-config.jam """
+			""" target-os=windows """
+			""" threading=multi """
+			""" threadapi=win32 """
+			""" --layout=tagged """
+			""" --without-mpi """
+			""" --without-python """
+			""" --prefix='%(prefix)s' """
+			""" --exec-prefix='%(prefix)s/bin' """
+			""" --libdir='%(prefix)s/lib' """
+			""" --includedir='%(prefix)s/include' """
+			""" -sEXPAT_INCLUDE='%(prefix)s/include' """
+			""" -sEXPAT_LIBPATH='%(prefix)s/lib' """
+			""" stage install """
+			""" && """
+		""" echo Package %(name)s done."""
+	)
+
 
 if 0 : buildPackage( "ladspa-sdk",
 	uri = "http://www.ladspa.org/",
@@ -499,15 +577,6 @@ if 0 : buildPackage( "xerces-c",
 	)
 
 
-def gnomeCheckVersion(name, majorVersion) :
-	return (
-		""" wget -q -O- 'http://git.gnome.org/browse/%(name)s/refs/tags' | """
-		""" grep '<a href=' | sed -n 's,.*<a[^>]*>\([0-9][^<]*\)<.*,\\1,p' | """
-		""" grep %(majorVersion)s | """ # downloadUri limits us 
-		""" sort | """
-		""" tail -1 """
-		% locals() )
-
 if 0 : buildPackage( "libsigc++",
 	uri = "http://libsigc.sourceforge.net/",
 	deps = "",
@@ -522,8 +591,6 @@ if 0 : buildPackage( "libsigc++",
 		""" make install """
 	)
 
-
-# TODO: Blocked here with libxml++ goal
 if 0 : buildPackage( "gettext",
 	uri = "http://www.gnu.org/software/gettext/",
 	checkVersion = 
@@ -531,11 +598,11 @@ if 0 : buildPackage( "gettext",
 		""" grep 'gettext-' | """
 		""" sed -n 's,.*gettext-\([0-9][^>]*\)\.tar.*,\\1,p' | """
 		""" head -1 """,
-	pinnedVersion = "0.17",
 	tarballName = "%(name)s-%(version)s.tar.gz",
 	downloadUri = "ftp://ftp.gnu.org/pub/gnu/gettext/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
+		""" cd gettext-runtime && """
 		""" ./configure """
 			""" --host='%(target)s' """
 			""" --prefix='%(prefix)s' """
@@ -549,16 +616,64 @@ if 0 : buildPackage( "gettext",
 		""" make install """
 	)
 
-
-if 0 : buildPackage( "glib",
-	uri = "http://www.gtk.org",
-	deps = "gettext",
-	checkVersion = gnomeCheckVersion("glib", "2.26"),
+if 0 : buildPackage( "libxml2",
+	uri = "http://xmlsoft.org/",
+	deps = "",
+	checkVersion = # gnomeCheckVersion("libxml2",".") but with a 'v' in the version :-P
+		""" wget -q -O- 'http://git.gnome.org/browse/libxml2/refs/tags' | """
+		""" grep '<a href=' | sed -n 's,.*<a[^>]*>v\([0-9][^<]*\)<.*,\\1,p' | """
+		""" sort | """
+		""" tail -1 """ ,
 	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/%(name)s/2.26/%(tarball)s",
+	downloadUri = "ftp://xmlsoft.org/libxml2/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
+		""" sed -i 's,`uname`,MinGW,g' 'xml2-config.in' && """
 		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
+			""" --without-debug """
+			""" --without-python """
+			""" --without-threads """
+			""" && """
+		""" make && """
+		""" make install """
+	)
+
+#############################################################################
+# Warning: Not-working border
+# Modules below this line are work in progress
+#############################################################################
+
+if 0 : buildPackage( "zlib",
+	uri = "http://zlib.net/",
+	deps = "",
+	checkVersion = 
+		""" wget -q -O- 'http://zlib.net/' | """
+		""" sed -n 's,.*zlib-\([0-9][^>]*\)\.tar.*,\\1,ip' | """
+		""" head -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://zlib.net//%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" CHOST='%(target)s' ./configure  --prefix='%(prefix)s' && """ 
+		# TODO: --enable-shared generates .so instead dll's
+		""" make && """
+		""" make install """
+	)
+
+
+if 1 : buildPackage( "glib",
+	uri = "http://www.gtk.org",
+	deps = "gettext libiconv zlib",
+	checkVersion = gnomeCheckVersion("glib", "2.26"),
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/%(name)s/%(minorversion)s/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" aclocal && libtoolize --force && autoconf && """
+		""" sed -i 's,cross_compiling=no,cross_compiling=yes,' 'configure' && """
+		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
+			""" CFLAGS='-I%(prefix)s/include' """
+			""" LDFLAGS='-L%(prefix)s/lib' """
 			""" && """
 		""" make && """
 		""" make install """
@@ -569,7 +684,7 @@ if 0 : buildPackage( "glibmm",
 	deps = "libsigc++ glib",
 	checkVersion = gnomeCheckVersion("glibmm", "2.24"),
 	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/%(name)s/2.24/%(tarball)s",
+	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/%(name)s/%(minorversion)s/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" ./autogen.sh  --prefix='%(prefix)s'  --host='%(target)s' """
@@ -588,7 +703,7 @@ if 0 : buildPackage( "libxml++",
 		""" sort | """
 		""" tail -1 """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/libxml++/2.32/libxml++-%(version)s.tar.gz",
+	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/libxml++/%(minorversion)s/libxml++-%(version)s.tar.gz",
 	buildCommand =
 		""" cd %(srcdir)s && """
 #		""" autoconf && """
@@ -598,26 +713,43 @@ if 0 : buildPackage( "libxml++",
 		""" make install """
 	)
 
-if 1 : buildPackage( "boost",
-	uri = "http://www.boost.org/",
+
+# See http://kampfwurst.net/python-mingw32/
+# It seems to be no clear way to crosscompile python
+# Mingw support seems broken
+# TODO: http://bugs.python.org/issue1597850
+# And crosscompilation seems to be also broken
+# TODO: http://bugs.python.org/issue3871
+if 0 : buildPackage( "python",
+	uri = "http://www.python.org",
 	checkVersion =
-		sfcheck("boost", "boost") +
-		""" sed -n 's,.*boost_\([0-9][^>]*\)\.tar.*,\\1,p' | """
-		""" grep -v beta | """
+		""" wget -O- -q 'http://www.python.org/download/releases/' | """
+		""" sed -n 's,.*releases/\(2\.4[0-9.]*\).*,\\1,p' | """
 		""" sort -g | """
 		""" tail -1 """,
-	tarballName = "%(name)s_%(version)s.tar.gz",
-	downloadUri = "%(sfmirror)s/sourceforge/boost/%(tarball)s",
-	srcdir = "%(name)s_%(version)s",
-	buildCommand =
+	srcdir = "Python-%(version)s",
+	tarballName = "Python-%(version)s.tar.bz2",
+	downloadUri = "http://www.python.org/ftp/python/%(version)s/%(tarball)s",
+	buildCommand = 
 		""" cd %(srcdir)s && """
-#		""" ./configure --host=%(target)s --prefix=%(prefix)s  """
-#			""" --enable-doxygen=no """
-#			""" && """
-#		""" make && """
-#		""" make install """
-	"echo vale"
+		""" autoheader && aclocal && autoconf && """
+# http://kampfwurst.net/python-mingw32/ defines this for configure
+#		""" CC=%(target)s-gcc """
+#		""" CXX=%(target)s-g++ """
+#		""" AR=%(target)s-ar """
+#		""" RANLIB=%(target)s-ranlib """
+		""" ./configure --host=%(target)s --target=%(target)s --prefix=%(prefix)s  """
+			""" --enable-unicode=ucs4 """
+			""" --with-threads """
+			""" --with-cxx-main=%(target)s-g++ """
+			""" && """
+		""" make && """
+		""" make install """
+#		""" python setup.py build --compiler=mingw32 """
 	)
+
+
+
 
 
 
