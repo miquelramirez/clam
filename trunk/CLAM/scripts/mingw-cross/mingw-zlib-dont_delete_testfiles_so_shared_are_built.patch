@@ -1,0 +1,10 @@
+--- zlib-1.2.5-orig/configure	2010-11-05 07:53:14.000000000 +0100
++++ zlib-1.2.5/configure	2010-11-05 07:53:19.000000000 +0100
+@@ -122,7 +122,6 @@
+   CYGWIN* | Cygwin* | cygwin* | OS/2*)
+         EXE='.exe' ;;
+   MINGW*|mingw*)
+-        rm -f $test.[co] $test $test$shared_ext
+         LDSHARED=${LDSHARED-"$cc -shared"}
+         LDSHAREDLIBC=""
+         EXE='.exe' ;;
