@@ -25,20 +25,21 @@ def die(message, errorcode=-1) :
 def archSuffix() :
 	return string.strip(os.popen('uname -m').read())
 
-def expectedArchName(base) :
+def expectedArchName(base, extension='.wav') :
 	suffix_arch = archSuffix()
-	return base+'_expected_'+suffix_arch+'.wav'
+	return base+'_expected_' + suffix_arch + extension
 
-def expectedName(base, suffix_arch = archSuffix() ) :
+def expectedName(base, extension) :
 	"""Returns the expected wav name.
 	If an architecture specific output already exists, it will use it.
 	"""
-	expected = expectedArchName(base)
+	expected = expectedArchName(base, extension)
 	if os.access(expected,os.R_OK): return expected
-	return base+'_expected.wav'
 
-def badResultName(base) :
-	return base+'_result.wav'
+	return base+'_expected'+extension
+
+def badResultName(base, extension = '.wav') :
+	return base+'_result'+extension
 
 def diffBaseName(base) :
 	return base+'_diff'
@@ -53,14 +54,17 @@ def accept(datapath, back2BackCases, archSpecific=False, cases=[]) :
 		if cases and case not in cases : continue
 		if cases : remainingCases.remove(case)
 		for output in outputs :
+
+			extension = os.path.splitext(output)[-1]
 			base = prefix(datapath, case, output)
-			badResult = badResultName(base)
+			badResult = badResultName(base, extension)
 			if not os.access(badResult, os.R_OK) : continue
 			print "Accepting", badResult
+
 			if archSpecific :
-				os.rename(badResult, expectedArchName(base))
+				os.rename(badResult, expectedArchName(base, extension))
 			else :
-				os.rename(badResult, expectedName(base))
+				os.rename(badResult, expectedName(base, extension))
 	if remainingCases :
 		print "Warning: No such test cases:", ", ".join("'%s'"%case for case in remainingCases)
 
@@ -84,18 +88,23 @@ def passB2BTests(datapath, back2BackCases) :
 			continue
 		failures = []
 		for output in outputs :
+
+			extension = os.path.splitext(output)[-1]
 			base = prefix(datapath, case, output)
-			expected = expectedName(base)
+			expected = expectedName(base, extension)
 			diffbase = diffBaseName(base)
 			difference = diff_files(expected, output, diffbase)
+			#diffbase = diffbase+'.wav'
+			diffbase = diffbase + extension
+
 			if not difference:
 				print "\033[32m Passed\033[0m"
-				removeIfExists(diffbase+'.wav')
-				removeIfExists(diffbase+'.wav.png')
-				removeIfExists(badResultName(base))
+				removeIfExists(diffbase)
+				removeIfExists(diffbase+'.png')
+				removeIfExists(badResultName(base,extension))
 			else:
 				print "\033[31m Failed\033[0m"
-				os.system('cp %s %s' % (output, badResultName(base)) )
+				os.system('cp %s %s' % (output, badResultName(base,extension)) )
 				failures.append("Output '%s': %s"%(base, difference))
 			removeIfExists(output)
 		if failures :
