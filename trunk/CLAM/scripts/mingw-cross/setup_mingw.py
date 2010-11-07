@@ -654,11 +654,6 @@ package( "libxml2",
 		""" make install """
 	)
 
-#############################################################################
-# Warning: Not-working border
-# Modules below this line are work in progress
-#############################################################################
-
 package( "zlib",
 	uri = "http://zlib.net/",
 	deps = "",
@@ -676,6 +671,33 @@ package( "zlib",
 		""" make install """
 	)
 
+package( "libpng",
+	uri = "http://www.libpng.org/",
+	deps = "zlib",
+	checkVersion = 
+		""" wget -q -O- 'http://libpng.git.sourceforge.net/git/gitweb.cgi?p=libpng/libpng;a=tags' | """
+		""" grep '<a class="list name"' | """
+		""" sed -n 's,.*<a[^>]*>v\([0-9][^<]*\)<.*,\\1,p' | """
+		""" grep -v alpha | """
+		""" grep -v beta | """
+		""" grep -v rc | """
+		""" grep -v '^1\.2\.' | """
+		""" head -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "%(sfmirror)s/project/libpng/01-libpng-master/%(version)s/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" ./configure  --prefix='%(prefix)s' --host='%(target)s' """
+			""" CFLAGS='-I%(prefix)s/include' """
+			""" LDFLAGS='-L%(prefix)s/lib' """
+			""" && """ 
+		""" make install """
+	)
+
+#############################################################################
+# Warning: Not-working border
+# Modules below this line are work in progress
+#############################################################################
 
 package( "glib",
 	uri = "http://www.gtk.org",
