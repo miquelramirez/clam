@@ -2,7 +2,7 @@
 2010-??-?? CLAM 1.4.1 SVN $Revision$ 
  * Infrastructure: 
    * Network added a GetProcessingName interface
-   * Network flow control orders port-less processings (control-based sources, sinks and filters) using its y-      position. Reasoning: make the order predictable
+   * Network flow control orders port-less processings (control-based sources, sinks and filters) using its y-position. Reasoning: make the order predictable
  * Dependencies:
    * xerces-c 2.8 -> xerces-c 3.0 (requires pkg-config file)
  * Removed some deprecated symbols
@@ -59,6 +59,8 @@
  * Processing::Get{In,Out}{Control,Port}() overloaded for indexes and names.
  * Processing::GetN{In,Out}{Controls,Ports}() to get the number of connectors.
  * Processing::Get{In,Out}{Controls,Ports}() are now protected methods.
+ * CLAM_EMBEDDED_FILE in EmbededFile.hxx deprecates CLAM_EXTERNAL_FILE_DATA
+ * Added a new CLAM_EMBEDDED_FILE version for mingw
  * Audio File:
    * AudioFileIO implementation simplified, API documented
    * MonoAudioFileReader supports seeking
