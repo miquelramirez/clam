@@ -44,6 +44,9 @@ def setup_global_environment( env, conf ) :
 	if env['release'] :
 		print 'COMPILING IN RELEASE MODE'
 		env.AppendUnique( CCFLAGS='-g -O3 -fomit-frame-pointer -Wall'.split(' ') )
+		# Strip when in windows (in linux symbols are useful and striped by packagers)
+		if 'mingw32' in env['TOOLS'] : 
+			env.Append( LDFLAGS='-s'.split(' ') )
 	else :
 		print 'COMPILING IN DEBUG MODE'
 		env.AppendUnique( CCFLAGS='-g -Wall'.split(' ') )
