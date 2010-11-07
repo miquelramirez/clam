@@ -29,11 +29,11 @@ Legend: - todo, * working on it, + done, x failed, child means dependency
 - properly support flac (does not link in sndfile)
 - ladspa-sdk::applyplugin binary had to be disabled
 - libxml++
+	+ libxml2
 	* glibmm
 		+ libsigc++
 		* glib
 			+ gettext
-	+ libxml2
 + boost
 X libpython
 - qt: supported by mingw-cross-env
@@ -181,6 +181,20 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	run(buildCommand % subst)
 	run("touch finnished-%(name)s-%(version)s"%subst)
 
+packageDatabase = {}
+packageOrder = []
+
+def package(name, **keywordArgs) :
+	packageDatabase[name] = keywordArgs
+	packageOrder.append(name)
+
+
+def build(names) :
+	for name in names.split() :
+		buildPackage(name, **packageDatabase[name])
+
+def buildAll() :
+	for name in packageOrder : build(name)
 
 
 ensureDir(os.path.join(sandbox, "src"))
@@ -192,7 +206,7 @@ os.environ.update(
 	)
 
 
-if 1 : buildPackage( "pthread",
+package( "pthread",
 	uri = "http://sourceware.org/pthreads-win32/",
 	checkVersion = ""
 		""" wget -q -O- 'ftp://sourceware.org/pub/pthreads-win32/Release_notes' | """
@@ -213,7 +227,7 @@ if 1 : buildPackage( "pthread",
 	)
 
 
-if 1 : buildPackage( "fftw",
+package( "fftw",
 	uri = "http://www.fftw.org",
 	deps = "pthread",
 	checkVersion =
@@ -232,7 +246,7 @@ if 1 : buildPackage( "fftw",
 	)
 
 
-if 1 : buildPackage( 'libmad',
+package( 'libmad',
 	uri = "??",
 	checkVersion =
 		sfCheckVersion("mad","libmad") +
@@ -250,7 +264,7 @@ if 1 : buildPackage( 'libmad',
 	)
 
 
-if 1 : buildPackage( "id3lib",
+package( "id3lib",
 	uri = "http://id3lib.sourceforge.net/",
 	checkVersion =
 		sfCheckVersion("id3lib", "id3lib") +
@@ -267,7 +281,7 @@ if 1 : buildPackage( "id3lib",
 	)
 
 
-if 1 : buildPackage( "libogg",
+package( "libogg",
 	uri = 'http://www.xiph.org/ogg/',
 	checkVersion =
 		""" wget -q -O- 'http://www.xiph.org/downloads/' | """
@@ -284,7 +298,7 @@ if 1 : buildPackage( "libogg",
 	)
 
 
-if 1 : buildPackage( "libvorbis",
+package( "libvorbis",
 	uri = "http://www.vorbis.com/",
 	deps = "libogg",
 	checkVersion =
@@ -300,7 +314,7 @@ if 1 : buildPackage( "libvorbis",
 		""" make install """
 	)
 
-if 1 : buildPackage( "libiconv",
+package( "libiconv",
 	uri = "http://www.gnu.org/software/libiconv/",
 	checkVersion =
 		""" wget -O- -q 'http://ftp.gnu.org/pub/gnu/libiconv/?C=M;O=A' | """
@@ -324,7 +338,7 @@ if 1 : buildPackage( "libiconv",
 
 	
 # TODO: flac dll has missing symbols when linking it against sndfile
-if 1 : buildPackage( "flac",
+package( "flac",
 	uri = "http://flac.sourceforge.net/",
 	deps = "libiconv libogg pthread",
 	checkVersion =
@@ -348,7 +362,7 @@ if 1 : buildPackage( "flac",
 		""" make install """
 	)
 
-if 1 : buildPackage( "libsndfile",
+package( "libsndfile",
 	uri = "http://www.mega-nerd.com/libsndfile/",
 	deps = "flac ogg vorbis",
 	pinnedVersion = "1.0.21",
@@ -372,7 +386,7 @@ if 1 : buildPackage( "libsndfile",
 		""" make install """
 	)
 
-if 1 : buildPackage( "speex",
+package( "speex",
 	uri = "http://www.speex.org/",
 	deps = "libogg",
 	checkVersion = 
@@ -392,7 +406,7 @@ if 1 : buildPackage( "speex",
 		""" make install """
 	)
 
-if 1 : buildPackage( "liblo",
+package( "liblo",
 	uri = "http://liblo.sourceforge.net/",
 	deps = "pthreads",
 	checkVersion =
@@ -411,7 +425,7 @@ if 1 : buildPackage( "liblo",
 		""" make install """
 	)
 
-if 1 : buildPackage( "cppunit",
+package( "cppunit",
 	uri = "http://liblo.sourceforge.net/",
 	checkVersion =
 		sfCheckVersion("cppunit", "cppunit") +
@@ -432,7 +446,7 @@ if 1 : buildPackage( "cppunit",
 	# sudo apt-get install autoconf-archive libtool automake
 
 
-if 1 : buildPackage( "dlfcn-win32",
+package( "dlfcn-win32",
 	uri = "http://code.google.com/p/dlfcn-win32/",
 	checkVersion =
 		""" wget -q -O- 'http://code.google.com/p/dlfcn-win32/downloads/list' | """
@@ -454,7 +468,7 @@ if 1 : buildPackage( "dlfcn-win32",
 		""" make install """
 	)
 
-if 1 : buildPackage( "boost",
+package( "boost",
 	uri = "http://www.boost.org/",
 	checkVersion =
 		sfCheckVersion("boost", "boost") +
@@ -493,7 +507,7 @@ if 1 : buildPackage( "boost",
 	)
 
 
-if 1 : buildPackage( "ladspa-sdk",
+package( "ladspa-sdk",
 	uri = "http://www.ladspa.org/",
 	deps = "dlfcn-win32",
 	checkVersion =
@@ -521,7 +535,7 @@ if 1 : buildPackage( "ladspa-sdk",
 
 
 
-if 1 : buildPackage( "directx",
+package( "directx",
 	uri = "http://www.microsoft.com",
 	checkVersion = "echo 8.0",
 	tarballName = "dx80_mgw.zip",
@@ -535,7 +549,7 @@ if 1 : buildPackage( "directx",
 
 
 
-if 1 : buildPackage( "portaudio",
+package( "portaudio",
 	uri = "http://www.portaudio.com",
 	deps = "directx",
 	checkVersion =
@@ -559,7 +573,7 @@ if 1 : buildPackage( "portaudio",
 	)
 
 
-if 1 : buildPackage( "xerces-c",
+package( "xerces-c",
 	uri = "http://xerces.apache.org/xerces-c/",
 	deps = "", # TODO
 	checkVersion =
@@ -579,7 +593,7 @@ if 1 : buildPackage( "xerces-c",
 	)
 
 
-if 1 : buildPackage( "libsigc++",
+package( "libsigc++",
 	uri = "http://libsigc.sourceforge.net/",
 	deps = "",
 	checkVersion = gnomeCheckVersion("libsigc++2", "2.2"),
@@ -593,7 +607,7 @@ if 1 : buildPackage( "libsigc++",
 		""" make install """
 	)
 
-if 1 : buildPackage( "gettext",
+package( "gettext",
 	uri = "http://www.gnu.org/software/gettext/",
 	checkVersion = 
 		""" wget -q -O- 'http://www.gnu.org/software/gettext/' | """
@@ -618,7 +632,7 @@ if 1 : buildPackage( "gettext",
 		""" make install """
 	)
 
-if 1 : buildPackage( "libxml2",
+package( "libxml2",
 	uri = "http://xmlsoft.org/",
 	deps = "",
 	checkVersion = # gnomeCheckVersion("libxml2",".") but with a 'v' in the version :-P
@@ -645,7 +659,7 @@ if 1 : buildPackage( "libxml2",
 # Modules below this line are work in progress
 #############################################################################
 
-if 1 : buildPackage( "zlib",
+package( "zlib",
 	uri = "http://zlib.net/",
 	deps = "",
 	checkVersion = 
@@ -663,7 +677,7 @@ if 1 : buildPackage( "zlib",
 	)
 
 
-if 1 : buildPackage( "glib",
+package( "glib",
 	uri = "http://www.gtk.org",
 	deps = "gettext libiconv zlib",
 	checkVersion = gnomeCheckVersion("glib", "2.26"),
@@ -681,7 +695,7 @@ if 1 : buildPackage( "glib",
 		""" make install """
 	)
 
-if 0 : buildPackage( "glibmm",
+package( "glibmm",
 	uri = "http://www.gtkmm.org/",
 	deps = "libsigc++ glib",
 	checkVersion = gnomeCheckVersion("glibmm", "2.24"),
@@ -695,7 +709,7 @@ if 0 : buildPackage( "glibmm",
 		""" make install """
 	)
 	
-if 0 : buildPackage( "libxml++",
+package( "libxml++",
 	uri = "http://libxmlplusplus.sourceforge.net/",
 	deps = "glibmm libxml2",
 	checkVersion =
@@ -722,7 +736,7 @@ if 0 : buildPackage( "libxml++",
 # TODO: http://bugs.python.org/issue1597850
 # And crosscompilation seems to be also broken
 # TODO: http://bugs.python.org/issue3871
-if 0 : buildPackage( "python",
+package( "python",
 	uri = "http://www.python.org",
 	checkVersion =
 		""" wget -O- -q 'http://www.python.org/download/releases/' | """
@@ -751,6 +765,8 @@ if 0 : buildPackage( "python",
 	)
 
 
+
+buildAll()
 
 
 
