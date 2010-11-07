@@ -7,18 +7,20 @@ mingw compatible binaries from a Linux box (crosscompilation).
 Non complete list of requirements (Ubuntu):
 sudo apt-get install gcc-mingw32 mingw32-binutils mingw32-runtime \
 	nsis wine automake autoconf-archive libtool pkg-config \
-	wget sed autogen
+	wget sed autogen mm-common
 
 Please, update the list of packages if you find any missing one.
 Note that 'ming32' package is legacy 3.2.1 gcc, do not install it.
 
-While in development, most targets will be disabled with 'if 0 :'.
-Enable them changing them to 'if 1 :'.
+You can provide the name of a package to download and build,
+or you can just build all of them.
 
-Add packages by adding calls to buildPackage. Patches dropped in
-the same directory than this script are applied automatically
-and in alphabetical order after download and extracting the 
-package if their name matches mingw-<packagename>*.patch
+
+Add packages by adding calls to 'package'.
+
+If your package is named 'foo' and you add patch files matching
+mingw-foo*.patch to this directory, they will be applied in
+alphabetical order to the downloaded and extracted source.
 
 
 Package TODO:
@@ -28,20 +30,20 @@ Legend: - todo, * working on it, + done, x failed, child means dependency
 - USe DX9 or DX10 instead of DX8
 - properly support flac (does not link in sndfile)
 - ladspa-sdk::applyplugin binary had to be disabled
-- libxml++
++ libxml++
 	+ libxml2
-	* glibmm
+	+ glibmm
 		+ libsigc++
-		* glib
+		+ glib
 			+ gettext
 + boost
 X libpython
-- qt: supported by mingw-cross-env
+* qt: supported by mingw-cross-env
 	+ libpng
 		+ zlib
 	+ libmng
 		+ jpeg
-		- lcms
+		+ lcms
 - Asio, Vst
 
 Script TODO:
@@ -757,11 +759,6 @@ package( "libmng",
 			""" LCMSLIB="`pkg-config lcms2 --libs`" """
 	)
 
-#############################################################################
-# Warning: Not-working border
-# Modules below this line are work in progress
-#############################################################################
-
 package( "glib",
 	uri = "http://www.gtk.org",
 	deps = "gettext libiconv zlib",
@@ -775,9 +772,16 @@ package( "glib",
 		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
 			""" CFLAGS='-I%(prefix)s/include' """
 			""" LDFLAGS='-L%(prefix)s/lib' """
+			""" CXX=%(target)s-g++ """
+			""" --with-libiconv=gnu """
 			""" && """
-		""" make && """
-		""" make install """
+		# specific to avoid non-working documentation target
+		""" make -C 'glib'    install && """
+		""" make -C 'gmodule' install && """
+		""" make -C 'gthread' install && """
+		""" make -C 'gobject' install && """
+		""" make -C 'gio'     install MISC_STUFF= && """
+		""" make              install-pkgconfigDATA """ # crossmingevn also installed install-configexecincludeDATA but failed
 	)
 
 package( "glibmm",
@@ -789,11 +793,12 @@ package( "glibmm",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" ./autogen.sh  --prefix='%(prefix)s'  --host='%(target)s' """
+			""" --disable-documentation """ # docs fails to build
 			""" && """
 		""" make && """
 		""" make install """
 	)
-	
+
 package( "libxml++",
 	uri = "http://libxmlplusplus.sourceforge.net/",
 	deps = "glibmm libxml2",
@@ -809,8 +814,72 @@ package( "libxml++",
 		""" cd %(srcdir)s && """
 #		""" autoconf && """
 		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
+			""" --disable-documentation """ # docs fails to build
+			"""  """
 			""" && """
 		""" make && """
+		""" make install """
+	)
+
+#############################################################################
+# Warning: Not-working border
+# Modules below this line are work in progress
+#############################################################################
+
+package( "qt",
+	uri = "http://qt.nokia.com/",
+	deps = "gcc libodbc++ postgresql freetds openssl libgcrypt zlib libpng jpeg libmng tiff giflib sqlite libiconv",
+	checkVersion =
+		""" wget -q -O- 'http://qt.gitorious.org/qt/qt/commits' | """
+		""" grep '<li><a href="/qt/qt/commit/' | """
+		""" sed -n 's,.*<a[^>]*>v\([0-9][^<-]*\)<.*,\\1,p' | """
+		""" tail -1 """,
+	tarballName = "%(name)s-everywhere-opensource-%(version)s.tar.gz",
+	downloadUri = "http://get.qt.nokia.com/qt/source/%(tarball)s",
+	srcdir = "%(name)s-everywhere-opensource-%(version)s",
+	buildCommand =
+		""" false && """
+		""" cd %(srcdir)s && """
+#		""" OPENSSL_LIBS="`pkg-config --libs-only-l openssl`" """
+		""" PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl` -lws2_32" """
+		""" ./configure """
+			""" -opensource """
+			""" -confirm-license """
+			""" -fast """
+			""" -xplatform unsupported/win32-g++-cross """
+			""" -force-pkg-config """
+			""" -release """
+			""" -exceptions """
+			""" -static """
+			""" -prefix '%(prefix)s' """
+			""" -prefix-install """
+			""" -script """
+			""" -opengl desktop """
+			""" -webkit """
+			""" -no-glib """
+			""" -no-gstreamer """
+			""" -no-phonon """
+			""" -no-phonon-backend """
+			""" -accessibility """
+			""" -no-reduce-exports """
+			""" -no-rpath """
+			""" -make libs """
+			""" -nomake demos """
+			""" -nomake docs """
+			""" -nomake examples """
+			""" -plugin-sql-sqlite """
+			""" -plugin-sql-odbc """
+			""" -plugin-sql-psql """
+			""" -plugin-sql-tds """
+			""" -system-zlib """
+			""" -system-libpng """
+			""" -system-libjpeg """
+			""" -system-libtiff """
+			""" -system-libmng """
+			""" -system-sqlite """
+			""" -openssl-linked """
+			""" -v """
+			""" && """
 		""" make install """
 	)
 
@@ -851,7 +920,10 @@ package( "python",
 
 
 
-if len(sys.argv)<=1 :
+if '--list' in sys.argv :
+	print "Available packages: " + " ". join(packageDatabase.keys())
+
+elif len(sys.argv)<=1 :
 	buildAll()
 else :
 	build(" ".join(sys.argv[1:]))
