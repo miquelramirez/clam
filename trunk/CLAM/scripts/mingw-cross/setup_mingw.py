@@ -37,10 +37,15 @@ Legend: - todo, * working on it, + done, x failed, child means dependency
 + boost
 X libpython
 - qt: supported by mingw-cross-env
+	+ libpng
+		+ zlib
+	+ libmng
+		+ jpeg
+		- lcms
 - Asio, Vst
 
 Script TODO:
-- Target by command line
++ Target by command line
 - Options for prefix, target...
 - Config file
 - Declarative + dependencies
@@ -672,7 +677,7 @@ package( "zlib",
 	)
 
 package( "libpng",
-	uri = "http://www.libpng.org/",
+	uri = "http://www.libpng.org",
 	deps = "zlib",
 	checkVersion = 
 		""" wget -q -O- 'http://libpng.git.sourceforge.net/git/gitweb.cgi?p=libpng/libpng;a=tags' | """
@@ -692,6 +697,64 @@ package( "libpng",
 			""" LDFLAGS='-L%(prefix)s/lib' """
 			""" && """ 
 		""" make install """
+	)
+
+package( "jpeg",
+	uri = "http://www.ijg.org/",
+	checkVersion = 
+		""" wget -q -O- 'http://www.ijg.org/' | """
+		""" sed -n 's,.*jpegsrc\.v\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" head -1 """,
+	tarballName = "jpegsrc.v%(version)s.tar.gz",
+	downloadUri = "http://www.ijg.org/files/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" ./configure  --prefix='%(prefix)s' --host='%(target)s' """
+			""" && """ 
+		""" make install """
+	)
+
+package( "lcms",
+	uri = "http://www.littlecms.com/",
+	deps = "jpeg zlib", # TODO: tiff?
+	checkVersion = 
+		sfCheckVersion('lcms', 'lcms') +
+		""" sed -n 's,.*lcms[0-9]*-\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" tail -1 """,
+	tarballName = "lcms%(majorversion)s-%(version)s.tar.gz",
+	downloadUri = "%(sfmirror)s/project/lcms/lcms/2.0/%(tarball)s", # TODO: 2.0 should be extracted
+	srcdir = "lcms-2.0",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" ./configure  --prefix='%(prefix)s' --host='%(target)s' """
+			""" CPPFLAGS='-I%(prefix)s/include' """
+			""" LDFLAGS='-L%(prefix)s/lib' """
+			""" && """ 
+		""" make install """
+	)
+
+package( "libmng",
+	uri = "http://www.libmng.com",
+	deps = "zlib jpeg lcms",
+	checkVersion = 
+		sfCheckVersion('libmng', 'libmng-devel') +
+	    """ sed -n 's,.*libmng-\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" tail -1 """,
+	tarballName = "%(name)s-%(version)s.tar.bz2",
+	downloadUri = "%(sfmirror)s/project/libmng/libmng-devel/%(version)s/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" make install -f makefiles/makefile.mingwdll """
+			""" CC='%(target)s-gcc' """
+			""" DLLWRAP='%(target)s-dllwrap' """
+			""" LD='%(target)s-ld' """
+			""" AR='%(target)s-ar rc' """
+			""" RANLIB='%(target)s-ranlib' """
+			""" INSTALL_PREFIX='%(prefix)s/' """
+			""" ZLIBINC="`pkg-config zlib --cflags`" """
+			""" ZLIBLIB="`pkg-config zlib --libs`"  """
+			""" LCMSINC="`pkg-config lcms2 --cflags`" """
+			""" LCMSLIB="`pkg-config lcms2 --libs`" """
 	)
 
 #############################################################################
