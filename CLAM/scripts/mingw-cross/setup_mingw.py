@@ -766,7 +766,10 @@ package( "python",
 
 
 
-buildAll()
+if len(sys.argv)<=1 :
+	buildAll()
+else :
+	build(" ".join(sys.argv[1:]))
 
 
 
