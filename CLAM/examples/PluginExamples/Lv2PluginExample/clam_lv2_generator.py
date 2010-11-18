@@ -24,7 +24,7 @@ class AudioPort():
 	def ttl(self, port_type, firstIndex) :
 		return [ """\
 	[
-		a lv2:%(port_type)s, lv2:AudioPort;
+		a lv2:%(port_type)sPort, lv2:AudioPort;
 		lv2:index %(index)s;
 		lv2:symbol "%(symbol)s";
 		lv2:name "%(name)s";
@@ -46,7 +46,7 @@ class ControlPort(AudioPort):
 	def ttl(self, port_type, firstIndex) :
 		return [ """\
 	[
-		a lv2:%(port_type)s, lv2:ControlPort;
+		a lv2:%(port_type)sPort, lv2:ControlPort;
 		lv2:index %(index)s;
 		lv2:symbol "%(symbol)s";
 		lv2:name "%(name)s";
@@ -123,18 +123,32 @@ class ExporterHandler(ContentHandler):
 		f.write("""\
 @prefix lv2:  <http://lv2plug.in/ns/lv2core#>.
 @prefix doap: <http://usefulinc.com/ns/doap#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix units: <http://lv2plug.in/ns/extension/units#> .
 
 <%(uri)s>
 	a lv2:Plugin;
 	lv2:binary <%(binary)s.so>;
 	doap:name "%(name)s";
 	doap:license <http://usefulinc.com/doap/licenses/gpl>;
-
+	doap:developer [
+		foaf:name "clam-project";
+		foaf:homepage <http://clam-project.org> ;
+		foaf:mbox <mailto:clam-devel@lists.clam-project.org> ;
+	] ;
+	doap:maintainer [
+		foaf:name "clam-project";
+		foaf:homepage <http://clam-project.org> ;
+		foaf:mbox <mailto:clam-devel@lists.clam-project.org> ;
+	] ;
+    	lv2:optionalFeature lv2:hardRtCapable ;
 	lv2:port
 """ %dict(
 			uri=uri,
-			binary=name.capitalize(),
-			name=name.capitalize(),
+			binary="clam_lv2_example",
+			#binary=name,
+			name=name,
 			))
 
 		ports = []
@@ -188,7 +202,7 @@ def printManifest(uris,names):
 """+"".join(["""\
 <%s>
 	a lv2:Plugin;
-	rdfs:seeAlso <%s.ttl>.
+	rdfs:seeAlso <%s.ttl>	.
 
 """%(uri, name) for uri, name in zip(uris, names)]))
 
