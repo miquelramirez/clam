@@ -3,6 +3,7 @@
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
 import sys
+import getopt
 
 class AudioPort():
 	def __init__ (self, id, pos):
@@ -116,7 +117,9 @@ class ExporterHandler(ContentHandler):
 		self.connections[self.audioAux.type].append(self.audioAux)
 		self.audioAux = None
 
-	def printTTL(self,clamnetwork,uri,name):
+	def printTTL(self,clamnetwork,uri,name,doapfile='default.doap'):
+
+		fileWithDoap = open(doapfile)
 
 		#TODO change the static PATH for Dynamic PATH
 		f = sys.stdout
@@ -132,23 +135,15 @@ class ExporterHandler(ContentHandler):
 	lv2:binary <%(binary)s.so>;
 	doap:name "%(name)s";
 	doap:license <http://usefulinc.com/doap/licenses/gpl>;
-	doap:developer [
-		foaf:name "clam-project";
-		foaf:homepage <http://clam-project.org> ;
-		foaf:mbox <mailto:clam-devel@lists.clam-project.org> ;
-	] ;
-	doap:maintainer [
-		foaf:name "clam-project";
-		foaf:homepage <http://clam-project.org> ;
-		foaf:mbox <mailto:clam-devel@lists.clam-project.org> ;
-	] ;
-    	lv2:optionalFeature lv2:hardRtCapable ;
+%(doapDescription)s
+	lv2:optionalFeature lv2:hardRtCapable ;
 	lv2:port
 """ %dict(
 			uri=uri,
 			binary="clam_lv2_example",
 			#binary=name,
 			name=name,
+			doapDescription=fileWithDoap.read()
 			))
 
 		ports = []
@@ -161,6 +156,9 @@ class ExporterHandler(ContentHandler):
 		for port in sorted(self.outputAudio, key=lambda p:p.pos) :
 			ports += port.ttl("Output", len(ports))
 		f.write(",\n".join(ports) + ".\n")
+		f.close()
+		fileWithDoap.close()
+
 
 
 def printCLAM_PLUGIN(clamnetworks,uris):
@@ -220,23 +218,64 @@ def parseCommandLine() :
 
 def main():
 
-	command, uribase, library, networks, names, uris = parseCommandLine()
-	if command == "--manifest" :
-		printManifest(uris,names)
-		return
-	if command == "--main" :
-		printCLAM_PLUGIN(networks,uris)
-		return
-	if command == "--ttl" :
+        args    =  sys.argv[1:]
+	networks= []
+	names   = []
+	uris    = []
+	uribase = "default/uri/lv2/"
+
+        try:
+                optlist1, args1 = getopt.getopt(args, "mtiu:h",  ["manifest", "ttl", "main","uribase", "help"])
+		
+        except getopt.error, msg:
+                print "[1] for help use --help"
+                sys.exit(2)
+
+	createTtls = False
+	createMain = False
+	createManifest = False
+
+        # process options
+        for o, a in optlist1:
+                if o in ("-m", "--manifest"):  	# to create the manifest.ttl 
+			createManifest = True
+	
+		if o in ("-t", "--ttl"):       	# to create the ttl for all networks 
+			createTtls = True 
+		
+		if o in ("-i", "--main"):       # to create the main
+			createMain = True
+
+		if o in ("-u", "--uribase"):
+			uribase = a
+
+                if o in ("-h", "--help"):       # print help
+                        print >>sys.stderr, "the help was here"
+                        sys.exit(0)
+
+	networks = args1
+	names = [os.path.splitext(os.path.basename(network))[0] for network in networks]
+	uris  = [os.path.join(uribase,name) for name in names ]
+
+	print >>sys.stderr, names
+	print >>sys.stderr, uris
+	
+	if createTtls:
 		for network, uri, name in zip(networks, uris, names) :
 			parser = make_parser()   
 			curHandler = ExporterHandler()
 			parser.setContentHandler(curHandler)
 			parser.parse(open(network))
 			curHandler.printTTL(network,uri,name)
-	else :
-		raise Exception("Invalid command %s"%command)
+			return
 
+	if createManifest:
+		printManifest(uris,names)
+		return
+
+	if createMain:
+		printCLAM_PLUGIN(networks,uris)
+		return
 
 
 if __name__ == '__main__' :
