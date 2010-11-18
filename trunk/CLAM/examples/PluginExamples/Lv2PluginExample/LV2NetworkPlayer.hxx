@@ -56,6 +56,7 @@ public:
 	void lv2_Deactivate();
 	void lv2_ConnectTo(uint32_t port, void *data);
 	void lv2_Run(uint32_t nframes);
+	void LocateConnections();
 private:
 	void ProcessInControlValues();
 	void ProcessOutControlValues();

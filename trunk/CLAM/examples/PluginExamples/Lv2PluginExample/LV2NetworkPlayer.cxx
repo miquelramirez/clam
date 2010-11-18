@@ -1,6 +1,6 @@
 #include "LV2NetworkPlayer.hxx"
 #include "LV2Library.hxx"
-
+#include <iostream>
 // LV2 Callbacks
 extern "C"
 {
@@ -12,40 +12,40 @@ extern "C"
 	// Construct a new plugin instance.
 	static LV2_Handle Instantiate(const LV2_Descriptor * descriptor, double sampleRate, const char *path, const LV2_Feature * const* features)
 	{
-//		std::cout << "INSTANTIATE"<<std::endl;
+	//	std::cout << "INSTANTIATE"<<std::endl;
 		return new CLAM::LV2NetworkPlayer(descriptor, sampleRate, path, features);
 	}
 
 	// Destruct plugin instance
 	static void CleanUp(LV2_Handle handle)
 	{
-//		std::cout << "CLEANUP"<<std::endl;
+	//	std::cout << "CLEANUP"<<std::endl;
 		delete exporter(handle);
 	}
 
 	// Run the plugin
 	static void Run(LV2_Handle handle,uint32_t sampleCount)
 	{
-//		std::cout << "RUN" << std::endl;
+	//	std::cout << "RUN" << std::endl;
 		exporter(handle)->lv2_Run( sampleCount );
 	}
 	// Activate Plugin
 	static void Activate(LV2_Handle handle)
 	{
-//		std::cout << "ACTIVATE"<<std::endl;
+	//	std::cout << "ACTIVATE"<<std::endl;
 		exporter(handle)->lv2_Activate();
 	}
 
 	static void Deactivate(LV2_Handle handle)
 	{
-//		std::cout << "DEACTIVATE"<<std::endl;
+	//	std::cout << "DEACTIVATE"<<std::endl;
 		exporter(handle)->lv2_Deactivate();
 	}
 
 	// Connect a port to a data location.
 	static void ConnectTo(LV2_Handle handle, uint32_t port,void* data)
 	{
-//		std::cout << "CONNECT_2"<<std::endl;
+	//	std::cout << "CONNECT_2"<<std::endl;
 		exporter(handle)->lv2_ConnectTo( port, data );
 	}
 
@@ -69,7 +69,7 @@ LV2_Descriptor * LV2NetworkPlayer::CreateLV2Descriptor(
 	descriptor->run            = ::Run;
 	descriptor->deactivate     = ::Deactivate;
 	descriptor->cleanup        = ::CleanUp;
-
+	
 	return descriptor;
 }
 
@@ -110,11 +110,18 @@ LV2NetworkPlayer::LV2NetworkPlayer(const LV2_Descriptor * descriptor, double sam
 	// but the network adquires the ownership of the player and, in this case,
 	// the player owns the network.
 	SetNetworkBackLink(_network);
+	LocateConnections();
+}
+
+void LV2NetworkPlayer::LocateConnections()
+{
 	CacheSourcesAndSinks();
+
 	_sourceBuffers.resize(GetNSources());
 	_sinkBuffers.resize(GetNSinks());
 	_inControlBuffers.resize(GetNControlSources());
 	_outControlBuffers.resize(GetNControlSinks());
+
 	ChangeFrameSize(mExternBufferSize);
 }
 
@@ -123,6 +130,7 @@ LV2NetworkPlayer::~LV2NetworkPlayer()
 }
 void LV2NetworkPlayer::lv2_Activate()
 {
+	CLAM_WARNING(_network.SupportsVariableAudioSize(), "Network don't support variable audio size");
 	_network.Start();
 }
 void LV2NetworkPlayer::lv2_Deactivate()
@@ -132,27 +140,32 @@ void LV2NetworkPlayer::lv2_Deactivate()
 
 void LV2NetworkPlayer::lv2_ConnectTo(uint32_t port, void *data)
 {
-	if ( port < _inControlBuffers.size() )
-	{
-		_inControlBuffers[port]=(float*)data;
-		return;
-	}
-	port-=_inControlBuffers.size();
-	if ( port < _outControlBuffers.size())
-	{
-		_outControlBuffers[port]=(float*)data;
-		return;
-	}
-	port-=_outControlBuffers.size();
-	if ( port < _sourceBuffers.size() )
+	unsigned nSources  = GetNSources();
+	unsigned nSinks  = GetNSinks();
+	unsigned nInControls  = GetNControlSources();
+	unsigned nOutControls  = GetNControlSinks();
+
+	if ( port < nSources ) //Input port
 	{
 		_sourceBuffers[port]=(float*)data;
 		return;
 	}
-	port-=_sourceBuffers.size();
-	if ( port < _sinkBuffers.size() )
+	port-=nSources;
+	if (port < nSinks) //Output port
 	{
 		_sinkBuffers[port]=(float*)data;
+		return;
+	}
+	port-=nSinks;
+	if ( port < nInControls) //Input control
+	{
+		_inControlBuffers[port]=(float*)data;
+		return;
+	}
+	port-=nInControls;
+	if (port < nOutControls)
+	{
+		_outControlBuffers[port]=(float*)data;
 		return;
 	}
 	CLAM_ASSERT(true,"Accessing a non-existing port");
@@ -193,15 +206,18 @@ void LV2NetworkPlayer::ProcessOutControlValues()
 
 void LV2NetworkPlayer::lv2_Run(uint32_t nframes)
 {
+
 	if(nframes != mExternBufferSize)
 	{
 		mExternBufferSize=nframes;
 		if(nframes == 0) return;
 		ChangeFrameSize(mExternBufferSize);
 	}
+
 	ProcessInControlValues();
 	SetAudioSourceBuffers(nframes);
 	SetAudioSinkBuffers(nframes);
+
 	_network.Do();
 	ProcessOutControlValues();
 }
