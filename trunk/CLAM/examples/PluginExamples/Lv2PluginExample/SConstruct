@@ -39,6 +39,7 @@ env.EnableClamModules([
 networks = glob.glob("*.clamnetwork")
 
 env['LV2BASEURI'] = "http://clam-project.org/examples/lv2"
+env['DOAPFILE'  ] = "default.doap"
 
 manifest = env.Command("manifest.ttl", networks,
 	"./clam_lv2_generator.py --manifest -u ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
@@ -47,7 +48,7 @@ mainSource = env.Command("clam_plugin.cxx", networks,
 	"./clam_lv2_generator.py --main -u ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
 ttls = [
 	env.Command(os.path.splitext(os.path.basename(network))[0]+".ttl", network,
-	"./clam_lv2_generator.py --ttl -u ${LV2BASEURI} ${SOURCE} > ${TARGET}" )
+	"./clam_lv2_generator.py --ttl -u ${LV2BASEURI} -d ${DOAPFILE} ${SOURCE} > ${TARGET}" )
 	for network in networks ]
 
 
