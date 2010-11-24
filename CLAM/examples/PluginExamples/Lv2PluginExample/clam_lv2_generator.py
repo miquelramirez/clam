@@ -117,9 +117,30 @@ class ExporterHandler(ContentHandler):
 		self.connections[self.audioAux.type].append(self.audioAux)
 		self.audioAux = None
 
-	def printTTL(self,clamnetwork,uri,name,doapfile='default.doap'):
+	def printTTL(self,clamnetwork,uri,name,doapfile):
+		
+		doapDescription = """\
+	doap:license <http://usefulinc.com/doap/licenses/gpl>;
+	doap:developer [
+		foaf:name "clam-project";
+		foaf:homepage <http://clam-project.org> ;
+		foaf:mbox <mailto:clam-devel@lists.clam-project.org> ;
+	] ;
+	doap:maintainer [
+		foaf:name "clam-project";
+		foaf:homepage <http://clam-project.org> ;
+		foaf:mbox <mailto:clam-devel@lists.clam-project.org> ;
+	] ;
+"""
+		fileWithDoap = None
 
-		fileWithDoap = open(doapfile)
+		if doapfile != None :
+			try:
+				fileWithDoap = open(doapfile)
+			except IOError:
+			        print 'cannot open', doapfile
+			else:
+				doapDescription = fileWithDoap.read()
 
 		#TODO change the static PATH for Dynamic PATH
 		f = sys.stdout
@@ -134,7 +155,6 @@ class ExporterHandler(ContentHandler):
 	a lv2:Plugin;
 	lv2:binary <%(binary)s.so>;
 	doap:name "%(name)s";
-	doap:license <http://usefulinc.com/doap/licenses/gpl>;
 %(doapDescription)s
 	lv2:optionalFeature lv2:hardRtCapable ;
 	lv2:port
@@ -143,7 +163,7 @@ class ExporterHandler(ContentHandler):
 			binary="clam_lv2_example",
 			#binary=name,
 			name=name,
-			doapDescription=fileWithDoap.read()
+			doapDescription=doapDescription
 			))
 
 		ports = []
@@ -157,9 +177,9 @@ class ExporterHandler(ContentHandler):
 			ports += port.ttl("Output", len(ports))
 		f.write(",\n".join(ports) + ".\n")
 		f.close()
-		fileWithDoap.close()
-
-
+		
+		if fileWithDoap!= None:
+			fileWithDoap.close()
 
 def printCLAM_PLUGIN(clamnetworks,uris):
 	f = sys.stdout
@@ -223,9 +243,10 @@ def main():
 	names   = []
 	uris    = []
 	uribase = "default/uri/lv2/"
+	doapfile= None
 
         try:
-                optlist1, args1 = getopt.getopt(args, "mtiu:h",  ["manifest", "ttl", "main","uribase", "help"])
+                optlist1, args1 = getopt.getopt(args, "mtiu:d:h",  ["manifest", "ttl", "main","uribase", "doap", "help"])
 		
         except getopt.error, msg:
                 print "[1] for help use --help"
@@ -249,7 +270,10 @@ def main():
 		if o in ("-u", "--uribase"):
 			uribase = a
 
-                if o in ("-h", "--help"):       # print help
+		if o in ("-d", "--doap"):
+			doapfile = a
+                
+		if o in ("-h", "--help"):       # print help
                         print >>sys.stderr, "the help was here"
                         sys.exit(0)
 
@@ -257,8 +281,8 @@ def main():
 	names = [os.path.splitext(os.path.basename(network))[0] for network in networks]
 	uris  = [os.path.join(uribase,name) for name in names ]
 
-	print >>sys.stderr, names
-	print >>sys.stderr, uris
+#	print >>sys.stderr,"names:\n", names
+#	print >>sys.stderr,"uris: \n", uris
 	
 	if createTtls:
 		for network, uri, name in zip(networks, uris, names) :
@@ -266,7 +290,7 @@ def main():
 			curHandler = ExporterHandler()
 			parser.setContentHandler(curHandler)
 			parser.parse(open(network))
-			curHandler.printTTL(network,uri,name)
+			curHandler.printTTL(network,uri,name,doapfile)
 			return
 
 	if createManifest:
