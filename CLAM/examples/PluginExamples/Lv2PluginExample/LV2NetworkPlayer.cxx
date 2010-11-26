@@ -145,18 +145,6 @@ void LV2NetworkPlayer::lv2_ConnectTo(uint32_t port, void *data)
 	unsigned nInControls  = GetNControlSources();
 	unsigned nOutControls  = GetNControlSinks();
 
-	if ( port < nSources ) //Input port
-	{
-		_sourceBuffers[port]=(float*)data;
-		return;
-	}
-	port-=nSources;
-	if (port < nSinks) //Output port
-	{
-		_sinkBuffers[port]=(float*)data;
-		return;
-	}
-	port-=nSinks;
 	if ( port < nInControls) //Input control
 	{
 		_inControlBuffers[port]=(float*)data;
@@ -166,6 +154,18 @@ void LV2NetworkPlayer::lv2_ConnectTo(uint32_t port, void *data)
 	if (port < nOutControls)
 	{
 		_outControlBuffers[port]=(float*)data;
+		return;
+	}
+	port-=nOutControls;
+	if ( port < nSources ) //Input port
+	{
+		_sourceBuffers[port]=(float*)data;
+		return;
+	}
+	port-=nSources;
+	if (port < nSinks) //Output port
+	{
+		_sinkBuffers[port]=(float*)data;
 		return;
 	}
 	CLAM_ASSERT(true,"Accessing a non-existing port");
