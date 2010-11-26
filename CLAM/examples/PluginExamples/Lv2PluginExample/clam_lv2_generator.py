@@ -10,6 +10,7 @@ class AudioPort():
 		self.pos      = pos
 		self.name     = id
 		self.numPorts = ""
+		print >>sys.stderr, pos
 
 	def setNumPorts(self,theNumPorts):
 		self.numPorts = theNumPorts
@@ -138,7 +139,8 @@ class ExporterHandler(ContentHandler):
 			try:
 				fileWithDoap = open(doapfile)
 			except IOError:
-			        print 'cannot open', doapfile
+			        print >>sys.stderr, 'cannot open', doapfile
+				fileWithDoap = None
 			else:
 				doapDescription = fileWithDoap.read()
 
