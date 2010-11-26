@@ -19,13 +19,10 @@
  *
  */
 
-#include <cstdio>
 #include <cstring>
-#include <new>
 #include "ErrOpenFile.hxx"
-#include "OSDefines.hxx"
-#include <errno.h>
 #include <string>
+#include <errno.h>
 
 namespace CLAM {
 

@@ -21,7 +21,6 @@
 
 #include "ErrProcessingObj.hxx"
 #include "Processing.hxx"
-#include <cstdio>
 #include <string>
 
 namespace CLAM {

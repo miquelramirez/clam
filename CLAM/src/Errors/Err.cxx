@@ -55,10 +55,10 @@ namespace CLAM {
 
 /* specifying the header's member function */
 	void Err::Print(void) const throw()
-	{	
+	{
 		fprintf(stderr,"CLAM Error: ");
 		if (mMsg)
-			fprintf(stderr,mMsg);
+			fprintf(stderr,"%s",mMsg);
 		else
 			fprintf(stderr,"Unknown Error");
 		fprintf(stderr,"\n");
