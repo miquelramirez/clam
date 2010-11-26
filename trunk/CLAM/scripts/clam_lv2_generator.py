@@ -149,8 +149,11 @@ class ExporterHandler(ContentHandler):
 		self.connections[self.audioAux.type].append(self.audioAux)
 		self.audioAux = None
 
-	def printTTL(self,clamnetwork,uri,name,doapfile):
-		
+	def printTTL(self,clamnetwork,uri,name,doapfile,binary):
+	
+		if binary==None:
+			binary="clam_lv2_example"
+	
 		doapDescription = """\
 	doap:license <http://usefulinc.com/doap/licenses/gpl>;
 	doap:developer [
@@ -193,8 +196,7 @@ class ExporterHandler(ContentHandler):
 	lv2:port
 """ %dict(
 			uri=uri,
-			binary="clam_lv2_example",
-			#binary=name,
+			binary=binary,
 			name=name,
 			doapDescription=doapDescription
 			))
@@ -297,9 +299,10 @@ def main():
 	uris    = []
 	uribase = "default/uri/lv2/"
 	doapfile= None
+	binary= None
 
         try:
-                optlist1, args1 = getopt.getopt(args, "mtiu:d:bh",  ["manifest", "ttl", "main","uribase", "doap", "back2back", "help"])
+                optlist1, args1 = getopt.getopt(args, "mtiu:d:b:y:h",  ["manifest", "ttl", "main","uribase", "doap", "back2back", "binary","help"])
 		
         except getopt.error, msg:
                 print "[1] for help use --help"
@@ -330,6 +333,9 @@ def main():
 			test_back2back()
 			sys.exit(0)
                 
+		if o in ("-y", "--binary"):
+			binary = a	
+	
 		if o in ("-h", "--help"):       # print help
                         print >>sys.stderr, "the help was here"
                         sys.exit(0)
@@ -347,7 +353,7 @@ def main():
 			curHandler = ExporterHandler()
 			parser.setContentHandler(curHandler)
 			parser.parse(open(network))
-			curHandler.printTTL(network,uri,name,doapfile)
+			curHandler.printTTL(network,uri,name,doapfile,binary)
 			return
 
 	if createManifest:
