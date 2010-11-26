@@ -20,7 +20,6 @@
  */
 
 #include "ErrOutOfMemory.hxx"
-#include "OSDefines.hxx"
 
 
 namespace CLAM {
