@@ -10,7 +10,6 @@ class AudioPort():
 		self.pos      = pos
 		self.name     = id
 		self.numPorts = ""
-		print >>sys.stderr, pos
 
 	def setNumPorts(self,theNumPorts):
 		self.numPorts = theNumPorts
@@ -186,8 +185,8 @@ class ExporterHandler(ContentHandler):
 def printCLAM_PLUGIN(clamnetworks,uris):
 	f = sys.stdout
 	source = """\
-#include "LV2NetworkExporter.hxx"
-#include "LV2Library.hxx"
+#include <CLAM/LV2NetworkExporter.hxx>
+#include <CLAM/LV2Library.hxx>
 #include <CLAM/EmbeddedFile.hxx>
 #include <iostream>
 
