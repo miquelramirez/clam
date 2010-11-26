@@ -4,7 +4,6 @@ from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
 import sys, os
 import getopt
-from audiob2b import runBack2BackProgram
 
 network_test = """\
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
@@ -271,6 +270,7 @@ def parseCommandLine() :
 	return command, None, uribase, networks, names, uris
 
 def test_back2back() :
+	from audiob2b import runBack2BackProgram
 	data_path="../../../clam-test-data/b2b/lv2_plugin/"
 	f = open('test_othercable.clamnetwork','w')
 	f.write(network_test)	
