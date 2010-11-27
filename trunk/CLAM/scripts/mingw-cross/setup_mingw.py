@@ -71,18 +71,61 @@ apachemirror = "http://www.apache.org/dist"
 apachemirror = "http://apache.rediris.es/"
 prefix = os.path.join(sandbox,"local")
 
+class tee :
+	def __init__(self, file1, file2) :
+		self.f1=file1
+		self.f2=file2
+	def flush(self):
+		self.f1.flush()
+		self.f2.flush()
+	def write(self, content) :
+		self.f1.write(content)
+		self.f2.write(content)
+	def isatty(self) : return f2.isatty()
+class quotedFile :
+	def __init__(self, aFile, incode, outcode) :
+		self.incode = incode
+		self.outcode = outcode
+		self.f = aFile
+	def write(self,content) :
+		self.f.write(self.incode)
+		self.f.write(content)
+		self.f.write(self.outcode)
+	def flush(self):
+		self.f.flush()
+	def isatty(self) : return 0
+
 def die(message) :
 	print >> sys.stderr, "\033[31m%s\033[0m"%message
 	sys.exit(-1)
 def warning(message) :
 	print >> sys.stderr, "\033[33m%s\033[0m"%message
 
-def run(command, message=None) :
+def progress(message) :
+	print >> sys.stderr, "\033[35m=== %s === \033[0m"%message
+
+def run(command, message=None, log=sys.stdout, err=None) :
 	if not message : message = "Running: " + command
 	print "\033[32m== %s\033[0m"%(message)
-	subprocess.call(command, shell=True) and die("Failed")
+	if err is None :
+		err = quotedFile(log, "\033[31m", "\033[0m")
+	process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	import select
+	outpoll = select.poll()
+	outpoll.register(process.stdout.fileno())
+	outpoll.register(process.stderr.fileno())
+	while process.returncode is None :
+		process.poll()
+		for fd, flags in outpoll.poll() :
+			if fd==process.stderr.fileno() :
+				err.write(process.stderr.readline())
+			if fd==process.stdout.fileno() :
+				log.write(process.stdout.readline())
+	if process.returncode : die("Failed, exit code %i"%process.returncode)
 
-def output(command) :
+def output(command, message=None) :
+	if message :
+		print "\033[32m== %s\033[0m"%(message)
 	return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).communicate()[0] 
 
 def applyPatch(directory, patch, level=0) :
@@ -96,7 +139,7 @@ def download(uri, filename=None) :
 		outputOption = " -O '%s'"% os.path.join(sandbox,"downloads",filename)
 	else :
 		outputOption = " -P '%s'"% os.path.join(sandbox,"downloads")
-	run("wget -nv --progress=dot -c %s '%s'" % (outputOption, uri),
+	run("wget --progress=dot -c %s '%s'" % (outputOption, uri),
 		"Downloading %s"%uri
 	)
 
@@ -151,7 +194,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		deps="",
 		pinnedVersion = None,
 	) :
-	print "Module:", name
+	progress("Module %s"%name)
 	subst = dict(
 		sandbox = sandbox,
 		prefix = prefix,
@@ -161,7 +204,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		name = name,
 		pinned = pinnedVersion if pinnedVersion else "None",
 	)
-	availableVersion = output(checkVersion).strip()
+	availableVersion = output(checkVersion, "Checking version for %s"%name).strip()
 	availableVersion or die("No online version found for the package\n Command used:\n%s" % checkVersion)
 	print "Found version: '%s'" % availableVersion
 	if (pinnedVersion and pinnedVersion != availableVersion) :
@@ -182,10 +225,10 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	extractSource(subst['tarball'])
 	patches = glob.glob(scriptRelative("mingw-"+name+"*"))
 	patches.sort()
-	print patches
 	for patch in patches :
 		applyPatch(subst['srcdir'], patch, level=1)
-	run(buildCommand % subst)
+	log = tee(open("log-%s-build"%name,'w'), sys.stdout)
+	run(buildCommand % subst, log=log)
 	run("touch finnished-%(name)s-%(version)s"%subst)
 
 packageDatabase = {}
@@ -204,8 +247,16 @@ def buildAll() :
 	for name in packageOrder : build(name)
 
 
+
+
+##########################################################################################################3
+
+
 ensureDir(os.path.join(sandbox, "src"))
 ensureDir(os.path.join(sandbox, "downloads"))
+ensureDir(os.path.join(prefix, "include"))
+ensureDir(os.path.join(prefix, "lib"))
+ensureDir(os.path.join(prefix, "bin"))
 
 os.environ.update(
 	PKG_CONFIG_LIBDIR = "/usr/%s/lib/pkgconfig"%target, # default debian installation
@@ -226,11 +277,13 @@ package( "pthread",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" make CROSS=i586-mingw32msvc- GC-inlined && """
-		""" mkdir -p %(prefix)s/{include,lib,bin} && """
+		""" mkdir -p %(prefix)s/include && """
+		""" mkdir -p %(prefix)s/lib && """
+		""" mkdir -p %(prefix)s/bin && """
 		""" cp libpthreadGC2.a %(prefix)s/lib && """
 		""" cp *.h %(prefix)s/include && """
 		""" cp pthreadGC2.dll %(prefix)s/bin && """
-		""" ln -s libpthreadGC2.a %(prefix)s/lib/libpthread.a """
+		""" ln -sf libpthreadGC2.a %(prefix)s/lib/libpthread.a """
 	)
 
 
@@ -321,8 +374,34 @@ package( "libvorbis",
 		""" make install """
 	)
 
+package( "gettext",
+	uri = "http://www.gnu.org/software/gettext/",
+	checkVersion = 
+		""" wget -q -O- 'http://www.gnu.org/software/gettext/' | """
+		""" grep 'gettext-' | """
+		""" sed -n 's,.*gettext-\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" head -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "ftp://ftp.gnu.org/pub/gnu/gettext/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" cd gettext-runtime && """
+		""" ./configure """
+			""" --host='%(target)s' """
+			""" --prefix='%(prefix)s' """
+			""" --enable-threads=win32 """
+			""" --disable-java """
+			""" --without-git """
+			""" --without-libexpat-prefix """
+			""" --without-libxml2-prefix """
+			""" CONFIG_SHELL=/bin/bash """
+			""" && """
+		""" make install """
+	)
+
 package( "libiconv",
 	uri = "http://www.gnu.org/software/libiconv/",
+	deps = 'gettext',
 	checkVersion =
 		""" wget -O- -q 'http://ftp.gnu.org/pub/gnu/libiconv/?C=M;O=A' | """
 		""" sed -n 's,.*libiconv-\([0-9][^<]*\)\.tar.*,\\1,p' | """
@@ -331,7 +410,7 @@ package( "libiconv",
 	downloadUri = "http://ftp.gnu.org/pub/gnu/%(name)s/%(tarball)s",
 	buildCommand = 
 		""" cd %(srcdir)s && """
-		""" sed -i 's, sed , sed ,g' 'windows/windres-options'  && """
+		""" sed -i 's, sed , sed ,g' 'windows/windres-options'  && """ # TODO useless command?
 		""" ./configure --host='%(target)s' --prefix='%(prefix)s' """
 #			""" --disable-nls """
 			""" && """
@@ -614,31 +693,6 @@ package( "libsigc++",
 		""" make install """
 	)
 
-package( "gettext",
-	uri = "http://www.gnu.org/software/gettext/",
-	checkVersion = 
-		""" wget -q -O- 'http://www.gnu.org/software/gettext/' | """
-		""" grep 'gettext-' | """
-		""" sed -n 's,.*gettext-\([0-9][^>]*\)\.tar.*,\\1,p' | """
-		""" head -1 """,
-	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "ftp://ftp.gnu.org/pub/gnu/gettext/%(tarball)s",
-	buildCommand =
-		""" cd %(srcdir)s && """
-		""" cd gettext-runtime && """
-		""" ./configure """
-			""" --host='%(target)s' """
-			""" --prefix='%(prefix)s' """
-			""" --enable-threads=win32 """
-			""" --disable-java """
-			""" --without-git """
-			""" --without-libexpat-prefix """
-			""" --without-libxml2-prefix """
-			""" CONFIG_SHELL=/bin/bash """
-			""" && """
-		""" make install """
-	)
-
 package( "libxml2",
 	uri = "http://xmlsoft.org/",
 	deps = "",
@@ -737,7 +791,7 @@ package( "lcms",
 
 package( "libmng",
 	uri = "http://www.libmng.com",
-	deps = "zlib jpeg lcms",
+	deps = "zlib jpeg",
 	checkVersion = 
 		sfCheckVersion('libmng', 'libmng-devel') +
 	    """ sed -n 's,.*libmng-\([0-9][^>]*\)\.tar.*,\\1,p' | """
@@ -746,6 +800,7 @@ package( "libmng",
 	downloadUri = "%(sfmirror)s/project/libmng/libmng-devel/%(version)s/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
+#		""" sed -i '/.*lcms\.h.*/s.lcms\.h,lcms2.h,p' libmng_types.h && """
 		""" make install -f makefiles/makefile.mingwdll """
 			""" CC='%(target)s-gcc' """
 			""" DLLWRAP='%(target)s-dllwrap' """
@@ -755,8 +810,8 @@ package( "libmng",
 			""" INSTALL_PREFIX='%(prefix)s/' """
 			""" ZLIBINC="`pkg-config zlib --cflags`" """
 			""" ZLIBLIB="`pkg-config zlib --libs`"  """
-			""" LCMSINC="`pkg-config lcms2 --cflags`" """
-			""" LCMSLIB="`pkg-config lcms2 --libs`" """
+#			""" LCMSINC="`pkg-config lcms2 --cflags` -DMNG_INCLUDE_LCMS" """ # uses lcms1 not lcms2
+#			""" LCMSLIB="`pkg-config lcms2 --libs`" """
 	)
 
 package( "glib",
@@ -828,20 +883,20 @@ package( "libxml++",
 
 package( "qt",
 	uri = "http://qt.nokia.com/",
-	deps = "gcc libodbc++ postgresql freetds openssl libgcrypt zlib libpng jpeg libmng tiff giflib sqlite libiconv",
+	deps = "gcc zlib libpng jpeg libmng tiff giflib libodbc++ postgresql freetds openssl libgcrypt sqlite libiconv",
 	checkVersion =
 		""" wget -q -O- 'http://qt.gitorious.org/qt/qt/commits' | """
 		""" grep '<li><a href="/qt/qt/commit/' | """
 		""" sed -n 's,.*<a[^>]*>v\([0-9][^<-]*\)<.*,\\1,p' | """
 		""" tail -1 """,
-	tarballName = "%(name)s-everywhere-opensource-%(version)s.tar.gz",
+	tarballName = "%(name)s-everywhere-opensource-src-%(version)s.tar.gz",
 	downloadUri = "http://get.qt.nokia.com/qt/source/%(tarball)s",
-	srcdir = "%(name)s-everywhere-opensource-%(version)s",
+	srcdir = "%(name)s-everywhere-opensource-src-%(version)s",
 	buildCommand =
-		""" false && """
 		""" cd %(srcdir)s && """
+		""" sed -i '/i686-pc-mingw32/s,i686-pc-mingw32,%(target)s,p' mkspecs/unsupported/win32-g++-cross/qmake.conf  """
 #		""" OPENSSL_LIBS="`pkg-config --libs-only-l openssl`" """
-		""" PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl` -lws2_32" """
+#		""" PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl` -lws2_32" """
 		""" ./configure """
 			""" -opensource """
 			""" -confirm-license """
@@ -850,16 +905,16 @@ package( "qt",
 			""" -force-pkg-config """
 			""" -release """
 			""" -exceptions """
-			""" -static """
+#			""" -static """
 			""" -prefix '%(prefix)s' """
 			""" -prefix-install """
 			""" -script """
 			""" -opengl desktop """
 			""" -webkit """
-			""" -no-glib """
-			""" -no-gstreamer """
-			""" -no-phonon """
-			""" -no-phonon-backend """
+#			""" -no-glib """
+#			""" -no-gstreamer """
+#			""" -no-phonon """
+#			""" -no-phonon-backend """
 			""" -accessibility """
 			""" -no-reduce-exports """
 			""" -no-rpath """
@@ -867,10 +922,10 @@ package( "qt",
 			""" -nomake demos """
 			""" -nomake docs """
 			""" -nomake examples """
-			""" -plugin-sql-sqlite """
-			""" -plugin-sql-odbc """
-			""" -plugin-sql-psql """
-			""" -plugin-sql-tds """
+			""" -no-sql-sqlite """ # clam do not need sql dependencies
+			""" -no-sql-odbc """
+			""" -no-sql-psql """
+			""" -no-sql-tds """
 			""" -system-zlib """
 			""" -system-libpng """
 			""" -system-libjpeg """
