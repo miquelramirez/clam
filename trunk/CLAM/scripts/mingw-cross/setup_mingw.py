@@ -7,7 +7,7 @@ mingw compatible binaries from a Linux box (crosscompilation).
 Non complete list of requirements (Ubuntu):
 sudo apt-get install gcc-mingw32 mingw32-binutils mingw32-runtime \
 	nsis wine automake autoconf-archive libtool pkg-config \
-	wget sed autogen mm-common
+	wget sed autogen mm-common bjam
 
 Please, update the list of packages if you find any missing one.
 Note that 'ming32' package is legacy 3.2.1 gcc, do not install it.
@@ -554,6 +554,23 @@ package( "dlfcn-win32",
 		""" make install """
 	)
 
+package( "zlib",
+	uri = "http://zlib.net/",
+	deps = "",
+	checkVersion = 
+		""" wget -q -O- 'http://zlib.net/' | """
+		""" sed -n 's,.*zlib-\([0-9][^>]*\)\.tar.*,\\1,ip' | """
+		""" head -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://zlib.net//%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" CHOST='%(target)s' ./configure  --prefix='%(prefix)s' && """ 
+		# TODO: --enable-shared generates .so instead dll's
+		""" make && """
+		""" make install """
+	)
+
 package( "boost",
 	uri = "http://www.boost.org/",
 	checkVersion =
@@ -570,9 +587,10 @@ package( "boost",
 		""" cd %(srcdir)s && """
 		""" echo 'using gcc : : %(target)s-g++ : <rc>%(target)s-windres <archiver>%(target)s-ar ;' > 'user-config.jam' && """
 		""" sed -i 's,<target-os>windows : lib ;,<target-os>windows : a ;,' '%(srcdir)s/tools/build/v2/tools/types/lib.jam' && """
-		""" cd 'tools/jam/src' && ./build.sh && """
+#		""" cd 'tools/jam/src' && ./build.sh && """
 		""" cd %(srcdir)s && """
- 		""" tools/jam/src/bin.*/bjam """
+#		""" tools/jam/src/bin.*/bjam """
+		""" bjam """
 			""" --ignore-site-config """
 			""" --user-config=user-config.jam """
 			""" target-os=windows """
@@ -711,23 +729,6 @@ package( "libxml2",
 			""" --without-python """
 			""" --without-threads """
 			""" && """
-		""" make && """
-		""" make install """
-	)
-
-package( "zlib",
-	uri = "http://zlib.net/",
-	deps = "",
-	checkVersion = 
-		""" wget -q -O- 'http://zlib.net/' | """
-		""" sed -n 's,.*zlib-\([0-9][^>]*\)\.tar.*,\\1,ip' | """
-		""" head -1 """,
-	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "http://zlib.net//%(tarball)s",
-	buildCommand =
-		""" cd %(srcdir)s && """
-		""" CHOST='%(target)s' ./configure  --prefix='%(prefix)s' && """ 
-		# TODO: --enable-shared generates .so instead dll's
 		""" make && """
 		""" make install """
 	)
