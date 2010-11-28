@@ -60,10 +60,6 @@ import os
 import glob
 
 
-if os.path.exists(os.path.expanduser("~/CajitasDeArena")) :
-	sandbox = os.path.expanduser("~/CajitasDeArena/mingw32")
-else:
-	sandbox = os.path.expanduser("~/mingw32")
 sandbox = os.path.expanduser("~/mingw32")
 target = "i586-mingw32msvc"
 sfmirror = "http://kent.dl.sourceforge.net"
@@ -599,10 +595,13 @@ package( "boost",
 			""" --layout=tagged """
 			""" --without-mpi """
 			""" --without-python """
+			""" --without-bzip2 """
 			""" --prefix='%(prefix)s' """
 			""" --exec-prefix='%(prefix)s/bin' """
 			""" --libdir='%(prefix)s/lib' """
 			""" --includedir='%(prefix)s/include' """
+			""" -sZLIB_INCLUDE='%(prefix)s/include' """
+			""" -sZLIB_LIBPATH='%(prefix)s/lib' """
 			""" -sEXPAT_INCLUDE='%(prefix)s/include' """
 			""" -sEXPAT_LIBPATH='%(prefix)s/lib' """
 			""" stage install """
