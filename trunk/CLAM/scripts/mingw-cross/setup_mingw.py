@@ -561,10 +561,21 @@ package( "zlib",
 	downloadUri = "http://zlib.net//%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
-		""" CHOST='%(target)s' ./configure  --prefix='%(prefix)s' && """ 
+		# Just to generate zlib.pc
+		""" CHOST='%(target)s' """
+			""" ./configure  --prefix='%(prefix)s' """
+			""" && """ 
 		# TODO: --enable-shared generates .so instead dll's
-		""" make && """
-		""" make install """
+		""" make install -f win32/Makefile.gcc """
+			""" prefix='%(prefix)s' """
+			""" PREFIX='%(target)s-' """
+			""" BINARY_PATH='%(prefix)s/bin' """
+			""" INCLUDE_PATH='%(prefix)s/include' """
+			""" LIBRARY_PATH='%(prefix)s/lib' """
+			""" SHARED_MODE=1 """
+			""" && """
+		""" cp zlib.pc %(prefix)s/lib/pkgconfig/ && """
+		""" echo Package %(name)s done."""
 	)
 
 package( "bzip2",
