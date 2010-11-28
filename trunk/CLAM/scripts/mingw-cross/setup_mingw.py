@@ -302,8 +302,9 @@ package( "fftw",
 	)
 
 
+# TODO: the pkg-config patch does not applies twice as it creates a file
 package( 'libmad',
-	uri = "??",
+	uri = "http://www.underbit.com/products/mad/",
 	checkVersion =
 		sfCheckVersion("mad","libmad") +
 		""" sed -n 's,.*libmad-\([0-9][^>]*\)\.tar.*,\\1,p' | """
@@ -439,14 +440,13 @@ package( "flac",
 			""" --enable-ogg """
 			""" --disable-oggtest """
 			""" && """
-#		""" ./configure --host='%(target)s' --prefix='%(prefix)s' --disable-xmms-plugin --enable-ogg --disable-oggtest && """
 		""" make && """
 		""" make install """
 	)
 
 package( "libsndfile",
 	uri = "http://www.mega-nerd.com/libsndfile/",
-	deps = "flac ogg vorbis",
+	deps = "ogg vorbis flac",
 	pinnedVersion = "1.0.21",
 	checkVersion =
 		""" wget -q -O- 'http://www.mega-nerd.com/libsndfile/' | """
@@ -460,7 +460,7 @@ package( "libsndfile",
 #		""" autoconf && """
 		""" ./configure mingw32 --host=%(target)s --prefix=%(prefix)s """
 			""" --disable-external-libs """
-			""" --disable-flac """
+#			""" --disable-flac """
 			""" --disable-sqlite """
 			""" --disable-octave """
 			""" --disable-alsa """
@@ -565,6 +565,33 @@ package( "zlib",
 		# TODO: --enable-shared generates .so instead dll's
 		""" make && """
 		""" make install """
+	)
+
+package( "bzip2",
+	uri = "http://www.bzip.org",
+	deps = "",
+	checkVersion = 
+		""" wget -q -O- 'http://www.bzip.org/downloads.html' | """
+		""" grep 'bzip2-' | """
+		""" sed -n 's,.*bzip2-\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" head -1 """
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://zlib.net//%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" sed -i 's,sys\\\\stat\\.h,sys/stat.h,g' 'bzip2.c' && """
+		""" sed -i 's,WINAPI,,g'                 'bzlib.h' && """
+		""" make -C '$(1)' -j '$(JOBS)' libbz2.a """
+			""" PREFIX='%(prefix)s' """
+			""" CC='%(target)s-gcc' """
+			""" AR='%(target)s-ar' """
+			""" RANLIB='%(target)s-ranlib' """
+			""" && """
+		""" install -d '%(prefix)s/lib' && """
+		""" install -m664 '$(1)/libbz2.a' '%(prefix)s/lib/' && """
+		""" install -d '%(prefix)s/include' && """
+		""" install -m664 '$(1)/bzlib.h' '%(prefix)s/include/' && """
+		""" echo Done. """
 	)
 
 package( "boost",
