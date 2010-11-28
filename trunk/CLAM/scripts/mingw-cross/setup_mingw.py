@@ -574,23 +574,23 @@ package( "bzip2",
 		""" wget -q -O- 'http://www.bzip.org/downloads.html' | """
 		""" grep 'bzip2-' | """
 		""" sed -n 's,.*bzip2-\([0-9][^>]*\)\.tar.*,\\1,p' | """
-		""" head -1 """
+		""" head -1 """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "http://zlib.net//%(tarball)s",
+	downloadUri = "http://www.bzip.org/%(version)s/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" sed -i 's,sys\\\\stat\\.h,sys/stat.h,g' 'bzip2.c' && """
 		""" sed -i 's,WINAPI,,g'                 'bzlib.h' && """
-		""" make -C '$(1)' -j '$(JOBS)' libbz2.a """
+		""" make install """
 			""" PREFIX='%(prefix)s' """
 			""" CC='%(target)s-gcc' """
 			""" AR='%(target)s-ar' """
 			""" RANLIB='%(target)s-ranlib' """
 			""" && """
-		""" install -d '%(prefix)s/lib' && """
-		""" install -m664 '$(1)/libbz2.a' '%(prefix)s/lib/' && """
-		""" install -d '%(prefix)s/include' && """
-		""" install -m664 '$(1)/bzlib.h' '%(prefix)s/include/' && """
+#		""" install -d '%(prefix)s/lib' && """
+#		""" install -m664 '$(1)/libbz2.a' '%(prefix)s/lib/' && """
+#		""" install -d '%(prefix)s/include' && """
+#		""" install -m664 '$(1)/bzlib.h' '%(prefix)s/include/' && """
 		""" echo Done. """
 	)
 
@@ -622,7 +622,6 @@ package( "boost",
 			""" --layout=tagged """
 			""" --without-mpi """
 			""" --without-python """
-			""" --without-bzip2 """
 			""" --prefix='%(prefix)s' """
 			""" --exec-prefix='%(prefix)s/bin' """
 			""" --libdir='%(prefix)s/lib' """
