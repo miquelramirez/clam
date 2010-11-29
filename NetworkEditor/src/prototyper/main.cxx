@@ -27,7 +27,7 @@ int usage(const std::string & program)
 			<< "Options:\n"
 			<< " -o             Non interactive mode\n"
 			<< " -b <backend>   Try backend (portaudio, alsa, jack).\n"
-			<< " -start-paused  Pause just at start.\n"
+			<< " --start-paused  Pause just at start.\n"
 			<< std::endl;
 		return -1;
 }
