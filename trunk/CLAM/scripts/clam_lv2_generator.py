@@ -186,6 +186,12 @@ class ExporterHandler(ContentHandler):
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix units: <http://lv2plug.in/ns/extension/units#> .
+@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+
+<%(uri)s/gui>
+        a uiext:GtkUI;
+        uiext:binary <%(binary)s.so>;
+.
 
 <%(uri)s>
 	a lv2:Plugin;
@@ -193,6 +199,7 @@ class ExporterHandler(ContentHandler):
 	doap:name "%(name)s";
 %(doapDescription)s
 	lv2:optionalFeature lv2:hardRtCapable ;
+	uiext:ui <%(uri)s/gui> ;
 	lv2:port
 """ %dict(
 			uri=uri,
