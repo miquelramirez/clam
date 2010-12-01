@@ -9,7 +9,6 @@ libraryName='clam_lv2_example'
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
-#options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', '', validator=PathVariable.PathAccept))
 options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 bundlePath=os.path.expanduser(os.path.join("~/.lv2",bundlename))
@@ -17,6 +16,14 @@ bundlePath=os.path.expanduser(os.path.join("~/.lv2",bundlename))
 toolChain = 'default'
 if sys.platform == 'win32': toolChain = 'mingw'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
+env.Tool("qt4", toolpath=["../../../scons/sconstools"])
+env.ParseConfig('pkg-config gtk+-2.0 --libs --cflags')
+env.ParseConfig('pkg-config QtGui --libs --cflags')
+env.ParseConfig('pkg-config QtUiTools --libs --cflags')
+env.ParseConfig('pkg-config liblo --libs --cflags')
+env['SHOBJPREFIX']='generated/'
+env['QT4_MOCHPREFIX']='generated/'
+
 options.Save('options.cache', env) # do not save options in NetworkEditor generated plugins
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
@@ -41,6 +48,8 @@ networks = glob.glob("*.clamnetwork")
 env['LV2BASEURI'] = "http://clam-project.org/examples/lv2"
 env['DOAPFILE'  ] = "default.doap"
 
+env.Uic4(glob.glob("*.ui"))
+
 manifest = env.Command("manifest.ttl", networks,
 	"clam_lv2_generator.py --manifest -u ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
 
@@ -48,8 +57,8 @@ mainSource = env.Command("clam_plugin.cxx", networks,
 	"clam_lv2_generator.py --main -u ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
 ttls = [
 	env.Command(os.path.splitext(os.path.basename(network))[0]+".ttl", network,
-#	"clam_lv2_generator.py --ttl -u ${LV2BASEURI} ${SOURCE} > ${TARGET}" )
-	"clam_lv2_generator.py --ttl -u ${LV2BASEURI} -d ${DOAPFILE} ${SOURCE} > ${TARGET}" )
+	"clam_lv2_generator.py --ttl -u ${LV2BASEURI} ${SOURCE} > ${TARGET}" )
+#	"clam_lv2_generator.py --ttl -u ${LV2BASEURI} -d ${DOAPFILE} ${SOURCE} > ${TARGET}" )
 	for network in networks ]
 
 
@@ -60,7 +69,8 @@ libraries = [
 	env.SharedLibrary(target=libraryName, source = sources, SHLIBPREFIX=''),
 	]
 
-install = env.Install(bundlePath, [libraries,ttls,manifest])
+install = env.Install(bundlePath, [libraries,ttls,manifest]) + env.Install(bundlePath, glob.glob("*ui"))
+
 env.Alias('install', install)
 env.Command('uninstall', [], Delete(FindInstalledFiles()))
 env.Default(libraries, ttls, manifest)
