@@ -67,7 +67,29 @@ apachemirror = "http://www.apache.org/dist"
 apachemirror = "http://apache.rediris.es/"
 prefix = os.path.join(sandbox,"local")
 
+def loadDictFile(dictfile) :
+	""" Returns a dict with the variables defined in a file """
+	class temp : exec(open(dictfile))
+	loaded = dict(temp.__dict__)
+	del loaded['__doc__']
+	del loaded['__module__']
+	return loaded
+
+def die(message) :
+	""" Exits the program by prompting a message using the do-this-or-die idiom. """
+	print >> sys.stderr, "\033[31m%s\033[0m"%message
+	sys.exit(-1)
+
+def warning(message) :
+	""" Outputs a warning message. """
+	print >> sys.stderr, "\033[33m%s\033[0m"%message
+
+def stage(message) :
+	""" Outputs an stage message. """
+	print >> sys.stderr, "\033[35m=== %s === \033[0m"%message
+
 class tee :
+	""" Output file decorator that duplicates the output to two files. """
 	def __init__(self, file1, file2) :
 		self.f1=file1
 		self.f2=file2
@@ -77,8 +99,10 @@ class tee :
 	def write(self, content) :
 		self.f1.write(content)
 		self.f2.write(content)
-	def isatty(self) : return f2.isatty()
+
 class quotedFile :
+	""" Output file decorator that, surrounds the content of each write
+	in between 'incode' and 'outcode'. """
 	def __init__(self, aFile, incode, outcode) :
 		self.incode = incode
 		self.outcode = outcode
@@ -89,16 +113,6 @@ class quotedFile :
 		self.f.write(self.outcode)
 	def flush(self):
 		self.f.flush()
-	def isatty(self) : return 0
-
-def die(message) :
-	print >> sys.stderr, "\033[31m%s\033[0m"%message
-	sys.exit(-1)
-def warning(message) :
-	print >> sys.stderr, "\033[33m%s\033[0m"%message
-
-def progress(message) :
-	print >> sys.stderr, "\033[35m=== %s === \033[0m"%message
 
 def run(command, message=None, log=sys.stdout, err=None) :
 	if not message : message = "Running: " + command
@@ -170,10 +184,13 @@ def scriptRelative(path) :
 def sfCheckVersion(project, package) :
 	return (
 		""" wget -q -O- 'http://sourceforge.net/projects/%s/files/%s/' | """
-		""" grep 'title="/' | """
-		""" sed -n 's,.*title="\(/[^:]*\).*released on \([0-9-]*\)",\\2 \\1,p' | """
-		""" sort | """
-		""" sed 's,^[^ ]* ,,' | """
+		""" grep legacy_release_notes | """
+		""" grep download_url |  """
+		""" sed -e 's,.*"\([0-9][^"]*\)":.*,\\1,' """
+#		""" grep 'title="/' | """
+#		""" sed -n 's,.*title="\(/[^:]*\).*released on \([0-9-]*\)",\\2 \\1,p' | """
+#		""" sort | """
+#		""" sed 's,^[^ ]* ,,' | """
 		)%(project, package)
 
 def gnomeCheckVersion(name, majorVersion) :
@@ -190,7 +207,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		deps="",
 		pinnedVersion = None,
 	) :
-	progress("Module %s"%name)
+	stage("Module %s"%name)
 	subst = dict(
 		sandbox = sandbox,
 		prefix = prefix,
@@ -252,6 +269,7 @@ ensureDir(os.path.join(sandbox, "src"))
 ensureDir(os.path.join(sandbox, "downloads"))
 ensureDir(os.path.join(prefix, "include"))
 ensureDir(os.path.join(prefix, "lib"))
+ensureDir(os.path.join(prefix, "lib", "pkgconfig"))
 ensureDir(os.path.join(prefix, "bin"))
 
 os.environ.update(
@@ -507,6 +525,61 @@ package( "liblo",
 		""" make install """
 	)
 
+package( "zlib",
+	uri = "http://zlib.net/",
+	deps = "",
+	checkVersion = 
+		""" wget -q -O- 'http://zlib.net/' | """
+		""" sed -n 's,.*zlib-\([0-9][^>]*\)\.tar.*,\\1,ip' | """
+		""" head -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "http://zlib.net//%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		# Just to generate zlib.pc
+		""" CHOST='%(target)s' """
+			""" ./configure  --prefix='%(prefix)s' """
+			""" && """ 
+		""" make install -f win32/Makefile.gcc """
+			""" prefix='%(prefix)s' """
+			""" PREFIX='%(target)s-' """
+			""" BINARY_PATH='%(prefix)s/bin' """
+			""" INCLUDE_PATH='%(prefix)s/include' """
+			""" LIBRARY_PATH='%(prefix)s/lib' """
+			""" SHARED_MODE=1 """
+			""" && """
+		""" cp zlib.pc %(prefix)s/lib/pkgconfig/ && """
+		""" echo Package %(name)s done."""
+	)
+
+package( "libpng",
+	uri = "http://www.libpng.org",
+	deps = "zlib",
+	checkVersion = 
+		""" wget -q -O- 'http://libpng.git.sourceforge.net/git/gitweb.cgi?p=libpng/libpng;a=tags' | """
+		""" grep '<a class="list name"' | """
+		""" sed -n 's,.*<a[^>]*>v\([0-9][^<]*\)<.*,\\1,p' | """
+		""" grep -v alpha | """
+		""" grep -v beta | """
+		""" grep -v rc | """
+		""" grep -v '^1\.2\.' | """
+		""" head -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "%(sfmirror)s/project/libpng/01-libpng-master/%(version)s/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+	#	""" ./autogen.sh && """
+	#	""" aclocal && """
+	#	""" autoconf && """
+	#	""" libtoolize --force && """
+		""" ./configure  --prefix='%(prefix)s' --host='%(target)s' """
+			""" CFLAGS='-I%(prefix)s/include' """
+			""" LDFLAGS='-L%(prefix)s/lib' """
+			""" LIBS='-lz' """
+			""" && """ 
+		""" make install """
+	)
+
 package( "cppunit",
 	uri = "http://liblo.sourceforge.net/",
 	checkVersion =
@@ -527,7 +600,7 @@ package( "cppunit",
 	# TODO: From the wiki: To get some extra autoconf macros and libtool do: 
 	# sudo apt-get install autoconf-archive libtool automake
 
-
+if False : \
 package( "dlfcn-win32",
 	uri = "http://code.google.com/p/dlfcn-win32/",
 	checkVersion =
@@ -550,33 +623,6 @@ package( "dlfcn-win32",
 		""" make install """
 	)
 
-package( "zlib",
-	uri = "http://zlib.net/",
-	deps = "",
-	checkVersion = 
-		""" wget -q -O- 'http://zlib.net/' | """
-		""" sed -n 's,.*zlib-\([0-9][^>]*\)\.tar.*,\\1,ip' | """
-		""" head -1 """,
-	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "http://zlib.net//%(tarball)s",
-	buildCommand =
-		""" cd %(srcdir)s && """
-		# Just to generate zlib.pc
-		""" CHOST='%(target)s' """
-			""" ./configure  --prefix='%(prefix)s' """
-			""" && """ 
-		# TODO: --enable-shared generates .so instead dll's
-		""" make install -f win32/Makefile.gcc """
-			""" prefix='%(prefix)s' """
-			""" PREFIX='%(target)s-' """
-			""" BINARY_PATH='%(prefix)s/bin' """
-			""" INCLUDE_PATH='%(prefix)s/include' """
-			""" LIBRARY_PATH='%(prefix)s/lib' """
-			""" SHARED_MODE=1 """
-			""" && """
-		""" cp zlib.pc %(prefix)s/lib/pkgconfig/ && """
-		""" echo Package %(name)s done."""
-	)
 
 package( "bzip2",
 	uri = "http://www.bzip.org",
@@ -769,28 +815,6 @@ package( "libxml2",
 		""" make install """
 	)
 
-package( "libpng",
-	uri = "http://www.libpng.org",
-	deps = "zlib",
-	checkVersion = 
-		""" wget -q -O- 'http://libpng.git.sourceforge.net/git/gitweb.cgi?p=libpng/libpng;a=tags' | """
-		""" grep '<a class="list name"' | """
-		""" sed -n 's,.*<a[^>]*>v\([0-9][^<]*\)<.*,\\1,p' | """
-		""" grep -v alpha | """
-		""" grep -v beta | """
-		""" grep -v rc | """
-		""" grep -v '^1\.2\.' | """
-		""" head -1 """,
-	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "%(sfmirror)s/project/libpng/01-libpng-master/%(version)s/%(tarball)s",
-	buildCommand =
-		""" cd %(srcdir)s && """
-		""" ./configure  --prefix='%(prefix)s' --host='%(target)s' """
-			""" CFLAGS='-I%(prefix)s/include' """
-			""" LDFLAGS='-L%(prefix)s/lib' """
-			""" && """ 
-		""" make install """
-	)
 
 package( "jpeg",
 	uri = "http://www.ijg.org/",
@@ -1012,10 +1036,19 @@ package( "python",
 
 
 
-if '--list' in sys.argv :
-	print "Available packages: " + " ". join(packageDatabase.keys())
+def hasOption(option) :
+	if option not in sys.argv :
+		return False
+	sys.argv.remove(option)
+	return True
 
-elif len(sys.argv)<=1 :
+if hasOption('--list') :
+	print "Available packages: " + " ". join(packageDatabase.keys())
+	sys.exit()
+
+deps = hasOption('--deps')
+
+if len(sys.argv)<=1 :
 	buildAll()
 else :
 	build(" ".join(sys.argv[1:]))
