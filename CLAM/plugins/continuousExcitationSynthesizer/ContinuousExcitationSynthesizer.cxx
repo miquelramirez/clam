@@ -43,6 +43,16 @@
 */
 namespace CLAM
 {
+	void StartOrSignalError(Processing * proc)
+	{
+		if (not proc) return;
+		if (not proc->IsConfigured())
+		{
+			std::cerr << proc->GetConfigErrorMessage() << std::endl;
+			exit(-1);
+		}
+		proc->Start();
+	}
 
 	void SynthesizeToSpeakers(
 		SDIFDatabase& sdifDatabase, SinusoidalSynthesis& synthesis, 
@@ -55,10 +65,10 @@ namespace CLAM
 
 		CLAM_ACTIVATE_FAST_ROUNDING;
 
-		unsigned int buffersize = 1024;
+		unsigned int buffersize = 2048;
 		int samplerate = 44100;
 
-		AudioManager audioManager(samplerate,2048);
+		AudioManager audioManager(samplerate,buffersize);
 		AudioIOConfig outLCfg;
 		outLCfg.SetDevice("rtaudio:default");
 		outLCfg.SetChannelID(0);
@@ -77,15 +87,11 @@ namespace CLAM
 
 		audioManager.Start();
 
-		smsFreqShift.Start();
-		synthesis.Start();
-		if (audioWriter != NULL)
-		{
-			audioWriter->Start();
-		}
-
-		outL.Start();
-		outR.Start();
+		StartOrSignalError(&smsFreqShift);
+		StartOrSignalError(&synthesis);
+		StartOrSignalError(audioWriter);
+		StartOrSignalError(&outL);
+		StartOrSignalError(&outR);
 
 		ControlStreamSegmentator theSegmentator;
 
@@ -257,10 +263,10 @@ int main(int argc,char** argv)
 	/****************************************\
 	 * Load SDIF							*
 	\****************************************/
-//		CLAM::SDIFInConfig cfg;
-//		cfg.SetEnableFundFreq(false);
-//		cfg.SetEnablePeakArray(true);
-//		cfg.SetEnablePeakArray(true);
+//	CLAM::SDIFInConfig cfg;
+//	cfg.SetEnableFundFreq(false);
+//	cfg.SetEnablePeakArray(true);
+//	cfg.SetEnablePeakArray(true);
 	std::string directoryName = std::string(sdifDirectory);
 	CLAM::SDIFDatabase theSDIFLoader;
 	bool isResidualEnabled = false;
@@ -272,20 +278,21 @@ int main(int argc,char** argv)
 	/****************************************\
 	 * Configure AudioFileWriter			*
 	\****************************************/
-	CLAM::MonoAudioFileWriter audioWriter;
-	CLAM::MonoAudioFileWriterConfig writercfg;
-
-	const std::string outputFile(wavoutput);
-	writercfg.SetTargetFile(outputFile);
-	audioWriter.Configure( writercfg );
-
 	/****************************************\
 	 * Let's now synthesize the audio	   *
 	\****************************************/
 	if ( strcmp(wavoutput, "speakers") == 0 )
 		SynthesizeToSpeakers(theSDIFLoader, Synthesis, aControlScorePtr, NULL);
 	else
+	{
+		CLAM::MonoAudioFileWriter audioWriter;
+		CLAM::MonoAudioFileWriterConfig writercfg;
+
+		writercfg.SetTargetFile(std::string(wavoutput));
+		audioWriter.Configure( writercfg );
+
 		SynthesizeToSpeakers(theSDIFLoader, Synthesis, aControlScorePtr, &audioWriter);
+	}
 
 	delete aControlScorePtr;
 
