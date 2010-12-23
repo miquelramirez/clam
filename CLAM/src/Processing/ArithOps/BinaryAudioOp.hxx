@@ -70,15 +70,7 @@ namespace CLAM
 
 	public:
 
-		BinaryAudioOp()
-			:mFirstInput("First Audio Input",this),
-			 mSecondInput("Second Audio Input",this),
-			 mOutput("Audio Output",this)
-		{
-			Configure( BinaryAudioOpConfig() );
-		}
-		
-		BinaryAudioOp(const BinaryAudioOpConfig &c)
+		BinaryAudioOp(const BinaryAudioOpConfig &c = BinaryAudioOpConfig())
 			:mFirstInput("First Audio Input",this),
 			 mSecondInput("Second Audio Input",this),
 			 mOutput("Audio Output",this)
