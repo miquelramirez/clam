@@ -127,9 +127,9 @@ def setup_build_options( env ) :
 	if isWindowsPlatform :
 		opts.Add( PathVariable( 'sandbox_path', 'The working directory in mingw where the external libraries are placed', '' ) )
 	opts.Add( BoolVariable( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no'))
-	opts.Add( BoolVariable( 'intel_optimize', 'Build CLAM with newer intel specific optimizations', 'no'))
-	opts.Add( BoolVariable( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolVariable( 'checks', 'Postcondition checks enabled', 'yes' ))
+	opts.Add( BoolVariable( 'intel_optimize', 'Build CLAM with newer intel specific optimizations', 'no'))
+	opts.Add( BoolVariable( 'double', 'CLAM TData type will be double instead of float','no'))
 	if sys.platform == "linux2" :
 		opts.Add( BoolVariable( 'crossmingw', '', 'no' ))
 
@@ -137,6 +137,8 @@ def setup_build_options( env ) :
 	opts.Add( BoolVariable( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	opts.Add( BoolVariable( 'optimize_and_lose_precision', 'Use tabulated trigonometric functions and the like', 'no' )) 
 	opts.Add( BoolVariable( 'force_avoid_configure', 'Avoid configure phase. Useful for Eclipse scons plugin. Enable it only if you know what you are doing', 'no' ) )
+	opts.Add( 'distcc_hosts', 'Defines compiling hosts, if defined enables the distcc compiler', '')
+	
 	# clam_core options
 	opts.Add( EnumVariable( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
 	if not isWindowsPlatform :
@@ -165,8 +167,6 @@ def setup_build_options( env ) :
 		opts.Add( EnumVariable( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
 	opts.Add( BoolVariable( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
 
-	opts.Add( 'distcc_hosts', 'Defines compiling hosts, if defined enables the distcc compiler', '')
-	
 	opts.Update(env)
 	opts.Save('options.cache', env) # Save, so user doesn't have to 
 	  				# specify prefix and other options every time
