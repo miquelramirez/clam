@@ -324,9 +324,9 @@ package( "fftw",
 package( 'libmad',
 	uri = "http://www.underbit.com/products/mad/",
 	checkVersion =
-		sfCheckVersion("mad","libmad") +
-		""" sed -n 's,.*libmad-\([0-9][^>]*\)\.tar.*,\\1,p' | """
-		""" tail -1 """,
+		""" wget -q -O- 'http://sourceforge.net/projects/mad/files/libmad/' | """
+		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
+		""" head -1 """,
 	tarballName = "libmad-%(version)s.tar.gz",
 	downloadUri = "%(sfmirror)s/sourceforge/mad/%(tarball)s",
 	buildCommand =
@@ -342,9 +342,9 @@ package( 'libmad',
 package( "id3lib",
 	uri = "http://id3lib.sourceforge.net/",
 	checkVersion =
-		sfCheckVersion("id3lib", "id3lib") +
-		""" sed -n 's,.*id3lib-\([0-9][^>]*\)\.tar.*,\\1,p' | """
-		""" tail -1 """,
+		""" wget -q -O- 'http://sourceforge.net/projects/id3lib/files/id3lib/' | """
+		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
+		""" head -1 """,
 	downloadUri = "%(sfmirror)s/sourceforge/id3lib/%(tarball)s",
 	tarballName = "id3lib-%(version)s.tar.gz",
 	buildCommand =
@@ -510,9 +510,9 @@ package( "liblo",
 	uri = "http://liblo.sourceforge.net/",
 	deps = "pthreads",
 	checkVersion =
-		sfCheckVersion("liblo", "liblo") +
-		""" sed -n 's,.*liblo-\([0-9][^>]*\)\.tar.*,\\1,p' | """
-		""" tail -1 """,
+		""" wget -q -O- 'http://sourceforge.net/projects/liblo/files/liblo/' | """
+		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
+		""" head -1 """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
 	downloadUri = "%(sfmirror)s/sourceforge/liblo/%(tarball)s",
 	buildCommand =
@@ -583,9 +583,9 @@ package( "libpng",
 package( "cppunit",
 	uri = "http://liblo.sourceforge.net/",
 	checkVersion =
-		sfCheckVersion("cppunit", "cppunit") +
-		""" sed -n 's,.*cppunit-\([0-9][^>]*\)\.tar.*,\\1,p' | """
-		""" tail -1 """,
+		""" wget -q -O- 'http://sourceforge.net/projects/cppunit/files/cppunit/' | """
+		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
+		""" head -1 """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
 	downloadUri = "%(sfmirror)s/sourceforge/cppunit/%(tarball)s",
 	buildCommand =
@@ -645,20 +645,20 @@ package( "bzip2",
 			""" RANLIB='%(target)s-ranlib' """
 			""" && """
 #		""" install -d '%(prefix)s/lib' && """
-#		""" install -m664 '$(1)/libbz2.a' '%(prefix)s/lib/' && """
+#		""" install -m644 '$(1)/libbz2.a' '%(prefix)s/lib/' && """
 #		""" install -d '%(prefix)s/include' && """
-#		""" install -m664 '$(1)/bzlib.h' '%(prefix)s/include/' && """
+#		""" install -m644 '$(1)/bzlib.h' '%(prefix)s/include/' && """
 		""" echo Done. """
 	)
 
 package( "boost",
 	uri = "http://www.boost.org/",
 	checkVersion =
-		sfCheckVersion("boost", "boost") +
-		""" sed -n 's,.*boost_\([0-9][^>]*\)\.tar.*,\\1,p' | """
+		""" wget -q -O- 'http://sourceforge.net/projects/boost/files/boost/' | """
+		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
 		""" grep -v beta | """
-		""" sort -g | """
-		""" tail -1 """,
+		""" head -1 | """
+		""" sed 's,\\.,_,g'""",
 	tarballName = "%(name)s_%(version)s.tar.gz",
 	downloadUri = "%(sfmirror)s/sourceforge/boost/%(tarball)s",
 	srcdir = "%(name)s_%(version)s",
@@ -835,9 +835,9 @@ package( "lcms",
 	uri = "http://www.littlecms.com/",
 	deps = "jpeg zlib", # TODO: tiff?
 	checkVersion = 
-		sfCheckVersion('lcms', 'lcms') +
-		""" sed -n 's,.*lcms[0-9]*-\([0-9][^>]*\)\.tar.*,\\1,p' | """
-		""" tail -1 """,
+		""" wget -q -O- 'http://sourceforge.net/projects/lcms/files/lcms/' | """
+		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
+		""" head -1 """,
 	tarballName = "lcms%(majorversion)s-%(version)s.tar.gz",
 	downloadUri = "%(sfmirror)s/project/lcms/lcms/2.0/%(tarball)s", # TODO: 2.0 should be extracted
 	srcdir = "lcms-2.0",
@@ -854,9 +854,9 @@ package( "libmng",
 	uri = "http://www.libmng.com",
 	deps = "zlib jpeg",
 	checkVersion = 
-		sfCheckVersion('libmng', 'libmng-devel') +
-	    """ sed -n 's,.*libmng-\([0-9][^>]*\)\.tar.*,\\1,p' | """
-		""" tail -1 """,
+		""" wget -q -O- 'http://sourceforge.net/projects/libmng/files/libmng-devel/' | """
+		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
+		""" head -1 """,
 	tarballName = "%(name)s-%(version)s.tar.bz2",
 	downloadUri = "%(sfmirror)s/project/libmng/libmng-devel/%(version)s/%(tarball)s",
 	buildCommand =
