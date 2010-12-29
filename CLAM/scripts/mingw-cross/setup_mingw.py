@@ -236,12 +236,14 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		srcdir = ("%(sandbox)s/src/" + (srcdir or "%(name)s-%(version)s/")) % subst,
 	)
 	print "srcdir:", subst['srcdir']
+	"""
 	download(downloadUri % subst)
 	extractSource(subst['tarball'])
 	patches = glob.glob(scriptRelative("mingw-"+name+"*.patch"))
 	patches.sort()
 	for patch in patches :
 		applyPatch(subst['srcdir'], patch, level=1)
+	"""
 	log = tee(open("log-%s-build"%name,'w'), sys.stdout)
 	run(buildCommand % subst, log=log)
 	run("touch finnished-%(name)s-%(version)s"%subst)
@@ -949,10 +951,12 @@ package( "qt",
 	downloadUri = "http://get.qt.nokia.com/qt/source/%(tarball)s",
 	srcdir = "%(name)s-everywhere-opensource-src-%(version)s",
 	buildCommand =
+		""" pkg-config zlib --cflags --libs && """
 		""" cd %(srcdir)s && """
 		""" sed -i '/i686-pc-mingw32/s,i686-pc-mingw32,%(target)s,p' mkspecs/unsupported/win32-g++-cross/qmake.conf  && """
 #		""" OPENSSL_LIBS="`pkg-config --libs-only-l openssl`" """
 #		""" PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl` -lws2_32" """
+		""" PKG_CONFIG_LIBDIR='%(prefix)s/lib/pkgconfig' """ # did not solved anything
 		""" ./configure """
 			""" -opensource """
 			""" -confirm-license """
@@ -990,6 +994,8 @@ package( "qt",
 			""" -system-sqlite """
 #			""" -openssl-linked """
 			""" -no-openssl """
+			""" -I'%(prefix)s/include' """
+			""" -L'%(prefix)s/lib' """
 			""" -v """
 			""" && """
 		""" make install """
