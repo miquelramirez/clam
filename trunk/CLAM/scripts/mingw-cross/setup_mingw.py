@@ -236,8 +236,8 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		srcdir = ("%(sandbox)s/src/" + (srcdir or "%(name)s-%(version)s/")) % subst,
 	)
 	print "srcdir:", subst['srcdir']
-#	download(downloadUri % subst)
-#	extractSource(subst['tarball'])
+	download(downloadUri % subst)
+	extractSource(subst['tarball'])
 	patches = glob.glob(scriptRelative("mingw-"+name+"*.patch"))
 	patches.sort()
 	for patch in patches :
