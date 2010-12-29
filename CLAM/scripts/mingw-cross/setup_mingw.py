@@ -156,9 +156,9 @@ def download(uri, filename=None) :
 def extractSource(tarball) :
 	def extractCommand(tarball) :
 		for extension, command in [
-			('.tar.gz',  "tar xvfz %(sandbox)s/downloads/%(tarball)s -C %(sandbox)s/src"),
-			('.tgz',     "tar xvfz %(sandbox)s/downloads/%(tarball)s -C %(sandbox)s/src"),
-			('.tar.bz2', "tar xvfj %(sandbox)s/downloads/%(tarball)s -C %(sandbox)s/src"),
+			('.tar.gz',  "pv -p %(sandbox)s/downloads/%(tarball)s | tar xz -C %(sandbox)s/src"),
+			('.tgz',     "pv -p %(sandbox)s/downloads/%(tarball)s | tar xz -C %(sandbox)s/src"),
+			('.tar.bz2', "pv -p %(sandbox)s/downloads/%(tarball)s | tar xj -C %(sandbox)s/src"),
 			('.zip',     "unzip -xo %(sandbox)s/downloads/%(tarball)s -d %(sandbox)s/src/%(basename)s"),
 			] :
 			if tarball.endswith(extension) : return extension, command
@@ -206,6 +206,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		srcdir=None,
 		deps="",
 		pinnedVersion = None,
+		checkout = None, # checkout command line
 	) :
 	stage("Module %s"%name)
 	subst = dict(
@@ -227,6 +228,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		version = version,
 		majorversion = ".".join(version.split(".")[:1]),
 		minorversion = ".".join(version.split(".")[:2]),
+		minorversionnumber = ".".join(version.split(".")[1:2]),
 	)
 
 	subst.update(
@@ -234,9 +236,9 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		srcdir = ("%(sandbox)s/src/" + (srcdir or "%(name)s-%(version)s/")) % subst,
 	)
 	print "srcdir:", subst['srcdir']
-	download(downloadUri % subst)
-	extractSource(subst['tarball'])
-	patches = glob.glob(scriptRelative("mingw-"+name+"*"))
+#	download(downloadUri % subst)
+#	extractSource(subst['tarball'])
+	patches = glob.glob(scriptRelative("mingw-"+name+"*.patch"))
 	patches.sort()
 	for patch in patches :
 		applyPatch(subst['srcdir'], patch, level=1)
@@ -525,6 +527,7 @@ package( "liblo",
 		""" make install """
 	)
 
+# TODO: send patch modifications back to fedora
 package( "zlib",
 	uri = "http://zlib.net/",
 	deps = "",
@@ -536,19 +539,11 @@ package( "zlib",
 	downloadUri = "http://zlib.net//%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
-		# Just to generate zlib.pc
-		""" CHOST='%(target)s' """
-			""" ./configure  --prefix='%(prefix)s' """
-			""" && """ 
-		""" make install -f win32/Makefile.gcc """
-			""" prefix='%(prefix)s' """
-			""" PREFIX='%(target)s-' """
-			""" BINARY_PATH='%(prefix)s/bin' """
-			""" INCLUDE_PATH='%(prefix)s/include' """
-			""" LIBRARY_PATH='%(prefix)s/lib' """
-			""" SHARED_MODE=1 """
-			""" && """
-		""" cp zlib.pc %(prefix)s/lib/pkgconfig/ && """
+		""" mkdir -p m4 && """
+		""" autoreconf --install && """
+		""" ./configure  --prefix='%(prefix)s' --host='%(target)s' && """
+		""" make all && """
+		""" make install && """
 		""" echo Package %(name)s done."""
 	)
 
@@ -565,7 +560,7 @@ package( "libpng",
 		""" grep -v '^1\.2\.' | """
 		""" head -1 """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
-	downloadUri = "%(sfmirror)s/project/libpng/01-libpng-master/%(version)s/%(tarball)s",
+	downloadUri = "%(sfmirror)s/project/%(name)s/%(name)s%(majorversion)s%(minorversionnumber)s/%(version)s/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
 	#	""" ./autogen.sh && """
@@ -599,29 +594,6 @@ package( "cppunit",
 	)
 	# TODO: From the wiki: To get some extra autoconf macros and libtool do: 
 	# sudo apt-get install autoconf-archive libtool automake
-
-if False : \
-package( "dlfcn-win32",
-	uri = "http://code.google.com/p/dlfcn-win32/",
-	checkVersion =
-		""" wget -q -O- 'http://code.google.com/p/dlfcn-win32/downloads/list' | """
-		""" sed -n 's,.*dlfcn-win32-\(r[0-9][r.0-9]*\)\.tar.bz2.*,\\1,p' | """
-		""" sort -g | tail -1 """,
-	tarballName = "%(name)s-%(version)s.tar.bz2",
-	downloadUri = "http://dlfcn-win32.googlecode.com/files/%(tarball)s",
-	buildCommand = ""
-		""" cd %(srcdir)s && """
-		""" sed -i '$aecho Done\\n' configure &&  """
-		""" ./configure """
-			""" --prefix='%(prefix)s' """
-			""" --cross-prefix='%(target)s-' """
-			""" --incdir='%(prefix)s/include' """
-			""" --libdir='%(prefix)s/lib' """
-			""" --enable-shared """
-			""" && """
-		""" make && """
-		""" make install """
-	)
 
 
 package( "bzip2",
@@ -692,6 +664,28 @@ package( "boost",
 		""" echo Package %(name)s done."""
 	)
 
+
+package( "dlfcn-win32",
+	uri = "http://code.google.com/p/dlfcn-win32/",
+	checkVersion =
+		""" wget -q -O- 'http://code.google.com/p/dlfcn-win32/downloads/list' | """
+		""" sed -n 's,.*dlfcn-win32-\(r[0-9][r.0-9]*\)\.tar.bz2.*,\\1,p' | """
+		""" sort -g | tail -1 """,
+	tarballName = "%(name)s-%(version)s.tar.bz2",
+	downloadUri = "http://dlfcn-win32.googlecode.com/files/%(tarball)s",
+	buildCommand = ""
+		""" cd %(srcdir)s && """
+		""" sed -i '$aecho Done\\n' configure &&  """
+		""" ./configure """
+			""" --prefix='%(prefix)s' """
+			""" --cross-prefix='%(target)s-' """
+			""" --incdir='%(prefix)s/include' """
+			""" --libdir='%(prefix)s/lib' """
+			""" --enable-shared """
+			""" && """
+		""" make && """
+		""" make install """
+	)
 
 package( "ladspa-sdk",
 	uri = "http://www.ladspa.org/",
@@ -839,8 +833,8 @@ package( "lcms",
 		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
 		""" head -1 """,
 	tarballName = "lcms%(majorversion)s-%(version)s.tar.gz",
-	downloadUri = "%(sfmirror)s/project/lcms/lcms/2.0/%(tarball)s", # TODO: 2.0 should be extracted
-	srcdir = "lcms-2.0",
+	downloadUri = "%(sfmirror)s/project/lcms/lcms/%(minorversion)s/%(tarball)s",
+	srcdir = "lcms%(majorversion)s-%(version)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" ./configure  --prefix='%(prefix)s' --host='%(target)s' """
@@ -878,12 +872,13 @@ package( "libmng",
 package( "glib",
 	uri = "http://www.gtk.org",
 	deps = "gettext libiconv zlib",
-	checkVersion = gnomeCheckVersion("glib", "2.26"),
+	checkVersion = gnomeCheckVersion("glib", "2.27"),
+	pinnedVersion = "2.27.4",
 	tarballName = "%(name)s-%(version)s.tar.gz",
 	downloadUri = "http://ftp.gnome.org/pub/GNOME/sources/%(name)s/%(minorversion)s/%(tarball)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
-		""" aclocal && libtoolize --force && autoconf && """
+#		""" aclocal && libtoolize --force && autoconf && """
 		""" sed -i 's,cross_compiling=no,cross_compiling=yes,' 'configure' && """
 		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
 			""" CFLAGS='-I%(prefix)s/include' """
@@ -955,7 +950,7 @@ package( "qt",
 	srcdir = "%(name)s-everywhere-opensource-src-%(version)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
-		""" sed -i '/i686-pc-mingw32/s,i686-pc-mingw32,%(target)s,p' mkspecs/unsupported/win32-g++-cross/qmake.conf  """
+		""" sed -i '/i686-pc-mingw32/s,i686-pc-mingw32,%(target)s,p' mkspecs/unsupported/win32-g++-cross/qmake.conf  && """
 #		""" OPENSSL_LIBS="`pkg-config --libs-only-l openssl`" """
 #		""" PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl` -lws2_32" """
 		""" ./configure """
@@ -993,7 +988,8 @@ package( "qt",
 			""" -system-libtiff """
 			""" -system-libmng """
 			""" -system-sqlite """
-			""" -openssl-linked """
+#			""" -openssl-linked """
+			""" -no-openssl """
 			""" -v """
 			""" && """
 		""" make install """
@@ -1035,6 +1031,41 @@ package( "python",
 	)
 
 
+order = """
+	pthread
+	fftw
+	libmad
+	id3lib
+	libogg
+	libvorbis
+	gettext
+	libiconv
+	flac
+	libsndfile
+	speex
+	liblo
+	zlib
+	libpng
+	cppunit
+	bzip2
+	boost
+	dlfcn-win32
+	ladspa-sdk
+	directx
+	portaudio
+	xerces-c
+	libsigc++
+	libxml2
+	jpeg
+	lcms
+	libmng
+	glib
+	glibmm
+	libxml++
+	qt
+	python
+""".split()
+
 
 def hasOption(option) :
 	if option not in sys.argv :
@@ -1042,18 +1073,28 @@ def hasOption(option) :
 	sys.argv.remove(option)
 	return True
 
+def parameterOption(option) :
+	if option not in sys.argv :
+		return None
+	optionIndex = sys.argv.index(option)
+	value = sys.argv[optionIndex+1]
+	del sys.argv[optionIndex:optionIndex+2]
+	return value
+
 if hasOption('--list') :
 	print "Available packages: " + " ". join(packageDatabase.keys())
 	sys.exit()
 
+fromPackage = parameterOption("--from")
+if fromPackage is not None :
+	fromPackage in order or die("Argument to --from '%s' is not a package. Use --list to see the list of packages."%fromPackage)
+	order = order[order.index(fromPackage):]
+
 deps = hasOption('--deps')
 
 if len(sys.argv)<=1 :
-	buildAll()
+#	buildAll()
+	build(" ".join(order))
 else :
 	build(" ".join(sys.argv[1:]))
-
-
-
-
 
