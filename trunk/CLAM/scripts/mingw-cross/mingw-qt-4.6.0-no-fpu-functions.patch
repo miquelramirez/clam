@@ -1,0 +1,39 @@
+Taken from http://pkgs.fedoraproject.org/gitweb/?p=mingw32-qt.git;a=blob_plain;f=mingw32-qt-4.6.0-no-fpu-functions.patch
+diff -ur qt-everywhere-opensource-src-4.6.0.orig/src/corelib/tools/qlocale.cpp qt-everywhere-opensource-src-4.6.0/src/corelib/tools/qlocale.cpp
+--- qt-everywhere-opensource-src-4.6.0.orig/src/corelib/tools/qlocale.cpp	2008-09-27 10:00:55.000000000 +0100
++++ qt-everywhere-opensource-src-4.6.0/src/corelib/tools/qlocale.cpp	2009-02-02 11:39:40.000000000 +0000
+@@ -6522,6 +6522,10 @@
+ 
+ Q_CORE_EXPORT char *qdtoa ( double d, int mode, int ndigits, int *decpt, int *sign, char **rve, char **resultp)
+ {
++    // RWMJ: The 8087-twiddling functions just don't seem to exist
++    // in MinGW cross-compiler, so comment out that code and hope for
++    // the best ...
++#if 0
+     // Some values of the floating-point control word can cause _qdtoa to crash with an underflow.
+     // We set a safe value here.
+ #ifdef Q_OS_WIN
+@@ -6536,6 +6540,7 @@
+ #endif
+     _control87(MCW_EM, MCW_EM);
+ #endif
++#endif
+ 
+ #if defined(Q_OS_LINUX) && !defined(__UCLIBC__)
+     fenv_t envp;
+@@ -6544,6 +6549,7 @@
+ 
+     char *s = _qdtoa(d, mode, ndigits, decpt, sign, rve, resultp);
+ 
++#if 0 // RWMJ - see above.
+ #ifdef Q_OS_WIN
+     _clear87();
+ #ifndef _M_X64
+@@ -6552,6 +6558,7 @@
+     _control87(oldbits, _MCW_EM|_MCW_DN|_MCW_RC);
+ #endif //_M_X64
+ #endif //Q_OS_WIN
++#endif
+ 
+ #if defined(Q_OS_LINUX) && !defined(__UCLIBC__)
+     fesetenv(&envp);
