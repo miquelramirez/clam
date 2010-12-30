@@ -1,0 +1,12 @@
+
+--- id3lib-3.8.3.orig/configure.in	2010-12-30 12:45:53.000000000 +0100
++++ id3lib-3.8.3/configure.in	2010-12-30 12:38:04.000000000 +0100
+@@ -17,6 +17,8 @@
+ # init autoconf (and check for presence fo reconf)
+ AC_INIT(reconf)
+ 
++LT_INIT([win32-dll])
++
+ ID3LIB_NAME=id3lib
+ 
+ dnl The following has been adapted from glib (http://www.gtk.org)
