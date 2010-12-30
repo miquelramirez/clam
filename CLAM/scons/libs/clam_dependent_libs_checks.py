@@ -110,9 +110,7 @@ def test_id3lib( env, conf ) :
 
 	libName = 'id3'
 	env.Append( LIBS=[libName] )
-	zlib = 'z'
-	if not conf.CheckLib(zlib, 'uncompress') :
-		return config_error( "Could not link zlib. Please, check your zlib/id3lib installation" )
+	if crosscompiling : env.AppendUnique(LIBS=['z', 'iconv'])
 
 	if not conf.CheckCXXHeader( 'id3.h' ) :
 		return config_error( "Could not find id3lib headers! Please check your id3lib installation" )
@@ -121,6 +119,7 @@ def test_id3lib( env, conf ) :
 		return config_error( "Could not find id3lib binaries! Please check your id3lib installation" )
 	if not conf.CheckLibrarySample(libName, 'c++', None, id3lib_test_code) :
 		return config_error( "id3lib compile/link/run tests failed!" )
+	if crosscompiling : env.AppendUnique(LIBS=['z', 'iconv'], delete_existing=1) # static, need to be after iconv
 	return True
 
 def test_alsa_sdk( env, conf ) :
@@ -245,7 +244,7 @@ def test_xml_backend( env, conf ) :
 			return config_error( "Error: pkg-config could not find xerces-c options." )
 		if not conf.CheckCXXHeader('xercesc/util/PlatformUtils.hpp') :
 			return config_error( "Could not find xerces c headers! Try disabling the xerces-c backend" )
-		if not conf.CheckLibrarySample('xerces-c', 'c++', 'xerces-c', xerces_test_code, 'libxerces-c2_8_0' ) :
+		if not conf.CheckLibrarySample('xerces-c', 'c++', 'xerces-c', xerces_test_code) :
 			return config_error( "xerces c code compile/link/run test failed!" )
 
 		env.AppendUnique( CPPFLAGS=['-DUSE_XERCES=1', '-DCLAM_USE_XML'] )
