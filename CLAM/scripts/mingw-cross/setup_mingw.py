@@ -24,8 +24,9 @@ alphabetical order to the downloaded and extracted source.
 
 
 Package TODO:
-Legend: - todo, * working on it, + done, x failed, child means dependency
+Legend: - todo, * working on it, + done, X failed, child means dependency
 - libid3 lacks a pkg-config file
+- Test whether LT_INIT([win32-dll]) in configure.ac helps to generate the dlls for libid3 and others
 - libsndfile lacks dependencies: sqlite flac ogg vorbis
 - USe DX9 or DX10 instead of DX8
 - properly support flac (does not link in sndfile)
@@ -36,6 +37,9 @@ Legend: - todo, * working on it, + done, x failed, child means dependency
 		+ libsigc++
 		+ glib
 			+ gettext
+- lv2core
+	- lv2-ui
+	- lv2 other extensions
 + boost
 X libpython
 * qt: supported by mingw-cross-env
@@ -45,6 +49,8 @@ X libpython
 		+ jpeg
 		+ lcms
 - Asio, Vst
+- Seems to be a race condition in the clam test program for pthreads that makes it segfault sometimes
+
 
 Script TODO:
 + Target by command line
@@ -62,10 +68,11 @@ import glob
 
 sandbox = os.path.expanduser("~/mingw32")
 target = "i586-mingw32msvc"
-sfmirror = "http://kent.dl.sourceforge.net"
+sfmirror = "http://puzzle.dl.sourceforge.net"
 apachemirror = "http://www.apache.org/dist"
 apachemirror = "http://apache.rediris.es/"
 prefix = os.path.join(sandbox,"local")
+skipDeploy = False
 
 def loadDictFile(dictfile) :
 	""" Returns a dict with the variables defined in a file """
@@ -236,14 +243,15 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		srcdir = ("%(sandbox)s/src/" + (srcdir or "%(name)s-%(version)s/")) % subst,
 	)
 	print "srcdir:", subst['srcdir']
-	"""
-	download(downloadUri % subst)
-	extractSource(subst['tarball'])
-	patches = glob.glob(scriptRelative("mingw-"+name+"*.patch"))
-	patches.sort()
-	for patch in patches :
-		applyPatch(subst['srcdir'], patch, level=1)
-	"""
+
+	if not skipDeploy :
+		download(downloadUri % subst)
+		extractSource(subst['tarball'])
+		patches = glob.glob(scriptRelative("mingw-"+name+"*.patch"))
+		patches.sort()
+		for patch in patches :
+			applyPatch(subst['srcdir'], patch, level=1)
+
 	log = tee(open("log-%s-build"%name,'w'), sys.stdout)
 	run(buildCommand % subst, log=log)
 	run("touch finnished-%(name)s-%(version)s"%subst)
@@ -279,6 +287,8 @@ ensureDir(os.path.join(prefix, "bin"))
 os.environ.update(
 	PKG_CONFIG_LIBDIR = "/usr/%s/lib/pkgconfig"%target, # default debian installation
 	PKG_CONFIG_PATH = os.path.join(prefix, 'lib', 'pkgconfig'), # our prefix installation
+#	PKG_CONFIG_ALLOW_SYSTEM_CFLAGS = "1", # do not strip system include path
+#	PKG_CONFIG_ALLOW_SYSTEM_LIBS = "1", # do not strip system lib path
 	)
 
 
@@ -342,9 +352,9 @@ package( 'libmad',
 		""" make install """
 	)
 
-
 package( "id3lib",
 	uri = "http://id3lib.sourceforge.net/",
+	deps = "zlib iconv",
 	checkVersion =
 		""" wget -q -O- 'http://sourceforge.net/projects/id3lib/files/id3lib/' | """
 		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
@@ -353,8 +363,16 @@ package( "id3lib",
 	tarballName = "id3lib-%(version)s.tar.gz",
 	buildCommand =
 		""" cd %(sandbox)s/src/id3lib-%(version)s && """
+		""" aclocal -I m4 && """
+		""" libtoolize && """
 		""" autoconf && """
-		""" ./configure --host='%(target)s' --prefix='%(prefix)s' && """
+		""" automake && """
+		""" CPPFLAGS='-I%(prefix)s/include' """ # Needed for: zlib, iconv... TODO: investigate dlfcn usage
+		""" LDFLAGS='-L%(prefix)s/lib' """
+		""" DLLTOOL=%(target)s-dlltool """
+		""" OBJDUMP=%(target)s-objdump """
+		""" AS=%(target)s-as """
+			""" ./configure --host='%(target)s' --prefix='%(prefix)s' --enable-shared && """
 		""" make && """
 		""" make install """
 	)
@@ -715,7 +733,25 @@ package( "ladspa-sdk",
 			""" PROGRAMS="../bin/analyseplugin ../bin/listplugins" """
 	)
 
-
+package( "lv2core",
+	uri = "http://lv2plug.in",
+	deps = "",
+	checkVersion = 
+		""" wget -q -O- 'http://lv2plug.in/spec/?C=M;O=D' | """
+		""" grep lv2core | """
+		""" grep -v sig | """
+		""" grep -v pre | """
+		""" sed -n 's,.*>lv2core-\(.*\)\.tar.[^<]*<.*,\\1,p' | """
+		""" head -n 1 """,
+	tarballName = "%(name)s-%(version)s.tar.bz2",
+	downloadUri = "http://lv2plug.in/spec/%(tarball)s",
+	buildCommand = 
+		""" cd %(srcdir)s && """
+		""" python waf configure --prefix=%(prefix)s && """
+		""" python waf && """
+		""" python waf install && """
+		""" echo Package %(name)s done."""
+)
 
 package( "directx",
 	uri = "http://www.microsoft.com",
@@ -726,7 +762,8 @@ package( "directx",
 	buildCommand = 
 		""" cd %(srcdir)s && """
 		# binaries are already provided by mingw, missing the includes
-		""" cp include/dinput.h include/dsound.h %(prefix)s/include """
+		""" cp include/dinput.h include/dsound.h %(prefix)s/include && """
+		""" echo Package %(name)s done."""
 	)
 
 
@@ -951,12 +988,11 @@ package( "qt",
 	downloadUri = "http://get.qt.nokia.com/qt/source/%(tarball)s",
 	srcdir = "%(name)s-everywhere-opensource-src-%(version)s",
 	buildCommand =
-		""" pkg-config zlib --cflags --libs && """
 		""" cd %(srcdir)s && """
 		""" sed -i '/i686-pc-mingw32/s,i686-pc-mingw32,%(target)s,p' mkspecs/unsupported/win32-g++-cross/qmake.conf  && """
 #		""" OPENSSL_LIBS="`pkg-config --libs-only-l openssl`" """
 #		""" PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl` -lws2_32" """
-		""" PKG_CONFIG_LIBDIR='%(prefix)s/lib/pkgconfig' """ # did not solved anything
+#		""" PKG_CONFIG_LIBDIR='%(prefix)s/lib/pkgconfig' """ # did not solved anything
 		""" ./configure """
 			""" -opensource """
 			""" -confirm-license """
@@ -992,14 +1028,38 @@ package( "qt",
 			""" -system-libtiff """
 			""" -system-libmng """
 			""" -system-sqlite """
+#			""" -dbus-linked """
 #			""" -openssl-linked """
 			""" -no-openssl """
-			""" -I'%(prefix)s/include' """
-			""" -L'%(prefix)s/lib' """
+#			""" -I'%(prefix)s/include' """
+#			""" -L'%(prefix)s/lib' """
 			""" -v """
 			""" && """
 		""" make install """
 	)
+
+# TODO: detect lv2
+package("clam",
+	uri = "http://clam-project.org",
+	checkVersion = "echo 1.5",
+	downloadUri = "",
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	buildCommand =
+#		""" svn co http://clam-project.org/clam/trunk/CLAM %(srcdir)s && """
+		""" cd %(srcdir)s && """
+		""" scons configure """
+			""" prefix='%(prefix)s' """
+			""" crossmingw=1 """
+			""" sandbox_path='%(prefix)s/../'"""
+			""" audio_backend=portaudio """
+			""" xmlbackend=both """
+			""" with_ladspa=1 """
+			""" with_fftw3=1 """
+			""" && """
+		""" scons install && """
+		""" echo Package %(name)s done."""
+)
+
 
 
 # See http://kampfwurst.net/python-mingw32/
@@ -1057,6 +1117,7 @@ order = """
 	boost
 	dlfcn-win32
 	ladspa-sdk
+	lv2core
 	directx
 	portaudio
 	xerces-c
@@ -1097,6 +1158,7 @@ if fromPackage is not None :
 	order = order[order.index(fromPackage):]
 
 deps = hasOption('--deps')
+skipDeploy = hasOption('--skip-deploy')
 
 if len(sys.argv)<=1 :
 #	buildAll()
