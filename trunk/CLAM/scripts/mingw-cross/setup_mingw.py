@@ -974,10 +974,29 @@ package( "libxml++",
 		""" cd %(srcdir)s && """
 #		""" autoconf && """
 		""" ./configure  --prefix='%(prefix)s'  --host='%(target)s' """
-			""" --disable-documentation """ # docs fails to build
+			""" --disable-documentation """ # TODO: docs fails to build
 			"""  """
 			""" && """
 		""" make && """
+		""" make install """
+	)
+
+package( "tiff",
+	uri = "http://libtiff.org",
+	deps = "zlib jpeg",
+	checkVersion =
+		""" wget -q -O- 'http://www.remotesensing.org/libtiff/' | """
+		""" sed -n 's,.*>v\([0-9][^<]*\)<.*,\\1,p' | """
+		""" head -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "ftp://ftp.remotesensing.org/libtiff/%(tarball)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" ./configure """
+			""" --host='%(target)s' """
+			""" --prefix='%(prefix)s' """
+			""" --without-x """
+			""" && """
 		""" make install """
 	)
 
@@ -1142,6 +1161,7 @@ order = """
 	glib
 	glibmm
 	libxml++
+	tiff
 	qt
 	python
 """.split()
