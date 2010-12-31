@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-"""
+help ="""
 This scripts setups clam dependencies to generated Windows
 mingw compatible binaries from a Linux box (crosscompilation).
 
@@ -12,17 +12,22 @@ sudo apt-get install gcc-mingw32 mingw32-binutils mingw32-runtime \
 Please, update the list of packages if you find any missing one.
 Note that 'ming32' package is legacy 3.2.1 gcc, do not install it.
 
-You can provide the name of a package to download and build,
-or you can just build all of them.
-
-
-Add packages by adding calls to 'package'.
+Usage:
+	                    without parameters, builds the default 
+	                    sequence of packages (not all of them)
+	[<package>]+        builds just <packages>
+	--list              shows the list of all available packages
+	--sequence          shows the default package build sequence
+	--from <package>    build the default sequence starting at <package>
+	--skip-deploy       skips download, extracting and patching
+	--skip-download     skips download
 
 If your package is named 'foo' and you add patch files matching
 mingw-foo*.patch to this directory, they will be applied in
 alphabetical order to the downloaded and extracted source.
+"""
 
-
+"""
 Package TODO:
 Legend: - todo, * working on it, + done, X failed, child means dependency
 - libid3 lacks a pkg-config file
@@ -50,6 +55,8 @@ X libpython
 		+ lcms
 - Asio, Vst
 - Seems to be a race condition in the clam test program for pthreads that makes it segfault sometimes
+- bzip and ladspa-sdk, do not append EXE to binaries
+- qt tools installed in mingw tree are compiled natively
 
 
 Script TODO:
@@ -245,10 +252,13 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	print "srcdir:", subst['srcdir']
 
 	if not skipDeploy :
-		download(downloadUri % subst)
-		extractSource(subst['tarball'])
+		if not skipDownload :
+			download(downloadUri % subst)
 		patches = glob.glob(scriptRelative("mingw-"+name+"*.patch"))
 		patches.sort()
+		if patches and subst['srcdir'] :
+			run("rm -rf %(srcdir)/"%subst)
+		extractSource(subst['tarball'])
 		for patch in patches :
 			applyPatch(subst['srcdir'], patch, level=1)
 
@@ -990,6 +1000,8 @@ package( "qt",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" sed -i '/i686-pc-mingw32/s,i686-pc-mingw32,%(target)s,p' mkspecs/unsupported/win32-g++-cross/qmake.conf  && """
+		""" echo "QMAKE_LIBDIR   += %(prefix)s/lib" >> mkspecs/unsupported/win32-g++-cross/qmake.conf && """
+		""" echo "QMAKE_INCDIR   += %(prefix)s/include" >> mkspecs/unsupported/win32-g++-cross/qmake.conf && """
 #		""" OPENSSL_LIBS="`pkg-config --libs-only-l openssl`" """
 #		""" PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl` -lws2_32" """
 #		""" PKG_CONFIG_LIBDIR='%(prefix)s/lib/pkgconfig' """ # did not solved anything
@@ -1006,11 +1018,11 @@ package( "qt",
 			""" -prefix-install """
 			""" -script """
 			""" -opengl desktop """
-			""" -webkit """
+			""" -no-webkit """
 #			""" -no-glib """
 #			""" -no-gstreamer """
-#			""" -no-phonon """
-#			""" -no-phonon-backend """
+			""" -no-phonon """
+			""" -no-phonon-backend """
 			""" -accessibility """
 			""" -no-reduce-exports """
 			""" -no-rpath """
@@ -1022,6 +1034,7 @@ package( "qt",
 			""" -no-sql-odbc """
 			""" -no-sql-psql """
 			""" -no-sql-tds """
+			""" -iconv """
 			""" -system-zlib """
 			""" -system-libpng """
 			""" -system-libjpeg """
@@ -1148,6 +1161,10 @@ def parameterOption(option) :
 	del sys.argv[optionIndex:optionIndex+2]
 	return value
 
+if hasOption('--sequence') :
+	print "Default build sequence: " + " ".join(order)
+	sys.exit()
+
 if hasOption('--list') :
 	print "Available packages: " + " ". join(packageDatabase.keys())
 	sys.exit()
@@ -1159,6 +1176,7 @@ if fromPackage is not None :
 
 deps = hasOption('--deps')
 skipDeploy = hasOption('--skip-deploy')
+skipDownload = hasOption('--skip-download')
 
 if len(sys.argv)<=1 :
 #	buildAll()
