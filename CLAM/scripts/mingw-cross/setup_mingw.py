@@ -1,16 +1,8 @@
 #!/usr/bin/python
 
 help ="""
-This scripts setups clam dependencies to generated Windows
-mingw compatible binaries from a Linux box (crosscompilation).
-
-Non complete list of requirements (Ubuntu):
-sudo apt-get install gcc-mingw32 mingw32-binutils mingw32-runtime \
-	nsis wine automake autoconf-archive libtool pkg-config \
-	wget sed autogen mm-common bjam
-
-Please, update the list of packages if you find any missing one.
-Note that 'ming32' package is legacy 3.2.1 gcc, do not install it.
+This scripts crosscompiles clam dependencies for Windows
+from a Linux box.
 
 Usage:
 	                    without parameters, builds the default 
@@ -19,12 +11,20 @@ Usage:
 	--list              shows the list of all available packages
 	--sequence          shows the default package build sequence
 	--from <package>    build the default sequence starting at <package>
+	--skip <package>	skips the <package> from the resulting order
 	--skip-deploy       skips download, extracting and patching
 	--skip-download     skips download
 
-If your package is named 'foo' and you add patch files matching
-mingw-foo*.patch to this directory, they will be applied in
-alphabetical order to the downloaded and extracted source.
+Add modules by adding a 
+For a package 'foo', every patch named 'mingw-foo*.patch' will
+be applied in alphabetical order.
+
+Non complete list of requirements (Ubuntu):
+sudo dpkg -r mingw32    # legacy 3.2.1 gcc, do not install it!
+sudo apt-get install gcc-mingw32 mingw32-binutils mingw32-runtime \\
+	nsis wine automake autoconf-archive libtool pkg-config \\
+	wget sed autogen mm-common bjam
+
 """
 
 """
@@ -1019,8 +1019,8 @@ package( "qt",
 	buildCommand =
 		""" cd %(srcdir)s && """
 		""" sed -i '/i686-pc-mingw32/s,i686-pc-mingw32,%(target)s,p' mkspecs/unsupported/win32-g++-cross/qmake.conf  && """
-		""" echo "QMAKE_LIBDIR   += %(prefix)s/lib" >> mkspecs/unsupported/win32-g++-cross/qmake.conf && """
-		""" echo "QMAKE_INCDIR   += %(prefix)s/include" >> mkspecs/unsupported/win32-g++-cross/qmake.conf && """
+		""" echo "QMAKE_LIBDIR   = %(prefix)s/lib" >> mkspecs/unsupported/win32-g++-cross/qmake.conf && """
+		""" echo "QMAKE_INCDIR   = %(prefix)s/include" >> mkspecs/unsupported/win32-g++-cross/qmake.conf && """
 #		""" OPENSSL_LIBS="`pkg-config --libs-only-l openssl`" """
 #		""" PSQL_LIBS="-lpq -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl` -lws2_32" """
 #		""" PKG_CONFIG_LIBDIR='%(prefix)s/lib/pkgconfig' """ # did not solved anything
@@ -1128,6 +1128,10 @@ package( "python",
 #		""" python setup.py build --compiler=mingw32 """
 	)
 
+for dictFile in glob.glob("packages/*.py") :
+	loaded = loadDictFile(dictFile)
+	package(loaded['name'], loaded)
+
 
 order = """
 	pthread
@@ -1181,6 +1185,9 @@ def parameterOption(option) :
 	del sys.argv[optionIndex:optionIndex+2]
 	return value
 
+if hasOption('--help') :
+	die(help)
+
 if hasOption('--sequence') :
 	print "Default build sequence: " + " ".join(order)
 	sys.exit()
@@ -1193,6 +1200,13 @@ fromPackage = parameterOption("--from")
 if fromPackage is not None :
 	fromPackage in order or die("Argument to --from '%s' is not a package. Use --list to see the list of packages."%fromPackage)
 	order = order[order.index(fromPackage):]
+
+while True :
+	toRemove = parameterOption("--skip")
+	if toRemove is None : break
+	toRemove in order or die("Argument to --skip '%s' is not a package. Use --list to see the list of packages."%fromPackage)
+	order.remove(toRemove)
+
 
 deps = hasOption('--deps')
 skipDeploy = hasOption('--skip-deploy')
