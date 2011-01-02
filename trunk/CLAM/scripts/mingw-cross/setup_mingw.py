@@ -1089,6 +1089,23 @@ package("clam",
 			""" with_fftw3=1 """
 			""" && """
 		""" scons install && """
+		+ "".join((
+		""" cd %%(srcdir)s/plugins/%s && """
+		""" scons install """
+			""" clam_prefix=%%(prefix)s """
+			""" crossmingw=1 """
+			""" release=1 """
+			""" sandbox_path=%%(prefix)s/.. """
+			""" external_dll_path=%%(prefix)s/bin  """
+			""" && """%clammodule for clammodule in (
+				"GuitarEffects",
+				"spacialization",
+				"Filters",
+				"speech",
+				"continuousExcitationSynthesizer",
+				"sndfile",
+				"osc",
+			)))+
 		""" echo Package %(name)s done."""
 )
 
