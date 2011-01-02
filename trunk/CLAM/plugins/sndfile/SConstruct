@@ -44,13 +44,11 @@ sources = env.scanFiles('*.cxx', sourcePaths) + env.scanFiles('*.c', sourcePaths
 sources = dict.fromkeys(sources).keys()
 headers = env.scanFiles('*.hxx', sourcePaths) + env.scanFiles('*.h', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)
-pkgconfig = "pkg-config"
 if sys.platform == "win32" or env['crossmingw'] :
-	pkgconfig = "PKG_CONFIG_PATH=%s %s"%(
-		os.path.join(env['sandbox_path'],'local','lib','pkgconfig'),
-		os.path.join(env['sandbox_path'],'local','bin','pkg-config.exe'))
 	env.AppendUnique(LIBS=['pthread'])
-env.ParseConfig( "%s --cflags --libs sndfile"%pkgconfig )
+if not env.has_key("PKG_CONFIG") :
+	env['PKG_CONFIG'] = 'pkg-config'
+env.ParseConfig( "$PKG_CONFIG --cflags --libs sndfile" )
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 install, default = env.ClamModule(
