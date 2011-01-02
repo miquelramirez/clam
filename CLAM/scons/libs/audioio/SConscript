@@ -34,6 +34,9 @@ if not env.get('with_oggvorbis') :
 if not env.get('with_portaudio') :
 	blacklist += ['PANetworkPlayer']
 
+if not env.get('with_lv2') :
+	blacklist += ['LV2']
+
 if env.get('with_portmidi') :
 	folders.append( 'src/Tools/MIDIIO/PortMIDI' )
 

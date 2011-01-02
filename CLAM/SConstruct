@@ -146,8 +146,8 @@ def setup_build_options( env ) :
 	else :
 		opts.Add( BoolVariable( 'with_jack', 'Enables/Disable JACK support', 'no') )
 
-	ladspa_option = True # (sys.platform == 'linux2' and not crosscompiling)
-	opts.Add( BoolVariable( 'with_ladspa', 'Ladspa plugin support', ladspa_option) )
+	opts.Add( BoolVariable( 'with_ladspa', 'Ladspa plugin support', True) )
+	opts.Add( BoolVariable( 'with_lv2', 'Lv2 plugin support', True) )
 	
 	# clam_processing options
 	opts.Add( BoolVariable( 'with_fftw3', 'Selects whether to use fftw3 or not', 'yes'))
