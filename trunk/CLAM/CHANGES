@@ -17,8 +17,9 @@
    * ControlSources and ControlSinks with multiple controls
  * OfflinePlayer accepts a control sequence script, containing in each line: 
    SMPTE controlSourceName and value.
- * New backends:
+ * New backend:
    * CLAM builds LV2 plugins from networks (see wiki tutorials)
+   * Helper scripts to automatically generate lv2 rdf's
  * Added In/OutControl/PortBase::SetName to be able to change the name of a 
    connection without disconnecting it.
  * New plugins:
