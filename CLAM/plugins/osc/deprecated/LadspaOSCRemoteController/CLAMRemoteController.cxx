@@ -102,7 +102,7 @@ void CLAMRemoteController::FillPortInfo( LADSPA_PortDescriptor* descriptors, cha
 		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL);
 		names[currentport] = dupstr( it->name.c_str() );
 
-		//Obté processingConfig, i defineix cada param
+		//ObtÃ© processingConfig, i defineix cada param
 		ExternInControlConfig& conf=const_cast<ExternInControlConfig&>(
 						dynamic_cast<const ExternInControlConfig&>(
 							it->processing->GetConfig() ));

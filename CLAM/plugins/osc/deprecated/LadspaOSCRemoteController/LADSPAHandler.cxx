@@ -44,7 +44,7 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 
 	g_psDescriptor = new LADSPA_Descriptor;
 
-	//TODO posa cada grupet en mètodes propis: "registra portdescriptors...", etc
+	//TODO posa cada grupet en mÃ¨todes propis: "registra portdescriptors...", etc
 	if (g_psDescriptor)
 	{
 		g_psDescriptor->UniqueID = 8984;
@@ -99,7 +99,7 @@ LADSPA_Handle Instantiate(const LADSPA_Descriptor * Descriptor, unsigned long Sa
 {
 	std::cerr << " instantiate" << std::endl;
 
-	//TODO això no està bé, principalment perquè si només té 1 in 1 out en vols intanciar dos però no li deixa...
+	//TODO aixÃ² no estÃ  bÃ©, principalment perquÃ¨ si nomÃ©s tÃ© 1 in 1 out en vols intanciar dos perÃ² no li deixa...
 	return new CLAM::CLAMRemoteController();
 }
 
