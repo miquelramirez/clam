@@ -306,7 +306,7 @@ Depends('install_core', sconstoolsInstall)
 # Module dependenciesa
 all_alias = Alias( 'all', modules)
 install_alias = Alias( 'install', ['install_%s'%module for module in modules])
-Alias('install_core', Install(os.path.join(clam_env['prefix'],'bin'), [
+Alias('install_core', Install(os.path.join(clam_env['prefix_for_packaging'],'bin'), [
 	os.path.join('scripts','clamrefactor.py'),
 	os.path.join('scripts','clamnetwork2code.py'),
 	os.path.join('scripts','clam_lv2_generator.py'),
