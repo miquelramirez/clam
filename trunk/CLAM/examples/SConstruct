@@ -163,8 +163,6 @@ directoryBasedExamples = [
 directoryBasedLibraries = [
 #	"PluginExamples/ClamLadspaPluginExample",
 	"PluginExamples/ClamNativePluginExample",
-# TODO: Files to be integred on the Network editor
-#	"PluginExamples/LadspaOSCRemoteController",
 ]
 
 singleSourceLibraries = [
