@@ -133,12 +133,18 @@ if isLinuxPlatform :
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"${prefix}/share/networkeditor/example-data\\""')
 
 env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
+
 if env['release'] :
 	env.Append( CCFLAGS=['-fomit-frame-pointer'] )
 
+clamRefactorLocation=os.path.join(env['clam_prefix'],'bin','clamrefactor.py')
+env.AppendUnique(CPPDEFINES=[
+	('CLAM_PREFIX', '"\\"%s\\""' % env['clam_prefix']),
+	])
+
 env.Depends("src/generated/NetworkUpgrader.o", [
 	"migrationScript",
-	"../CLAM/scripts/clamrefactor.py",
+	clamRefactorLocation,
 	])
 
 qtmonitorDirs = env.recursiveDirs(os.path.join('src','widgets')) + env.recursiveDirs(os.path.join('src','monitors'))
