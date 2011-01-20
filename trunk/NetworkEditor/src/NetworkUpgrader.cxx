@@ -5,8 +5,8 @@
 #include <CLAM/Assert.hxx>
 #include <iostream>
 
-CLAM_EMBEDDED_FILE(migrationScript,"migrationScript")
-CLAM_EMBEDDED_FILE(clamrefactor,"../CLAM/scripts/clamrefactor.py")
+CLAM_EMBEDDED_FILE(migrationScript, "migrationScript")
+CLAM_EMBEDDED_FILE(clamrefactor, CLAM_PREFIX "/bin/clamrefactor.py")
 
 
 /**
