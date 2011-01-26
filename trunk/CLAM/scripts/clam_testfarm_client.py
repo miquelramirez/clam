@@ -69,6 +69,9 @@ clam.add_subtask( 'List of new commits', [
 		{CMD: 'true ; cd %s; svn log -r BASE:HEAD; cd -'%repo, INFO: lambda x:x }
 		for repo in repositories if repo not in private_repositories
 	] + [
+		{CMD: 'true ; cd %s; svn log -q -r BASE:HEAD; cd -'%repo, INFO: lambda x:x }
+		for repo in private_repositories
+	] + [
 		{CMD: '(cd %s ; svn up --accept postpone )'%repo, INFO: lambda x:x }
 		for repo in repositories if repo not in private_repositories
 	] + [
@@ -168,6 +171,10 @@ clam.add_subtask('CLAM Plugins', [
 	'cd %(sandbox)s/clam/CLAM/plugins/resampling'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
+	
+	'cd %(sandbox)s/clam/CLAM/plugins/expression'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
 ] )
 
 clam.add_subtask('NetworkEditor installation', [
@@ -188,8 +195,10 @@ clam.add_subtask('BM-Audio back-to-back tests', [
 	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
 	'./back2back.py',
 	'cd %(sandbox)s/acustica/src/bm_clam_plugin'%localDefinitions,
+	'scons clam_prefix=%(installPath)s' % localDefinitions,
+	'scons install',
 	'./back2back_decoders.py',
-	'./back2back_upmix.py',
+#	'./back2back_upmix.py',
 ] )
 
 clam.add_subtask('SMSTools installation', [
