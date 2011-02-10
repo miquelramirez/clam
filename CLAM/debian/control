@@ -3,19 +3,50 @@ Section: libs
 Priority: optional
 Maintainer: CLAM Team <developers@clam-project.org>
 Uploaders: David García Garzón <dgarcia_debian@iua.upf.edu>
-Build-Depends: debhelper (>= 5.0.0), scons, ladspa-sdk, libxerces-c2-dev, portaudio19-dev, libfftw3-dev | fftw3-dev, libjack-dev, libmad0-dev, libogg-dev, libsndfile1-dev, libvorbis-dev, libid3-3.8.3-dev, libasound2-dev, liblo0-dev, doxygen
 Standards-Version: 3.8.3
 Homepage: http://clam-project.org/
 Vcs-Browser: https://clam-project.org/clam/trunk/packaging/CLAM/debian
 Vcs-Svn: https://clam-project.org/clam/trunk/packaging/CLAM/debian
+Build-Depends:
+ debhelper (>= 5.0.0), 
+ scons,
+ ladspa-sdk,
+ libxerces-c2-dev,
+ portaudio19-dev,
+ libfftw3-dev | fftw3-dev,
+ libjack-dev,
+ libmad0-dev,
+ libogg-dev,
+ libsndfile1-dev,
+ libvorbis-dev,
+ libid3-3.8.3-dev,
+ libasound2-dev,
+ liblo0-dev,
+ doxygen,
+ python-central
 
 Package: libclam1.4
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Conflicts: libclam-audioio-dev, libclam-audioio0, libclam-core-dev, libclam-core0, libclam-processing-dev, libclam-processing0, libclam-vmfl-dev, libclam-vmfl0, libclam-vmqt-dev, libclam-vmqt0
-Suggests: clam-annotator, clam-networkeditor, clam-smstools, clam-plugins
-Description: runtime package for the CLAM framework
+Conflicts:
+ libclam-audioio-dev,
+ libclam-audioio0,
+ libclam-core-dev,
+ libclam-core0,
+ libclam-processing-dev,
+ libclam-processing0,
+ libclam-vmfl-dev,
+ libclam-vmfl0,
+ libclam-vmqt-dev,
+ libclam-vmqt0
+Suggests:
+ clam-annotator,
+ clam-networkeditor,
+ clam-smstools,
+ clam-plugins,
+ clam-chordata
+Description: CLAM framework - runtime libraries
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
  visualization for audio and music related objects, and other tools that are
@@ -28,9 +59,23 @@ Description: runtime package for the CLAM framework
 Package: libclam-dev
 Section: libdevel
 Architecture: any
-Depends: libclam1.4 (= ${binary:Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15), portaudio19-dev, libfftw3-dev | fftw3-dev, libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), liblo0-dev, libjack-dev, scons
+Depends:
+ libclam1.4 (= ${binary:Version}),
+ ladspa-sdk (>= 1.1),
+ pkg-config (>= 0.15),
+ portaudio19-dev,
+ libfftw3-dev | fftw3-dev,
+ libmad0-dev (>= 0.15.1b),
+ libogg-dev (>= 1.1.2),
+ libsndfile1-dev (>= 1.0.2-1),
+ libvorbis-dev (>= 1.0.1),
+ libid3-3.8.3-dev,
+ libasound2-dev (>= 1.0.8),
+ liblo0-dev,
+ libjack-dev,
+ scons
 Suggests: libclam-doc (= ${binary:Version})
-Description: development package for the CLAM framework
+Description: CLAM framework - development files
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
  visualization for audio and music related objects, and other tools that are
@@ -40,11 +85,25 @@ Description: development package for the CLAM framework
  This package contains the files needed to develop with libclam-core,
  libclam-processing, and libclam-audioio libraries.
 
+Package: libclam1.4-dbg
+Architecture: any
+Section: debug
+Depends: libclam1.4 (= ${binary:Version}), ${misc:Depends}
+Description: CLAM framework - runtime libraries debugging symbols
+ CLAM is a framework to develop audio and music applications in C++.
+ It provides tools to perform advanced analysis, transformations and synthesis,
+ visualization for audio and music related objects, and other tools that are
+ useful to abstract target platform for most tasks in an audio applications
+ such as audio devices, file formats, threading...
+ .
+ This package contains the debugging symbols for libclam-core,
+ libclam-processing, and libclam-audioio libraries.
+
 Package: libclam-doc
 Section: doc
 Architecture: all
 Suggests: 
-Description: CLAM framework documentation package
+Description: CLAM framework - documentation
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
  visualization for audio and music related objects, and other tools that are
@@ -52,5 +111,25 @@ Description: CLAM framework documentation package
  such as audio devices, file formats, threading...
  .
  This package contains the framework documentation and some example programs.
+
+Package: clam-tools
+Section: sound
+Architecture: all
+Depends: ${python:Depends}
+XS-Python-Version: all
+XB-Python-Version: ${python:Version} 
+Description: CLAM framework - tools
+ CLAM is a framework to develop audio and music applications in C++.
+ It provides tools to perform advanced analysis, transformations and synthesis,
+ visualization for audio and music related objects, and other tools that are
+ useful to abstract target platform for most tasks in an audio applications
+ such as audio devices, file formats, threading...
+ .
+ This package installs some python utilities.
+ * clamrefactor.py - Enables do batch modification on xml networks such as 
+   version migration scripts.
+ * clamnetwork2code.py - Generates C++ code from a network xml file
+ * clam_lv2_generator.py - Helper script to generate lv2 related files.
+
 
 
