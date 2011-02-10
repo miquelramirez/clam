@@ -75,7 +75,8 @@ Depends:
  liblo0-dev,
  libjack-dev,
  scons,
- ${python:Depends}
+ ${python:Depends},
+ ${misc:Depends}
 Provides: libclam-dev
 Conflicts: libclam-dev
 Suggests: libclam-doc (= ${binary:Version})
@@ -121,7 +122,7 @@ Description: CLAM framework - documentation
 Package: clam-tools
 Section: sound
 Architecture: all
-Depends: ${python:Depends}
+Depends: ${python:Depends}, ${misc:Depends}
 XS-Python-Version: all
 XB-Python-Version: ${python:Version} 
 Description: CLAM framework - tools
