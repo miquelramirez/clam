@@ -83,6 +83,7 @@ binary-arch: build install
 	dh_installman
 	dh_link
 	dh_strip --dbg-package=libclam1.4-dbg
+	dh_pycentral
 	dh_compress
 	dh_fixperms
 	dh_makeshlibs
