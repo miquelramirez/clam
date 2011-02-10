@@ -109,7 +109,7 @@ Description: CLAM framework - runtime libraries debug symbols
 Package: libclam-doc
 Section: doc
 Architecture: all
-Suggests: 
+Depends: ${misc:Depends}
 Description: CLAM framework - documentation
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
