@@ -82,12 +82,12 @@ binary-arch: build install
 	dh_installexamples
 	dh_installman
 	dh_link
-	dh_strip
+	dh_strip --dbg-package=libclam1.4-dbg
 	dh_compress
 	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
-	dh_shlibdeps -L libclam13 -l debian/libclam13/usr/lib
+	dh_shlibdeps -L libclam1.4 -l debian/libclam1.4/usr/lib
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
