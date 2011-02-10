@@ -312,7 +312,7 @@ for script in [
 	'clam_lv2_generator',
 	] :
 	Alias('install_core', Install(
-		os.path.join(install_dirs.data,'share','clam'),
+		os.path.join(install_dirs.data,'clam'),
 		os.path.join('scripts',script+'.py'),
 	)) 
 	Alias('install_core', Install(
