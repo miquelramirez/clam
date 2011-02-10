@@ -73,7 +73,8 @@ Depends:
  libasound2-dev (>= 1.0.8),
  liblo0-dev,
  libjack-dev,
- scons
+ scons,
+ ${python:Depends}
 Suggests: libclam-doc (= ${binary:Version})
 Description: CLAM framework - development files
  CLAM is a framework to develop audio and music applications in C++.
