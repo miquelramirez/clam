@@ -1,4 +1,26 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+_copyright = u"""\
+Copyright (C) 2010, Fundacio Barcelona Media.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Licence GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl2.html>
+
+Written by Xavier Oliver, David Garcia Garzon and Angelo Scorza.
+"""
+
+_description = u"""\
+This script generates different files needed to build LV2 plugin bundles
+based on the information provided by a set of CLAM networks.
+The script can be used in three modes: 'manifest' to generate the main
+metadata index for the bundle, 'ttls' to generate a set of ttl's
+for each plugin in the buncle, and, 'main' to generate the main
+source file of the library.
+If you are using SCons, clam provides builders to generate all those
+files. See the LV2 clam example for more information on how to use it.
+"""
+
 
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
@@ -269,15 +291,6 @@ def printManifest(uris,names):
 
 import os
 
-def parseCommandLine() :
-	command = sys.argv[1]
-	uribase = sys.argv[2]
-	networks = sys.argv[3:]
-	names = [os.path.splitext(os.path.basename(network))[0]
-		for network in networks]
-	uris = [os.path.join(uribase,name) for name in names ]
-	return command, None, uribase, networks, names, uris
-
 def test_back2back() :
 	from audiob2b import runBack2BackProgram
 	data_path="../../../clam-test-data/b2b/lv2_plugin/"
@@ -299,75 +312,52 @@ def test_back2back() :
 
 
 def main():
+	from optparse import OptionParser
+	parser = OptionParser(
+		usage="usage: %prog [options] network1 network2...",
+		version="%prog 1.4\n"+_copyright,
+		description=_description
+		)
+	parser.add_option("-m", "--manifest", dest='createManifest', action='store_true',
+		help="Generates the manifest file")
+	parser.add_option("-t", "--ttl", dest='createTtls', action='store_true',
+		help="Generates ttl files for each network")
+	parser.add_option("-i", "--main", dest='createMain', action='store_true',
+		help="Generates the main C++ file for the plugin library")
+	parser.add_option("-u", "--uribase", dest='uribase', default="default/uri/lv2/",
+		help="Specifies the uri base for the plugins", metavar="URIBASE")
+	parser.add_option("-d", "--doap", dest='doapfile',
+		help="Specifies a doapfile with additional info (required by --ttls)", metavar="DOAPFILE")
+	parser.add_option("-y", "--binary", dest='binary', action="store_true",
+		help="Provides a name for the library binary (required by --ttls)")
+	parser.add_option("-b", "--back2back", dest='back2back', action="store_true",
+		help="Runs the script back-to-back test")
+	options, args = parser.parse_args()
 
-        args    =  sys.argv[1:]
-	networks= []
-	names   = []
-	uris    = []
-	uribase = "default/uri/lv2/"
-	doapfile= None
-	binary= None
+	options, args = parser.parse_args()
 
-        try:
-                optlist1, args1 = getopt.getopt(args, "mtiu:d:b:y:h",  ["manifest", "ttl", "main","uribase", "doap", "back2back", "binary","help"])
-		
-        except getopt.error, msg:
-                print "[1] for help use --help"
-                sys.exit(2)
+	if options.back2back :
+		test_back2back()
+		sys.exit(0)
 
-	createTtls = False
-	createMain = False
-	createManifest = False
-
-        # process options
-        for o, a in optlist1:
-                if o in ("-m", "--manifest"):  	# to create the manifest.ttl 
-			createManifest = True
-	
-		if o in ("-t", "--ttl"):       	# to create the ttl for all networks 
-			createTtls = True 
-		
-		if o in ("-i", "--main"):       # to create the main
-			createMain = True
-
-		if o in ("-u", "--uribase"):
-			uribase = a
-
-		if o in ("-d", "--doap"):
-			doapfile = a
-		
-		if o in ("-b", "--back2back"):
-			test_back2back()
-			sys.exit(0)
-                
-		if o in ("-y", "--binary"):
-			binary = a	
-	
-		if o in ("-h", "--help"):       # print help
-                        print >>sys.stderr, "the help was here"
-                        sys.exit(0)
-
-	networks = args1
+	networks = args
 	names = [os.path.splitext(os.path.basename(network))[0] for network in networks]
-	uris  = [os.path.join(uribase,name) for name in names ]
+	uris  = [os.path.join(options.uribase,name) for name in names ]
 
-#	print >>sys.stderr,"names:\n", names
-#	print >>sys.stderr,"uris: \n", uris
-	
-	if createTtls:
+	if options.createTtls:
 		for network, uri, name in zip(networks, uris, names) :
 			parser = make_parser()   
 			curHandler = ExporterHandler()
 			parser.setContentHandler(curHandler)
 			parser.parse(open(network))
-			curHandler.printTTL(network,uri,name,doapfile,binary)
+			curHandler.printTTL(network,uri,name,options.doapfile,options.binary)
 			return
 
-	if createManifest:
+	if options.createManifest:
 		printManifest(uris,names)
 		return
 
-	if createMain:
+	if options.createMain:
 		printCLAM_PLUGIN(networks,uris)
 		return
 
