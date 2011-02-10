@@ -11,7 +11,7 @@ Build-Depends:
  debhelper (>= 5.0.0), 
  scons,
  ladspa-sdk,
- libxerces-c2-dev,
+ libxerces-c-dev,
  portaudio19-dev,
  libfftw3-dev | fftw3-dev,
  libjack-dev,
