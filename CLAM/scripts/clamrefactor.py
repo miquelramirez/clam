@@ -1,12 +1,24 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-# This script can be used, as a command line tool or as a python module,
-# to performs a set of high level transformations on CLAM networks.
-#
-# The script is useful to upgrade the network to changes on C++
-# code and also to perform automatized parameter changes from the
-# commandline (not using the NetworkEditor).
-#
+_copyright = u"""\
+Copyright (C) 2010, Fundacio Barcelona Media.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Licence GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl2.html>
+
+Written by David Garcia Garzon, Pau Arumi, Natanael Olaiz, Dirk Griffioen
+and Angelo Scorza.
+"""
+
+_description ="""\
+This script can be used, as a command line tool or as a python module,
+to performs a set of high level transformations on CLAM networks.
+
+The script is useful to upgrade the network to changes on C++
+code and also to perform automatized parameter changes from the
+commandline (not using the NetworkEditor).
+"""
 
 # DONE: Basic operaions
 # DONE: Making it easy to use on command line, not just as library
@@ -342,7 +354,8 @@ if __name__ == "__main__" :
 	from optparse import OptionParser
 	parser = OptionParser(
 		usage="usage: %prog [-c COMMAND|-f SCRIPTFILE] network1 network2...",
-		version="%prog 0.9"
+		version="%prog 1.4\n"+_copyright,
+		description=_description
 		)
 	parser.add_option("-v", "--verbose", dest='verbose', action='store_true')
 	parser.add_option("-q", "--quiet", dest='verbose', action='store_false')
