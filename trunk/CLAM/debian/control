@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: CLAM Team <developers@clam-project.org>
 Uploaders: David García Garzón <dgarcia_debian@iua.upf.edu>
-Standards-Version: 3.8.3
+Standards-Version: 3.9.1
 Homepage: http://clam-project.org/
 Vcs-Browser: https://clam-project.org/clam/trunk/packaging/CLAM/debian
 Vcs-Svn: https://clam-project.org/clam/trunk/packaging/CLAM/debian
