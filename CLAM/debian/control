@@ -79,6 +79,7 @@ Depends:
 Provides: libclam-dev
 Conflicts: libclam-dev
 Suggests: libclam-doc (= ${binary:Version})
+Recommends: libclam-tools (= ${binary:Version})
 Description: CLAM framework - development files
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
@@ -92,15 +93,16 @@ Description: CLAM framework - development files
 Package: libclam1.4-dbg
 Architecture: any
 Section: debug
+Priority: extra
 Depends: libclam1.4 (= ${binary:Version}), ${misc:Depends}
-Description: CLAM framework - runtime libraries debugging symbols
+Description: CLAM framework - runtime libraries debug symbols
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
  visualization for audio and music related objects, and other tools that are
  useful to abstract target platform for most tasks in an audio applications
  such as audio devices, file formats, threading...
  .
- This package contains the debugging symbols for libclam-core,
+ This package contains the debug symbols for libclam-core,
  libclam-processing, and libclam-audioio libraries.
 
 Package: libclam-doc
@@ -130,10 +132,10 @@ Description: CLAM framework - tools
  such as audio devices, file formats, threading...
  .
  This package installs some python utilities.
- * clamrefactor.py - Enables do batch modification on xml networks such as 
-   version migration scripts.
- * clamnetwork2code.py - Generates C++ code from a network xml file
- * clam_lv2_generator.py - Helper script to generate lv2 related files.
+  * clamrefactor.py - Performs batch modification on networks' xml,
+    often used by version migration scripts.
+  * clamnetwork2code.py - Generates C++ code from a network xml file
+  * clam_lv2_generator.py - Helper script to generate lv2 related files.
 
 
 
