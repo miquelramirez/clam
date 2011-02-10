@@ -11,6 +11,7 @@ Build-Depends:
  debhelper (>= 5.0.0), 
  scons,
  ladspa-sdk,
+ lv2core,
  libxerces-c-dev,
  portaudio19-dev,
  libfftw3-dev | fftw3-dev,
@@ -56,7 +57,7 @@ Description: CLAM framework - runtime libraries
  This package contains the shared libraries for libclam-core, 
  libclam-processing and libclam-audioio.
 
-Package: libclam-dev
+Package: libclam1.4-dev
 Section: libdevel
 Architecture: any
 Depends:
@@ -75,6 +76,8 @@ Depends:
  libjack-dev,
  scons,
  ${python:Depends}
+Provides: libclam-dev
+Conflicts: libclam-dev
 Suggests: libclam-doc (= ${binary:Version})
 Description: CLAM framework - development files
  CLAM is a framework to develop audio and music applications in C++.
