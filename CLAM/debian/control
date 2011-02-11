@@ -79,9 +79,8 @@ Depends:
  ${misc:Depends}
 Provides: libclam-dev
 Conflicts: libclam-dev
-Recommends: clam-plugins
 Suggests: libclam-doc (= ${binary:Version})
-Recommends: libclam-tools (= ${binary:Version})
+Recommends: libclam-tools (= ${binary:Version}), clam-plugins
 Description: CLAM framework - development files
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
