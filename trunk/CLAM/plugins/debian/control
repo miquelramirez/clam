@@ -25,7 +25,7 @@ Description: CLAM framework plugins
  such as audio devices, file formats, threading...
  .
  This package provides several plugins extensions for the CLAM audio
- framework, which are provided by the CLAM project including:
+ framework, which are already provided by the CLAM project including:
   * OSC support
   * Real-time 3D acoustics scene simulation (ambisonics, raytracing, HRTF's)
   * Speech synthesis and analysis
@@ -39,7 +39,6 @@ Architecture: any
 Section: libdevel
 Depends:  ${shlibs:Depends}, ${misc:Depends}, clam-devel, libclam-plugins1.4 (= ${binary:Version})
 Description: CLAM framework plugins - development files
-Description: Development files for the extensions to the CLAM framework
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
  visualization for audio and music related objects, and other tools that are
