@@ -4,10 +4,14 @@ Priority: optional
 Maintainer: CLAM Team <developers@clam-project.org>
 Uploaders: David García Garzón <dgarcia_debian@iua.upf.edu>
 Homepage: http://clam-project.org
-Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, liblo0-dev
-Standards-Version: 3.8.3
+Build-Depends:
+ debhelper (>= 5.0.0),
+ scons,
+ libclam-dev,
+ liblo0-dev
+Standards-Version: 3.9.1
 
-Package: libclam-plugins
+Package: libclam-plugins1.4
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends} 
 Recommends: clam-networkeditor
@@ -21,10 +25,10 @@ Description: Extension plugins for the CLAM framework
   * Sample by sample convolution effects
   * Lock-free wave file reader
 
-Package: libclam-plugins-dev
+Package: libclam-plugins1.4-dev
 Architecture: any
 section: libdevel
-Depends:  ${shlibs:Depends}, ${misc:Depends}, clam-devel, libclam-plugins (= ${binary:Version})
+Depends:  ${shlibs:Depends}, ${misc:Depends}, clam-devel, libclam-plugins1.4 (= ${binary:Version})
 Description: Development files for the extensions to the CLAM framework
  This package provides the development files needed by applications explicitly
  using the symbols defined in libclam-plugins package.

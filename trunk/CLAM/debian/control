@@ -45,7 +45,7 @@ Suggests:
  clam-annotator,
  clam-networkeditor,
  clam-smstools,
- clam-plugins,
+ libclam-plugins1.4,
  clam-chordata
 Description: CLAM framework - runtime libraries
  CLAM is a framework to develop audio and music applications in C++.
