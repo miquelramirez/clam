@@ -17,8 +17,15 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Provides: libclam-plugins, clam-plugins
 Conflicts: libclam-plugins
 Recommends: clam-networkeditor
-Description: Extension plugins for the CLAM framework
- This package provides several plugins for the CLAM audio library, including:
+Description: CLAM framework plugins
+ CLAM is a framework to develop audio and music applications in C++.
+ It provides tools to perform advanced analysis, transformations and synthesis,
+ visualization for audio and music related objects, and other tools that are
+ useful to abstract target platform for most tasks in an audio applications
+ such as audio devices, file formats, threading...
+ .
+ This package provides several plugins extensions for the CLAM audio
+ framework, which are provided by the CLAM project including:
   * OSC support
   * Real-time 3D acoustics scene simulation (ambisonics, raytracing, HRTF's)
   * Speech synthesis and analysis
@@ -31,12 +38,32 @@ Package: libclam-plugins1.4-dev
 Architecture: any
 Section: libdevel
 Depends:  ${shlibs:Depends}, ${misc:Depends}, clam-devel, libclam-plugins1.4 (= ${binary:Version})
+Description: CLAM framework plugins - development files
 Description: Development files for the extensions to the CLAM framework
- This package provides the development files needed by applications explicitly
- using the symbols defined in libclam-plugins package.
- This package is not needed at all if you just want to use such black box manipulation
- of the extension objects like NetworkEditor and Prototyper applications do.
- Black box manipulation is limited to create processings by type name and using
- common interfaces defined in libclam-core to manipolate them.
+ CLAM is a framework to develop audio and music applications in C++.
+ It provides tools to perform advanced analysis, transformations and synthesis,
+ visualization for audio and music related objects, and other tools that are
+ useful to abstract target platform for most tasks in an audio applications
+ such as audio devices, file formats, threading...
+ .
+ This package provides the development files needed to compile C++ code
+ explicitly using symbols defined in libclam-plugins package. Black box
+ usage of processing objects defined by plugins does not require this package.
+ You can still instanciate them using the Network or the ProcessingFactory
+ and manipulating them using the abstract interface.
  
+Package: libclam-plugins1.4-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends: libclam-plugins1.4 (= ${binary:Version}), ${misc:Depends}
+Description: CLAM framework plugins - debug symbols
+ CLAM is a framework to develop audio and music applications in C++.
+ It provides tools to perform advanced analysis, transformations and synthesis,
+ visualization for audio and music related objects, and other tools that are
+ useful to abstract target platform for most tasks in an audio applications
+ such as audio devices, file formats, threading...
+ .
+ This package contains the debug symbols for the extension plugins
+ provided by the CLAM project.
 
