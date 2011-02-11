@@ -79,6 +79,7 @@ Depends:
  ${misc:Depends}
 Provides: libclam-dev
 Conflicts: libclam-dev
+Recommends: clam-plugins
 Suggests: libclam-doc (= ${binary:Version})
 Recommends: libclam-tools (= ${binary:Version})
 Description: CLAM framework - development files
