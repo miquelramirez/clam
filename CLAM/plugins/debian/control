@@ -14,6 +14,8 @@ Standards-Version: 3.9.1
 Package: libclam-plugins1.4
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends} 
+Provides: libclam-plugins, clam-plugins
+Conflicts: libclam-plugins
 Recommends: clam-networkeditor
 Description: Extension plugins for the CLAM framework
  This package provides several plugins for the CLAM audio library, including:
@@ -27,7 +29,7 @@ Description: Extension plugins for the CLAM framework
 
 Package: libclam-plugins1.4-dev
 Architecture: any
-section: libdevel
+Section: libdevel
 Depends:  ${shlibs:Depends}, ${misc:Depends}, clam-devel, libclam-plugins1.4 (= ${binary:Version})
 Description: Development files for the extensions to the CLAM framework
  This package provides the development files needed by applications explicitly
