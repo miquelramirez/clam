@@ -45,11 +45,10 @@ Description: CLAM framework plugins - development files
  useful to abstract target platform for most tasks in an audio applications
  such as audio devices, file formats, threading...
  .
- This package provides the development files needed to compile C++ code
- explicitly using symbols defined in libclam-plugins package. Black box
- usage of processing objects defined by plugins does not require this package.
- You can still instanciate them using the Network or the ProcessingFactory
- and manipulating them using the abstract interface.
+ This package provides development files needed to compile C++ code referring
+ specific symbols in libclam-plugins. This package is not required to use
+ plugins as long as the processing object defined in them are created by means
+ of factories and manipulated using the abstract interfaces in libclam-core.
  
 Package: libclam-plugins1.4-dbg
 Architecture: any
