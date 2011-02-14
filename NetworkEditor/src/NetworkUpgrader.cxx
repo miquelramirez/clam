@@ -6,7 +6,7 @@
 #include <iostream>
 
 CLAM_EMBEDDED_FILE(migrationScript, "migrationScript")
-CLAM_EMBEDDED_FILE(clamrefactor, CLAM_PREFIX "/bin/clamrefactor.py")
+CLAM_EMBEDDED_FILE(clamrefactor, CLAM_PREFIX "/share/clam/clamrefactor.py")
 
 
 /**
