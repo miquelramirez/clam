@@ -42,8 +42,11 @@ isDarwinPlatform = sys.platform=='darwin'
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
-env.ParseConfig("python-config --cflags")
-env.ParseConfig("python-config --libs")
+env.ParseConfig('python-config --cflags')
+env.ParseConfig('python-config --libs')
+# g++ complaints about -Wstrict-prototypes added by python-config
+if '-Wstrict-prototypes' in env['CCFLAGS'] :
+	env['CCFLAGS'].remove("-Wstrict-prototypes")
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
