@@ -854,7 +854,7 @@ private:
 			QString fileName=QString(factory.GetValueFromAttribute(className,"faust_source_file").c_str());
 			menu->addAction(
 				clamProcessingIcon(className),
-				tr("Open source with editor"),
+				tr("Edit Faust source"),
 				this,SLOT(onOpenFileWithExternalApplication())
 				)->setData(fileName);
 			//menu->addAction(clamProcessingIcon(className),"Recompile plugin");
