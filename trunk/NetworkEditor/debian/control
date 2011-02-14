@@ -5,17 +5,18 @@ Maintainer: CLAM Team <developers@clam-project.org>
 Uploaders: David García Garzón <dgarcia_debian@iua.upf.edu>
 Homepage: http://clam-project.org
 Build-Depends:
- debhelper (>= 5.0.0),
  scons,
  libclam-dev,
- qt4-dev-tools,
+ clam-tools,
  libqt4-dev,
  libqt4-dev (<4.4) | libqt4-opengl-dev,
+ libqtwebkit-dev,
+ qt4-dev-tools,
  docbook-to-man,
  imagemagick,
  libcppunit-dev,
  python-dev,
- libqtwebkit-dev
+ debhelper (>= 5.0.0)
 Standards-Version: 3.8.3
 
 Package: clam-networkeditor
