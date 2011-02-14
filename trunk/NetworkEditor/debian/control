@@ -53,6 +53,7 @@ Package: libclam-qtmonitors1.4
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: clam-plugin
 Description: visual
  The CLAM framework can be used to develop rich real-time audio and music
  applications either by c++ programming or by visual means using the

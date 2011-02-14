@@ -14,7 +14,7 @@ Standards-Version: 3.9.1
 Package: libclam-plugins1.4
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends} 
-Provides: libclam-plugins, clam-plugins
+Provides: libclam-plugins, clam-plugin
 Conflicts: libclam-plugins
 Recommends: clam-networkeditor
 Description: CLAM framework plugins
