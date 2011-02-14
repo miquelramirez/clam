@@ -14,7 +14,8 @@ Build-Depends:
  docbook-to-man,
  imagemagick,
  libcppunit-dev,
- python-dev
+ python-dev,
+ libqtwebkit-dev
 Standards-Version: 3.8.3
 
 Package: clam-networkeditor
