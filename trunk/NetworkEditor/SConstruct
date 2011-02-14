@@ -137,7 +137,7 @@ env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
 if env['release'] :
 	env.Append( CCFLAGS=['-fomit-frame-pointer'] )
 
-clamRefactorLocation=os.path.join(env['clam_prefix'],'bin','clamrefactor.py')
+clamRefactorLocation=os.path.join(env['clam_prefix'],'share', 'clam', 'clamrefactor.py')
 env.AppendUnique(CPPDEFINES=[
 	('CLAM_PREFIX', '"\\"%s\\""' % env['clam_prefix']),
 	])
