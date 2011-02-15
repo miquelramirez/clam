@@ -40,13 +40,7 @@ class Connector(object):
 	def host(self):
 		from Processing import Processing
 		return Processing(self.__dict__["host"], self._proxy)
-	@property
-	def peers(self):
-		"""A list of all the Connectors connected to the Connector"""
-		import PeerConnectors
-		return PeerConnectors.PeerConnectors(
-			host, name, kind, direction, 
-			networkProxy )
+
 
 import unittest
 import definition
