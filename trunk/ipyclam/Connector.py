@@ -38,8 +38,11 @@ class Connector(object):
 		return self.__dict__["type"]
 	@property
 	def host(self):
-		from Processing import Processing
-		return Processing(self.__dict__["host"], self._proxy)
+		import Processing
+		return Processing.Processing(
+			self.__dict__["host"],
+			self._proxy,
+			)
 	@property
 	def peers(self):
 		from PeerConnectors import PeerConnectors
