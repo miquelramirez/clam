@@ -1,0 +1,36 @@
+
+- Polishing connector interface:
+	- Dummy_NetworkProxy.connectorInfo failure case (assert? exception?)
+	- Index and type are queried to the proxy instead of passed as constructor parameters and stored as attribute. For tests using constructor parameters instead of a definition structure we can keep these attributes, query the proxy just when they are None
+	- If we have properties, do we need a dicctionary to hold Connector attributes?
+	- PeerConnectors should not receive type as parameter
+	- PeerConnectors
+	- Connector.peers no se usa/testea
+	- PeerConnectors.__len__()
+- Connecting
+	- Test Connector.connect(Connector)
+		increments the peers
+		increments the peer peers
+		many kinds:
+			output first
+			input first
+			controls
+			ports
+		error conditions
+			different kind
+			same direction
+			different type
+	- Test Connectors.connect(Processing)
+
+- Network interface:
+	- Processing factories for the dummy proxy
+	- Adding a processing
+	- Self generation code
+	- Introspection for processings
+	- Adding processings
+		- Factory
+	- Self writting code for processings
+	- Self writting code for connections
+
+
+
