@@ -10,7 +10,7 @@ class Connector(object):
 	Control = "Control"
 	In = "In"
 	Out = "Out"
-	def __init__(self, type, name = "inport1", kind=Port, direction=In, index=1):
+	def __init__(self, name = "inport1", kind=Port, direction=In, index=1, type=None):
 		self.__dict__["name"] = name
 		self.__dict__["kind"] = kind
 		self.__dict__["direction"] = direction

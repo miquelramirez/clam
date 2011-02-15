@@ -47,7 +47,7 @@ class ConnectorsTests(unittest.TestCase):
 				incontrols = [],
 				outcontrols = [],
 			),
-		])
+		],[],[])
 					
 	def test_iterable(self):
 		ports = Connectors(self.proxy, "Name", Connector.Port, Connector.In)
