@@ -10,7 +10,7 @@ Build-Depends:
  clam-tools,
  libqt4-dev,
  libqt4-dev (<<4.4) | libqt4-opengl-dev,
- libqtwebkit-dev,
+ libqt4-dev (<=4:4.6.2) | libqtwebkit-dev,
  qt4-dev-tools,
  docbook-to-man,
  imagemagick,
