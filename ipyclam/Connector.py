@@ -12,13 +12,14 @@ class Connector(object):
 	In = "In"
 	Out = "Out"
 	def __init__(self, networkProxy, host, name = "Inport1", kind=Port, direction=In, index=1, type=None):
+		from PeersConnectors import PeersConnectors
 		self.__dict__["host"] = host
 		self.__dict__["name"] = name
 		self.__dict__["kind"] = kind
 		self.__dict__["direction"] = direction
 		self.__dict__["index"] = index
 		self.__dict__["type"] = type
-#		self.__dict__["peers"] = PeersConnectors( host, name, kind, direction, networkProxy )
+		self.__dict__["peers"] = PeersConnectors( host, name, kind, direction, networkProxy, type )
 	@property
 	def name(self):
 		"""The name of the port"""
