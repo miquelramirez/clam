@@ -1,7 +1,7 @@
 import unittest
 from Dummy_NetworkProxy import Dummy_NetworkProxy
 from Configuration import Configuration
-from Connector import Connector
+import Connector
 from Connectors import Connectors
 
 class Processing(object):
