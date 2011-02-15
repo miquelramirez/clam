@@ -21,12 +21,23 @@ class Dummy_NetworkProxy :
 		]
 		mapping = dict([((k,d),n) for k,d,n in nameKinds])
 		return self._processings[name][mapping[kind,direction]]
-	def processingConnections(self, processingName, portName, kind, direction):
+	def connectorPeers(self, processingName, portName, kind, direction):
 		connections = self._portConnections if kind == Connector.Port else self._controlConnections
 		if direction == Connector.Out :
 			return [x[0:2] for x in connections if (processingName, portName)==x[2:4] ]
 		else :
 			return [x[2:4] for x in connections if (processingName, portName)==x[0:2] ]
+	def connectorInfo(self, processingName, connectorName, kind, direction) :
+		nameKinds = [
+			(Connector.Port, Connector.In, 'inports'),
+			(Connector.Port, Connector.Out, 'outports'),
+			(Connector.Control, Connector.In, 'incontrols'),
+			(Connector.Control, Connector.Out, 'outcontrols'),
+		]
+		mapping = dict([((k,d),n) for k,d,n in nameKinds])
+		for i, connector in enumerate(self._processings[processingName][mapping[kind, direction]]):
+			if connector[0] == connectorName:
+				return [i, connector[1]]
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def definition(self) :
@@ -149,13 +160,19 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		self.assertEquals([
 				("Processing1", "Outport1"),
 				("Processing1", "Outport2")]
-				, proxy.processingConnections("Processing2", "Inport2", Connector.Port, Connector.Out))
+				, proxy.connectorPeers("Processing2", "Inport2", Connector.Port, Connector.Out))
 	
 	def test_portConnectionsIn(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
 				("Processing2", "Inport2")]
-				, proxy.processingConnections("Processing1", "Outport1", Connector.Port, Connector.In))
+				, proxy.connectorPeers("Processing1", "Outport1", Connector.Port, Connector.In))
+
+	def test_connectorInfo(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		index, type = proxy.connectorInfo("Processing1", "Inport1", Connector.Port, Connector.In)
+		self.assertEquals(0, index)
+		self.assertEquals("type1", type)
 
 if __name__ == '__main__':
 	unittest.main()

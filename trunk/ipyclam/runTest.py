@@ -5,7 +5,7 @@ from Connectors import *
 from Configuration import *
 from Dummy_NetworkProxy import *
 from Processing import *
-from PeersConnectors import *
+from PeerConnectors import *
 
 if __name__ == '__main__':
 	unittest.main()
