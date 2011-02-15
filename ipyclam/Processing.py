@@ -14,8 +14,6 @@ class Processing(object):
 		self.__dict__["_outports"] = Connectors(proxy, name, Connector.Port, Connector.Out)
 		self.__dict__["_incontrols"] = Connectors(proxy, name, Connector.Control, Connector.In)
 		self.__dict__["_outcontrols"] = Connectors(proxy, name, Connector.Control, Connector.Out)
-		self.__dict__["_portConnections"] = proxy.portConnections(name)
-		self.__dict__["_controlConnections"] = proxy.controlConnections(name)
 	def __getitem__(self, name):
 		if name in dir(self._config):
 			return self._config[name]
@@ -140,12 +138,6 @@ class ProcessingTests(unittest.TestCase):
 			'Incontrol1', 'Incontrol2',
 			'Outcontrol1', 'Outcontrol2',
 			'type', '_config', '_inports', '_outports', '_incontrols', '_outcontrols']), dir(p))
-	def test_peers(self):
-		p = Processing("Processing1", definition.proxy())
-		self.assertEqual([
-							('Processing1', 'Outport2', 'Processing2', 'Inport2')
-						], p.Outport2.peers)
-
 
 if __name__ == '__main__':
 	unittest.main()

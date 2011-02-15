@@ -11,22 +11,14 @@ class Connector(object):
 	Control = "Control"
 	In = "In"
 	Out = "Out"
-	def __init__(self, networkProxy, processingName, name = "Inport1", kind=Port, direction=In, index=1, type=None):
-		self.__dict__["processingName"] = processingName
+	def __init__(self, networkProxy, host, name = "Inport1", kind=Port, direction=In, index=1, type=None):
+		self.__dict__["host"] = host
 		self.__dict__["name"] = name
 		self.__dict__["kind"] = kind
 		self.__dict__["direction"] = direction
 		self.__dict__["index"] = index
 		self.__dict__["type"] = type
-		self.__dict__["peers"] = []
-		if kind == Port:
-			for connection in networkProxy.portConnections(processingName):
-				if connection[1] == name:
-					self.__dict__["peers"].append(connection)
-		if kind == Control:
-			for connection in networkProxy.controlConnections(processingName):
-				if connection[1] == name:
-					self.__dict__["peers"].append(connection)
+#		self.__dict__["peers"] = PeersConnectors( host, name, kind, direction, networkProxy )
 	@property
 	def name(self):
 		"""The name of the port"""
@@ -47,6 +39,9 @@ class Connector(object):
 	def type(self):
 		"""The type of the port"""
 		return self.__dict__["type"]
+	@property
+	def host(self):
+		return self.__dict__["host"]
 	@property
 	def peers(self):
 		"""A list of all the Connectors connected to the Connector"""
@@ -89,11 +84,9 @@ class ConnectorTests(unittest.TestCase):
 	def test_settingTypeAndFailing(self):
 		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=1, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "type", "tipus2")
-	def test_peers(self):
+	def test_host(self):
 		port = Connector(definition.proxy(), "Processing1", name="Outport1", kind=Port, direction=In, index=1, type="type1")
-		self.assertEqual([
-							('Processing1', 'Outport1', 'Processing2', 'Inport2'),
-						], port.peers)
+		self.assertEqual(port.host, "Processing1")
 
 if __name__ == '__main__':
 	unittest.main()
