@@ -14,9 +14,9 @@ Build-Depends:
  libqt4-dev (<<4.4) | libqt4-opengl-dev,
  docbook-to-man,
  imagemagick,
- libwmf-bin,
+ imagemagick (>=7:6.6) | libmagickcore2-extra,
  librsvg2-bin
-Standards-Version: 3.8.3
+Standards-Version: 3.9.1
 
 Package: clam-chordata
 Architecture: any
