@@ -58,6 +58,8 @@
 	proc.Output.name
 	proc.Output.index
 	proc.Output.peers # returns a list of connected peers
+	proc.Output.processing
+	proc.Output.peers[0].processing
 
 - Connecting
 	proc._outports.connect(proc2) # Connects all feasible ports

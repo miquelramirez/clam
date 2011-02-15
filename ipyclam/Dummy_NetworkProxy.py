@@ -2,9 +2,9 @@ import unittest
 import Connector
 
 class Dummy_NetworkProxy :
-	def __init__(self, definition) :
+	def __init__(self, processings, portConnections, controlConnections) :
 		self._processings = dict()
-		for process in definition:
+		for process in processings:
 			self._processings[process['name']] = process
 	def processingType(self, name) :
 		return self._processings[name]["type"]
@@ -24,6 +24,7 @@ class Dummy_NetworkProxy :
 class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def definition(self) :
 		return [
+		[
 			dict(
 				type = "AudioSource",
 				name = "Processing1",
@@ -72,21 +73,29 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 					["Outcontrol2", "type2"]
 				],
 			),
+		],
+		[
+			("Processing1", "Outport1", "Processing2", "Inport2"),
+			("Processing1", "Outport2", "Processing2", "Inport2"),
+			("Processing2", "Outport1", "Processing1", "Inport2"),
+		],
+		[
 		]
+	]
 
 	def test_type(self) :
-		proxy = Dummy_NetworkProxy(self.definition())
+		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals("AudioSource", proxy.processingType("Processing1"))
 
 	def test_config(self) :
-		proxy = Dummy_NetworkProxy(self.definition())
+		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals(dict(
 				ConfigParam1 = "default1",
 				ConfigParam2 = "default2",
 			), proxy.processingConfig("Processing1"))
 
 	def test_inports(self) :
-		proxy = Dummy_NetworkProxy(self.definition())
+		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
 				["Inport1", "type1"],
 				["Inport2", "type1"]
@@ -94,7 +103,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				"Processing1", Connector.Port, Connector.In))
 
 	def test_outports(self) :
-		proxy = Dummy_NetworkProxy(self.definition())
+		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
 				["Outport1", "type1"],
 				["Outport2", "type1"]
@@ -102,7 +111,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				"Processing1", Connector.Port, Connector.Out))
 
 	def test_incontrols(self) :
-		proxy = Dummy_NetworkProxy(self.definition())
+		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
 				["Incontrol1", "type2"],
 				["Incontrol2", "type2"]
@@ -110,7 +119,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				"Processing1", Connector.Control, Connector.In))
 
 	def test_outcontrols(self) :
-		proxy = Dummy_NetworkProxy(self.definition())
+		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
 				["Outcontrol1", "type2"],
 				["Outcontrol2", "type2"]
@@ -118,11 +127,11 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				"Processing1", Connector.Control, Connector.Out))
 
 	def test_withBadProcessingName(self) :
-		proxy = Dummy_NetworkProxy(self.definition())
+		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertRaises(KeyError, proxy.processingType, "Processing3")
 
 	def test_typeSecondProcessing(self) :
-		proxy = Dummy_NetworkProxy(self.definition())
+		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals("AudioSink", proxy.processingType("Processing2"))
 
 if __name__ == '__main__':
