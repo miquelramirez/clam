@@ -1,5 +1,10 @@
 import unittest
 
+Port = "Port"
+Control = "Control"
+In = "In"
+Out = "Out"
+
 class Connector(object):
 	Port = "Port"
 	Control = "Control"
