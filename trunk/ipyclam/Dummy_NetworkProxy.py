@@ -6,6 +6,8 @@ class Dummy_NetworkProxy :
 		self._processings = dict()
 		for process in processings:
 			self._processings[process['name']] = process
+		self._portConnections = portConnections
+		self._controlConnections = controlConnections
 	def processingType(self, name) :
 		return self._processings[name]["type"]
 	def processingConfig(self, name) :
@@ -19,6 +21,18 @@ class Dummy_NetworkProxy :
 		]
 		mapping = dict([((k,d),n) for k,d,n in nameKinds])
 		return self._processings[name][mapping[kind,direction]]
+	def portConnections(self, name):
+		connections = []
+		for connection in self._portConnections:
+			if connection[0] == name:
+				connections.append(connection)
+		return connections
+	def controlConnections(self, name):
+		connections = []
+		for connection in self._controlConnections:
+			if connection[0] == name:
+				connections.append(connection)
+		return connections
 
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
@@ -80,6 +94,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			("Processing2", "Outport1", "Processing1", "Inport2"),
 		],
 		[
+			("Processing1", "Incontrol1", "Processing2", "Incontrol2"),
+			("Processing1", "Incontrol2", "Processing2", "Incontrol2"),
+			("Processing2", "Incontrol1", "Processing1", "Incontrol2"),			
 		]
 	]
 
@@ -133,6 +150,27 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def test_typeSecondProcessing(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals("AudioSink", proxy.processingType("Processing2"))
+	
+	def test_portConnections(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		self.assertEquals([
+			("Processing1", "Outport1", "Processing2", "Inport2"),
+			("Processing1", "Outport2", "Processing2", "Inport2"),
+		], proxy.portConnections("Processing1"))
+		self.assertEquals([
+			("Processing2", "Outport1", "Processing1", "Inport2"),
+		], proxy.portConnections("Processing2"))
+	
+	def test_controlConnections(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		self.assertEquals([
+			("Processing1", "Incontrol1", "Processing2", "Incontrol2"),
+			("Processing1", "Incontrol2", "Processing2", "Incontrol2"),
+		], proxy.controlConnections("Processing1"))
+		self.assertEquals([
+			("Processing2", "Incontrol1", "Processing1", "Incontrol2"),
+		], proxy.controlConnections("Processing2"))
+
 
 if __name__ == '__main__':
 	unittest.main()
