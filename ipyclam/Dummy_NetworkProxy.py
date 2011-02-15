@@ -10,14 +10,6 @@ class Dummy_NetworkProxy :
 		return self._processings[name]["type"]
 	def processingConfig(self, name) :
 		return self._processings[name]["config"]
-	def processingInports(self, name) :
-		return self._processings[name]["inports"]
-	def processingOutports(self, name) :
-		return self._processings[name]["outports"]
-	def processingIncontrols(self, name) :
-		return self._processings[name]["incontrols"]
-	def processingOutcontrols(self, name) :
-		return self._processings[name]["outcontrols"]
 	def processingConnectors(self, name, kind, direction) :
 		nameKinds = [
 			(Connector.Port, Connector.In, 'inports'),
