@@ -1,6 +1,3 @@
-import unittest
-import definition
-
 Port = "Port"
 Control = "Control"
 In = "In"
@@ -48,6 +45,9 @@ class Connector(object):
 	def peers(self):
 		"""A list of all the Connectors connected to the Connector"""
 		return PeerConnectors( host, name, kind, direction, networkProxy, type )
+
+import unittest
+import definition
 
 class ConnectorTests(unittest.TestCase):
 	def test_gettingName(self):
