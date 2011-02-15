@@ -20,10 +20,10 @@ class PeerConnectors(object):
 
 
 import unittest
-import definition
+import TestFixtures
 class PeerConnectorsTests(unittest.TestCase):				
 	def test_iterable(self):
-		peers = PeerConnectors( "Processing2", "Inport2", Connector.Port, Connector.Out, definition.proxy())
+		peers = PeerConnectors( "Processing2", "Inport2", Connector.Port, Connector.Out, TestFixtures.proxy())
 		listConnectors = [ (connector.host.name, connector.name, connector.type, connector.index) for connector in peers ]
 		self.assertEqual([
 			('Processing1', 'Outport1', 'type1', 0),
