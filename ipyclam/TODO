@@ -1,0 +1,4 @@
+- PeerConnectors.__iter__
+	+ error when asking for connectorInfo, should ask for peerName, not for hostName
+- Redefine connectors name from Processing2 to avoid further errors
+- Redefine types too
