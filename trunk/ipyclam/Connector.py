@@ -40,7 +40,14 @@ class Connector(object):
 	def host(self):
 		from Processing import Processing
 		return Processing(self.__dict__["host"], self._proxy)
-
+	@property
+	def peers(self):
+		from PeerConnectors import PeerConnectors
+		if self.__dict__["direction"] == Connector.In:
+			direction = Connector.Out
+		else:
+			direction = Connector.In
+		return PeerConnectors(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], direction, self._proxy)
 
 import unittest
 import definition
@@ -86,6 +93,10 @@ class ConnectorTests(unittest.TestCase):
 		port = Connector(definition.proxy(), "Processing1", name="Outport1", kind=Port, direction=In, index=1, type="type1")
 		self.assertEqual(port.host.name, "Processing1")
 		self.assertEqual(port.host.type, "AudioSource")
+	def test_peers(self):
+		port = Connector(definition.proxy(), "Processing2", name="Inport2", kind=Port, direction=In, index=1, type="type1")
+		listPeers = [ connector.name for connector in port.peers ]
+		self.assertEqual(['Outport1', 'Outport2'], listPeers)
 
 if __name__ == '__main__':
 	unittest.main()
