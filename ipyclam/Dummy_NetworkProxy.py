@@ -1,5 +1,12 @@
-import unittest
 import Connector
+
+_connectorKindNames = [
+	(Connector.Port, Connector.In, 'inports'),
+	(Connector.Port, Connector.Out, 'outports'),
+	(Connector.Control, Connector.In, 'incontrols'),
+	(Connector.Control, Connector.Out, 'outcontrols'),
+	]
+_kind2Name = dict([((k,d),n) for k,d,n in _connectorKindNames])
 
 class Dummy_NetworkProxy :
 	def __init__(self, processings, portConnections, controlConnections) :
@@ -13,14 +20,8 @@ class Dummy_NetworkProxy :
 	def processingConfig(self, name) :
 		return self._processings[name]["config"]
 	def processingConnectors(self, name, kind, direction) :
-		nameKinds = [
-			(Connector.Port, Connector.In, 'inports'),
-			(Connector.Port, Connector.Out, 'outports'),
-			(Connector.Control, Connector.In, 'incontrols'),
-			(Connector.Control, Connector.Out, 'outcontrols'),
-		]
-		mapping = dict([((k,d),n) for k,d,n in nameKinds])
-		return self._processings[name][mapping[kind,direction]]
+		connectorKindName = _kind2Name[(kind,direction)]
+		return self._processings[name][connectorKindName]
 	def connectorPeers(self, processingName, portName, kind, direction):
 		connections = self._portConnections if kind == Connector.Port else self._controlConnections
 		if direction == Connector.Out :
@@ -28,16 +29,12 @@ class Dummy_NetworkProxy :
 		else :
 			return [x[2:4] for x in connections if (processingName, portName)==x[0:2] ]
 	def connectorInfo(self, processingName, connectorName, kind, direction) :
-		nameKinds = [
-			(Connector.Port, Connector.In, 'inports'),
-			(Connector.Port, Connector.Out, 'outports'),
-			(Connector.Control, Connector.In, 'incontrols'),
-			(Connector.Control, Connector.Out, 'outcontrols'),
-		]
-		mapping = dict([((k,d),n) for k,d,n in nameKinds])
-		for i, connector in enumerate(self._processings[processingName][mapping[kind, direction]]):
+		connectorKindName = _kind2Name[(kind,direction)]
+		for i, connector in enumerate(self._processings[processingName][connectorKindName]):
 			if connector[0] == connectorName:
 				return (i, connector[1])
+
+import unittest
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def definition(self) :
