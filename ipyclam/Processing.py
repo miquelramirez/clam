@@ -79,7 +79,7 @@ class ProcessingTests(unittest.TestCase):
 					["Outcontrol2", "type2"]
 				],
 			),
-		])
+		],[],[])
 	def test_type(self) :
 		p = Processing("Processing1", self.proxy())
 		self.assertEqual(p.type, "AudioSource")
