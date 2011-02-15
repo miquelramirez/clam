@@ -11,6 +11,12 @@ int usage(const std::string & program)
 	std::cout
 		<< "Usage: CheckClamNetwork"
 		<< " <networkfile> \n"
+		<<
+			"Checks that a CLAM network XML file can be safely loaded.\n"
+			"Reports problems with XML syntax, unavalaible processing types,\n"
+			"wrong configurations, miss-connections or problems on start\n"
+			"or stopping the network. No processing step is done.\n"
+			"Returns non-zero on error.\n"
 		<< "\nReport bugs to http://clam-project.org\n"
 		<< std::endl;
 	return -1;
