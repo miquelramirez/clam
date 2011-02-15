@@ -9,34 +9,42 @@ _connectorKindNames = [
 _kind2Name = dict([((k,d),n) for k,d,n in _connectorKindNames])
 
 class Dummy_NetworkProxy :
+
 	def __init__(self, processings, portConnections, controlConnections) :
 		self._processings = dict()
 		for process in processings:
 			self._processings[process['name']] = process
 		self._portConnections = portConnections
 		self._controlConnections = controlConnections
+
 	def processingType(self, name) :
 		return self._processings[name]["type"]
+
 	def processingConfig(self, name) :
 		return self._processings[name]["config"]
+
 	def processingConnectors(self, name, kind, direction) :
 		connectorKindName = _kind2Name[(kind,direction)]
 		return self._processings[name][connectorKindName]
+
 	def connectorPeers(self, processingName, portName, kind, direction):
 		connections = self._portConnections if kind == Connector.Port else self._controlConnections
 		if direction == Connector.Out :
 			return [x[0:2] for x in connections if (processingName, portName)==x[2:4] ]
 		else :
 			return [x[2:4] for x in connections if (processingName, portName)==x[0:2] ]
+
 	def connectorInfo(self, processingName, connectorName, kind, direction) :
 		connectorKindName = _kind2Name[(kind,direction)]
 		for i, connector in enumerate(self._processings[processingName][connectorKindName]):
 			if connector[0] == connectorName:
 				return (i, connector[1])
 
+
 import unittest
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
+
 	def definition(self) :
 		return [
 		[
