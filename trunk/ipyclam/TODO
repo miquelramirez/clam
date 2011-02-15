@@ -1,12 +1,29 @@
 
 - Polishing connector interface:
 	- Dummy_NetworkProxy.connectorInfo failure case (assert? exception?)
-	- Index and type are queried to the proxy instead of passed as constructor parameters and stored as attribute. For tests using constructor parameters instead of a definition structure we can keep these attributes, query the proxy just when they are None
+	- Index and type should be queried to the proxy instead of passed as constructor parameters and stored as attribute. 
+		For tests using constructor parameters instead of a definition structure we can keep these attributes, query the proxy just when they are None
 	- If we have properties, do we need a dicctionary to hold Connector attributes?
-	- PeerConnectors should not receive type as parameter
-	- PeerConnectors
-	- Connector.peers no se usa/testea
 	- PeerConnectors.__len__()
+
+- Network interface:
+	- Given a dummy defined network net=Network(dummyProxy)
+		- Getting a processing with net.procesingName
+		- Getting a processing with net["processingName"]
+		- Failure case on net.missingProcessingName 
+		- Failure case on net["missingProcessingName"]
+		- Exploring the processings in a network with net.[tab] (__dir__)
+		- In parallel defining and refactor dummy proxy interface for processing enumeration
+	- Creating processings
+		- Processing factories for the dummy proxy
+		- Adding a processing
+	- Self generation code (network is able to generate python code to generate itself again)
+		- Useful for quick checking the network status
+		- Self writting code for processings
+		- Self writting code for connections
+		- Self writting code for configurations
+		- Self writting code for configurations
+
 - Connecting
 	- Test Connector.connect(Connector)
 		increments the peers
@@ -20,17 +37,13 @@
 			different kind
 			same direction
 			different type
+	- Test Connectors.connect(Connector)
+		multiple to one connection
 	- Test Connectors.connect(Processing)
+		connects all feasible in same order
+		must define exact behaviour
+	- Test > and < operators to connect
 
-- Network interface:
-	- Processing factories for the dummy proxy
-	- Adding a processing
-	- Self generation code
-	- Introspection for processings
-	- Adding processings
-		- Factory
-	- Self writting code for processings
-	- Self writting code for connections
 
 
 
