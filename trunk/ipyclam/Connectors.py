@@ -2,6 +2,7 @@ import unittest
 from Connector import Connector
 
 class Connectors(object):
+#	def __init__(self, networkProxy, processingName, kind, direction) :
 	def __init__(self, kind, direction, portNames):
 		self._dict = dict()
 		self._list = list()
