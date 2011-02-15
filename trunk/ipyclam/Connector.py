@@ -1,15 +1,14 @@
-Port = "Port"
-Control = "Control"
 In = "In"
 Out = "Out"
+Port = "Port"
+Control = "Control"
 
 class Connector(object):
-	Port = Port
-	Control = Control
 	In = In
 	Out = Out
+	Port = Port
+	Control = Control
 	def __init__(self, networkProxy, host, name = "Inport1", kind=Port, direction=In, index=1, type=None):
-		from PeerConnectors import PeerConnectors
 		self._proxy = networkProxy
 		self.__dict__["host"] = host
 		self.__dict__["name"] = name
@@ -44,7 +43,10 @@ class Connector(object):
 	@property
 	def peers(self):
 		"""A list of all the Connectors connected to the Connector"""
-		return PeerConnectors( host, name, kind, direction, networkProxy, type )
+		import PeerConnectors
+		return PeerConnectors.PeerConnectors(
+			host, name, kind, direction, 
+			networkProxy )
 
 import unittest
 import definition
