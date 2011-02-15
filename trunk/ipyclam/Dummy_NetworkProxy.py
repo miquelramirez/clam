@@ -37,7 +37,7 @@ class Dummy_NetworkProxy :
 		mapping = dict([((k,d),n) for k,d,n in nameKinds])
 		for i, connector in enumerate(self._processings[processingName][mapping[kind, direction]]):
 			if connector[0] == connectorName:
-				return [i, connector[1]]
+				return (i, connector[1])
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def definition(self) :
