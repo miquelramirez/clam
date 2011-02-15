@@ -6,8 +6,8 @@ class PeersConnectors(object):
 	def __init__(self, host, port, kind, direction, proxy, type) :
 		connectors = proxy.processingConnections(host, port, kind, direction)
 		self._peers = []
-		for i, connector in enumerate(connectors):
-			self._peers.append(Connector(proxy, connector[0], name=connector[1], kind=kind, direction=direction, index=i+1))
+		for i, (peerHost, peerName) in enumerate(connectors):
+			self._peers.append(Connector(proxy, peerHost, name=peerName, kind=kind, direction=direction, index=i+1))
 	def __iter__(self):
 		for connector in self._peers:
 			yield connector
