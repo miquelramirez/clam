@@ -1,0 +1,40 @@
+ipyclam: Interactive CLAM for Python
+
+What is this
+============
+
+This project is about providing interactive exploration and
+manipulation of CLAM networks from a python console.
+
+How similar is that to pyCLAM
+=============================
+
+While pyclam are python bindings exposing the whole CLAM
+C++ API for python, this project just tries to provide
+high level primitives to manipulate CLAM networks.
+
+The file API.py describes the target API.
+
+Status:
+======
+
+This project is still under development.
+
+Most of the explorative API is already implemented:
+Connectors, Processings, Connections, and Configurations
+can be explored given a network proxy. But the current
+network proxy is based on a dummy data structure that
+simulates the real CLAM one. Regarding the interface
+the main tasks to do are implementing the manipulation 
+bit (adding and removing processings, stablishing and 
+removing connections, configuring the processings).
+Also implementing all the Network external interface.
+The other big task i implement a real network proxy
+based on CLAM. This description might get outdated
+soon so see the TODO file for more details on what's 
+to do and what's done.
+
+
+
+
+
