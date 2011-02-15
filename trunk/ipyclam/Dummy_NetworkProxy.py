@@ -1,4 +1,5 @@
 import unittest
+import Connector
 
 class Dummy_NetworkProxy :
 	def __init__(self, definition) :
@@ -17,6 +18,16 @@ class Dummy_NetworkProxy :
 		return self._processings[name]["incontrols"]
 	def processingOutcontrols(self, name) :
 		return self._processings[name]["outcontrols"]
+	def processingConnectors(self, name, kind, direction) :
+		nameKinds = [
+			(Connector.Port, Connector.In, 'inports'),
+			(Connector.Port, Connector.Out, 'outports'),
+			(Connector.Control, Connector.In, 'incontrols'),
+			(Connector.Control, Connector.Out, 'outcontrols'),
+		]
+		mapping = dict([((k,d),n) for k,d,n in nameKinds])
+		return self._processings[name][mapping[kind,direction]]
+
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def definition(self) :
@@ -87,28 +98,32 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		self.assertEquals([
 				["Inport1", "type1"],
 				["Inport2", "type1"]
-			], proxy.processingInports("Processing1"))
+			], proxy.processingConnectors(
+				"Processing1", Connector.Port, Connector.In))
 
 	def test_outports(self) :
 		proxy = Dummy_NetworkProxy(self.definition())
 		self.assertEquals([
 				["Outport1", "type1"],
 				["Outport2", "type1"]
-			], proxy.processingOutports("Processing1"))
+			], proxy.processingConnectors(
+				"Processing1", Connector.Port, Connector.Out))
 
 	def test_incontrols(self) :
 		proxy = Dummy_NetworkProxy(self.definition())
 		self.assertEquals([
 				["Incontrol1", "type2"],
 				["Incontrol2", "type2"]
-			], proxy.processingIncontrols("Processing1"))
+			], proxy.processingConnectors(
+				"Processing1", Connector.Control, Connector.In))
 
 	def test_outcontrols(self) :
 		proxy = Dummy_NetworkProxy(self.definition())
 		self.assertEquals([
 				["Outcontrol1", "type2"],
 				["Outcontrol2", "type2"]
-			], proxy.processingOutcontrols("Processing1"))
+			], proxy.processingConnectors(
+				"Processing1", Connector.Control, Connector.Out))
 
 	def test_withBadProcessingName(self) :
 		proxy = Dummy_NetworkProxy(self.definition())
