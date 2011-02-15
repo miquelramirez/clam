@@ -2,7 +2,6 @@ import operator
 import unittest
 
 
-
 class Configuration(object):
 	def __init__(self, config):
 		object.__setattr__(self, "_dict", config.copy())
