@@ -140,10 +140,11 @@ class ProcessingTests(unittest.TestCase):
 			'Incontrol1', 'Incontrol2',
 			'Outcontrol1', 'Outcontrol2',
 			'type', '_config', '_inports', '_outports', '_incontrols', '_outcontrols']), dir(p))
-
 	def test_peers(self):
 		p = Processing("Processing1", definition.proxy())
-		self.assertEquals([], p.Inport1.peers)
+		self.assertEqual([
+							('Processing1', 'Outport2', 'Processing2', 'Inport2')
+						], p.Outport2.peers)
 
 
 if __name__ == '__main__':
