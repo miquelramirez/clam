@@ -2,14 +2,8 @@ import unittest
 from Connector import Connector
 
 class Connectors(object):
-	def __init__(self, *args) :
-#	def __init__(self, networkProxy, processingName, kind, direction) :
-#	def __init__(self, kind, direction, portNames):
-		try :
-			networkProxy, processingName, kind, direction = args
-			portNames = networkProxy.processingConnectors(processingName, kind, direction)
-		except :
-			kind, direction, portNames = args
+	def __init__(self, networkProxy, processingName, kind, direction) :
+		portNames = networkProxy.processingConnectors(processingName, kind, direction)
 		self._dict = dict()
 		self._list = list()
 		for i, port in enumerate(portNames):
