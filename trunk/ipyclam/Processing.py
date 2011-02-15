@@ -7,9 +7,9 @@ from Connectors import Connectors
 class Processing(object):
 	def __init__(self, name, proxy):
 		self.__dict__["name"] = name
-		self.__dict__["type"] = proxy.processingType(self.name)
+		self.__dict__["type"] = proxy.processingType(name)
 		self.__dict__["_config"] = Configuration(proxy.processingConfig(self.name))
-		self.__dict__["_inports"] = Connectors(Connector.Port, Connector.In, proxy.processingConnectors(self.name, Connector.Port, Connector.In))
+		self.__dict__["_inports"] = Connectors(proxy, name,Connector.Port, Connector.In)
 		self.__dict__["_outports"] = Connectors(Connector.Port, Connector.Out, proxy.processingConnectors(self.name, Connector.Port, Connector.Out))
 		self.__dict__["_incontrols"] = Connectors(Connector.Control, Connector.In, proxy.processingConnectors(self.name, Connector.Control, Connector.In))
 		self.__dict__["_outcontrols"] = Connectors(Connector.Control, Connector.Out, proxy.processingConnectors(self.name,Connector.Control, Connector.Out))
