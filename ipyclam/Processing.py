@@ -33,6 +33,7 @@ class Processing(object):
 		except KeyError:
 			raise AttributeError(name)
 	def __setattr__(self, name, value):
+		if name is 'type': raise AttributeError("Attribute 'type' is read only")
 		self.__setitem__(name, value)
 	def __dir__(self):
 		return (
@@ -83,11 +84,12 @@ class ProcessingTests(unittest.TestCase):
 		p = Processing("Processing1", self.proxy())
 		self.assertEqual(p.type, "AudioSource")
 
-	def test_set_type(self) :
+	def test_typeIsReadOnly(self) :
 		p = Processing("Processing1", self.proxy())
-		p.type="AnotherType"
-		self.assertEqual(p.type, "AudioSource")
-	
+		with self.assertRaises(AttributeError) as contexManager :
+			p.type="AnotherType"
+		self.assertEquals("Attribute 'type' is read only", contexManager.exception.args[0])
+
 	def test_name(self) :
 		p = Processing("Processing1", self.proxy())
 		self.assertEqual(p.name, "Processing1")
