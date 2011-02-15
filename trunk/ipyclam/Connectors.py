@@ -1,5 +1,3 @@
-import unittest
-import definition
 from Connector import Connector
 
 class Connectors(object):
@@ -30,28 +28,30 @@ class Connectors(object):
 	def __dir__(self):
 		return self._dict.keys()
 
+import unittest
+import TestFixtures
 class ConnectorsTests(unittest.TestCase):				
 	def test_iterable(self):
-		ports = Connectors(definition.proxy(), "Processing1", Connector.Port, Connector.In)
+		ports = Connectors(TestFixtures.proxy(), "Processing1", Connector.Port, Connector.In)
 		listNames = [ connector.name for connector in ports ]
 		self.assertEqual(listNames, ['Inport1', 'Inport2', 'Inport3', 'Inport4'])
 	def test_indexable(self):
-		ports = Connectors(definition.proxy(), "Processing1", Connector.Port, Connector.In)
+		ports = Connectors(TestFixtures.proxy(), "Processing1", Connector.Port, Connector.In)
 		self.assertEqual(ports[0].name, 'Inport1')
 	def test_lenImplementation(self):
-		ports = Connectors(definition.proxy(), "Processing1", Connector.Port, Connector.In)
+		ports = Connectors(TestFixtures.proxy(), "Processing1", Connector.Port, Connector.In)
 		self.assertEqual(len(ports), 4)
 	def test_getConnectorByNameAsDicionary(self):
-		ports = Connectors(definition.proxy(), "Processing1", Connector.Port, Connector.In)
+		ports = Connectors(TestFixtures.proxy(), "Processing1", Connector.Port, Connector.In)
 		self.assertEqual(ports['Inport1'].name, 'Inport1')
 	def test_getConnectorByNameAsAttribute(self):
-		ports = Connectors(definition.proxy(), "Processing1", Connector.Port, Connector.In)
+		ports = Connectors(TestFixtures.proxy(), "Processing1", Connector.Port, Connector.In)
 		self.assertEqual(ports.Inport1.kind, Connector.Port)
 	def test_dirFunction(self):
-		ports = Connectors(definition.proxy(), "Processing1", Connector.Port, Connector.In)
+		ports = Connectors(TestFixtures.proxy(), "Processing1", Connector.Port, Connector.In)
 		self.assertEquals(['Inport1', 'Inport2', 'Inport3', 'Inport4'], dir(ports))
 	def test_sliceable(self):
-		ports = Connectors(definition.proxy(), "Processing1", Connector.Port, Connector.In)
+		ports = Connectors(TestFixtures.proxy(), "Processing1", Connector.Port, Connector.In)
 		portsSliced = ports[1:4]
 		self.assertEqual(portsSliced[0].name, 'Inport2')
 		self.assertEqual(portsSliced[1].name, 'Inport3')

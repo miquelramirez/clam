@@ -1,5 +1,3 @@
-import unittest
-import definition
 import Connector
 from Dummy_NetworkProxy import Dummy_NetworkProxy
 from Configuration import Configuration
@@ -53,84 +51,86 @@ class Processing(object):
 			]
 		)
 
+import unittest
+import TestFixtures
 class ProcessingTests(unittest.TestCase):
 	def test_type(self) :
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p.type, "AudioSource")
 	def test_typeIsReadOnly(self) :
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		with self.assertRaises(AttributeError) as contexManager :
 			p.type="AnotherType"
 		self.assertEquals("Attribute 'type' is read only", contexManager.exception.args[0])
 	def test_name(self) :
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p.name, "Processing1")
 	def test_ConfigGettingAsDictionary(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p["ConfigParam1"], "default1")
 	def test_ConfigSettingAndGettingAsDictionary(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		p["ConfigParam1"] = 'newvalue'
 		self.assertEqual(p["ConfigParam1"], "newvalue")
 	def test_configGettingAsAttribute(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p.ConfigParam1, "default1")
 	def test_configSettingAndGettingAsAttribute(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		p.ConfigParam1 = 'newvalue'
 		self.assertEqual(p.ConfigParam1, "newvalue")
 	def test_ConfigGettersBy_configInterface(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p._config.ConfigParam1, "default1")
 		self.assertEqual(p._config["ConfigParam2"], "default2")
 	def test_ConfigSettersBy_configInterface(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		p._config.ConfigParam1 = "newvalue1"
 		p._config["ConfigParam2"] = "newvalue2"
 		self.assertEqual(p._config.ConfigParam1, "newvalue1")
 		self.assertEqual(p._config["ConfigParam2"], "newvalue2")
 	def test_InportsGettingByNameAsDictionary(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p["Inport1"].name, "Inport1")
 		self.assertEqual(p["Inport1"].kind, "Port")
 		self.assertEqual(p["Inport1"].direction, "In")
 	def test_InportsGettingByNameAsAttribute(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p.Inport2.name, "Inport2")
 		self.assertEqual(p.Inport2.kind, "Port")
 		self.assertEqual(p.Inport2.direction, "In")
 	def test_OutportsGettingByNameAsDictionary(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p["Outport1"].name, "Outport1")
 		self.assertEqual(p["Outport1"].kind, "Port")
 		self.assertEqual(p["Outport1"].direction, "Out")
 	def test_OutportsGettingByNameAsAttribute(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p.Outport2.name, "Outport2")
 		self.assertEqual(p.Outport2.kind, "Port")
 		self.assertEqual(p.Outport2.direction, "Out")
 	def test_IncontrolsGettingByNameAsDictionary(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p["Incontrol1"].name, "Incontrol1")
 		self.assertEqual(p["Incontrol1"].kind, "Control")
 		self.assertEqual(p["Incontrol1"].direction, "In")
 	def test_IncontrolsGettingByNameAsAttribute(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p.Incontrol2.name, "Incontrol2")
 		self.assertEqual(p.Incontrol2.kind, "Control")
 		self.assertEqual(p.Incontrol2.direction, "In")
 	def test_OutcontrolsGettingByNameAsDictionary(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p["Outcontrol1"].name, "Outcontrol1")
 		self.assertEqual(p["Outcontrol1"].kind, "Control")
 		self.assertEqual(p["Outcontrol1"].direction, "Out")
 	def test_OutcontrolsGettingByNameAsAttribute(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEqual(p.Outcontrol2.name, "Outcontrol2")
 		self.assertEqual(p.Outcontrol2.kind, "Control")
 		self.assertEqual(p.Outcontrol2.direction, "Out")
 	def test_dirFunction(self):
-		p = Processing("Processing1", definition.proxy())
+		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEquals(sorted(
 			['ConfigParam1', 'ConfigParam2', 
 			'Inport1', 'Inport2','Inport3','Inport4',

@@ -53,51 +53,51 @@ class Connector(object):
 		return PeerConnectors(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], direction, self._proxy)
 
 import unittest
-import definition
+import TestFixtures
 
 class ConnectorTests(unittest.TestCase):
 	def test_gettingName(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
 		self.assertEqual(port.name, "Inport1")
 	def test_settingNameAndFailing(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "name", 'Inport2')
 	def test_gettingKindPort(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
 		self.assertEqual(port.kind, "Port")
 	def test_gettingKindControl(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Control, direction=In, index=2, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Control, direction=In, index=2, type="type1")
 		self.assertEqual(port.kind, "Control")
 	def test_settingKindAndFailing(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "kind", Connector.Control)
 	def test_gettingDirectionIn(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
 		self.assertEqual(port.direction, "In")
 	def test_gettingDirectionOut(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=Out, index=2, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=Out, index=2, type="type1")
 		self.assertEqual(port.direction, "Out")
 	def test_settingDirectionAndFailing(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=2, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "direction", Connector.Out)
 	def test_gettingIndex(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=1, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=1, type="type1")
 		self.assertEqual(port.index, 1)
 	def test_settingIndexAndFailing(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=1, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=1, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "index", 2)
 	def test_gettingType(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=1, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=1, type="type1")
 		self.assertEqual(port.type, "type1")
 	def test_settingTypeAndFailing(self):
-		port = Connector(definition.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=1, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Inport1", kind=Port, direction=In, index=1, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "type", "tipus2")
 	def test_hostNameAndType(self):
-		port = Connector(definition.proxy(), "Processing1", name="Outport1", kind=Port, direction=In, index=1, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing1", name="Outport1", kind=Port, direction=In, index=1, type="type1")
 		self.assertEqual(port.host.name, "Processing1")
 		self.assertEqual(port.host.type, "AudioSource")
 	def test_peers(self):
-		port = Connector(definition.proxy(), "Processing2", name="Inport2", kind=Port, direction=In, index=1, type="type1")
+		port = Connector(TestFixtures.proxy(), "Processing2", name="Inport2", kind=Port, direction=In, index=1, type="type1")
 		listPeers = [ connector.name for connector in port.peers ]
 		self.assertEqual(['Outport1', 'Outport2'], listPeers)
 
