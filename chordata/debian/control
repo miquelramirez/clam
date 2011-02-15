@@ -11,7 +11,7 @@ Build-Depends:
  libclam-qtmonitors-dev,
  qt4-dev-tools,
  libqt4-dev,
- libqt4-dev (<4.4) | libqt4-opengl-dev,
+ libqt4-dev (<<4.4) | libqt4-opengl-dev,
  docbook-to-man,
  imagemagick,
  libwmf-bin,
