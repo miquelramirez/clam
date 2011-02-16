@@ -13,7 +13,6 @@ clamDependencies = [
 	]
 otherDependencies = [
 	]
-libraryName='midi'
 
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
