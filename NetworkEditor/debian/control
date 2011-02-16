@@ -17,7 +17,7 @@ Build-Depends:
  libcppunit-dev,
  python-dev,
  debhelper (>= 5.0.0)
-Standards-Version: 3.8.3
+Standards-Version: 3.9.1
 
 Package: clam-networkeditor
 Architecture: any
