@@ -209,6 +209,7 @@ manpages = [
 	'resources/man/man1/Prototyper.1',
 	'resources/man/man1/OfflinePlayer.1',
 	'resources/man/man1/MonoOfflinePlayer.1',
+	'resources/man/man1/CheckClamNetwork.1',
 	]
 
 tsfiles = env.scanFiles("*.ts", ["src/i18n/"])
