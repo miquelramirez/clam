@@ -13,7 +13,7 @@ While pyclam are python bindings exposing the whole CLAM
 C++ API for python, this project just tries to provide
 high level primitives to manipulate CLAM networks.
 
-The file API.py describes the target API.
+The file API.txt describes the target API.
 
 Status:
 ======

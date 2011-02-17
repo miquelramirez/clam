@@ -30,6 +30,8 @@
 	proc.rename("newname")
 	proc2 = proc.clone()
 	proc2 = proc.clone("name2")
+	network.processing1 = "ProcessingType" # new proposal
+	del network.processing1 # new proposal
 
 - Processing Configuration
 	# Changes on proc._config has no effect on the processing 
