@@ -1,18 +1,18 @@
 This is an example on how to build LV2 plugins based on CLAM networks.
-LV2 support in CLAM is still experimental so expect changes how they
+LV2 support in CLAM is still experimental so expect changes on how they
 are built. Suggestions and patches are welcome.
 
 sudo apt-get install lv2core (debian/ubuntu)
 
-1: Edit the file network_and_uri.config. Format is:
-	relative/path/to/network    lv2/uri     name
-2: python generateFileToCompile.py
-3: make
-4: sudo make install
+scons clam_prefix=....
+scons install # it installs in ~/.lv2
 
+Most of the building relies on the clam_lv2_generator script,
+which is provided by the framework and generates ttl files,
+manifest files and a minimal main c++ file which loads all
+the networks and present them as a plugin.
 
-TODOs
-- Embed the network in the so or make it part of the bundle
-- Enhance multi-plugin library support
-- Integrate qt based ui's
+GUI stuff is still WIP. Feel free to experiment with it
+but no warranty.
+
 
