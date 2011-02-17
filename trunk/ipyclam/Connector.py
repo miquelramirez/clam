@@ -56,50 +56,59 @@ import unittest
 import TestFixtures
 
 class ConnectorTests(unittest.TestCase):
-	def test_gettingName(self):
+	def test_name(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=2, type="type1")
 		self.assertEqual(port.name, "InPort1")
-	def test_settingNameAndFailing(self):
+	def test_name_isReadOnly(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=2, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "name", 'InPort2')
-	def test_gettingKindPort(self):
+	def test_kind_whenPort(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=2, type="type1")
 		self.assertEqual(port.kind, "Port")
-	def test_gettingKindControl(self):
+	def test_kind_whenControl(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Control, direction=In, index=2, type="type1")
 		self.assertEqual(port.kind, "Control")
-	def test_settingKindAndFailing(self):
+	def test_kind_isReadOnly(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=2, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "kind", Connector.Control)
-	def test_gettingDirectionIn(self):
+	def test_direction_whenIn(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=2, type="type1")
 		self.assertEqual(port.direction, "In")
-	def test_gettingDirectionOut(self):
+	def test_direction_whenOut(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=Out, index=2, type="type1")
 		self.assertEqual(port.direction, "Out")
-	def test_settingDirectionAndFailing(self):
+	def test_direction_isReadOnly(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=2, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "direction", Connector.Out)
-	def test_gettingIndex(self):
+	def test_index(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=1, type="type1")
 		self.assertEqual(port.index, 1)
-	def test_settingIndexAndFailing(self):
+	def test_index_isReadOnly(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=1, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "index", 2)
-	def test_gettingType(self):
+	def test_type(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=1, type="type1")
 		self.assertEqual(port.type, "type1")
-	def test_settingTypeAndFailing(self):
+	def test_type_isReadOnly(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In, index=1, type="type1")
 		self.assertRaises(AttributeError, setattr, port, "type", "tipus2")
-	def test_hostNameAndType(self):
+	def test_host(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="OutPort1", kind=Port, direction=In, index=1, type="type1")
 		self.assertEqual(port.host.name, "Processing1")
 		self.assertEqual(port.host.type, "AudioSource")
-	def test_peers(self):
+	# TODO: is host read only?
+	def test_peers_forInPorts(self):
 		port = Connector(TestFixtures.proxy(), "Processing2", name="Inport2", kind=Port, direction=In, index=1, type="type1")
 		listPeers = [ connector.name for connector in port.peers ]
 		self.assertEqual(['OutPort1', 'OutPort2'], listPeers)
+	def test_peers_forInPorts_whenEmpty(self):
+		port = Connector(TestFixtures.proxy(), "Processing2", name="Inport1", kind=Port, direction=In, index=1, type="type1")
+		listPeers = [ connector.name for connector in port.peers ]
+		self.assertEqual([], listPeers)
+	def test_peers_forOutPorts(self):
+		port = Connector(TestFixtures.proxy(), "Processing1", name="OutPort1", kind=Port, direction=Out, index=1, type="type1")
+		listPeers = [ connector.name for connector in port.peers ]
+		self.assertEqual(['InPort2'], listPeers)
 
 if __name__ == '__main__':
 	unittest.main()
