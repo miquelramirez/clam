@@ -66,11 +66,11 @@ ttls = [
 		"-u ${CLAMLV2_BASEURI} "
 		"--binary ${CLAMLV2_BINARY} "
 		"${CLAMLV2_GUIBINARY and '--gui-binary '+CLAMLV2_GUIBINARY or ''} "
-		"${DOAPFILE and ('-d '+DOAPFILE) or ''} "
+		"${CLAMLV2_DOAPFILE and ('-d '+CLAMLV2_DOAPFILE) or ''} "
 		"${SOURCE} > ${TARGET}",
 	CLAMLV2_BINARY=libraryName,
 	CLAMLV2_GUIBINARY=libraryName
-#	DOAPFILE="default.doap",
+#	CLAMLV2_DOAPFILE="default.doap",
 	)
 	for network in networks ]
 
