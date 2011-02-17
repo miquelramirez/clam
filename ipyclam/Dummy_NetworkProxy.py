@@ -36,9 +36,9 @@ class Dummy_NetworkProxy :
 
 	def connectorInfo(self, processingName, connectorName, kind, direction) :
 		connectorKindName = _kind2Name[(kind,direction)]
-		for i, connector in enumerate(self._processings[processingName][connectorKindName]):
-			if connector[0] == connectorName:
-				return (i, connector[1])
+		for i, (name, type) in enumerate(self._processings[processingName][connectorKindName]):
+			if name == connectorName:
+				return (i, type)
 
 
 import unittest

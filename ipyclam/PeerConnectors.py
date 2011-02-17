@@ -1,7 +1,7 @@
 import Connector
 
 class PeerConnectors(object):
-	def __init__(self, hostName, connectorName, kind, direction, proxy) :
+	def __init__(self, proxy, hostName, kind, direction, connectorName) :
 		self._proxy = proxy
 		self._connectorName = connectorName
 		self._hostName = hostName
@@ -23,7 +23,7 @@ import unittest
 import TestFixtures
 class PeerConnectorsTests(unittest.TestCase):				
 	def test_iterable(self):
-		peers = PeerConnectors( "Processing2", "Inport2", Connector.Port, Connector.Out, TestFixtures.proxy())
+		peers = PeerConnectors(TestFixtures.proxy(), "Processing2", Connector.Port, Connector.Out, "Inport2")
 		listConnectors = [ (connector.host.name, connector.name, connector.type, connector.index) for connector in peers ]
 		self.assertEqual([
 			('Processing1', 'OutPort1', 'type1', 0),
