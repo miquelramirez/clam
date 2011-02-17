@@ -9,14 +9,8 @@ class PeerConnectors(object):
 		self._direction = direction
 
 	def __iter__(self):
-		if self._direction == Connector.In:
-			direction = Connector.Out
-		else:
-			direction = Connector.In
-
 		for peerHost, peerConnector in self._proxy.connectorPeers(self._hostName, self._connectorName, self._kind, self._direction):
-			index, type = self._proxy.connectorInfo(peerHost, peerConnector, self._kind, self._direction)
-			yield Connector.Connector(self._proxy, peerHost, peerConnector, self._kind, direction, index, type)
+			yield Connector.Connector(self._proxy, peerHost, peerConnector, self._kind, self._direction)
 
 
 import unittest
