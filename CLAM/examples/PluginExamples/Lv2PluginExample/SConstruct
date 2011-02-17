@@ -85,7 +85,7 @@ libraries = [
 install = env.Install(bundlePath, [libraries,ttls,manifest]) + env.Install(bundlePath, glob.glob("*ui"))
 
 env.Alias('install', install)
-env.Command('uninstall', [], Delete(FindInstalledFiles()))
+env.Command('uninstall', [], [Delete(FindInstalledFiles()),Delete(bundlePath)])
 env.Default(libraries, ttls, manifest)
 
 
