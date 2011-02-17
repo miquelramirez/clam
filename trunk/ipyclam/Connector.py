@@ -50,7 +50,7 @@ class Connector(object):
 			direction = Connector.Out
 		else:
 			direction = Connector.In
-		return PeerConnectors(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], direction, self._proxy)
+		return PeerConnectors(self._proxy, self.__dict__["host"], self.__dict__["kind"], direction, self.__dict__["name"])
 
 import unittest
 import TestFixtures
