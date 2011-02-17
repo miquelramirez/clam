@@ -5,8 +5,8 @@ class Connectors(object):
 		portNames = networkProxy.processingConnectors(processingName, kind, direction)
 		self._dict = dict()
 		self._list = list()
-		for i, port in enumerate(portNames):
-			connector = Connector(networkProxy, processingName, name=port[0], kind=kind, direction=direction, index=i+1, type=port[1])
+		for port in portNames:
+			connector = Connector(networkProxy, processingName, name=port[0], kind=kind, direction=direction)
 			self._list.append(connector)
 			self._dict[connector.name] = connector
 	def __iter__(self):
