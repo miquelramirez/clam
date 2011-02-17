@@ -1,6 +1,3 @@
-import operator
-import unittest
-
 
 class Configuration(object):
 	def __init__(self, config):
@@ -23,6 +20,8 @@ class Configuration(object):
 	def __dir__(self):
 		return self._dict.keys()
 
+import operator
+import unittest
 class ConfigurationTests(unittest.TestCase):
 	def config(self) :
 		return dict(
