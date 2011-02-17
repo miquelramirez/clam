@@ -34,19 +34,16 @@ Generates the main C++ file for the plugin library
 Specifies the uri base for the plugins
 .TP
 \fB\-d\fR DOAPFILE, \fB\-\-doap\fR=\fIDOAPFILE\fR
-Specifies a doapfile with additional info (required by
-\fB\-\-ttls\fR)
+Specifies a doapfile with additional info when
+generating a ttl
 .TP
-\fB\-y\fR, \fB\-\-binary\fR
+\fB\-y\fR LIBBINARY, \fB\-\-binary\fR=\fILIBBINARY\fR
 Provides a name for the library binary (required by
 \fB\-\-ttls\fR)
 .TP
-\fB\-g\fR, \fB\-\-gui\-binary\fR
-Provides a name for the ui library binary (optional,
-just for \fB\-\-ttls\fR)
-.TP
-\fB\-b\fR, \fB\-\-back2back\fR
-Runs the script back\-to\-back test
+\fB\-g\fR UIBINARY, \fB\-\-gui\-binary\fR=\fIUIBINARY\fR
+Provides a name for a ui library binary for the plugin
+in the ttl
 .SH AUTHOR
 Written by Xavier Oliver, David Garcia Garzon and Angelo Scorza.
 .SH COPYRIGHT

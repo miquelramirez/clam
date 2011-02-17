@@ -27,37 +27,9 @@ from xml.sax.handler import ContentHandler
 import sys, os
 import getopt
 
-network_test = """\
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network clamVersion="1.4.1" id="Unnamed">
-
-  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'DejaVu Sans'; font-size:11pt;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
-
-  <processing id="Input" position="151,180" size="128,108" type="AudioSource">
-    <NSources>2</NSources>
-  </processing>
-
-  <processing id="Output" position="370,183" size="128,111" type="AudioSink">
-    <NSinks>2</NSinks>
-  </processing>
-
-  <port_connection>
-    <out>Input.1</out>
-    <in>Output.1</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Input.2</out>
-    <in>Output.2</in>
-  </port_connection>
-
-</network>
-
-"""
+def die(msg) :
+	print >> sys.stderr, "Error:", msg
+	sys.exit(-1)
 
 class AudioPort():
 	def __init__ (self, id, pos):
@@ -171,10 +143,8 @@ class ExporterHandler(ContentHandler):
 		self.connections[self.audioAux.type].append(self.audioAux)
 		self.audioAux = None
 
-	def printTTL(self,clamnetwork,uri,name,doapfile,binary):
-	
-		if binary==None:
-			binary="clam_lv2_example"
+	def printTTL(self,clamnetwork,uri,name,doapfile,binary,guibinary=None):
+		binary or die("Option -y is required when required generating ttls")
 	
 		doapDescription = """\
 	doap:license <http://usefulinc.com/doap/licenses/gpl>;
@@ -202,33 +172,34 @@ class ExporterHandler(ContentHandler):
 
 		#TODO change the static PATH for Dynamic PATH
 		f = sys.stdout
-		f.write("""\
+		uiDefinition = """\
+@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+
+<%(uri)s/gui>
+        a uiext:GtkUI;
+        uiext:binary <%(guibinary)s.so>;
+.
+"""
+		uiReference = """\
+	uiext:ui <%(uri)s/gui> ;
+"""
+
+		f.write(("""\
 @prefix lv2:  <http://lv2plug.in/ns/lv2core#>.
 @prefix doap: <http://usefulinc.com/ns/doap#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix units: <http://lv2plug.in/ns/extension/units#> .
-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
-
-<%(uri)s/gui>
-        a uiext:GtkUI;
-        uiext:binary <%(binary)s.so>;
-.
-
+""" + (uiDefinition if guibinary else "") + """
 <%(uri)s>
 	a lv2:Plugin;
 	lv2:binary <%(binary)s.so>;
 	doap:name "%(name)s";
 %(doapDescription)s
 	lv2:optionalFeature lv2:hardRtCapable ;
-	uiext:ui <%(uri)s/gui> ;
+""" + (uiReference if guibinary else "") + """\
 	lv2:port
-""" %dict(
-			uri=uri,
-			binary=binary,
-			name=name,
-			doapDescription=doapDescription
-			))
+""") %locals())
 
 		ports = []
 		for port in sorted(self.inputControl, key=lambda p:p.pos) :
@@ -289,27 +260,6 @@ def printManifest(uris,names):
 """%(uri, name) for uri, name in zip(uris, names)]))
 
 
-import os
-
-def test_back2back() :
-	from audiob2b import runBack2BackProgram
-	data_path="../../../clam-test-data/b2b/lv2_plugin/"
-	f = open('test_othercable.clamnetwork','w')
-	f.write(network_test)	
-	f.close()
-	back2BackTests = [
-		("simple_ttl",
-		"clam_lv2_generator.py --ttl -u %(uri)s %(network)s > %(target)s" 
-			% dict(   uri="http://clam-project.org/examples/lv2"
-				, network="test_othercable.clamnetwork"
-				, target="output.ttl")
-		, [
-			"output.ttl",
-		]),
-	]
-	runBack2BackProgram(data_path, sys.argv, back2BackTests)
-	os.remove('test_othercable.clamnetwork')
-
 
 def main():
 	from optparse import OptionParser
@@ -324,23 +274,17 @@ def main():
 		help="Generates ttl files for each network")
 	parser.add_option("-i", "--main", dest='createMain', action='store_true',
 		help="Generates the main C++ file for the plugin library")
-	parser.add_option("-u", "--uribase", dest='uribase', default="default/uri/lv2/",
+	parser.add_option("-u", "--uribase", dest='uribase', default="http://clam-project.org/examples/lv2",
 		help="Specifies the uri base for the plugins", metavar="URIBASE")
 	parser.add_option("-d", "--doap", dest='doapfile',
-		help="Specifies a doapfile with additional info (required by --ttls)", metavar="DOAPFILE")
-	parser.add_option("-y", "--binary", dest='binary', action="store_true",
-		help="Provides a name for the library binary (required by --ttls)")
-	parser.add_option("-b", "--back2back", dest='back2back', action="store_true",
-		help="Runs the script back-to-back test")
-	options, args = parser.parse_args()
+		help="Specifies a doapfile with additional info when generating a ttl", metavar="DOAPFILE")
+	parser.add_option("-y", "--binary", dest='binary',
+		help="Provides a name for the library binary (required by --ttls)", metavar="LIBBINARY")
+	parser.add_option("-g", "--gui-binary", dest='guibinary', default=None,
+		help="Provides a name for a ui library binary for the plugin in the ttl", metavar="UIBINARY")
 
-	options, args = parser.parse_args()
+	options, networks = parser.parse_args()
 
-	if options.back2back :
-		test_back2back()
-		sys.exit(0)
-
-	networks = args
 	names = [os.path.splitext(os.path.basename(network))[0] for network in networks]
 	uris  = [os.path.join(options.uribase,name) for name in names ]
 
@@ -350,7 +294,7 @@ def main():
 			curHandler = ExporterHandler()
 			parser.setContentHandler(curHandler)
 			parser.parse(open(network))
-			curHandler.printTTL(network,uri,name,options.doapfile,options.binary)
+			curHandler.printTTL(network,uri,name,options.doapfile,options.binary,options.guibinary)
 			return
 
 	if options.createManifest:
