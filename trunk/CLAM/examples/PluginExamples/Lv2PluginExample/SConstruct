@@ -45,21 +45,33 @@ env.EnableClamModules([
 networks = glob.glob("*.clamnetwork")
 
 env['CLAMLV2'] = os.path.join(env['clam_prefix'],'bin','clam_lv2_generator')
-env['LV2BASEURI'] = "http://clam-project.org/examples/lv2"
-env['DOAPFILE'  ] = "default.doap"
+env['CLAMLV2_BASEURI'] = "http://clam-project.org/examples/lv2"
 
 env.Uic4(glob.glob("*.ui"))
 
 manifest = env.Command("manifest.ttl", networks,
-	"${CLAMLV2} --manifest -u ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
+	"${CLAMLV2} --manifest "
+		"-u ${CLAMLV2_BASEURI} "
+		"${SOURCES} > ${TARGET}"
+	)
 
 mainSource = env.Command("clam_plugin.cxx", networks,
-	"${CLAMLV2} --main -u ${LV2BASEURI} ${SOURCES} > ${TARGET}" )
+	"${CLAMLV2} --main "
+		"-u ${CLAMLV2_BASEURI} "
+		"${SOURCES} > ${TARGET}"
+	)
 ttls = [
 	env.Command(os.path.splitext(os.path.basename(network))[0]+".ttl", network,
-	"${CLAMLV2} --ttl -u ${LV2BASEURI} -y ${LV2BINARY} ${SOURCE} > ${TARGET}",
-#	"${CLAMLV2} --ttl -u ${LV2BASEURI} -d ${DOAPFILE} ${SOURCE} > ${TARGET}",
-	LV2BINARY=libraryName)
+	"${CLAMLV2} --ttl "
+		"-u ${CLAMLV2_BASEURI} "
+		"--binary ${CLAMLV2_BINARY} "
+		"${CLAMLV2_GUIBINARY and '--gui-binary '+CLAMLV2_GUIBINARY or ''} "
+		"${DOAPFILE and ('-d '+DOAPFILE) or ''} "
+		"${SOURCE} > ${TARGET}",
+	CLAMLV2_BINARY=libraryName,
+	CLAMLV2_GUIBINARY=libraryName
+#	DOAPFILE="default.doap",
+	)
 	for network in networks ]
 
 
