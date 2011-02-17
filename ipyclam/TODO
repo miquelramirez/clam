@@ -5,6 +5,8 @@
 		For tests using constructor parameters instead of a definition structure we can keep these attributes, query the proxy just when they are None
 	- If we have properties, do we need a dicctionary to hold Connector attributes?
 	- PeerConnectors.__len__()
+	- Rework proxy interface and external objects constructors so that parameters are specified in order of search
+		(proxy,processingname,kind,direction,connectorname...)
 
 - Network interface:
 	- Given a dummy defined network net=Network(dummyProxy)
