@@ -56,20 +56,20 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 					ConfigParam2 = "default2",
 				),
 				inports = [
-					["Inport1", "type1"],
-					["Inport2", "type1"]
+					["InPort1", "type1"],
+					["InPort2", "type1"]
 				],
 				outports = [
-					["Outport1", "type1"],
-					["Outport2", "type1"]
+					["OutPort1", "type1"],
+					["OutPort2", "type1"]
 				],
 				incontrols = [
-					["Incontrol1", "type2"],
-					["Incontrol2", "type2"]
+					["InControl1", "type2"],
+					["InControl2", "type2"]
 				],
 				outcontrols = [
-					["Outcontrol1", "type2"],
-					["Outcontrol2", "type2"]
+					["OutControl1", "type2"],
+					["OutControl2", "type2"]
 				],
 			),
 			dict(
@@ -98,14 +98,14 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			),
 		],
 		[
-			("Processing1", "Outport1", "Processing2", "Inport2"),
-			("Processing1", "Outport2", "Processing2", "Inport2"),
-			("Processing2", "Outport2", "Processing1", "Inport2"),
+			("Processing1", "OutPort1", "Processing2", "Inport2"),
+			("Processing1", "OutPort2", "Processing2", "Inport2"),
+			("Processing2", "Outport2", "Processing1", "InPort2"),
 		],
 		[
-			("Processing1", "Incontrol1", "Processing2", "Incontrol2"),
-			("Processing1", "Incontrol2", "Processing2", "Incontrol2"),
-			("Processing2", "Incontrol1", "Processing1", "Incontrol2"),			
+			("Processing1", "InControl1", "Processing2", "Incontrol2"),
+			("Processing1", "InControl2", "Processing2", "Incontrol2"),
+			("Processing2", "Incontrol1", "Processing1", "InControl2"),			
 		]
 	]
 
@@ -123,32 +123,32 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def test_inports(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
-				["Inport1", "type1"],
-				["Inport2", "type1"]
+				["InPort1", "type1"],
+				["InPort2", "type1"]
 			], proxy.processingConnectors(
 				"Processing1", Connector.Port, Connector.In))
 
 	def test_outports(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
-				["Outport1", "type1"],
-				["Outport2", "type1"]
+				["OutPort1", "type1"],
+				["OutPort2", "type1"]
 			], proxy.processingConnectors(
 				"Processing1", Connector.Port, Connector.Out))
 
 	def test_incontrols(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
-				["Incontrol1", "type2"],
-				["Incontrol2", "type2"]
+				["InControl1", "type2"],
+				["InControl2", "type2"]
 			], proxy.processingConnectors(
 				"Processing1", Connector.Control, Connector.In))
 
 	def test_outcontrols(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
-				["Outcontrol1", "type2"],
-				["Outcontrol2", "type2"]
+				["OutControl1", "type2"],
+				["OutControl2", "type2"]
 			], proxy.processingConnectors(
 				"Processing1", Connector.Control, Connector.Out))
 
@@ -163,19 +163,19 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def test_portConnectionsOut(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
-				("Processing1", "Outport1"),
-				("Processing1", "Outport2")]
+				("Processing1", "OutPort1"),
+				("Processing1", "OutPort2")]
 				, proxy.connectorPeers("Processing2", "Inport2", Connector.Port, Connector.Out))
 	
 	def test_portConnectionsIn(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
 				("Processing2", "Inport2")]
-				, proxy.connectorPeers("Processing1", "Outport1", Connector.Port, Connector.In))
+				, proxy.connectorPeers("Processing1", "OutPort1", Connector.Port, Connector.In))
 
 	def test_connectorInfo(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
-		index, type = proxy.connectorInfo("Processing1", "Inport1", Connector.Port, Connector.In)
+		index, type = proxy.connectorInfo("Processing1", "InPort1", Connector.Port, Connector.In)
 		self.assertEquals(0, index)
 		self.assertEquals("type1", type)
 

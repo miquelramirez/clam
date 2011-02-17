@@ -91,52 +91,52 @@ class ProcessingTests(unittest.TestCase):
 		self.assertEqual(p._config["ConfigParam2"], "newvalue2")
 	def test_InportsGettingByNameAsDictionary(self):
 		p = Processing("Processing1", TestFixtures.proxy())
-		self.assertEqual(p["Inport1"].name, "Inport1")
-		self.assertEqual(p["Inport1"].kind, "Port")
-		self.assertEqual(p["Inport1"].direction, "In")
+		self.assertEqual(p["InPort1"].name, "InPort1")
+		self.assertEqual(p["InPort1"].kind, "Port")
+		self.assertEqual(p["InPort1"].direction, "In")
 	def test_InportsGettingByNameAsAttribute(self):
 		p = Processing("Processing1", TestFixtures.proxy())
-		self.assertEqual(p.Inport2.name, "Inport2")
-		self.assertEqual(p.Inport2.kind, "Port")
-		self.assertEqual(p.Inport2.direction, "In")
+		self.assertEqual(p.InPort2.name, "InPort2")
+		self.assertEqual(p.InPort2.kind, "Port")
+		self.assertEqual(p.InPort2.direction, "In")
 	def test_OutportsGettingByNameAsDictionary(self):
 		p = Processing("Processing1", TestFixtures.proxy())
-		self.assertEqual(p["Outport1"].name, "Outport1")
-		self.assertEqual(p["Outport1"].kind, "Port")
-		self.assertEqual(p["Outport1"].direction, "Out")
+		self.assertEqual(p["OutPort1"].name, "OutPort1")
+		self.assertEqual(p["OutPort1"].kind, "Port")
+		self.assertEqual(p["OutPort1"].direction, "Out")
 	def test_OutportsGettingByNameAsAttribute(self):
 		p = Processing("Processing1", TestFixtures.proxy())
-		self.assertEqual(p.Outport2.name, "Outport2")
-		self.assertEqual(p.Outport2.kind, "Port")
-		self.assertEqual(p.Outport2.direction, "Out")
+		self.assertEqual(p.OutPort2.name, "OutPort2")
+		self.assertEqual(p.OutPort2.kind, "Port")
+		self.assertEqual(p.OutPort2.direction, "Out")
 	def test_IncontrolsGettingByNameAsDictionary(self):
 		p = Processing("Processing1", TestFixtures.proxy())
-		self.assertEqual(p["Incontrol1"].name, "Incontrol1")
-		self.assertEqual(p["Incontrol1"].kind, "Control")
-		self.assertEqual(p["Incontrol1"].direction, "In")
+		self.assertEqual(p["InControl1"].name, "InControl1")
+		self.assertEqual(p["InControl1"].kind, "Control")
+		self.assertEqual(p["InControl1"].direction, "In")
 	def test_IncontrolsGettingByNameAsAttribute(self):
 		p = Processing("Processing1", TestFixtures.proxy())
-		self.assertEqual(p.Incontrol2.name, "Incontrol2")
-		self.assertEqual(p.Incontrol2.kind, "Control")
-		self.assertEqual(p.Incontrol2.direction, "In")
+		self.assertEqual(p.InControl2.name, "InControl2")
+		self.assertEqual(p.InControl2.kind, "Control")
+		self.assertEqual(p.InControl2.direction, "In")
 	def test_OutcontrolsGettingByNameAsDictionary(self):
 		p = Processing("Processing1", TestFixtures.proxy())
-		self.assertEqual(p["Outcontrol1"].name, "Outcontrol1")
-		self.assertEqual(p["Outcontrol1"].kind, "Control")
-		self.assertEqual(p["Outcontrol1"].direction, "Out")
+		self.assertEqual(p["OutControl1"].name, "OutControl1")
+		self.assertEqual(p["OutControl1"].kind, "Control")
+		self.assertEqual(p["OutControl1"].direction, "Out")
 	def test_OutcontrolsGettingByNameAsAttribute(self):
 		p = Processing("Processing1", TestFixtures.proxy())
-		self.assertEqual(p.Outcontrol2.name, "Outcontrol2")
-		self.assertEqual(p.Outcontrol2.kind, "Control")
-		self.assertEqual(p.Outcontrol2.direction, "Out")
+		self.assertEqual(p.OutControl2.name, "OutControl2")
+		self.assertEqual(p.OutControl2.kind, "Control")
+		self.assertEqual(p.OutControl2.direction, "Out")
 	def test_dirFunction(self):
 		p = Processing("Processing1", TestFixtures.proxy())
 		self.assertEquals(sorted(
 			['ConfigParam1', 'ConfigParam2', 
-			'Inport1', 'Inport2','Inport3','Inport4',
-			'Outport1', 'Outport2',
-			'Incontrol1', 'Incontrol2',
-			'Outcontrol1', 'Outcontrol2',
+			'InPort1', 'InPort2','InPort3','InPort4',
+			'OutPort1', 'OutPort2',
+			'InControl1', 'InControl2',
+			'OutControl1', 'OutControl2',
 			'type', '_config', '_inports', '_outports', '_incontrols', '_outcontrols']), dir(p))
 
 if __name__ == '__main__':

@@ -11,22 +11,22 @@ def proxy() :
 					ConfigParam2 = "default2",
 				),
 				inports = [
-					["Inport1", "type1"],
-					["Inport2", "type1"],
-					['Inport3', 'type1'],
-					['Inport4', 'type1'],
+					["InPort1", "type1"],
+					["InPort2", "type1"],
+					['InPort3', 'type1'],
+					['InPort4', 'type1'],
 				],
 				outports = [
-					["Outport1", "type1"],
-					["Outport2", "type1"]
+					["OutPort1", "type1"],
+					["OutPort2", "type1"]
 				],
 				incontrols = [
-					["Incontrol1", "type2"],
-					["Incontrol2", "type2"]
+					["InControl1", "type2"],
+					["InControl2", "type2"]
 				],
 				outcontrols = [
-					["Outcontrol1", "type2"],
-					["Outcontrol2", "type2"]
+					["OutControl1", "type2"],
+					["OutControl2", "type2"]
 				],
 			),
 			dict(
@@ -55,13 +55,13 @@ def proxy() :
 			),
 		],
 		[
-			("Processing1", "Outport1", "Processing2", "Inport2"),
-			("Processing1", "Outport2", "Processing2", "Inport2"),
-			("Processing2", "Outport2", "Processing1", "Inport2"),
+			("Processing1", "OutPort1", "Processing2", "Inport2"),
+			("Processing1", "OutPort2", "Processing2", "Inport2"),
+			("Processing2", "Outport2", "Processing1", "InPort2"),
 		],
 		[
-			("Processing1", "Outcontrol1", "Processing2", "Incontrol2"),
-			("Processing1", "Outcontrol2", "Processing2", "Incontrol2"),
-			("Processing2", "Outcontrol1", "Processing1", "Incontrol2"),			
+			("Processing1", "OutControl1", "Processing2", "Incontrol2"),
+			("Processing1", "OutControl2", "Processing2", "Incontrol2"),
+			("Processing2", "Outcontrol1", "Processing1", "InControl2"),			
 		]
 )
