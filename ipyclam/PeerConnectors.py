@@ -15,7 +15,7 @@ class PeerConnectors(object):
 			direction = Connector.In
 
 		for peerHost, peerConnector in self._proxy.connectorPeers(self._hostName, self._connectorName, self._kind, self._direction):
-			index, type = self._proxy.connectorInfo(self._hostName, peerConnector, self._kind, self._direction)
+			index, type = self._proxy.connectorInfo(peerHost, peerConnector, self._kind, self._direction)
 			yield Connector.Connector(self._proxy, peerHost, peerConnector, self._kind, direction, index, type)
 
 
@@ -26,8 +26,8 @@ class PeerConnectorsTests(unittest.TestCase):
 		peers = PeerConnectors( "Processing2", "Inport2", Connector.Port, Connector.Out, TestFixtures.proxy())
 		listConnectors = [ (connector.host.name, connector.name, connector.type, connector.index) for connector in peers ]
 		self.assertEqual([
-			('Processing1', 'Outport1', 'type1', 0),
-			('Processing1', 'Outport2', 'type1', 1)
+			('Processing1', 'OutPort1', 'type1', 0),
+			('Processing1', 'OutPort2', 'type1', 1)
 			], listConnectors)
 
 if __name__ == '__main__':
