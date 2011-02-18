@@ -2,28 +2,20 @@ import Processing
 
 class Network(object):
 	def __init__(self, networkProxy):
-		for processName in networkProxy.processingsName():
-			self.__dict__[processName] = Processing.Processing(processName, networkProxy)
+		self._proxy = networkProxy
 
 	def __getitem__(self, name):
-		if name in dir(self):
-			return self.__dict__[name]
-		raise KeyError(name)
-
-	def __setitem__(self, name, value):
-		pass
+		if name not in self._proxy.processingsName() :
+			raise KeyError(name)
+		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __getattr__(self, name):
-		try:
-			return self.__getitem__(name)
-		except KeyError:
+		if name not in self._proxy.processingsName() :
 			raise AttributeError(name)
-
-	def __setattr__(self, name, value):
-		pass
+		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __dir__(self):
-		return self.__dict__.keys()
+		return [name for name in self._proxy.processingsName()]
 
 import operator
 import unittest
