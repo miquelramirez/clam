@@ -40,6 +40,9 @@ class Dummy_NetworkProxy :
 			if name == connectorName:
 				return (i, type)
 
+	def processingsName(self) :
+		for processingName in self._processings:
+			yield processingName
 
 import unittest
 
@@ -178,6 +181,11 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		index, type = proxy.connectorInfo("Processing1", "InPort1", Connector.Port, Connector.In)
 		self.assertEquals(0, index)
 		self.assertEquals("type1", type)
+
+	def test_processingsName(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		listProcessings = [ processName for processName in proxy.processingsName() ]
+		self.assertEquals(['Processing1', 'Processing2'], listProcessings)
 
 if __name__ == '__main__':
 	unittest.main()
