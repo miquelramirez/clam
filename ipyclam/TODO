@@ -1,7 +1,7 @@
 
 - Polishing connector interface:
 	- Dummy_NetworkProxy.connectorInfo failure case (assert? exception?)
-	- Index and type should be queried to the proxy instead of passed as constructor parameters and stored as attribute. 
+[X]	- Index and type should be queried to the proxy instead of passed as constructor parameters and stored as attribute. 
 		For tests using constructor parameters instead of a definition structure we can keep these attributes, query the proxy just when they are None
 	- If we have properties, do we need a dicctionary to hold Connector attributes?
 	- PeerConnectors.__len__()
@@ -10,12 +10,12 @@
 
 - Network interface:
 	- Given a dummy defined network net=Network(dummyProxy)
-		- Getting a processing with net.procesingName
-		- Getting a processing with net["processingName"]
-		- Failure case on net.missingProcessingName 
-		- Failure case on net["missingProcessingName"]
-		- Exploring the processings in a network with net.[tab] (__dir__)
-		- In parallel defining and refactor dummy proxy interface for processing enumeration
+[X]		- Getting a processing with net.procesingName
+[X]		- Getting a processing with net["processingName"]
+[X]		- Failure case on net.missingProcessingName 
+[X]		- Failure case on net["missingProcessingName"]
+[X]		- Exploring the processings in a network with net.[tab] (__dir__)
+[X]		- In parallel defining and refactor dummy proxy interface for processing enumeration
 	- Creating processings
 		- Processing factories for the dummy proxy
 		- Adding a processing
