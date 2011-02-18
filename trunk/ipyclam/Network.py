@@ -5,12 +5,12 @@ class Network(object):
 		self._proxy = networkProxy
 
 	def __getitem__(self, name):
-		if name not in self._proxy.processingsName() :
+		if not self._proxy.hasProcessing(name) :
 			raise KeyError(name)
 		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __getattr__(self, name):
-		if name not in self._proxy.processingsName() :
+		if not self._proxy.hasProcessing(name) :
 			raise AttributeError(name)
 		return Processing.Processing(proxy=self._proxy, name=name)
 
