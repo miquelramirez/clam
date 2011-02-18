@@ -40,6 +40,9 @@ class Dummy_NetworkProxy :
 			if name == connectorName:
 				return (i, type)
 
+	def hasProcessing(self, processingName) :
+		return processingName in self._processings
+
 	def processingsName(self) :
 		for processingName in self._processings:
 			yield processingName
@@ -186,6 +189,14 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		listProcessings = [ processName for processName in proxy.processingsName() ]
 		self.assertEquals(['Processing1', 'Processing2'], listProcessings)
+
+	def test_hasProcessing_whenItIsThere(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		self.assertTrue(proxy.hasProcessing('Processing1'))
+
+	def test_hasProcessing_whenItIsNotThere(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		self.assertFalse(proxy.hasProcessing('NotExisting'))
 
 if __name__ == '__main__':
 	unittest.main()
