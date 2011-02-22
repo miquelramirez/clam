@@ -206,10 +206,17 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertFalse(proxy.hasProcessing('NotExisting'))
 
-	def test_addProcessingWithNoName(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
-		processingName = proxy.addProcessing("AudioSink")
-		self.assertTrue(proxy.hasProcessing(processingName))
+	def test_addProcessing_withOneMinimalProcessing(self) :
+		proxy = Dummy_NetworkProxy([],[],[])
+		proxy.addProcessing("MinimalProcessing", "AProcessing")
+		self.assertEquals(['AProcessing'], proxy.processingsName())
+		self.assertEquals('MinimalProcessing', proxy.processingType('AProcessing'))
+		self.assertEquals([], proxy.processingConfig('AProcessing'))
+		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Port, Connector.In))
+		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Port, Connector.Out))
+		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Control, Connector.In))
+		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Control, Connector.Out))
+
 
 if __name__ == '__main__':
 	unittest.main()
