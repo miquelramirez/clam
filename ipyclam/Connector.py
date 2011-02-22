@@ -10,41 +10,41 @@ class Connector(object):
 	Control = Control
 	def __init__(self, networkProxy, host, name = "Inport1", kind=Port, direction=In):
 		self._proxy = networkProxy
-		self._host = host
-		self._name = name
-		self._kind = kind
-		self._direction = direction
+		self.__dict__["host"] = host
+		self.__dict__["name"] = name
+		self.__dict__["kind"] = kind
+		self.__dict__["direction"] = direction
 	@property
 	def name(self):
 		"""The name of the port"""
-		return self._name
+		return self.__dict__["name"]
 	@property
 	def kind(self):
 		"""The kind of the port"""
-		return self._kind
+		return self.__dict__["kind"]
 	@property
 	def direction(self):
 		"""The direction of the port"""
-		return self._direction
+		return self.__dict__["direction"]
 	@property
 	def index(self):
 		"""The index of the port"""
-		return self._proxy.connectorIndex(self._host, self._name, self._kind, self._direction)
+		return self._proxy.connectorIndex(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], self.__dict__["direction"])
 	@property
 	def type(self):
 		"""The type of the port"""
-		return self._proxy.connectorType(self._host, self._name, self._kind, self._direction)
+		return self._proxy.connectorType(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], self.__dict__["direction"])
 	@property
 	def host(self):
 		import Processing
 		return Processing.Processing(
-			self._host,
+			self.__dict__["host"],
 			self._proxy,
 			)
 	@property
 	def peers(self):
 		from PeerConnectors import PeerConnectors
-		return PeerConnectors(self._proxy, self._host, self._kind, self._direction, self._name)
+		return PeerConnectors(self._proxy, self.__dict__["host"], self.__dict__["kind"], self.__dict__['direction'], self.__dict__["name"])
 
 import unittest
 import TestFixtures
