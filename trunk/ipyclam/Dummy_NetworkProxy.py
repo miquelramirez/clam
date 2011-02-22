@@ -52,14 +52,13 @@ class Dummy_NetworkProxy :
 
 	def addProcessing(self, type, name) :
 		self._processings[name] = dict(
-									type = "MinimalProcessing",
-									name = name,
-									config = dict(),
-									inports = [],
-									outports = [],
-									incontrols = [],
-									outcontrols = []
-								)
+			type = "MinimalProcessing",
+			config = dict(),
+			inports = [],
+			outports = [],
+			incontrols = [],
+			outcontrols = []
+		)
 
 import unittest
 
