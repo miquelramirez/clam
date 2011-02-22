@@ -8,6 +8,17 @@ _connectorKindNames = [
 	]
 _kind2Name = dict([((k,d),n) for k,d,n in _connectorKindNames])
 
+_dummyPrototypes = dict(
+	MinimalProcessing = dict(
+		type = "MinimalProcessing",
+		config = dict(),
+		inports = [],
+		outports = [],
+		incontrols = [],
+		outcontrols = []
+	)
+)
+
 class Dummy_NetworkProxy :
 
 	def __init__(self, processings, portConnections, controlConnections) :
@@ -51,14 +62,7 @@ class Dummy_NetworkProxy :
 		return [ processingName for processingName in self._processings]
 
 	def addProcessing(self, type, name) :
-		self._processings[name] = dict(
-			type = "MinimalProcessing",
-			config = dict(),
-			inports = [],
-			outports = [],
-			incontrols = [],
-			outcontrols = []
-		)
+		self._processings[name] = _dummyPrototypes[type]
 
 import unittest
 
