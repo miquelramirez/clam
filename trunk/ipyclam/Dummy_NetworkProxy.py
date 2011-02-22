@@ -91,12 +91,12 @@ class Dummy_NetworkProxy :
 		else :
 			return [x[2:4] for x in connections if (processingName, portName)==x[0:2] ]
 
-	def connectorIndex(self, processingName, connectorName, kind, direction) :
+	def connectorIndex(self, processingName, kind, direction, connectorName) :
 		connectorKindName = _kind2Name[(kind,direction)]
 		for i, (name, type) in enumerate(self._processings[processingName][connectorKindName]):
 			if name == connectorName: return i
 
-	def connectorType(self, processingName, connectorName, kind, direction) :
+	def connectorType(self, processingName, kind, direction, connectorName) :
 		connectorKindName = _kind2Name[(kind,direction)]
 		for name, type in self._processings[processingName][connectorKindName]:
 			if name == connectorName: return type
@@ -248,12 +248,12 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_connectorType(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
-		type = proxy.connectorType("Processing1", "InPort1", Connector.Port, Connector.In)
+		type = proxy.connectorType("Processing1", Connector.Port, Connector.In, "InPort1")
 		self.assertEquals("type1", type)
 
 	def test_connectorInfo(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
-		index = proxy.connectorIndex("Processing1", "InPort1", Connector.Port, Connector.In)
+		index = proxy.connectorIndex("Processing1", Connector.Port, Connector.In, "InPort1")
 		self.assertEquals(0, index)
 
 	def test_processingsName(self) :
