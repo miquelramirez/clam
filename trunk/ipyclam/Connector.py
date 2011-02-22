@@ -4,10 +4,6 @@ Port = "Port"
 Control = "Control"
 
 class Connector(object):
-	In = In
-	Out = Out
-	Port = Port
-	Control = Control
 	def __init__(self, networkProxy, host, name = "Inport1", kind=Port, direction=In):
 		self._proxy = networkProxy
 		self.__dict__["host"] = host
@@ -64,7 +60,7 @@ class ConnectorTests(unittest.TestCase):
 		self.assertEqual(port.kind, "Control")
 	def test_kind_isReadOnly(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In)
-		self.assertRaises(AttributeError, setattr, port, "kind", Connector.Control)
+		self.assertRaises(AttributeError, setattr, port, "kind", Control)
 	def test_direction_whenIn(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In)
 		self.assertEqual(port.direction, "In")
@@ -73,7 +69,7 @@ class ConnectorTests(unittest.TestCase):
 		self.assertEqual(port.direction, "Out")
 	def test_direction_isReadOnly(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In)
-		self.assertRaises(AttributeError, setattr, port, "direction", Connector.Out)
+		self.assertRaises(AttributeError, setattr, port, "direction", Out)
 	def test_index(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", name="InPort1", kind=Port, direction=In)
 		self.assertEqual(port.index, 0)
