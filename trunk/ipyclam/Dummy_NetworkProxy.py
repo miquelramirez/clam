@@ -206,6 +206,11 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertFalse(proxy.hasProcessing('NotExisting'))
 
+	def test_addProcessingWithNoName(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		processingName = proxy.addProcessing("AudioSink")
+		self.assertTrue(proxy.hasProcessing(processingName))
+
 if __name__ == '__main__':
 	unittest.main()
 
