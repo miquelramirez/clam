@@ -17,6 +17,9 @@ class Network(object):
 	def __dir__(self):
 		return [name for name in self._proxy.processingsName()]
 
+	def code(self):
+		return "network = Network.Network(TestFixtures.proxy())"
+
 import operator
 import unittest
 import TestFixtures
@@ -44,6 +47,9 @@ class NetworkTests(unittest.TestCase):
 		net = Network(TestFixtures.proxy())
 		self.assertRaises(KeyError, operator.getitem, net, "Processing3")
 
+	def test_codeEmptyNetwork(self) :
+		net = Network(TestFixtures.proxy())
+		self.assertEquals("network = Network.Network(TestFixtures.proxy())", net.code())
 
 if __name__ == '__main__':
 	unittest.main()
