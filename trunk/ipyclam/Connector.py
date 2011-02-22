@@ -29,11 +29,11 @@ class Connector(object):
 	@property
 	def index(self):
 		"""The index of the port"""
-		return self._proxy.connectorInfo(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], self.__dict__["direction"])[0]
+		return self._proxy.connectorIndex(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], self.__dict__["direction"])
 	@property
 	def type(self):
 		"""The type of the port"""
-		return self._proxy.connectorInfo(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], self.__dict__["direction"])[1]
+		return self._proxy.connectorType(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], self.__dict__["direction"])
 	@property
 	def host(self):
 		import Processing
