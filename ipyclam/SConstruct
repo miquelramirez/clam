@@ -1,0 +1,58 @@
+#!/usr/bin/python
+import os, sys
+
+options = Variables('options.cache', ARGUMENTS)
+
+
+
+toolChain = 'default' if sys.platform is not 'win32' else 'mingw'
+env = Environment(ENV=os.environ, tools=[toolChain], options=options)
+options.Save('options.cache', env)
+Help(options.GenerateHelpText(env))
+env.SConsignFile() # Single signature file
+
+env.ParseConfig('python-config --cflags')
+env.ParseConfig('python-config --libs')
+env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
+
+boost_prefix = '/usr'
+
+env.AppendUnique(
+	LIBS=['boost_python']
+)
+
+if '-Wstrict-prototypes' in env['CCFLAGS'] :
+	# added by python-config --cflags, nags c++
+	env['CCFLAGS'].remove('-Wstrict-prototypes')
+
+"""
+module = env.SharedLibrary (
+	target='boostpyclam',
+	source='boostpyclam.cxx',
+	SHLIBPREFIX='',
+)
+"""
+
+program = env.Program(
+	target='ipyclam_console',
+	source='ipyclam_console.cxx',
+)
+
+
+install = [
+	env.Install(targetDir, files) for targetDir, files in [
+	( os.path.join(os.path.expanduser('~/local'),'lib','python'),[
+#		module,
+	]),
+	( os.path.join(os.path.expanduser('~/local'),'bin'),[
+		program,
+	]),
+]]
+
+env.Alias('install', install)
+
+Default(
+#	module, 
+	program,
+)
+
