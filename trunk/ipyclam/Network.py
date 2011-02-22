@@ -2,7 +2,7 @@ import Processing
 
 class Network(object):
 	def __init__(self, networkProxy):
-		self._proxy = networkProxy
+		self.__dict__['_proxy'] = networkProxy
 
 	def __getitem__(self, name):
 		if not self._proxy.hasProcessing(name) :
@@ -15,10 +15,17 @@ class Network(object):
 		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __dir__(self):
-		return [name for name in self._proxy.processingsName()]
+		return self._proxy.processingsName()
 
 	def code(self):
-		return "network = Network.Network(TestFixtures.proxy())"
+		return "\n".join([
+			"network.%s = '%s'"%(name, self._proxy.processingType(name))
+			for name in self._proxy.processingsName()])
+
+	def __setattr__(self, name, type) :
+		# TODO: fail on existing attributes (not processings)
+		self._proxy.addProcessing(type, name)
+		
 
 import operator
 import unittest
@@ -48,8 +55,16 @@ class NetworkTests(unittest.TestCase):
 		self.assertRaises(KeyError, operator.getitem, net, "NonExistingProcessing")
 
 	def test_codeEmptyNetwork(self) :
-		net = Network(TestFixtures.proxy())
-		self.assertEquals("network = Network.Network(TestFixtures.proxy())", net.code())
+		net = Network(TestFixtures.empty())
+		self.assertEquals("", net.code())
+
+	def test_addProcessing(self) :
+		net = Network(TestFixtures.empty())
+		net.processing1 = "MinimalProcessing"
+		self.assertEquals(
+			"network.processing1 = 'MinimalProcessing'"
+			, net.code())
+
 
 if __name__ == '__main__':
 	unittest.main()
