@@ -25,6 +25,13 @@
 		- Self writting code for connections
 		- Self writting code for configurations
 		- Self writting code for configurations
+	- Pending test cases
+		- network.code = "Type", should fail (and any existing network method)
+		- network.code() should use the [] notation to create a processing if its name is not a symbol or is an attribute
+	- Additional features
+		- dir(network.types) should give all the available types as symbols
+		- network.types.MinimalProcessing should return "MinimalProcessing"
+		- network.types.NonExistingType should raise AttributeError
 
 - Connecting
 	- Test Connector.connect(Connector)
