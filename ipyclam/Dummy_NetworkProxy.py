@@ -329,9 +329,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		self.assertEquals([["OutControl1", "ControlType"]], proxy.processingConnectors('AControlSource', Connector.Control, Connector.Out))
 
 	def test_addProcessing_withNameAlreadyAdded(self) :
+		proxy = Dummy_NetworkProxy([],[],[])
+		proxy.addProcessing("ControlSource", "ARepeatedName")
 		try:
-			proxy = Dummy_NetworkProxy([],[],[])
-			proxy.addProcessing("ControlSource", "ARepeatedName")
 			proxy.addProcessing("ControlSource", "ARepeatedName")
 			self.fail("Exception expected")
 		except BadProcessingName, e:
