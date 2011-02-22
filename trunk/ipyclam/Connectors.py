@@ -1,4 +1,4 @@
-from Connector import Connector
+import Connector
 
 class Connectors(object):
 	def __init__(self, networkProxy, processingName, kind, direction) :
@@ -6,7 +6,7 @@ class Connectors(object):
 		self._dict = dict()
 		self._list = list()
 		for port in portNames:
-			connector = Connector(networkProxy, processingName, name=port[0], kind=kind, direction=direction)
+			connector = Connector.Connector(networkProxy, processingName, name=port[0], kind=kind, direction=direction)
 			self._list.append(connector)
 			self._dict[connector.name] = connector
 	def __iter__(self):
