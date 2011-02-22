@@ -48,8 +48,7 @@ class Dummy_NetworkProxy :
 		return processingName in self._processings
 
 	def processingsName(self) :
-		for processingName in self._processings:
-			yield processingName
+		return [ processingName for processingName in self._processings]
 
 import unittest
 
@@ -205,8 +204,12 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def test_hasProcessing_whenItIsNotThere(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertFalse(proxy.hasProcessing('NotExisting'))
+	
+	def test_processingsName_empty(self):
+		proxy = Dummy_NetworkProxy([],[],[])
+		self.assertEquals([], proxy.processingsName())
 
-	def test_addProcessing_withOneMinimalProcessing(self) :
+	def _test_addProcessing_withOneMinimalProcessing(self) :
 		proxy = Dummy_NetworkProxy([],[],[])
 		proxy.addProcessing("MinimalProcessing", "AProcessing")
 		self.assertEquals(['AProcessing'], proxy.processingsName())
