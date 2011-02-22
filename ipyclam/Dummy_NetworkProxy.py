@@ -16,6 +16,38 @@ _dummyPrototypes = dict(
 		outports = [],
 		incontrols = [],
 		outcontrols = []
+	),
+	PortSink = dict(
+		type = "PortSink",
+		config = dict(),
+		inports = [['InPort1', 'type1']],
+		outports = [],
+		incontrols = [],
+		outcontrols = []
+	),
+	PortSource = dict(
+		type = "PortSource",
+		config = dict(),
+		inports = [],
+		outports = [['OutPort1', 'type1']],
+		incontrols = [],
+		outcontrols = []
+	),
+	ControlSink = dict(
+		type = "ControlSink",
+		config = dict(),
+		inports = [],
+		outports = [],
+		incontrols = [['InControl1', 'type1']],
+		outcontrols = []
+	),
+	ControlSource = dict(
+		type = "ControlSource",
+		config = dict(),
+		inports = [],
+		outports = [],
+		incontrols = [],
+		outcontrols = [['OutControl1', 'type1']]
 	)
 )
 
@@ -234,6 +266,49 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Control, Connector.In))
 		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Control, Connector.Out))
 
+	def test_addProcessing_withInPort(self) :
+		proxy = Dummy_NetworkProxy([],[],[])
+		proxy.addProcessing("PortSink", "APortSink")
+		self.assertEquals(['APortSink'], proxy.processingsName())
+		self.assertEquals('PortSink', proxy.processingType('APortSink'))
+		self.assertEquals({}, proxy.processingConfig('APortSink'))
+		self.assertEquals([["InPort1", "type1"]], proxy.processingConnectors('APortSink', Connector.Port, Connector.In))
+		self.assertEquals([], proxy.processingConnectors('APortSink', Connector.Port, Connector.Out))
+		self.assertEquals([], proxy.processingConnectors('APortSink', Connector.Control, Connector.In))
+		self.assertEquals([], proxy.processingConnectors('APortSink', Connector.Control, Connector.Out))
+
+	def test_addProcessing_withInControl(self) :
+		proxy = Dummy_NetworkProxy([],[],[])
+		proxy.addProcessing("ControlSink", "AControlSink")
+		self.assertEquals(['AControlSink'], proxy.processingsName())
+		self.assertEquals('ControlSink', proxy.processingType('AControlSink'))
+		self.assertEquals({}, proxy.processingConfig('AControlSink'))
+		self.assertEquals([], proxy.processingConnectors('AControlSink', Connector.Port, Connector.In))
+		self.assertEquals([], proxy.processingConnectors('AControlSink', Connector.Port, Connector.Out))
+		self.assertEquals([["InControl1", "type1"]], proxy.processingConnectors('AControlSink', Connector.Control, Connector.In))
+		self.assertEquals([], proxy.processingConnectors('AControlSink', Connector.Control, Connector.Out))
+
+	def test_addProcessing_withOutPort(self) :
+		proxy = Dummy_NetworkProxy([],[],[])
+		proxy.addProcessing("PortSource", "APortSource")
+		self.assertEquals(['APortSource'], proxy.processingsName())
+		self.assertEquals('PortSource', proxy.processingType('APortSource'))
+		self.assertEquals({}, proxy.processingConfig('APortSource'))
+		self.assertEquals([], proxy.processingConnectors('APortSource', Connector.Port, Connector.In))
+		self.assertEquals([["OutPort1", "type1"]], proxy.processingConnectors('APortSource', Connector.Port, Connector.Out))
+		self.assertEquals([], proxy.processingConnectors('APortSource', Connector.Control, Connector.In))
+		self.assertEquals([], proxy.processingConnectors('APortSource', Connector.Control, Connector.Out))
+
+	def test_addProcessing_withInControl(self) :
+		proxy = Dummy_NetworkProxy([],[],[])
+		proxy.addProcessing("ControlSource", "AControlSource")
+		self.assertEquals(['AControlSource'], proxy.processingsName())
+		self.assertEquals('ControlSource', proxy.processingType('AControlSource'))
+		self.assertEquals({}, proxy.processingConfig('AControlSource'))
+		self.assertEquals([], proxy.processingConnectors('AControlSource', Connector.Port, Connector.In))
+		self.assertEquals([], proxy.processingConnectors('AControlSource', Connector.Port, Connector.Out))
+		self.assertEquals([], proxy.processingConnectors('AControlSource', Connector.Control, Connector.In))
+		self.assertEquals([["OutControl1", "type1"]], proxy.processingConnectors('AControlSource', Connector.Control, Connector.Out))
 
 if __name__ == '__main__':
 	unittest.main()
