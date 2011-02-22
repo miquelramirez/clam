@@ -41,11 +41,11 @@ class NetworkTests(unittest.TestCase):
 
 	def test_ProcessingAsAttributesGettingAndFailing(self):
 		net = Network(TestFixtures.proxy())
-		self.assertRaises(AttributeError, getattr, net, "Processing3")
+		self.assertRaises(AttributeError, getattr, net, "NonExistingProcessing")
 
 	def test_ValuesAsDictionaryGettingAndFailing(self):
 		net = Network(TestFixtures.proxy())
-		self.assertRaises(KeyError, operator.getitem, net, "Processing3")
+		self.assertRaises(KeyError, operator.getitem, net, "NonExistingProcessing")
 
 	def test_codeEmptyNetwork(self) :
 		net = Network(TestFixtures.proxy())
