@@ -15,16 +15,16 @@ class PeerConnectors(object):
 			peerDirection = Connector.In
 		for peerHost, peerConnector in self._proxy.connectorPeers(
 				self._hostName, 
-				self._connectorName, 
 				self._kind, 
 				self._direction,
+				self._connectorName, 
 			):
 			yield Connector.Connector(
 				self._proxy, 
 				peerHost, 
-				peerConnector, 
 				self._kind, 
 				peerDirection,
+				peerConnector, 
 			)
 
 import unittest
