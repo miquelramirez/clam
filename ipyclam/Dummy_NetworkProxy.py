@@ -51,6 +51,13 @@ _dummyPrototypes = dict(
 	)
 )
 
+class BadProcessingName(Exception):
+	def __init__(self, name, reason):
+		self.name = name
+		self.reason = reason
+	def __str__(self):
+		return repr(self.name + ': ' + self.reason)
+
 class Dummy_NetworkProxy :
 
 	def __init__(self, processings, portConnections, controlConnections) :
@@ -94,6 +101,8 @@ class Dummy_NetworkProxy :
 		return [ processingName for processingName in self._processings]
 
 	def addProcessing(self, type, name) :
+		if self.hasProcessing(name):
+			raise BadProcessingName(name, "Name repeated")
 		self._processings[name] = _dummyPrototypes[type]
 
 import unittest
@@ -309,6 +318,15 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		self.assertEquals([], proxy.processingConnectors('AControlSource', Connector.Port, Connector.Out))
 		self.assertEquals([], proxy.processingConnectors('AControlSource', Connector.Control, Connector.In))
 		self.assertEquals([["OutControl1", "ControlType"]], proxy.processingConnectors('AControlSource', Connector.Control, Connector.Out))
+
+	def test_addProcessing_withNameAlreadyAdded(self) :
+		try:
+			proxy = Dummy_NetworkProxy([],[],[])
+			proxy.addProcessing("ControlSource", "ARepeatedName")
+			proxy.addProcessing("ControlSource", "ARepeatedName")
+			self.fail("Exception expected")
+		except BadProcessingName, e:
+			self.assertEquals("'ARepeatedName: Name repeated'", e.__str__())
 
 if __name__ == '__main__':
 	unittest.main()
