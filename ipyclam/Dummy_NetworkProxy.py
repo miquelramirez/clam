@@ -86,7 +86,7 @@ class Dummy_NetworkProxy :
 
 	def connectorPeers(self, processingName, portName, kind, direction):
 		connections = self._portConnections if kind == Connector.Port else self._controlConnections
-		if direction == Connector.Out :
+		if direction == Connector.In :
 			return [x[0:2] for x in connections if (processingName, portName)==x[2:4] ]
 		else :
 			return [x[2:4] for x in connections if (processingName, portName)==x[0:2] ]
@@ -238,13 +238,13 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		self.assertEquals([
 				("Processing1", "OutPort1"),
 				("Processing1", "OutPort2")]
-				, proxy.connectorPeers("Processing2", "Inport2", Connector.Port, Connector.Out))
+				, proxy.connectorPeers("Processing2", "Inport2", Connector.Port, Connector.In))
 	
 	def test_portConnectionsIn(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
 				("Processing2", "Inport2")]
-				, proxy.connectorPeers("Processing1", "OutPort1", Connector.Port, Connector.In))
+				, proxy.connectorPeers("Processing1", "OutPort1", Connector.Port, Connector.Out))
 
 	def test_connectorType(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())

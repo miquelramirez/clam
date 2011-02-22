@@ -44,11 +44,7 @@ class Connector(object):
 	@property
 	def peers(self):
 		from PeerConnectors import PeerConnectors
-		if self.__dict__["direction"] == Connector.In:
-			direction = Connector.Out
-		else:
-			direction = Connector.In
-		return PeerConnectors(self._proxy, self.__dict__["host"], self.__dict__["kind"], direction, self.__dict__["name"])
+		return PeerConnectors(self._proxy, self.__dict__["host"], self.__dict__["kind"], self.__dict__['direction'], self.__dict__["name"])
 
 import unittest
 import TestFixtures
