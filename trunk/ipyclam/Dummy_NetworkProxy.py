@@ -50,6 +50,17 @@ class Dummy_NetworkProxy :
 	def processingsName(self) :
 		return [ processingName for processingName in self._processings]
 
+	def addProcessing(self, type, name) :
+		self._processings[name] = dict(
+									type = "MinimalProcessing",
+									name = name,
+									config = dict(),
+									inports = [],
+									outports = [],
+									incontrols = [],
+									outcontrols = []
+								)
+
 import unittest
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
@@ -209,12 +220,12 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy([],[],[])
 		self.assertEquals([], proxy.processingsName())
 
-	def _test_addProcessing_withOneMinimalProcessing(self) :
+	def test_addProcessing_withOneMinimalProcessing(self) :
 		proxy = Dummy_NetworkProxy([],[],[])
 		proxy.addProcessing("MinimalProcessing", "AProcessing")
 		self.assertEquals(['AProcessing'], proxy.processingsName())
 		self.assertEquals('MinimalProcessing', proxy.processingType('AProcessing'))
-		self.assertEquals([], proxy.processingConfig('AProcessing'))
+		self.assertEquals({}, proxy.processingConfig('AProcessing'))
 		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Port, Connector.In))
 		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Port, Connector.Out))
 		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Control, Connector.In))
