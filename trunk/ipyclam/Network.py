@@ -15,12 +15,12 @@ class Network(object):
 		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __dir__(self):
-		return self._proxy.processingsName()
+		return self._proxy.processingNames()
 
 	def code(self):
 		return "\n".join([
 			"network.%s = '%s'"%(name, self._proxy.processingType(name))
-			for name in self._proxy.processingsName()])
+			for name in self._proxy.processingNames()])
 
 	def __setattr__(self, name, type) :
 		# TODO: fail on existing attributes (not processings)
@@ -65,6 +65,23 @@ class NetworkTests(unittest.TestCase):
 			"network.processing1 = 'MinimalProcessing'"
 			, net.code())
 
+	def test_addTwoProcessingsSameType(self) :
+		net = Network(TestFixtures.empty())
+		net.processing1 = "MinimalProcessing"
+		net.processing2 = "MinimalProcessing"
+		self.assertEquals(
+			"network.processing1 = 'MinimalProcessing'\n\
+network.processing2 = 'MinimalProcessing'"
+			, net.code())
+
+	def test_addTwoProcessingsDifferentType(self) :
+		net = Network(TestFixtures.empty())
+		net.processing1 = "MinimalProcessing"
+		net.processing2 = "PortSink"
+		self.assertEquals(
+			"network.processing1 = 'MinimalProcessing'\n\
+network.processing2 = 'PortSink'"
+			, net.code())
 
 if __name__ == '__main__':
 	unittest.main()

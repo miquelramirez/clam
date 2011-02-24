@@ -1,3 +1,8 @@
+- Dummy Network:
+[X]	- processingsName -> processingNames
+	- Dummy: tests for ProcessingWithConfig
+	- _dummyPrototypes: when two or more processings of the same type are added, changes to one affect the others
+
 
 - Polishing connector interface:
 	- Dummy_NetworkProxy.connectorInfo failure case (assert? exception?)
@@ -17,13 +22,15 @@
 [X]		- Exploring the processings in a network with net.[tab] (__dir__)
 [X]		- In parallel defining and refactor dummy proxy interface for processing enumeration
 	- Creating processings
-		- Processing factories for the dummy proxy
-		- Adding a processing
+[X]		- Processing factories for the dummy proxy
+[X]		- Adding a processing
+[X]			- 1 x Network.addProcessing -> code
+[X]			- 2 x Network.addProcessing -> code (same type)
+[X]			- 2 x Network.addProcessing (different type) -> code
 	- Self generation code (network is able to generate python code to generate itself again)
 		- Useful for quick checking the network status
-		- Self writting code for processings
+[X]		- Self writting code for processings
 		- Self writting code for connections
-		- Self writting code for configurations
 		- Self writting code for configurations
 	- Pending test cases
 		- network.code = "Type", should fail (and any existing network method)
