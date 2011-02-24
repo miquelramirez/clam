@@ -133,10 +133,10 @@ Description: CLAM framework - tools
  such as audio devices, file formats, threading...
  .
  This package installs some python utilities.
-  * clamrefactor.py - Performs batch modification on networks' xml,
+  * clamrefactor - Performs batch modification on networks' xml,
     often used by version migration scripts.
-  * clamnetwork2code.py - Generates C++ code from a network xml file
-  * clam_lv2_generator.py - Helper script to generate lv2 related files.
+  * clamnetwork2code - Generates C++ code from a network xml file
+  * clam_lv2_generator - Helper script to generate lv2 related files.
 
 
 
