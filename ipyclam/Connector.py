@@ -42,6 +42,10 @@ class Connector(object):
 		from PeerConnectors import PeerConnectors
 		return PeerConnectors(self._proxy, self.__dict__["host"], self.__dict__["kind"], self.__dict__['direction'], self.__dict__["name"])
 
+	def connect(self, connectorDestiny):
+		self._proxy.connect(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], self.__dict__["direction"],
+					connectorDestiny.host.name, connectorDestiny.name, connectorDestiny.kind, connectorDestiny.direction)
+
 import unittest
 import TestFixtures
 
@@ -99,6 +103,18 @@ class ConnectorTests(unittest.TestCase):
 		port = Connector(TestFixtures.proxy(), "Processing1", kind=Port, direction=Out, name="OutPort1")
 		listPeers = [ connector.name for connector in port.peers ]
 		self.assertEqual(['Inport2'], listPeers)
+	def test_connectTwoPorts(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(proxy, "Processing2", kind=Port, direction=In, name="Inport1")
+		port.connect(port2)
+		listPeersPort = [ connector.name for connector in port.peers ]
+		self.assertEqual(['Inport2', 'Inport1'], listPeersPort)
+		listPeersPort2 = [ connector.name for connector in port2.peers ]
+		self.assertEqual(['OutPort1'], listPeersPort2)
 
 if __name__ == '__main__':
 	unittest.main()
+
+
+
