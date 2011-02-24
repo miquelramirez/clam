@@ -49,12 +49,12 @@ _dummyPrototypes = dict(
 		incontrols = [],
 		outcontrols = [['OutControl1', 'ControlType']]
 	),
-	BadProcessingType = dict(
-		type = "BadProcessingType",
+	OtherControlSink = dict(
+		type = "OtherControlSink",
 		config = dict(),
 		inports = [],
 		outports = [],
-		incontrols = [['InControl1', 'BadControlType']],
+		incontrols = [['InControl1', 'OtherControlType']],
 		outcontrols = []
 	)
 )
@@ -413,10 +413,10 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def test_connectControlSourceWithBadProcessingTypeAndFail(self) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("ControlSource", "Processing1")
-		proxy.addProcessing("BadProcessingType", "BadProcessingType1")
+		proxy.addProcessing("OtherControlSink", "OtherControlSink1")
 		try:
-			proxy.connect("Processing1", "OutControl1", Connector.Control, Connector.Out, "BadProcessingType1", "InControl1", Connector.Control, Connector.In)
-		except DifferentConnectorKind, e:
+			proxy.connect("Processing1", "OutControl1", Connector.Control, Connector.Out, "OtherControlSink1", "InControl1", Connector.Control, Connector.In)
+		except DifferentConnectorType, e:
 			self.assertEquals("Different type: OutControl1 InControl1", e.__str__())
 
 
