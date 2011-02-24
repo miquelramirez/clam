@@ -54,6 +54,8 @@ elif env['xmlbackend'] == 'none' :
 
 if not env.has_key('with_ladspa') or env['with_ladspa'] == False :
 	blacklist.append( 'Ladspa.+' )
+	blacklist.append( 'RunTimeFaustLibraryLoader.+' )
+	blacklist.append( 'RunTimeLadspaLibraryLoader.*' )
 
 lib_tgt, install_tgt = lib_rules( module, version, folders, blacklist, install_dirs, env, moduleDependencies)
 Return( 'lib_tgt', 'install_tgt' )
