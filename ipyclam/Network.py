@@ -1,4 +1,5 @@
 import Processing
+import ProcessingSymbols
 
 class Network(object):
 	def __init__(self, networkProxy):
@@ -10,6 +11,8 @@ class Network(object):
 		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __getattr__(self, name):
+		if name == "types" :
+			return ProcessingSymbols.ProcessingSymbols()
 		if not self._proxy.hasProcessing(name) :
 			raise AttributeError(name)
 		return Processing.Processing(proxy=self._proxy, name=name)
@@ -34,7 +37,6 @@ class Network(object):
 	def __setattr__(self, name, type) :
 		# TODO: fail on existing attributes (not processings)
 		self._proxy.addProcessing(type, name)
-		
 
 import operator
 import unittest
@@ -134,6 +136,10 @@ class NetworkTests(unittest.TestCase):
 			"network.processing1.OutPort1 > network.processing2.InPort1\n"
 			"network.processing3.OutControl1 > network.processing4.InControl1"
 			, net.code())
+
+	def test_types(self) :
+		net = Network(TestFixtures.empty())
+		self.assertEqual("MinimalProcessing", net.types.MinimalProcessing["type"])
 
 if __name__ == '__main__':
 	unittest.main()
