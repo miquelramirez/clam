@@ -122,16 +122,28 @@ class Dummy_NetworkProxy :
 		self._processings[name] = _dummyPrototypes[type]
 
 	def processingHasConnector(self, processingName, connectorName):
-		for kind, direction, name in _connectorKindNames:
+		for kind, direction, ignore in _connectorKindNames:
 			if connectorName in self.processingConnectors(processingName, kind, direction):
 				return True
 		return False
+
+	def areConnectables(self, fromProcessing, fromConnector, toProcessing, toConnector) :
+		for kind, direction, ignore in _connectorKindNames:
+			fromType = self.connectorType(fromProcessing, kind, direction, fromConnector)
+			if fromType is not None:
+				break
+		for kind, direction, ignore in _connectorKindNames:
+			toType = self.connectorType(toProcessing, kind, direction, toConnector)
+			if toType is not None:
+				break
+		return fromType == toType
 
 	def connect(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
 		assert self.hasProcessing(fromProcessing), "%s does not exist" %(fromProcessing)
 		assert self.hasProcessing(toProcessing), "%s does not exist" %(toProcessing)
 		assert self.processingHasConnector(fromProcessing, fromConnector), "%s does not have connector %s"%(fromProcessing, fromConnector)
 		assert self.processingHasConnector(toProcessing, toConnector), "%s does not have connector %s"%(toProcessing, toConnector)
+		assert self.areConnectables(fromProcessing, fromConnector, toProcessing, toConnector), "%s and %s have incompatible types"%(fromConnector, toConnector)
 		if kind == Connector.Port:
 			self._portConnections.append((fromProcessing, fromConnector, toProcessing, toConnector))
 		else:
@@ -409,6 +421,15 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		except AssertionError, e:
 			self.assertEquals(("ProcessingWithNoIncontrol2 does not have connector InControl2", ), e.args)
 
+	def test_connectControlsWithDifferentTypes(self) :
+		proxy = Dummy_NetworkProxy()
+		proxy.addProcessing("ControlSource", "Processing1")
+		proxy.addProcessing("OtherControlSink", "ProcessingWithOtherControlType")
+		try:
+			proxy.connect(Connector.Control, "Processing1", "OutControl1", "ProcessingWithOtherControlType", "InControl1")
+		except AssertionError, e:
+			self.assertEquals(("OutControl1 and InControl1 have incompatible types", ), e.args)
+
 	def test_portConnections(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
@@ -424,7 +445,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			("Processing1", "InControl2", "Processing2", "Incontrol2"),
 			("Processing2", "Incontrol1", "Processing1", "InControl2"),			
 		], proxy.controlConnections())
-			
+
 if __name__ == '__main__':
 	unittest.main()
 
