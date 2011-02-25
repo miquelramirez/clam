@@ -1,7 +1,7 @@
 import Dummy_NetworkProxy
 
 def empty() :
-	return Dummy_NetworkProxy.Dummy_NetworkProxy()
+	return Dummy_NetworkProxy.Dummy_NetworkProxy([], [], [])
 
 def proxy() :
 	return Dummy_NetworkProxy.Dummy_NetworkProxy(

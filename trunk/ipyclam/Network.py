@@ -18,9 +18,18 @@ class Network(object):
 		return self._proxy.processingNames()
 
 	def code(self):
-		return "\n".join([
+		code = "\n".join([
 			"network.%s = '%s'"%(name, self._proxy.processingType(name))
 			for name in self._proxy.processingNames()])
+		code += "\n"
+		code += "\n".join([
+				"network.%s.%s > network.%s.%s"%(fromProcessing, fromConnector, toProcessing, toConnector)
+				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.portConnections()])
+		code += "\n"
+		code += "\n".join([
+				"network.%s.%s > network.%s.%s"%(fromProcessing, fromConnector, toProcessing, toConnector)
+				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.controlConnections()])
+		return code
 
 	def __setattr__(self, name, type) :
 		# TODO: fail on existing attributes (not processings)
@@ -54,33 +63,76 @@ class NetworkTests(unittest.TestCase):
 		net = Network(TestFixtures.proxy())
 		self.assertRaises(KeyError, operator.getitem, net, "NonExistingProcessing")
 
-	def test_codeEmptyNetwork(self) :
+	def _test_codeEmptyNetwork(self) :
 		net = Network(TestFixtures.empty())
-		self.assertEquals("", net.code())
+		self.assertEquals("\n\n", net.code())
 
-	def test_addProcessing(self) :
+	def _test_addProcessing(self) :
 		net = Network(TestFixtures.empty())
 		net.processing1 = "MinimalProcessing"
 		self.assertEquals(
-			"network.processing1 = 'MinimalProcessing'"
+			"network.processing1 = 'MinimalProcessing'\n"
+			"\n"
 			, net.code())
 
-	def test_addTwoProcessingsSameType(self) :
+	def _test_addTwoProcessingsSameType(self) :
 		net = Network(TestFixtures.empty())
 		net.processing1 = "MinimalProcessing"
 		net.processing2 = "MinimalProcessing"
 		self.assertEquals(
 			"network.processing1 = 'MinimalProcessing'\n"
-			"network.processing2 = 'MinimalProcessing'"
+			"network.processing2 = 'MinimalProcessing'\n"
+			"\n"
 			, net.code())
 
-	def test_addTwoProcessingsDifferentType(self) :
+	def _test_addTwoProcessingsDifferentType(self) :
 		net = Network(TestFixtures.empty())
 		net.processing1 = "MinimalProcessing"
 		net.processing2 = "PortSink"
 		self.assertEquals(
 			"network.processing1 = 'MinimalProcessing'\n"
-			"network.processing2 = 'PortSink'"
+			"network.processing2 = 'PortSink'\n"
+			"\n"
+			, net.code())
+
+	def test_addPortSourceAndPortSinkAndConnectPorts(self) :
+		net = Network(TestFixtures.empty())
+		net.processing1 = "PortSource"
+		net.processing2 = "PortSink"
+		net.processing1.OutPort1 > net.processing2.InPort1
+		self.assertEquals(
+			"network.processing1 = 'PortSource'\n"
+			"network.processing2 = 'PortSink'\n"
+			"network.processing1.OutPort1 > network.processing2.InPort1\n"
+			, net.code())
+
+	def test_addControlSourceAndControlSinkAndConnectControls(self) :
+		net = Network(TestFixtures.empty())
+		net.processing1 = "ControlSource"
+		net.processing2 = "ControlSink"
+		net.processing1.OutControl1 > net.processing2.InControl1
+		self.assertEquals(
+			"network.processing1 = 'ControlSource'\n"
+			"network.processing2 = 'ControlSink'\n"
+			"\n"
+			"network.processing1.OutControl1 > network.processing2.InControl1"
+			, net.code())
+
+	def test_addPortControlSourceAndPortControlSinkAndConnectPortsAndControls(self) :
+		net = Network(TestFixtures.empty())
+		net.processing1 = "PortSource"
+		net.processing2 = "PortSink"
+		net.processing3 = "ControlSource"
+		net.processing4 = "ControlSink"
+		net.processing1.OutPort1 > net.processing2.InPort1
+		net.processing3.OutControl1 > net.processing4.InControl1
+		self.assertEquals(
+			"network.processing1 = 'PortSource'\n"
+			"network.processing2 = 'PortSink'\n"
+			"network.processing3 = 'ControlSource'\n"
+			"network.processing4 = 'ControlSink'\n"
+			"network.processing1.OutPort1 > network.processing2.InPort1\n"
+			"network.processing3.OutControl1 > network.processing4.InControl1"
 			, net.code())
 
 if __name__ == '__main__':
