@@ -30,36 +30,32 @@
 	- Self generation code (network is able to generate python code to generate itself again)
 		- Useful for quick checking the network status
 [X]		- Self writting code for processings
-		- Self writting code for connections
+[X]		- Self writting code for connections
 		- Self writting code for configurations
 	- Pending test cases
 		- network.code = "Type", should fail (and any existing network method)
 		- network.code() should use the [] notation to create a processing if its name is not a symbol or is an attribute
 	- Additional features
-		- dir(network.types) should give all the available types as symbols
-		- network.types.MinimalProcessing should return "MinimalProcessing"
-		- network.types.NonExistingType should raise AttributeError
+[X]		- dir(network.types) should give all the available types as symbols
+[X]		- network.types.MinimalProcessing should return "MinimalProcessing"
+[X]		- network.types.NonExistingType should raise AttributeError
 
 - Connecting
 	- Test Connector.connect(Connector)
-		increments the peers
-		increments the peer peers
+[X]		increments the peers
+[X]		increments the peer peers
 		many kinds:
-			output first
-			input first
-			controls
-			ports
+[X]			output first
+[X]			input first
+[X]			controls
+[X]			ports
 		error conditions
-			different kind
-			same direction
-			different type
+[X]			different kind
+[X]			same direction
+[X]			different type
 	- Test Connectors.connect(Connector)
 		multiple to one connection
 	- Test Connectors.connect(Processing)
 		connects all feasible in same order
 		must define exact behaviour
-	- Test > and < operators to connect
-
-
-
-
+[X]	- Test > and < operators to connect
