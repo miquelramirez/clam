@@ -72,15 +72,6 @@ class BadProcessingType(Exception):
 	def __str__(self):
 		return repr("BadProcessingType(" + self.type + ")")
 
-class DifferentConnectorKind(Exception):
-	pass
-
-class SameConnectorDirection(Exception):
-	pass
-
-class DifferentConnectorType(Exception):
-	pass
-
 class Dummy_NetworkProxy :
 
 	def __init__(self, processings=[], portConnections=[], controlConnections=[]) :
@@ -130,18 +121,11 @@ class Dummy_NetworkProxy :
 			raise BadProcessingType(type)
 		self._processings[name] = _dummyPrototypes[type]
 
-	def connect(self, processingNameFrom, connectorNameFrom, connectorKindFrom, connectorDirectionFrom,
-					processingNameTo, connectorNameTo, connectorKindTo, connectorDirectionTo) :
-		if connectorKindFrom != connectorKindTo:
-			raise DifferentConnectorKind("Different kind: %s %s"%(connectorNameFrom, connectorNameTo))
-		if connectorDirectionFrom == connectorDirectionTo:
-			raise SameConnectorDirection("Same direction: %s %s"%(connectorNameFrom, connectorNameTo))
-		if self.connectorType(processingNameFrom, connectorKindFrom, connectorDirectionFrom, connectorNameFrom) != self.connectorType(processingNameTo, connectorKindTo, connectorDirectionTo, connectorNameTo):
-			raise DifferentConnectorType("Different type: %s %s"%(connectorNameFrom, connectorNameTo))
-		if connectorKindFrom == Connector.Port:
-			self._portConnections.append((processingNameFrom, connectorNameFrom, processingNameTo, connectorNameTo))
+	def connect(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
+		if kind == Connector.Port:
+			self._portConnections.append((fromProcessing, fromConnector, toProcessing, toConnector))
 		else:
-			self._controlConnections.append((processingNameFrom, connectorNameFrom, processingNameTo, connectorNameTo))
+			self._controlConnections.append((fromProcessing, fromConnector, toProcessing, toConnector))
 
 import unittest
 
@@ -378,7 +362,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("PortSource", "Processing1")
 		proxy.addProcessing("PortSink", "Processing2")
-		proxy.connect("Processing1", "OutPort1", Connector.Port, Connector.Out, "Processing2", "InPort1", Connector.Port, Connector.In)
+		proxy.connect(Connector.Port, "Processing1", "OutPort1", "Processing2", "InPort1")
 		self.assertEquals([
 				("Processing2", "InPort1")]
 				, proxy.connectorPeers("Processing1", Connector.Port, Connector.Out, "OutPort1"))
@@ -387,38 +371,10 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("ControlSource", "Processing1")
 		proxy.addProcessing("ControlSink", "Processing2")
-		proxy.connect("Processing1", "OutControl1", Connector.Control, Connector.Out, "Processing2", "InControl1", Connector.Control, Connector.In)
+		proxy.connect(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1")
 		self.assertEquals([
 				("Processing2", "InControl1")]
 				, proxy.connectorPeers("Processing1", Connector.Control, Connector.Out, "OutControl1"))
-
-	def test_connectControlSourceWithControlSourceAndFail(self) :
-		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Processing1")
-		proxy.addProcessing("ControlSource", "Processing2")
-		try:
-			proxy.connect("Processing1", "OutControl1", Connector.Control, Connector.Out, "Processing2", "OutControl1", Connector.Control, Connector.Out)
-		except SameConnectorDirection, e:
-			self.assertEquals("Same direction: OutControl1 OutControl1", e.__str__())
-
-	def test_connectControlSourceWithPortSinkAndFail(self) :
-		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Processing1")
-		proxy.addProcessing("PortSink", "Processing2")
-		try:
-			proxy.connect("Processing1", "OutControl1", Connector.Control, Connector.Out, "Processing2", "InPort1", Connector.Port, Connector.In)
-		except DifferentConnectorKind, e:
-			self.assertEquals("Different kind: OutControl1 InPort1", e.__str__())
-
-	def test_connectControlSourceWithBadProcessingTypeAndFail(self) :
-		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Processing1")
-		proxy.addProcessing("OtherControlSink", "OtherControlSink1")
-		try:
-			proxy.connect("Processing1", "OutControl1", Connector.Control, Connector.Out, "OtherControlSink1", "InControl1", Connector.Control, Connector.In)
-		except DifferentConnectorType, e:
-			self.assertEquals("Different type: OutControl1 InControl1", e.__str__())
-
 
 if __name__ == '__main__':
 	unittest.main()

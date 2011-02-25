@@ -49,7 +49,8 @@ def proxy() :
 				],
 				incontrols = [
 					["Incontrol1", "type2"],
-					["Incontrol2", "type2"]
+					["Incontrol2", "type2"],
+					["Incontrol3", "DifferentType"]
 				],
 				outcontrols = [
 					["Outcontrol1", "type2"],
