@@ -63,6 +63,9 @@ class Connector(object):
 		else :
 			self._proxy.connect(self.__dict__["kind"], toConnector.host.name, toConnector.name, self.__dict__["host"], self.__dict__["name"])
 
+	def __gt__(self, toConnector) :
+		self.connect(toConnector)
+
 import unittest
 import TestFixtures
 
@@ -162,6 +165,16 @@ class ConnectorTests(unittest.TestCase):
 			port.connect(port2)
 		except DifferentConnectorType, e:
 			self.assertEquals("Different type: OutControl1 Incontrol3", e.__str__())
+
+	def test_connectWith__gt__Operator(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(proxy, "Processing2", kind=Port, direction=In, name="Inport1")
+		port > port2
+		listPeersPort = [ connector.name for connector in port.peers ]
+		self.assertEqual(['Inport2', 'Inport1'], listPeersPort)
+		listPeersPort2 = [ connector.name for connector in port2.peers ]
+		self.assertEqual(['OutPort1'], listPeersPort2)
 
 if __name__ == '__main__':
 	unittest.main()
