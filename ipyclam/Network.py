@@ -70,8 +70,8 @@ class NetworkTests(unittest.TestCase):
 		net.processing1 = "MinimalProcessing"
 		net.processing2 = "MinimalProcessing"
 		self.assertEquals(
-			"network.processing1 = 'MinimalProcessing'\n\
-network.processing2 = 'MinimalProcessing'"
+			"network.processing1 = 'MinimalProcessing'\n"
+			"network.processing2 = 'MinimalProcessing'"
 			, net.code())
 
 	def test_addTwoProcessingsDifferentType(self) :
@@ -79,8 +79,8 @@ network.processing2 = 'MinimalProcessing'"
 		net.processing1 = "MinimalProcessing"
 		net.processing2 = "PortSink"
 		self.assertEquals(
-			"network.processing1 = 'MinimalProcessing'\n\
-network.processing2 = 'PortSink'"
+			"network.processing1 = 'MinimalProcessing'\n"
+			"network.processing2 = 'PortSink'"
 			, net.code())
 
 if __name__ == '__main__':
