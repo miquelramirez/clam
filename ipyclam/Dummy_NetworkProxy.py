@@ -137,6 +137,12 @@ class Dummy_NetworkProxy :
 		else:
 			self._controlConnections.append((fromProcessing, fromConnector, toProcessing, toConnector))
 
+	def portConnections(self) :
+		return self._portConnections
+
+	def controlConnections(self) :
+		return self._controlConnections
+
 import unittest
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
@@ -402,6 +408,22 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			proxy.connect(Connector.Control, "Processing1", "OutControl1", "ProcessingWithNoIncontrol2", "InControl2")
 		except AssertionError, e:
 			self.assertEquals(("ProcessingWithNoIncontrol2 does not have connector InControl2", ), e.args)
+
+	def test_portConnections(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		self.assertEquals([
+			("Processing1", "OutPort1", "Processing2", "Inport2"),
+			("Processing1", "OutPort2", "Processing2", "Inport2"),
+			("Processing2", "Outport2", "Processing1", "InPort2"),
+		], proxy.portConnections())
+
+	def test_controlConnections(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		self.assertEquals([
+			("Processing1", "InControl1", "Processing2", "Incontrol2"),
+			("Processing1", "InControl2", "Processing2", "Incontrol2"),
+			("Processing2", "Incontrol1", "Processing1", "InControl2"),			
+		], proxy.controlConnections())
 			
 if __name__ == '__main__':
 	unittest.main()
