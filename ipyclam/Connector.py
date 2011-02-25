@@ -3,6 +3,15 @@ Out = "Out"
 Port = "Port"
 Control = "Control"
 
+class DifferentConnectorKind(Exception):
+	pass
+
+class SameConnectorDirection(Exception):
+	pass
+
+class DifferentConnectorType(Exception):
+	pass
+
 class Connector(object):
 	def __init__(self, networkProxy, host, kind=Port, direction=In, name = "Inport1"):
 		self._proxy = networkProxy
@@ -42,9 +51,17 @@ class Connector(object):
 		from PeerConnectors import PeerConnectors
 		return PeerConnectors(self._proxy, self.__dict__["host"], self.__dict__["kind"], self.__dict__['direction'], self.__dict__["name"])
 
-	def connect(self, connectorDestiny):
-		self._proxy.connect(self.__dict__["host"], self.__dict__["name"], self.__dict__["kind"], self.__dict__["direction"],
-					connectorDestiny.host.name, connectorDestiny.name, connectorDestiny.kind, connectorDestiny.direction)
+	def connect(self, toConnector):
+		if self.__dict__["direction"] == toConnector.direction :
+			raise SameConnectorDirection("Same direction: %s %s"%(self.__dict__["name"], toConnector.name))
+		if self.__dict__["kind"] != toConnector.kind :
+			raise DifferentConnectorKind("Different kind: %s %s"%(self.__dict__["name"], toConnector.name))
+		if self._proxy.connectorType(self.__dict__["host"], self.__dict__["kind"], self.__dict__["direction"], self.__dict__["name"]) != self._proxy.connectorType(toConnector.host.name, toConnector.kind, toConnector.direction, toConnector.name):
+			raise DifferentConnectorType("Different type: %s %s"%(self.__dict__["name"], toConnector.name))
+		if self.__dict__["direction"] == Out :
+			self._proxy.connect(self.__dict__["kind"], self.__dict__["host"], self.__dict__["name"], toConnector.host.name, toConnector.name)
+		else :
+			self._proxy.connect(self.__dict__["kind"], toConnector.host.name, toConnector.name, self.__dict__["host"], self.__dict__["name"])
 
 import unittest
 import TestFixtures
@@ -112,6 +129,39 @@ class ConnectorTests(unittest.TestCase):
 		self.assertEqual(['Inport2', 'Inport1'], listPeersPort)
 		listPeersPort2 = [ connector.name for connector in port2.peers ]
 		self.assertEqual(['OutPort1'], listPeersPort2)
+	def test_connectTwoPortsPassingInportFirst(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(proxy, "Processing2", kind=Port, direction=In, name="Inport1")
+		port2.connect(port)
+		listPeersPort = [ connector.name for connector in port.peers ]
+		self.assertEqual(['Inport2', 'Inport1'], listPeersPort)
+		listPeersPort2 = [ connector.name for connector in port2.peers ]
+		self.assertEqual(['OutPort1'], listPeersPort2)
+	def test_connectTwoPortsWithSameDirectionAndFail(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(proxy, "Processing2", kind=Port, direction=Out, name="Outport1")
+		try:
+			port.connect(port2)
+		except SameConnectorDirection, e:
+			self.assertEquals("Same direction: OutPort1 Outport1", e.__str__())
+	def	test_connectPortWithControlAndFail(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(proxy, "Processing2", kind=Control, direction=In, name="Incontrol1")
+		try:
+			port.connect(port2)
+		except DifferentConnectorKind, e:
+			self.assertEquals("Different kind: OutPort1 Incontrol1", e.__str__())
+	def	test_connectControlWithDifferentTypeControlAndFail(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Control, direction=Out, name="OutControl1")
+		port2 = Connector(proxy, "Processing2", kind=Control, direction=In, name="Incontrol3")
+		try:
+			port.connect(port2)
+		except DifferentConnectorType, e:
+			self.assertEquals("Different type: OutControl1 Incontrol3", e.__str__())
 
 if __name__ == '__main__':
 	unittest.main()
