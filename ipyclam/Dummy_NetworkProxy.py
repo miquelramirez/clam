@@ -121,7 +121,17 @@ class Dummy_NetworkProxy :
 			raise BadProcessingType(type)
 		self._processings[name] = _dummyPrototypes[type]
 
+	def processingHasConnector(self, processingName, connectorName):
+		for kind, direction, name in _connectorKindNames:
+			if connectorName in self.processingConnectors(processingName, kind, direction):
+				return True
+		return False
+
 	def connect(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
+		assert self.hasProcessing(fromProcessing), "%s does not exist" %(fromProcessing)
+		assert self.hasProcessing(toProcessing), "%s does not exist" %(toProcessing)
+		assert self.processingHasConnector(fromProcessing, fromConnector), "%s does not have connector %s"%(fromProcessing, fromConnector)
+		assert self.processingHasConnector(toProcessing, toConnector), "%s does not have connector %s"%(toProcessing, toConnector)
 		if kind == Connector.Port:
 			self._portConnections.append((fromProcessing, fromConnector, toProcessing, toConnector))
 		else:
@@ -376,6 +386,23 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				("Processing2", "InControl1")]
 				, proxy.connectorPeers("Processing1", Connector.Control, Connector.Out, "OutControl1"))
 
+	def test_connectControlSourceWithNonExistingProcessingAndFail(self) :
+		proxy = Dummy_NetworkProxy()
+		proxy.addProcessing("ControlSource", "Processing1")
+		try:
+			proxy.connect(Connector.Control, "Processing1", "OutControl1", "NonExistingProcessing", "InControl1")
+		except AssertionError, e:
+			self.assertEquals(("NonExistingProcessing does not exist", ), e.args)
+
+	def test_connectControlToNonExistingPort(self) :
+		proxy = Dummy_NetworkProxy()
+		proxy.addProcessing("ControlSource", "Processing1")
+		proxy.addProcessing("ControlSink", "ProcessingWithNoIncontrol2")
+		try:
+			proxy.connect(Connector.Control, "Processing1", "OutControl1", "ProcessingWithNoIncontrol2", "InControl2")
+		except AssertionError, e:
+			self.assertEquals(("ProcessingWithNoIncontrol2 does not have connector InControl2", ), e.args)
+			
 if __name__ == '__main__':
 	unittest.main()
 
