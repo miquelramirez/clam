@@ -386,7 +386,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		except BadProcessingType, e:
 			self.assertEquals("'BadProcessingType(ABadType)'", e.__str__())
 
-	def test_connectPortSourceWithPortSink(self) :
+	def test_connect_ports(self) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("PortSource", "Processing1")
 		proxy.addProcessing("PortSink", "Processing2")
@@ -395,7 +395,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				("Processing2", "InPort1")]
 				, proxy.connectorPeers("Processing1", Connector.Port, Connector.Out, "OutPort1"))
 
-	def test_connectControlSourceWithControlSink(self) :
+	def test_connect_controls(self) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("ControlSource", "Processing1")
 		proxy.addProcessing("ControlSink", "Processing2")
@@ -404,7 +404,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				("Processing2", "InControl1")]
 				, proxy.connectorPeers("Processing1", Connector.Control, Connector.Out, "OutControl1"))
 
-	def test_connectControlSourceWithNonExistingProcessingAndFail(self) :
+	def test_connect_missingControl(self) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("ControlSource", "Processing1")
 		try:
@@ -413,7 +413,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		except AssertionError, e:
 			self.assertEquals(("NonExistingProcessing does not exist", ), e.args)
 
-	def test_connectControlToNonExistingPort(self) :
+	def test_connect_missingPort(self) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("ControlSource", "Processing1")
 		proxy.addProcessing("ControlSink", "ProcessingWithNoIncontrol2")
@@ -423,7 +423,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		except AssertionError, e:
 			self.assertEquals(("ProcessingWithNoIncontrol2 does not have connector InControl2", ), e.args)
 
-	def test_connectControlsWithDifferentTypes(self) :
+	def test_connect_connectorsWithDifferentTypes(self) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("ControlSource", "Processing1")
 		proxy.addProcessing("OtherControlSink", "ProcessingWithOtherControlType")
