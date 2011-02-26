@@ -19,26 +19,32 @@ class Connector(object):
 		self.__dict__["name"] = name
 		self.__dict__["kind"] = kind
 		self.__dict__["direction"] = direction
+
 	@property
 	def name(self):
 		"""The name of the port"""
 		return self.__dict__["name"]
+
 	@property
 	def kind(self):
 		"""The kind of the port"""
 		return self.__dict__["kind"]
+
 	@property
 	def direction(self):
 		"""The direction of the port"""
 		return self.__dict__["direction"]
+
 	@property
 	def index(self):
 		"""The index of the port"""
-		return self._proxy.connectorIndex(self.__dict__["host"], self.__dict__["kind"], self.__dict__["direction"], self.__dict__["name"])
-	@property                                                                                                                                
-	def type(self):                                                                                                                          
-		"""The type of the port"""                                                                                                       
-		return self._proxy.connectorType(self.__dict__["host"], self.__dict__["kind"], self.__dict__["direction"], self.__dict__["name"])
+		return self._proxy.connectorIndex(self.__dict__["host"], self.kind, self.direction, self.name)
+
+	@property
+	def type(self):
+		"""The type of the port"""
+		return self._proxy.connectorType(self.__dict__["host"], self.kind, self.direction, self.name)
+
 	@property
 	def host(self):
 		import Processing
@@ -46,25 +52,26 @@ class Connector(object):
 			self.__dict__["host"],
 			self._proxy,
 			)
+
 	@property
 	def peers(self):
 		from PeerConnectors import PeerConnectors
-		return PeerConnectors(self._proxy, self.__dict__["host"], self.__dict__["kind"], self.__dict__['direction'], self.__dict__["name"])
+		return PeerConnectors(self._proxy, self.__dict__["host"], self.kind, self.direction, self.name)
 
-	def connect(self, toConnector):
-		if self.__dict__["direction"] == toConnector.direction :
-			raise SameConnectorDirection("Same direction: %s %s"%(self.__dict__["name"], toConnector.name))
-		if self.__dict__["kind"] != toConnector.kind :
-			raise DifferentConnectorKind("Different kind: %s %s"%(self.__dict__["name"], toConnector.name))
-		if self._proxy.connectorType(self.__dict__["host"], self.__dict__["kind"], self.__dict__["direction"], self.__dict__["name"]) != self._proxy.connectorType(toConnector.host.name, toConnector.kind, toConnector.direction, toConnector.name):
-			raise DifferentConnectorType("Different type: %s %s"%(self.__dict__["name"], toConnector.name))
-		if self.__dict__["direction"] == Out :
-			self._proxy.connect(self.__dict__["kind"], self.__dict__["host"], self.__dict__["name"], toConnector.host.name, toConnector.name)
+	def connect(self, peer):
+		if self.direction == peer.direction :
+			raise SameConnectorDirection("Same direction: %s %s"%(self.name, peer.name))
+		if self.kind != peer.kind :
+			raise DifferentConnectorKind("Different kind: %s %s"%(self.name, peer.name))
+		if self.type != peer.type :
+			raise DifferentConnectorType("Different type: %s %s"%(self.name, peer.name))
+		if self.direction == Out :
+			self._proxy.connect(self.kind, self.host.name, self.name, peer.host.name, peer.name)
 		else :
-			self._proxy.connect(self.__dict__["kind"], toConnector.host.name, toConnector.name, self.__dict__["host"], self.__dict__["name"])
+			self._proxy.connect(self.kind, peer.host.name, peer.name, self.host.name, self.name)
 
-	def __gt__(self, toConnector) :
-		self.connect(toConnector)
+	def __gt__(self, peer) :
+		self.connect(peer)
 
 import unittest
 import TestFixtures
