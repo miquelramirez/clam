@@ -74,7 +74,7 @@ class BadProcessingType(Exception):
 
 class Dummy_NetworkProxy :
 
-	def __init__(self, processings=[], portConnections=[], controlConnections=[]) :
+	def __init__(self, processings=[], portConnections=[], controlConnections=[], types=_dummyPrototypes) :
 		self._processings = dict()
 		for process in processings:
 			self._processings[process['name']] = process
@@ -409,6 +409,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy.addProcessing("ControlSource", "Processing1")
 		try:
 			proxy.connect(Connector.Control, "Processing1", "OutControl1", "NonExistingProcessing", "InControl1")
+			self.fail("Exception expected")
 		except AssertionError, e:
 			self.assertEquals(("NonExistingProcessing does not exist", ), e.args)
 
@@ -418,6 +419,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy.addProcessing("ControlSink", "ProcessingWithNoIncontrol2")
 		try:
 			proxy.connect(Connector.Control, "Processing1", "OutControl1", "ProcessingWithNoIncontrol2", "InControl2")
+			self.fail("Exception expected")
 		except AssertionError, e:
 			self.assertEquals(("ProcessingWithNoIncontrol2 does not have connector InControl2", ), e.args)
 
@@ -427,6 +429,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy.addProcessing("OtherControlSink", "ProcessingWithOtherControlType")
 		try:
 			proxy.connect(Connector.Control, "Processing1", "OutControl1", "ProcessingWithOtherControlType", "InControl1")
+			self.fail("Exception expected")
 		except AssertionError, e:
 			self.assertEquals(("OutControl1 and InControl1 have incompatible types", ), e.args)
 
