@@ -59,3 +59,9 @@
 		connects all feasible in same order
 		must define exact behaviour
 [X]	- Test > and < operators to connect
+
+
+- Bugs
+	- Network.__dir__ should return also types
+
+
