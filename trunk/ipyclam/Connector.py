@@ -20,6 +20,10 @@ class Connector(object):
 		self.__dict__["kind"] = kind
 		self.__dict__["direction"] = direction
 
+	def _hostname(self) :
+		"Private helper to get the host name"
+		return self.__dict__["host"]
+
 	@property
 	def name(self):
 		"""The name of the port"""
@@ -38,12 +42,12 @@ class Connector(object):
 	@property
 	def index(self):
 		"""The index of the port"""
-		return self._proxy.connectorIndex(self.__dict__["host"], self.kind, self.direction, self.name)
+		return self._proxy.connectorIndex(self._hostname(), self.kind, self.direction, self.name)
 
 	@property
 	def type(self):
 		"""The type of the port"""
-		return self._proxy.connectorType(self.__dict__["host"], self.kind, self.direction, self.name)
+		return self._proxy.connectorType(self._hostname(), self.kind, self.direction, self.name)
 
 	@property
 	def host(self):
@@ -56,7 +60,7 @@ class Connector(object):
 	@property
 	def peers(self):
 		from PeerConnectors import PeerConnectors
-		return PeerConnectors(self._proxy, self.__dict__["host"], self.kind, self.direction, self.name)
+		return PeerConnectors(self._proxy, self._hostname(), self.kind, self.direction, self.name)
 
 	def connect(self, peer):
 		if self.direction == peer.direction :
@@ -66,9 +70,9 @@ class Connector(object):
 		if self.type != peer.type :
 			raise DifferentConnectorType("Different type: %s %s"%(self.name, peer.name))
 		if self.direction == Out :
-			self._proxy.connect(self.kind, self.host.name, self.name, peer.host.name, peer.name)
+			self._proxy.connect(self.kind, self._hostname(), self.name, peer._hostname(), peer.name)
 		else :
-			self._proxy.connect(self.kind, peer.host.name, peer.name, self.host.name, self.name)
+			self._proxy.connect(self.kind, peer._hostname(), peer.name, self._hostname(), self.name)
 
 	def __gt__(self, peer) :
 		self.connect(peer)
