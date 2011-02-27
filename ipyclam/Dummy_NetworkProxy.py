@@ -80,6 +80,7 @@ class Dummy_NetworkProxy :
 			self._processings[process['name']] = process
 		self._portConnections = portConnections
 		self._controlConnections = controlConnections
+		self._types = types
 
 	def processingType(self, name) :
 		return self._processings[name]["type"]
@@ -117,9 +118,9 @@ class Dummy_NetworkProxy :
 	def addProcessing(self, type, name) :
 		if self.hasProcessing(name):
 			raise BadProcessingName(name, "Name repeated")
-		if type not in _dummyPrototypes.keys():
+		if type not in self._types.keys():
 			raise BadProcessingType(type)
-		self._processings[name] = _dummyPrototypes[type]
+		self._processings[name] = self._types[type]
 
 	def processingHasConnector(self, processingName, connectorName):
 		for kind, direction, ignore in _connectorKindNames:
