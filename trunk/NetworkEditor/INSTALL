@@ -3,8 +3,9 @@ from the source tarballs.
 
  1. Install CLAM dependencies
 
- Please refere to the INSTALL file in the CLAM (library) tarball.
- 
+ Please refer to the INSTALL file in the CLAM (library) tarball.
+ NetworkEditor adds additional dependencies on python development
+ files. Debian/Ubuntu dependencies: python-dev 
    
  2. Compile CLAM libraries from the tarball
  
@@ -33,7 +34,7 @@ from the source tarballs.
  $ (cd ../CLAM && scons && scons install) && scons && ./NetworkEditor
 
  When doing development the recommended procedure to run designer and
- prototyper with plugins without installing is:
+ prototyper with qt plugins without installing is:
 
     $ cd NetworkEditor
     $ export QT_PLUGIN_PATH=.
