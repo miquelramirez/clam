@@ -20,6 +20,7 @@ class ProcessingTypesTests(unittest.TestCase):
 		type = ProcessingTypes(TestFixtures.proxy())
 		try:
 			type.BadProcessingType
+			self.fail("Exception expected")
 		except AttributeError, e:
 			self.assertEqual(("BadProcessingType",), e.args)
 	def test_dir(self) :

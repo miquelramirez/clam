@@ -158,6 +158,7 @@ class ConnectorTests(unittest.TestCase):
 		port2 = Connector(proxy, "Processing2", kind=Port, direction=Out, name="Outport1")
 		try:
 			port.connect(port2)
+			self.fail("Exception expected")
 		except SameConnectorDirection, e:
 			self.assertEquals("Same direction: OutPort1 Outport1", e.__str__())
 	def	test_connectPortWithControlAndFail(self) :
@@ -166,6 +167,7 @@ class ConnectorTests(unittest.TestCase):
 		port2 = Connector(proxy, "Processing2", kind=Control, direction=In, name="Incontrol1")
 		try:
 			port.connect(port2)
+			self.fail("Exception expected")
 		except DifferentConnectorKind, e:
 			self.assertEquals("Different kind: OutPort1 Incontrol1", e.__str__())
 	def	test_connectControlWithDifferentTypeControlAndFail(self) :
@@ -174,6 +176,7 @@ class ConnectorTests(unittest.TestCase):
 		port2 = Connector(proxy, "Processing2", kind=Control, direction=In, name="Incontrol3")
 		try:
 			port.connect(port2)
+			self.fail("Exception expected")
 		except DifferentConnectorType, e:
 			self.assertEquals("Different type: OutControl1 Incontrol3", e.__str__())
 

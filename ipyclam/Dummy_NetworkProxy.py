@@ -122,29 +122,18 @@ class Dummy_NetworkProxy :
 			raise BadProcessingType(type)
 		self._processings[name] = self._types[type]
 
-	def processingHasConnector(self, processingName, connectorName):
-		for kind, direction, ignore in _connectorKindNames:
-			if connectorName in self.processingConnectors(processingName, kind, direction):
-				return True
-		return False
+	def processingHasConnector(self, processingName, kind, direction, connectorName):
+		return connectorName in self.processingConnectors(processingName, kind, direction)
 
-	def areConnectables(self, fromProcessing, fromConnector, toProcessing, toConnector) :
-		for kind, direction, ignore in _connectorKindNames:
-			fromType = self.connectorType(fromProcessing, kind, direction, fromConnector)
-			if fromType is not None:
-				break
-		for kind, direction, ignore in _connectorKindNames:
-			toType = self.connectorType(toProcessing, kind, direction, toConnector)
-			if toType is not None:
-				break
-		return fromType == toType
+	def areConnectable(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
+		return self.connectorType(fromProcessing, kind, Connector.Out, fromConnector) == self.connectorType(toProcessing, kind, Connector.In, toConnector)
 
 	def connect(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
 		assert self.hasProcessing(fromProcessing), "%s does not exist" %(fromProcessing)
 		assert self.hasProcessing(toProcessing), "%s does not exist" %(toProcessing)
-		assert self.processingHasConnector(fromProcessing, fromConnector), "%s does not have connector %s"%(fromProcessing, fromConnector)
-		assert self.processingHasConnector(toProcessing, toConnector), "%s does not have connector %s"%(toProcessing, toConnector)
-		assert self.areConnectables(fromProcessing, fromConnector, toProcessing, toConnector), "%s and %s have incompatible types"%(fromConnector, toConnector)
+		assert self.processingHasConnector(fromProcessing, kind, Connector.Out, fromConnector), "%s does not have connector %s"%(fromProcessing, fromConnector)
+		assert self.processingHasConnector(toProcessing, kind, Connector.In, toConnector), "%s does not have connector %s"%(toProcessing, toConnector)
+		assert self.areConnectable(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s and %s have incompatible types"%(fromConnector, toConnector)
 		if kind == Connector.Port:
 			self._portConnections.append((fromProcessing, fromConnector, toProcessing, toConnector))
 		else:
@@ -457,6 +446,21 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals(['PortSource', 'PortSink', 'ControlSource', 
 						'OtherControlSink', 'MinimalProcessing', 'ControlSink'], proxy.availableTypes())
+
+	def test_areConnectable(self) :
+		proxy = Dummy_NetworkProxy()
+		proxy.addProcessing("ControlSource", "Processing1")
+		proxy.addProcessing("ControlSink", "Processing2")
+		self.assertTrue(proxy.areConnectable(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1"))
+		proxy.addProcessing("OtherControlSink", "ProcessingWithOtherControlType")
+		self.assertFalse(proxy.areConnectable(Connector.Control, "Processing1", "OutControl1", "ProcessingWithOtherControlType", "InControl1"))
+
+	def test_processingHasConnector(self) :
+		proxy = Dummy_NetworkProxy()
+		proxy.addProcessing("ControlSource", "Processing1")
+		self.assertTrue(proxy.processingHasConnector("Processing1", Connector.Control, Connector.Out, "OutControl1"))
+		self.assertFalse(proxy.processingHasConnector("Processing1", Connector.Control, Connector.In, "InControl1"))
+
 
 if __name__ == '__main__':
 	unittest.main()
