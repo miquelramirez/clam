@@ -156,6 +156,9 @@ class Dummy_NetworkProxy :
 	def controlConnections(self) :
 		return self._controlConnections
 
+	def availableTypes(self) :
+		return self._types.keys()
+
 import unittest
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
@@ -449,6 +452,11 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			("Processing1", "InControl2", "Processing2", "Incontrol2"),
 			("Processing2", "Incontrol1", "Processing1", "InControl2"),			
 		], proxy.controlConnections())
+
+	def test_availableTypes(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		self.assertEquals(['PortSource', 'PortSink', 'ControlSource', 
+						'OtherControlSink', 'MinimalProcessing', 'ControlSink'], proxy.availableTypes())
 
 if __name__ == '__main__':
 	unittest.main()
