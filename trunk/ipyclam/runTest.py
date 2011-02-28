@@ -7,7 +7,7 @@ from Dummy_NetworkProxy import *
 from Processing import *
 from PeerConnectors import *
 from Network import *
-from ProcessingSymbols import *
+from ProcessingTypes import *
 
 if __name__ == '__main__':
 	unittest.main()
