@@ -1,23 +1,12 @@
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-#include <cmath>
-#include <algorithm>
-#include <lv2.h>
-#include "lv2_ui.h"
 #include "plugin_gui.h"
-#include <QtGui/QPushButton>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QApplication>
-#include <QtGui/QMessageBox>
-#include <QtGui/QX11EmbedWidget>
+#include <QtGui/QIcon>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtUiTools/QUiLoader>
-#include <iostream>
-#include <iostream>
 #include <string>
-#include <sstream>
+#include <iostream>
 #include <QtCore/QVariant>
 
 static LV2UI_Descriptor *gdescriptor[]={0,0};
@@ -32,14 +21,9 @@ void PluginGui::setValueControlAtWidget(unsigned id, double value)
 
 void PluginGui::setValueControlAtPlugin(unsigned id, double value)
 {
+	CLAM_ASSERT(id<containers.size(), "Warning id isn't valid.");
+
 	float fvalue = (float)value;
-
-	if(id>=containers.size())
-	{
-		std::cerr << "Warning id isn't valid." << std::endl;
-		return;
-	}
-
 	(*write_function)(controller, id, 4, 0, &fvalue);
 }
 
@@ -62,10 +46,7 @@ static void on_socket_realized(GtkWidget *widget, gpointer   user_data)
 **/
 void bindWidgets(QWidget * userInterface, PluginGui * pgui)
 {
-        QList<QWidget*> widgets = userInterface->findChildren<QWidget*>();
-
-	int idx=0;
-	Lv2GuiContainer * temp=0;
+	QList<QWidget*> widgets = userInterface->findChildren<QWidget*>();
 
 	std::vector< std::pair<int, Lv2GuiContainer*> > aux; // Ports in widget maybe unordered
 
@@ -73,29 +54,20 @@ void bindWidgets(QWidget * userInterface, PluginGui * pgui)
                         it!=widgets.end();
                         it++)
 	{
-                QWidget * aWidget = *it;
+		QWidget * aWidget = *it;
 		QVariant v = aWidget->property("clamLv2Port");
+		if (not v.isValid()) continue;
 
-		if(v.isValid())
-		{
-			int nport = v.toInt();
-			std::cout << "No." << nport << " Name: " << aWidget->metaObject()->className() << std::endl;
-			temp=new Lv2DoubleSpinBox(idx,(QDoubleSpinBox*)aWidget,pgui);
-			aux.push_back( std::make_pair(nport,temp) );
-			idx++;
-		}
+		int nport = v.toInt();
+		Lv2GuiContainer * temp=new Lv2DoubleSpinBox(aux.size(),(QDoubleSpinBox*)aWidget,pgui);
+		aux.push_back( std::make_pair(nport,temp) );
 	}
 	
 	int size = aux.size();
 	pgui->containers.resize(size);
 	for(int i=0;i<size;i++)
 	{
-		if(aux[i].first>=size)
-		{
-			std::cerr 	<< "==== ERROR Port number isn't valid! It wants number port:" << aux[i].first 
-					<< ", but It only has " << size << "ports.====" << std::endl; 
-			exit(0);
-		}
+		CLAM_ASSERT(aux[i].first<size, "Port number isn't valid!");
 		pgui->containers[aux[i].first]=aux[i].second;
 	}
 }
@@ -130,38 +102,35 @@ QWidget * loadUi(const QString & uiFilename)
 }
 
 template <unsigned num>
-static LV2UI_Handle instantiateIToneGui(const struct _LV2UI_Descriptor* descriptor
-				, const char* plugin_uri
-				, const char* bundle_path
-				, LV2UI_Write_Function write_function
-				, LV2UI_Controller controller
-				, LV2UI_Widget* widget
-				, const LV2_Feature* const* features)
+static LV2UI_Handle instantiateIToneGui(
+	const struct _LV2UI_Descriptor* descriptor,
+	const char * plugin_uri,
+	const char * bundle_path,
+	LV2UI_Write_Function write_function,
+	LV2UI_Controller controller,
+	LV2UI_Widget * widget,
+	const LV2_Feature* const* features)
 {
 	std::cout << "Controller: " << (void*)controller << std::endl;
 
-	PluginGui *pluginGui = new PluginGui();
-
-	if(pluginGui==NULL) return NULL;
-
-	printf("\nInitializing GUI!!!!!!!!!!!!!\n");
+	PluginGui * pluginGui = new PluginGui();
 
 	pluginGui->write_function = write_function;
 	pluginGui->controller     = controller;
 	pluginGui->bundlePath     = bundle_path;
-	pluginGui->_id 		  = num;
 	
 	/*************** Qt */
 
 	pluginGui->widgetSocket = gtk_socket_new();
 	
-	pluginGui->qtWidget 	= loadUi(QString(bundle_path)+"example.ui");
+	pluginGui->qtWidget = loadUi(QString(bundle_path)+"example.ui");
 
 	bindWidgets(pluginGui->qtWidget, pluginGui);
 
-	gtk_widget_set_size_request(pluginGui->widgetSocket
-					, pluginGui->qtWidget->width()
-					, pluginGui->qtWidget->height());
+	gtk_widget_set_size_request(
+		pluginGui->widgetSocket,
+		pluginGui->qtWidget->width(),
+		pluginGui->qtWidget->height());
 
 	g_signal_connect(G_OBJECT(pluginGui->widgetSocket), "realize",
 		G_CALLBACK(on_socket_realized), gpointer(pluginGui) );
@@ -176,14 +145,14 @@ static LV2UI_Handle instantiateIToneGui(const struct _LV2UI_Descriptor* descript
 static void cleanupIToneGui(LV2UI_Handle ui)
 {}
 
-static void port_eventIToneGui(LV2UI_Handle ui
-				, uint32_t port
-				, uint32_t buffer_size
-				, uint32_t format
-				, const void*  buffer)
+static void port_eventIToneGui(
+				LV2UI_Handle ui,
+				uint32_t port,
+				uint32_t buffer_size,
+				uint32_t format,
+				const void*  buffer)
 {
 	PluginGui * pluginGui = (PluginGui*) ui;
-
 	if(format==0) 
 	{
 		float value=* (float *) buffer;
@@ -221,3 +190,6 @@ const LV2UI_Descriptor* lv2ui_descriptor(uint32_t index)
 
 	return ((index == 0 or index == 1)?gdescriptor[index]:NULL);
 }
+
+
+
