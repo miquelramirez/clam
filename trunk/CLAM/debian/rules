@@ -53,11 +53,12 @@ clean:
 	find $(CURDIR) -type f -name .*.swp | xargs rm -rf
 	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
 	find $(CURDIR) -type f -name *.db | xargs rm -rf
+	find $(CURDIR) -type f -name flags.conf | xargs rm -rf
+	find $(CURDIR) -type d -name generated | xargs rm -rf
 	-rm -rf $(CURDIR)/CLAM.tag $(CURDIR)/*.tar.gz $(CURDIR)/doxygen \
 	  $(CURDIR)/src/Defines/CLAMVersion.cxx src/Defines/CLAMVersion.hxx \
 		$(CURDIR)/.sconsign.dblite config.log \
 		$(CURDIR)/*/{*.conf,include,src,*.so*,*.pc,CLAM} \
-		$(CURDIR)/*.conf
 	dh_clean 
 
 install: build
