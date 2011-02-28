@@ -7,11 +7,11 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'DejaVu Sans'; font-size:11pt;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="Input" position="151,180" size="128,108" type="AudioSource">
+  <processing id="Input" position="151,180" size="128,108" type="AudioBufferSource">
     <NSources>2</NSources>
   </processing>
 
-  <processing id="Output" position="370,183" size="128,111" type="AudioSink">
+  <processing id="Output" position="370,183" size="128,111" type="AudioBufferSink">
     <NSinks>2</NSinks>
   </processing>
 
