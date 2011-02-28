@@ -1,13 +1,12 @@
 #ifndef PluginGui_h
 #define PluginGui_h
 
+#include <gtk/gtk.h>
 #include <lv2.h>
 #include "lv2_ui.h"
-#include <gtk/gtk.h>
 #include <QtGui/QX11EmbedWidget>
-#include <QtUiTools/QUiLoader>
 #include <QtGui/QDoubleSpinBox>
-#include <iostream>
+#include <CLAM/Assert.hxx>
 
 class Lv2GuiContainer;
 
@@ -16,7 +15,6 @@ class PluginGui : public QX11EmbedWidget
 	Q_OBJECT
 
 public:
-	unsigned _id;
 	QWidget   *	qtWidget;
 	GtkWidget *	widgetSocket;
 
@@ -68,8 +66,7 @@ public:
 			, _pgui(pgui)
 			, _doubleSpinBox(_doubleSpinBox) 
 	{
-		if(pgui==0)
-			std::cerr << "The PluginGui cann't be 0" << std::endl;		
+		CLAM_ASSERT(pgui,"The PluginGui cannot be 0");		
 
 		connect(_doubleSpinBox, SIGNAL(valueChanged(double)),
 			this, SLOT(setValueAtPlugin(double)));
