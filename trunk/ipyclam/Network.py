@@ -1,5 +1,5 @@
 import Processing
-import ProcessingSymbols
+import ProcessingTypes
 
 class Network(object):
 	def __init__(self, networkProxy):
@@ -11,14 +11,16 @@ class Network(object):
 		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __getattr__(self, name):
-		if name == "types" :
-			return ProcessingSymbols.ProcessingSymbols()
 		if not self._proxy.hasProcessing(name) :
 			raise AttributeError(name)
 		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __dir__(self):
 		return self._proxy.processingNames()
+
+	@property
+	def types(self) :
+		return ProcessingTypes.ProcessingTypes(self._proxy)
 
 	def code(self):
 		code = "\n".join([
