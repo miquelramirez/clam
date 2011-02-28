@@ -25,13 +25,11 @@ if '-Wstrict-prototypes' in env['CCFLAGS'] :
 	# added by python-config --cflags, nags c++
 	env['CCFLAGS'].remove('-Wstrict-prototypes')
 
-"""
 module = env.SharedLibrary (
-	target='boostpyclam',
-	source='boostpyclam.cxx',
+	target='Clam_NetworkProxy',
+	source='Clam_NetworkProxy.cxx',
 	SHLIBPREFIX='',
 )
-"""
 
 program = env.Program(
 	target='ipyclam_console',
@@ -42,7 +40,7 @@ program = env.Program(
 install = [
 	env.Install(targetDir, files) for targetDir, files in [
 	( os.path.join(os.path.expanduser('~/local'),'lib','python'),[
-#		module,
+		module,
 	]),
 	( os.path.join(os.path.expanduser('~/local'),'bin'),[
 		program,
@@ -52,7 +50,7 @@ install = [
 env.Alias('install', install)
 
 Default(
-#	module, 
+	module, 
 	program,
 )
 
