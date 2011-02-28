@@ -29,11 +29,11 @@ p, li { white-space: pre-wrap; }
     <UnitName>-</UnitName>
   </processing>
 
-  <processing id="Input" position="151,180" size="128,108" type="AudioSource">
+  <processing id="Input" position="151,180" size="128,108" type="AudioBufferSource">
     <NSources>2</NSources>
   </processing>
 
-  <processing id="Output" position="370,183" size="128,111" type="AudioSink">
+  <processing id="Output" position="370,183" size="128,111" type="AudioBufferSink">
     <NSinks>2</NSinks>
   </processing>
 
@@ -52,7 +52,7 @@ p, li { white-space: pre-wrap; }
     <SamplingRate>44100</SamplingRate>
   </processing>
 
-  <processing id="Tone" position="358,85" size="128,111" type="AudioSink">
+  <processing id="Tone" position="358,85" size="128,111" type="AudioBufferSink">
     <NSinks>1</NSinks>
   </processing>
 
