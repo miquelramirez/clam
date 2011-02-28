@@ -61,7 +61,7 @@
 
 
 - Bugs
-	- Network.__dir__ should return also types
+[X]	- Network.__dir__ should return also types
 	- Do not allow repeated connections
 	- > and < operators should ensure direction matches with arrows
 
