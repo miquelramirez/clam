@@ -9,8 +9,6 @@
 #include <iostream>
 #include <QtCore/QVariant>
 
-static LV2UI_Descriptor *gdescriptor[]={0,0};
-
 void PluginGui::setValueControlAtWidget(unsigned id, double value)
 {
 	for(unsigned i=0;i<containers.size();i++)
@@ -101,9 +99,54 @@ QWidget * loadUi(const QString & uiFilename)
 	return userInterface;
 }
 
-template <unsigned num>
-static LV2UI_Handle instantiateIToneGui(
-	const struct _LV2UI_Descriptor* descriptor,
+class Lv2UiLibrary
+{
+	std::vector<LV2UI_Descriptor * > _descriptors;
+public:
+	Lv2UiLibrary()
+	{
+	}
+	~Lv2UiLibrary()
+	{
+        for (unsigned i=0; i<_descriptors.size(); i++)
+			CleanUpDescriptor(_descriptors[i]);
+
+	}
+	void AddPluginType(LV2UI_Descriptor * descriptor, const std::string & uiFile)
+	{
+		_descriptors.push_back(descriptor);
+		addUri(descriptor->URI,uiFile);
+	}
+
+	LV2UI_Descriptor * pluginAt(unsigned i)
+	{
+		if (i<_descriptors.size()) return _descriptors[i];
+		return 0;
+	}
+	static std::string getUiFile(const std::string & uri)
+	{
+		return uri2ui()[uri];
+	}
+	static void addUri(const std::string & uri, const std::string & uiFile)
+	{
+		uri2ui()[uri] = uiFile;
+	}
+private:
+	static std::map<std::string,std::string> & uri2ui()
+	{
+		static std::map<std::string,std::string> map;
+		return map;
+	}
+	void CleanUpDescriptor(LV2UI_Descriptor *& descriptor)
+	{
+		if (not descriptor) return;
+		delete descriptor;
+		descriptor = 0;
+	}
+};
+
+static LV2UI_Handle instantiate_callback(
+	const LV2UI_Descriptor* descriptor,
 	const char * plugin_uri,
 	const char * bundle_path,
 	LV2UI_Write_Function write_function,
@@ -122,8 +165,11 @@ static LV2UI_Handle instantiateIToneGui(
 	/*************** Qt */
 
 	pluginGui->widgetSocket = gtk_socket_new();
-	
-	pluginGui->qtWidget = loadUi(QString(bundle_path)+"example.ui");
+
+	std::string fullPluginPath = bundle_path + Lv2UiLibrary::getUiFile(descriptor->URI);
+	std::cout << "fullPluginPath: " << fullPluginPath << std::endl;
+	std::cout << "uri: " << plugin_uri << std::endl;
+	pluginGui->qtWidget = loadUi(QString(fullPluginPath.c_str()));
 
 	bindWidgets(pluginGui->qtWidget, pluginGui);
 
@@ -142,10 +188,11 @@ static LV2UI_Handle instantiateIToneGui(
 	return pluginGui;
 }
 
-static void cleanupIToneGui(LV2UI_Handle ui)
-{}
+static void cleanup_callback(LV2UI_Handle ui)
+{
+}
 
-static void port_eventIToneGui(
+static void port_event_callback(
 				LV2UI_Handle ui,
 				uint32_t port,
 				uint32_t buffer_size,
@@ -160,22 +207,20 @@ static void port_eventIToneGui(
 	}
 }
 
-static void init()
+class Lv2UiDescriptor
 {
-	gdescriptor[0] 			= new LV2UI_Descriptor();
-	gdescriptor[0]->URI 		= "http://clam-project.org/examples/lv2/othercable/gui";
-	gdescriptor[0]->instantiate 	= instantiateIToneGui<0>;
-	gdescriptor[0]->cleanup		= cleanupIToneGui;
-	gdescriptor[0]->port_event	= port_eventIToneGui;
-	gdescriptor[0]->extension_data 	= NULL;
-	
-	gdescriptor[1] 			= new LV2UI_Descriptor();
-	gdescriptor[1]->URI 		= "http://clam-project.org/examples/lv2/stereocable/gui";
-	gdescriptor[1]->instantiate 	= instantiateIToneGui<1>;
-	gdescriptor[1]->cleanup		= cleanupIToneGui;
-	gdescriptor[1]->port_event	= port_eventIToneGui;
-	gdescriptor[1]->extension_data 	= NULL;
-}
+public:
+	Lv2UiDescriptor(Lv2UiLibrary & library, const char * uri, const char * uifile)
+	{
+		LV2UI_Descriptor * descriptor = new LV2UI_Descriptor;
+		descriptor->URI = uri;
+		descriptor->instantiate = instantiate_callback;
+		descriptor->cleanup = cleanup_callback;
+		descriptor->port_event = port_event_callback;
+		descriptor->extension_data = NULL;
+		library.AddPluginType(descriptor,uifile);
+	}
+};
 
 const LV2UI_Descriptor* lv2ui_descriptor(uint32_t index)
 {	
@@ -186,9 +231,11 @@ const LV2UI_Descriptor* lv2ui_descriptor(uint32_t index)
 	if (not QApplication::instance())
 		app = new QApplication(argc, argv);
 
-	if (!gdescriptor[0]) init();
+	static Lv2UiLibrary library;
+	static Lv2UiDescriptor p1(library, "http://clam-project.org/examples/lv2/stereocable/gui", "stereocable.ui");
+	static Lv2UiDescriptor p2(library, "http://clam-project.org/examples/lv2/othercable/gui", "othercable.ui");
 
-	return ((index == 0 or index == 1)?gdescriptor[index]:NULL);
+	return library.pluginAt(index);
 }
 
 
