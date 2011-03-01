@@ -141,7 +141,7 @@ class NetworkTests(unittest.TestCase):
 
 	def test_types(self) :
 		net = Network(TestFixtures.empty())
-		self.assertEqual("MinimalProcessing", net.types.MinimalProcessing["type"])
+		self.assertEqual("MinimalProcessing", net.types.MinimalProcessing)
 
 if __name__ == '__main__':
 	unittest.main()
