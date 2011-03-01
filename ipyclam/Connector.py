@@ -6,6 +6,9 @@ Control = "Control"
 class ConnectionExists(Exception):
 	pass
 
+class BadConnectorDirectionOrder(Exception):
+	pass
+
 class DifferentConnectorKind(Exception):
 	pass
 
@@ -80,6 +83,13 @@ class Connector(object):
 			self._proxy.connect(self.kind, peer._hostname(), peer.name, self._hostname(), self.name)
 
 	def __gt__(self, peer) :
+		if self.direction == In and peer.direction == Out:
+			raise BadConnectorDirectionOrder("Wrong connectors order: Output > Input")
+		self.connect(peer)
+
+	def __lt__(self, peer) :
+		if self.direction == Out and peer.direction == In:
+			raise BadConnectorDirectionOrder("Wrong connectors order: Input < Output")
 		self.connect(peer)
 
 import unittest
@@ -205,6 +215,36 @@ class ConnectorTests(unittest.TestCase):
 			self.fail("Exception expected")
 		except ConnectionExists, e:
 			self.assertEquals("Processing1.OutPort1 and Processing2.Inport1 already connected", e.__str__())
+
+	def test_connectInputOutputWith__gt__OperatorAndFail(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(proxy, "Processing2", kind=Port, direction=In, name="Inport1")
+		try:
+			port2 > port
+			self.fail("Exception expected")
+		except BadConnectorDirectionOrder, e:
+			self.assertEquals("Wrong connectors order: Output > Input", e.__str__())
+
+	def test_connectWith__lt__Operator(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(proxy, "Processing2", kind=Port, direction=In, name="Inport1")
+		port2 < port
+		listPeersPort = [ connector.name for connector in port.peers ]
+		self.assertEqual(['Inport2', 'Inport1'], listPeersPort)
+		listPeersPort2 = [ connector.name for connector in port2.peers ]
+		self.assertEqual(['OutPort1'], listPeersPort2)
+
+	def test_connectOutputInputWith__lt__OperatorAndFail(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(proxy, "Processing2", kind=Port, direction=In, name="Inport1")
+		try:
+			port < port2
+			self.fail("Exception expected")
+		except BadConnectorDirectionOrder, e:
+			self.assertEquals("Wrong connectors order: Input < Output", e.__str__())
 
 if __name__ == '__main__':
 	unittest.main()
