@@ -148,6 +148,18 @@ class Dummy_NetworkProxy :
 	def availableTypes(self) :
 		return self._types.keys()
 
+	def connectionExists(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
+		if kind == Connector.Control:
+			for connection in self._controlConnections:
+				if connection == (fromProcessing, fromConnector, toProcessing, toConnector):
+					return True
+		else:
+			for connection in self._portConnections:
+				if connection == (fromProcessing, fromConnector, toProcessing, toConnector):
+					return True
+		return False
+
+
 import unittest
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
@@ -461,6 +473,18 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		self.assertTrue(proxy.processingHasConnector("Processing1", Connector.Control, Connector.Out, "OutControl1"))
 		self.assertFalse(proxy.processingHasConnector("Processing1", Connector.Control, Connector.In, "InControl1"))
 
+	def test_connectionExists(self) :
+		proxy = Dummy_NetworkProxy()
+		proxy.addProcessing("ControlSource", "Processing1")
+		proxy.addProcessing("ControlSink", "Processing2")
+		proxy.connect(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1")
+		self.assertTrue(proxy.connectionExists(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1"))
+		self.assertFalse(proxy.connectionExists(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl2"))
+		proxy.addProcessing("PortSource", "Processing3")
+		proxy.addProcessing("PortSink", "Processing4")
+		proxy.connect(Connector.Port, "Processing3", "OutPort1", "Processing4", "InPort1")
+		self.assertTrue(proxy.connectionExists(Connector.Port, "Processing3", "OutPort1", "Processing4", "InPort1"))
+		self.assertFalse(proxy.connectionExists(Connector.Port, "Processing3", "OutPort1", "Processing4", "InPort2"))
 
 if __name__ == '__main__':
 	unittest.main()

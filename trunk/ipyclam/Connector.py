@@ -3,6 +3,9 @@ Out = "Out"
 Port = "Port"
 Control = "Control"
 
+class ConnectionExists(Exception):
+	pass
+
 class DifferentConnectorKind(Exception):
 	pass
 
@@ -69,6 +72,8 @@ class Connector(object):
 			raise DifferentConnectorKind("Different kind: %s %s"%(self.name, peer.name))
 		if self.type != peer.type :
 			raise DifferentConnectorType("Different type: %s %s"%(self.name, peer.name))
+		if self._proxy.connectionExists(self.direction, self._hostname(), self.name, peer._hostname(), peer.name):
+			raise ConnectionExists("%s.%s and %s.%s already connected"%(self._hostname(), self.name, peer._hostname(), peer.name))
 		if self.direction == Out :
 			self._proxy.connect(self.kind, self._hostname(), self.name, peer._hostname(), peer.name)
 		else :
@@ -189,6 +194,17 @@ class ConnectorTests(unittest.TestCase):
 		self.assertEqual(['Inport2', 'Inport1'], listPeersPort)
 		listPeersPort2 = [ connector.name for connector in port2.peers ]
 		self.assertEqual(['OutPort1'], listPeersPort2)
+
+	def test_connectTwoTimesSamePortsAndFail(self) :
+		proxy = TestFixtures.proxy()
+		port = Connector(proxy, "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(proxy, "Processing2", kind=Port, direction=In, name="Inport1")
+		port > port2
+		try:
+			port > port2
+			self.fail("Exception expected")
+		except ConnectionExists, e:
+			self.assertEquals("Processing1.OutPort1 and Processing2.Inport1 already connected", e.__str__())
 
 if __name__ == '__main__':
 	unittest.main()
