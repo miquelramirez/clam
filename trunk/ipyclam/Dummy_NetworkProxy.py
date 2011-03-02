@@ -134,10 +134,8 @@ class Dummy_NetworkProxy :
 		assert self.processingHasConnector(fromProcessing, kind, Connector.Out, fromConnector), "%s does not have connector %s"%(fromProcessing, fromConnector)
 		assert self.processingHasConnector(toProcessing, kind, Connector.In, toConnector), "%s does not have connector %s"%(toProcessing, toConnector)
 		assert self.areConnectable(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s and %s have incompatible types"%(fromConnector, toConnector)
-		if kind == Connector.Port:
-			self._portConnections.append((fromProcessing, fromConnector, toProcessing, toConnector))
-		else:
-			self._controlConnections.append((fromProcessing, fromConnector, toProcessing, toConnector))
+		connections = self._controlConnections if kind == Connector.Control else self._portConnections
+		connections.append((fromProcessing, fromConnector, toProcessing, toConnector))
 
 	def portConnections(self) :
 		return self._portConnections
@@ -149,16 +147,8 @@ class Dummy_NetworkProxy :
 		return self._types.keys()
 
 	def connectionExists(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
-		if kind == Connector.Control:
-			for connection in self._controlConnections:
-				if connection == (fromProcessing, fromConnector, toProcessing, toConnector):
-					return True
-		else:
-			for connection in self._portConnections:
-				if connection == (fromProcessing, fromConnector, toProcessing, toConnector):
-					return True
-		return False
-
+		connections = self._controlConnections if kind == Connector.Control else self._portConnections
+		return (fromProcessing, fromConnector, toProcessing, toConnector) in connections
 
 import unittest
 
@@ -473,13 +463,22 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		self.assertTrue(proxy.processingHasConnector("Processing1", Connector.Control, Connector.Out, "OutControl1"))
 		self.assertFalse(proxy.processingHasConnector("Processing1", Connector.Control, Connector.In, "InControl1"))
 
-	def test_connectionExists(self) :
+	def test_connectionExists_withControls_whenDoesNotExists(self) :
+		proxy = Dummy_NetworkProxy()
+		self.assertFalse(proxy.connectionExists(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1"))
+
+	def test_connectionExists_withControls_whenExists(self) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("ControlSource", "Processing1")
 		proxy.addProcessing("ControlSink", "Processing2")
-		proxy.connect(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1")
 		self.assertTrue(proxy.connectionExists(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1"))
-		self.assertFalse(proxy.connectionExists(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl2"))
+
+	def test_connectionExists_withPorts_whenDoesNotExists(self) :
+		proxy = Dummy_NetworkProxy()
+		self.assertFalse(proxy.connectionExists(Connector.Port, "Processing3", "OutPort1", "Processing4", "InPort1"))
+
+	def test_connectionExists_withPorts_whenExists(self) :
+		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("PortSource", "Processing3")
 		proxy.addProcessing("PortSink", "Processing4")
 		proxy.connect(Connector.Port, "Processing3", "OutPort1", "Processing4", "InPort1")
