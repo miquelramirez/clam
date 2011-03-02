@@ -27,17 +27,47 @@
 [X]			- 2 x Network.addProcessing -> code (same type)
 [X]			- 2 x Network.addProcessing (different type) -> code
 	- Self generation code (network is able to generate python code to generate itself again)
-		- Useful for quick checking the network status
 [X]		- Self writting code for processings
 [X]		- Self writting code for connections
 		- Self writting code for configurations
-	- Pending test cases
-		- network.code = "Type", should fail (and any existing network method)
-		- network.code() should use the [] notation to create a processing if its name is not a symbol or is an attribute
 	- Additional features
 [X]		- dir(network.types) should give all the available types as symbols
 [X]		- network.types.MinimalProcessing should return "MinimalProcessing"
 [X]		- network.types.NonExistingType should raise AttributeError
+		- network.code = "Type", should fail (and any existing network method)
+		- net.code(networkVar="aNetwork") generates code using 'aNetwork' as var for the network
+		- net.code dealing weird names, should use subscript net["A processing"] or net.proc1["A connector"]
+			- Failing names:
+				- Containing other than [a-zA-Z_][a-zAz_09]*
+				- Names which are properties (types, 
+			- When?
+				- Processing instantiation
+				- Procesing in processing connection
+				- Connector in processing connector
+			- How?
+				- helper function appendAttribute(name) which returns "."+name if ok or "['%s']"%name if not ok
+				- helper function isAlphanumeric(name) which returns 
+				- helper to know whether is a given property of the entity (how??)
+		- Broadcast/Bus connections: 
+			- Behaviour:
+				- return the number of connections done
+				- connect as many compatible connections as available, matching index
+				- < and > version restrict directionality
+			- Connectors.connect(Connector): all from Connectors connectable to Connector (returns n of connections done)
+			- Connector.connect(Connectors): all from Connectors connectable to Connector (returns n of connections done)
+			- Processing.connect(Connector): all from processing connectable to Connector
+			- Processing.connect(Connectors): all from processing connectable to Connector
+			- Processing.connect(Processing): all connectable in order
+			- Connectors[1::2].connect(Processing) and the like (Suggestion the slice should return a Connectors with a diferent list)
+	- Advanced features (no prioritary at all)
+		- Type properties (category, description, port_monitor_type, icon, faust_svg...)
+			- net.types.AType should be able to be used as now to instanciate processings
+			- They are dynamic properties that may or may not be present
+			- They are not settable
+			- Now types are strings, after this feature current code should still work
+		- Type categories: there are many types, we have categories, solutions?
+			- net.types.categories.[tab]
+
 
 - Connecting
 	- Test Connector.connect(Connector)
@@ -52,11 +82,6 @@
 [X]			different kind
 [X]			same direction
 [X]			different type
-	- Test Connectors.connect(Connector)
-		multiple to one connection
-	- Test Connectors.connect(Processing)
-		connects all feasible in same order
-		must define exact behaviour
 [X]	- Test > operator to connect
 [X]	- Test < operator to connect
 
@@ -65,6 +90,7 @@
 [X]	- Network.__dir__ should return also types
 [X]	- Do not allow repeated connections
 [X]	- > and < operators should ensure direction matches with arrows
+
 
 
 
