@@ -134,6 +134,7 @@ class Dummy_NetworkProxy :
 		assert self.processingHasConnector(fromProcessing, kind, Connector.Out, fromConnector), "%s does not have connector %s"%(fromProcessing, fromConnector)
 		assert self.processingHasConnector(toProcessing, kind, Connector.In, toConnector), "%s does not have connector %s"%(toProcessing, toConnector)
 		assert self.areConnectable(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s and %s have incompatible types"%(fromConnector, toConnector)
+		assert not self.connectionExists(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s.%s and %s.%s already connected"%(fromProcessing, fromConnector, toProcessing, toConnector)
 		connections = self._controlConnections if kind == Connector.Control else self._portConnections
 		connections.append((fromProcessing, fromConnector, toProcessing, toConnector))
 
@@ -149,6 +150,12 @@ class Dummy_NetworkProxy :
 	def connectionExists(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
 		connections = self._controlConnections if kind == Connector.Control else self._portConnections
 		return (fromProcessing, fromConnector, toProcessing, toConnector) in connections
+
+	def disconnect(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
+		if kind == Connector.Port:
+			self._portConnections.remove((fromProcessing, fromConnector, toProcessing, toConnector))
+		else:
+			self._controlConnections.remove((fromProcessing, fromConnector, toProcessing, toConnector))
 
 import unittest
 
@@ -212,9 +219,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			("Processing2", "Outport2", "Processing1", "InPort2"),
 		],
 		[
-			("Processing1", "InControl1", "Processing2", "Incontrol2"),
-			("Processing1", "InControl2", "Processing2", "Incontrol2"),
-			("Processing2", "Incontrol1", "Processing1", "InControl2"),			
+			("Processing1", "OutControl1", "Processing2", "Incontrol2"),
+			("Processing1", "OutControl2", "Processing2", "Incontrol2"),
+			("Processing2", "Outcontrol1", "Processing1", "InControl2"),
 		]
 	]
 
@@ -439,9 +446,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def test_controlConnections(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals([
-			("Processing1", "InControl1", "Processing2", "Incontrol2"),
-			("Processing1", "InControl2", "Processing2", "Incontrol2"),
-			("Processing2", "Incontrol1", "Processing1", "InControl2"),			
+			("Processing1", "OutControl1", "Processing2", "Incontrol2"),
+			("Processing1", "OutControl2", "Processing2", "Incontrol2"),
+			("Processing2", "Outcontrol1", "Processing1", "InControl2"),			
 		], proxy.controlConnections())
 
 	def test_availableTypes(self) :
@@ -465,7 +472,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_connectionExists_withControls_whenDoesNotExists(self) :
 		proxy = Dummy_NetworkProxy()
-		self.assertFalse(proxy.connectionExists(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1"))
+		self.assertFalse(proxy.connectionExists(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl2"))
 
 	def test_connectionExists_withControls_whenExists(self) :
 		proxy = Dummy_NetworkProxy()
@@ -484,6 +491,30 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy.connect(Connector.Port, "Processing3", "OutPort1", "Processing4", "InPort1")
 		self.assertTrue(proxy.connectionExists(Connector.Port, "Processing3", "OutPort1", "Processing4", "InPort1"))
 		self.assertFalse(proxy.connectionExists(Connector.Port, "Processing3", "OutPort1", "Processing4", "InPort2"))
+
+	def test_connectWhenAlreadyConnected(self) :
+		proxy = Dummy_NetworkProxy()
+		proxy.addProcessing("PortSource", "Processing5")
+		proxy.addProcessing("PortSink", "Processing6")
+		proxy.connect(Connector.Port, "Processing5", "OutPort1", "Processing6", "InPort1")
+		try:
+			proxy.connect(Connector.Port, "Processing5", "OutPort1", "Processing6", "InPort1")
+			self.fail("Exception expected")
+		except AssertionError, e:
+			self.assertEquals(("Processing5.OutPort1 and Processing6.InPort1 already connected", ), e.args)
+
+
+	def test_disconnect_ports(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy.disconnect(Connector.Port, "Processing1", "OutPort1", "Processing2", "Inport2")
+		self.assertEquals([]
+				, proxy.connectorPeers("Processing1", Connector.Port, Connector.Out, "OutPort1"))
+
+	def test_disconnect_controls(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy.disconnect(Connector.Control, "Processing1", "OutControl1", "Processing2", "Incontrol2")
+		self.assertEquals([]
+				, proxy.connectorPeers("Processing1", Connector.Control, Connector.Out, "OutControl1"))
 
 if __name__ == '__main__':
 	unittest.main()
