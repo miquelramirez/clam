@@ -92,6 +92,9 @@ class Connector(object):
 			raise BadConnectorDirectionOrder("Wrong connectors order: Input < Output")
 		self.connect(peer)
 
+	def disconnect(self, peer):
+		self._proxy.disconnect(self.kind, self._hostname(), self.name, peer._hostname(), peer.name)
+
 import unittest
 import TestFixtures
 
@@ -106,8 +109,8 @@ class ConnectorTests(unittest.TestCase):
 		port = Connector(TestFixtures.proxy(), "Processing1", kind=Port, direction=In, name="InPort1")
 		self.assertEqual(port.kind, "Port")
 	def test_kind_whenControl(self):
-		port = Connector(TestFixtures.proxy(), "Processing1", kind=Control, direction=In, name="InPort1")
-		self.assertEqual(port.kind, "Control")
+		control = Connector(TestFixtures.proxy(), "Processing1", kind=Control, direction=In, name="InControl1")
+		self.assertEqual(control.kind, "Control")
 	def test_kind_isReadOnly(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", kind=Port, direction=In, name="InPort1")
 		self.assertRaises(AttributeError, setattr, port, "kind", Control)
@@ -245,6 +248,20 @@ class ConnectorTests(unittest.TestCase):
 			self.fail("Exception expected")
 		except BadConnectorDirectionOrder, e:
 			self.assertEquals("Wrong connectors order: Input < Output", e.__str__())
+
+	def test_disconnect_ports(self):
+		port = Connector(TestFixtures.proxy(), "Processing1", kind=Port, direction=Out, name="OutPort1")
+		port2 = Connector(TestFixtures.proxy(), "Processing2", kind=Port, direction=In, name="Inport2")
+		port.disconnect(port2)
+		listPeers = [ connector.name for connector in port.peers ]
+		self.assertEqual([], listPeers)
+
+	def test_disconnect_controls(self):
+		control = Connector(TestFixtures.proxy(), "Processing1", kind=Control, direction=Out, name="OutControl1")
+		control2 = Connector(TestFixtures.proxy(), "Processing2", kind=Control, direction=In, name="Incontrol2")
+		control.disconnect(control2)
+		listPeers = [ connector.name for connector in control.peers ]
+		self.assertEqual([], listPeers)
 
 if __name__ == '__main__':
 	unittest.main()
