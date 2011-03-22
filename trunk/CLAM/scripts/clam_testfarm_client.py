@@ -194,6 +194,9 @@ clam.add_subtask('BM-Audio back-to-back tests', [
 	'./back2back.py',
 	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
 	'./back2back.py',
+	'cd %(sandbox)s/acustica/src/libs/cpp_modules'%localDefinitions,
+	'scons prefix=%(installPath)s' % localDefinitions,
+	'scons install'
 	'cd %(sandbox)s/acustica/src/bm_clam_plugin'%localDefinitions,
 	'scons clam_prefix=%(installPath)s' % localDefinitions,
 	'scons install',
