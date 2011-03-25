@@ -44,6 +44,7 @@ os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinit
 os.environ['PATH']='%(installPath)s/bin:' % localDefinitions + os.environ['PATH']
 os.environ['CLAM_PLUGIN_PATH']='%(installPath)s/lib/clam' % localDefinitions
 os.environ['LADSPA_PATH']='%(installPath)s/lib/ladspa' % localDefinitions
+os.environ['PKG_CONFIG_PATH']='%(installPath)s/lib/pkgconfig' % localDefinitions
 
 client = Client(localDefinitions['name'])
 client.brief_description = localDefinitions['description']
@@ -198,11 +199,11 @@ clam.add_subtask('BM-Audio back-to-back tests', [
 	'scons prefix=%(installPath)s' % localDefinitions,
 	'scons install',
 	'cd %(sandbox)s/acustica/src/decoders'%localDefinitions,
-	'PKG_CONFIG_PATH=%(installPath)s/lib/pkgconfig scons prefix=%(installPath)s' % localDefinitions,
-	'PKG_CONFIG_PATH=%(installPath)s/lib/pkgconfig scons install',
+	'scons prefix=%(installPath)s' % localDefinitions,
+	'scons install',
 	'cd %(sandbox)s/acustica/src/bm_clam_plugin'%localDefinitions,
-	'PKG_CONFIG_PATH=%(installPath)s/lib/pkgconfig scons clam_prefix=%(installPath)s' % localDefinitions,
-	'PKG_CONFIG_PATH=%(installPath)s/lib/pkgconfig scons install',
+	'scons clam_prefix=%(installPath)s' % localDefinitions,
+	'scons install',
 	'./back2back_decoders.py',
 #	'./back2back_upmix.py',
 ] )
