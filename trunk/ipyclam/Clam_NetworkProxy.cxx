@@ -43,16 +43,28 @@ CLAM::Processing & addProcessing(CLAM::Network & network, char * type, char * pr
 	return network.AddProcessing(processingName, type);
 }
 
-// TODO: Implement correctly
 bool hasProcessing(CLAM::Network & network, char * processingName)
 {
-	return 1;
+	return network.HasProcessing(processingName);
 }
 
-// TODO: Implement correctly
 std::string processingType(CLAM::Network & network, char * processingName)
 {
-	return "";
+	return network.GetProcessing(processingName).GetClassName();
+}
+//TODO: Implement correctly
+py::dict processingConfig(CLAM::Network & network, char * processingName)
+{
+	py::dict processingConfig;
+	return processingConfig;
+}
+//TODO: Implement correctly
+py::list processingConnectors(CLAM::Network & network, char * processingName, char * kind, char * direction)
+{
+	py::list connectors;
+	connectors.append("Connector1");
+	//network.GetProcessing(processingName).GetInControls();
+	return connectors;
 }
 
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
@@ -82,15 +94,21 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			return_internal_reference<>(),
 			"Adds a Processing with the name and type specified to the network"
 			)
-		.def("hasProcessing", // TODO: Implement correctly
+		.def("hasProcessing",
 			hasProcessing,
-			""
+			"Tells whether or not there is a processing with the given name on the network"
 			)
-		.def("processingType", // TODO: Implement correctly
+		.def("processingType",
 			processingType,
+			"Returns the type of the processing"
+			)
+		.def("processingConfig",
+			processingConfig, //TODO: Implement correctly
+			"Returns the config dictionary of the processing"
+			)
+		.def("processingConnectors", //TODO: Implement correctly
+			processingConnectors,
 			""
 			)
 		;
 }
-
-
