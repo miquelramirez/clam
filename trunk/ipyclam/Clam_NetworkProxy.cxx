@@ -10,6 +10,8 @@ std::string Dump(CLAM::Network & net)
 {
 	std::ostringstream str;
 	CLAM::XMLStorage::Dump(net, "Network", str);
+	//TODO: Workaround to be able to see the xml. Why doesn't work the return?
+	std::cout << str.str() << std::endl;
 	return str.str();
 }
 
@@ -36,6 +38,23 @@ py::list processingNames(CLAM::Network & network)
 	return pythonizeList(names);
 }
 
+CLAM::Processing & addProcessing(CLAM::Network & network, char * type, char * processingName)
+{
+	return network.AddProcessing(processingName, type);
+}
+
+// TODO: Implement correctly
+bool hasProcessing(CLAM::Network & network, char * processingName)
+{
+	return 1;
+}
+
+// TODO: Implement correctly
+std::string processingType(CLAM::Network & network, char * processingName)
+{
+	return "";
+}
+
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 {
 	// Keep 'using namespace' in the inner scope
@@ -43,6 +62,8 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 	using namespace CLAM;
 
 	typedef const std::string & cstringref;
+	
+	class_<Processing, boost::noncopyable>("Processing", no_init);
 
 	class_<Network>("Clam_NetworkProxy")
 		.def("xml",
@@ -55,6 +76,19 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("processingNames",
 			processingNames,
 			"Returns the names of all the processing modules"
+			)
+		.def("addProcessing",
+			&addProcessing,
+			return_internal_reference<>(),
+			"Adds a Processing with the name and type specified to the network"
+			)
+		.def("hasProcessing", // TODO: Implement correctly
+			hasProcessing,
+			""
+			)
+		.def("processingType", // TODO: Implement correctly
+			processingType,
+			""
 			)
 		;
 }
