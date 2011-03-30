@@ -29,8 +29,8 @@ localDefinitions = dict(
 	name= 'BM_lucid_32',
 	description= '<img src="http://clam-project.org/images/linux_icon.png"/> <img src="http://clam-project.org/images/ubuntu_icon.png"/>',
 #	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
-	repositories = "clam acustica data_acustica clam/testdata",
-	private_repositories = "acustica data_acustica",
+	repositories = "clam acustica data_acustica clam/testdata imm_bm data_imm_bm",
+	private_repositories = "acustica data_acustica imm_bm data_imm_bm",
 	sandbox= os.path.expanduser('~/'),
 	qt3dir='',
 	qt4dir='',
@@ -97,7 +97,7 @@ clam.add_subtask('Unit Tests', [
 	'cd %(sandbox)s/clam/CLAM/test'%localDefinitions,
 	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions, # TODO: test_data_path and release
 	'cd UnitTests',
-	{INFO : lambda x:startTimer() }, 
+	{INFO : lambda x:startTimer() },
 	{CMD: './UnitTests'},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
@@ -105,7 +105,7 @@ clam.add_subtask('Functional Tests', [
 	'cd %(sandbox)s/clam/CLAM/test'%localDefinitions,
 	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
 	'cd FunctionalTests',
-	{INFO : lambda x:startTimer() }, 
+	{INFO : lambda x:startTimer() },
 	{CMD:'./FunctionalTests'},
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
 ] )
@@ -164,15 +164,15 @@ clam.add_subtask('CLAM Plugins', [
 	'cd %(sandbox)s/clam/CLAM/plugins/speech'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
-	
+
 	'cd %(sandbox)s/clam/CLAM/plugins/Filters'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
-	
+
 	'cd %(sandbox)s/clam/CLAM/plugins/resampling'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
-	
+
 	'cd %(sandbox)s/clam/CLAM/plugins/expression'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
@@ -187,25 +187,6 @@ clam.add_subtask('NetworkEditor installation', [
 clam.add_subtask('Back-to-back network tests', [
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
 	'./back2back.py',
-] )
-
-clam.add_subtask('BM-Audio back-to-back tests', [
-	'ln -sf %(sandbox)s/acustica/src/rendercoreo/rendercoreo %(installPath)s/bin'%localDefinitions,
-	'cd %(sandbox)s/acustica/bformat2binaural'%localDefinitions,
-	'./back2back.py',
-	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
-	'./back2back.py',
-	'cd %(sandbox)s/acustica/src/libs/cpp_modules'%localDefinitions,
-	'scons prefix=%(installPath)s' % localDefinitions,
-	'scons install',
-	'cd %(sandbox)s/acustica/src/decoders'%localDefinitions,
-	'scons prefix=%(installPath)s' % localDefinitions,
-	'scons install',
-	'cd %(sandbox)s/acustica/src/bm_clam_plugin'%localDefinitions,
-	'scons clam_prefix=%(installPath)s' % localDefinitions,
-	'scons install',
-	'./back2back_decoders.py',
-#	'./back2back_upmix.py',
 ] )
 
 clam.add_subtask('SMSTools installation', [
