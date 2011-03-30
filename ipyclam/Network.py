@@ -40,6 +40,10 @@ class Network(object):
 		# TODO: fail on existing attributes (not processings)
 		self._proxy.addProcessing(type, name)
 
+	# TODO: Workaround to be able to use the function from the C++ proxy
+	def xml(self):
+		self._proxy.xml()
+
 import operator
 import unittest
 import TestFixtures
