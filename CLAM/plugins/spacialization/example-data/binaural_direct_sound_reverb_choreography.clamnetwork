@@ -97,7 +97,7 @@ p, li { white-space: pre-wrap; }
   <processing id="BFormatRotation" position="1183,150" size="166,78" type="BFormatRotation"/>
 
   <processing id="ChoreoSequencer_1" position="104,22" size="226,59" type="ChoreoSequencer">
-    <Filename>../../../../data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
+    <Filename>../../../../data_imm_bm/test_coreos/horitzontal/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
@@ -204,7 +204,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="HRTFDatabaseFetcher2" position="237,999" size="207,94" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <HrtfDatabase>../../../../acustica/HRTFs/mitKemarFullL.hrtfs</HrtfDatabase>
+    <HrtfDatabase>../../../../imm_bm/HRTFs/mitKemarFullL.hrtfs</HrtfDatabase>
   </processing>
 
   <processing id="IFFT L" position="2347,186" size="94,66" type="MyIFFT">
@@ -404,7 +404,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="RoomImpulseResponseSimulator" position="61,172" size="271,100" type="RoomImpulseResponseSimulator">
     <FrameSize>512</FrameSize>
-    <Model3DFile>../../../../acustica/src/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
+    <Model3DFile>../../../../imm_bm/src/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
     <GridDivisions>500</GridDivisions>
     <NRays>200</NRays>
     <NRebounds>50</NRebounds>
