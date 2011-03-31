@@ -34,7 +34,11 @@ py::list processingTypes(CLAM::Network & network)
 py::list processingNames(CLAM::Network & network)
 {
 	std::list<std::string> names;
-	// TODO:
+	CLAM::Network::ProcessingsMap::iterator it;
+	for (it=network.BeginProcessings(); it!=network.EndProcessings(); it++)
+	{
+		names.push_back(it->first);
+	}
 	return pythonizeList(names);
 }
 
@@ -62,7 +66,10 @@ py::dict processingConfig(CLAM::Network & network, char * processingName)
 py::list processingConnectors(CLAM::Network & network, char * processingName, char * kind, char * direction)
 {
 	py::list connectors;
-	connectors.append("Connector1");
+	if (strcmp(kind, "Port") == 0)
+		connectors.append("Port1");
+	else
+		connectors.append("Control1");
 	//network.GetProcessing(processingName).GetInControls();
 	return connectors;
 }
