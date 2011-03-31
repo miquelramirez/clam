@@ -43,7 +43,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="ImpulseResponseLoader" position="14,194" size="215,58" type="ImpulseResponseLoader">
     <FrameSize>1024</FrameSize>
-    <ImpulseResponse>/usr/local/share/clam/ElvisStereo.wav</ImpulseResponse>
+    <ImpulseResponse>../../../../clam-test-data/ElvisStereo.wav</ImpulseResponse>
     <IsBFormatFile>0</IsBFormatFile>
   </processing>
 

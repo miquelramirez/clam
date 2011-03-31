@@ -53,7 +53,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="ChoreoSequencerViaControl" position="33,-14" size="239,58" type="ChoreoSequencerViaControl">
-    <Filename>../../../../data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
+    <Filename>../../../../data_imm_bm/test_coreos/horitzontal/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <ControlsPerSecond>25</ControlsPerSecond>
     <UseSpiralIfNoFilename>0</UseSpiralIfNoFilename>
@@ -79,7 +79,7 @@ p, li { white-space: pre-wrap; }
 
   <processing id="HRTFDatabaseFetcher2" position="15,168" size="207,62" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <HrtfDatabase>../../../../acustica/HRTFs/mitKemarFullL.hrtfs</HrtfDatabase>
+    <HrtfDatabase>../../../../imm_bm/HRTFs/mitKemarFullL.hrtfs</HrtfDatabase>
   </processing>
 
   <processing id="IRSwappingDelay_L" position="228,156" size="185,62" type="IRSwappingDelay"/>

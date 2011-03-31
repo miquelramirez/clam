@@ -19,7 +19,7 @@ p, li { white-space: pre-wrap; }
   <processing id="BufferOscilloscope" position="46,54" size="284,120" type="BufferOscilloscope"/>
 
   <processing id="ConstantSpectrum" position="3,4" size="177,62" type="ConstantSpectrum">
-    <AudioFile>/usr/local/share/clam/ElvisStereo.wav</AudioFile>
+    <AudioFile>../../../../clam-test-data/ElvisStereo.wav</AudioFile>
     <FrameSize>32768</FrameSize>
   </processing>
 

@@ -78,7 +78,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="MonoAudioFileReader" position="-387,438" size="196,59" type="MonoAudioFileReader">
-    <SourceFile>/usr/local/share/clam/ElvisStereo.wav</SourceFile>
+    <SourceFile>../../../../clam-test-data/ElvisStereo.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
