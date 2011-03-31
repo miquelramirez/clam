@@ -51,7 +51,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="ChoreoSequencer" position="108,51" size="226,58" type="ChoreoSequencer">
-    <Filename>../../../../data_acustica/test_coreos/vertical/exported_coreo.data</Filename>
+    <Filename>../../../../data_imm_bm/test_coreos/vertical/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>

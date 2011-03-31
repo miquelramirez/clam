@@ -39,7 +39,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="MonoAudioFileReader" position="-522,548" size="196,59" type="MonoAudioFileReader">
-    <SourceFile>/usr/local/share/clam/Elvis.wav</SourceFile>
+    <SourceFile>../../../../clam-test-data/Elvis.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
@@ -51,7 +51,7 @@ p, li { white-space: pre-wrap; }
     <FadeInMs>500</FadeInMs>
     <MinCutoffFrequency>350</MinCutoffFrequency>
     <OcclusionGainFactor>0.3</OcclusionGainFactor>
-    <GeometryFile>../../../../acustica/src/raytracing/entorns/salo_simplificat.dat</GeometryFile>
+    <GeometryFile>../../../../imm_bm/src/raytracing/entorns/salo_simplificat.dat</GeometryFile>
   </processing>
 
   <processing id="Seek in-Control" position="-522,421" size="185,78" type="OutControlSender">

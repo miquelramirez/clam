@@ -20,7 +20,7 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="ConstantSpectrum_0" position="37,126" size="192,62" type="ConstantSpectrum">
-    <AudioFile>/usr/local/share/clam/ElvisStereo.wav</AudioFile>
+    <AudioFile>../../../../clam-test-data/ElvisStereo.wav</AudioFile>
     <FrameSize>65536</FrameSize>
   </processing>
 

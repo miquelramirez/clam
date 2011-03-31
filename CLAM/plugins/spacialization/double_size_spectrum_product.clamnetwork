@@ -27,7 +27,7 @@ p, li { white-space: pre-wrap; }
   <processing id="Complex2MagPhaseSpectrum_0" position="419,244" size="266,58" type="Complex2MagPhaseSpectrum"/>
 
   <processing id="ConstantSpectrum_0" position="35,42" size="192,62" type="ConstantSpectrum">
-    <AudioFile>/usr/local/share/clam/ElvisStereo.wav</AudioFile>
+    <AudioFile>../../../../clam-test-data/ElvisStereo.wav</AudioFile>
     <FrameSize>262144</FrameSize>
   </processing>
 
