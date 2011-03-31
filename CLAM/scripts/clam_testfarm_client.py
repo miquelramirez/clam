@@ -115,15 +115,15 @@ clam.add_subtask('CLAM Examples', [
 ] )
 
 clam.add_subtask('BM-Audio Soxsucks', [
-	'cd %(sandbox)s/acustica/src/soxsucks/'%localDefinitions,
+	'cd %(sandbox)s/imm_bm/src/soxsucks/'%localDefinitions,
 	'scons',
-	'ln -sf %(sandbox)s/acustica/src/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
+	'ln -sf %(sandbox)s/imm_bm/src/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
 ] )
 
 clam.add_subtask('BM-Audio Raytracing', [
-	'cd %(sandbox)s/acustica/src/raytracing'%localDefinitions,
+	'cd %(sandbox)s/imm_bm/src/raytracing'%localDefinitions,
 	'scons',
-	'ln -sf %(sandbox)s/acustica/src/raytracing/raytracing %(installPath)s/bin'%localDefinitions,
+	'ln -sf %(sandbox)s/imm_bm/src/raytracing/raytracing %(installPath)s/bin'%localDefinitions,
 	'./back2back.py',
 ] )
 
