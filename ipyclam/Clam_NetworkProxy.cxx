@@ -67,11 +67,51 @@ py::list processingConnectors(CLAM::Network & network, char * processingName, ch
 {
 	py::list connectors;
 	if (strcmp(kind, "Port") == 0)
-		connectors.append("Port1");
+	{
+		if (strcmp(direction, "In") == 0)
+			connectors.append("InPort1");
+		else
+			connectors.append("OutPort1");
+	}
 	else
-		connectors.append("Control1");
+	{
+		if (strcmp(direction, "In") == 0)
+			connectors.append("InControl1");
+		else
+			connectors.append("OutControl1");
+	}
 	//network.GetProcessing(processingName).GetInControls();
 	return connectors;
+}
+
+bool processingHasConnector(CLAM::Network & network, char * processingName, char * kind, char * direction, char * connectorName)
+{
+	if (strcmp(kind, "Port") == 0)
+	{
+		if (strcmp(direction, "In") == 0)
+			return network.GetProcessing(processingName).HasInPort(connectorName);
+		else
+			return network.GetProcessing(processingName).HasOutPort(connectorName);
+	}
+	else
+	{
+		if (strcmp(direction, "In") == 0)
+			return network.GetProcessing(processingName).HasInControl(connectorName);
+		else
+			return network.GetProcessing(processingName).HasOutControl(connectorName);
+	}
+}
+//TODO: Implement correctly
+py::list portConnections(CLAM::Network & network)
+{
+	py::list portConnections;
+	return portConnections;
+}
+//TODO: Implement correctly
+py::list controlConnections(CLAM::Network & network)
+{
+	py::list controlConnections;
+	return controlConnections;
 }
 
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
@@ -115,6 +155,18 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			)
 		.def("processingConnectors", //TODO: Implement correctly
 			processingConnectors,
+			""
+			)
+		.def("processingHasConnector",
+			processingHasConnector,
+			"Returns true if the processing has the specified connector"
+			)
+		.def("portConnections", //TODO: Implement correctly
+			portConnections,
+			""
+			)
+		.def("controlConnections", //TODO: Implement correctly
+			controlConnections,
 			""
 			)
 		;
