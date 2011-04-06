@@ -30,12 +30,29 @@
 [X]		- Self writting code for processings
 [X]		- Self writting code for connections
 		- Self writting code for configurations
+	- Dummy Configurations
+		- Config information in dummy proxy (tests)
+		- config = proc.config.clone()
+		- proc.config = config
+		- proc.config.Param1 = "illegal value" -> raise
+			- ask proxy.isCompatibleConfigurationValue(proc, param, value)
+		- proc.config.Param1 = "value"
+			- config = proxy.setConfiguration(proc)
+			- config.setValue(param, value)
+			- proxy.Configure(proc, config)
+	- CLAM Configurations
+		- Implement the visitor
+			- from a CLAM::Configuration get a proper ipyclam::Configuration
+			- from a ipyclam::Configuration obtain a CLAM::Configuration
+	- Multilevel configs
 	- Additional features
 [X]		- dir(network.types) should give all the available types as symbols
 [X]		- network.types.MinimalProcessing should return "MinimalProcessing"
 [X]		- network.types.NonExistingType should raise AttributeError
 		- network.processing1.name = processing2 # renaming
 		- network.processing1 = network.processing2 # cloning
+		- network.description
+		- network.description = "A description"
 		- del network.processing1 # removing
 		- network.processing1.InControl1.disconnect(network.Processing1.OutControl1) # just that connection
 		- network.processing1.InControl1.disconnect(network.Processing1) # any connections to Processing1
@@ -64,6 +81,8 @@
 			- Processing.connect(Connector): all from processing connectable to Connector
 			- Processing.connect(Connectors): all from processing connectable to Connector
 			- Processing.connect(Processing): all connectable in order
+			- Connector.connect(Processing): all from processing connectable to Connector
+			- Connectors.connect(Processing): all from processing connectable to Connector
 			- Connectors[1::2].connect(Processing) and the like (Suggestion the slice should return a Connectors with a diferent list)
 	- Advanced features (no prioritary at all)
 		- Type properties (category, description, port_monitor_type, icon, faust_svg...)

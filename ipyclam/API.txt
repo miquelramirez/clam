@@ -37,6 +37,7 @@
 	# Changes on proc._config has no effect on the processing 
 	# until 'reconfigure' is called
 	config = Config("ProcessingType")
+	config = proc._config.clone()
 	proc.ConfigField = newvalue
 	proc["ConfigField"] = newvalue
 	proc._config["ConfigField"] = newvalue
@@ -49,6 +50,7 @@
 	proc.config=config
 	proc.reconfigure()
 	proc.configured
+	proc.configErrorMessage
 
 - Obtaining ports/controls
 	proc.Output
