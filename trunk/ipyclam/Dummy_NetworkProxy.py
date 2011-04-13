@@ -64,6 +64,14 @@ _dummyPrototypes = dict(
 		outports = [],
 		incontrols = [],
 		outcontrols = []
+	),
+	SeveralInControlsProcessing = dict(
+		type = "SeveralInControlsProcessing",
+		config = dict(),
+		inports = [],
+		outports = [],
+		incontrols = [['InControl1', 'ControlType'], ['InControl2', 'ControlType'], ['InControl3', 'ControlType'], ['InControl4', 'ControlType']],
+		outcontrols = []
 	)
 )
 

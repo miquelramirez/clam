@@ -106,6 +106,11 @@ class Connector(object):
 			for connection in connections:
 				if (connection[0:2] == names) & (peer.name == connection[2]):
 					self._proxy.disconnect(self.kind, self._hostname(), self.name, peer.name, connection[3])
+		else:
+			connections = [connection for connection in self._proxy.controlConnections()]
+			for connection in connections:
+				if (connection[0:2] == names) & (peer.name == connection[2]):
+					self._proxy.disconnect(self.kind, self._hostname(), self.name, peer.name, connection[3])
 
 import unittest
 import TestFixtures
@@ -275,7 +280,7 @@ class ConnectorTests(unittest.TestCase):
 		listPeers = [ connector.name for connector in control.peers ]
 		self.assertEqual([], listPeers)
 
-	def test_disconnect_from_processing(self):
+	def test_disconnectports_from_processing(self):
 		import Network
 		net = Network.Network(TestFixtures.empty())
 		net.ProcessingSource = "PortSource"
@@ -288,6 +293,21 @@ class ConnectorTests(unittest.TestCase):
 		self.assertEqual(['InPort1', 'InPort2', 'InPort3', 'InPort4'], listPeers)
 		net.ProcessingSource.OutPort1.disconnect(net.ProcessingWithInports)
 		listPeers = [ connector.name for connector in net.ProcessingSource.OutPort1.peers ]
+		self.assertEqual([], listPeers)
+
+	def test_disconnectcontrols_from_processing(self):
+		import Network
+		net = Network.Network(TestFixtures.empty())
+		net.ProcessingSource = "ControlSource"
+		net.ProcessingWithIncontrols = "SeveralInControlsProcessing"
+		net.ProcessingSource.OutControl1.connect(net.ProcessingWithIncontrols.InControl1)
+		net.ProcessingSource.OutControl1.connect(net.ProcessingWithIncontrols.InControl2)
+		net.ProcessingSource.OutControl1.connect(net.ProcessingWithIncontrols.InControl3)		
+		net.ProcessingSource.OutControl1.connect(net.ProcessingWithIncontrols.InControl4)
+		listPeers = [ connector.name for connector in net.ProcessingSource.OutControl1.peers ]
+		self.assertEqual(['InControl1', 'InControl2', 'InControl3', 'InControl4'], listPeers)
+		net.ProcessingSource.OutControl1.disconnect(net.ProcessingWithIncontrols)
+		listPeers = [ connector.name for connector in net.ProcessingSource.OutControl1.peers ]
 		self.assertEqual([], listPeers)
 
 if __name__ == '__main__':
