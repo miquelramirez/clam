@@ -32,7 +32,7 @@ class ProcessingTypesTests(unittest.TestCase):
 
 	def test_dir(self) :
 		type = ProcessingTypes(TestFixtures.proxy())
-		self.assertEqual(["ControlSink", "ControlSource", "MinimalProcessing", "OtherControlSink", "PortSink", "PortSource", "SeveralInPortsProcessing"], dir(type))
+		self.assertEqual(["ControlSink", "ControlSource", "MinimalProcessing", "OtherControlSink", "PortSink", "PortSource", "SeveralInControlsProcessing", "SeveralInPortsProcessing"], dir(type))
 
 if __name__ == "__main__":
 	unittest.main()
