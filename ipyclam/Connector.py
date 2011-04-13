@@ -93,7 +93,19 @@ class Connector(object):
 		self.connect(peer)
 
 	def disconnect(self, peer):
+		import Processing
+		if type(peer) == Processing.Processing:
+			self.disconnectProcessing(peer)
+			return
 		self._proxy.disconnect(self.kind, self._hostname(), self.name, peer._hostname(), peer.name)
+
+	def disconnectProcessing(self, peer):
+		names = (self._hostname(), self.name)
+		if self.kind == Port:
+			connections = [connection for connection in self._proxy.portConnections()]
+			for connection in connections:
+				if (connection[0:2] == names) & (peer.name == connection[2]):
+					self._proxy.disconnect(self.kind, self._hostname(), self.name, peer.name, connection[3])
 
 import unittest
 import TestFixtures
@@ -263,8 +275,21 @@ class ConnectorTests(unittest.TestCase):
 		listPeers = [ connector.name for connector in control.peers ]
 		self.assertEqual([], listPeers)
 
+	def test_disconnect_from_processing(self):
+		import Network
+		net = Network.Network(TestFixtures.empty())
+		net.ProcessingSource = "PortSource"
+		net.ProcessingWithInports = "SeveralInPortsProcessing"
+		net.ProcessingSource.OutPort1.connect(net.ProcessingWithInports.InPort1)
+		net.ProcessingSource.OutPort1.connect(net.ProcessingWithInports.InPort2)
+		net.ProcessingSource.OutPort1.connect(net.ProcessingWithInports.InPort3)		
+		net.ProcessingSource.OutPort1.connect(net.ProcessingWithInports.InPort4)
+		listPeers = [ connector.name for connector in net.ProcessingSource.OutPort1.peers ]
+		self.assertEqual(['InPort1', 'InPort2', 'InPort3', 'InPort4'], listPeers)
+		net.ProcessingSource.OutPort1.disconnect(net.ProcessingWithInports)
+		listPeers = [ connector.name for connector in net.ProcessingSource.OutPort1.peers ]
+		self.assertEqual([], listPeers)
+
 if __name__ == '__main__':
 	unittest.main()
-
-
 
