@@ -56,6 +56,14 @@ _dummyPrototypes = dict(
 		outports = [],
 		incontrols = [['InControl1', 'OtherControlType']],
 		outcontrols = []
+	),
+	SeveralInPortsProcessing = dict(
+		type = "SeveralInPortsProcessing",
+		config = dict(),
+		inports = [['InPort1', 'DataType'], ['InPort2', 'DataType'], ['InPort3', 'DataType'], ['InPort4', 'DataType']],
+		outports = [],
+		incontrols = [],
+		outcontrols = []
 	)
 )
 
@@ -460,7 +468,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 	def test_availableTypes(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		self.assertEquals(['PortSource', 'PortSink', 'ControlSource', 
-						'OtherControlSink', 'MinimalProcessing', 'ControlSink'], proxy.availableTypes())
+						'OtherControlSink', 'MinimalProcessing', 'SeveralInPortsProcessing', 'ControlSink'], proxy.availableTypes())
 
 	def test_areConnectable(self) :
 		proxy = Dummy_NetworkProxy()
