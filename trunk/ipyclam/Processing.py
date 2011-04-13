@@ -5,6 +5,7 @@ import Connectors
 class Processing(object):
 	def __init__(self, name, proxy):
 		self.__dict__["name"] = name
+		self.__dict__["proxy"] = proxy
 		self.__dict__["type"] = proxy.processingType(name)
 		self.__dict__["_config"] = Configuration.Configuration(proxy.processingConfig(self.name))
 		self.__dict__["_inports"] = Connectors.Connectors(proxy, name, Connector.Port, Connector.In)
@@ -24,6 +25,10 @@ class Processing(object):
 			return self._outcontrols[name]
 		raise KeyError(name)
 	def __setitem__(self, name, value):
+		if name == 'name':
+			self.__dict__["proxy"].processingRename(self.__dict__[name], value)
+			self.__dict__["name"] = value
+			return
 		self._config[name] = value
 	def __getattr__(self, name):
 		try:
@@ -145,6 +150,11 @@ class ProcessingTests(unittest.TestCase):
 		self.assertEqual(p.OutControl2.name, "OutControl2")
 		self.assertEqual(p.OutControl2.kind, "Control")
 		self.assertEqual(p.OutControl2.direction, "Out")
+
+	def test_processingRenaming(self):
+		p = Processing("Processing1", TestFixtures.proxy())
+		p.name = "ProcessingRenamed"
+		self.assertEqual(p.name, "ProcessingRenamed")
 
 	def test_dirFunction(self):
 		p = Processing("Processing1", TestFixtures.proxy())

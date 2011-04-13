@@ -42,7 +42,7 @@ class Network(object):
 
 	# TODO: Workaround to be able to use the function from the C++ proxy
 	def xml(self):
-		self._proxy.xml()
+		return self._proxy.xml()
 
 import operator
 import unittest
