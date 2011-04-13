@@ -88,6 +88,10 @@ class Dummy_NetworkProxy :
 	def processingConfig(self, name) :
 		return self._processings[name]["config"]
 
+	def processingRename(self, oldName, newName):
+		self._processings[newName] = self._processings[oldName]
+		del self._processings[oldName]
+
 	def processingConnectors(self, name, kind, direction) :
 		connectorKindName = _kind2Name[(kind,direction)]
 		return [name for name,type in self._processings[name][connectorKindName]]
@@ -515,6 +519,12 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy.disconnect(Connector.Control, "Processing1", "OutControl1", "Processing2", "Incontrol2")
 		self.assertEquals([]
 				, proxy.connectorPeers("Processing1", Connector.Control, Connector.Out, "OutControl1"))
+
+	def test_processingRenaming(self) :
+		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy.processingRename("Processing1", "ProcessingRenamed")
+		self.assertFalse(proxy.hasProcessing("Processing1"))
+		self.assertTrue(proxy.hasProcessing("ProcessingRenamed"))
 
 if __name__ == '__main__':
 	unittest.main()
