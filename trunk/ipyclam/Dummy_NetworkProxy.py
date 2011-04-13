@@ -89,6 +89,8 @@ class Dummy_NetworkProxy :
 		return self._processings[name]["config"]
 
 	def processingRename(self, oldName, newName):
+		if newName in self._processings.keys():
+			raise KeyError(newName + " is already taken")
 		self._processings[newName] = self._processings[oldName]
 		del self._processings[oldName]
 
@@ -525,6 +527,15 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy.processingRename("Processing1", "ProcessingRenamed")
 		self.assertFalse(proxy.hasProcessing("Processing1"))
 		self.assertTrue(proxy.hasProcessing("ProcessingRenamed"))
+
+	def test_processingRenamingWithExistingNameFails(self) :
+		proxy = Dummy_NetworkProxy()
+		proxy.addProcessing("PortSource", "ProcessingNameThatWillBeRepeated")
+		proxy.addProcessing("PortSink", "ProcessingToRename")
+		try:
+			proxy.processingRename("ProcessingToRename", "ProcessingNameThatWillBeRepeated")
+		except KeyError, e:
+			self.assertEquals(("ProcessingNameThatWillBeRepeated is already taken", ), e.args)
 
 if __name__ == '__main__':
 	unittest.main()
