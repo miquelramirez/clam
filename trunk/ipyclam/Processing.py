@@ -2,8 +2,11 @@ import Connector
 import Configuration
 import Connectors
 
+class NotFound(Exception) : pass
+
 class Processing(object):
 	def __init__(self, name, proxy):
+		assert(proxy.hasProcessing(name)) # TODO unit test
 		self.__dict__["name"] = name
 		self.__dict__["proxy"] = proxy
 		self.__dict__["type"] = proxy.processingType(name)
@@ -65,9 +68,11 @@ class ProcessingTests(unittest.TestCase):
 
 	def test_typeIsReadOnly(self) :
 		p = Processing("Processing1", TestFixtures.proxy())
-		with self.assertRaises(AttributeError) as contexManager :
+		try :
 			p.type="AnotherType"
-		self.assertEquals("Attribute 'type' is read only", contexManager.exception.args[0])
+			self.fail("Exception expected")
+		except AttributeError, e :
+			self.assertEquals("Attribute 'type' is read only", e.args[0])
 
 	def test_name(self) :
 		p = Processing("Processing1", TestFixtures.proxy())
