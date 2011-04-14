@@ -475,8 +475,15 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_availableTypes(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
-		self.assertEquals(['PortSource', 'PortSink', 'ControlSource', 
-						'OtherControlSink', 'MinimalProcessing', 'SeveralInPortsProcessing', 'ControlSink'], proxy.availableTypes())
+		self.assertEquals([
+			'PortSource',
+			'PortSink',
+			'ControlSource', 
+			'OtherControlSink',
+			'MinimalProcessing',
+			'SeveralInPortsProcessing',
+			'ControlSink',
+			].sort(), proxy.availableTypes().sort())
 
 	def test_areConnectable(self) :
 		proxy = Dummy_NetworkProxy()
@@ -546,13 +553,15 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_processingRenamingWithExistingNameFails(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("PortSource", "ProcessingNameThatWillBeRepeated")
+		proxy.addProcessing("PortSource", "ExistingName")
 		proxy.addProcessing("PortSink", "ProcessingToRename")
+		# TOFIX: KeyError should be used just when a non existing key, and args should be the kay
 		try:
-			proxy.processingRename("ProcessingToRename", "ProcessingNameThatWillBeRepeated")
+			proxy.processingRename("ProcessingToRename", "ExistingName")
 		except KeyError, e:
-			self.assertEquals(("ProcessingNameThatWillBeRepeated is already taken", ), e.args)
+			self.assertEquals(("ExistingName is already taken", ), e.args)
 
 if __name__ == '__main__':
 	unittest.main()
+
 
