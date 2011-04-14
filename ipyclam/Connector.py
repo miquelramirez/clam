@@ -283,31 +283,31 @@ class ConnectorTests(unittest.TestCase):
 	def test_disconnectports_from_processing(self):
 		import Network
 		net = Network.Network(TestFixtures.empty())
-		net.ProcessingSource = "PortSource"
-		net.ProcessingWithInports = "SeveralInPortsProcessing"
-		net.ProcessingSource.OutPort1.connect(net.ProcessingWithInports.InPort1)
-		net.ProcessingSource.OutPort1.connect(net.ProcessingWithInports.InPort2)
-		net.ProcessingSource.OutPort1.connect(net.ProcessingWithInports.InPort3)		
-		net.ProcessingSource.OutPort1.connect(net.ProcessingWithInports.InPort4)
-		listPeers = [ connector.name for connector in net.ProcessingSource.OutPort1.peers ]
+		net.source = "PortSource"
+		net.sink = "SeveralInPortsProcessing"
+		net.source.OutPort1 > net.sink.InPort1
+		net.source.OutPort1 > net.sink.InPort2
+		net.source.OutPort1 > net.sink.InPort3
+		net.source.OutPort1 > net.sink.InPort4
+		listPeers = [ connector.name for connector in net.source.OutPort1.peers ]
 		self.assertEqual(['InPort1', 'InPort2', 'InPort3', 'InPort4'], listPeers)
-		net.ProcessingSource.OutPort1.disconnect(net.ProcessingWithInports)
-		listPeers = [ connector.name for connector in net.ProcessingSource.OutPort1.peers ]
+		net.source.OutPort1.disconnect(net.sink)
+		listPeers = [ connector.name for connector in net.source.OutPort1.peers ]
 		self.assertEqual([], listPeers)
 
 	def test_disconnectcontrols_from_processing(self):
 		import Network
 		net = Network.Network(TestFixtures.empty())
-		net.ProcessingSource = "ControlSource"
-		net.ProcessingWithIncontrols = "SeveralInControlsProcessing"
-		net.ProcessingSource.OutControl1.connect(net.ProcessingWithIncontrols.InControl1)
-		net.ProcessingSource.OutControl1.connect(net.ProcessingWithIncontrols.InControl2)
-		net.ProcessingSource.OutControl1.connect(net.ProcessingWithIncontrols.InControl3)		
-		net.ProcessingSource.OutControl1.connect(net.ProcessingWithIncontrols.InControl4)
-		listPeers = [ connector.name for connector in net.ProcessingSource.OutControl1.peers ]
+		net.source = "ControlSource"
+		net.sink = "SeveralInControlsProcessing"
+		net.source.OutControl1 > net.sink.InControl1
+		net.source.OutControl1 > net.sink.InControl2
+		net.source.OutControl1 > net.sink.InControl3
+		net.source.OutControl1 > net.sink.InControl4
+		listPeers = [ connector.name for connector in net.source.OutControl1.peers ]
 		self.assertEqual(['InControl1', 'InControl2', 'InControl3', 'InControl4'], listPeers)
-		net.ProcessingSource.OutControl1.disconnect(net.ProcessingWithIncontrols)
-		listPeers = [ connector.name for connector in net.ProcessingSource.OutControl1.peers ]
+		net.source.OutControl1.disconnect(net.sink)
+		listPeers = [ connector.name for connector in net.source.OutControl1.peers ]
 		self.assertEqual([], listPeers)
 
 if __name__ == '__main__':
