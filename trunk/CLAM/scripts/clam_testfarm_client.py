@@ -184,7 +184,7 @@ clam.add_subtask('NetworkEditor installation', [
 	'scons install',
 ] )
 
-task.add_subtask('Offline Player installation', [
+clam.add_subtask('Offline Player installation', [
 	'cd %(sandbox)s/imm_bm/src/OfflinePlayer/'%localDefinitions,
 	'scons prefix=%(installPath)s' % localDefinitions,
 	'scons install',
