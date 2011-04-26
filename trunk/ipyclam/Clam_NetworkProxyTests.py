@@ -8,6 +8,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 	def test_availableTypes(self):
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
 		self.assertTrue('DummyProcessingWithInAndOutPorts' in proxy.availableTypes())
+		self.assertTrue('DummyProcessingWithInAndOutControls' in proxy.availableTypes())
 
 	def test_addProcessing(self):
 		import Network
@@ -62,12 +63,47 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.AddedProcessing1 = "AudioSink"
 		self.assertEqual("AudioSink", proxy.processingType("AddedProcessing1"))
 
-	def test_processingHasConnectorWhenItDoesnt(self):
+	def test_processingHasPortWhenItDoesnt(self):
 		import Network
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
 		net = Network.Network(proxy)
-		net.AddedProcessing1 = "AudioSink"
-		
+		net.ProcessingWithoutInport2 = "DummyProcessingWithInAndOutPorts"
+		self.assertFalse(proxy.processingHasConnector('ProcessingWithoutInport2', "Port", "In", "Inport2"))
+
+	def test_processingHasInPortWhenItDoes(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.ProcessingWithInport = "DummyProcessingWithInAndOutPorts"
+		self.assertTrue(proxy.processingHasConnector('ProcessingWithInport', "Port", "In", "Inport1"))
+
+	def test_processingHasOutPortWhenItDoes(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.ProcessingWithOutport = "DummyProcessingWithInAndOutPorts"
+		self.assertTrue(proxy.processingHasConnector('ProcessingWithOutport', "Port", "Out", "Outport1"))
+
+	def test_processingHasControlWhenItDoesnt(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.ProcessingWithoutIncontrol1 = "DummyProcessingWithInAndOutPorts"
+		self.assertFalse(proxy.processingHasConnector('ProcessingWithoutIncontrol1', "Control", "In", "Incontrol1"))
+   
+	def test_processingHasInControlWhenItDoes(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.ProcessingWithIncontrol = "DummyProcessingWithInAndOutControls"
+		self.assertTrue(proxy.processingHasConnector('ProcessingWithIncontrol', "Control", "In", "Incontrol1"))
+   
+	def test_processingHasOutControlWhenItDoes(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.ProcessingWithOutcontrol = "DummyProcessingWithInAndOutControls"
+		self.assertTrue(proxy.processingHasConnector('ProcessingWithOutcontrol', "Control", "Out", "Outcontrol1"))
 
 if __name__ == '__main__':
 	unittest.main()
