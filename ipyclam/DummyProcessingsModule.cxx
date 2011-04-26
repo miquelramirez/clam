@@ -1,5 +1,5 @@
 #include <boost/python.hpp>
-#include "DummyProcessing.hxx"
+#include "DummyProcessings.hxx"
 
 BOOST_PYTHON_MODULE(DummyProcessingsModule)
 {}
