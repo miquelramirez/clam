@@ -1,18 +1,18 @@
-#ifndef DummyProcessing_hxx
-#define DummyProcessing_hxx
+#ifndef DummyProcessings_hxx
+#define DummyProcessings_hxx
 
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
 
 
-class DummyProcessing : public CLAM::Processing
+class DummyProcessingWithInAndOutPorts : public CLAM::Processing
 { 
 	CLAM::InPort<float> mIn;
 	CLAM::OutPort<float> mOut;
 public:
-	const char* GetClassName() const { return "DummyProcessing"; }
-	DummyProcessing(const Config& config = Config()) 
+	const char* GetClassName() const { return "DummyProcessingWithInAndOutPorts"; }
+	DummyProcessingWithInAndOutPorts(const Config& config = Config()) 
 		: mIn("Inport1", this)
 		, mOut("Outport1", this) 
 	{
@@ -34,4 +34,4 @@ public:
 	}
 };
 
-#endif // DummyProcessing_hxx
+#endif // DummyProcessings_hxx
