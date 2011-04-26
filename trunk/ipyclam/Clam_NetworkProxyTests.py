@@ -34,5 +34,26 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.Processing1 = "AudioSink"
 		self.assertEqual(['Processing1'], proxy.processingNames())
 
+	def test_addTwoProcessings(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "AudioSink"
+		net.Processing2 = "AudioSource"
+		self.assertEqual(['Processing1', 'Processing2'], proxy.processingNames())
+
+	def test_hasProcessingWhenEmpty(self):
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		self.assertFalse(proxy.hasProcessing('NotAddedProcessing'))
+
+	def test_hasProcessingWhenAddingTwo(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.AddedProcessing1 = "AudioSink"
+		net.AddedProcessing2 = "AudioSource"
+		self.assertTrue(proxy.hasProcessing('AddedProcessing1'))
+		self.assertTrue(proxy.hasProcessing('AddedProcessing2'))
+
 if __name__ == '__main__':
 	unittest.main()
