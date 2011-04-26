@@ -34,6 +34,17 @@ void addProcessing(CLAM::Network & network, char * type, char * processingName)
 	network.AddProcessing(processingName, type);
 }
 
+py::list processingNames(CLAM::Network & network)
+{
+	std::list<std::string> names;
+	CLAM::Network::ProcessingsMap::iterator it;
+	for (it=network.BeginProcessings(); it!=network.EndProcessings(); it++)
+	{
+		names.push_back(it->first);
+	}
+	return pythonizeList(names);
+}
+
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 {
 	// Keep 'using namespace' in the inner scope
@@ -55,6 +66,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("addProcessing",
 			addProcessing,
 			"Adds a Processing with the name and type specified to the network"
+			)
+		.def("processingNames",
+			processingNames,
+			"Returns the names of all the processing modules"
 			)
 		;
 }
