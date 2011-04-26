@@ -10,8 +10,6 @@ std::string Dump(CLAM::Network & net)
 {
 	std::ostringstream str;
 	CLAM::XMLStorage::Dump(net, "Network", str);
-	//TODO: Workaround to be able to see the xml. Why doesn't work the return?
-	std::cout << str.str() << std::endl;
 	return str.str();
 }
 
@@ -42,9 +40,9 @@ py::list processingNames(CLAM::Network & network)
 	return pythonizeList(names);
 }
 
-CLAM::Processing & addProcessing(CLAM::Network & network, char * type, char * processingName)
+void addProcessing(CLAM::Network & network, char * type, char * processingName)
 {
-	return network.AddProcessing(processingName, type);
+	network.AddProcessing(processingName, type);
 }
 
 bool hasProcessing(CLAM::Network & network, char * processingName)
@@ -137,8 +135,7 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			"Returns the names of all the processing modules"
 			)
 		.def("addProcessing",
-			&addProcessing,
-			return_internal_reference<>(),
+			addProcessing,
 			"Adds a Processing with the name and type specified to the network"
 			)
 		.def("hasProcessing",
