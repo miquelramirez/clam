@@ -49,14 +49,15 @@
 [X]		- dir(network.types) should give all the available types as symbols
 [X]		- network.types.MinimalProcessing should return "MinimalProcessing"
 [X]		- network.types.NonExistingType should raise AttributeError
-		- network.processing1.name = processing2 # renaming
+[X]		- network.processing1.name = processing2 # renaming
 		- network.processing1 = network.processing2 # cloning
 		- network.description
 		- network.description = "A description"
 		- del network.processing1 # removing
-		- network.processing1.InControl1.disconnect(network.Processing1.OutControl1) # just that connection
-		- network.processing1.InControl1.disconnect(network.Processing1) # any connections to Processing1
-		- network.processing1.InControl1.disconnect() # any connections
+[X]		- network.processing1.InControl1.disconnect(network.Processing1.OutControl1) # just that connection
+			- Fail if not connected?
+[X]		- network.processing1.InControl1.disconnect(network.Processing1) # any connections to Processing1
+[X]		- network.processing1.InControl1.disconnect() # any connections
 		- network.code = "Type", should fail (and any existing network method)
 		- net.code(networkVar="aNetwork") generates code using 'aNetwork' as var for the network
 		- net.code dealing weird names, should use subscript net["A processing"] or net.proc1["A connector"]
