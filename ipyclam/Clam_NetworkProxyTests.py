@@ -55,5 +55,13 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		self.assertTrue(proxy.hasProcessing('AddedProcessing1'))
 		self.assertTrue(proxy.hasProcessing('AddedProcessing2'))
 
+	def test_processingType(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.AddedProcessing1 = "AudioSink"
+		self.assertEqual("AudioSink", proxy.processingType("AddedProcessing1"))
+
+
 if __name__ == '__main__':
 	unittest.main()

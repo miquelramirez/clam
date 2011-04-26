@@ -50,6 +50,28 @@ bool hasProcessing(CLAM::Network & network, char * processingName)
 	return network.HasProcessing(processingName);
 }
 
+std::string processingType(CLAM::Network & network, char * processingName)
+{
+	return network.GetProcessing(processingName).GetClassName();
+}
+
+/*
+	TODO: Untested non-working code
+*/
+py::dict processingConfig(CLAM::Network & network, char * processingName)
+{
+	py::dict processingConfig;
+	return processingConfig;
+}
+py::list processingConnectors(CLAM::Network & network, char * processingName, char * kind, char * direction)
+{
+	py::list connectors;
+	return connectors;
+}
+/*
+	End of non-working code
+*/
+
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 {
 	// Keep 'using namespace' in the inner scope
@@ -79,6 +101,18 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("hasProcessing",
 			hasProcessing,
 			"Tells whether or not there is a processing with the given name on the network"
+			)
+		.def("processingType",
+			processingType,
+			"Returns the type of the processing"
+			)
+		.def("processingConfig",
+			processingConfig, //TODO: Fake implementation for processingType
+			"Returns the config dictionary of the processing"
+			)
+		.def("processingConnectors", //TODO: Fake implementation for processingType
+			processingConnectors,
+			""
 			)
 		;
 }
