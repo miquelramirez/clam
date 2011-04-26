@@ -45,6 +45,11 @@ py::list processingNames(CLAM::Network & network)
 	return pythonizeList(names);
 }
 
+bool hasProcessing(CLAM::Network & network, char * processingName)
+{
+	return network.HasProcessing(processingName);
+}
+
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 {
 	// Keep 'using namespace' in the inner scope
@@ -70,6 +75,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("processingNames",
 			processingNames,
 			"Returns the names of all the processing modules"
+			)
+		.def("hasProcessing",
+			hasProcessing,
+			"Tells whether or not there is a processing with the given name on the network"
 			)
 		;
 }
