@@ -7,18 +7,18 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	def test_availableTypes(self):
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
-		self.assertTrue('DummyProcessing' in proxy.availableTypes())
+		self.assertTrue('DummyProcessingWithInAndOutPorts' in proxy.availableTypes())
 
 	def test_addProcessing(self):
 		import Network
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
 		net = Network.Network(proxy)
-		net.Processing1 = "DummyProcessing"
+		net.Processing1 = "DummyProcessingWithInAndOutPorts"
 		self.assertEqual(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n"
 			"<Network clamVersion=\"1.4.1\" id=\"Unnamed Network\">\n"
 			"\n"
-			"  <processing id=\"Processing1\" type=\"DummyProcessing\"/>\n"
+			"  <processing id=\"Processing1\" type=\"DummyProcessingWithInAndOutPorts\"/>\n"
 			"\n"
 			"</Network>\n"
 			, proxy.xml())
@@ -62,6 +62,12 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.AddedProcessing1 = "AudioSink"
 		self.assertEqual("AudioSink", proxy.processingType("AddedProcessing1"))
 
+	def test_processingHasConnectorWhenItDoesnt(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.AddedProcessing1 = "AudioSink"
+		
 
 if __name__ == '__main__':
 	unittest.main()
