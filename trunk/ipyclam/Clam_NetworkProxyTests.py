@@ -4,9 +4,11 @@ import unittest
 import TestFixtures
 
 class Clam_NetworkProxyTests(unittest.TestCase):
+
 	def test_availableTypes(self):
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
 		self.assertTrue('DummyProcessing' in proxy.availableTypes())
+
 	def test_addProcessing(self):
 		import Network
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
@@ -20,6 +22,17 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 			"\n"
 			"</Network>\n"
 			, proxy.xml())
+
+	def test_processingNamesWhenEmpty(self):
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		self.assertEqual([], proxy.processingNames())
+
+	def test_processingNamesWhenAddingAProcessing(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "AudioSink"
+		self.assertEqual(['Processing1'], proxy.processingNames())
 
 if __name__ == '__main__':
 	unittest.main()
