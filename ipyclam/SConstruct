@@ -31,6 +31,12 @@ module = env.SharedLibrary (
 	SHLIBPREFIX='',
 )
 
+module = env.SharedLibrary (
+	target='DummyProcessingsModule',
+	source=['DummyProcessingsModule.cxx','DummyProcessing.cxx'],
+	SHLIBPREFIX='',
+)
+
 program = env.Program(
 	target='ipyclam_console',
 	source='ipyclam_console.cxx',
