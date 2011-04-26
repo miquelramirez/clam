@@ -3,8 +3,9 @@
 
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/Processing.hxx>
-
 
 class DummyProcessingWithInAndOutPorts : public CLAM::Processing
 { 
@@ -26,6 +27,30 @@ public:
 		mIn.Consume();
 		mOut.Produce();
 		return result;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+};
+
+class DummyProcessingWithInAndOutControls : public CLAM::Processing
+{
+	CLAM::InControl<float> mInControl;
+	CLAM::OutControl<float> mOutControl;
+public:
+	const char* GetClassName() const { return "DummyProcessingWithInAndOutControls"; }
+	DummyProcessingWithInAndOutControls(const Config& config = Config()) 
+		: mInControl("Incontrol1", this)
+		, mOutControl("Outcontrol1", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
 	}
 
 	bool Do(float in, float out)
