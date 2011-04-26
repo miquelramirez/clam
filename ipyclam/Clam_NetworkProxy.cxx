@@ -55,6 +55,24 @@ std::string processingType(CLAM::Network & network, char * processingName)
 	return network.GetProcessing(processingName).GetClassName();
 }
 
+bool processingHasConnector(CLAM::Network & network, char * processingName, char * kind, char * direction, char * connectorName)
+{
+	if (strcmp(kind, "Port") == 0)
+	{
+		if (strcmp(direction, "In") == 0)
+			return network.GetProcessing(processingName).HasInPort(connectorName);
+		else
+			return network.GetProcessing(processingName).HasOutPort(connectorName);
+	}
+	else
+	{
+		if (strcmp(direction, "In") == 0)
+			return network.GetProcessing(processingName).HasInControl(connectorName);
+		else
+			return network.GetProcessing(processingName).HasOutControl(connectorName);
+	}
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -105,6 +123,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("processingType",
 			processingType,
 			"Returns the type of the processing"
+			)
+		.def("processingHasConnector",
+			processingHasConnector,
+			"Returns true if the processing has the specified connector"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
