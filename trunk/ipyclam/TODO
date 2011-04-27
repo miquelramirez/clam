@@ -51,8 +51,8 @@
 [X]		- network.types.NonExistingType should raise AttributeError
 [X]		- network.processing1.name = processing2 # renaming
 		- network.processing1 = network.processing2 # cloning
-		- network.description
-		- network.description = "A description"
+[X]		- network.description
+[X]		- network.description = "A description"
 		- del network.processing1 # removing
 [X]		- network.processing1.InControl1.disconnect(network.Processing1.OutControl1) # just that connection
 			- Fail if not connected?
@@ -78,9 +78,9 @@
 				- connect as many compatible connections as available, matching index
 				- < and > version restrict directionality
 			- Connectors.connect(Connector): all from Connectors connectable to Connector (returns n of connections done)
-			- Connector.connect(Connectors): all from Connectors connectable to Connector (returns n of connections done)
+			- Connector.connect(Connectors): all from Connector connectable to Connectors (returns n of connections done)
 			- Processing.connect(Connector): all from processing connectable to Connector
-			- Processing.connect(Connectors): all from processing connectable to Connector
+			- Processing.connect(Connectors): all from processing connectable to Connectors
 			- Processing.connect(Processing): all connectable in order
 			- Connector.connect(Processing): all from processing connectable to Connector
 			- Connectors.connect(Processing): all from processing connectable to Connector
@@ -116,7 +116,3 @@
 [X]	- Network.__dir__ should return also types
 [X]	- Do not allow repeated connections
 [X]	- > and < operators should ensure direction matches with arrows
-
-
-
-

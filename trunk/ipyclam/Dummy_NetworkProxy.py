@@ -90,13 +90,14 @@ class BadProcessingType(Exception):
 
 class Dummy_NetworkProxy :
 
-	def __init__(self, processings=[], portConnections=[], controlConnections=[], types=_dummyPrototypes) :
+	def __init__(self, processings=[], portConnections=[], controlConnections=[], description="", types=_dummyPrototypes) :
 		self._processings = dict()
 		for process in processings:
 			self._processings[process['name']] = process
 		self._portConnections = portConnections
 		self._controlConnections = controlConnections
 		self._types = types
+		self._description = description
 
 	def processingType(self, name) :
 		return self._processings[name]["type"]
@@ -179,6 +180,11 @@ class Dummy_NetworkProxy :
 		else:
 			self._controlConnections.remove((fromProcessing, fromConnector, toProcessing, toConnector))
 
+	def description(self, description = None):
+		if description == None:
+			return self._description
+		self._description = description
+
 import unittest
 
 class Dummy_NetworkProxyTest(unittest.TestCase) :
@@ -244,7 +250,8 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			("Processing1", "OutControl1", "Processing2", "Incontrol2"),
 			("Processing1", "OutControl2", "Processing2", "Incontrol2"),
 			("Processing2", "Outcontrol1", "Processing1", "InControl2"),
-		]
+		],
+		""
 	]
 
 	def test_type(self) :
@@ -560,6 +567,15 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			proxy.processingRename("ProcessingToRename", "ExistingName")
 		except KeyError, e:
 			self.assertEquals(("ExistingName is already taken", ), e.args)
+
+	def test_networkDescriptionEmpty(self):
+		proxy = Dummy_NetworkProxy()
+		self.assertEquals("", proxy.description())
+
+	def test_setNetworkDescription(self):
+		proxy = Dummy_NetworkProxy()
+		proxy.description("A description")
+		self.assertEquals("A description", proxy.description())
 
 if __name__ == '__main__':
 	unittest.main()

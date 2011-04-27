@@ -67,5 +67,6 @@ def proxy() :
 			("Processing1", "OutControl1", "Processing2", "Incontrol2"),
 			("Processing1", "OutControl2", "Processing2", "Incontrol2"),
 			("Processing2", "Outcontrol1", "Processing1", "InControl2"),			
-		]
+		],
+		""
 )
