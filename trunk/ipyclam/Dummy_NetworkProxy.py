@@ -180,9 +180,10 @@ class Dummy_NetworkProxy :
 		else:
 			self._controlConnections.remove((fromProcessing, fromConnector, toProcessing, toConnector))
 
-	def description(self, description = None):
-		if description == None:
-			return self._description
+	def getDescription(self):
+		return self._description
+
+	def setDescription(self, description):
 		self._description = description
 
 import unittest
@@ -568,14 +569,14 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		except KeyError, e:
 			self.assertEquals(("ExistingName is already taken", ), e.args)
 
-	def test_networkDescriptionEmpty(self):
+	def test_getNetworkDescriptionEmpty(self):
 		proxy = Dummy_NetworkProxy()
-		self.assertEquals("", proxy.description())
+		self.assertEquals("", proxy.getDescription())
 
 	def test_setNetworkDescription(self):
 		proxy = Dummy_NetworkProxy()
-		proxy.description("A description")
-		self.assertEquals("A description", proxy.description())
+		proxy.setDescription("A description")
+		self.assertEquals("A description", proxy.getDescription())
 
 if __name__ == '__main__':
 	unittest.main()

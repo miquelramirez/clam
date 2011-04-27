@@ -12,7 +12,7 @@ class Network(object):
 
 	def __getattr__(self, name):
 		if name == "description":
-			return self._proxy.description()
+			return self._proxy.getDescription()
 		if not self._proxy.hasProcessing(name) :
 			raise AttributeError(name)
 		return Processing.Processing(proxy=self._proxy, name=name)
@@ -40,7 +40,7 @@ class Network(object):
 
 	def __setattr__(self, name, type) :
 		if name == "description":
-			self._proxy.description(type)
+			self._proxy.setDescription(type)
 			return
 		# TODO: fail on existing attributes (not processings)
 		self._proxy.addProcessing(type, name)
