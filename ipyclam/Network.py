@@ -11,6 +11,8 @@ class Network(object):
 		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __getattr__(self, name):
+		if name == "description":
+			return self._proxy.description()
 		if not self._proxy.hasProcessing(name) :
 			raise AttributeError(name)
 		return Processing.Processing(proxy=self._proxy, name=name)
@@ -37,6 +39,9 @@ class Network(object):
 		return code
 
 	def __setattr__(self, name, type) :
+		if name == "description":
+			self._proxy.description(type)
+			return
 		# TODO: fail on existing attributes (not processings)
 		self._proxy.addProcessing(type, name)
 
@@ -146,6 +151,11 @@ class NetworkTests(unittest.TestCase):
 	def test_types(self) :
 		net = Network(TestFixtures.empty())
 		self.assertEqual("MinimalProcessing", net.types.MinimalProcessing)
+
+	def test_setDescription(self):
+		net = Network(TestFixtures.empty())
+		net.description = "A description"
+		self.assertEquals("A description", net.description)
 
 if __name__ == '__main__':
 	unittest.main()
