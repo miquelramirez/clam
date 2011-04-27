@@ -46,6 +46,12 @@ env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
+# spectral lib
+spectral_sourcePaths = ["spectral"]
+spectral_sources = env.scanFiles('*.cxx', spectral_sourcePaths)
+spectral_headers = env.scanFiles('*.hxx', spectral_sourcePaths)
+
+
 # Sources and headers
 sourcePaths = ["src"]
 sources = env.scanFiles('*.cxx', sourcePaths)
@@ -70,12 +76,14 @@ if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
 	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
 	env.Append( LIBS=['fftw3'] )
 
+spectral_lib = env.SharedLibrary('spectral',spectral_sources)
+
 install, default = env.ClamModule(
 	moduleName,
 	version,
 	description = description,
 	url = url,
-	sources = sources,
+	sources = [spectral_lib] + sources,
 	headers = headers,
 	clamDependencies = clamDependencies,
 	otherDependencies = otherDependencies,
@@ -95,8 +103,21 @@ examples = env.scanFiles('*.clamnetwork', ['example-data'])
 examples+= env.scanFiles('*.ui', ['example-data'])
 
 
+spectral_pcfile = env.PkgConfigFile(
+	package='spectral',
+	version=version,
+	prefix=env['prefix'],
+	description='spectral utilities',
+	url=url,
+	requires=['fftw3f'],
+)
+
+default = [spectral_lib, spectral_pcfile] + list(default)
 install += [
-#	env.Install(os.path.join(env['prefix'],'share','networkeditor','example-data'), examples)
+	env.Install(os.path.join(env['prefix'],'lib'), spectral_lib),
+	env.Install(os.path.join(env['prefix'],'lib', 'pkgconfig'), spectral_pcfile),
+	env.Install(os.path.join(env['prefix'],'include', 'spectral'), spectral_headers),
+#	env.Install(os.path.join(env['prefix'],'share','networkeditor','example-data'), examples),
 	]
 
 env.Alias('install', install)
