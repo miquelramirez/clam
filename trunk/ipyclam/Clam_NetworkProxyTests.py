@@ -105,5 +105,15 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.ProcessingWithOutcontrol = "DummyProcessingWithInAndOutControls"
 		self.assertTrue(proxy.processingHasConnector('ProcessingWithOutcontrol', "Control", "Out", "Outcontrol1"))
 
+	def test_getNetworkdescriptionWhenNotSet(self):
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		self.assertEqual("", proxy.getDescription())
+
+	def test_setNetworkdescription(self):
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		proxy.setDescription("A network description")
+		self.assertEqual("A network description", proxy.getDescription())
+
+
 if __name__ == '__main__':
 	unittest.main()
