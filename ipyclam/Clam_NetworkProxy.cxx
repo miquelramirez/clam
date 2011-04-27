@@ -73,6 +73,16 @@ bool processingHasConnector(CLAM::Network & network, char * processingName, char
 	}
 }
 
+std::string getDescription(CLAM::Network & network)
+{
+	return network.GetDescription();
+}
+
+void setDescription(CLAM::Network & network, char * description)
+{
+	network.SetDescription(description);
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -127,6 +137,14 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("processingHasConnector",
 			processingHasConnector,
 			"Returns true if the processing has the specified connector"
+			)
+		.def("getDescription",
+			getDescription,
+			"Returns the description of the network"
+			)
+		.def("setDescription",
+			setDescription,
+			"Sets the description of the network"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
