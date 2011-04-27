@@ -1,0 +1,71 @@
+#! /usr/bin/python
+
+import os, glob, sys
+
+moduleName='spectral'
+version = "1.4.0"
+description = "Barcelona Media contributed spacialization algorigthms for the CLAM framework"
+url = 'http://clam-project.org'
+otherDependencies = [
+	'fftw3f',
+	]
+
+options = Variables('options.cache', ARGUMENTS)
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
+options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
+options.Add(PathVariable('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathVariable.PathAccept))
+options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
+options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+
+toolChain = 'mingw' if sys.platform == "win32" else 'default'
+env = Environment(ENV=os.environ, tools=[toolChain], options=options)
+options.Save('options.cache', env)
+Help(options.GenerateHelpText(env))
+env.SConsignFile() # Single signature file
+
+CLAMInstallDir = env['clam_prefix']
+if not env['prefix'] : env['prefix'] = env['clam_prefix']
+
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+if not os.access(os.path.join(clam_sconstoolspath,"clam.py"),os.R_OK):
+	raise Exception("CLAM not installed at '%s'. Use clam_prefix option."%CLAMInstallDir)
+if env['crossmingw'] :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
+env.Tool('pc', toolpath=[clam_sconstoolspath])
+
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+
+# spectral lib
+spectral_sourcePaths = []
+spectral_sources = Glob('*.cxx')
+spectral_headers = Glob('*.hxx')
+
+if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
+	env.Append( LIBPATH=['/opt/local/lib'] )
+
+if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
+	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
+	env.Append( LIBS=['fftw3'] )
+
+spectral_lib = env.SharedLibrary('spectral',spectral_sources)
+
+spectral_pcfile = env.PkgConfigFile(
+	package='spectral',
+	version=version,
+	prefix=env['prefix'],
+	description='spectral utilities',
+	url=url,
+	requires=['fftw3f'],
+)
+
+default = [spectral_lib, spectral_pcfile]
+install = [
+	env.Install(os.path.join(env['prefix'],'lib'), spectral_lib),
+	env.Install(os.path.join(env['prefix'],'lib', 'pkgconfig'), spectral_pcfile),
+	env.Install(os.path.join(env['prefix'],'include', 'spectral'), spectral_headers),
+	]
+
+env.Alias('install', install)
+env.Default(default)
+
+
