@@ -21,7 +21,7 @@
 #ifndef AlignedAllocator_hxx
 #define AlignedAllocator_hxx
 
-#if USE_FFTW
+#ifdef AVOID_FFTW 
 #include <cstdlib>
 #else
 #include <fftw3.h>
@@ -50,7 +50,7 @@ public:
 	inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer = 0)
 	{
 		size_t bytes = cnt * sizeof(T);
-#if AVOID_FFTW
+#ifdef AVOID_FFTW
 		void * result = 0;
 		// NOTE: on OSX, posix_memalign requires SDK 10.6
 		if (posix_memalign(&result, 16, bytes)) return 0;
@@ -62,7 +62,7 @@ public:
 	}
 	inline void deallocate(pointer p, size_type)
 	{
-#if AVOID_FFTW
+#ifdef AVOID_FFTW 
 		std::free(p);
 #else
 		fftwf_free(p);
