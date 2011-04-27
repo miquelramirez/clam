@@ -15,14 +15,12 @@ env.ParseConfig('python-config --cflags')
 env.ParseConfig('python-config --libs')
 env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
 
-boost_prefix = '/usr'
-
 env.AppendUnique(
 	LIBS=['boost_python']
 )
 
+# python-config adds a flag that is refused by g++
 if '-Wstrict-prototypes' in env['CCFLAGS'] :
-	# added by python-config --cflags, nags c++
 	env['CCFLAGS'].remove('-Wstrict-prototypes')
 
 module = env.SharedLibrary (
@@ -31,7 +29,7 @@ module = env.SharedLibrary (
 	SHLIBPREFIX='',
 )
 
-DummyProcessingsModule = env.SharedLibrary (
+dummyProcessingsModule = env.SharedLibrary (
 	target='DummyProcessingsModule',
 	source=['DummyProcessingsModule.cxx','DummyProcessings.cxx'],
 	SHLIBPREFIX='',
@@ -47,7 +45,7 @@ install = [
 	env.Install(targetDir, files) for targetDir, files in [
 	( os.path.join(os.path.expanduser('~/local'),'lib','python'),[
 		module,
-		DummyProcessingsModule,
+		dummyProcessingsModule,
 	]),
 	( os.path.join(os.path.expanduser('~/local'),'bin'),[
 		program,
@@ -58,7 +56,7 @@ env.Alias('install', install)
 
 Default(
 	module,
-	DummyProcessingsModule,
+	dummyProcessingsModule,
 	program,
 )
 
