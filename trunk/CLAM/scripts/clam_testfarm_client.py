@@ -188,12 +188,6 @@ clam.add_subtask('NetworkEditor installation', [
 	'scons install',
 ] )
 
-clam.add_subtask('Offline Player installation', [
-	'cd %(sandbox)s/imm_bm/src/OfflinePlayer/'%localDefinitions,
-	'scons prefix=%(installPath)s' % localDefinitions,
-	'scons install',
-] )
-
 clam.add_subtask('Back-to-back network tests', [
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
 	'./back2back.py',
