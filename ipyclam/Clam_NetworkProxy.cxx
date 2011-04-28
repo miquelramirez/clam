@@ -2,6 +2,8 @@
 #include <CLAM/Network.hxx>
 #include <CLAM/ProcessingFactory.hxx>
 #include <CLAM/XMLStorage.hxx>
+#include <CLAM/OutPort.hxx>
+#include <CLAM/OutControl.hxx>
 
 
 namespace py = boost::python;
@@ -139,6 +141,25 @@ bool connect(CLAM::Network & network, char * kind, const std::string & fromProce
 		return network.ConnectControls( producer, consumer );
 }
 
+bool connectionExists(CLAM::Network & network, char * kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
+{
+	const std::string producer = fromProcessing + "." + fromConnector;
+	const std::string consumer = toProcessing + "." + toConnector;
+
+	if (strcmp(kind, "Port") == 0)
+	{
+		CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(producer);
+		CLAM::InPortBase & inport = network.GetInPortByCompleteName(consumer);
+		return outport.IsVisuallyConnectedTo(inport);
+	}
+	else
+	{
+		CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(producer);
+		CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(consumer);
+		return outcontrol.IsConnectedTo(incontrol);
+	}
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -204,6 +225,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("connect",
 			connect,
 			"Connects an outconnector with an inconnector"
+			)
+		.def("connectionExists",
+			connectionExists,
+			"Returns true if the two connectors are connected. False otherwise"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
