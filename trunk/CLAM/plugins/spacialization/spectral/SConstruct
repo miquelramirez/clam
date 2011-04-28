@@ -34,6 +34,8 @@ spectral_sourcePaths = []
 spectral_sources = Glob('*.cxx')
 spectral_headers = Glob('*.hxx')
 
+env.ParseConfig('pkg-config --cflags --libs fftw3f')
+
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
 
