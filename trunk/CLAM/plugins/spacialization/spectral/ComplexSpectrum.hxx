@@ -25,6 +25,8 @@
 #include "AlignedAllocator.hxx"
 #include <vector>
 
+namespace spectral { class ComplexSpectrum; }
+
 /**
  * Experimental light-weight spectrum using complex representation.
  * Linear scale is used.
@@ -32,7 +34,7 @@
  * @ingroup NewSpectralProcessing.
  * @see MagPhaseSpectrum, CLAM::Spectrum
  */
-class ComplexSpectrum
+class spectral::ComplexSpectrum
 {
 public:
 	typedef std::complex<Float> Bin;

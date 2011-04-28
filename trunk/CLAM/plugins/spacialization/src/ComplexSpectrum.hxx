@@ -34,7 +34,7 @@ namespace CLAM
  * @see MagPhaseSpectrum, CLAM::Spectrum
  */
 
-typedef ::ComplexSpectrum ComplexSpectrum;
+typedef spectral::ComplexSpectrum ComplexSpectrum;
 
 } // namespace CLAM
 
