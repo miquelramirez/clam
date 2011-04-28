@@ -156,5 +156,31 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.Processing2 = "ControlSink"
 		self.assertTrue(proxy.connect("Control", "Processing1", "output", "Processing2", "input"))
 
+	def test_connectionExistsWhenItDoesnt(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "ControlSource"
+		net.Processing2 = "ControlSink"
+		self.assertFalse(proxy.connectionExists("Control", "Processing1", "output", "Processing2", "input"))
+
+	def test_connectionExistsForTwoPortsWhenItDoes(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "AudioSource"
+		net.Processing2 = "AudioSink"
+		proxy.connect("Port", "Processing1", "1", "Processing2", "1")
+		self.assertTrue(proxy.connectionExists("Port", "Processing1", "1", "Processing2", "1"))
+
+	def test_connectionExistsForTwoPortsWhenItDoes(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "ControlSource"
+		net.Processing2 = "ControlSink"
+		proxy.connect("Control", "Processing1", "output", "Processing2", "input")
+		self.assertTrue(proxy.connectionExists("Control", "Processing1", "output", "Processing2", "input"))
+
 if __name__ == '__main__':
 	unittest.main()
