@@ -127,6 +127,18 @@ py::list processingConnectors(CLAM::Network & network, char * processingName, ch
 	}
 }
 
+bool connect(CLAM::Network & network, char * kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
+{
+	
+	const std::string producer = fromProcessing + "." + fromConnector;
+	const std::string consumer = toProcessing + "." + toConnector;
+
+	if (strcmp(kind, "Port") == 0)
+		return network.ConnectPorts( producer, consumer );
+	else
+		return network.ConnectControls( producer, consumer );
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -188,6 +200,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("processingConnectors",
 			processingConnectors,
 			"Returns a list of the connectors of certain kind and direction from a Processing"
+			)
+		.def("connect",
+			connect,
+			"Connects an outconnector with an inconnector"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
