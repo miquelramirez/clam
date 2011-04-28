@@ -124,7 +124,7 @@ bool MyFFT::Do(const Audio& in, ComplexSpectrum &out)
 		"MyFFT: Do(): Not in execution mode");
 
 	TData * inbuffer = in.GetBuffer().GetPtr();
-	for (int i=0; i<mSize; i++)
+	for (unsigned i=0; i<mSize; i++)
 		_fftw3->realInput[i] = inbuffer[i];
 
 	fftw_execute(_fftw3->plan);
@@ -132,7 +132,7 @@ bool MyFFT::Do(const Audio& in, ComplexSpectrum &out)
 	out.spectralRange = in.GetSampleRate()/2;
 	const unsigned spectrumSize = mSize/2+1;
 	out.bins.resize(spectrumSize);
-	for (int i=0; i<spectrumSize; i++)
+	for (unsigned i=0; i<spectrumSize; i++)
 	{
 		out.bins[i]=std::complex<TData>(
 			_fftw3->complexOutput[i][0],
