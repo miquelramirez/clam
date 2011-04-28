@@ -59,4 +59,40 @@ public:
 	}
 };
 
+class DummyProcessingWithMultiplePortsAndControls : public CLAM::Processing
+{
+	CLAM::InPort<float> mIn;
+	CLAM::InPort<float> mIn2;
+	CLAM::OutPort<float> mOut;
+	CLAM::OutPort<float> mOut2;
+	CLAM::InControl<float> mInControl;
+	CLAM::InControl<float> mInControl2;
+	CLAM::OutControl<float> mOutControl;
+	CLAM::OutControl<float> mOutControl2;
+public:
+	const char* GetClassName() const { return "DummyProcessingWithMultiplePortsAndControls"; }
+	DummyProcessingWithMultiplePortsAndControls(const Config& config = Config()) 
+		: mIn("Inport1", this)
+		, mIn2("Inport2", this)
+		, mOut("Outport1", this)
+		, mOut2("Outport2", this)
+		, mInControl("Incontrol1", this)
+		, mInControl2("Incontrol2", this)
+		, mOutControl("Outcontrol1", this)
+		, mOutControl2("Outcontrol2", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+};
+
 #endif // DummyProcessings_hxx

@@ -130,6 +130,16 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		self.assertEqual(['Incontrol1'], proxy.processingConnectors('DummyProcessingWithInAndOutControl', "Control", "In"))
 		self.assertEqual(['Outcontrol1'], proxy.processingConnectors('DummyProcessingWithInAndOutControl', "Control", "Out"))
 
+	def test_processingConnectorsWithMultiplePortsAndControls(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.DummyProcessingWithMultiplePortsAndControls = "DummyProcessingWithMultiplePortsAndControls"
+		self.assertEqual(['Inport1', 'Inport2'], proxy.processingConnectors('DummyProcessingWithMultiplePortsAndControls', "Port", "In"))
+		self.assertEqual(['Outport1', 'Outport2'], proxy.processingConnectors('DummyProcessingWithMultiplePortsAndControls', "Port", "Out"))
+		self.assertEqual(['Incontrol1', 'Incontrol2'], proxy.processingConnectors('DummyProcessingWithMultiplePortsAndControls', "Control", "In"))
+		self.assertEqual(['Outcontrol1', 'Outcontrol2'], proxy.processingConnectors('DummyProcessingWithMultiplePortsAndControls', "Control", "Out"))
+
 
 if __name__ == '__main__':
 	unittest.main()

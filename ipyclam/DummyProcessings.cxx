@@ -3,7 +3,7 @@
 
 static const char * metadata[] = {
 	"key", "DummyProcessingWithInAndOutPorts",
-	"category", "Spectral Transformations",
+	"category", "Dummy Processings",
 	0
 	};
 
@@ -11,8 +11,16 @@ static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyProcessingWithInAn
 
 static const char * metadata2[] = {
 	"key", "DummyProcessingWithInAndOutControls",
-	"category", "Spectral Transformations",
+	"category", "Dummy Processings",
 	0
 	};
 
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyProcessingWithInAndOutControls> registrator2(metadata2);
+
+static const char * metadata3[] = {
+	"key", "DummyProcessingWithMultiplePortsAndControls",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyProcessingWithMultiplePortsAndControls> registrator3(metadata3);
