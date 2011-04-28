@@ -46,6 +46,7 @@ env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+#env.Append( CCFLAGS=['-march=native'] )
 
 # Sources and headers
 sourcePaths = ["src"]
@@ -53,12 +54,14 @@ sources = env.scanFiles('*.cxx', sourcePaths)
 headers = env.scanFiles('*.hxx', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)
 
+env.ParseConfig('pkg-config --cflags --libs spectral')
+
 if env['raytracing']=='traditional' or env['raytracing']=='convergent':
 	print 'linking with raytracing'
 	env.Append(CPPPATH=[os.path.join('..','..','..','..','imm_bm','src','raytracing')])
 	env.Append(LIBPATH=[os.path.join('..','..','..','..','imm_bm','src','raytracing')])
 	env.Append(LIBS=['raytracing',"GL","GLU","lo",'glut'])
-	env.ParseConfig('pkg-config --libs sdl')
+	env.ParseConfig('pkg-config --cflags --libs sdl')
 else :
 	sources.remove(os.path.join('src','RoomImpulseResponseSimulator.cxx'))
 	sources.remove(os.path.join('src','EnvironmentManager.cxx'))

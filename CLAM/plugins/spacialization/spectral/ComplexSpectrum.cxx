@@ -20,6 +20,6 @@
 
 #include "ComplexSpectrum.hxx"
 
-ComplexSpectrum::~ComplexSpectrum()
+spectral::ComplexSpectrum::~ComplexSpectrum()
 {
 }
