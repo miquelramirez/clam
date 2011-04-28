@@ -21,10 +21,7 @@
 #ifndef ComplexSpectrum_hxx
 #define ComplexSpectrum_hxx
 
-#include <vector>
-#include <complex>
-#include <CLAM/DataTypes.hxx>
-//#include "AlignedAllocator.hxx"
+#include <spectral/ComplexSpectrum.hxx>
 
 namespace CLAM
 {
@@ -36,23 +33,8 @@ namespace CLAM
  * @ingroup NewSpectralProcessing.
  * @see MagPhaseSpectrum, CLAM::Spectrum
  */
-class ComplexSpectrum
-{
-public:
-	typedef std::complex<TData> Bin;
-//	typedef std::vector<Bin, AlignedAllocator<Bin> > Bins;
-	typedef std::vector<Bin> Bins;
-	Bins bins;
-	virtual ~ComplexSpectrum();
-	TData spectralRange;
-	void dump(std::ostream & os)
-	{
-		os << "ComplexSpectrum (spectralRange " << spectralRange << ") {";
-		for (unsigned i=0; i<bins.size(); i++)
-			os << bins[i] << " ";
-		os << "}" << std::endl;
-	}
-};
+
+typedef ::ComplexSpectrum ComplexSpectrum;
 
 } // namespace CLAM
 
