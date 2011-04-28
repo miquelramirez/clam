@@ -129,7 +129,7 @@ clam.add_subtask('BM-Audio Raytracing', [
 
 clam.add_subtask('CLAM Plugins', [
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization/spectral'%localDefinitions,
-	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons prefix=%(installPath)s'%localDefinitions,
 	'scons install',
 
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
