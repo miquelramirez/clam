@@ -34,10 +34,6 @@
 
 namespace CLAM
 {
-
-	class ComplexSpectrum;
-	class Audio;
-
 /**
  Fast Fourier Tranform that takes an audio buffer (n samples) 
  and returns the complex spectrum of n/2+1 complex bins.
