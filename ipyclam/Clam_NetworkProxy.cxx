@@ -132,6 +132,8 @@ py::list processingConnectors(CLAM::Network & network, char * processingName, ch
 bool connect(CLAM::Network & network, char * kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
 {
 	
+	//TODO: Needs all the checks that the Dummy Proxy has
+	
 	const std::string producer = fromProcessing + "." + fromConnector;
 	const std::string consumer = toProcessing + "." + toConnector;
 
@@ -139,25 +141,6 @@ bool connect(CLAM::Network & network, char * kind, const std::string & fromProce
 		return network.ConnectPorts( producer, consumer );
 	else
 		return network.ConnectControls( producer, consumer );
-}
-
-bool connectionExists(CLAM::Network & network, char * kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
-{
-	const std::string producer = fromProcessing + "." + fromConnector;
-	const std::string consumer = toProcessing + "." + toConnector;
-
-	if (strcmp(kind, "Port") == 0)
-	{
-		CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(producer);
-		CLAM::InPortBase & inport = network.GetInPortByCompleteName(consumer);
-		return outport.IsVisuallyConnectedTo(inport);
-	}
-	else
-	{
-		CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(producer);
-		CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(consumer);
-		return outcontrol.IsConnectedTo(incontrol);
-	}
 }
 
 /*
@@ -229,6 +212,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("connectionExists",
 			connectionExists,
 			"Returns true if the two connectors are connected. False otherwise"
+			)
+		.def("areConnectable",
+			areConnectable,
+			"Returns true if the two connectors are connectable. False otherwise"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
