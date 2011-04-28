@@ -83,6 +83,50 @@ void setDescription(CLAM::Network & network, char * description)
 	network.SetDescription(description);
 }
 
+py::list processingConnectors(CLAM::Network & network, char * processingName, char * kind, char * direction)
+{
+	py::list connectors;
+	CLAM::Processing & proc = network.GetProcessing(processingName);
+	if (strcmp(kind, "Port") == 0)
+	{
+		if (strcmp(direction, "In") == 0)
+		{
+			for(unsigned int i = 0; i < proc.GetNInPorts(); ++i)
+			{
+				connectors.append(proc.GetInPort(i).GetName());
+			}
+			return connectors;
+		}	
+		else
+		{
+			for(unsigned int i = 0; i < proc.GetNOutPorts(); ++i)
+			{
+				connectors.append(proc.GetOutPort(i).GetName());
+			}
+			return connectors;
+		}
+	}
+	else
+	{
+		if (strcmp(direction, "In") == 0)
+		{
+			for(unsigned int i = 0; i < proc.GetNInControls(); ++i)
+			{
+				connectors.append(proc.GetInControl(i).GetName());
+			}
+			return connectors;
+		}
+		else
+		{
+			for(unsigned int i = 0; i < proc.GetNOutControls(); ++i)
+			{
+				connectors.append(proc.GetOutControl(i).GetName());
+			}
+			return connectors;
+		}
+	}
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -90,11 +134,6 @@ py::dict processingConfig(CLAM::Network & network, char * processingName)
 {
 	py::dict processingConfig;
 	return processingConfig;
-}
-py::list processingConnectors(CLAM::Network & network, char * processingName, char * kind, char * direction)
-{
-	py::list connectors;
-	return connectors;
 }
 /*
 	End of non-working code
@@ -146,13 +185,13 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			setDescription,
 			"Sets the description of the network"
 			)
+		.def("processingConnectors",
+			processingConnectors,
+			"Returns a list of the connectors of certain kind and direction from a Processing"
+			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
 			"Returns the config dictionary of the processing"
-			)
-		.def("processingConnectors", //TODO: Fake implementation for processingType
-			processingConnectors,
-			""
 			)
 		;
 }
