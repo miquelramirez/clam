@@ -189,7 +189,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		proxy.connect("Port", "Processing1", "1", "Processing2", "1")
 		self.assertTrue(proxy.connectionExists("Port", "Processing1", "1", "Processing2", "1"))
 
-	def test_connectionExistsForTwoPortsWhenItDoes(self):
+	def test_connectionExistsForTwoControlsWhenItDoes(self):
 		import Network
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
 		net = Network.Network(proxy)
@@ -197,6 +197,33 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.Processing2 = "ControlSink"
 		proxy.connect("Control", "Processing1", "output", "Processing2", "input")
 		self.assertTrue(proxy.connectionExists("Control", "Processing1", "output", "Processing2", "input"))
+
+	def test_connectorPeersOutport(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "AudioSource"
+		net.Processing2 = "AudioSink"
+		proxy.connect("Port", "Processing1", "1", "Processing2", "1")
+		self.assertEqual([("Processing2", "1")], proxy.connectorPeers("Processing1", "Port", "Out", "1"))
+
+	def test_connectorPeersInport(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "AudioSource"
+		net.Processing2 = "AudioSink"
+		proxy.connect("Port", "Processing1", "1", "Processing2", "1")
+		self.assertEqual([("Processing1", "1")], proxy.connectorPeers("Processing2", "Port", "In", "1"))
+
+	def test_connectorPeersOutcontrol(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "ControlSource"
+		net.Processing2 = "ControlSink"
+		proxy.connect("Control", "Processing1", "output", "Processing2", "input")
+		self.assertEqual([("Processing2", "input")], proxy.connectorPeers("Processing1", "Control", "Out", "output"))
 
 if __name__ == '__main__':
 	unittest.main()
