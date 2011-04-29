@@ -75,7 +75,7 @@ class Connector(object):
 			raise DifferentConnectorKind("Different kind: %s %s"%(self.name, peer.name))
 		if self.type != peer.type :
 			raise DifferentConnectorType("Different type: %s %s"%(self.name, peer.name))
-		if self._proxy.connectionExists(self.direction, self._hostname(), self.name, peer._hostname(), peer.name):
+		if self._proxy.connectionExists(self.kind, self._hostname(), self.name, peer._hostname(), peer.name):
 			raise ConnectionExists("%s.%s and %s.%s already connected"%(self._hostname(), self.name, peer._hostname(), peer.name))
 		if self.direction == Out :
 			self._proxy.connect(self.kind, self._hostname(), self.name, peer._hostname(), peer.name)
