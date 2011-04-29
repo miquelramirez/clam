@@ -193,6 +193,59 @@ bool connectionExists(CLAM::Network & network, char * kind, const std::string & 
 	}
 }
 
+py::list extractPeers(CLAM::Network::NamesList peers)
+{
+	py::list connectorPeers;
+	for(unsigned int i = 0; i < peers.size(); ++i)
+	{
+		std::list<std::string>::iterator it;
+		for(it=peers.begin(); it!=peers.end(); it++)
+		{
+			size_t tokenPosition = (*it).find(".");
+			py::tuple peer = py::make_tuple( (*it).substr(0, tokenPosition), (*it).substr(tokenPosition + 1) );
+			connectorPeers.append( peer );
+		}
+	}
+	return connectorPeers;
+}
+
+py::list connectorPeers(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
+{
+	py::list connectorPeers;
+	const std::string connector = processingName + "." + connectorName;
+
+	if (kind.compare("Port") == 0)
+	{
+		if (direction.compare("In") == 0)
+		{
+			CLAM::InPortBase & inport = network.GetInPortByCompleteName(connector);
+			CLAM::OutPortBase * outport = inport.GetVisuallyConnectedOutPort();
+			py::tuple peerTuple = py::make_tuple( network.GetProcessingName( *outport->GetProcessing() ), outport->GetName() );
+			connectorPeers.append(peerTuple);
+			return connectorPeers;
+		}
+		else
+		{
+			CLAM::Network::NamesList peers = network.GetInPortsConnectedTo(connector);
+			return extractPeers(peers);
+		}
+	}
+	else
+	{
+		if (direction.compare("In") == 0)
+		{
+			return connectorPeers;
+		}
+		else
+		{
+			CLAM::Network::NamesList peers = network.GetInControlsConnectedTo(connector);
+			return extractPeers(peers);
+		}
+	}
+}
+
+
+
 /*
 	TODO: Untested non-working code
 */
@@ -266,6 +319,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("connectionExists",
 			connectionExists,
 			"Returns true if the two connectors are connected. False otherwise"
+			)
+		.def("connectorPeers",
+			connectorPeers,
+			"Returns the list of peers from the connector"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
