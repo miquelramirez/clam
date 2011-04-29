@@ -156,5 +156,21 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.Processing2 = "ControlSink"
 		self.assertTrue(proxy.connect("Control", "Processing1", "output", "Processing2", "input"))
 
+	def test_connectorTypeForPorts(self) :
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "DummyProcessingWithInAndOutPorts"
+		self.assertEquals("f", proxy.connectorType("Processing1", "Port", "In", "Inport1"))
+		self.assertEquals("f", proxy.connectorType("Processing1", "Port", "Out", "Outport1"))
+
+	def test_connectorTypeForControls(self) :
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "DummyProcessingWithInAndOutControls"
+		self.assertEquals("f", proxy.connectorType("Processing1", "Control", "In", "Incontrol1"))
+		self.assertEquals("f", proxy.connectorType("Processing1", "Control", "Out", "Outcontrol1"))
+
 if __name__ == '__main__':
 	unittest.main()
