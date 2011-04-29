@@ -24,6 +24,23 @@ py::list pythonizeList(std::list<std::string> & list)
 	return result;
 }
 
+//Helper to build a Python List of Tuples containing the peers
+py::list extractPeers(CLAM::Network::NamesList peers)
+{
+	py::list connectorPeers;
+	for(unsigned int i = 0; i < peers.size(); ++i)
+	{
+		std::list<std::string>::iterator it;
+		for(it=peers.begin(); it!=peers.end(); it++)
+		{
+			size_t tokenPosition = (*it).find(".");
+			py::tuple peer = py::make_tuple( (*it).substr(0, tokenPosition), (*it).substr(tokenPosition + 1) );
+			connectorPeers.append( peer );
+		}
+	}
+	return connectorPeers;
+}
+
 py::list processingTypes(CLAM::Network & network)
 {
 	CLAM::ProcessingFactory::Keys types;
@@ -193,22 +210,6 @@ bool connectionExists(CLAM::Network & network, const std::string & kind, const s
 	}
 }
 
-py::list extractPeers(CLAM::Network::NamesList peers)
-{
-	py::list connectorPeers;
-	for(unsigned int i = 0; i < peers.size(); ++i)
-	{
-		std::list<std::string>::iterator it;
-		for(it=peers.begin(); it!=peers.end(); it++)
-		{
-			size_t tokenPosition = (*it).find(".");
-			py::tuple peer = py::make_tuple( (*it).substr(0, tokenPosition), (*it).substr(tokenPosition + 1) );
-			connectorPeers.append( peer );
-		}
-	}
-	return connectorPeers;
-}
-
 py::list connectorPeers(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
 {
 	py::list connectorPeers;
@@ -244,8 +245,16 @@ py::list connectorPeers(CLAM::Network & network, const std::string & processingN
 	}
 }
 
+bool disconnect(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
+{
+	const std::string producer = fromProcessing + "." + fromConnector;
+	const std::string consumer = toProcessing + "." + toConnector;
 
-
+	if (kind.compare("Port") == 0)
+		return network.DisconnectPorts( producer, consumer );
+	else
+		return network.DisconnectControls( producer, consumer );
+}
 /*
 	TODO: Untested non-working code
 */
@@ -323,6 +332,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("connectorPeers",
 			connectorPeers,
 			"Returns the list of peers from the connector"
+			)
+		.def("disconnect",
+			disconnect,
+			"Diconnects an outconnector from an inconnector"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
