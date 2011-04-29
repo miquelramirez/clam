@@ -143,6 +143,37 @@ bool connect(CLAM::Network & network, char * kind, const std::string & fromProce
 		return network.ConnectControls( producer, consumer );
 }
 
+std::string connectorType(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
+{
+	const std::string connector = processingName + "." + connectorName;
+	if (kind.compare("Port") == 0)
+	{
+		if (direction.compare("In") == 0)
+		{
+			CLAM::InPortBase & inport = network.GetInPortByCompleteName(connector);
+			return inport.GetTypeId().name();
+		}
+		else
+		{
+			CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(connector);
+			return outport.GetTypeId().name();
+		}
+	}
+	else
+	{
+		if (direction.compare("In") == 0)
+		{
+			CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(connector);
+			return incontrol.GetTypeId().name();
+		}
+		else
+		{
+			CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(connector);
+			return outcontrol.GetTypeId().name();
+		}
+	}
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -208,6 +239,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("connect",
 			connect,
 			"Connects an outconnector with an inconnector"
+			)
+		.def("connectorType",
+			connectorType,
+			"Returns the type of the connector"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
