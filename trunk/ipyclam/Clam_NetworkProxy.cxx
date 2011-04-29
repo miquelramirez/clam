@@ -31,7 +31,7 @@ py::list processingTypes(CLAM::Network & network)
 	return pythonizeList(types);
 }
 
-void addProcessing(CLAM::Network & network, char * type, char * processingName)
+void addProcessing(CLAM::Network & network, const std::string & type, const std::string & processingName)
 {
 	network.AddProcessing(processingName, type);
 }
@@ -47,28 +47,28 @@ py::list processingNames(CLAM::Network & network)
 	return pythonizeList(names);
 }
 
-bool hasProcessing(CLAM::Network & network, char * processingName)
+bool hasProcessing(CLAM::Network & network, const std::string & processingName)
 {
 	return network.HasProcessing(processingName);
 }
 
-std::string processingType(CLAM::Network & network, char * processingName)
+std::string processingType(CLAM::Network & network, const std::string & processingName)
 {
 	return network.GetProcessing(processingName).GetClassName();
 }
 
-bool processingHasConnector(CLAM::Network & network, char * processingName, char * kind, char * direction, char * connectorName)
+bool processingHasConnector(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
 {
-	if (strcmp(kind, "Port") == 0)
+	if (kind.compare("Port") == 0)
 	{
-		if (strcmp(direction, "In") == 0)
+		if (direction.compare("In") == 0)
 			return network.GetProcessing(processingName).HasInPort(connectorName);
 		else
 			return network.GetProcessing(processingName).HasOutPort(connectorName);
 	}
 	else
 	{
-		if (strcmp(direction, "In") == 0)
+		if (direction.compare("In") == 0)
 			return network.GetProcessing(processingName).HasInControl(connectorName);
 		else
 			return network.GetProcessing(processingName).HasOutControl(connectorName);
@@ -80,18 +80,18 @@ std::string getDescription(CLAM::Network & network)
 	return network.GetDescription();
 }
 
-void setDescription(CLAM::Network & network, char * description)
+void setDescription(CLAM::Network & network, const std::string & description)
 {
 	network.SetDescription(description);
 }
 
-py::list processingConnectors(CLAM::Network & network, char * processingName, char * kind, char * direction)
+py::list processingConnectors(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction)
 {
 	py::list connectors;
 	CLAM::Processing & proc = network.GetProcessing(processingName);
-	if (strcmp(kind, "Port") == 0)
+	if (kind.compare("Port") == 0)
 	{
-		if (strcmp(direction, "In") == 0)
+		if (direction.compare("In") == 0)
 		{
 			for(unsigned int i = 0; i < proc.GetNInPorts(); ++i)
 			{
@@ -110,7 +110,7 @@ py::list processingConnectors(CLAM::Network & network, char * processingName, ch
 	}
 	else
 	{
-		if (strcmp(direction, "In") == 0)
+		if (direction.compare("In") == 0)
 		{
 			for(unsigned int i = 0; i < proc.GetNInControls(); ++i)
 			{
@@ -129,7 +129,7 @@ py::list processingConnectors(CLAM::Network & network, char * processingName, ch
 	}
 }
 
-bool connect(CLAM::Network & network, char * kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
+bool connect(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
 {
 	
 	//TODO: Needs all the checks that the Dummy Proxy has
@@ -137,7 +137,7 @@ bool connect(CLAM::Network & network, char * kind, const std::string & fromProce
 	const std::string producer = fromProcessing + "." + fromConnector;
 	const std::string consumer = toProcessing + "." + toConnector;
 
-	if (strcmp(kind, "Port") == 0)
+	if (kind.compare("Port") == 0)
 		return network.ConnectPorts( producer, consumer );
 	else
 		return network.ConnectControls( producer, consumer );
@@ -174,12 +174,12 @@ std::string connectorType(CLAM::Network & network, const std::string & processin
 	}
 }
 
-bool connectionExists(CLAM::Network & network, char * kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
+bool connectionExists(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
 {
 	const std::string producer = fromProcessing + "." + fromConnector;
 	const std::string consumer = toProcessing + "." + toConnector;
 
-	if (strcmp(kind, "Port") == 0)
+	if (kind.compare("Port") == 0)
 	{
 		CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(producer);
 		CLAM::InPortBase & inport = network.GetInPortByCompleteName(consumer);
@@ -249,7 +249,7 @@ py::list connectorPeers(CLAM::Network & network, const std::string & processingN
 /*
 	TODO: Untested non-working code
 */
-py::dict processingConfig(CLAM::Network & network, char * processingName)
+py::dict processingConfig(CLAM::Network & network, const std::string & processingName)
 {
 	py::dict processingConfig;
 	return processingConfig;
