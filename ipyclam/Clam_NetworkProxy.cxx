@@ -209,14 +209,6 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			connect,
 			"Connects an outconnector with an inconnector"
 			)
-		.def("connectionExists",
-			connectionExists,
-			"Returns true if the two connectors are connected. False otherwise"
-			)
-		.def("areConnectable",
-			areConnectable,
-			"Returns true if the two connectors are connectable. False otherwise"
-			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
 			"Returns the config dictionary of the processing"
