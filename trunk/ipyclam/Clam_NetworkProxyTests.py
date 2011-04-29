@@ -225,5 +225,23 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		proxy.connect("Control", "Processing1", "output", "Processing2", "input")
 		self.assertEqual([("Processing2", "input")], proxy.connectorPeers("Processing1", "Control", "Out", "output"))
 
+	def test_disconnectTwoPorts(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "AudioSource"
+		net.Processing2 = "AudioSink"
+		net.Processing1["1"] > net.Processing2["1"]
+		self.assertTrue(proxy.disconnect("Port", "Processing1", "1", "Processing2", "1"))
+
+	def test_disconnectTwoControls(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "ControlSource"
+		net.Processing2 = "ControlSink"
+		net.Processing1.output > net.Processing2.input
+		self.assertTrue(proxy.disconnect("Control", "Processing1", "output", "Processing2", "input"))
+
 if __name__ == '__main__':
 	unittest.main()
