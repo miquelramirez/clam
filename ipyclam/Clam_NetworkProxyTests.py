@@ -275,5 +275,20 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		self.assertEquals(0, proxy.connectorIndex("Processing1", "Control", "Out", "Outcontrol1"))
 		self.assertEquals(1, proxy.connectorIndex("Processing1", "Control", "Out", "Outcontrol2"))
 
+	def test_portConnections(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "AudioSource"
+		net.Processing2 = "AudioSink"
+		net.Processing3 = "DummyProcessingWithInAndOutPorts"
+		net.Processing4 = "DummyProcessingWithInAndOutPorts"
+		net.Processing1["1"] > net.Processing2["1"]
+		net.Processing3.Outport1 > net.Processing4.Inport1
+		self.assertEquals([
+			('Processing1', '1', 'Processing2', '1'),
+			('Processing3', 'Outport1', 'Processing4', 'Inport1')
+		], proxy.portConnections())
+
 if __name__ == '__main__':
 	unittest.main()
