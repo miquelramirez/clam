@@ -255,6 +255,56 @@ bool disconnect(CLAM::Network & network, const std::string & kind, const std::st
 	else
 		return network.DisconnectControls( producer, consumer );
 }
+
+int connectorIndex(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
+{
+	CLAM::Processing & proc = network.GetProcessing(processingName);
+	const std::string connector = processingName + "." + connectorName;
+	if (kind == "Port")
+	{
+		if (direction == "In")
+		{
+			CLAM::InPortBase & inport = network.GetInPortByCompleteName(connector);
+			for(unsigned int i = 0; i < proc.GetNInPorts(); ++i)
+			{
+				if(&inport == &proc.GetInPort(i))
+					return i;
+			}
+		}	
+		else
+		{
+			CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(connector);
+			for(unsigned int i = 0; i < proc.GetNOutPorts(); ++i)
+			{
+				if(&outport == &proc.GetOutPort(i))
+					return i;
+			}
+		}
+	}
+	else
+	{
+		if (direction == "In")
+		{
+			CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(connector);
+			for(unsigned int i = 0; i < proc.GetNInControls(); ++i)
+			{
+				if(&incontrol == &proc.GetInControl(i))
+					return i;
+			}
+		}
+		else
+		{
+			CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(connector);
+			for(unsigned int i = 0; i < proc.GetNOutControls(); ++i)
+			{
+				if(&outcontrol == &proc.GetOutControl(i))
+					return i;
+			}
+		}
+	}
+	return -1;
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -336,6 +386,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("disconnect",
 			disconnect,
 			"Diconnects an outconnector from an inconnector"
+			)
+		.def("connectorIndex",
+			connectorIndex,
+			"Returns the index of the connector"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
