@@ -76,16 +76,16 @@ std::string processingType(CLAM::Network & network, const std::string & processi
 
 bool processingHasConnector(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
 {
-	if (kind.compare("Port") == 0)
+	if (kind == "Port")
 	{
-		if (direction.compare("In") == 0)
+		if (direction == "In")
 			return network.GetProcessing(processingName).HasInPort(connectorName);
 		else
 			return network.GetProcessing(processingName).HasOutPort(connectorName);
 	}
 	else
 	{
-		if (direction.compare("In") == 0)
+		if (direction == "In")
 			return network.GetProcessing(processingName).HasInControl(connectorName);
 		else
 			return network.GetProcessing(processingName).HasOutControl(connectorName);
@@ -106,9 +106,9 @@ py::list processingConnectors(CLAM::Network & network, const std::string & proce
 {
 	py::list connectors;
 	CLAM::Processing & proc = network.GetProcessing(processingName);
-	if (kind.compare("Port") == 0)
+	if (kind == "Port")
 	{
-		if (direction.compare("In") == 0)
+		if (direction == "In")
 		{
 			for(unsigned int i = 0; i < proc.GetNInPorts(); ++i)
 			{
@@ -127,7 +127,7 @@ py::list processingConnectors(CLAM::Network & network, const std::string & proce
 	}
 	else
 	{
-		if (direction.compare("In") == 0)
+		if (direction == "In")
 		{
 			for(unsigned int i = 0; i < proc.GetNInControls(); ++i)
 			{
@@ -154,7 +154,7 @@ bool connect(CLAM::Network & network, const std::string & kind, const std::strin
 	const std::string producer = fromProcessing + "." + fromConnector;
 	const std::string consumer = toProcessing + "." + toConnector;
 
-	if (kind.compare("Port") == 0)
+	if (kind == "Port")
 		return network.ConnectPorts( producer, consumer );
 	else
 		return network.ConnectControls( producer, consumer );
@@ -163,9 +163,9 @@ bool connect(CLAM::Network & network, const std::string & kind, const std::strin
 std::string connectorType(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
 {
 	const std::string connector = processingName + "." + connectorName;
-	if (kind.compare("Port") == 0)
+	if (kind == "Port")
 	{
-		if (direction.compare("In") == 0)
+		if (direction == "In")
 		{
 			CLAM::InPortBase & inport = network.GetInPortByCompleteName(connector);
 			return inport.GetTypeId().name();
@@ -178,7 +178,7 @@ std::string connectorType(CLAM::Network & network, const std::string & processin
 	}
 	else
 	{
-		if (direction.compare("In") == 0)
+		if (direction == "In")
 		{
 			CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(connector);
 			return incontrol.GetTypeId().name();
@@ -196,7 +196,7 @@ bool connectionExists(CLAM::Network & network, const std::string & kind, const s
 	const std::string producer = fromProcessing + "." + fromConnector;
 	const std::string consumer = toProcessing + "." + toConnector;
 
-	if (kind.compare("Port") == 0)
+	if (kind == "Port")
 	{
 		CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(producer);
 		CLAM::InPortBase & inport = network.GetInPortByCompleteName(consumer);
@@ -215,9 +215,9 @@ py::list connectorPeers(CLAM::Network & network, const std::string & processingN
 	py::list connectorPeers;
 	const std::string connector = processingName + "." + connectorName;
 
-	if (kind.compare("Port") == 0)
+	if (kind == "Port")
 	{
-		if (direction.compare("In") == 0)
+		if (direction == "In")
 		{
 			CLAM::InPortBase & inport = network.GetInPortByCompleteName(connector);
 			CLAM::OutPortBase * outport = inport.GetVisuallyConnectedOutPort();
@@ -233,7 +233,7 @@ py::list connectorPeers(CLAM::Network & network, const std::string & processingN
 	}
 	else
 	{
-		if (direction.compare("In") == 0)
+		if (direction == "In")
 		{
 			return connectorPeers;
 		}
@@ -250,7 +250,7 @@ bool disconnect(CLAM::Network & network, const std::string & kind, const std::st
 	const std::string producer = fromProcessing + "." + fromConnector;
 	const std::string consumer = toProcessing + "." + toConnector;
 
-	if (kind.compare("Port") == 0)
+	if (kind == "Port")
 		return network.DisconnectPorts( producer, consumer );
 	else
 		return network.DisconnectControls( producer, consumer );
