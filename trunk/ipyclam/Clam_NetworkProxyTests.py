@@ -243,5 +243,37 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.Processing1.output > net.Processing2.input
 		self.assertTrue(proxy.disconnect("Control", "Processing1", "output", "Processing2", "input"))
 
+	def test_connectorIndexInport(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "DummyProcessingWithMultiplePortsAndControls"
+		self.assertEquals(0, proxy.connectorIndex("Processing1", "Port", "In", "Inport1"))
+		self.assertEquals(1, proxy.connectorIndex("Processing1", "Port", "In", "Inport2"))
+
+	def test_connectorIndexOutport(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "DummyProcessingWithMultiplePortsAndControls"
+		self.assertEquals(0, proxy.connectorIndex("Processing1", "Port", "Out", "Outport1"))
+		self.assertEquals(1, proxy.connectorIndex("Processing1", "Port", "Out", "Outport2"))
+
+	def test_connectorIndexIncontrol(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "DummyProcessingWithMultiplePortsAndControls"
+		self.assertEquals(0, proxy.connectorIndex("Processing1", "Control", "In", "Incontrol1"))
+		self.assertEquals(1, proxy.connectorIndex("Processing1", "Control", "In", "Incontrol2"))
+
+	def test_connectorIndexOutport(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "DummyProcessingWithMultiplePortsAndControls"
+		self.assertEquals(0, proxy.connectorIndex("Processing1", "Control", "Out", "Outcontrol1"))
+		self.assertEquals(1, proxy.connectorIndex("Processing1", "Control", "Out", "Outcontrol2"))
+
 if __name__ == '__main__':
 	unittest.main()
