@@ -5,7 +5,6 @@
 #include <CLAM/OutPort.hxx>
 #include <CLAM/OutControl.hxx>
 
-
 namespace py = boost::python;
 
 std::string Dump(CLAM::Network & net)
@@ -305,6 +304,28 @@ int connectorIndex(CLAM::Network & network, const std::string & processingName, 
 	return -1;
 }
 
+py::list portConnections(CLAM::Network & network)
+{
+	py::list portConnections;
+	CLAM::Network::ProcessingsMap::iterator it;
+	for (it=network.BeginProcessings(); it!=network.EndProcessings(); it++)
+	{
+		for(unsigned int i = 0; i < it->second->GetNOutPorts(); ++i)
+		{
+			CLAM::OutPortBase::InPortsList::iterator itInPort;
+			std::string processingName = it->first;
+			CLAM::OutPortBase & outport = it->second->GetOutPort(i);
+			for (itInPort=outport.BeginVisuallyConnectedInPorts(); itInPort!=outport.EndVisuallyConnectedInPorts(); itInPort++)
+			{
+				CLAM::InPortBase & inPort = **itInPort;
+				py::tuple peer = py::make_tuple( processingName, outport.GetName(), network.GetProcessingName(*inPort.GetProcessing()), inPort.GetName() );
+				portConnections.append(peer);
+			}
+		}
+	}
+	return portConnections;
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -390,6 +411,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("connectorIndex",
 			connectorIndex,
 			"Returns the index of the connector"
+			)
+		.def("portConnections",
+			portConnections,
+			"Returns a list of tuples containing the port connections of the network"
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
