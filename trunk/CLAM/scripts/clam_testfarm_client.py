@@ -223,6 +223,12 @@ clam.add_subtask('Voice2MIDI installation', [
 	'scons install',
 ] )
 
+clam.add_subtask('ipyclam compilation and test', [
+	'cd %(sandbox)s/clam/ipyclam'%localDefinitions,
+	'scons'%localDefinitions,
+	'./runTests.py',
+] )
+
 
 """
 clam.add_subtask('Padova Speech SMS (external repository)', [
