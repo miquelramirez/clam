@@ -290,5 +290,15 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 			('Processing3', 'Outport1', 'Processing4', 'Inport1')
 		], proxy.portConnections())
 
+	def test_processingRename(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.NameToBeChanged = "AudioSource"
+		net.NameToBeChanged.name = "NewName"
+		self.assertFalse(proxy.hasProcessing('NameToBeChanged'))
+		self.assertTrue(proxy.hasProcessing('NewName'))
+		
+
 if __name__ == '__main__':
 	unittest.main()

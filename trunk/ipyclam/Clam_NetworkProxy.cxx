@@ -326,6 +326,11 @@ py::list portConnections(CLAM::Network & network)
 	return portConnections;
 }
 
+bool processingRename(CLAM::Network & network, const std::string & oldName, const std::string & newName)
+{
+	return network.RenameProcessing( oldName, newName );
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -415,6 +420,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("portConnections",
 			portConnections,
 			"Returns a list of tuples containing the port connections of the network"
+			)
+		.def("processingRename",
+			processingRename,
+			"Renames a processing. Returns true if successfull."
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType
