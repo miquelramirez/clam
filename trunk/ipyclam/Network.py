@@ -24,17 +24,17 @@ class Network(object):
 	def types(self) :
 		return ProcessingTypes.ProcessingTypes(self._proxy)
 
-	def code(self):
+	def code(self, networkVar = "network"):
 		code = "\n".join([
-			"network.%s = '%s'"%(name, self._proxy.processingType(name))
+			"%s.%s = '%s'"%(networkVar, name, self._proxy.processingType(name))
 			for name in self._proxy.processingNames()])
 		code += "\n"
 		code += "\n".join([
-				"network.%s.%s > network.%s.%s"%(fromProcessing, fromConnector, toProcessing, toConnector)
+				"%s.%s.%s > network.%s.%s"%(networkVar, fromProcessing, fromConnector, toProcessing, toConnector)
 				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.portConnections()])
 		code += "\n"
 		code += "\n".join([
-				"network.%s.%s > network.%s.%s"%(fromProcessing, fromConnector, toProcessing, toConnector)
+				"%s.%s.%s > network.%s.%s"%(networkVar, fromProcessing, fromConnector, toProcessing, toConnector)
 				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.controlConnections()])
 		return code
 
@@ -156,6 +156,18 @@ class NetworkTests(unittest.TestCase):
 		net = Network(TestFixtures.empty())
 		net.description = "A description"
 		self.assertEquals("A description", net.description)
+
+	def test_changeNetworkVarForCode(self):
+		net = Network(TestFixtures.empty())
+		net.processing1 = "ControlSource"
+		net.processing2 = "ControlSink"
+		net.processing1.OutControl1 > net.processing2.InControl1
+		self.assertEquals(
+			"net.processing1 = 'ControlSource'\n"
+			"net.processing2 = 'ControlSink'\n"
+			"\n"
+			"net.processing1.OutControl1 > network.processing2.InControl1"
+			, net.code("net"))		
 
 if __name__ == '__main__':
 	unittest.main()
