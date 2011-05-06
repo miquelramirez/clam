@@ -85,7 +85,7 @@ Checkout the subversion repository
  ** to compile and pass the tests: libcppunit-dev 
 
  * Qt4 packages required to compile most CLAM applications (NetworkEditor, Annotator, Chordata, Voice2Midi...):
-   qt4-dev-tools libqt4-dev libqt4-opengl-dev
+   qt4-dev-tools libqt4-dev libqt4-opengl-dev libqtwebkit-dev
 
  * Qt3 packages to compile SMSTools:
    libqt3-headers libqt3-mt-dev 
