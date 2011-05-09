@@ -21,8 +21,9 @@ namespace CLAM {
 	{
 		std::string mName;
 		Processing * mProcessing;
-	protected:
+	public:
 		typedef std::list<InControlBase*> Peers;
+	protected:
 		/// Stores the pointers to the connected incontrols
 		Peers mLinks;
 		/** Private copy constructor to avoid copies */
