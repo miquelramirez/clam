@@ -27,15 +27,12 @@ py::list pythonizeList(std::list<std::string> & list)
 py::list extractPeers(CLAM::Network::NamesList peers)
 {
 	py::list connectorPeers;
-	for(unsigned int i = 0; i < peers.size(); ++i)
+	std::list<std::string>::iterator it;
+	for(it=peers.begin(); it!=peers.end(); it++)
 	{
-		std::list<std::string>::iterator it;
-		for(it=peers.begin(); it!=peers.end(); it++)
-		{
-			size_t tokenPosition = (*it).find(".");
-			py::tuple peer = py::make_tuple( (*it).substr(0, tokenPosition), (*it).substr(tokenPosition + 1) );
-			connectorPeers.append( peer );
-		}
+		size_t tokenPosition = (*it).find(".");
+		py::tuple peer = py::make_tuple( (*it).substr(0, tokenPosition), (*it).substr(tokenPosition + 1) );
+		connectorPeers.append( peer );
 	}
 	return connectorPeers;
 }
@@ -234,7 +231,8 @@ py::list connectorPeers(CLAM::Network & network, const std::string & processingN
 	{
 		if (direction == "In")
 		{
-			return connectorPeers;
+			CLAM::Network::NamesList peers = network.GetOutControlsConnectedTo(connector);
+			return extractPeers(peers);
 		}
 		else
 		{
