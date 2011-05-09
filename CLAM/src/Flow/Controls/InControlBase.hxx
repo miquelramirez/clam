@@ -22,9 +22,10 @@ namespace CLAM {
 	class InControlBase
 	{
 		std::string mName;
+	public:
+		typedef std::list<OutControlBase*> Peers;
 	protected:
 		Processing * mProcessing; 
-		typedef std::list<OutControlBase*> Peers;
 		/// Stores the pointers to the connected outcontrols
 		Peers mLinks;
 		TControlData mDefaultValue;
@@ -98,6 +99,8 @@ namespace CLAM {
 		{
 			return "Non printable type";
 		}
+		Peers::iterator BeginOutControlsConnected();
+		Peers::iterator EndOutControlsConnected();
 	};
 } // End namespace CLAM
 #endif // InControlBase_hxx

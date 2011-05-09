@@ -263,6 +263,7 @@ public:
 
 	NamesList GetInPortsConnectedTo( const std::string & ) const;
 	NamesList GetInControlsConnectedTo( const std::string & ) const;
+	NamesList GetOutControlsConnectedTo( const std::string & ) const;
 	InPortsList GetInPortsConnectedTo( OutPortBase & ) const;
 
 	std::string GetConnectorIdentifier( const std::string& ) const;

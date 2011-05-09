@@ -853,6 +853,24 @@ namespace CLAM
 		return consumers;
 	}
 
+	Network::NamesList  Network::GetOutControlsConnectedTo( const std::string & producer ) const
+	{		
+		InControlBase & in = GetInControlByCompleteName( producer );
+		NamesList consumers;
+
+		std::list<OutControlBase*>::iterator it;
+		for(it=in.BeginOutControlsConnected();
+		    it!=in.EndOutControlsConnected();
+		    it++)
+		{
+			std::string completeName(GetNetworkId((*it)->GetProcessing()));
+			completeName += ".";
+			completeName += (*it)->GetName();
+			consumers.push_back(completeName);
+		}
+		return consumers;
+	}
+
 	Network::InPortsList Network::GetInPortsConnectedTo( OutPortBase & producer ) const
 	{		
 		InPortsList consumers;
