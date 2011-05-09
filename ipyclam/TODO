@@ -60,7 +60,7 @@
 [X]		- network.processing1.InControl1.disconnect() # any connections
 		- network.code = "Type", should fail (and any existing network method)
 [X]		- net.code(networkVar="aNetwork") generates code using 'aNetwork' as var for the network
-		- net.code dealing weird names, should use subscript net["A processing"] or net.proc1["A connector"]
+[X]		- net.code dealing weird names, should use subscript net["A processing"] or net.proc1["A connector"]
 			- Failing names:
 				- Containing other than [a-zA-Z_][a-zAz_09]*
 				- Names which are properties (types, 
