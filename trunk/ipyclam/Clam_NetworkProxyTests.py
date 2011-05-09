@@ -299,6 +299,20 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		self.assertFalse(proxy.hasProcessing('NameToBeChanged'))
 		self.assertTrue(proxy.hasProcessing('NewName'))
 		
+	def test_controlConnections(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "ControlSource"
+		net.Processing2 = "ControlSink"
+		net.Processing3 = "DummyProcessingWithInAndOutControls"
+		net.Processing4 = "DummyProcessingWithInAndOutControls"
+		net.Processing1.output > net.Processing2.input
+		net.Processing3.Outcontrol1 > net.Processing4.Incontrol1
+		self.assertEquals([
+			('Processing1', 'output', 'Processing2', 'input'),
+			('Processing3', 'Outcontrol1', 'Processing4', 'Incontrol1')
+		], proxy.controlConnections())
 
 if __name__ == '__main__':
 	unittest.main()

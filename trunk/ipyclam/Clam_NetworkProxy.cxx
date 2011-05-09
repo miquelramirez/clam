@@ -326,6 +326,28 @@ py::list portConnections(CLAM::Network & network)
 	return portConnections;
 }
 
+py::list controlConnections(CLAM::Network & network)
+{
+	py::list controlConnections;
+	CLAM::Network::ProcessingsMap::iterator it;
+	for (it=network.BeginProcessings(); it!=network.EndProcessings(); it++)
+	{
+		for(unsigned int i = 0; i < it->second->GetNOutControls(); ++i)
+		{
+			CLAM::OutControlBase::Peers::iterator itInControl;
+			std::string processingName = it->first;
+			CLAM::OutControlBase & outcontrol = it->second->GetOutControl(i);
+			for (itInControl=outcontrol.BeginInControlsConnected(); itInControl!=outcontrol.EndInControlsConnected(); itInControl++)
+			{
+				CLAM::InControlBase & incontrol = **itInControl;
+				py::tuple peer = py::make_tuple( processingName, outcontrol.GetName(), network.GetProcessingName(*incontrol.GetProcessing()), incontrol.GetName() );
+				controlConnections.append(peer);
+			}
+		}
+	}
+	return controlConnections;
+}
+
 bool processingRename(CLAM::Network & network, const std::string & oldName, const std::string & newName)
 {
 	return network.RenameProcessing( oldName, newName );
@@ -420,6 +442,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("portConnections",
 			portConnections,
 			"Returns a list of tuples containing the port connections of the network"
+			)
+		.def("controlConnections",
+			controlConnections,
+			"Returns a list of tuples containing the control connections of the network"
 			)
 		.def("processingRename",
 			processingRename,
