@@ -72,7 +72,23 @@ _dummyPrototypes = dict(
 		outports = [],
 		incontrols = [['InControl1', 'ControlType'], ['InControl2', 'ControlType'], ['InControl3', 'ControlType'], ['InControl4', 'ControlType']],
 		outcontrols = []
-	)
+	),
+	ProcessingWithNameSpacedPorts = dict(
+		type = "ProcessingWithNameSpacedPorts",
+		config = dict(),
+		inports = [['An inport', 'DataType']],
+		outports = [['An outport', 'DataType']],
+		incontrols = [],
+		outcontrols = []
+	),
+	ProcessingWithNameSpacedControls = dict(
+		type = "ProcessingWithNameSpacedControls",
+		config = dict(),
+		inports = [],
+		outports = [],
+		incontrols = [['An incontrol', 'ControlType']],
+		outcontrols = [['An outcontrol', 'ControlType']]
+	),
 )
 
 class BadProcessingName(Exception):
@@ -185,6 +201,9 @@ class Dummy_NetworkProxy :
 
 	def setDescription(self, description):
 		self._description = description
+
+	def deleteProcessing(self, processingName):
+		del self._processings[processingName]
 
 import unittest
 
@@ -577,6 +596,13 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy()
 		proxy.setDescription("A description")
 		self.assertEquals("A description", proxy.getDescription())
+
+	def test_deleteProcessing(self):
+		proxy = Dummy_NetworkProxy()
+		proxy.addProcessing("PortSource", "Processing1")
+		self.assertTrue(proxy.hasProcessing('Processing1'))
+		proxy.deleteProcessing("Processing1")
+		self.assertFalse(proxy.hasProcessing('Processing1'))
 
 if __name__ == '__main__':
 	unittest.main()

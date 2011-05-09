@@ -53,7 +53,7 @@
 		- network.processing1 = network.processing2 # cloning
 [X]		- network.description
 [X]		- network.description = "A description"
-		- del network.processing1 # removing
+[X]		- del network.processing1 # removing
 [X]		- network.processing1.InControl1.disconnect(network.Processing1.OutControl1) # just that connection
 			- Fail if not connected?
 [X]		- network.processing1.InControl1.disconnect(network.Processing1) # any connections to Processing1

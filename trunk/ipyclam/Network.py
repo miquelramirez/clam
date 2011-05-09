@@ -45,6 +45,18 @@ class Network(object):
 		# TODO: fail on existing attributes (not processings)
 		self._proxy.addProcessing(type, name)
 
+	def __setitem__(self, name, type) :
+		self.__setattr__(name, type)
+
+	def __delattr__(self, name):
+		if not self._proxy.hasProcessing(name) :
+			raise AttributeError(name)
+		self._proxy.deleteProcessing(name)
+
+	def __delitem__(self, name):
+		if not self._proxy.hasProcessing(name) :
+			raise KeyError(name)
+		self.__delattr__(name)
 	# TODO: Workaround to be able to use the function from the C++ proxy
 	def xml(self):
 		return self._proxy.xml()
@@ -83,6 +95,14 @@ class NetworkTests(unittest.TestCase):
 	def _test_addProcessing(self) :
 		net = Network(TestFixtures.empty())
 		net.processing1 = "MinimalProcessing"
+		self.assertEquals(
+			"network.processing1 = 'MinimalProcessing'\n"
+			"\n"
+			, net.code())
+
+	def _test_addProcessingAsItem(self) :
+		net = Network(TestFixtures.empty())
+		net["processing1"] = "MinimalProcessing"
 		self.assertEquals(
 			"network.processing1 = 'MinimalProcessing'\n"
 			"\n"
@@ -168,6 +188,26 @@ class NetworkTests(unittest.TestCase):
 			"\n"
 			"net.processing1.OutControl1 > network.processing2.InControl1"
 			, net.code("net"))		
+
+	def test_deleteProcessingAsAttribute(self):
+		net = Network(TestFixtures.empty())
+		net.processing1 = "PortSource"
+		net.processing2 = "PortSink"
+		del net.processing1
+		self.assertEquals(
+			"network.processing2 = 'PortSink'\n"
+			"\n"
+			, net.code())
+
+	def test_deleteProcessingAsItem(self):
+		net = Network(TestFixtures.empty())
+		net["processing1"] = "PortSource"
+		net["processing2"] = "PortSink"
+		del net["processing1"]
+		self.assertEquals(
+			"network.processing2 = 'PortSink'\n"
+			"\n"
+			, net.code())
 
 if __name__ == '__main__':
 	unittest.main()
