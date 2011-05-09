@@ -204,8 +204,10 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net = Network.Network(proxy)
 		net.Processing1 = "AudioSource"
 		net.Processing2 = "AudioSink"
+		net.Processing3 = "AudioSink"
 		proxy.connect("Port", "Processing1", "1", "Processing2", "1")
-		self.assertEqual([("Processing2", "1")], proxy.connectorPeers("Processing1", "Port", "Out", "1"))
+		proxy.connect("Port", "Processing1", "1", "Processing3", "1")
+		self.assertEqual([("Processing2", "1"),("Processing3", "1")], proxy.connectorPeers("Processing1", "Port", "Out", "1"))
 
 	def test_connectorPeersInport(self):
 		import Network
@@ -222,8 +224,21 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net = Network.Network(proxy)
 		net.Processing1 = "ControlSource"
 		net.Processing2 = "ControlSink"
+		net.Processing3 = "ControlSink"
 		proxy.connect("Control", "Processing1", "output", "Processing2", "input")
-		self.assertEqual([("Processing2", "input")], proxy.connectorPeers("Processing1", "Control", "Out", "output"))
+		proxy.connect("Control", "Processing1", "output", "Processing3", "input")
+		self.assertEqual([("Processing2", "input"),("Processing3", "input")], proxy.connectorPeers("Processing1", "Control", "Out", "output"))
+
+	def test_connectorPeersIncontrol(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "ControlSource"
+		net.Processing2 = "ControlSink"
+		net.Processing3 = "ControlSource"
+		proxy.connect("Control", "Processing1", "output", "Processing2", "input")
+		proxy.connect("Control", "Processing3", "output", "Processing2", "input")
+		self.assertEqual([("Processing1", "output"),("Processing3", "output")], proxy.connectorPeers("Processing2", "Out", "In", "input"))
 
 	def test_disconnectTwoPorts(self):
 		import Network
