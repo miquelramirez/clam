@@ -353,6 +353,11 @@ bool processingRename(CLAM::Network & network, const std::string & oldName, cons
 	return network.RenameProcessing( oldName, newName );
 }
 
+void deleteProcessing(CLAM::Network & network, const std::string & processingName)
+{
+	network.RemoveProcessing(processingName);
+}
+
 /*
 	TODO: Untested non-working code
 */
@@ -450,6 +455,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("processingRename",
 			processingRename,
 			"Renames a processing. Returns true if successfull."
+			)
+		.def("deleteProcessing",
+			deleteProcessing,
+			"Removes a processing from the network."
 			)
 		.def("processingConfig",
 			processingConfig, //TODO: Fake implementation for processingType

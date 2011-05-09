@@ -314,5 +314,12 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 			('Processing3', 'Outcontrol1', 'Processing4', 'Incontrol1')
 		], proxy.controlConnections())
 
+	def test_processingDeletion(self):
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		proxy.addProcessing("ControlSource", "ProcessingToDelete")
+		self.assertTrue(proxy.hasProcessing('ProcessingToDelete'))
+		proxy.deleteProcessing("ProcessingToDelete")
+		self.assertFalse(proxy.hasProcessing('ProcessingToDelete'))
+
 if __name__ == '__main__':
 	unittest.main()
