@@ -55,4 +55,13 @@ namespace CLAM
 		if (mHasDefaultValue) return mDefaultValue;
 		return (mUpperBound+mLowerBound)/2.f;
 	}
+	InControlBase::Peers::iterator InControlBase::BeginOutControlsConnected()
+	{
+		return mLinks.begin();
+	}
+
+	InControlBase::Peers::iterator InControlBase::EndOutControlsConnected()
+	{
+		return mLinks.end();
+	}
 }
