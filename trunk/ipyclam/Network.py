@@ -26,17 +26,23 @@ class Network(object):
 
 	def code(self, networkVar = "network"):
 		code = "\n".join([
-			"%s.%s = '%s'"%(networkVar, name, self._proxy.processingType(name))
+			"%s%s = '%s'"%(networkVar, self.appendAttribute(name), self._proxy.processingType(name))
 			for name in self._proxy.processingNames()])
 		code += "\n"
 		code += "\n".join([
-				"%s.%s.%s > network.%s.%s"%(networkVar, fromProcessing, fromConnector, toProcessing, toConnector)
+				"%s%s%s > %s%s%s"%(networkVar, self.appendAttribute(fromProcessing), self.appendAttribute(fromConnector), networkVar, self.appendAttribute(toProcessing), self.appendAttribute(toConnector))
 				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.portConnections()])
 		code += "\n"
 		code += "\n".join([
-				"%s.%s.%s > network.%s.%s"%(networkVar, fromProcessing, fromConnector, toProcessing, toConnector)
+				"%s%s%s > %s%s%s"%(networkVar, self.appendAttribute(fromProcessing), self.appendAttribute(fromConnector), networkVar, self.appendAttribute(toProcessing), self.appendAttribute(toConnector))
 				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.controlConnections()])
 		return code
+
+	def appendAttribute(self, name):
+		if name.isalnum():
+			return "."+name
+		else:
+			return "[\"%s\"]"%name
 
 	def __setattr__(self, name, type) :
 		if name == "description":
@@ -88,11 +94,11 @@ class NetworkTests(unittest.TestCase):
 		net = Network(TestFixtures.proxy())
 		self.assertRaises(KeyError, operator.getitem, net, "NonExistingProcessing")
 
-	def _test_codeEmptyNetwork(self) :
+	def test_codeEmptyNetwork(self) :
 		net = Network(TestFixtures.empty())
 		self.assertEquals("\n\n", net.code())
 
-	def _test_addProcessing(self) :
+	def test_addProcessing(self) :
 		net = Network(TestFixtures.empty())
 		net.processing1 = "MinimalProcessing"
 		self.assertEquals(
@@ -100,7 +106,7 @@ class NetworkTests(unittest.TestCase):
 			"\n"
 			, net.code())
 
-	def _test_addProcessingAsItem(self) :
+	def test_addProcessingAsItem(self) :
 		net = Network(TestFixtures.empty())
 		net["processing1"] = "MinimalProcessing"
 		self.assertEquals(
@@ -108,7 +114,7 @@ class NetworkTests(unittest.TestCase):
 			"\n"
 			, net.code())
 
-	def _test_addTwoProcessingsSameType(self) :
+	def test_addTwoProcessingsSameType(self) :
 		net = Network(TestFixtures.empty())
 		net.processing1 = "MinimalProcessing"
 		net.processing2 = "MinimalProcessing"
@@ -118,7 +124,7 @@ class NetworkTests(unittest.TestCase):
 			"\n"
 			, net.code())
 
-	def _test_addTwoProcessingsDifferentType(self) :
+	def test_addTwoProcessingsDifferentType(self) :
 		net = Network(TestFixtures.empty())
 		net.processing1 = "MinimalProcessing"
 		net.processing2 = "PortSink"
@@ -186,7 +192,7 @@ class NetworkTests(unittest.TestCase):
 			"net.processing1 = 'ControlSource'\n"
 			"net.processing2 = 'ControlSink'\n"
 			"\n"
-			"net.processing1.OutControl1 > network.processing2.InControl1"
+			"net.processing1.OutControl1 > net.processing2.InControl1"
 			, net.code("net"))		
 
 	def test_deleteProcessingAsAttribute(self):
@@ -207,6 +213,23 @@ class NetworkTests(unittest.TestCase):
 		self.assertEquals(
 			"network.processing2 = 'PortSink'\n"
 			"\n"
+			, net.code())
+
+	def test_codeWhenNotAlphaNumericProcessingAndConnectorNames(self) :
+		net = Network(TestFixtures.empty())
+		net["A processing with ports"] = "ProcessingWithNameSpacedPorts"
+		net.processing2 = "ProcessingWithNameSpacedPorts"
+		net.processing3 = "ProcessingWithNameSpacedControls"
+		net.processing4 = "ProcessingWithNameSpacedControls"
+		net.processing3["An outcontrol"] > net.processing4["An incontrol"]
+		net["A processing with ports"]["An outport"] > net.processing2["An inport"]
+		self.assertEquals(
+			"network.processing2 = 'ProcessingWithNameSpacedPorts'\n"
+			"network.processing3 = 'ProcessingWithNameSpacedControls'\n"
+			"network.processing4 = 'ProcessingWithNameSpacedControls'\n"
+			"network[\"A processing with ports\"] = 'ProcessingWithNameSpacedPorts'\n"
+			"network[\"A processing with ports\"][\"An outport\"] > network.processing2[\"An inport\"]\n"
+			"network.processing3[\"An outcontrol\"] > network.processing4[\"An incontrol\"]"
 			, net.code())
 
 if __name__ == '__main__':
