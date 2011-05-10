@@ -4,6 +4,7 @@ import ProcessingTypes
 class Network(object):
 	def __init__(self, networkProxy):
 		self.__dict__['_proxy'] = networkProxy
+		self.__dict__['methods'] = ["types", "code", "appendAttribute", "xml"]
 
 	def __getitem__(self, name):
 		if not self._proxy.hasProcessing(name) :
@@ -48,6 +49,8 @@ class Network(object):
 		if name == "description":
 			self._proxy.setDescription(type)
 			return
+		if name in self.__dict__['methods']:
+			raise AssertionError("Wrong processing name: %s is a method"%(name))
 		# TODO: fail on existing attributes (not processings)
 		self._proxy.addProcessing(type, name)
 
@@ -231,6 +234,22 @@ class NetworkTests(unittest.TestCase):
 			"network[\"A processing with ports\"][\"An outport\"] > network.processing2[\"An inport\"]\n"
 			"network.processing3[\"An outcontrol\"] > network.processing4[\"An incontrol\"]"
 			, net.code())
+
+	def test_addProcessingWithName_code_AndFail(self):
+		net = Network(TestFixtures.empty())
+		try:
+			net.code = "PortSource"
+			self.fail("Exception expected")
+		except AssertionError, e:
+			self.assertEquals("Wrong processing name: code is a method", e.__str__())
+
+	def test_addProcessingWithName_types_AndFail(self):
+		net = Network(TestFixtures.empty())
+		try:
+			net.types = "PortSource"
+			self.fail("Exception expected")
+		except AssertionError, e:
+			self.assertEquals("Wrong processing name: types is a method", e.__str__())
 
 if __name__ == '__main__':
 	unittest.main()

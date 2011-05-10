@@ -1,7 +1,6 @@
 - Dummy Network:
 [X]	- processingsName -> processingNames
 	- Dummy: tests for ProcessingWithConfig
-	- _dummyPrototypes: when two or more processings of the same type are added, changes to one affect the others
 
 
 - Polishing connector interface:
@@ -58,7 +57,7 @@
 			- Fail if not connected?
 [X]		- network.processing1.InControl1.disconnect(network.Processing1) # any connections to Processing1
 [X]		- network.processing1.InControl1.disconnect() # any connections
-		- network.code = "Type", should fail (and any existing network method)
+[X]		- network.code = "Type", should fail (and any existing network method)
 [X]		- net.code(networkVar="aNetwork") generates code using 'aNetwork' as var for the network
 [X]		- net.code dealing weird names, should use subscript net["A processing"] or net.proc1["A connector"]
 			- Failing names:
