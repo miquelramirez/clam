@@ -8,6 +8,14 @@ class PeerConnectors(object):
 		self._kind = kind
 		self._direction = direction
 
+	def __len__(self):
+		return self._proxy.connectorPeers(
+				self._hostName, 
+				self._kind, 
+				self._direction,
+				self._connectorName, 
+			).__len__()
+
 	def __iter__(self):
 		if self._direction == Connector.In:
 			peerDirection = Connector.Out
@@ -37,6 +45,10 @@ class PeerConnectorsTests(unittest.TestCase):
 			('Processing1', 'OutPort1', 'type1', 0),
 			('Processing1', 'OutPort2', 'type1', 1)
 			], listConnectors)
+
+	def test_len(self):
+		peers = PeerConnectors(TestFixtures.proxy(), "Processing2", Connector.Port, Connector.In, "Inport2")
+		self.assertEqual(2, peers.__len__() )
 
 if __name__ == '__main__':
 	unittest.main()

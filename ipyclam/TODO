@@ -8,7 +8,7 @@
 	- Dummy_NetworkProxy.connectorType,Index... failure case (assert? exception?)
 [X]	- Index and type should be queried to the proxy instead of passed as constructor parameters and stored as attribute. 
 		For tests using constructor parameters instead of a definition structure we can keep these attributes, query the proxy just when they are None
-	- PeerConnectors.__len__()
+[X]	- PeerConnectors.__len__()
 [X]	- Rework proxy interface and external objects constructors so that parameters are specified in order of search
 		(proxy,processingname,kind,direction,connectorname...)
 
