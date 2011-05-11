@@ -58,6 +58,26 @@ class Processing(object):
 			]
 		)
 
+	def connect(self, peer):
+		inports = 0
+		incontrols = 0
+		for connector in peer.__dict__["_inports"]:
+			try:
+				self.__dict__["_outports"][inports] > connector
+				inports += 1
+			except Exception, e:
+				break
+		for connector in peer.__dict__["_incontrols"]:
+			try:
+				self.__dict__["_outcontrols"][incontrols] > connector
+				incontrols += 1
+			except Exception, e:
+				break
+		return inports + incontrols
+
+	def __gt__(self, peer) :
+		return self.connect(peer)
+
 import unittest
 import TestFixtures
 class ProcessingTests(unittest.TestCase):
@@ -170,6 +190,23 @@ class ProcessingTests(unittest.TestCase):
 			'InControl1', 'InControl2',
 			'OutControl1', 'OutControl2',
 			'type', '_config', '_inports', '_outports', '_incontrols', '_outcontrols']), dir(p))
+
+	def test_connect_from_processing_to_processing(self):
+		import Network
+		net = Network.Network(TestFixtures.empty())
+		net.proc1 = "ProcessingWithPortsAndControls"
+		net.proc2 = "ProcessingWithPortsAndControls"
+		self.assertEquals(6, net.proc1 > net.proc2)
+		self.assertEquals(
+			"network.proc1 = 'ProcessingWithPortsAndControls'\n"
+			"network.proc2 = 'ProcessingWithPortsAndControls'\n"
+			"network.proc1.OutPort1 > network.proc2.InPort1\n"
+			"network.proc1.OutPort2 > network.proc2.InPort2\n"
+			"network.proc1.OutPort3 > network.proc2.InPort3\n"
+			"network.proc1.OutControl1 > network.proc2.InControl1\n"
+			"network.proc1.OutControl2 > network.proc2.InControl2\n"
+			"network.proc1.OutControl3 > network.proc2.InControl3"
+			, net.code())
 
 if __name__ == '__main__':
 	unittest.main()
