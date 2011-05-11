@@ -115,3 +115,26 @@
 [X]	- Network.__dir__ should return also types
 [X]	- Do not allow repeated connections
 [X]	- > and < operators should ensure direction matches with arrows
+
+	- net.desc[tab]ription (description in __dir__)
+	- net.code() adds the description if it is not empty
+	- Adding an existing processing name asserts (c++), should raise
+	- code() uses numeric ports (like AudioSink.1) as attributes, instead of subscripts (first char should be letter or _)
+
+
+== Config ==
+
+- Proxyfy configs
+	- Copy all Configuration as Dummy_ConfigurationProxy (and tests)
+	- Remove __dir__ and attribute access from Dummy_ConfigurationProxy
+	- Configuration delegates to the Proxy, accepts a proxy in __init__
+	- TypeError on different type than the default value
+	- Sub configurations in proxy config.subconfig.param
+- Clam Configs
+	- 
+
+
+
+
+
+
