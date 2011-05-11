@@ -63,6 +63,8 @@ class Processing(object):
 			return self.connectProcessings(peer)
 		if type(peer) == Connector.Connector:
 			return self.connectWithConnector(peer)
+		if type(peer) == Connectors.Connectors:
+			return self.connectWithConnectors(peer)
 
 	def __gt__(self, peer) :
 		return self.connect(peer)
@@ -101,6 +103,23 @@ class Processing(object):
 					connections += 1
 			return connections
 
+	#Helper method to connect compatible ports or controls to connectors
+	def connectWithConnectors(self, peers):
+		connections = 0
+		if peers[0].kind == "Control":
+			for connector in self.__dict__["_outcontrols"]:
+				for peer in peers:
+					if self.__dict__["proxy"].areConnectable("Control", self.__dict__["name"], connector.name, peer.host.name, peer.name):
+						connector > peer
+						connections += 1
+			return connections
+		if peers[0].kind == "Port":
+			for connector in self.__dict__["_outports"]:
+				for peer in peers:
+					if self.__dict__["proxy"].areConnectable("Port", self.__dict__["name"], connector.name, peer.host.name, peer.name):
+						connector > peer
+						connections += 1
+			return connections
 
 import unittest
 import TestFixtures
@@ -240,6 +259,14 @@ class ProcessingTests(unittest.TestCase):
 		net.proc3 = "PortSink"
 		self.assertEquals(3, net.proc1 > net.proc2.InControl1)
 		self.assertEquals(4, net.proc1 > net.proc3.InPort1)
+
+	def test_connect_from_processing_to_connectors(self):
+		import Network
+		net = Network.Network(TestFixtures.empty())
+		net.proc1 = "ProcessingWithPortsAndControls"
+		net.proc2 = "ProcessingWithPortsAndControls"
+		self.assertEquals(12, net.proc1 > net.proc2._incontrols)
+		self.assertEquals(12, net.proc1 > net.proc2._inports)
 
 if __name__ == '__main__':
 	unittest.main()

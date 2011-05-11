@@ -2,11 +2,11 @@ import Connector
 
 class Connectors(object):
 	def __init__(self, networkProxy, processingName, kind, direction) :
-		portNames = networkProxy.processingConnectors(processingName, kind, direction)
+		connectorNames = networkProxy.processingConnectors(processingName, kind, direction)
 		self._dict = dict()
 		self._list = list()
-		for portName in portNames:
-			connector = Connector.Connector(networkProxy, processingName, kind=kind, direction=direction, name=portName)
+		for conectorName in connectorNames:
+			connector = Connector.Connector(networkProxy, processingName, kind=kind, direction=direction, name=conectorName)
 			self._list.append(connector)
 			self._dict[connector.name] = connector
 	def __iter__(self):
