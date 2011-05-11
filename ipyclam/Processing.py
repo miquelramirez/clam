@@ -72,17 +72,17 @@ class Processing(object):
 		inports = 0
 		incontrols = 0
 		for connector in peer.__dict__["_inports"]:
-			try:
+			if inports >= self.__dict__["_outports"].__len__():
+				break
+			if self.__dict__["proxy"].areConnectable("Port", self.__dict__["name"], self.__dict__["_outports"][inports].name, connector.host.name, connector.name):
 				self.__dict__["_outports"][inports] > connector
 				inports += 1
-			except Exception, e:
-				break
 		for connector in peer.__dict__["_incontrols"]:
-			try:
+			if incontrols >= self.__dict__["_outcontrols"].__len__():
+				break
+			if self.__dict__["proxy"].areConnectable("Port", self.__dict__["name"], self.__dict__["_outcontrols"][incontrols].name, connector.host.name, connector.name):
 				self.__dict__["_outcontrols"][incontrols] > connector
 				incontrols += 1
-			except Exception, e:
-				break
 		return inports + incontrols
 
 	#Helper method to connect compatible ports or controls to a single connector
@@ -90,19 +90,15 @@ class Processing(object):
 		connections = 0
 		if peer.kind == "Control":
 			for connector in self.__dict__["_outcontrols"]:
-				try:
+				if self.__dict__["proxy"].areConnectable("Control", self.__dict__["name"], connector.name, peer.host.name, peer.name):
 					connector > peer
 					connections += 1
-				except Exception, e:
-					break
 			return connections
 		if peer.kind == "Port":
 			for connector in self.__dict__["_outports"]:
-				try:
+				if self.__dict__["proxy"].areConnectable("Port", self.__dict__["name"], connector.name, peer.host.name, peer.name):
 					connector > peer
 					connections += 1
-				except Exception, e:
-					break
 			return connections
 
 

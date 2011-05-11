@@ -78,7 +78,7 @@
 				- < and > version restrict directionality
 			- Connectors.connect(Connector): all from Connectors connectable to Connector (returns n of connections done)
 			- Connector.connect(Connectors): all from Connector connectable to Connectors (returns n of connections done)
-			- Processing.connect(Connector): all from processing connectable to Connector
+[X]			- Processing.connect(Connector): all from processing connectable to Connector
 			- Processing.connect(Connectors): all from processing connectable to Connectors
 [X]			- Processing.connect(Processing): all connectable in order
 			- Connector.connect(Processing): all from processing connectable to Connector
