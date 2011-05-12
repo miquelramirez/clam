@@ -19,14 +19,17 @@ class Network(object):
 		return Processing.Processing(proxy=self._proxy, name=name)
 
 	def __dir__(self):
-		return self._proxy.processingNames()
+		return self._proxy.processingNames() + ["description"]
 
 	@property
 	def types(self) :
 		return ProcessingTypes.ProcessingTypes(self._proxy)
 
 	def code(self, networkVar = "network"):
-		code = "\n".join([
+		code = ""
+		if self._proxy.getDescription() != "":
+			code += "%s.description = '%s'\n"%(networkVar, self._proxy.getDescription())
+		code += "\n".join([
 			"%s%s = '%s'"%(networkVar, self.appendAttribute(name), self._proxy.processingType(name))
 			for name in self._proxy.processingNames()])
 		code += "\n"
@@ -40,6 +43,8 @@ class Network(object):
 		return code
 
 	def appendAttribute(self, name):
+		if name[0].isdigit():
+			return "[\"%s\"]"%name
 		if name.isalnum():
 			return "."+name
 		else:
@@ -87,7 +92,7 @@ class NetworkTests(unittest.TestCase):
 
 	def test_dirFunction(self) :
 		net = Network(TestFixtures.proxy())
-		self.assertEquals(["Processing1", "Processing2"], dir(net))
+		self.assertEquals(["Processing1", "Processing2", "description"], dir(net))
 
 	def test_ProcessingAsAttributesGettingAndFailing(self):
 		net = Network(TestFixtures.proxy())
@@ -250,6 +255,34 @@ class NetworkTests(unittest.TestCase):
 			self.fail("Exception expected")
 		except AssertionError, e:
 			self.assertEquals("Wrong processing name: types is a method", e.__str__())
+
+	def test_codeShowsDescription(self):
+		net = Network(TestFixtures.empty())
+		net.description = "A description"
+		net.proc1 = "PortSink"
+		self.assertEquals("A description", net.description)
+		self.assertEquals(
+			"network.description = 'A description'\n"
+			"network.proc1 = 'PortSink'\n"
+			"\n"
+			, net.code())
+
+	def test_codeForNumericConnectors(self):
+		net = Network(TestFixtures.empty())
+		net.proc1 = "ProcessingWithNumericPorts"
+		net.proc2 = "ProcessingWithNumericPorts"
+		net.proc3 = "ControlSource"
+		net.proc4 = "ProcessingWithNumericControls"
+		net.proc1["2"] > net.proc2["1"]
+		net.proc3.OutControl1 > net.proc4["2"]
+		self.assertEquals(
+			"network.proc4 = 'ProcessingWithNumericControls'\n"
+			"network.proc1 = 'ProcessingWithNumericPorts'\n"
+			"network.proc3 = 'ControlSource'\n"
+			"network.proc2 = 'ProcessingWithNumericPorts'\n"
+			"network.proc1[\"2\"] > network.proc2[\"1\"]\n"
+			"network.proc3.OutControl1 > network.proc4[\"2\"]"
+			, net.code())
 
 if __name__ == '__main__':
 	unittest.main()

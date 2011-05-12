@@ -97,6 +97,22 @@ _dummyPrototypes = dict(
 		incontrols = [['InControl1', 'ControlType'], ['InControl2', 'ControlType'], ['InControl3', 'ControlType'], ['InControl4', 'ControlType']],
 		outcontrols = [['OutControl1', 'ControlType'], ['OutControl2', 'ControlType'], ['OutControl3', 'ControlType']]
 	),
+	ProcessingWithNumericPorts = dict(
+		type = "ProcessingWithNumericPorts",
+		config = dict(),
+		inports = [['1', 'DataType']],
+		outports = [['1', 'DataType'], ['2', 'DataType']],
+		incontrols = [],
+		outcontrols = []
+	),
+	ProcessingWithNumericControls = dict(
+		type = "ProcessingWithNumericControls",
+		config = dict(),
+		inports = [],
+		outports = [],
+		incontrols = [['1', 'ControlType'], ['2', 'ControlType']],
+		outcontrols = [['1', 'ControlType']]
+	),
 )
 
 class BadProcessingName(Exception):
