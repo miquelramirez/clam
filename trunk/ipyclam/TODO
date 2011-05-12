@@ -79,7 +79,7 @@
 			- Connector.connect(Connectors): all from Connector connectable to Connectors (returns n of connections done)
 			- Connector.connect(Processing): all from processing connectable to Connector
 [X]			- Processing.connect(Connector): all from processing connectable to Connector
-			- Processing.connect(Connectors): all from processing connectable to Connectors
+[X]			- Processing.connect(Connectors): all from processing connectable to Connectors
 [X]			- Processing.connect(Processing): all connectable in order
 			- Connectors.connect(Connector): all from Connectors connectable to Connector (returns n of connections done)
 			- Connectors.connect(Processing): all from processing connectable to Connector
@@ -116,10 +116,11 @@
 [X]	- Do not allow repeated connections
 [X]	- > and < operators should ensure direction matches with arrows
 
-	- net.desc[tab]ription (description in __dir__)
-	- net.code() adds the description if it is not empty
+[X]	- net.desc[tab]ription (description in __dir__)
+[X]	- net.code() adds the description if it is not empty
+[X]	- code() uses numeric ports (like AudioSink.1) as attributes, instead of subscripts (first char should be letter or _)
+	- If an inconnector and outconnector have the same name, the processing will always think it's the incconnector
 	- Adding an existing processing name asserts (c++), should raise
-	- code() uses numeric ports (like AudioSink.1) as attributes, instead of subscripts (first char should be letter or _)
 
 
 == Config ==
