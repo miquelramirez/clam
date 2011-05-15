@@ -70,3 +70,8 @@ def proxy() :
 		],
 		""
 )
+
+import Dummy_ConfigurationProxy
+
+def configProxy(type) :
+	return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(type)
