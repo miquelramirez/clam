@@ -3,6 +3,7 @@ import unittest
 from Connector import *
 from Connectors import *
 from Configuration import *
+from Dummy_ConfigurationProxy import *
 from Dummy_NetworkProxy import *
 from Clam_NetworkProxyTests import *
 from Processing import *
