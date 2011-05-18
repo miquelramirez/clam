@@ -4,7 +4,7 @@ import ProcessingTypes
 class Network(object):
 	def __init__(self, networkProxy):
 		self.__dict__['_proxy'] = networkProxy
-		self.__dict__['methods'] = ["types", "code", "appendAttribute", "xml"]
+		self.__dict__['methods'] = ["types", "code", "xml"]
 
 	def __getitem__(self, name):
 		if not self._proxy.hasProcessing(name) :
@@ -26,29 +26,30 @@ class Network(object):
 		return ProcessingTypes.ProcessingTypes(self._proxy)
 
 	def code(self, networkVar = "network"):
+
+		def appendAttribute(name):
+			if name[0].isdigit():
+				return "[\"%s\"]"%name
+			if name.isalnum():
+				return "."+name
+			else:
+				return "[\"%s\"]"%name
 		code = ""
 		if self._proxy.getDescription() != "":
 			code += "%s.description = '%s'\n"%(networkVar, self._proxy.getDescription())
 		code += "\n".join([
-			"%s%s = '%s'"%(networkVar, self.appendAttribute(name), self._proxy.processingType(name))
+			"%s%s = '%s'"%(networkVar, appendAttribute(name), self._proxy.processingType(name))
 			for name in self._proxy.processingNames()])
 		code += "\n"
 		code += "\n".join([
-				"%s%s%s > %s%s%s"%(networkVar, self.appendAttribute(fromProcessing), self.appendAttribute(fromConnector), networkVar, self.appendAttribute(toProcessing), self.appendAttribute(toConnector))
+				"%s%s%s > %s%s%s"%(networkVar, appendAttribute(fromProcessing), appendAttribute(fromConnector), networkVar, appendAttribute(toProcessing), appendAttribute(toConnector))
 				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.portConnections()])
 		code += "\n"
 		code += "\n".join([
-				"%s%s%s > %s%s%s"%(networkVar, self.appendAttribute(fromProcessing), self.appendAttribute(fromConnector), networkVar, self.appendAttribute(toProcessing), self.appendAttribute(toConnector))
+				"%s%s%s > %s%s%s"%(networkVar, appendAttribute(fromProcessing), appendAttribute(fromConnector), networkVar, appendAttribute(toProcessing), appendAttribute(toConnector))
 				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.controlConnections()])
 		return code
 
-	def appendAttribute(self, name):
-		if name[0].isdigit():
-			return "[\"%s\"]"%name
-		if name.isalnum():
-			return "."+name
-		else:
-			return "[\"%s\"]"%name
 
 	def __setattr__(self, name, type) :
 		if name == "description":
@@ -74,6 +75,9 @@ class Network(object):
 	# TODO: Workaround to be able to use the function from the C++ proxy
 	def xml(self):
 		return self._proxy.xml()
+
+	def __repr__(self) :
+		return self.code()
 
 import operator
 import unittest
