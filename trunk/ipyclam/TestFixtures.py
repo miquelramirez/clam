@@ -71,7 +71,11 @@ def proxy() :
 		""
 )
 
-import Dummy_ConfigurationProxy
+def dummyConfigWithStrings() :
+	return dict(
+		ConfigParam1 = "Param1",
+		ConfigParam2 = "Param2",
+		ConfigParam3 = "Param3"
+	)
 
-def configProxy(type) :
-	return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(type)
+

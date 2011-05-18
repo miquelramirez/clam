@@ -29,55 +29,58 @@ import unittest
 import TestFixtures
 
 class ConfigurationTests(unittest.TestCase):
+	def stringParametersConfig(self) :
+		return Dummy_ConfigurationProxy(
+			TestFixtures.dummyConfigWithStrings())
 	def test_configGettingAsDictionary(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		self.assertEqual(c["ConfigParam1"], "Param1")
 		self.assertEqual(c["ConfigParam2"], "Param2")
 
 	def test_configSettingAndGettingAsDictionary(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		c["ConfigParam1"] = 'newvalue'
 		self.assertEqual(c["ConfigParam1"], "newvalue")
 
 	def test_configGettingAsAttribute(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		self.assertEqual(c.ConfigParam1, "Param1")
 		self.assertEqual(c.ConfigParam2, "Param2")
 
 	def test_configSettingAndGettingAsAttribute(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		c.ConfigParam1 = 'newvalue'
 		self.assertEqual(c.ConfigParam1, "newvalue")
 
 	def test_configSettingAsAttributeAndGettingAsDictionary(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		c.ConfigParam1 = 'newvalue1'
 		c.ConfigParam2 = 'newvalue2'
 		self.assertEqual(c["ConfigParam1"], "newvalue1")
 		self.assertEqual(c["ConfigParam2"], "newvalue2")
 
 	def test_ValuesAsAttributesSettingAndFailing(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		self.assertRaises(AttributeError, setattr, c, "ConfigParam4", "newvalue")
 
 	def test_ValuesAsAttributesGettingAndFailing(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		self.assertRaises(AttributeError, getattr, c, "ConfigParam4")
 
 	def test_ValuesAsDictionarySettingAndFailing(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		self.assertRaises(KeyError, operator.setitem, c, "ConfigParam4", "newvalue")
 
 	def test_ValuesAsDictionaryGettingAndFailing(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		self.assertRaises(KeyError, operator.getitem, c, "ConfigParam4")
 
 	def test_dirFunction(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		self.assertEquals(["ConfigParam1", "ConfigParam2", "ConfigParam3"], dir(c))
 
 	def test_setValueOfDifferentTypeAndFail(self):
-		c = Configuration(TestFixtures.configProxy("StringParameters"))
+		c = Configuration(self.stringParametersConfig())
 		try:
 			c.ConfigParam1 = 1
 			self.fail("Exception expected")
