@@ -1,12 +1,3 @@
-_dummyConfigurations = dict(
-	StringParameters = dict(
-		typename = "StringParameters",
-		ConfigParam1 = "Param1",
-		ConfigParam2 = "Param2",
-		ConfigParam3 = "Param3"
-	)
-)
-
 class Dummy_ConfigurationProxy(object):
 	def __init__(self, config):
 		self._default = config
