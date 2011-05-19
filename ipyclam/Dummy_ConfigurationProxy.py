@@ -32,5 +32,21 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		self.assertEqual(["ConfigParam3", "ConfigParam2", "ConfigParam1"], c.keys() )
 
+	def test_incompatibleTypes(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		try:
+			c["ConfigParam1"] = 1
+			self.fail("Exception expected")
+		except TypeError, e:
+			self.assertEquals("str value expected, got int", e.args[0])
+
+	def test_setFailsWithWrongParameterName(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		try:
+			c["WrongParam1"] = "ParamValue"
+			self.fail("Exception expected")
+		except KeyError, e:
+			self.assertEquals("WrongParam1", e.args[0])
+
 if __name__ == '__main__':
 	unittest.main()
