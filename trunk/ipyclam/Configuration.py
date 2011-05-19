@@ -27,10 +27,11 @@ class Configuration(object):
 import operator
 import unittest
 import TestFixtures
+import Dummy_ConfigurationProxy
 
 class ConfigurationTests(unittest.TestCase):
 	def stringParametersConfig(self) :
-		return Dummy_ConfigurationProxy(
+		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(
 			TestFixtures.dummyConfigWithStrings())
 	def test_configGettingAsDictionary(self):
 		c = Configuration(self.stringParametersConfig())
