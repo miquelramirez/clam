@@ -30,6 +30,10 @@
 [X]		- Self writting code for connections
 		- Self writting code for configurations
 	- Dummy Configurations
+		- Test type check
+		- Test name check on getting
+		- Test name check on setting (differs from regular dict!)
+		- Push the check on Configuration down on the Dummy_ConfigurationProxy
 		- Config information in dummy proxy (tests)
 		- config = proc.config.clone()
 		- proc.config = config
