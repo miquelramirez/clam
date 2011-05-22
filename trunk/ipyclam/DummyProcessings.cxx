@@ -1,6 +1,5 @@
 #include "DummyProcessings.hxx"
 #include <CLAM/ProcessingFactory.hxx>
-#include "DummyConfigurations.hxx"
 
 
 static const char * metadata[] = {

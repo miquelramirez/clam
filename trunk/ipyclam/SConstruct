@@ -29,9 +29,21 @@ module = env.SharedLibrary (
 	SHLIBPREFIX='',
 )
 
+configurationModule = env.SharedLibrary (
+	target='Clam_ConfigurationProxy',
+	source='Clam_ConfigurationProxy.cxx',
+	SHLIBPREFIX='',
+)
+
 dummyProcessingsModule = env.SharedLibrary (
 	target='DummyProcessingsModule',
 	source=['DummyProcessingsModule.cxx','DummyProcessings.cxx'],
+	SHLIBPREFIX='',
+)
+
+cppTestFixtures = env.SharedLibrary (
+	target='CppTestFixtures',
+	source=['CppTestFixtures.cxx'],
 	SHLIBPREFIX='',
 )
 
@@ -45,7 +57,9 @@ install = [
 	env.Install(targetDir, files) for targetDir, files in [
 	( os.path.join(os.path.expanduser('~/local'),'lib','python'),[
 		module,
+		configurationModule,
 		dummyProcessingsModule,
+		cppTestFixtures,
 	]),
 	( os.path.join(os.path.expanduser('~/local'),'bin'),[
 		program,
@@ -56,7 +70,8 @@ env.Alias('install', install)
 
 Default(
 	module,
+	configurationModule,
 	dummyProcessingsModule,
+	cppTestFixtures,
 	program,
 )
-

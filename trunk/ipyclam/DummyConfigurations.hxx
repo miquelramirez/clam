@@ -5,7 +5,6 @@
 
 namespace IpyclamTests { class DummyDTWithJustStrings; }
 
-
 class IpyclamTests::DummyDTWithJustStrings : public CLAM::ProcessingConfig
 {
 public:
