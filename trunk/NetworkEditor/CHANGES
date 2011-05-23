@@ -1,4 +1,17 @@
-2010-??-?? NetworkEditor 1.4.1 SVN $Revision$
+2011-??-?? NetworkEditor 1.4.1 SVN $Revision$
+''
+ * Migration scripts are called automatically when a network from an 
+   old version is loaded
+ * CheckClamNetwork: a new program to test networks load properly.
+ * Cartesian2PolarControl : moved from NetworkEditor to spacialization plugin
+ * GenderChange prototype: 
+   ** fixed names of AudioSource ports
+   ** an spacer added between buttons
+   ** added documentation
+ * fixed problem into Audio2MIDI.clamnetwork 
+ * prefix_for_packaging scons option for better distribution packaging
+ * FIX: Prototyper is a QtCoreApplication to avoid requiring X11
+ * FIX: Prototyper stops the backend before exiting
 
 
 2010-03-05 NetworkEditor 1.4.0
