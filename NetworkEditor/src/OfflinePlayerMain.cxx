@@ -7,7 +7,7 @@
 
 #ifdef USE_LADSPA
 #	include <CLAM/RunTimeLadspaLibraryLoader.hxx>
-#	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
+#	include <CLAM/RunTimeFaustLibraryLoader.hxx>
 #endif
 
 int usage(const std::string & program)
@@ -34,7 +34,7 @@ int version()
 {
 	// If you change that remember to update the manpage with help2man
 	// $ help2man -N ./OfflinePlayer -n "Plays CLAM networks off-line"
-	std::cout 
+	std::cout
 		<< "OfflinePlayer " << NetworkEditor::GetFullVersion() << "\n"
 		<< "Copyright (C) 2009, Fundació Barcelona Media.\n"
 		<< "This is free software: you are free to change and redistribute it.\n"
@@ -57,7 +57,7 @@ bool isWavFile(std::string filename)
 
 	if(filename.at(posDot)!='.')
 		return false;
-	
+
 	if(fileExtension.compare(originalExtension)!=0)
 		return false;
 
@@ -86,8 +86,8 @@ int main( int argc, char *argv[] )
 	std::string networkFile = argv[1];
 	CLAM::Network net;
 	CLAM::OfflineNetworkPlayer * player =  new CLAM::OfflineNetworkPlayer;
-	net.SetPlayer( player ); // network owns the player memory	
- 	CLAM::XMLStorage::Restore(net, networkFile);
+	net.SetPlayer( player ); // network owns the player memory
+	CLAM::XMLStorage::Restore(net, networkFile);
 
 	if (argc==2)
 	{
@@ -107,7 +107,7 @@ int main( int argc, char *argv[] )
 		std::string controlFile(argv[++argIndex]);
 		std::cout << "Sequence file: " <<  controlFile << std::endl;
 		player->SetControlFile(controlFile);
-		argIndex++;		
+		argIndex++;
 	}
 
 	if (std::string(argv[argIndex])== "-t")
@@ -124,7 +124,7 @@ int main( int argc, char *argv[] )
 		std::cout << "TIME (seconds) " << seconds << std::endl;
 		player->EnableLoopInputWavs();
 		player->SetResultWavsTime(seconds);
-		argIndex++;		
+		argIndex++;
 	}
 
 	if(std::string(argv[argIndex]) == "-o")
@@ -139,7 +139,7 @@ int main( int argc, char *argv[] )
 		if(!isWavFile(std::string(argv[argIndex])))
 		{
 			std::cout << "Found bad input file. The input files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
-			return -1;			
+			return -1;
 		}
 		player->AddInputFile(argv[argIndex]);
 		argIndex++;
@@ -147,12 +147,12 @@ int main( int argc, char *argv[] )
 		{
 			std::cout << "There are not output files. The output files are separated by -o" << std::endl;
 			return -1;
-		}		
+		}
 	}
 	argIndex ++;
 
 	if(std::string(argv[argIndex]) == "-f")
-	{	
+	{
 		if(argc <= ++argIndex)
 		{
 			std::cout << "Error: needed a format argument. The arguments posibles are 16, 24 signed data or 32, 64 float data. Example -c 16" << std::endl;
@@ -160,7 +160,7 @@ int main( int argc, char *argv[] )
 		}
 		std::istringstream stream(argv[argIndex++]);
 		int format;
-		stream >> format;		
+		stream >> format;
 		switch(format)
 		{
 			case(16):	player->SetFormat(SF_FORMAT_WAV | SF_FORMAT_PCM_16);
@@ -182,7 +182,7 @@ int main( int argc, char *argv[] )
 
 	int channel;
 	for (; argIndex<argc; argIndex++)
-	{		
+	{
 		if(std::string(argv[argIndex]) == "-c")
 		{
 			if(argc <= ++argIndex)
@@ -200,9 +200,9 @@ int main( int argc, char *argv[] )
 		if(!isWavFile(std::string(argv[argIndex])))
 		{
 			std::cout << "The output files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
-			return -1;			
+			return -1;
 		}
-		player->AddNumChannels(channel);			
+		player->AddNumChannels(channel);
 		player->AddOutputFile(argv[argIndex]);
 	}
 
