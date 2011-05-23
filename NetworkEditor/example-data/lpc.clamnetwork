@@ -1,39 +1,48 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
 
-  <processing id="AudioSource_0" position="-33,39" size="165,108" type="AudioSource" />
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'FreeSans'; font-size:11pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
 
-  <processing id="AudioWindowing" position="130,63" size="182,64" type="AudioStream2Buffer">
+  <processing id="AudioSource" position="31,59" size="132,108" type="AudioSource">
+    <NSources>1</NSources>
+  </processing>
+
+  <processing id="AudioWindowing" position="250,95" size="153,59" type="AudioStream2Buffer">
     <HopSize>512</HopSize>
     <BufferSize>1024</BufferSize>
-    </processing>
+  </processing>
 
-  <processing id="CepstralTransform_0" position="444,117" size="216,64" type="CepstralTransform">
+  <processing id="CepstralTransform_0" position="566,156" size="178,59" type="CepstralTransform">
     <NumMelCoefficients>20</NumMelCoefficients>
     <NumCepstrumCoefficients>20</NumCepstrumCoefficients>
     <UseBase10>0</UseBase10>
   </processing>
 
-  <processing id="FFT Spectrum" position="531,-70" size="157,80" type="SpectrumView" />
+  <processing id="FFT Spectrum" position="587,-31" size="157,80" type="SpectrumView"/>
 
-  <processing id="FFT_0" position="136,2" size="85,64" type="FFT">
+  <processing id="FFT_0" position="226,44" size="96,64" type="FFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Incomming Audio" position="238,-72" size="190,80" type="Oscilloscope" />
+  <processing id="Incomming Audio" position="247,-20" size="159,83" type="Oscilloscope"/>
 
-  <processing id="LP Model" position="656,-76" size="115,82" type="LPModelView" />
+  <processing id="LP Model" position="746,-34" size="113,84" type="LPModelView"/>
 
-  <processing id="LPC AutoCorrelation" position="305,60" size="214,64" type="LPC_AutoCorrelation">
+  <processing id="LPC AutoCorrelation" position="424,99" size="176,62" type="LPC_AutoCorrelation">
     <Order>33</Order>
   </processing>
 
-  <processing id="LPC Spectral Envelope" position="631,11" size="235,87" type="SpectrumView" />
+  <processing id="LPC Spectral Envelope" position="665,64" size="235,87" type="SpectrumView"/>
 
-  <processing id="Mel Cepstrum" position="609,219" size="159,71" type="MelCepstrumView" />
+  <processing id="Mel Cepstrum" position="714,256" size="162,76" type="MelCepstrumView"/>
 
-  <processing id="Mel Spectrum" position="471,215" size="158,77" type="MelSpectrumView" />
+  <processing id="Mel Spectrum" position="562,258" size="158,77" type="MelSpectrumView"/>
 
-  <processing id="MelFilterBank_0" position="288,118" size="174,64" type="MelFilterBank">
+  <processing id="MelFilterBank_0" position="394,159" size="152,59" type="MelFilterBank">
     <SpectrumSize>513</SpectrumSize>
     <SpectralRange>22050</SpectralRange>
     <LowCutoff>0</LowCutoff>
@@ -42,7 +51,7 @@
     <UsePower>0</UsePower>
   </processing>
 
-  <processing id="SpectralAnalysis_0" position="111,115" size="200,64" type="SpectralAnalysis">
+  <processing id="SpectralAnalysis_0" position="201,157" size="170,59" type="SpectralAnalysis">
     <WindowGenerator>
       <Type>BlackmanHarris92</Type>
       <Size>1025</Size>
@@ -65,27 +74,27 @@
     <prWindowType>BlackmanHarris92</prWindowType>
   </processing>
 
-  <processing id="Windowed Audio" position="388,-69" size="183,81" type="BufferOscilloscope" />
+  <processing id="Windowed Audio" position="416,-18" size="154,83" type="BufferOscilloscope"/>
 
-  <processing id="Windowed Spectrum" position="295,213" size="219,77" type="SpectrumView" />
+  <processing id="Windowed Spectrum" position="385,255" size="177,82" type="SpectrumView"/>
 
   <port_connection>
-    <out>AudioSource_0.1</out>
+    <out>AudioSource.1</out>
     <in>AudioWindowing.Audio stream</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.1</out>
+    <out>AudioSource.1</out>
     <in>Incomming Audio.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.1</out>
+    <out>AudioSource.1</out>
     <in>FFT_0.Audio Input</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.1</out>
+    <out>AudioSource.1</out>
     <in>SpectralAnalysis_0.Input</in>
   </port_connection>
 
