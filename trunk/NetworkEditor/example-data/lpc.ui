@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Dialog</class>
- <widget class="QDialog" name="Dialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,87 +10,64 @@
     <height>501</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>LPC Analysis</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="../src/images.qrc" >:/icons/images/lpmodel.svg</iconset>
+  <property name="windowIcon">
+   <iconset resource="../src/images.qrc">
+    <normaloff>:/icons/images/lpmodel.svg</normaloff>:/icons/images/lpmodel.svg</iconset>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="spacing" >
+  <property name="styleSheet">
+   <string notr="true">background-color: #222; color: #fff</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="spacing">
     <number>6</number>
    </property>
-   <property name="leftMargin" >
-    <number>9</number>
-   </property>
-   <property name="topMargin" >
-    <number>9</number>
-   </property>
-   <property name="rightMargin" >
-    <number>9</number>
-   </property>
-   <property name="bottomMargin" >
+   <property name="margin">
     <number>9</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin">
       <number>0</number>
      </property>
      <item>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>0</number>
-       </property>
-       <property name="topMargin" >
-        <number>0</number>
-       </property>
-       <property name="rightMargin" >
-        <number>0</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
-        <widget class="CLAM::VM::LPModelView" name="OutPort__LPC___AutoCorrelation__LPModelOut" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <widget class="CLAM::VM::LPModelView" name="OutPort__LPC___AutoCorrelation__LPModelOut" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
-         <property name="toolTip" >
+         <property name="toolTip">
           <string>LPC Coeficients</string>
          </property>
-         <property name="autoFillBackground" >
+         <property name="autoFillBackground">
           <bool>false</bool>
          </property>
-         <property name="styleSheet" >
+         <property name="styleSheet">
           <string>background-color:#444</string>
          </property>
-         <property name="barGradientBegin" >
+         <property name="barGradientBegin" stdset="0">
           <color>
            <red>255</red>
            <green>200</green>
            <blue>0</blue>
           </color>
          </property>
-         <property name="barGradientEnd" >
+         <property name="barGradientEnd" stdset="0">
           <color>
            <red>255</red>
            <green>100</green>
@@ -99,8 +77,8 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_3" >
-         <property name="text" >
+        <widget class="QLabel" name="label_3">
+         <property name="text">
           <string>LPC Coefficients</string>
          </property>
         </widget>
@@ -108,37 +86,28 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>0</number>
-       </property>
-       <property name="topMargin" >
-        <number>0</number>
-       </property>
-       <property name="rightMargin" >
-        <number>0</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
-        <widget class="Oscilloscope" name="OutPort__AudioSource_0__AudioOut" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <widget class="Oscilloscope" name="OutPort__AudioSource__1" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
-         <property name="autoFillBackground" >
+         <property name="autoFillBackground">
           <bool>false</bool>
          </property>
-         <property name="styleSheet" >
+         <property name="styleSheet">
           <string>background-color:#444;</string>
          </property>
-         <property name="lineColor" >
+         <property name="lineColor" stdset="0">
           <color>
            <red>255</red>
            <green>150</green>
@@ -148,30 +117,30 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_4" >
-         <property name="text" >
+        <widget class="QLabel" name="label_4">
+         <property name="text">
           <string>Input audio</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="SpectrumView" name="OutPort__LPC___AutoCorrelation__SpectrumOut" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <widget class="SpectrumView" name="OutPort__LPC___AutoCorrelation__SpectrumOut" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
-         <property name="toolTip" >
+         <property name="toolTip">
           <string>LPC Envelope</string>
          </property>
-         <property name="autoFillBackground" >
+         <property name="autoFillBackground">
           <bool>false</bool>
          </property>
-         <property name="styleSheet" >
+         <property name="styleSheet">
           <string>background-color:#444</string>
          </property>
-         <property name="lineColor" >
+         <property name="lineColor" stdset="0">
           <color>
            <red>255</red>
            <green>150</green>
@@ -181,30 +150,30 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_2" >
-         <property name="text" >
+        <widget class="QLabel" name="label_2">
+         <property name="text">
           <string>LPC envelope</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="SpectrumView" name="OutPort__FFT_0__Spectrum___Output" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <widget class="SpectrumView" name="OutPort__FFT_0__Spectrum___Output" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
-         <property name="toolTip" >
+         <property name="toolTip">
           <string>FFT Spectrum</string>
          </property>
-         <property name="autoFillBackground" >
+         <property name="autoFillBackground">
           <bool>false</bool>
          </property>
-         <property name="styleSheet" >
+         <property name="styleSheet">
           <string>background-color:#444</string>
          </property>
-         <property name="lineColor" >
+         <property name="lineColor" stdset="0">
           <color>
            <red>255</red>
            <green>150</green>
@@ -214,8 +183,8 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label" >
-         <property name="text" >
+        <widget class="QLabel" name="label">
+         <property name="text">
           <string>FFT Spectrum</string>
          </property>
         </widget>
@@ -223,44 +192,35 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>0</number>
-       </property>
-       <property name="topMargin" >
-        <number>0</number>
-       </property>
-       <property name="rightMargin" >
-        <number>0</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
-        <widget class="CLAM::VM::MelSpectrumView" name="OutPort__MelFilterBank_0__Mel___Spectrum" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <widget class="CLAM::VM::MelSpectrumView" name="OutPort__MelFilterBank_0__Mel___Spectrum" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
-         <property name="autoFillBackground" >
+         <property name="autoFillBackground">
           <bool>false</bool>
          </property>
-         <property name="styleSheet" >
+         <property name="styleSheet">
           <string>background-color:#444</string>
          </property>
-         <property name="barGradientBegin" >
+         <property name="barGradientBegin" stdset="0">
           <color>
            <red>255</red>
            <green>200</green>
            <blue>0</blue>
           </color>
          </property>
-         <property name="barGradientEnd" >
+         <property name="barGradientEnd" stdset="0">
           <color>
            <red>255</red>
            <green>100</green>
@@ -270,34 +230,34 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_5" >
-         <property name="text" >
+        <widget class="QLabel" name="label_5">
+         <property name="text">
           <string>Mel Spectrum</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="CLAM::VM::MelCepstrumView" name="OutPort__CepstralTransform_0__Mel___Cepstrum" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <widget class="CLAM::VM::MelCepstrumView" name="OutPort__CepstralTransform_0__Mel___Cepstrum" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
-         <property name="autoFillBackground" >
+         <property name="autoFillBackground">
           <bool>false</bool>
          </property>
-         <property name="styleSheet" >
+         <property name="styleSheet">
           <string>background-color:#444</string>
          </property>
-         <property name="barGradientBegin" >
+         <property name="barGradientBegin" stdset="0">
           <color>
            <red>255</red>
            <green>200</green>
            <blue>0</blue>
           </color>
          </property>
-         <property name="barGradientEnd" >
+         <property name="barGradientEnd" stdset="0">
           <color>
            <red>255</red>
            <green>100</green>
@@ -307,8 +267,8 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_6" >
-         <property name="text" >
+        <widget class="QLabel" name="label_6">
+         <property name="text">
           <string>Mel Cepstrum</string>
          </property>
         </widget>
@@ -318,71 +278,53 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="PlayButton" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <widget class="QPushButton" name="PlayButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Play</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="StopButton" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <widget class="QPushButton" name="StopButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Stop</string>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" >
-       <property name="spacing" >
+      <layout class="QHBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>0</number>
-       </property>
-       <property name="topMargin" >
-        <number>0</number>
-       </property>
-       <property name="rightMargin" >
-        <number>0</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>40</width>
            <height>20</height>
@@ -391,18 +333,18 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="PlaybackIndicator" >
-         <property name="text" >
+        <widget class="QLabel" name="PlaybackIndicator">
+         <property name="text">
           <string>Playback</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="BackendIndicator" >
-         <property name="text" >
+        <widget class="QLabel" name="BackendIndicator">
+         <property name="text">
           <string>Backend</string>
          </property>
-         <property name="alignment" >
+         <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
@@ -410,14 +352,14 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="CloseButton" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <widget class="QPushButton" name="CloseButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Close</string>
        </property>
       </widget>
@@ -454,7 +396,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../src/images.qrc" />
+  <include location="../src/images.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -463,11 +405,11 @@
    <receiver>Dialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>539</x>
      <y>490</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>435</x>
      <y>306</y>
     </hint>
