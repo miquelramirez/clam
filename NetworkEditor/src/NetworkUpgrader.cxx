@@ -136,8 +136,8 @@ const char * NetworkUpgrader::Impl::run(const std::string & filename)
 	PyBorrowed mainDict = PyModule_GetDict(main);
 	// Hack to avoid __main__ exectuion
 	{
-		PyReference boo =  Py_BuildValue("s","boo");
-		PyDict_SetItemString(mainDict, "__name__", boo);
+		PyReference moduleName =  Py_BuildValue("s","CLAM_NetworkUpgrader_clamrefactor");
+		PyDict_SetItemString(mainDict, "__name__", moduleName);
 	}
 
 	int error = PyRun_SimpleString(clamrefactor);
