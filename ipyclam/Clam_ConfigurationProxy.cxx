@@ -20,13 +20,13 @@ BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 {
 	using namespace boost::python;
 
-		class_<ConfigurationProxy>("Clam_ConfigurationProxy")
-			.def("setConfig",
-				setConfig,
-				"" )
-/*			.def("GetAttributeAsVoidPtr",
-				GetAttributeAsVoidPtr,
-				return_internal_reference<>(),
-				"" )
+	class_<ConfigurationProxy>("Clam_ConfigurationProxy")
+		.def("setConfig",
+			setConfig,
+			"" )
+/*		.def("GetAttributeAsVoidPtr",
+			GetAttributeAsVoidPtr,
+			return_internal_reference<>(),
+			"" )
 */			;
 }
