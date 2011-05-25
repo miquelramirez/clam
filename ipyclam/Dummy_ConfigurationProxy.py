@@ -18,12 +18,12 @@ import operator
 import unittest
 import TestFixtures
 class Dummy_ConfigurationProxyTests(unittest.TestCase):
-	def test_configGetting(self):
+	def test_gettingDefaultValues(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		self.assertEqual(c["ConfigParam1"], "Param1")
 		self.assertEqual(c["ConfigParam2"], "Param2")
 
-	def test_configSettingAndGetting(self):
+	def test_settingNewValues(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		c["ConfigParam1"] = 'newvalue'
 		self.assertEqual(c["ConfigParam1"], "newvalue")

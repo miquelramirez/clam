@@ -23,6 +23,18 @@ py::list pythonizeList(std::list<std::string> & list)
 	return result;
 }
 
+py::tuple connectorTuple(const std::string & name)
+{
+	size_t tokenPosition = name.find(".");
+	// TODO: Handle no point at all
+	// TODO: Handle point at the end
+	// TODO: Handle point at the begining
+	return py::make_tuple( 
+		name.substr(0, tokenPosition), 
+		name.substr(tokenPosition + 1)
+		);
+}
+
 //Helper to build a Python List of Tuples containing the peers
 py::list extractPeers(CLAM::Network::NamesList peers)
 {
@@ -30,9 +42,7 @@ py::list extractPeers(CLAM::Network::NamesList peers)
 	std::list<std::string>::iterator it;
 	for(it=peers.begin(); it!=peers.end(); it++)
 	{
-		size_t tokenPosition = (*it).find(".");
-		py::tuple peer = py::make_tuple( (*it).substr(0, tokenPosition), (*it).substr(tokenPosition + 1) );
-		connectorPeers.append( peer );
+		connectorPeers.append( connectorTuple(*it) );
 	}
 	return connectorPeers;
 }
