@@ -173,4 +173,42 @@ protected:
 	}
 };
 
+class DummyProcessingWithCompleteConfiguration : public CLAM::Processing
+{
+public:
+	typedef IpyclamTests::DummyDTWithEveryType Config;
+private:
+	Config mConfig;
+
+public:
+	const char* GetClassName() const { return "DummyProcessingWithCompleteConfiguration"; }
+	DummyProcessingWithCompleteConfiguration(const Config& config = Config()) 
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+	
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		return mConfig;
+	}
+
+protected:
+	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
+	{
+		CopyAsConcreteConfig(mConfig, config);
+		// Use here the config to setup you object
+		return true; // Configuration ok
+	}
+};
+
 #endif // DummyProcessings_hxx

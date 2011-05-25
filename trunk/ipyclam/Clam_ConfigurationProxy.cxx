@@ -46,6 +46,14 @@ static PyObject * getAttribute(ConfigurationProxy & config, const std::string & 
 		return Py_BuildValue("s", (*(std::string *) config._processingConfig->GetAttributeAsVoidPtr(index)).c_str() );
 	if ( config._processingConfig->GetTypeId(index) == typeid(int) )
 		return Py_BuildValue("i", *(int *) config._processingConfig->GetAttributeAsVoidPtr(index) );
+	if ( config._processingConfig->GetTypeId(index) == typeid(char) )
+		return Py_BuildValue("c", *(char *) config._processingConfig->GetAttributeAsVoidPtr(index) );
+	if ( config._processingConfig->GetTypeId(index) == typeid(bool) )
+		return Py_BuildValue("b", *(bool *) config._processingConfig->GetAttributeAsVoidPtr(index) );
+	if ( config._processingConfig->GetTypeId(index) == typeid(float) )
+		return Py_BuildValue("f", *(float *) config._processingConfig->GetAttributeAsVoidPtr(index) );
+	if ( config._processingConfig->GetTypeId(index) == typeid(double) )
+		return Py_BuildValue("d", *(double *) config._processingConfig->GetAttributeAsVoidPtr(index) );
 	return Py_None;
 }
 
