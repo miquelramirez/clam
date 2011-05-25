@@ -34,7 +34,7 @@ std::string Dump(ConfigurationProxy & config)
 	return str.str();
 }
 
-std::string getAttribute(ConfigurationProxy & config, const std::string & attribute)
+static PyObject * getAttribute(ConfigurationProxy & config, const std::string & attribute)
 {
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
@@ -42,7 +42,11 @@ std::string getAttribute(ConfigurationProxy & config, const std::string & attrib
 		PyErr_SetString(PyExc_AttributeError, attribute.c_str() );
 		py::throw_error_already_set();
 	}
-	return *(std::string *) config._processingConfig->GetAttributeAsVoidPtr(index);
+	if ( config._processingConfig->GetTypeId(index) == typeid(std::string) )
+		return Py_BuildValue("s", (*(std::string *) config._processingConfig->GetAttributeAsVoidPtr(index)).c_str() );
+	if ( config._processingConfig->GetTypeId(index) == typeid(int) )
+		return Py_BuildValue("i", *(int *) config._processingConfig->GetAttributeAsVoidPtr(index) );
+	return Py_None;
 }
 
 BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)

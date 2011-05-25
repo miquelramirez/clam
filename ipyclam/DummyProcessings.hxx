@@ -135,4 +135,42 @@ protected:
 	}
 };
 
+class DummyProcessingWithIntConfiguration : public CLAM::Processing
+{
+public:
+	typedef IpyclamTests::DummyDTWithJustIntegers Config;
+private:
+	Config mConfig;
+
+public:
+	const char* GetClassName() const { return "DummyProcessingWithIntConfiguration"; }
+	DummyProcessingWithIntConfiguration(const Config& config = Config()) 
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+	
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		return mConfig;
+	}
+
+protected:
+	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
+	{
+		CopyAsConcreteConfig(mConfig, config);
+		// Use here the config to setup you object
+		return true; // Configuration ok
+	}
+};
+
 #endif // DummyProcessings_hxx

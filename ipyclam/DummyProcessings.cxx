@@ -33,3 +33,11 @@ static const char * metadata4[] = {
 	};
 
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyProcessingWithStringConfiguration> registrator4(metadata4);
+
+static const char * metadata5[] = {
+	"key", "DummyProcessingWithIntConfiguration",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyProcessingWithIntConfiguration> registrator5(metadata5);

@@ -30,5 +30,10 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		except AttributeError, e:
 			self.assertEqual("WrongAttribute", e.args[0])
 
+	def test_getValueFromIntAttributes(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
+		self.assertEqual(42, proxy["FirstInt"])
+		self.assertEqual(15, proxy["SecondInt"])
+
 if __name__ == '__main__':
 	unittest.main()
