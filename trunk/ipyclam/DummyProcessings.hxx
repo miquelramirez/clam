@@ -7,6 +7,8 @@
 #include <CLAM/OutControl.hxx>
 #include <CLAM/Processing.hxx>
 
+#include "DummyConfigurations.hxx"
+
 class DummyProcessingWithInAndOutPorts : public CLAM::Processing
 { 
 	CLAM::InPort<float> mIn;
@@ -92,6 +94,44 @@ public:
 	bool Do(float in, float out)
 	{
 		return true;
+	}
+};
+
+class DummyProcessingWithStringConfiguration : public CLAM::Processing
+{
+public:
+	typedef IpyclamTests::DummyDTWithJustStrings Config;
+private:
+	Config mConfig;
+
+public:
+	const char* GetClassName() const { return "DummyProcessingWithStringConfiguration"; }
+	DummyProcessingWithStringConfiguration(const Config& config = Config()) 
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+	
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		return mConfig;
+	}
+
+protected:
+	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
+	{
+		CopyAsConcreteConfig(mConfig, config);
+		// Use here the config to setup you object
+		return true; // Configuration ok
 	}
 };
 
