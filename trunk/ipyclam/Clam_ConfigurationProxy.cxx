@@ -7,11 +7,11 @@
 
 namespace py = boost::python;
 
-int getAttributeIndex(ConfigurationProxy & config, const std::string & attribute)
+int getAttributeIndex(const ConfigurationProxy & config, const std::string & attribute)
 {
-	for(unsigned int i = 0; i < config._processingConfig->GetNDynamicAttributes(); ++i)
+	for(unsigned int i = 0; i < config.nAttributes(); ++i)
 	{
-		if ( attribute == config._processingConfig->GetDynamicAttributeName(i) )
+		if ( attribute == config.attributeName(i) )
 			return (int) i;
 	}
 	return -1;
@@ -42,18 +42,18 @@ static PyObject * getAttribute(ConfigurationProxy & config, const std::string & 
 		PyErr_SetString(PyExc_AttributeError, attribute.c_str() );
 		py::throw_error_already_set();
 	}
-	if ( config._processingConfig->GetTypeId(index) == typeid(std::string) )
-		return Py_BuildValue("s", (*(std::string *) config._processingConfig->GetAttributeAsVoidPtr(index)).c_str() );
-	if ( config._processingConfig->GetTypeId(index) == typeid(int) )
-		return Py_BuildValue("i", *(int *) config._processingConfig->GetAttributeAsVoidPtr(index) );
-	if ( config._processingConfig->GetTypeId(index) == typeid(char) )
-		return Py_BuildValue("c", *(char *) config._processingConfig->GetAttributeAsVoidPtr(index) );
-	if ( config._processingConfig->GetTypeId(index) == typeid(bool) )
-		return Py_BuildValue("b", *(bool *) config._processingConfig->GetAttributeAsVoidPtr(index) );
-	if ( config._processingConfig->GetTypeId(index) == typeid(float) )
-		return Py_BuildValue("f", *(float *) config._processingConfig->GetAttributeAsVoidPtr(index) );
-	if ( config._processingConfig->GetTypeId(index) == typeid(double) )
-		return Py_BuildValue("d", *(double *) config._processingConfig->GetAttributeAsVoidPtr(index) );
+	if ( config.attributeType(index) == typeid(std::string) )
+		return Py_BuildValue("s", config.attributeValue<std::string>(index).c_str() );
+	if ( config.attributeType(index) == typeid(int) )
+		return Py_BuildValue("i", config.attributeValue<int>(index));
+	if ( config.attributeType(index) == typeid(char) )
+		return Py_BuildValue("c", config.attributeValue<char>(index));
+	if ( config.attributeType(index) == typeid(bool) )
+		return Py_BuildValue("b", config.attributeValue<bool>(index));
+	if ( config.attributeType(index) == typeid(float) )
+		return Py_BuildValue("f", config.attributeValue<float>(index));
+	if ( config.attributeType(index) == typeid(double) )
+		return Py_BuildValue("d", config.attributeValue<double>(index));
 	return Py_None;
 }
 
