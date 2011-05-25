@@ -17,5 +17,18 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		"</Configuration>\n"
 		, proxy.xml())
 
+	def test_getValueFromStringAttributes(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		self.assertEqual("ValorPerDefecte", proxy["UnString"])
+		self.assertEqual("Un altre valor per defecte", proxy["UnAltreString"])
+
+	def test_raiseAttributeErrorGettingValueFromWrongAttribute(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		try:
+			proxy["WrongAttribute"]
+			self.fail("Exception expected")
+		except AttributeError, e:
+			self.assertEqual("WrongAttribute", e.args[0])
+
 if __name__ == '__main__':
 	unittest.main()
