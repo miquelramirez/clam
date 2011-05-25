@@ -1,0 +1,93 @@
+Taken from http://sourceforge.net/tracker/?func=detail&aid=2000973&group_id=13478&atid=313478
+Needed to properly build dll with mingw
+
+
+diff -r -u flac-1.2.1/configure.in Copia di flac-1.2.1/configure.in
+--- flac-1.2.1/configure.in	Thu Sep 13 15:48:42 2007
++++ Copia di flac-1.2.1/configure.in	Mon Jun 23 14:20:32 2008
+@@ -25,6 +25,9 @@
+ # explicitly requested.  Eases autobuilding -mdz
+ AM_MAINTAINER_MODE
+ 
++# Enable the generation of shared libraries under Win32
++AC_LIBTOOL_WIN32_DLL
++
+ # We need two libtools, one that builds both shared and static, and
+ # one that builds only static.  This is because the resulting libtool
+ # does not allow us to choose which to build at runtime.
+@@ -50,6 +53,10 @@
+ 
+ AC_CHECK_TYPES(socklen_t, [], [])
+ 
++dnl define this variable for enabling strict exports with libtool
++dnl for now, it's only supported by Win32.
++LT_NO_UNDEFINED=""
++
+ dnl check for getopt in standard library
+ dnl AC_CHECK_FUNCS(getopt_long , , [LIBOBJS="$LIBOBJS getopt.o getopt1.o"] )
+ AC_CHECK_FUNCS(getopt_long, [], [])
+@@ -85,7 +92,10 @@
+ 
+ # only needed because of ntohl() usage, can get rid of after that's gone:
+ case "$host" in
+-	*-*-cygwin|*mingw*) MINGW_WINSOCK_LIBS=-lwsock32 ;;
++	*-*-cygwin|*mingw*)
++		MINGW_WINSOCK_LIBS=-lwsock32
++		LT_NO_UNDEFINED="$LT_NO_UNDEFINED -no-undefined"
++		;;
+ 	*) MINGW_WINSOCK_LIBS= ;;
+ esac
+ AC_SUBST(MINGW_WINSOCK_LIBS)
+@@ -306,6 +316,7 @@
+ fi
+ 
+ #@@@
++AC_SUBST(LT_NO_UNDEFINED)
+ AM_CONDITIONAL(FLaC__HAS_AS__TEMPORARILY_DISABLED, test "yes" = "no")
+ AM_CONDITIONAL(FLaC__HAS_GAS__TEMPORARILY_DISABLED, test "yes" = "no")
+ 
+diff -r -u flac-1.2.1/include/share/alloc.h Copia di flac-1.2.1/include/share/alloc.h
+--- flac-1.2.1/include/share/alloc.h	Wed Sep 12 05:32:21 2007
++++ Copia di flac-1.2.1/include/share/alloc.h	Mon Jun 23 13:05:08 2008
+@@ -28,7 +28,7 @@
+  */
+ 
+ #include <limits.h> /* for SIZE_MAX */
+-#if !defined _MSC_VER && !defined __MINGW32__ && !defined __EMX__
++#ifdef HAVE_STDINT_H
+ #include <stdint.h> /* for SIZE_MAX in case limits.h didn't get it */
+ #endif
+ #include <stdlib.h> /* for size_t, malloc(), etc */
+diff -r -u flac-1.2.1/src/libFLAC/Makefile.am Copia di flac-1.2.1/src/libFLAC/Makefile.am
+--- flac-1.2.1/src/libFLAC/Makefile.am	Fri Sep 14 21:06:17 2007
++++ Copia di flac-1.2.1/src/libFLAC/Makefile.am	Mon Jun 23 14:32:26 2008
+@@ -69,7 +69,7 @@
+ endif
+ endif
+ 
+-libFLAC_la_LIBADD = $(LOCAL_EXTRA_LIBADD) @OGG_LIBS@
++libFLAC_la_LIBADD = $(LOCAL_EXTRA_LIBADD) @OGG_LIBS@ @MINGW_WINSOCK_LIBS@
+ 
+ SUBDIRS = $(ARCH_SUBDIRS) include .
+ 
+@@ -96,7 +96,7 @@
+ 	ogg_mapping.c
+ endif
+ # see 'http://www.gnu.org/software/libtool/manual.html#Libtool-versioning' for numbering convention
+-libFLAC_la_LDFLAGS = -version-info 10:0:2 -lm $(LOCAL_EXTRA_LDFLAGS)
++libFLAC_la_LDFLAGS = -version-info 10:0:2 -lm $(LOCAL_EXTRA_LDFLAGS) @LT_NO_UNDEFINED@
+ libFLAC_la_SOURCES = \
+ 	bitmath.c \
+ 	bitreader.c \
+diff -r -u flac-1.2.1/src/libFLAC++/Makefile.am Copia di flac-1.2.1/src/libFLAC++/Makefile.am
+--- flac-1.2.1/src/libFLAC++/Makefile.am	Fri Sep 14 21:06:10 2007
++++ Copia di flac-1.2.1/src/libFLAC++/Makefile.am	Mon Jun 23 15:01:04 2008
+@@ -46,7 +46,7 @@
+ 	libFLAC++.m4
+ 
+ # see 'http://www.gnu.org/software/libtool/manual.html#Libtool-versioning' for numbering convention
+-libFLAC___la_LDFLAGS = -version-info 8:0:2
++libFLAC___la_LDFLAGS = -version-info 8:0:2 @LT_NO_UNDEFINED@
+ libFLAC___la_LIBADD = ../libFLAC/libFLAC.la
+ 
+ libFLAC___la_SOURCES = \

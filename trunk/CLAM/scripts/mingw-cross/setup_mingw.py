@@ -257,7 +257,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		patches = glob.glob(scriptRelative("mingw-"+name+"*.patch"))
 		patches.sort()
 		if patches and subst['srcdir'] :
-			run("rm -rf %(srcdir)/"%subst)
+			run("rm -rf %(srcdir)s/"%subst)
 		extractSource(subst['tarball'])
 		for patch in patches :
 			applyPatch(subst['srcdir'], patch, level=1)
@@ -373,10 +373,10 @@ package( "id3lib",
 	tarballName = "id3lib-%(version)s.tar.gz",
 	buildCommand =
 		""" cd %(sandbox)s/src/id3lib-%(version)s && """
-		""" aclocal -I m4 && """
-		""" libtoolize && """
+#		""" aclocal -I m4 && """
+#		""" libtoolize && """
 		""" autoconf && """
-		""" automake && """
+#		""" automake && """
 		""" CPPFLAGS='-I%(prefix)s/include' """ # Needed for: zlib, iconv... TODO: investigate dlfcn usage
 		""" LDFLAGS='-L%(prefix)s/lib' """
 		""" DLLTOOL=%(target)s-dlltool """
@@ -487,7 +487,9 @@ package( "flac",
 		""" ./autogen.sh --host='%(target)s' --prefix='%(prefix)s' """
 			""" PKG_CONFIG_PATH=$PKG_CONFIG_PATH """
 			""" --disable-xmms-plugin """
+			""" --disable-doxygen-docs """
 			""" --enable-ogg """
+			""" --enable-cpplibs """
 			""" --disable-oggtest """
 			""" && """
 		""" make && """
@@ -497,7 +499,6 @@ package( "flac",
 package( "libsndfile",
 	uri = "http://www.mega-nerd.com/libsndfile/",
 	deps = "ogg vorbis flac",
-	pinnedVersion = "1.0.21",
 	checkVersion =
 		""" wget -q -O- 'http://www.mega-nerd.com/libsndfile/' | """
 		""" grep '<META NAME="Version"' | """
@@ -509,8 +510,6 @@ package( "libsndfile",
 		""" cd %(srcdir)s && """
 #		""" autoconf && """
 		""" ./configure mingw32 --host=%(target)s --prefix=%(prefix)s """
-			""" --disable-external-libs """
-#			""" --disable-flac """
 			""" --disable-sqlite """
 			""" --disable-octave """
 			""" --disable-alsa """
@@ -1037,7 +1036,7 @@ package( "qt",
 			""" -prefix-install """
 			""" -script """
 			""" -opengl desktop """
-			""" -no-webkit """
+#			""" -no-webkit """
 #			""" -no-glib """
 #			""" -no-gstreamer """
 			""" -no-phonon """
@@ -1138,7 +1137,6 @@ package( "python",
 		""" ./configure --host=%(target)s --target=%(target)s --prefix=%(prefix)s  """
 			""" --enable-unicode=ucs4 """
 			""" --with-threads """
-			""" --with-cxx-main=%(target)s-g++ """
 			""" && """
 		""" make && """
 		""" make install """
@@ -1160,8 +1158,8 @@ order = """
 	gettext
 	libiconv
 	flac
-	libsndfile
 	speex
+	libsndfile
 	liblo
 	zlib
 	libpng
