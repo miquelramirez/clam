@@ -123,11 +123,8 @@ def CheckPkgConfigFile(context, libname) :
 	if str(libname) != libname :
 		libname = " ".join(libname)
 	context.Message( 'Checking for %s pkg-config file... ' % libname)
-	pkgconfig = context.env['PKG_CONFIG']
-	if pkgconfig == '': pkgconfig = "pkg-config"
-	#TODO: Trying native windows, remove the commented out line if other platforms still work
-#	command = "PKG_CONFIG_PATH='$PKG_CONFIG_PATH' %s --cflags --libs %s" % (pkgconfig, libname)
-	command = "%s --cflags --libs %s" % (pkgconfig, libname)
+	context.env.SetDefault(PKG_CONFIG="pkg-config")
+	command = "$PKG_CONFIG --cflags --libs %s" % (libname)
 	ret,_=context.TryAction( command )
 	context.Result(ret)
 	if not ret: return False
