@@ -136,10 +136,6 @@
 	- TypeError on different type than the default value
 	- Sub configurations in proxy config.subconfig.param
 - Clam Configs
-	- 
-
-
-
-
-
-
+	- Setting attributes:
+		- Missing char attributes (need to figure out how to do)
+		- Missing double attributes (python doesn't distinguish between float/double)

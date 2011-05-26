@@ -25,6 +25,13 @@ public:
 		return *(value_type *)
 			_processingConfig->GetAttributeAsVoidPtr(i );
 	}
+	template <typename value_type>
+	void setAttributeValue(unsigned i, const value_type & value)
+	{
+		value_type & attribute = 
+			*(value_type *)_processingConfig->GetAttributeAsVoidPtr( i );
+		attribute = value;
+	}
 	const std::type_info & attributeType(unsigned i) const
 	{
 		return _processingConfig->GetTypeId(i);

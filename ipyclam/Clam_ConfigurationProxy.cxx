@@ -57,6 +57,45 @@ static PyObject * getAttribute(ConfigurationProxy & config, const std::string & 
 	return Py_None;
 }
 
+void setAttribute(ConfigurationProxy & config, const std::string & attribute, PyObject * value)
+{
+	int index = getAttributeIndex(config, attribute);
+	
+	if ( PyString_Check(value) )
+	{
+		std::string stringvalue = PyString_AsString(value);
+		config.setAttributeValue<std::string>(index, stringvalue);
+		return;
+	}
+	if ( PyInt_Check(value) )
+	{
+		int intvalue = PyInt_AsLong(value);
+		config.setAttributeValue<int>(index, intvalue);
+		return;
+	}
+	//CHAR NEEDED!!
+	if ( PyBool_Check(value) )
+	{
+		if (value == Py_False)
+			config.setAttributeValue<bool>(index, 0);
+		else
+			config.setAttributeValue<bool>(index, 1);
+		return;
+	}
+	if ( PyFloat_Check(value) )
+	{
+		float floatvalue = PyFloat_AsDouble(value);
+		config.setAttributeValue<float>(index, floatvalue);
+		return;
+	}
+}
+/*
+void setAttribute(ConfigurationProxy & config, const std::string & attribute, const std::string & value)
+{
+	int index = getAttributeIndex(config, attribute);
+	config.setAttributeValue<std::string>(index, value);
+}
+*/
 BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 {
 	using namespace boost::python;
@@ -73,7 +112,11 @@ BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 			)
 		.def("__getitem__",
 			getAttribute,
-			""
+			"Returns the attribute value"
+			)
+		.def("__setitem__",
+			setAttribute,
+			"Sets a new value for the attribute"
 			)
 		;
 }

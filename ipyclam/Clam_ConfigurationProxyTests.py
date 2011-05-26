@@ -44,5 +44,22 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual(3.140000104904175, proxy["FloatAttribute"])
 		self.assertEqual(134.15, proxy["DoubleAttribute"])
 
+	def test_setValueFromStringAttributes(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		proxy["UnString"] = "newvalue"
+		self.assertEqual("newvalue", proxy["UnString"])
+
+	def test_setValueFromIntegerAttributes(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
+		proxy["FirstInt"] = 24
+		self.assertEqual(24, proxy["FirstInt"])
+
+	def test_getValueFromBoolAndFloatAttributes(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
+		proxy["BoolAttribute"] = True
+		proxy["FloatAttribute"] = 4.15
+		self.assertEqual(True, proxy["BoolAttribute"])
+		self.assertEqual(4.150000095367432, proxy["FloatAttribute"])
+
 if __name__ == '__main__':
 	unittest.main()
