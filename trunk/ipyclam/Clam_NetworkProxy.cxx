@@ -120,7 +120,6 @@ py::list processingConnectors(CLAM::Network & network, const std::string & proce
 			{
 				connectors.append(proc.GetInPort(i).GetName());
 			}
-			return connectors;
 		}	
 		else
 		{
@@ -128,7 +127,6 @@ py::list processingConnectors(CLAM::Network & network, const std::string & proce
 			{
 				connectors.append(proc.GetOutPort(i).GetName());
 			}
-			return connectors;
 		}
 	}
 	else
@@ -139,7 +137,6 @@ py::list processingConnectors(CLAM::Network & network, const std::string & proce
 			{
 				connectors.append(proc.GetInControl(i).GetName());
 			}
-			return connectors;
 		}
 		else
 		{
@@ -147,9 +144,9 @@ py::list processingConnectors(CLAM::Network & network, const std::string & proce
 			{
 				connectors.append(proc.GetOutControl(i).GetName());
 			}
-			return connectors;
 		}
 	}
+	return connectors;
 }
 
 bool connect(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
@@ -218,13 +215,12 @@ bool connectionExists(CLAM::Network & network, const std::string & kind, const s
 
 py::list connectorPeers(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
 {
-	py::list connectorPeers;
 	const std::string connector = processingName + "." + connectorName;
-
 	if (kind == "Port")
 	{
 		if (direction == "In")
 		{
+			py::list connectorPeers;
 			CLAM::InPortBase & inport = network.GetInPortByCompleteName(connector);
 			CLAM::OutPortBase * outport = inport.GetVisuallyConnectedOutPort();
 			py::tuple peerTuple = py::make_tuple( network.GetProcessingName( *outport->GetProcessing() ), outport->GetName() );
@@ -233,21 +229,18 @@ py::list connectorPeers(CLAM::Network & network, const std::string & processingN
 		}
 		else
 		{
-			CLAM::Network::NamesList peers = network.GetInPortsConnectedTo(connector);
-			return extractPeers(peers);
+			return extractPeers(network.GetInPortsConnectedTo(connector));
 		}
 	}
 	else
 	{
 		if (direction == "In")
 		{
-			CLAM::Network::NamesList peers = network.GetOutControlsConnectedTo(connector);
-			return extractPeers(peers);
+			return extractPeers(network.GetOutControlsConnectedTo(connector));
 		}
 		else
 		{
-			CLAM::Network::NamesList peers = network.GetInControlsConnectedTo(connector);
-			return extractPeers(peers);
+			return extractPeers(network.GetInControlsConnectedTo(connector));
 		}
 	}
 }
