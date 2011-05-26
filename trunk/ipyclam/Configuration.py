@@ -25,37 +25,42 @@ import TestFixtures
 import Dummy_ConfigurationProxy
 
 class ConfigurationTests(unittest.TestCase):
+
 	def stringParametersConfig(self) :
 		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(
 			TestFixtures.dummyConfigWithStrings())
-	def test_configGettingAsDictionary(self):
+
+	def test_getItem(self):
 		c = Configuration(self.stringParametersConfig())
 		self.assertEqual(c["ConfigParam1"], "Param1")
 		self.assertEqual(c["ConfigParam2"], "Param2")
 
-	def test_configSettingAndGettingAsDictionary(self):
+	def test_setItem(self):
 		c = Configuration(self.stringParametersConfig())
 		c["ConfigParam1"] = 'newvalue'
 		self.assertEqual(c["ConfigParam1"], "newvalue")
 
-	def test_configGettingAsAttribute(self):
+	def test_getAttr(self):
 		c = Configuration(self.stringParametersConfig())
 		self.assertEqual(c.ConfigParam1, "Param1")
 		self.assertEqual(c.ConfigParam2, "Param2")
 
-	def test_configSettingAndGettingAsAttribute(self):
+	def test_setAttr(self):
 		c = Configuration(self.stringParametersConfig())
 		c.ConfigParam1 = 'newvalue'
 		self.assertEqual(c.ConfigParam1, "newvalue")
 
-	def test_configSettingAsAttributeAndGettingAsDictionary(self):
+	def test_setAttr_affects_getItem(self):
 		c = Configuration(self.stringParametersConfig())
-		c.ConfigParam1 = 'newvalue1'
-		c.ConfigParam2 = 'newvalue2'
-		self.assertEqual(c["ConfigParam1"], "newvalue1")
-		self.assertEqual(c["ConfigParam2"], "newvalue2")
+		c.ConfigParam1 = 'newvalue'
+		self.assertEqual(c["ConfigParam1"], "newvalue")
 
-	def test_ValuesAsAttributesSettingAndFailing(self):
+	def test_setItem_affects_getAttr(self):
+		c = Configuration(self.stringParametersConfig())
+		c['ConfigParam1'] = 'newvalue'
+		self.assertEqual(c.ConfigParam1, "newvalue")
+
+	def test_setAttr_wrongName(self):
 		c = Configuration(self.stringParametersConfig())
 		try:
 			c.WrongParam1 = "ParamValue"
@@ -63,7 +68,7 @@ class ConfigurationTests(unittest.TestCase):
 		except AttributeError, e:
 			self.assertEquals("WrongParam1", e.args[0])
 
-	def test_ValuesAsAttributesGettingAndFailing(self):
+	def test_getAttr_wrongName(self):
 		c = Configuration(self.stringParametersConfig())
 		try:
 			param = c.WrongParam1
@@ -71,7 +76,7 @@ class ConfigurationTests(unittest.TestCase):
 		except AttributeError, e:
 			self.assertEquals("WrongParam1", e.args[0])
 
-	def test_ValuesAsDictionarySettingAndFailing(self):
+	def test_setAttr_wrongType(self):
 		c = Configuration(self.stringParametersConfig())
 		try:
 			c.ConfigParam1 = 1
@@ -79,13 +84,29 @@ class ConfigurationTests(unittest.TestCase):
 		except TypeError, e:
 			self.assertEquals("str value expected, got int", e.args[0])
 
-	def test_ValuesAsDictionaryGettingAndFailing(self):
+	def test_getItem_wrongName(self):
 		c = Configuration(self.stringParametersConfig())
 		try:
 			param = c["WrongParam1"]
 			self.fail("Exception expected")
 		except KeyError, e:
 			self.assertEquals("WrongParam1", e.args[0])
+
+	def test_setitem_wrongName(self):
+		c = Configuration(self.stringParametersConfig())
+		try:
+			c["WrongParam1"] = "value"
+			self.fail("Exception expected")
+		except KeyError, e:
+			self.assertEquals("WrongParam1", e.args[0])
+
+	def test_setItem_wrongType(self):
+		c = Configuration(self.stringParametersConfig())
+		try:
+			c["ConfigParam1"] = 1
+			self.fail("Exception expected")
+		except TypeError, e:
+			self.assertEquals("str value expected, got int", e.args[0])
 
 	def test_dirFunction(self):
 		c = Configuration(self.stringParametersConfig())
@@ -94,3 +115,4 @@ class ConfigurationTests(unittest.TestCase):
 
 if __name__ == '__main__':
 	unittest.main()
+
