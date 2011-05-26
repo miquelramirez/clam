@@ -28,9 +28,9 @@ def ellapsedTime():
 localDefinitions = dict(
 	name= 'BM_lucid_32',
 	description= '<img src="http://clam-project.org/images/linux_icon.png"/> <img src="http://clam-project.org/images/ubuntu_icon.png"/>',
-#	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
-	repositories = "clam acustica data_acustica clam/testdata imm_bm data_imm_bm",
-	private_repositories = "acustica data_acustica imm_bm data_imm_bm",
+#	repositories = "clam acustica clam/testdata clam/padova-speech-sms",
+	repositories = "clam clam/testdata",
+	private_repositories = "",
 	sandbox= os.path.expanduser('~/'),
 	qt3dir='',
 	qt4dir='',
@@ -114,19 +114,6 @@ clam.add_subtask('CLAM Examples', [
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 ] )
 
-clam.add_subtask('BM-Audio Soxsucks', [
-	'cd %(sandbox)s/imm_bm/src/soxsucks/'%localDefinitions,
-	'scons',
-	'ln -sf %(sandbox)s/imm_bm/src/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
-] )
-
-clam.add_subtask('BM-Audio Raytracing', [
-	'cd %(sandbox)s/imm_bm/src/raytracing'%localDefinitions,
-	'scons',
-	'ln -sf %(sandbox)s/imm_bm/src/raytracing/raytracing %(installPath)s/bin'%localDefinitions,
-	'./back2back.py',
-] )
-
 clam.add_subtask('CLAM Plugins', [
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization/spectral'%localDefinitions,
 	'scons prefix=%(installPath)s'%localDefinitions,
@@ -134,10 +121,6 @@ clam.add_subtask('CLAM Plugins', [
 
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s raytracing=disabled'%localDefinitions,
-	'scons install',
-
-	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
-	'scons clam_prefix=%(installPath)s %(extraAppOptions)s raytracing=traditional'%localDefinitions,
 	'scons install',
 
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization/ladspa/'%localDefinitions,
