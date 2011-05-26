@@ -18,12 +18,13 @@ import operator
 import unittest
 import TestFixtures
 class Dummy_ConfigurationProxyTests(unittest.TestCase):
-	def test_gettingDefaultValues(self):
+
+	def test_get_default(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		self.assertEqual(c["ConfigParam1"], "Param1")
 		self.assertEqual(c["ConfigParam2"], "Param2")
 
-	def test_settingNewValues(self):
+	def test_set(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		c["ConfigParam1"] = 'newvalue'
 		self.assertEqual(c["ConfigParam1"], "newvalue")
@@ -32,7 +33,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		self.assertEqual(["ConfigParam3", "ConfigParam2", "ConfigParam1"], c.keys() )
 
-	def test_incompatibleTypes(self):
+	def test_set_wrongType(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		try:
 			c["ConfigParam1"] = 1
@@ -40,7 +41,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		except TypeError, e:
 			self.assertEquals("str value expected, got int", e.args[0])
 
-	def test_setFailsWithWrongParameterName(self):
+	def test_set_wrongName(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		try:
 			c["WrongParam1"] = "ParamValue"
@@ -48,5 +49,14 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		except KeyError, e:
 			self.assertEquals("WrongParam1", e.args[0])
 
+	def test_get_wrongName(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		try:
+			value = c["WrongParam1"]
+			self.fail("Exception expected")
+		except KeyError, e:
+			self.assertEquals("WrongParam1", e.args[0])
+
 if __name__ == '__main__':
 	unittest.main()
+
