@@ -20,6 +20,8 @@ public:
 	template <typename value_type>
 	const value_type & attributeValue(unsigned i) const
 	{
+		CLAM_ASSERT(attributeType(i) == typeid(value_type),
+			"Asking for the wrong type of value in configuration");
 		return *(value_type *)
 			_processingConfig->GetAttributeAsVoidPtr(i );
 	}
