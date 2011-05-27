@@ -25,7 +25,7 @@ class Network(object):
 	def types(self) :
 		return ProcessingTypes.ProcessingTypes(self._proxy)
 
-	def code(self, networkVar = "network"):
+	def code(self, networkVar = "network", fullConfig = False):
 
 		def appendAttribute(name):
 			if name[0].isdigit():
@@ -41,6 +41,8 @@ class Network(object):
 			"%s%s = '%s'"%(networkVar, appendAttribute(name), self._proxy.processingType(name))
 			for name in self._proxy.processingNames()])
 		code += "\n"
+		code += self.configCode(networkVar, fullConfig)
+		code += "\n"
 		code += "\n".join([
 				"%s%s%s > %s%s%s"%(networkVar, appendAttribute(fromProcessing), appendAttribute(fromConnector), networkVar, appendAttribute(toProcessing), appendAttribute(toConnector))
 				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.portConnections()])
@@ -50,6 +52,11 @@ class Network(object):
 				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.controlConnections()])
 		return code
 
+	def configCode(self, networkVar, fullConfig):
+		configCode = ""
+		for name in self._proxy.processingNames():
+			configCode += self.__getitem__(name)._config.code(name, networkVar, fullConfig)
+		return configCode
 
 	def __setattr__(self, name, type) :
 		if name == "description":
@@ -108,13 +115,14 @@ class NetworkTests(unittest.TestCase):
 
 	def test_codeEmptyNetwork(self) :
 		net = Network(TestFixtures.empty())
-		self.assertEquals("\n\n", net.code())
+		self.assertEquals("\n\n\n", net.code())
 
 	def test_addProcessing(self) :
 		net = Network(TestFixtures.empty())
 		net.processing1 = "MinimalProcessing"
 		self.assertEquals(
 			"network.processing1 = 'MinimalProcessing'\n"
+			"\n"
 			"\n"
 			, net.code())
 
@@ -123,6 +131,7 @@ class NetworkTests(unittest.TestCase):
 		net["processing1"] = "MinimalProcessing"
 		self.assertEquals(
 			"network.processing1 = 'MinimalProcessing'\n"
+			"\n"
 			"\n"
 			, net.code())
 
@@ -134,6 +143,7 @@ class NetworkTests(unittest.TestCase):
 			"network.processing1 = 'MinimalProcessing'\n"
 			"network.processing2 = 'MinimalProcessing'\n"
 			"\n"
+			"\n"
 			, net.code())
 
 	def test_addTwoProcessingsDifferentType(self) :
@@ -143,6 +153,7 @@ class NetworkTests(unittest.TestCase):
 		self.assertEquals(
 			"network.processing1 = 'MinimalProcessing'\n"
 			"network.processing2 = 'PortSink'\n"
+			"\n"
 			"\n"
 			, net.code())
 
@@ -154,6 +165,7 @@ class NetworkTests(unittest.TestCase):
 		self.assertEquals(
 			"network.processing1 = 'PortSource'\n"
 			"network.processing2 = 'PortSink'\n"
+			"\n"
 			"network.processing1.OutPort1 > network.processing2.InPort1\n"
 			, net.code())
 
@@ -165,6 +177,7 @@ class NetworkTests(unittest.TestCase):
 		self.assertEquals(
 			"network.processing1 = 'ControlSource'\n"
 			"network.processing2 = 'ControlSink'\n"
+			"\n"
 			"\n"
 			"network.processing1.OutControl1 > network.processing2.InControl1"
 			, net.code())
@@ -182,6 +195,7 @@ class NetworkTests(unittest.TestCase):
 			"network.processing2 = 'PortSink'\n"
 			"network.processing3 = 'ControlSource'\n"
 			"network.processing4 = 'ControlSink'\n"
+			"\n"
 			"network.processing1.OutPort1 > network.processing2.InPort1\n"
 			"network.processing3.OutControl1 > network.processing4.InControl1"
 			, net.code())
@@ -204,6 +218,7 @@ class NetworkTests(unittest.TestCase):
 			"net.processing1 = 'ControlSource'\n"
 			"net.processing2 = 'ControlSink'\n"
 			"\n"
+			"\n"
 			"net.processing1.OutControl1 > net.processing2.InControl1"
 			, net.code("net"))		
 
@@ -215,6 +230,7 @@ class NetworkTests(unittest.TestCase):
 		self.assertEquals(
 			"network.processing2 = 'PortSink'\n"
 			"\n"
+			"\n"
 			, net.code())
 
 	def test_deleteProcessingAsItem(self):
@@ -224,6 +240,7 @@ class NetworkTests(unittest.TestCase):
 		del net["processing1"]
 		self.assertEquals(
 			"network.processing2 = 'PortSink'\n"
+			"\n"
 			"\n"
 			, net.code())
 
@@ -240,6 +257,7 @@ class NetworkTests(unittest.TestCase):
 			"network.processing3 = 'ProcessingWithNameSpacedControls'\n"
 			"network.processing4 = 'ProcessingWithNameSpacedControls'\n"
 			"network[\"A processing with ports\"] = 'ProcessingWithNameSpacedPorts'\n"
+			"\n"
 			"network[\"A processing with ports\"][\"An outport\"] > network.processing2[\"An inport\"]\n"
 			"network.processing3[\"An outcontrol\"] > network.processing4[\"An incontrol\"]"
 			, net.code())
@@ -269,6 +287,7 @@ class NetworkTests(unittest.TestCase):
 			"network.description = 'A description'\n"
 			"network.proc1 = 'PortSink'\n"
 			"\n"
+			"\n"
 			, net.code())
 
 	def test_codeForNumericConnectors(self):
@@ -284,6 +303,7 @@ class NetworkTests(unittest.TestCase):
 			"network.proc1 = 'ProcessingWithNumericPorts'\n"
 			"network.proc3 = 'ControlSource'\n"
 			"network.proc2 = 'ProcessingWithNumericPorts'\n"
+			"\n"
 			"network.proc1[\"2\"] > network.proc2[\"1\"]\n"
 			"network.proc3.OutControl1 > network.proc4[\"2\"]"
 			, net.code())
@@ -293,6 +313,16 @@ class NetworkTests(unittest.TestCase):
 		net.Processing1["ConfigParam1"] = 'newvalue'
 		self.assertEqual(net.Processing1["ConfigParam1"], "newvalue")
 
+	def test_code_for_changing_config_attributes(self):
+		net = Network(TestFixtures.empty())
+		net.Processing1 = "ProcessingWithConfig"
+		net.Processing1.ConfigParam1 = 'newvalue'
+		self.assertEquals(
+			"network.Processing1 = 'ProcessingWithConfig'\n"
+			"network.Processing1.['ConfigParam2'] = 'default2'\n"
+			"network.Processing1.['ConfigParam1'] = 'newvalue'\n"
+			"\n\n"
+			, net.code(fullConfig=True))
 
 if __name__ == '__main__':
 	unittest.main()
