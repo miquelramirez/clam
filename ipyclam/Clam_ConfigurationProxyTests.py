@@ -68,5 +68,37 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		except KeyError, e:
 			self.assertEquals("WrongAttribute", e.args[0])
 
+	def _test_set_wrongTypeForString(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		try:
+			proxy["UnString"] = 2
+			self.fail("Exception expected")
+		except TypeError, e:
+			self.assertEquals("str value expected, got int", e.args[0])
+
+	def test_set_wrongTypeForInt(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
+		try:
+			proxy["FirstInt"] = "WrongType"
+			self.fail("Exception expected")
+		except TypeError, e:
+			self.assertEquals("int value expected, got str", e.args[0])
+
+	def test_set_wrongTypeForBool(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
+		try:
+			proxy["BoolAttribute"] = 2.15
+			self.fail("Exception expected")
+		except TypeError, e:
+			self.assertEquals("bool value expected, got float", e.args[0])
+
+	def test_set_wrongTypeForFloat(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
+		try:
+			proxy["FloatAttribute"] = False
+			self.fail("Exception expected")
+		except TypeError, e:
+			self.assertEquals("float value expected, got bool", e.args[0])
+
 if __name__ == '__main__':
 	unittest.main()

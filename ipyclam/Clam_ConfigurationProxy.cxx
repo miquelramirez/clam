@@ -7,6 +7,25 @@
 
 namespace py = boost::python;
 
+std::string pythonType(PyObject * value)
+{
+	if ( PyString_Check(value) )
+		return "str";
+	if ( PyBool_Check(value) )
+		return "bool";
+	if ( PyInt_Check(value) )
+		return "int";
+	if ( PyFloat_Check(value) )
+		return "float";
+	return "";
+}
+
+void throwPythonError(std::string errorString)
+{
+	PyErr_SetString(PyExc_TypeError, errorString.c_str() );
+	py::throw_error_already_set();
+}
+
 int getAttributeIndex(const ConfigurationProxy & config, const std::string & attribute)
 {
 	for(unsigned int i = 0; i < config.nAttributes(); ++i)
@@ -66,41 +85,41 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, Py
 		py::throw_error_already_set();
 	}
 
-	if ( PyString_Check(value) )
+	if ( config.attributeType(index) == typeid(std::string) )
 	{
+		if (not PyString_Check(value) )
+			throwPythonError("str value expected, got " + pythonType(value));
 		std::string stringvalue = PyString_AsString(value);
 		config.setAttributeValue<std::string>(index, stringvalue);
 		return;
 	}
-	if ( PyInt_Check(value) )
+	if ( config.attributeType(index) == typeid(int) )
 	{
+		if (not PyInt_Check(value) )
+			throwPythonError("int value expected, got " + pythonType(value));
 		int intvalue = PyInt_AsLong(value);
 		config.setAttributeValue<int>(index, intvalue);
 		return;
 	}
-	//CHAR NEEDED!!
-	if ( PyBool_Check(value) )
+	//TODO: CHAR
+	if ( config.attributeType(index) == typeid(bool) )
 	{
-		if (value == Py_False)
-			config.setAttributeValue<bool>(index, 0);
-		else
-			config.setAttributeValue<bool>(index, 1);
+		if (not PyBool_Check(value) )
+			throwPythonError("bool value expected, got " + pythonType(value));
+		bool boolvalue = value==Py_True;
+		config.setAttributeValue<bool>(index, boolvalue);
 		return;
 	}
-	if ( PyFloat_Check(value) )
+	if ( config.attributeType(index) == typeid(float) )
 	{
+		if (not PyFloat_Check(value) )
+			throwPythonError("float value expected, got " + pythonType(value));
 		float floatvalue = PyFloat_AsDouble(value);
 		config.setAttributeValue<float>(index, floatvalue);
 		return;
 	}
 }
-/*
-void setAttribute(ConfigurationProxy & config, const std::string & attribute, const std::string & value)
-{
-	int index = getAttributeIndex(config, attribute);
-	config.setAttributeValue<std::string>(index, value);
-}
-*/
+
 BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 {
 	using namespace boost::python;
