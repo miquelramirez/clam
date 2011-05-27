@@ -39,7 +39,7 @@ static PyObject * getAttribute(ConfigurationProxy & config, const std::string & 
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
 	{
-		PyErr_SetString(PyExc_AttributeError, attribute.c_str() );
+		PyErr_SetString(PyExc_KeyError, attribute.c_str() );
 		py::throw_error_already_set();
 	}
 	if ( config.attributeType(index) == typeid(std::string) )
@@ -60,7 +60,12 @@ static PyObject * getAttribute(ConfigurationProxy & config, const std::string & 
 void setAttribute(ConfigurationProxy & config, const std::string & attribute, PyObject * value)
 {
 	int index = getAttributeIndex(config, attribute);
-	
+	if (index == -1)
+	{
+		PyErr_SetString(PyExc_KeyError, attribute.c_str() );
+		py::throw_error_already_set();
+	}
+
 	if ( PyString_Check(value) )
 	{
 		std::string stringvalue = PyString_AsString(value);
