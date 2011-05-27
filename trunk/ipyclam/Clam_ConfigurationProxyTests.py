@@ -27,7 +27,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			proxy["WrongAttribute"]
 			self.fail("Exception expected")
-		except AttributeError, e:
+		except KeyError, e:
 			self.assertEqual("WrongAttribute", e.args[0])
 
 	def test_getValueFromIntAttributes(self):
@@ -59,6 +59,14 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		proxy["FloatAttribute"] = 4.15
 		self.assertEqual(True, proxy["BoolAttribute"])
 		self.assertEqual(4.150000095367432, proxy["FloatAttribute"])
+
+	def test_setAttr_wrongName(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
+		try:
+			proxy["WrongAttribute"] = 24
+			self.fail("Exception expected")
+		except KeyError, e:
+			self.assertEquals("WrongAttribute", e.args[0])
 
 if __name__ == '__main__':
 	unittest.main()
