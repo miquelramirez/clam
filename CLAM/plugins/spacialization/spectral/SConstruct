@@ -39,11 +39,12 @@ env.ParseConfig('pkg-config --cflags --libs fftw3f')
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
 
-if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
-	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
-	env.Append( LIBS=['fftw3f'] )
-
 spectral_lib = env.SharedLibrary('spectral',spectral_sources)
+
+spectral_dll = []
+if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
+	spectral_dll = spectral_lib[0:1]
+	spectral_lib = spectral_lib[1:]
 
 spectral_pcfile = env.PkgConfigFile(
 	package='spectral',
@@ -56,6 +57,7 @@ spectral_pcfile = env.PkgConfigFile(
 
 default = [spectral_lib, spectral_pcfile]
 install = [
+	env.Install(os.path.join(env['prefix'],'bin'), spectral_dll),
 	env.Install(os.path.join(env['prefix'],'lib'), spectral_lib),
 	env.Install(os.path.join(env['prefix'],'lib', 'pkgconfig'), spectral_pcfile),
 	env.Install(os.path.join(env['prefix'],'include', 'spectral'), spectral_headers),
