@@ -58,22 +58,34 @@ public:
 
 	class Implementation 
 	{
-		
+	public:
+		float _sampleRate;
+		float _xN;
+		float _xNmin1;
+		float _xNmin2;
+		float _yN;
+		float _yNmin1;
+		float _yNmin2;
+	public:
+		Implementation(float sampleRate)
+			: _sampleRate(sampleRate)
+			, _xN(0.0f)
+			, _xNmin1(0.0f)
+			, _xNmin2(0.0f)
+			, _yN(0.0f)
+			, _yNmin1(0.0f)
+			, _yNmin2(0.0f)
+
+		{
+		}
 	};
 
-//private: //TODO debugging	
+//private: //TODO debugging
 protected:
 	Config _config;
-	
+
 	InPort<Audio> _in1;
 	OutPort<Audio> _out1;
-	float _sampleRate;
-	float _xN;
-	float _xNmin1;
-	float _xNmin2;
-	float _yN;
-	float _yNmin1;
-	float _yNmin2;
 
 protected:
 	FloatInControl _distance;
@@ -84,7 +96,7 @@ private:
 public:
 	AirAbsortion(const Config& config = Config()) 
 		: _in1("InputBuffer", this)
-		, _out1("OutputBuffer", this)	
+		, _out1("OutputBuffer", this)
 		, _distance("relative distance in mts", this)
 		, _scaleAttenuation("scale attenuation factor", this)
 		, _impl(0)
@@ -95,74 +107,74 @@ public:
 	bool ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(_config, c);
-		_sampleRate = BackendSampleRate();	
+
+		if (_impl) delete _impl;
+		_impl = new Implementation(BackendSampleRate());
 
 		_distance.DoControl(_config.GetDistance());
 		_distance.SetBounds(0,500);
 		_scaleAttenuation.DoControl(_config.GetScaleAttenuation());
 		_scaleAttenuation.SetBounds(1,10);
-		_xN=0.0f;
-		_xNmin1=0.0f;
-		_xNmin2=0.0f;
-		_yN=0.0f;
-		_yNmin1=0.0f;
-		_yNmin2=0.0f;
-
-		if (_impl) delete _impl;
-		_impl = new Implementation;
 
 		return true;
 	}
-	
+
 	const char* GetClassName() const { return "AirAbsortion"; }
-	
+
 	virtual ~AirAbsortion()
 	{
 		if (_impl) delete _impl;
 	}
-		
+
 	const ProcessingConfig & GetConfig() const { return _config; }
-	
-	bool Do()
-	{	
-		const CLAM::Audio& in = _in1.GetData();
-		const TData* inpointer = in.GetBuffer().GetPtr();		
-		unsigned size = in.GetSize();
-		
-		CLAM::Audio& out = _out1.GetData();
-		out.SetSize(size);
-		TData* outpointer = out.GetBuffer().GetPtr();	
-	
+
+	void run(unsigned bufferSize, const TData * input, TData * output, float distance, float attenuation)
+	{
 		const float S=1.0f;
 		const float freqHz=10000.0f;
-		float distance = _distance.GetLastValue();			
-		float dBgain=-0.05*distance*_scaleAttenuation.GetLastValue();
+		float dBgain = -0.05 * distance * attenuation;
 		//std::cout << gain << "*************************************** " <<std::endl;
 		float A  = pow(10,dBgain/40);
-		float w0 = 2*M_PI*(2*freqHz)/_sampleRate;  
-		//float alpha = sin(w0)/2 * sqrt( (A + 1/A)*(1/S - 1) + 2 );		
+		float w0 = 2*M_PI*(2*freqHz)/_impl->_sampleRate;
+		//float alpha = sin(w0)/2 * sqrt( (A + 1/A)*(1/S - 1) + 2 );
 		float two_sqrtA_alpha  =  sin(w0) * sqrt( (pow(A,2) + 1)*(1/S - 1) + 2*A );
-		
+
 		float b0 = A*( (A+1) + (A-1)*cos(w0) + two_sqrtA_alpha );
-           	float b1 = -2*A*( (A-1) + (A+1)*cos(w0));
-            	float b2 = A*( (A+1) + (A-1)*cos(w0) - two_sqrtA_alpha );
-            	float a0 = (A+1) - (A-1)*cos(w0) + two_sqrtA_alpha;
-            	float a1 = 2*((A-1) - (A+1)*cos(w0));
-            	float a2 = (A+1) - (A-1)*cos(w0) - two_sqrtA_alpha;
+		float b1 = -2*A*( (A-1) + (A+1)*cos(w0));
+		float b2 = A*( (A+1) + (A-1)*cos(w0) - two_sqrtA_alpha );
+		float a0 = (A+1) - (A-1)*cos(w0) + two_sqrtA_alpha;
+		float a1 = 2*((A-1) - (A+1)*cos(w0));
+		float a2 = (A+1) - (A-1)*cos(w0) - two_sqrtA_alpha;
 
-		for (unsigned i = 0; i < size; ++i){
-			
-			_xNmin2=_xNmin1;
-			_xNmin1=_xN;
-			_xN=inpointer[i];
+		for (unsigned i = 0; i < bufferSize; ++i)
+		{
+			_impl->_xNmin2=_impl->_xNmin1;
+			_impl->_xNmin1=_impl->_xN;
+			_impl->_xN=input[i];
 
-        		_yN = (b0/a0)*_xN + (b1/a0)*_xNmin1 + (b2/a0)*_xNmin2 - (a1/a0)*_yNmin1 - (a2/a0)*_yNmin2 ;
+			_impl->_yN = (b0/a0)*_impl->_xN + (b1/a0)*_impl->_xNmin1 + (b2/a0)*_impl->_xNmin2 - (a1/a0)*_impl->_yNmin1 - (a2/a0)*_impl->_yNmin2 ;
 
-			_yNmin2=_yNmin1;
-			_yNmin1=_yN;
-			outpointer[i]=_yN; 
+			_impl->_yNmin2=_impl->_yNmin1;
+			_impl->_yNmin1=_impl->_yN;
+			output[i]=_impl->_yN; 
 		}
-		
+	}
+
+	bool Do()
+	{
+		const CLAM::Audio& in = _in1.GetData();
+		const TData* inpointer = in.GetBuffer().GetPtr();
+		unsigned bufferSize = in.GetSize();
+
+		CLAM::Audio& out = _out1.GetData();
+		out.SetSize(bufferSize);
+		TData* outpointer = out.GetBuffer().GetPtr();
+
+		float distance = _distance.GetLastValue();
+		float attenuation = _scaleAttenuation.GetLastValue();
+
+		run(bufferSize, inpointer, outpointer, distance, attenuation);
+
 		_in1.Consume();
 		_out1.Produce();
 		return true;
