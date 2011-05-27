@@ -68,19 +68,26 @@ protected:
 	InPort<Audio> _in1;
 	OutPort<Audio> _out1;
 	float _sampleRate;
-	float _xN,_xNmin1,_xNmin2,_yN,_yNmin1,_yNmin2;
+	float _xN;
+	float _xNmin1;
+	float _xNmin2;
+	float _yN;
+	float _yNmin1;
+	float _yNmin2;
 
 protected:
 	FloatInControl _distance;
 	FloatInControl _scaleAttenuation;
-			
+private:
+	Implementation * _impl;
 
 public:
 	AirAbsortion(const Config& config = Config()) 
 		: _in1("InputBuffer", this)
 		, _out1("OutputBuffer", this)	
-		,_distance("relative distance in mts", this)
-		,_scaleAttenuation("scale attenuation factor", this)
+		, _distance("relative distance in mts", this)
+		, _scaleAttenuation("scale attenuation factor", this)
+		, _impl(0)
 	{
 		Configure( config );
 	}
@@ -101,12 +108,18 @@ public:
 		_yNmin1=0.0f;
 		_yNmin2=0.0f;
 
+		if (_impl) delete _impl;
+		_impl = new Implementation;
+
 		return true;
 	}
 	
 	const char* GetClassName() const { return "AirAbsortion"; }
 	
-	virtual ~AirAbsortion() {}
+	virtual ~AirAbsortion()
+	{
+		if (_impl) delete _impl;
+	}
 		
 	const ProcessingConfig & GetConfig() const { return _config; }
 	
