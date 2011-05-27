@@ -14,6 +14,9 @@ class Dummy_ConfigurationProxy(object):
 	def keys(self):
 		return self._dict.keys()
 
+	def nonDefault(self, attribute):
+		return not self._default[attribute] == self._dict[attribute]
+
 import operator
 import unittest
 import TestFixtures
@@ -56,6 +59,12 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 			self.fail("Exception expected")
 		except KeyError, e:
 			self.assertEquals("WrongParam1", e.args[0])
+
+	def test_check_nondefault_value(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		c["ConfigParam1"] = 'newvalue'
+		self.assertEqual(True, c.nonDefault("ConfigParam1"))
+		self.assertEqual(False, c.nonDefault("ConfigParam2"))
 
 if __name__ == '__main__':
 	unittest.main()

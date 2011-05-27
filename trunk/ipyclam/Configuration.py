@@ -18,6 +18,18 @@ class Configuration(object):
 			raise AttributeError(e.args[0])
 	def __dir__(self):
 		return self._proxy.keys()
+	def code(self, processingName, networkVar = "network", fullConfig = False):
+		code = ""
+		if not fullConfig:
+			for attribute in self._proxy.keys():
+				if self._proxy.nonDefault(attribute):
+					code += "%s.%s.['%s'] = '%s'\n"%(networkVar, processingName, attribute, self._proxy[attribute] )
+			return code
+		code += "\n".join([
+				"%s.%s.['%s'] = '%s'"%(networkVar, processingName, attribute, self._proxy[attribute])
+				for attribute in self._proxy.keys()])
+		code += "\n"
+		return code
 
 import operator
 import unittest
@@ -112,6 +124,21 @@ class ConfigurationTests(unittest.TestCase):
 		c = Configuration(self.stringParametersConfig())
 		self.assertEquals(["ConfigParam1", "ConfigParam2", "ConfigParam3"], dir(c))
 
+	def test_code_when_only_modified(self):
+		c = Configuration(self.stringParametersConfig())
+		c['ConfigParam1'] = 'newvalue'
+		self.assertEquals(
+			"network.Processing1.['ConfigParam1'] = 'newvalue'\n"
+			, c.code("Processing1"))
+
+	def test_code_full(self):
+		c = Configuration(self.stringParametersConfig())
+		c['ConfigParam1'] = 'newvalue'
+		self.assertEquals(
+			"network.Processing1.['ConfigParam3'] = 'Param3'\n"
+			"network.Processing1.['ConfigParam2'] = 'Param2'\n"
+			"network.Processing1.['ConfigParam1'] = 'newvalue'\n"
+			, c.code("Processing1", fullConfig = True))
 
 if __name__ == '__main__':
 	unittest.main()

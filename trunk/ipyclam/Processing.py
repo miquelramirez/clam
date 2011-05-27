@@ -243,6 +243,7 @@ class ProcessingTests(unittest.TestCase):
 		self.assertEquals(
 			"network.proc1 = 'ProcessingWithPortsAndControls'\n"
 			"network.proc2 = 'ProcessingWithPortsAndControls'\n"
+			"\n"
 			"network.proc1.OutPort1 > network.proc2.InPort1\n"
 			"network.proc1.OutPort2 > network.proc2.InPort2\n"
 			"network.proc1.OutPort3 > network.proc2.InPort3\n"
