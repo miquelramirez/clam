@@ -63,8 +63,10 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 
 for binary, mainSource in mainSources.items() :
 	sources.remove(mainSource)
-env.Prepend(LIBPATH=["."])
-programs = [ env.Program(target=program, source = [mainSource], LIBS='clam_'+moduleName)
+envProgram = env.Clone()
+envProgram.Prepend(LIBPATH=["."])
+envProgram.AppendUnique(LIBS=["clam_"+moduleName])
+programs = [ envProgram.Program(target=program, source = [mainSource])
 	for program, mainSource in mainSources.items()]
 
 install, default = env.ClamModule(
