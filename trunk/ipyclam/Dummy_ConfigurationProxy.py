@@ -1,7 +1,7 @@
 class Dummy_ConfigurationProxy(object):
 	def __init__(self, config):
-		self._default = config
-		self._dict = config.copy()
+		self._default = config.copy()
+		self._dict = config
 
 	def __getitem__(self, name):
 		return self._dict[name]
