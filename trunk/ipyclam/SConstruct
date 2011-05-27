@@ -41,12 +41,6 @@ dummyProcessingsModule = env.SharedLibrary (
 	SHLIBPREFIX='',
 )
 
-cppTestFixtures = env.SharedLibrary (
-	target='CppTestFixtures',
-	source=['CppTestFixtures.cxx'],
-	SHLIBPREFIX='',
-)
-
 program = env.Program(
 	target='ipyclam_console',
 	source='ipyclam_console.cxx',
@@ -59,7 +53,6 @@ install = [
 		module,
 		configurationModule,
 		dummyProcessingsModule,
-		cppTestFixtures,
 	]),
 	( os.path.join(os.path.expanduser('~/local'),'bin'),[
 		program,
@@ -72,6 +65,5 @@ Default(
 	module,
 	configurationModule,
 	dummyProcessingsModule,
-	cppTestFixtures,
 	program,
 )
