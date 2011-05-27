@@ -80,13 +80,12 @@ public:
 		}
 		void run(unsigned bufferSize, const TData * input, TData * output, float distance, float attenuation)
 		{
-			Implementation * _impl = this;
 			const float S=1.0f;
 			const float freqHz=10000.0f;
 			float dBgain = -0.05 * distance * attenuation;
 			//std::cout << gain << "*************************************** " <<std::endl;
 			float A  = pow(10,dBgain/40);
-			float w0 = 2*M_PI*(2*freqHz)/_impl->_sampleRate;
+			float w0 = 2*M_PI*(2*freqHz)/_sampleRate;
 			//float alpha = sin(w0)/2 * sqrt( (A + 1/A)*(1/S - 1) + 2 );
 			float two_sqrtA_alpha  =  sin(w0) * sqrt( (pow(A,2) + 1)*(1/S - 1) + 2*A );
 
@@ -99,15 +98,15 @@ public:
 
 			for (unsigned i = 0; i < bufferSize; ++i)
 			{
-				_impl->_xNmin2=_impl->_xNmin1;
-				_impl->_xNmin1=_impl->_xN;
-				_impl->_xN=input[i];
+				_xNmin2=_xNmin1;
+				_xNmin1=_xN;
+				_xN=input[i];
 
-				_impl->_yN = (b0/a0)*_impl->_xN + (b1/a0)*_impl->_xNmin1 + (b2/a0)*_impl->_xNmin2 - (a1/a0)*_impl->_yNmin1 - (a2/a0)*_impl->_yNmin2 ;
+				_yN = (b0/a0)*_xN + (b1/a0)*_xNmin1 + (b2/a0)*_xNmin2 - (a1/a0)*_yNmin1 - (a2/a0)*_yNmin2 ;
 
-				_impl->_yNmin2=_impl->_yNmin1;
-				_impl->_yNmin1=_impl->_yN;
-				output[i]=_impl->_yN; 
+				_yNmin2=_yNmin1;
+				_yNmin1=_yN;
+				output[i]=_yN; 
 			}
 		}
 
