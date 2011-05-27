@@ -30,9 +30,9 @@
 [X]		- Self writting code for connections
 		- Self writting code for configurations
 	- Dummy Configurations
-		- Test type check
-		- Test name check on getting
-		- Test name check on setting (differs from regular dict!)
+[X]		- Test type check
+[X]		- Test name check on getting
+[X]		- Test name check on setting (differs from regular dict!)
 		- Push the check on Configuration down on the Dummy_ConfigurationProxy
 		- Config information in dummy proxy (tests)
 		- config = proc.config.clone()
@@ -130,12 +130,48 @@
 == Config ==
 
 - Proxyfy configs
-	- Copy all Configuration as Dummy_ConfigurationProxy (and tests)
-	- Remove __dir__ and attribute access from Dummy_ConfigurationProxy
-	- Configuration delegates to the Proxy, accepts a proxy in __init__
-	- TypeError on different type than the default value
-	- Sub configurations in proxy config.subconfig.param
+[X]	- Copy all Configuration as Dummy_ConfigurationProxy (and tests)
+[X]	- Remove __dir__ and attribute access from Dummy_ConfigurationProxy
+[X]	- Configuration delegates to the Proxy, accepts a proxy in __init__
+[X]	- TypeError on different type than the default value
 - Clam Configs
 	- Setting attributes:
 		- Missing char attributes (need to figure out how to do)
+			- DGG: see the list of types in Configurator, if char is supported it should be a kind of short int not 'c', 
+			  in any case i doubt that we need such type for this first stage, i would remove it until we get type plugins.
 		- Missing double attributes (python doesn't distinguish between float/double)
+			- DGG: see the mail, the configuration slot drives which is the type not the python value
+		- Raising TypeError on wrong type
+		- Raising KeyError on wrong attribute name
+	- keys()
+- Configuration in net.code()
+	- DummyProxy
+		- configproxy.nonDefault(attrib) returns true if value of attribute i differs from the default
+	- Configuration
+		- optional code() parameter fullConfig (False by default to keep) that always expands configuration values
+		- in code(), use nonDefault() to print modified configuration prameters when not fullConfig
+	- Clam
+		- obtain a default constructed config (Species()?)
+- Type plugins for 
+	- Base class:
+		- take Configurator as reference
+			- static function to access the list of plugins
+			- base constructor adds 'this' to the list
+		- defines the interface (different from Configurator)
+			- accept(config, slot) says if the plugin works for the attribute
+			- set(config, slot, pyobject) sets the value for the attribute
+			- pyobject get(config, slot) obtains the value for the attribute
+			- ... (future interface as we need it, isDefault..., see below)
+
+- Subconfigs: net.processing._config.subconfig.param
+	- Dummy
+	- Configuration
+	- Clam
+- Optionality
+	- Dummy
+	- Configuration
+	- Clam
+
+
+
+
