@@ -55,6 +55,12 @@ public:
 			SetScaleAttenuation(1);
 		}
 	};
+
+	class Implementation 
+	{
+		
+	};
+
 //private: //TODO debugging	
 protected:
 	Config _config;
