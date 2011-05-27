@@ -147,7 +147,7 @@ class Dummy_NetworkProxy :
 
 	def processingRename(self, oldName, newName):
 		if newName in self._processings.keys():
-			raise KeyError(newName + " is already taken")
+			raise KeyError("A processing named '%s' already exists"%newName)
 		self._processings[newName] = self._processings[oldName]
 		del self._processings[oldName]
 
@@ -610,7 +610,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		try:
 			proxy.processingRename("ProcessingToRename", "ExistingName")
 		except KeyError, e:
-			self.assertEquals(("ExistingName is already taken", ), e.args)
+			self.assertEquals(("A processing named 'ExistingName' already exists", ), e.args)
 
 	def test_getNetworkDescriptionEmpty(self):
 		proxy = Dummy_NetworkProxy()
