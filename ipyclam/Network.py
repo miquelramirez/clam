@@ -288,5 +288,11 @@ class NetworkTests(unittest.TestCase):
 			"network.proc3.OutControl1 > network.proc4[\"2\"]"
 			, net.code())
 
+	def test_change_config_attributes(self):
+		net = Network(TestFixtures.proxy())
+		net.Processing1["ConfigParam1"] = 'newvalue'
+		self.assertEqual(net.Processing1["ConfigParam1"], "newvalue")
+
+
 if __name__ == '__main__':
 	unittest.main()
