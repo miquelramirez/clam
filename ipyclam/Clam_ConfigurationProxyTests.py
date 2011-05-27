@@ -100,5 +100,9 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		except TypeError, e:
 			self.assertEquals("float value expected, got bool", e.args[0])
 
+	def test_keys(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		self.assertEqual( ["UnString", "UnAltreString"], proxy.keys() )
+
 if __name__ == '__main__':
 	unittest.main()

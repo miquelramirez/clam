@@ -120,6 +120,14 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, Py
 	}
 }
 
+py::list keys(ConfigurationProxy & config)
+{
+	py::list keys;
+	for(unsigned int i = 0; i < config.nAttributes(); ++i)
+		keys.append(config.attributeName(i));
+	return keys;
+}
+
 BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 {
 	using namespace boost::python;
@@ -141,6 +149,10 @@ BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 		.def("__setitem__",
 			setAttribute,
 			"Sets a new value for the attribute"
+			)
+		.def("keys",
+			keys,
+			"Returns a list with the keys of the proxy"
 			)
 		;
 }
