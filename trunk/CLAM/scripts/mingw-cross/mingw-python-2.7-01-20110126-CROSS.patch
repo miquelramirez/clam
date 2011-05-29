@@ -1,0 +1,1293 @@
+--- ./Lib/distutils/README.CROSS	2009-03-12 22:24:37.000000000 +0200
++++ ./Lib/distutils/README	2010-01-27 23:21:26.000000000 +0200
+@@ -9,5 +9,10 @@
+     http://www.python.org/sigs/distutils-sig/
+ 
+ WARNING : Distutils must remain compatible with 2.3
++NOTE: After "Revision 77704 : taking sysconfig out of distutils"
++Distutils package is not compatible with versions before 2.7a3.
++Although "Revision 77759 : reintroduced the names in Distutils for APIs
++that were relocated"(i.e. API is backward compatibile) to cross compile
++python on build system has to be at least version 2.7a3.
+ 
+ $Id: README 70017 2009-02-27 12:53:34Z tarek.ziade $
+--- ./Lib/sysconfig.py.CROSS	2010-11-11 22:29:54.000000000 +0200
++++ ./Lib/sysconfig.py	2010-11-11 22:30:01.000000000 +0200
+@@ -3,7 +3,15 @@
+ """
+ import sys
+ import os
+-from os.path import pardir, realpath
++# revert patch from issue 7880 :
++#  - the test case (from issue 7880) works for me
++#  - realpath break cross compilation
++# => so lets use abspath again ;)
++# NOTE "Issue #6612: Fix site and sysconfig to catch os.getcwd() error,
++# eg. if the current directory was deleted." replase all occurrence of
++# realpath with _safe_realpath. Instead to update _safe_realpath to use
++# abspath the cross-compilation revert all!
++from os.path import pardir, abspath
+ 
+ _INSTALL_SCHEMES = {
+     'posix_prefix': {
+@@ -94,27 +102,21 @@
+ _CONFIG_VARS = None
+ _USER_BASE = None
+ 
+-def _safe_realpath(path):
+-    try:
+-        return realpath(path)
+-    except OSError:
+-        return path
+-
+ if sys.executable:
+-    _PROJECT_BASE = os.path.dirname(_safe_realpath(sys.executable))
++    _PROJECT_BASE = os.path.dirname(abspath(sys.executable))
+ else:
+     # sys.executable can be empty if argv[0] has been changed and Python is
+     # unable to retrieve the real program name
+-    _PROJECT_BASE = _safe_realpath(os.getcwd())
++    _PROJECT_BASE = abspath(os.getcwd())
+ 
+ if os.name == "nt" and "pcbuild" in _PROJECT_BASE[-8:].lower():
+-    _PROJECT_BASE = _safe_realpath(os.path.join(_PROJECT_BASE, pardir))
++    _PROJECT_BASE = abspath(os.path.join(_PROJECT_BASE, pardir))
+ # PC/VS7.1
+ if os.name == "nt" and "\\pc\\v" in _PROJECT_BASE[-10:].lower():
+-    _PROJECT_BASE = _safe_realpath(os.path.join(_PROJECT_BASE, pardir, pardir))
++    _PROJECT_BASE = abspath(os.path.join(_PROJECT_BASE, pardir, pardir))
+ # PC/AMD64
+ if os.name == "nt" and "\\pcbuild\\amd64" in _PROJECT_BASE[-14:].lower():
+-    _PROJECT_BASE = _safe_realpath(os.path.join(_PROJECT_BASE, pardir, pardir))
++    _PROJECT_BASE = abspath(os.path.join(_PROJECT_BASE, pardir, pardir))
+ 
+ def is_python_build():
+     for fn in ("Setup.dist", "Setup.local"):
+@@ -327,7 +329,7 @@
+     vars['SO'] = '.pyd'
+     vars['EXE'] = '.exe'
+     vars['VERSION'] = _PY_VERSION_SHORT_NO_DOT
+-    vars['BINDIR'] = os.path.dirname(_safe_realpath(sys.executable))
++    vars['BINDIR'] = os.path.dirname(abspath(sys.executable))
+ 
+ #
+ # public APIs
+--- ./Makefile.pre.in.CROSS	2011-01-12 01:49:52.000000000 +0200
++++ ./Makefile.pre.in	2011-01-12 01:51:56.000000000 +0200
+@@ -184,6 +184,10 @@
+ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
+ #PROFILE_TASK=	$(srcdir)/Lib/test/regrtest.py
+ 
++# Don't define HOST_OS as makefile macro !
++@CROSS_ON@RUNPYTHON=	HOST_OS=@HOST_OS@ @SYSPYTHON@
++@CROSS_OFF@RUNPYTHON=	$(RUNSHARED) ./$(BUILDPYTHON)
++
+ # === Definitions added by makesetup ===
+ 
+ 
+@@ -397,15 +401,16 @@
+ 			Modules/python.o \
+ 			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
+ 
++# FIXME: next produce incorrect result if cross-compiling
+ platform: $(BUILDPYTHON)
+-	$(RUNSHARED) ./$(BUILDPYTHON) -E -c 'import sys ; from sysconfig import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
++	$(RUNPYTHON) -E -c 'import sys ; from sysconfig import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
+ 
+ 
+ # Build the shared modules
+ sharedmods: $(BUILDPYTHON)
+ 	@case $$MAKEFLAGS in \
+-	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py -q build;; \
+-	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
++	*s*) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' $(RUNPYTHON) -E $(srcdir)/setup.py -q build;; \
++	*) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' $(RUNPYTHON) -E $(srcdir)/setup.py build;; \
+ 	esac
+ 
+ # Build static library
+@@ -422,10 +427,10 @@
+ 
+ libpython$(VERSION).so: $(LIBRARY_OBJS)
+ 	if test $(INSTSONAME) != $(LDLIBRARY); then \
+-		$(BLDSHARED) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
++		$(LDSHARED) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
+ 		$(LN) -f $(INSTSONAME) $@; \
+ 	else \
+-		$(BLDSHARED) -o $@ $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
++		$(LDSHARED) -o $@ $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
+ 	fi
+ 
+ libpython$(VERSION).dylib: $(LIBRARY_OBJS)
+@@ -487,18 +492,17 @@
+ oldsharedmods: $(SHAREDMODS)
+ 
+ 
++setup_info: setup_info.in config.status
++	$(SHELL) ./config.status $@
++
++
+ Makefile Modules/config.c: Makefile.pre \
+ 				$(srcdir)/Modules/config.c.in \
+ 				$(MAKESETUP) \
+ 				Modules/Setup.config \
+ 				Modules/Setup \
+ 				Modules/Setup.local
+-	$(SHELL) $(MAKESETUP) -c $(srcdir)/Modules/config.c.in \
+-				-s Modules \
+-				Modules/Setup.config \
+-				Modules/Setup.local \
+-				Modules/Setup
+-	@mv config.c Modules
++	$(SHELL) ./config.status Makefile
+ 	@echo "The Makefile was updated, you may need to re-run make."
+ 
+ 
+@@ -536,6 +540,7 @@
+ 	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
+ 
+ 
++# FIXME: next may fail in cross-compilation environment
+ # Use a stamp file to prevent make -j invoking pgen twice
+ $(GRAMMAR_H) $(GRAMMAR_C): Parser/pgen.stamp
+ Parser/pgen.stamp: $(PGEN) $(GRAMMAR_INPUT)
+@@ -705,6 +710,7 @@
+ 
+ TESTOPTS=	-l $(EXTRATESTOPTS)
+ TESTPROG=	$(srcdir)/Lib/test/regrtest.py
++# FIXME: next test may fail in cross-compilation environment
+ TESTPYTHON=	$(RUNSHARED) ./$(BUILDPYTHON) -Wd -3 -E -tt $(TESTPYTHONOPTS)
+ test:		all platform
+ 		-find $(srcdir)/Lib -name '*.py[co]' -print | xargs rm -f
+@@ -923,26 +929,26 @@
+ 		done; \
+ 	done
+ 	$(INSTALL_DATA) $(srcdir)/LICENSE $(DESTDIR)$(LIBDEST)/LICENSE.txt
+-	PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
+-		./$(BUILDPYTHON) -Wi -tt $(DESTDIR)$(LIBDEST)/compileall.py \
++	PYTHONPATH=$(DESTDIR)$(LIBDEST) \
++		$(RUNPYTHON) -Wi -tt $(DESTDIR)$(LIBDEST)/compileall.py \
+ 		-d $(LIBDEST) -f \
+ 		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
+ 		$(DESTDIR)$(LIBDEST)
+-	PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+-		./$(BUILDPYTHON) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
++	PYTHONPATH=$(DESTDIR)$(LIBDEST) \
++		$(RUNPYTHON) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
+ 		-d $(LIBDEST) -f \
+ 		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
+ 		$(DESTDIR)$(LIBDEST)
+-	-PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
+-		./$(BUILDPYTHON) -Wi -t $(DESTDIR)$(LIBDEST)/compileall.py \
++	-PYTHONPATH=$(DESTDIR)$(LIBDEST) \
++		$(RUNPYTHON) -Wi -t $(DESTDIR)$(LIBDEST)/compileall.py \
+ 		-d $(LIBDEST)/site-packages -f \
+ 		-x badsyntax $(DESTDIR)$(LIBDEST)/site-packages
+-	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+-		./$(BUILDPYTHON) -Wi -t -O $(DESTDIR)$(LIBDEST)/compileall.py \
++	-PYTHONPATH=$(DESTDIR)$(LIBDEST) \
++		$(RUNPYTHON) -Wi -t -O $(DESTDIR)$(LIBDEST)/compileall.py \
+ 		-d $(LIBDEST)/site-packages -f \
+ 		-x badsyntax $(DESTDIR)$(LIBDEST)/site-packages
+-	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+-		./$(BUILDPYTHON) -Wi -t -c "import lib2to3.pygram, lib2to3.patcomp;lib2to3.patcomp.PatternCompiler()"
++	-PYTHONPATH=$(DESTDIR)$(LIBDEST) \
++		$(RUNPYTHON) -Wi -t -c "import lib2to3.pygram, lib2to3.patcomp;lib2to3.patcomp.PatternCompiler()"
+ 
+ # Create the PLATDIR source directory, if one wasn't distributed..
+ $(srcdir)/Lib/$(PLATDIR):
+@@ -1047,7 +1053,7 @@
+ # Install the dynamically loadable modules
+ # This goes into $(exec_prefix)
+ sharedinstall: sharedmods
+-	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
++	$(RUNPYTHON) -E $(srcdir)/setup.py install \
+ 	   	--prefix=$(prefix) \
+ 		--install-scripts=$(BINDIR) \
+ 		--install-platlib=$(DESTSHARED) \
+@@ -1085,7 +1091,7 @@
+ 		fi; \
+ 	done
+ 	$(LN) -fsn include/python$(VERSION) $(DESTDIR)$(prefix)/Headers
+-	sed 's/%VERSION%/'"`$(RUNSHARED) ./$(BUILDPYTHON) -c 'import platform; print platform.python_version()'`"'/g' < $(RESSRCDIR)/Info.plist > $(DESTDIR)$(prefix)/Resources/Info.plist
++	sed 's/%VERSION%/'"`$(RUNPYTHON) -c 'import platform; print platform.python_version()'`"'/g' < $(RESSRCDIR)/Info.plist > $(DESTDIR)$(prefix)/Resources/Info.plist
+ 	$(LN) -fsn $(VERSION) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Versions/Current
+ 	$(LN) -fsn Versions/Current/$(PYTHONFRAMEWORK) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/$(PYTHONFRAMEWORK)
+ 	$(LN) -fsn Versions/Current/Headers $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Headers
+@@ -1119,20 +1125,19 @@
+ 
+ # This installs a few of the useful scripts in Tools/scripts
+ scriptsinstall:
+-	SRCDIR=$(srcdir) $(RUNSHARED) \
+-	./$(BUILDPYTHON) $(srcdir)/Tools/scripts/setup.py install \
++	SRCDIR=$(srcdir) \
++	$(RUNPYTHON) $(srcdir)/Tools/scripts/setup.py install \
+ 	--prefix=$(prefix) \
+ 	--install-scripts=$(BINDIR) \
+ 	--root=/$(DESTDIR)
+ 
+ # Build the toplevel Makefile
+ Makefile.pre: Makefile.pre.in config.status
+-	CONFIG_FILES=Makefile.pre CONFIG_HEADERS= $(SHELL) config.status
+-	$(MAKE) -f Makefile.pre Makefile
++	$(SHELL) ./config.status $@
+ 
+ # Run the configure script.
+ config.status:	$(srcdir)/configure
+-	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
++	$(SHELL) ./config.status --recheck
+ 
+ .PRECIOUS: config.status $(BUILDPYTHON) Makefile Makefile.pre
+ 
+@@ -1147,8 +1152,8 @@
+ # Rerun configure with the same options as it was run last time,
+ # provided the config.status script exists
+ recheck:
+-	$(SHELL) config.status --recheck
+-	$(SHELL) config.status
++	$(SHELL) ./config.status --recheck
++	$(SHELL) ./config.status
+ 
+ # Rebuild the configure script from configure.in; also rebuild pyconfig.h.in
+ autoconf:
+@@ -1245,7 +1250,7 @@
+ 
+ # Perform some verification checks on any modified files.
+ patchcheck:
+-	$(RUNSHARED) ./$(BUILDPYTHON) $(srcdir)/Tools/scripts/patchcheck.py
++	$(RUNPYTHON) $(srcdir)/Tools/scripts/patchcheck.py
+ 
+ # Dependencies
+ 
+--- ./setup.py.CROSS	2010-11-11 22:16:31.000000000 +0200
++++ ./setup.py	2010-12-28 20:11:59.000000000 +0200
+@@ -17,6 +17,22 @@
+ from distutils.command.install_lib import install_lib
+ from distutils.spawn import find_executable
+ 
++
++def _get_platform():
++    # Get value of host platform (set only if cross-compile)
++    # otherwise value of sys.platform
++    host_platform = os.environ.get('HOST_OS')
++    if host_platform is None:
++        host_platform = sys.platform
++    for platform in ['cygwin', 'beos', 'darwin', 'atheos', 'osf1']:
++        if host_platform.startswith(platform):
++            return platform
++    return host_platform
++
++host_platform = _get_platform()
++cross_compiling = (not os.environ.get('HOST_OS') is None)
++
++
+ # Were we compiled --with-pydebug or with #define Py_DEBUG?
+ COMPILED_WITH_PYDEBUG = hasattr(sys, 'gettotalrefcount')
+ 
+@@ -60,7 +76,7 @@
+     'paths' is a list of additional locations to check; if the file is
+         found in one of them, the resulting list will contain the directory.
+     """
+-    if sys.platform == 'darwin':
++    if host_platform == 'darwin':
+         # Honor the MacOSX SDK setting when one was specified.
+         # An SDK is a directory with the same structure as a real
+         # system, but with only header files and libraries.
+@@ -70,7 +86,7 @@
+     for dir in std_dirs:
+         f = os.path.join(dir, filename)
+ 
+-        if sys.platform == 'darwin' and is_macosx_sdk_path(dir):
++        if host_platform == 'darwin' and is_macosx_sdk_path(dir):
+             f = os.path.join(sysroot, dir[1:], filename)
+ 
+         if os.path.exists(f): return []
+@@ -79,7 +95,7 @@
+     for dir in paths:
+         f = os.path.join(dir, filename)
+ 
+-        if sys.platform == 'darwin' and is_macosx_sdk_path(dir):
++        if host_platform == 'darwin' and is_macosx_sdk_path(dir):
+             f = os.path.join(sysroot, dir[1:], filename)
+ 
+         if os.path.exists(f):
+@@ -93,7 +109,7 @@
+     if result is None:
+         return None
+ 
+-    if sys.platform == 'darwin':
++    if host_platform == 'darwin':
+         sysroot = macosx_sdk_root()
+ 
+     # Check whether the found file is in one of the standard directories
+@@ -102,7 +118,7 @@
+         # Ensure path doesn't end with path separator
+         p = p.rstrip(os.sep)
+ 
+-        if sys.platform == 'darwin' and is_macosx_sdk_path(p):
++        if host_platform == 'darwin' and is_macosx_sdk_path(p):
+             if os.path.join(sysroot, p[1:]) == dirname:
+                 return [ ]
+ 
+@@ -115,7 +131,7 @@
+         # Ensure path doesn't end with path separator
+         p = p.rstrip(os.sep)
+ 
+-        if sys.platform == 'darwin' and is_macosx_sdk_path(p):
++        if host_platform == 'darwin' and is_macosx_sdk_path(p):
+             if os.path.join(sysroot, p[1:]) == dirname:
+                 return [ p ]
+ 
+@@ -172,8 +188,7 @@
+ 
+         # Platform-dependent module source and include directories
+         incdirlist = []
+-        platform = self.get_platform()
+-        if platform == 'darwin' and ("--disable-toolbox-glue" not in
++        if host_platform == 'darwin' and ("--disable-toolbox-glue" not in
+             sysconfig.get_config_var("CONFIG_ARGS")):
+             # Mac OS X also includes some mac-specific modules
+             macmoddir = os.path.join(srcdir, 'Mac/Modules')
+@@ -286,7 +301,7 @@
+                 ext.name)
+             return
+ 
+-        if self.get_platform() == 'darwin' and (
++        if host_platform == 'darwin' and (
+                 sys.maxint > 2**32 and '-arch' in ext.extra_link_args):
+             # Don't bother doing an import check when an extension was
+             # build with an explicit '-arch' flag on OSX. That's currently
+@@ -300,10 +315,14 @@
+ 
+         # Workaround for Cygwin: Cygwin currently has fork issues when many
+         # modules have been imported
+-        if self.get_platform() == 'cygwin':
++        if host_platform == 'cygwin':
+             self.announce('WARNING: skipping import check for Cygwin-based "%s"'
+                 % ext.name)
+             return
++        if cross_compiling:
++            self.announce('WARNING: skipping import check for cross-compiled "%s"'
++                % ext.name)
++            return
+         ext_filename = os.path.join(
+             self.build_lib,
+             self.get_ext_filename(self.get_ext_fullname(ext.name)))
+@@ -338,17 +357,14 @@
+                           level=3)
+             self.failed.append(ext.name)
+ 
+-    def get_platform(self):
+-        # Get value of sys.platform
+-        for platform in ['cygwin', 'beos', 'darwin', 'atheos', 'osf1']:
+-            if sys.platform.startswith(platform):
+-                return platform
+-        return sys.platform
+-
+     def detect_modules(self):
+-        # Ensure that /usr/local is always used
+-        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+-        add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
++        pyconfig_h_data = open('pyconfig.h').read()
++        setup_info_data = open('setup_info').read()
++
++        if not cross_compiling:
++            # Ensure that /usr/local is always used
++            add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
++            add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+ 
+         # Add paths specified in the environment variables LDFLAGS and
+         # CPPFLAGS for header and library files.
+@@ -356,6 +372,9 @@
+         # directly since an inconsistently reproducible issue comes up where
+         # the environment variable is not set even though the value were passed
+         # into configure and stored in the Makefile (issue found on OS X 10.3).
++        # NOTE: In cross-compilation environment python for build system
++        # is linked in top build directory under name syspython to get
++        # above to work (distutils hack).
+         for env_var, arg_name, dir_list in (
+                 ('LDFLAGS', '-R', self.compiler.runtime_library_dirs),
+                 ('LDFLAGS', '-L', self.compiler.library_dirs),
+@@ -400,35 +419,37 @@
+         except NameError:
+             have_unicode = 0
+ 
+-        # lib_dirs and inc_dirs are used to search for files;
+-        # if a file is found in one of those directories, it can
+-        # be assumed that no additional -I,-L directives are needed.
+-        lib_dirs = self.compiler.library_dirs + [
+-            '/lib64', '/usr/lib64',
+-            '/lib', '/usr/lib',
+-            ]
+-        inc_dirs = self.compiler.include_dirs + ['/usr/include']
++        lib_dirs = self.compiler.library_dirs
++        inc_dirs = self.compiler.include_dirs
++        if not cross_compiling:
++            # lib_dirs and inc_dirs are used to search for files;
++            # if a file is found in one of those directories, it can
++            # be assumed that no additional -I,-L directives are needed.
++            lib_dirs += [
++                '/lib64', '/usr/lib64',
++                '/lib', '/usr/lib',
++                ]
++            inc_dirs += ['/usr/include']
+         exts = []
+         missing = []
+ 
+         config_h = sysconfig.get_config_h_filename()
+         config_h_vars = sysconfig.parse_config_h(open(config_h))
+ 
+-        platform = self.get_platform()
+         srcdir = sysconfig.get_config_var('srcdir')
+ 
+         # Check for AtheOS which has libraries in non-standard locations
+-        if platform == 'atheos':
++        if host_platform == 'atheos':
+             lib_dirs += ['/system/libs', '/atheos/autolnk/lib']
+             lib_dirs += os.getenv('LIBRARY_PATH', '').split(os.pathsep)
+             inc_dirs += ['/system/include', '/atheos/autolnk/include']
+             inc_dirs += os.getenv('C_INCLUDE_PATH', '').split(os.pathsep)
+ 
+         # OSF/1 and Unixware have some stuff in /usr/ccs/lib (like -ldb)
+-        if platform in ['osf1', 'unixware7', 'openunix8']:
++        if host_platform in ['osf1', 'unixware7', 'openunix8']:
+             lib_dirs += ['/usr/ccs/lib']
+ 
+-        if platform == 'darwin':
++        if host_platform == 'darwin':
+             # This should work on any unixy platform ;-)
+             # If the user has bothered specifying additional -I and -L flags
+             # in OPT and LDFLAGS we might as well use them here.
+@@ -447,7 +468,7 @@
+ 
+         # Check for MacOS X, which doesn't need libm.a at all
+         math_libs = ['m']
+-        if platform in ['darwin', 'beos']:
++        if host_platform in ['darwin', 'beos']:
+             math_libs = []
+ 
+         # XXX Omitted modules: gl, pure, dl, SGI-specific modules
+@@ -513,13 +534,12 @@
+         else:
+             missing.append('unicodedata')
+         # access to ISO C locale support
+-        data = open('pyconfig.h').read()
+-        m = re.search(r"#s*define\s+WITH_LIBINTL\s+1\s*", data)
++        m = re.search(r"#s*define\s+WITH_LIBINTL\s+1\s*", pyconfig_h_data)
+         if m is not None:
+             locale_libs = ['intl']
+         else:
+             locale_libs = []
+-        if platform == 'darwin':
++        if host_platform == 'darwin':
+             locale_extra_link_args = ['-framework', 'CoreFoundation']
+         else:
+             locale_extra_link_args = []
+@@ -561,7 +581,7 @@
+         exts.append( Extension('cPickle', ['cPickle.c']) )
+ 
+         # Memory-mapped files (also works on Win32).
+-        if platform not in ['atheos']:
++        if host_platform not in ['atheos']:
+             exts.append( Extension('mmap', ['mmapmodule.c']) )
+         else:
+             missing.append('mmap')
+@@ -597,12 +617,32 @@
+             missing.extend(['imageop'])
+ 
+         # readline
+-        do_readline = self.compiler.find_library_file(lib_dirs, 'readline')
++        do_readline = re.search(r"#s*define\s+HAVE_LIBREADLINE\s+1\s*", pyconfig_h_data)
++
+         readline_termcap_library = ""
+         curses_library = ""
++
+         # Determine if readline is already linked against curses or tinfo.
+-        if do_readline and find_executable('ldd'):
+-            fp = os.popen("ldd %s" % do_readline)
++        # NOTE readline_termcap_library is flag used only if cannot determine readline libs
++        readline_conf = False
++        readline_conf_termcap = ""
++        if do_readline:
++            m = re.search(r"\s*READLINE_LIBS\s*=\s*(?P<rl>-l.*)", setup_info_data)
++            if m:
++                readline_conf = True
++                ln = m.group('rl')
++                if 'curses' in ln:
++                    readline_conf_termcap = re.sub(
++                        r'.*-l(n?cursesw?).*', r'\1', ln
++                    ).rstrip()
++                elif 'tinfo' in ln: # termcap interface split out from ncurses
++                    readline_conf_termcap = 'tinfo'
++                else: # may be readline is linked with termcap interface library
++                    readline_conf = False
++
++        if do_readline and not readline_conf and find_executable('ldd'):
++            rl_lib = self.compiler.find_library_file(lib_dirs, 'readline')
++            fp = os.popen("ldd %s" % rl_lib)
+             ldd_output = fp.readlines()
+             ret = fp.close()
+             if ret is None or ret >> 8 == 0:
+@@ -617,7 +657,9 @@
+                         break
+         # Issue 7384: If readline is already linked against curses,
+         # use the same library for the readline and curses modules.
+-        if 'curses' in readline_termcap_library:
++        if 'curses' in readline_conf_termcap:
++            curses_library = readline_conf_termcap
++        elif 'curses' in readline_termcap_library:
+             curses_library = readline_termcap_library
+         elif self.compiler.find_library_file(lib_dirs, 'ncursesw'):
+             curses_library = 'ncursesw'
+@@ -626,7 +668,7 @@
+         elif self.compiler.find_library_file(lib_dirs, 'curses'):
+             curses_library = 'curses'
+ 
+-        if platform == 'darwin':
++        if host_platform == 'darwin':
+             os_release = int(os.uname()[2].split('.')[0])
+             dep_target = sysconfig.get_config_var('MACOSX_DEPLOYMENT_TARGET')
+             if dep_target and dep_target.split('.') < ['10', '5']:
+@@ -638,7 +680,7 @@
+                 if find_file('readline/rlconf.h', inc_dirs, []) is None:
+                     do_readline = False
+         if do_readline:
+-            if platform == 'darwin' and os_release < 9:
++            if host_platform == 'darwin' and os_release < 9:
+                 # In every directory on the search path search for a dynamic
+                 # library and then a static library, instead of first looking
+                 # for dynamic libraries on the entiry path.
+@@ -716,7 +758,7 @@
+                 inc_dirs + search_for_ssl_incs_in)
+         if opensslv_h:
+             name = os.path.join(opensslv_h[0], 'openssl/opensslv.h')
+-            if sys.platform == 'darwin' and is_macosx_sdk_path(name):
++            if host_platform == 'darwin' and is_macosx_sdk_path(name):
+                 name = os.path.join(macosx_sdk_root(), name[1:])
+             try:
+                 incfile = open(name, 'r')
+@@ -860,7 +902,7 @@
+ 
+         db_ver_inc_map = {}
+ 
+-        if sys.platform == 'darwin':
++        if host_platform == 'darwin':
+             sysroot = macosx_sdk_root()
+ 
+         class db_found(Exception): pass
+@@ -870,7 +912,7 @@
+             for d in inc_dirs + db_inc_paths:
+                 f = os.path.join(d, "db.h")
+ 
+-                if sys.platform == 'darwin' and is_macosx_sdk_path(d):
++                if host_platform == 'darwin' and is_macosx_sdk_path(d):
+                     f = os.path.join(sysroot, d[1:], "db.h")
+ 
+                 if db_setup_debug: print "db: looking for db.h in", f
+@@ -920,7 +962,7 @@
+                     db_incdir.replace("include", 'lib'),
+                 ]
+ 
+-                if sys.platform != 'darwin':
++                if host_platform != 'darwin':
+                     db_dirs_to_check = filter(os.path.isdir, db_dirs_to_check)
+ 
+                 else:
+@@ -995,13 +1037,13 @@
+         # Scan the default include directories before the SQLite specific
+         # ones. This allows one to override the copy of sqlite on OSX,
+         # where /usr/include contains an old version of sqlite.
+-        if sys.platform == 'darwin':
++        if host_platform == 'darwin':
+             sysroot = macosx_sdk_root()
+ 
+         for d in inc_dirs + sqlite_inc_paths:
+             f = os.path.join(d, "sqlite3.h")
+ 
+-            if sys.platform == 'darwin' and is_macosx_sdk_path(d):
++            if host_platform == 'darwin' and is_macosx_sdk_path(d):
+                 f = os.path.join(sysroot, d[1:], "sqlite3.h")
+ 
+             if os.path.exists(f):
+@@ -1050,7 +1092,7 @@
+                 '_sqlite/util.c', ]
+ 
+             sqlite_defines = []
+-            if sys.platform != "win32":
++            if host_platform != "win32":
+                 sqlite_defines.append(('MODULE_NAME', '"sqlite3"'))
+             else:
+                 sqlite_defines.append(('MODULE_NAME', '\\"sqlite3\\"'))
+@@ -1058,7 +1100,7 @@
+             # Comment this out if you want the sqlite3 module to be able to load extensions.
+             sqlite_defines.append(("SQLITE_OMIT_LOAD_EXTENSION", "1"))
+ 
+-            if sys.platform == 'darwin':
++            if host_platform == 'darwin':
+                 # In every directory on the search path search for a dynamic
+                 # library and then a static library, instead of first looking
+                 # for dynamic libraries on the entiry path.
+@@ -1092,7 +1134,7 @@
+         # when attempting to compile and it will fail.
+         f = "/usr/include/db.h"
+ 
+-        if sys.platform == 'darwin':
++        if host_platform == 'darwin':
+             if is_macosx_sdk_path(f):
+                 sysroot = macosx_sdk_root()
+                 f = os.path.join(sysroot, f[1:])
+@@ -1105,7 +1147,7 @@
+                 ### XXX this should be fixed to not be platform-dependent
+                 ### but I don't have direct access to an osf1 platform and
+                 ### seemed to be muffing the search somehow
+-                libraries = platform == "osf1" and ['db'] or None
++                libraries = host_platform == "osf1" and ['db'] or None
+                 if libraries is not None:
+                     exts.append(Extension('bsddb185', ['bsddbmodule.c'],
+                                           libraries=libraries))
+@@ -1118,7 +1160,7 @@
+ 
+         dbm_order = ['gdbm']
+         # The standard Unix dbm module:
+-        if platform not in ['cygwin']:
++        if host_platform not in ['cygwin']:
+             config_args = [arg.strip("'")
+                            for arg in sysconfig.get_config_var("CONFIG_ARGS").split()]
+             dbm_args = [arg for arg in config_args
+@@ -1196,17 +1238,17 @@
+             missing.append('gdbm')
+ 
+         # Unix-only modules
+-        if platform not in ['win32']:
++        if host_platform not in ['win32']:
+             # Steen Lumholt's termios module
+             exts.append( Extension('termios', ['termios.c']) )
+             # Jeremy Hylton's rlimit interface
+-            if platform not in ['atheos']:
++            if host_platform not in ['atheos']:
+                 exts.append( Extension('resource', ['resource.c']) )
+             else:
+                 missing.append('resource')
+ 
+             # Sun yellow pages. Some systems have the functions in libc.
+-            if (platform not in ['cygwin', 'atheos', 'qnx6'] and
++            if (host_platform not in ['cygwin', 'atheos', 'qnx6'] and
+                 find_file('rpcsvc/yp_prot.h', inc_dirs, []) is not None):
+                 if (self.compiler.find_library_file(lib_dirs, 'nsl')):
+                     libs = ['nsl']
+@@ -1230,7 +1272,7 @@
+             curses_libs = [curses_library]
+             exts.append( Extension('_curses', ['_cursesmodule.c'],
+                                    libraries = curses_libs) )
+-        elif curses_library == 'curses' and platform != 'darwin':
++        elif curses_library == 'curses' and host_platform != 'darwin':
+                 # OSX has an old Berkeley curses, not good enough for
+                 # the _curses module.
+             if (self.compiler.find_library_file(lib_dirs, 'terminfo')):
+@@ -1281,7 +1323,7 @@
+                     break
+             if version >= version_req:
+                 if (self.compiler.find_library_file(lib_dirs, 'z')):
+-                    if sys.platform == "darwin":
++                    if host_platform == "darwin":
+                         zlib_extra_link_args = ('-Wl,-search_paths_first',)
+                     else:
+                         zlib_extra_link_args = ()
+@@ -1313,7 +1355,7 @@
+ 
+         # Gustavo Niemeyer's bz2 module.
+         if (self.compiler.find_library_file(lib_dirs, 'bz2')):
+-            if sys.platform == "darwin":
++            if host_platform == "darwin":
+                 bz2_extra_link_args = ('-Wl,-search_paths_first',)
+             else:
+                 bz2_extra_link_args = ()
+@@ -1386,7 +1428,7 @@
+         if sys.maxint == 0x7fffffff:
+             # This requires sizeof(int) == sizeof(long) == sizeof(char*)
+             dl_inc = find_file('dlfcn.h', [], inc_dirs)
+-            if (dl_inc is not None) and (platform not in ['atheos']):
++            if (dl_inc is not None) and (host_platform not in ['atheos']):
+                 exts.append( Extension('dl', ['dlmodule.c']) )
+             else:
+                 missing.append('dl')
+@@ -1397,29 +1439,29 @@
+         self.detect_ctypes(inc_dirs, lib_dirs)
+ 
+         # Richard Oudkerk's multiprocessing module
+-        if platform == 'win32':             # Windows
++        if host_platform == 'win32':
+             macros = dict()
+             libraries = ['ws2_32']
+ 
+-        elif platform == 'darwin':          # Mac OSX
++        elif host_platform == 'darwin':
+             macros = dict()
+             libraries = []
+ 
+-        elif platform == 'cygwin':          # Cygwin
++        elif host_platform == 'cygwin':
+             macros = dict()
+             libraries = []
+ 
+-        elif platform in ('freebsd4', 'freebsd5', 'freebsd6', 'freebsd7', 'freebsd8'):
++        elif host_platform in ('freebsd4', 'freebsd5', 'freebsd6', 'freebsd7', 'freebsd8'):
+             # FreeBSD's P1003.1b semaphore support is very experimental
+             # and has many known problems. (as of June 2008)
+             macros = dict()
+             libraries = []
+ 
+-        elif platform.startswith('openbsd'):
++        elif host_platform.startswith('openbsd'):
+             macros = dict()
+             libraries = []
+ 
+-        elif platform.startswith('netbsd'):
++        elif host_platform.startswith('netbsd'):
+             macros = dict()
+             libraries = []
+ 
+@@ -1427,7 +1469,7 @@
+             macros = dict()
+             libraries = ['rt']
+ 
+-        if platform == 'win32':
++        if host_platform == 'win32':
+             multiprocessing_srcs = [ '_multiprocessing/multiprocessing.c',
+                                      '_multiprocessing/semaphore.c',
+                                      '_multiprocessing/pipe_connection.c',
+@@ -1454,26 +1496,26 @@
+ 
+ 
+         # Platform-specific libraries
+-        if platform == 'linux2':
++        if host_platform == 'linux2':
+             # Linux-specific modules
+             exts.append( Extension('linuxaudiodev', ['linuxaudiodev.c']) )
+         else:
+             missing.append('linuxaudiodev')
+ 
+-        if (platform in ('linux2', 'freebsd4', 'freebsd5', 'freebsd6',
++        if (host_platform in ('linux2', 'freebsd4', 'freebsd5', 'freebsd6',
+                         'freebsd7', 'freebsd8')
+-            or platform.startswith("gnukfreebsd")):
++            or host_platform.startswith("gnukfreebsd")):
+             exts.append( Extension('ossaudiodev', ['ossaudiodev.c']) )
+         else:
+             missing.append('ossaudiodev')
+ 
+-        if platform == 'sunos5':
++        if host_platform == 'sunos5':
+             # SunOS specific modules
+             exts.append( Extension('sunaudiodev', ['sunaudiodev.c']) )
+         else:
+             missing.append('sunaudiodev')
+ 
+-        if platform == 'darwin':
++        if host_platform == 'darwin':
+             # _scproxy
+             exts.append(Extension("_scproxy", [os.path.join(srcdir, "Mac/Modules/_scproxy.c")],
+                 extra_link_args= [
+@@ -1482,7 +1524,7 @@
+                 ]))
+ 
+ 
+-        if platform == 'darwin' and ("--disable-toolbox-glue" not in
++        if host_platform == 'darwin' and ("--disable-toolbox-glue" not in
+                 sysconfig.get_config_var("CONFIG_ARGS")):
+ 
+             if int(os.uname()[2].split('.')[0]) >= 8:
+@@ -1678,8 +1720,7 @@
+         # Rather than complicate the code below, detecting and building
+         # AquaTk is a separate method. Only one Tkinter will be built on
+         # Darwin - either AquaTk, if it is found, or X11 based Tk.
+-        platform = self.get_platform()
+-        if (platform == 'darwin' and
++        if (host_platform == 'darwin' and
+             self.detect_tkinter_darwin(inc_dirs, lib_dirs)):
+             return
+ 
+@@ -1702,7 +1743,7 @@
+             # Check for the include files on Debian and {Free,Open}BSD, where
+             # they're put in /usr/include/{tcl,tk}X.Y
+             dotversion = version
+-            if '.' not in dotversion and "bsd" in sys.platform.lower():
++            if '.' not in dotversion and "bsd" in host_platform.lower():
+                 # OpenBSD and FreeBSD use Tcl/Tk library names like libtcl83.a,
+                 # but the include subdirs are named like .../include/tcl8.3.
+                 dotversion = dotversion[:-1] + '.' + dotversion[-1]
+@@ -1728,7 +1769,7 @@
+                 include_dirs.append(dir)
+ 
+         # Check for various platform-specific directories
+-        if platform == 'sunos5':
++        if host_platform == 'sunos5':
+             include_dirs.append('/usr/openwin/include')
+             added_lib_dirs.append('/usr/openwin/lib')
+         elif os.path.exists('/usr/X11R6/include'):
+@@ -1744,7 +1785,7 @@
+             added_lib_dirs.append('/usr/X11/lib')
+ 
+         # If Cygwin, then verify that X is installed before proceeding
+-        if platform == 'cygwin':
++        if host_platform == 'cygwin':
+             x11_inc = find_file('X11/Xlib.h', [], include_dirs)
+             if x11_inc is None:
+                 return
+@@ -1763,11 +1804,11 @@
+         libs.append('tk'+ version)
+         libs.append('tcl'+ version)
+ 
+-        if platform in ['aix3', 'aix4']:
++        if host_platform in ['aix3', 'aix4']:
+             libs.append('ld')
+ 
+         # Finally, link with the X11 libraries (not appropriate on cygwin)
+-        if platform != "cygwin":
++        if host_platform != "cygwin":
+             libs.append('X11')
+ 
+         ext = Extension('_tkinter', ['_tkinter.c', 'tkappinit.c'],
+@@ -1819,7 +1860,7 @@
+ 
+     def configure_ctypes(self, ext):
+         if not self.use_system_libffi:
+-            if sys.platform == 'darwin':
++            if host_platform == 'darwin':
+                 return self.configure_ctypes_darwin(ext)
+ 
+             srcdir = sysconfig.get_config_var('srcdir')
+@@ -1837,12 +1878,17 @@
+                                          ffi_configfile):
+                 from distutils.dir_util import mkpath
+                 mkpath(ffi_builddir)
+-                config_args = []
++                #NOTE: best solution is to add to configure script
++                # as config subdirectory and to exclude darwin
++                # (see configure_ctypes_darwin).
++                #FIXME: lets for now pass all top configure arguments
++                #and do not modify configure script.
++                config_args = sysconfig.get_config_var("CONFIG_ARGS")
+ 
+                 # Pass empty CFLAGS because we'll just append the resulting
+                 # CFLAGS to Python's; -g or -O2 is to be avoided.
+                 cmd = "cd %s && env CFLAGS='' '%s/configure' %s" \
+-                      % (ffi_builddir, ffi_srcdir, " ".join(config_args))
++                      % (ffi_builddir, ffi_srcdir, config_args)
+ 
+                 res = os.system(cmd)
+                 if res or not os.path.exists(ffi_configfile):
+@@ -1879,7 +1925,7 @@
+                    '_ctypes/cfield.c']
+         depends = ['_ctypes/ctypes.h']
+ 
+-        if sys.platform == 'darwin':
++        if host_platform == 'darwin':
+             sources.append('_ctypes/malloc_closure.c')
+             sources.append('_ctypes/darwin/dlfcn_simple.c')
+             extra_compile_args.append('-DMACOSX')
+@@ -1887,7 +1933,7 @@
+ # XXX Is this still needed?
+ ##            extra_link_args.extend(['-read_only_relocs', 'warning'])
+ 
+-        elif sys.platform == 'sunos5':
++        elif host_platform == 'sunos5':
+             # XXX This shouldn't be necessary; it appears that some
+             # of the assembler code is non-PIC (i.e. it has relocations
+             # when it shouldn't. The proper fix would be to rewrite
+@@ -1898,7 +1944,7 @@
+             # finding some -z option for the Sun compiler.
+             extra_link_args.append('-mimpure-text')
+ 
+-        elif sys.platform.startswith('hp-ux'):
++        elif host_platform.startswith('hp-ux'):
+             extra_link_args.append('-fPIC')
+ 
+         ext = Extension('_ctypes',
+@@ -1915,7 +1961,7 @@
+         if not '--with-system-ffi' in sysconfig.get_config_var("CONFIG_ARGS"):
+             return
+ 
+-        if sys.platform == 'darwin':
++        if host_platform == 'darwin':
+             # OS X 10.5 comes with libffi.dylib; the include files are
+             # in /usr/include/ffi
+             inc_dirs.append('/usr/include/ffi')
+--- ./configure.in.CROSS	2011-01-12 01:40:26.000000000 +0200
++++ ./configure.in	2011-01-12 01:40:31.000000000 +0200
+@@ -18,6 +18,7 @@
+ AC_INIT(python, PYTHON_VERSION, http://bugs.python.org/)
+ AC_CONFIG_SRCDIR([Include/object.h])
+ AC_CONFIG_HEADER(pyconfig.h)
++AC_CANONICAL_HOST
+ 
+ dnl Ensure that if prefix is specified, it does not end in a slash. If
+ dnl it does, we get path names containing '//' which is both ugly and
+@@ -49,6 +50,46 @@
+ rm confdefs.h
+ mv confdefs.h.new confdefs.h
+ 
++dnl makefile conditional (for future use)
++if test "x$cross_compiling" = xyes; then
++  CROSS_ON=''
++  CROSS_OFF='#'
++else
++  CROSS_ON='#'
++  CROSS_OFF=''
++fi
++AC_SUBST(CROSS_ON)
++AC_SUBST(CROSS_OFF)
++
++AC_PROG_LN_S
++if test "x$cross_compiling" = xyes; then
++  AC_MSG_WARN([cross-compilation is incomplete])
++
++  dnl In cross-compilation environment we need python from
++  dnl the build system (for future use)
++  AC_PATH_PROG(SYSPYTHON, python, [none],
++    [$PATH:/usr/local/bin]
++  )
++  if test "x$PYTHON" = xnone; then
++    AC_MSG_ERROR([python program is required in cross-compilation environment])
++  fi
++  SYSPYOSNAME=`${SYSPYTHON} -c "import os; print os.name"`
++  case $SYSPYOSNAME in
++  posix)
++    dnl On posix distutils read variables from installed makefile.
++    dnl We will do some hacks based on distutils internals to overcome
++    dnl this limitation:
++    dnl - we link system python in build directory so that it will
++    dnl   read generated file.
++    dnl As result from sysconfig.get_config_vars we will get our
++    dnl setting (for the host system) like SO, CFLAGS, CPPFLAGS,
++    dnl LDFLAGS instead those for the build system.
++    rm -f syspython
++    ${LN_S} ${SYSPYTHON} syspython
++    SYSPYTHON=./syspython
++  esac
++fi
++
+ AC_SUBST(VERSION)
+ VERSION=PYTHON_VERSION
+ 
+@@ -282,8 +323,35 @@
+ ##                           [Use (OpenStep|Rhapsody) dynamic linker]))
+ ##
+ # Set name for machine-dependent library files
++dnl Now configure script support cross-compilation and detection of host
++dnl system based on value of $ac_sys_system and/or $ac_sys_release
++dnl has to be avoided. It is superseded by "host triplet"(cpu-verdor-os).
++dnl FIXME: replace all cases based on $ac_sys_system and/or $ac_sys_release
++dnl with case based on $host ("host triplet") or $host_os.
++dnl Also cases with MACHDEP may be replaces by $host or $host_os. Note
++dnl script may not set this variable if cross compiling.
++
++dnl Next two variables are intended to be passed through makefile to other
++dnl scripts. As example setup.py check for CPU(machine) and OS(platform).
++HOST_CPU=$host_cpu
++AC_SUBST(HOST_CPU)
++HOST_OS=$host_os
++AC_SUBST(HOST_OS)
++
+ AC_SUBST(MACHDEP)
++if test "x$cross_compiling" = xyes; then
++AC_MSG_WARN([
++  May be value of MACHDEP isn't correct if cross-compiling.
++  You may tweak configure script for you host system: $host])
++fi
+ AC_MSG_CHECKING(MACHDEP)
++dnl Note that $host_os cann't be translated directly into python
++dnl specific $MACHDEP. As example on linux (kernel 2.x) the script below
++dnl will set MACHDEP to "linux2" but $host_os is only "linux".
++dnl Another point is in cross-compilation environment we cannot distinguish
++dnl linux with 1.x(if someone still use it) and 2.x host kernels.
++dnl As example setup.py check for linux2(get from sys.platform) and will
++dnl install some host plaform specific files into subdirectory "plat-linux2".
+ if test -z "$MACHDEP"
+ then
+ 	ac_sys_system=`uname -s`
+@@ -300,14 +368,18 @@
+ 	MACHDEP="$ac_md_system$ac_md_release"
+ 
+ 	case $MACHDEP in
+-	cygwin*) MACHDEP="cygwin";;
+-	darwin*) MACHDEP="darwin";;
+-	atheos*) MACHDEP="atheos";;
+         irix646) MACHDEP="irix6";;
+ 	'')	MACHDEP="unknown";;
+ 	esac
++
++	dnl override MACHDEP only on certain host systems
++	case $host in
++	*-*-cygwin*) MACHDEP="cygwin";;
++	*-*-darwin*) MACHDEP="darwin";;
++	*-*-atheos*) MACHDEP="atheos";;
++	esac
+ fi
+-	
++
+ # Some systems cannot stand _XOPEN_SOURCE being defined at all; they
+ # disable features if it is defined, without any means to access these
+ # features as extensions. For these systems, we skip the definition of
+@@ -452,10 +524,6 @@
+ CONFIGURE_MACOSX_DEPLOYMENT_TARGET=
+ EXPORT_MACOSX_DEPLOYMENT_TARGET='#'
+ 
+-AC_MSG_CHECKING(machine type as reported by uname -m)
+-ac_sys_machine=`uname -m`
+-AC_MSG_RESULT($ac_sys_machine)
+-
+ # checks for alternative programs
+ 
+ # compiler flags are generated in two sets, BASECFLAGS and OPT.  OPT is just
+@@ -581,6 +649,13 @@
+ AC_USE_SYSTEM_EXTENSIONS
+ 
+ # Check for unsupported systems
++case $host in
++  *-*-beos*)
++    AC_MSG_WARN([
++  Support for BeOS is deprecated as of Python 2.6.
++  See PEP 11 for the gory details.
++  ]);;
++esac
+ case $ac_sys_system/$ac_sys_release in
+ atheos*|Linux*/1*)
+    echo This system \($ac_sys_system/$ac_sys_release\) is no longer supported.
+@@ -734,22 +809,23 @@
+ 
+ AC_MSG_CHECKING(for --enable-profiling)
+ AC_ARG_ENABLE(profiling,
+-              AS_HELP_STRING([--enable-profiling], [enable C-level code profiling]),
+-[ac_save_cc="$CC"
+- CC="$CC -pg"
+- AC_RUN_IFELSE([AC_LANG_SOURCE([[int main() { return 0; }]])],
+-   [ac_enable_profiling="yes"],
+-   [ac_enable_profiling="no"],
+-   [ac_enable_profiling="no"])
+- CC="$ac_save_cc"])
+-AC_MSG_RESULT($ac_enable_profiling)
+-
+-case "$ac_enable_profiling" in
+-    "yes")
+-	BASECFLAGS="-pg $BASECFLAGS"
+-	LDFLAGS="-pg $LDFLAGS"
+-    ;;
+-esac
++              AS_HELP_STRING([--enable-profiling], [enable C-level code profiling]))
++if test "x$enable_profiling" = xyes; then
++  py_save_CFLAGS="$CFLAGS"
++  CFLAGS="$CFLAGS -pg"
++  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[]])],
++    [],
++    [enable_profiling=no])
++  CFLAGS="$py_save_CFLAGS"
++else
++  enable_profiling=no
++fi
++AC_MSG_RESULT($enable_profiling)
++
++if test "x$enable_profiling" = xyes; then
++  BASECFLAGS="-pg $BASECFLAGS"
++  LDFLAGS="-pg $LDFLAGS"
++fi
+ 
+ AC_MSG_CHECKING(LDLIBRARY)
+ 
+@@ -841,8 +917,7 @@
+ AC_MSG_RESULT($LDLIBRARY)
+ 
+ AC_PROG_RANLIB
+-AC_SUBST(AR)
+-AC_CHECK_PROGS(AR, ar aal, ar)
++AC_CHECK_TOOLS(AR, ar aal, ar)
+ 
+ # tweak ARFLAGS only if the user didn't set it on the command line
+ AC_SUBST(ARFLAGS)
+@@ -979,7 +1054,7 @@
+     # if using gcc on alpha, use -mieee to get (near) full IEEE 754
+     # support.  Without this, treatment of subnormals doesn't follow
+     # the standard.
+-    case $ac_sys_machine in
++    case $host in
+          alpha*)
+                 BASECFLAGS="$BASECFLAGS -mieee"
+                 ;;
+@@ -2698,7 +2773,11 @@
+ else
+ 	MACHDEP_OBJS="$MACHDEP_OBJS $extra_machdep_objs"
+ fi
+-AC_MSG_RESULT(MACHDEP_OBJS)
++if test -z "$MACHDEP_OBJS"; then
++  AC_MSG_RESULT([none])
++else
++  AC_MSG_RESULT([$MACHDEP_OBJS])
++fi
+ 
+ # checks for library functions
+ AC_CHECK_FUNCS(alarm setitimer getitimer bind_textdomain_codeset chown \
+@@ -3111,7 +3190,7 @@
+ 
+ AC_MSG_RESULT($ac_cv_buggy_getaddrinfo)
+ 
+-if test $have_getaddrinfo = no -o "$ac_cv_buggy_getaddrinfo" = yes
++if test $have_getaddrinfo = no || test "$ac_cv_buggy_getaddrinfo" = yes
+ then
+ 	if test $ipv6 = yes
+ 	then
+@@ -3620,6 +3699,7 @@
+ fi
+ 
+ # Multiprocessing check for broken sem_getvalue
++if test $ac_cv_func_sem_getvalue = yes; then
+ AC_MSG_CHECKING(for broken sem_getvalue)
+ AC_CACHE_VAL(ac_cv_broken_sem_getvalue,
+ AC_RUN_IFELSE([AC_LANG_SOURCE([[
+@@ -3654,6 +3734,7 @@
+   AC_DEFINE(HAVE_BROKEN_SEM_GETVALUE, 1,
+   [define to 1 if your sem_getvalue is broken.])
+ fi
++fi
+ 
+ # determine what size digit to use for Python's longs
+ AC_MSG_CHECKING([digit size for Python's longs])
+@@ -3837,7 +3918,7 @@
+ # with setup.py.
+ py_cv_lib_readline=no
+ AC_MSG_CHECKING([how to link readline libs])
+-for py_libtermcap in "" ncursesw ncurses curses termcap; do
++for py_libtermcap in "" tinfo ncursesw ncurses curses termcap; do
+   if test -z "$py_libtermcap"; then
+     READLINE_LIBS="-lreadline"
+   else
+@@ -3850,9 +3931,9 @@
+   if test $py_cv_lib_readline = yes; then
+     break
+   fi
++  READLINE_LIBS=
+ done
+-# Uncomment this line if you want to use READINE_LIBS in Makefile or scripts
+-#AC_SUBST([READLINE_LIBS])
++AC_SUBST([READLINE_LIBS])
+ if test $py_cv_lib_readline = no; then
+   AC_MSG_RESULT([none])
+ else
+@@ -4135,26 +4216,34 @@
+   [AC_MSG_RESULT(no)]
+ )
+ 
+-AC_MSG_CHECKING(for /dev/ptmx)
++AC_MSG_NOTICE([checking for device files])
+ 
+-if test -r /dev/ptmx
+-then
+-  AC_MSG_RESULT(yes)
+-  AC_DEFINE(HAVE_DEV_PTMX, 1,
+-  [Define if we have /dev/ptmx.])
+-else
+-  AC_MSG_RESULT(no)
++dnl NOTE: Inform user how to proceed with files when cross compiling.
++if test "x$cross_compiling" = xyes; then
++  if test "${ac_cv_file__dev_ptmx+set}" != set; then
++    AC_MSG_CHECKING([for /dev/ptmx])
++    AC_MSG_RESULT([not set])
++    AC_MSG_ERROR([set ac_cv_file__dev_ptmx to yes/no in your CONFIG_SITE file when cross compiling])
++  fi
++  if test "${ac_cv_file__dev_ptc+set}" != set; then
++    AC_MSG_CHECKING([for /dev/ptc])
++    AC_MSG_RESULT([not set])
++    AC_MSG_ERROR([set ac_cv_file__dev_ptc to yes/no in your CONFIG_SITE file when cross compiling])
++  fi
+ fi
+ 
+-AC_MSG_CHECKING(for /dev/ptc)
+-
+-if test -r /dev/ptc
+-then
+-  AC_MSG_RESULT(yes)
++# FIXME: autoconf macro AC_CHECK_FILES is better but require additional
++# changes in posixmodule.c : 's/HAVE_DEV_/HAVE__DEV_/g'
++# To keep patch minimal I left defines as before.
++AC_CHECK_FILE(/dev/ptmx, [], [])
++if test "x$ac_cv_file__dev_ptmx" = xyes; then
++  AC_DEFINE(HAVE_DEV_PTMX, 1,
++  [Define to 1 if you have the /dev/ptmx device file.])
++fi
++AC_CHECK_FILE(/dev/ptc, [], [])
++if test "x$ac_cv_file__dev_ptc" = xyes; then
+   AC_DEFINE(HAVE_DEV_PTC, 1,
+-  [Define if we have /dev/ptc.])
+-else
+-  AC_MSG_RESULT(no)
++  [Define to 1 if you have the /dev/ptc device file.])
+ fi
+ 
+ if test "$have_long_long" = yes
+@@ -4292,36 +4381,27 @@
+ AC_MSG_RESULT(done)
+ 
+ # generate output files
+-AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc)
+-AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
+-AC_OUTPUT
+-
+-echo "creating Modules/Setup"
++AC_CONFIG_COMMANDS_PRE([
++AC_MSG_NOTICE([creating Modules/Setup])
+ if test ! -f Modules/Setup
+ then
+ 	cp $srcdir/Modules/Setup.dist Modules/Setup
+ fi
+ 
+-echo "creating Modules/Setup.local"
++AC_MSG_NOTICE([creating Modules/Setup.local])
+ if test ! -f Modules/Setup.local
+ then
+ 	echo "# Edit this file for local setup changes" >Modules/Setup.local
+-fi
++fi])
+ 
+-echo "creating Makefile"
+-$SHELL $srcdir/Modules/makesetup -c $srcdir/Modules/config.c.in \
++AC_CONFIG_COMMANDS([Makefile],
++[$SHELL $srcdir/Modules/makesetup -c $srcdir/Modules/config.c.in \
+ 			-s Modules Modules/Setup.config \
+ 			Modules/Setup.local Modules/Setup
+ 
+-case $ac_sys_system in
+-BeOS)
+-        AC_MSG_WARN([
+-
+-  Support for BeOS is deprecated as of Python 2.6.
+-  See PEP 11 for the gory details.
+-  ])
+-  ;;
+-*) ;;
+-esac
++mv config.c Modules])
+ 
+-mv config.c Modules
++AC_CONFIG_FILES([setup_info])
++AC_CONFIG_FILES([Makefile.pre Modules/Setup.config Misc/python.pc])
++AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
++AC_OUTPUT
+--- ./pyconfig.h.in.CROSS	2010-10-18 00:34:31.000000000 +0300
++++ ./pyconfig.h.in	2010-10-18 00:34:39.000000000 +0300
+@@ -158,10 +158,10 @@
+ /* Define to 1 if you have the device macros. */
+ #undef HAVE_DEVICE_MACROS
+ 
+-/* Define if we have /dev/ptc. */
++/* Define to 1 if you have the /dev/ptc device file. */
+ #undef HAVE_DEV_PTC
+ 
+-/* Define if we have /dev/ptmx. */
++/* Define to 1 if you have the /dev/ptmx device file. */
+ #undef HAVE_DEV_PTMX
+ 
+ /* Define to 1 if you have the <direct.h> header file. */
+--- ./setup_info.in.CROSS	2010-06-10 23:02:45.000000000 +0300
++++ ./setup_info.in	2010-06-10 23:05:05.000000000 +0300
+@@ -0,0 +1,3 @@
++# file with data from configure file
++
++READLINE_LIBS=@READLINE_LIBS@
