@@ -295,11 +295,14 @@ ensureDir(os.path.join(prefix, "lib", "pkgconfig"))
 ensureDir(os.path.join(prefix, "bin"))
 
 os.environ.update(
+	QTDIR = prefix,
 	PKG_CONFIG_LIBDIR = "/usr/%s/lib/pkgconfig"%target, # default debian installation
 	PKG_CONFIG_PATH = os.path.join(prefix, 'lib', 'pkgconfig'), # our prefix installation
 #	PKG_CONFIG_ALLOW_SYSTEM_CFLAGS = "1", # do not strip system include path
 #	PKG_CONFIG_ALLOW_SYSTEM_LIBS = "1", # do not strip system lib path
 	)
+
+"zcat /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > %{prefix}s/bin/mingwm10.dll"
 
 
 package( "pthread",
@@ -1017,6 +1020,7 @@ package( "qt",
 	srcdir = "%(name)s-everywhere-opensource-src-%(version)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
+		""" sed -i '/Windows\\.h/s,Windows.h,windows.h,p' tools/linguist/shared/profileevaluator.cpp  && """
 		""" sed -i '/i686-pc-mingw32/s,i686-pc-mingw32,%(target)s,p' mkspecs/unsupported/win32-g++-cross/qmake.conf  && """
 		""" echo "QMAKE_LIBDIR   = %(prefix)s/lib" >> mkspecs/unsupported/win32-g++-cross/qmake.conf && """
 		""" echo "QMAKE_INCDIR   = %(prefix)s/include" >> mkspecs/unsupported/win32-g++-cross/qmake.conf && """
@@ -1034,7 +1038,6 @@ package( "qt",
 #			""" -static """
 			""" -prefix '%(prefix)s' """
 			""" -prefix-install """
-			""" -script """
 			""" -opengl desktop """
 #			""" -no-webkit """
 #			""" -no-glib """
@@ -1045,6 +1048,7 @@ package( "qt",
 			""" -no-reduce-exports """
 			""" -no-rpath """
 			""" -make libs """
+			""" -make tools """
 			""" -nomake demos """
 			""" -nomake docs """
 			""" -nomake examples """
@@ -1052,7 +1056,6 @@ package( "qt",
 			""" -no-sql-odbc """
 			""" -no-sql-psql """
 			""" -no-sql-tds """
-			""" -iconv """
 			""" -system-zlib """
 			""" -system-libpng """
 			""" -system-libjpeg """
@@ -1069,14 +1072,13 @@ package( "qt",
 		""" make install """
 	)
 
-# TODO: detect lv2
 package("clam",
 	uri = "http://clam-project.org",
-	checkVersion = "echo 1.5",
-	downloadUri = "",
+	checkVersion = "echo 1.5", # TODO Take the real version
+	downloadUri = "", # TODO svn download method
 	tarballName = "%(name)s-%(version)s.tar.gz",
 	buildCommand =
-#		""" svn co http://clam-project.org/clam/trunk/CLAM %(srcdir)s && """
+		""" svn co http://clam-project.org/clam/trunk/CLAM %(srcdir)s && """
 		""" cd %(srcdir)s && """
 		""" scons configure """
 			""" prefix='%(prefix)s' """
@@ -1109,6 +1111,28 @@ package("clam",
 )
 
 
+package("clam-networkeditor",
+	uri = "http://clam-project.org",
+	checkVersion = "echo 1.5",
+	downloadUri = "",
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	buildCommand =
+#		""" svn co http://clam-project.org/clam/trunk/NetworkEditor %(srcdir)s && """
+		""" cd %(srcdir)s && """
+		""" scons install """
+			""" clam_prefix=%(prefix)s """
+			""" prefix=%(prefix)s """
+			""" crossmingw=1 """
+			""" release=1 """
+			""" sandbox_path=%(prefix)s/.. """
+			""" external_dll_path=%(prefix)s/bin  """
+			""" && """
+		""" echo Package %(name)s done."""
+)
+
+
+
+
 
 # See http://kampfwurst.net/python-mingw32/
 # It seems to be no clear way to crosscompile python
@@ -1120,7 +1144,7 @@ package( "python",
 	uri = "http://www.python.org",
 	checkVersion =
 		""" wget -O- -q 'http://www.python.org/download/releases/' | """
-		""" sed -n 's,.*releases/\(2\.4[0-9.]*\).*,\\1,p' | """
+		""" sed -n 's,.*releases/\(2\.7[0-9.]*\).*,\\1,p' | """
 		""" sort -g | """
 		""" tail -1 """,
 	srcdir = "Python-%(version)s",
