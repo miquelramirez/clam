@@ -336,5 +336,12 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		proxy.deleteProcessing("ProcessingToDelete")
 		self.assertFalse(proxy.hasProcessing('ProcessingToDelete'))
 
+	def test_processingConfig(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.Processing1 = "DummyProcessingWithCompleteConfiguration"
+		self.assertEquals(42, net.Processing1.IntAttribute)
+
 if __name__ == '__main__':
 	unittest.main()
