@@ -42,20 +42,18 @@ public:
 class IpyclamTests::DummyDTWithEveryType : public CLAM::ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (DummyDTWithEveryType, 6, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (DummyDTWithEveryType, 5, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, std::string, StringAttribute);
 	DYN_ATTRIBUTE (1, public, int, IntAttribute);
-	DYN_ATTRIBUTE (2, public, char, CharAttribute);
-	DYN_ATTRIBUTE (3, public, bool, BoolAttribute);
-	DYN_ATTRIBUTE (4, public, float, FloatAttribute);
-	DYN_ATTRIBUTE (5, public, double, DoubleAttribute);
+	DYN_ATTRIBUTE (2, public, bool, BoolAttribute);
+	DYN_ATTRIBUTE (3, public, float, FloatAttribute);
+	DYN_ATTRIBUTE (4, public, double, DoubleAttribute);
 	void DefaultInit(void)
 	{
 		AddAll();
 		UpdateData();
 		SetStringAttribute("String Attribute");
 		SetIntAttribute(42);
-		SetCharAttribute('c');
 		SetBoolAttribute(0);
 		SetFloatAttribute(3.140000104904175);
 		SetDoubleAttribute(134.15);

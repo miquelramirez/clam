@@ -38,7 +38,6 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 	def test_getValueFromDifferentTypesOfAttributes(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
 		self.assertEqual(42, proxy["IntAttribute"])
-		self.assertEqual('c', proxy["CharAttribute"])
 		self.assertEqual(False, proxy["BoolAttribute"])
 		self.assertEqual(3.140000104904175, proxy["FloatAttribute"])
 		self.assertEqual(134.15, proxy["DoubleAttribute"])
