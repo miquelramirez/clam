@@ -65,8 +65,6 @@ static PyObject * getAttribute(ConfigurationProxy & config, const std::string & 
 		return Py_BuildValue("s", config.attributeValue<std::string>(index).c_str() );
 	if ( config.attributeType(index) == typeid(int) )
 		return Py_BuildValue("i", config.attributeValue<int>(index));
-	if ( config.attributeType(index) == typeid(char) )
-		return Py_BuildValue("c", config.attributeValue<char>(index));
 	if ( config.attributeType(index) == typeid(bool) )
 		return Py_BuildValue("b", config.attributeValue<bool>(index));
 	if ( config.attributeType(index) == typeid(float) )
