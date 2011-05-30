@@ -41,7 +41,9 @@ class ConfigurationTests(unittest.TestCase):
 	def stringParametersConfig(self) :
 		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(
 			TestFixtures.dummyConfigWithStrings())
-
+	def nestedConfig(self) :
+		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(
+			TestFixtures.dummyConfigWithNestedConfigs())
 	def test_getItem(self):
 		c = Configuration(self.stringParametersConfig())
 		self.assertEqual(c["ConfigParam1"], "Param1")
@@ -139,6 +141,10 @@ class ConfigurationTests(unittest.TestCase):
 			"network.Processing1.['ConfigParam2'] = 'Param2'\n"
 			"network.Processing1.['ConfigParam1'] = 'newvalue'\n"
 			, c.code("Processing1", fullConfig = True))
+
+	def test_nestedconfigs(self):
+		c = Configuration(self.nestedConfig())
+		self.assertEquals('defaultnested1', c.ConfigParam3.NestedParam1)
 
 if __name__ == '__main__':
 	unittest.main()

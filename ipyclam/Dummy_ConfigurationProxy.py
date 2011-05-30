@@ -4,6 +4,9 @@ class Dummy_ConfigurationProxy(object):
 		self._dict = config
 
 	def __getitem__(self, name):
+		if type(self._dict[name]) == dict:
+			import Configuration
+			return Configuration.Configuration( Dummy_ConfigurationProxy(self._dict[name]) )
 		return self._dict[name]
 
 	def __setitem__(self, name, value):
@@ -65,6 +68,11 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		c["ConfigParam1"] = 'newvalue'
 		self.assertEqual(True, c.nonDefault("ConfigParam1"))
 		self.assertEqual(False, c.nonDefault("ConfigParam2"))
+
+	def test_nestedconfig(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithNestedConfigs())
+		self.assertEquals('defaultnested1', c["ConfigParam3"]["NestedParam1"])
+
 
 if __name__ == '__main__':
 	unittest.main()

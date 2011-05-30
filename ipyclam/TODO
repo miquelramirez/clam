@@ -165,8 +165,8 @@
 			- ... (future interface as we need it, isDefault..., see below)
 
 - Subconfigs: net.processing._config.subconfig.param
-	- Dummy
-	- Configuration
+[X]	- Dummy
+[X]	- Configuration
 	- Clam
 - Optionality
 	- Dummy
