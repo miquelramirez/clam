@@ -99,7 +99,6 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, Py
 		config.setAttributeValue<int>(index, intvalue);
 		return;
 	}
-	//TODO: CHAR
 	if ( config.attributeType(index) == typeid(bool) )
 	{
 		if (not PyBool_Check(value) )
@@ -114,6 +113,14 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, Py
 			throwPythonError("float value expected, got " + pythonType(value));
 		float floatvalue = PyFloat_AsDouble(value);
 		config.setAttributeValue<float>(index, floatvalue);
+		return;
+	}
+	if ( config.attributeType(index) == typeid(double) )
+	{
+		if (not PyFloat_Check(value) )
+			throwPythonError("double value expected, got " + pythonType(value));
+		double doublevalue = PyFloat_AsDouble(value);
+		config.setAttributeValue<double>(index, doublevalue);
 		return;
 	}
 }
