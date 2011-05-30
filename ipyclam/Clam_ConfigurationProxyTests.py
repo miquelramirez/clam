@@ -105,5 +105,14 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		self.assertEqual( ["UnString", "UnAltreString"], proxy.keys() )
 
+	def test_nonDefault(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
+		proxy["IntAttribute"] = 27
+		proxy["BoolAttribute"] = True
+		self.assertEqual(True, proxy.nonDefault("IntAttribute"))
+		self.assertEqual(True, proxy.nonDefault("BoolAttribute"))
+		self.assertEqual(False, proxy.nonDefault("FloatAttribute"))
+
+
 if __name__ == '__main__':
 	unittest.main()
