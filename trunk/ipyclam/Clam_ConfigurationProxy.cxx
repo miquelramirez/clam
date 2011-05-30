@@ -20,9 +20,9 @@ std::string pythonType(PyObject * value)
 	return "";
 }
 
-void throwPythonError(std::string errorString)
+void throwPythonError(PyObject * type, std::string errorString)
 {
-	PyErr_SetString(PyExc_TypeError, errorString.c_str() );
+	PyErr_SetString(type, errorString.c_str() );
 	py::throw_error_already_set();
 }
 
@@ -58,10 +58,8 @@ static PyObject * getAttribute(ConfigurationProxy & config, const std::string & 
 {
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
-	{
-		PyErr_SetString(PyExc_KeyError, attribute.c_str() );
-		py::throw_error_already_set();
-	}
+		throwPythonError(PyExc_KeyError, attribute.c_str());
+
 	if ( config.attributeType(index) == typeid(std::string) )
 		return Py_BuildValue("s", config.attributeValue<std::string>(index).c_str() );
 	if ( config.attributeType(index) == typeid(int) )
@@ -79,15 +77,12 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, Py
 {
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
-	{
-		PyErr_SetString(PyExc_KeyError, attribute.c_str() );
-		py::throw_error_already_set();
-	}
+		throwPythonError(PyExc_KeyError, attribute.c_str());
 
 	if ( config.attributeType(index) == typeid(std::string) )
 	{
 		if (not PyString_Check(value) )
-			throwPythonError("str value expected, got " + pythonType(value));
+			throwPythonError(PyExc_TypeError, "str value expected, got " + pythonType(value));
 		std::string stringvalue = PyString_AsString(value);
 		config.setAttributeValue<std::string>(index, stringvalue);
 		return;
@@ -95,7 +90,7 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, Py
 	if ( config.attributeType(index) == typeid(int) )
 	{
 		if (not PyInt_Check(value) )
-			throwPythonError("int value expected, got " + pythonType(value));
+			throwPythonError(PyExc_TypeError, "int value expected, got " + pythonType(value));
 		int intvalue = PyInt_AsLong(value);
 		config.setAttributeValue<int>(index, intvalue);
 		return;
@@ -103,7 +98,7 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, Py
 	if ( config.attributeType(index) == typeid(bool) )
 	{
 		if (not PyBool_Check(value) )
-			throwPythonError("bool value expected, got " + pythonType(value));
+			throwPythonError(PyExc_TypeError, "bool value expected, got " + pythonType(value));
 		bool boolvalue = value==Py_True;
 		config.setAttributeValue<bool>(index, boolvalue);
 		return;
@@ -111,7 +106,7 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, Py
 	if ( config.attributeType(index) == typeid(float) )
 	{
 		if (not PyFloat_Check(value) )
-			throwPythonError("float value expected, got " + pythonType(value));
+			throwPythonError(PyExc_TypeError, "float value expected, got " + pythonType(value));
 		float floatvalue = PyFloat_AsDouble(value);
 		config.setAttributeValue<float>(index, floatvalue);
 		return;
@@ -119,7 +114,7 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, Py
 	if ( config.attributeType(index) == typeid(double) )
 	{
 		if (not PyFloat_Check(value) )
-			throwPythonError("double value expected, got " + pythonType(value));
+			throwPythonError(PyExc_TypeError, "double value expected, got " + pythonType(value));
 		double doublevalue = PyFloat_AsDouble(value);
 		config.setAttributeValue<double>(index, doublevalue);
 		return;
@@ -138,10 +133,8 @@ bool nonDefault(ConfigurationProxy & config, const std::string & attribute)
 {
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
-	{
-		PyErr_SetString(PyExc_KeyError, attribute.c_str() );
-		py::throw_error_already_set();
-	}
+		throwPythonError(PyExc_KeyError, attribute.c_str());
+
 	if ( config.attributeType(index) == typeid(std::string) )
 		return config.nonDefault<std::string>(index);
 	if ( config.attributeType(index) == typeid(int) )

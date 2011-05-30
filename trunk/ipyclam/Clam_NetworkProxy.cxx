@@ -9,6 +9,17 @@
 
 namespace py = boost::python;
 
+class BadProcessingName : public std::exception {
+private:
+	std::string _msg;
+public:
+	BadProcessingName(const std::string & msg) : _msg(msg) {}
+	~BadProcessingName() throw() {}
+	const char * what() const throw () {
+		return _msg.c_str();
+	}
+};
+
 std::string Dump(CLAM::Network & net)
 {
 	std::ostringstream str;
@@ -23,6 +34,12 @@ py::list pythonizeList(std::list<std::string> & list)
 	for (std::list<std::string>::iterator it=list.begin(); it!=list.end(); it++)
 		result.append(*it);
 	return result;
+}
+
+void throwPythonException(PyObject * type, const std::string & msg)
+{
+	PyErr_SetString(type, msg.c_str() );
+	py::throw_error_already_set();
 }
 
 py::tuple connectorTuple(const std::string & name)
@@ -56,11 +73,6 @@ py::list processingTypes(CLAM::Network & network)
 	return pythonizeList(types);
 }
 
-void addProcessing(CLAM::Network & network, const std::string & type, const std::string & processingName)
-{
-	network.AddProcessing(processingName, type);
-}
-
 py::list processingNames(CLAM::Network & network)
 {
 	std::list<std::string> names;
@@ -70,6 +82,13 @@ py::list processingNames(CLAM::Network & network)
 		names.push_back(it->first);
 	}
 	return pythonizeList(names);
+}
+
+void addProcessing(CLAM::Network & network, const std::string & type, const std::string & processingName)
+{
+	if( network.HasProcessing(processingName) )
+		throw BadProcessingName(processingName + ": name repeated");
+	network.AddProcessing(processingName, type);
 }
 
 bool hasProcessing(CLAM::Network & network, const std::string & processingName)
@@ -151,13 +170,57 @@ py::list processingConnectors(CLAM::Network & network, const std::string & proce
 	return connectors;
 }
 
-bool connect(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
+bool connectionExists(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
 {
-	
-	//TODO: Needs all the checks that the Dummy Proxy has
-	
 	const std::string producer = fromProcessing + "." + fromConnector;
 	const std::string consumer = toProcessing + "." + toConnector;
+
+	if (kind == "Port")
+	{
+		CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(producer);
+		CLAM::InPortBase & inport = network.GetInPortByCompleteName(consumer);
+		return outport.IsVisuallyConnectedTo(inport);
+	}
+	else
+	{
+		CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(producer);
+		CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(consumer);
+		return outcontrol.IsConnectedTo(incontrol);
+	}
+}
+
+bool connect(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
+{
+	const std::string producer = fromProcessing + "." + fromConnector;
+	const std::string consumer = toProcessing + "." + toConnector;
+	
+	if (!network.HasProcessing(fromProcessing))
+	{
+		std::string errorMsg = fromProcessing + " does not exist";
+		throwPythonException(PyExc_AssertionError, errorMsg);
+	}
+	if (!network.HasProcessing(toProcessing))
+	{
+		std::string errorMsg = toProcessing + " does not exist";
+		throwPythonException(PyExc_AssertionError, errorMsg);
+	}
+
+	if ( !processingHasConnector(network, fromProcessing, kind, "Out", fromConnector) )
+	{
+		std::string errorMsg = fromProcessing + " does not have connector " + fromConnector;
+		throwPythonException(PyExc_AssertionError, errorMsg);
+	}
+	if ( !processingHasConnector(network, toProcessing, kind, "In", toConnector) )
+	{
+		std::string errorMsg = toProcessing + " does not have connector " + toConnector;
+		throwPythonException(PyExc_AssertionError, errorMsg);
+	}
+
+	if ( connectionExists(network, kind, fromProcessing, fromConnector, toProcessing, toConnector) )
+	{
+		std::string errorMsg = producer + " and "+ consumer + " already connected";
+		throwPythonException(PyExc_AssertionError, errorMsg);
+	}
 
 	if (kind == "Port")
 		return network.ConnectPorts( producer, consumer );
@@ -193,25 +256,6 @@ std::string connectorType(CLAM::Network & network, const std::string & processin
 			CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(connector);
 			return outcontrol.GetTypeId().name();
 		}
-	}
-}
-
-bool connectionExists(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
-{
-	const std::string producer = fromProcessing + "." + fromConnector;
-	const std::string consumer = toProcessing + "." + toConnector;
-
-	if (kind == "Port")
-	{
-		CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(producer);
-		CLAM::InPortBase & inport = network.GetInPortByCompleteName(consumer);
-		return outport.IsVisuallyConnectedTo(inport);
-	}
-	else
-	{
-		CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(producer);
-		CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(consumer);
-		return outcontrol.IsConnectedTo(incontrol);
 	}
 }
 
@@ -353,8 +397,12 @@ py::list controlConnections(CLAM::Network & network)
 
 void processingRename(CLAM::Network & network, const std::string & oldName, const std::string & newName)
 {
-	network.RenameProcessing( oldName, newName );
-	//TODO: Throw exception on False
+	if ( !network.RenameProcessing( oldName, newName ) )
+	{
+		std::string errorMsg = "A processing named '" + newName + "' already exists";
+		PyErr_SetString(PyExc_KeyError, errorMsg.c_str() );
+		py::throw_error_already_set();
+	}
 }
 
 void deleteProcessing(CLAM::Network & network, const std::string & processingName)
@@ -377,7 +425,7 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 	typedef const std::string & cstringref;
 	
 	import("Clam_ConfigurationProxy");
-	
+
 	class_<Processing, boost::noncopyable>("Processing", no_init);
 
 	class_<Network>("Clam_NetworkProxy")
