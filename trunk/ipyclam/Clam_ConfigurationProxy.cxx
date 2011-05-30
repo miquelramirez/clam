@@ -42,6 +42,7 @@ ConfigurationProxy * createConfigurationProxy(const std::string & type)
 	const CLAM::ProcessingConfig & config = proc->GetConfig();
 
 	ConfigurationProxy * configurationProxy = new ConfigurationProxy(config);
+	configurationProxy->setDefaultConfig(config);
 
 	return configurationProxy;
 }
@@ -133,6 +134,27 @@ py::list keys(ConfigurationProxy & config)
 	return keys;
 }
 
+bool nonDefault(ConfigurationProxy & config, const std::string & attribute)
+{
+	int index = getAttributeIndex(config, attribute);
+	if (index == -1)
+	{
+		PyErr_SetString(PyExc_KeyError, attribute.c_str() );
+		py::throw_error_already_set();
+	}
+	if ( config.attributeType(index) == typeid(std::string) )
+		return config.nonDefault<std::string>(index);
+	if ( config.attributeType(index) == typeid(int) )
+		return config.nonDefault<int>(index);
+	if ( config.attributeType(index) == typeid(bool) )
+		return config.nonDefault<bool>(index);
+	if ( config.attributeType(index) == typeid(float) )
+		return config.nonDefault<float>(index);
+	if ( config.attributeType(index) == typeid(double) )
+		return config.nonDefault<double>(index);
+	return false;
+}
+
 BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 {
 	using namespace boost::python;
@@ -158,6 +180,10 @@ BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 		.def("keys",
 			keys,
 			"Returns a list with the keys of the proxy"
+			)
+		.def("nonDefault",
+			nonDefault,
+			"Returns true if the attribute has been changed"
 			)
 		;
 }
