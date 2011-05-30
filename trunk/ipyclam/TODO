@@ -136,20 +136,21 @@
 [X]	- TypeError on different type than the default value
 - Clam Configs
 	- Setting attributes:
-		- Missing char attributes (need to figure out how to do)
+[X]		- Missing char attributes (need to figure out how to do)
 			- DGG: see the list of types in Configurator, if char is supported it should be a kind of short int not 'c', 
 			  in any case i doubt that we need such type for this first stage, i would remove it until we get type plugins.
-		- Missing double attributes (python doesn't distinguish between float/double)
+			- XSR: removed for now
+[X]		- Missing double attributes (python doesn't distinguish between float/double)
 			- DGG: see the mail, the configuration slot drives which is the type not the python value
-		- Raising TypeError on wrong type
-		- Raising KeyError on wrong attribute name
-	- keys()
+[X]		- Raising TypeError on wrong type
+[X]		- Raising KeyError on wrong attribute name
+[X]	- keys()
 - Configuration in net.code()
 	- DummyProxy
-		- configproxy.nonDefault(attrib) returns true if value of attribute i differs from the default
+[X]		- configproxy.nonDefault(attrib) returns true if value of attribute i differs from the default
 	- Configuration
-		- optional code() parameter fullConfig (False by default to keep) that always expands configuration values
-		- in code(), use nonDefault() to print modified configuration prameters when not fullConfig
+[X]		- optional code() parameter fullConfig (False by default to keep) that always expands configuration values
+[X]		- in code(), use nonDefault() to print modified configuration prameters when not fullConfig
 	- Clam
 		- obtain a default constructed config (Species()?)
 - Type plugins for 
