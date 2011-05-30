@@ -484,7 +484,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				("Processing2", "InControl1")]
 				, proxy.connectorPeers("Processing1", Connector.Control, Connector.Out, "OutControl1"))
 
-	def test_connect_missingControl(self) :
+	def test_connect_missingProcessing(self) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("ControlSource", "Processing1")
 		try:
@@ -493,7 +493,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		except AssertionError, e:
 			self.assertEquals(("NonExistingProcessing does not exist", ), e.args)
 
-	def test_connect_missingPort(self) :
+	def test_connect_missingconnector(self) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("ControlSource", "Processing1")
 		proxy.addProcessing("ControlSink", "ProcessingWithNoIncontrol2")

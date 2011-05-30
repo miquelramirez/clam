@@ -343,5 +343,58 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.Processing1 = "DummyProcessingWithCompleteConfiguration"
 		self.assertEquals(42, net.Processing1.IntAttribute)
 
+	def test_addprocessing_taken_name(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.p1 = "AudioSource"
+		try:
+			net.p1 = "AudioSink"
+			self.fail("Exception expected")
+		except RuntimeError, e:
+			self.assertEquals("p1: name repeated", e.__str__())
+
+	def test_addprocessing_taken_name(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.p1 = "AudioSource"
+		net.p2 = "AudioSource"
+		try:
+			net.p1.name = "p2"
+			self.fail("Exception expected")
+		except KeyError, e:
+			self.assertEquals(("A processing named 'p2' already exists", ), e.args)
+
+	def test_connectWhenAlreadyConnected(self) :
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		proxy.addProcessing("DummyProcessingWithInAndOutPorts", "Processing1")
+		proxy.addProcessing("DummyProcessingWithInAndOutPorts", "Processing2")
+		proxy.connect("Port", "Processing1", "Outport1", "Processing2", "Inport1")
+		try:
+			proxy.connect("Port", "Processing1", "Outport1", "Processing2", "Inport1")
+			self.fail("Exception expected")
+		except AssertionError, e:
+			self.assertEquals(("Processing1.Outport1 and Processing2.Inport1 already connected", ), e.args)
+
+	def test_connect_missing_connector(self) :
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		proxy.addProcessing("DummyProcessingWithInAndOutPorts", "Processing1")
+		proxy.addProcessing("DummyProcessingWithInAndOutPorts", "Processing2")
+		try:
+			proxy.connect("Port", "Processing1", "Outport1", "Processing2", "Inport")
+			self.fail("Exception expected")
+		except AssertionError, e:
+			self.assertEquals(("Processing2 does not have connector Inport", ), e.args)
+
+	def test_connect_missing_processing(self) :
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		proxy.addProcessing("DummyProcessingWithInAndOutPorts", "Processing1")
+		try:
+			proxy.connect("Port", "Processing1", "Outport1", "NonExistingProcessing", "Inport1")
+			self.fail("Exception expected")
+		except AssertionError, e:
+			self.assertEquals(("NonExistingProcessing does not exist", ), e.args)
+
 if __name__ == '__main__':
 	unittest.main()

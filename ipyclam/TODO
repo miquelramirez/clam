@@ -124,8 +124,7 @@
 [X]	- net.code() adds the description if it is not empty
 [X]	- code() uses numeric ports (like AudioSink.1) as attributes, instead of subscripts (first char should be letter or _)
 	- If an inconnector and outconnector have the same name, the processing will always think it's the incconnector
-	- Adding an existing processing name asserts (c++), should raise
-
+[X]	- Adding an existing processing name asserts (c++), should raise
 
 == Config ==
 
