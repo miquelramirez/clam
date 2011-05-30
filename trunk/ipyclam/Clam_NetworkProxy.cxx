@@ -4,6 +4,8 @@
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/OutControl.hxx>
+#include <CLAM/ProcessingConfig.hxx>
+#include "ConfigurationProxy.hxx"
 
 namespace py = boost::python;
 
@@ -349,9 +351,10 @@ py::list controlConnections(CLAM::Network & network)
 	return controlConnections;
 }
 
-bool processingRename(CLAM::Network & network, const std::string & oldName, const std::string & newName)
+void processingRename(CLAM::Network & network, const std::string & oldName, const std::string & newName)
 {
-	return network.RenameProcessing( oldName, newName );
+	network.RenameProcessing( oldName, newName );
+	//TODO: Throw exception on False
 }
 
 void deleteProcessing(CLAM::Network & network, const std::string & processingName)
@@ -359,17 +362,11 @@ void deleteProcessing(CLAM::Network & network, const std::string & processingNam
 	network.RemoveProcessing(processingName);
 }
 
-/*
-	TODO: Untested non-working code
-*/
-py::dict processingConfig(CLAM::Network & network, const std::string & processingName)
+py::object processingConfig(CLAM::Network & network, const std::string & processingName)
 {
-	py::dict processingConfig;
-	return processingConfig;
+	const CLAM::ProcessingConfig & config = network.GetProcessing(processingName).GetConfig();
+	return py::object(py::ptr(new ConfigurationProxy(config)));
 }
-/*
-	End of non-working code
-*/
 
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 {
@@ -378,6 +375,8 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 	using namespace CLAM;
 
 	typedef const std::string & cstringref;
+	
+	import("Clam_ConfigurationProxy");
 	
 	class_<Processing, boost::noncopyable>("Processing", no_init);
 
@@ -462,7 +461,7 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			"Removes a processing from the network."
 			)
 		.def("processingConfig",
-			processingConfig, //TODO: Fake implementation for processingType
+			processingConfig,
 			"Returns the config dictionary of the processing"
 			)
 		;
