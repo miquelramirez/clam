@@ -152,6 +152,14 @@
 [X]		- in code(), use nonDefault() to print modified configuration prameters when not fullConfig
 	- Clam
 		- obtain a default constructed config (Species()?)
+- Configuration use cases
+	- With just a configuration (done?)
+	- With a processing
+		- test value change
+		- test processing changed (in a AudioSource, the number of outputs)
+	- with a processing but holding configuration (calling hold() ) 
+		- test that the configuration changes but not the processing
+		- test that apply() actually aplies
 - Type plugins for 
 	- Base class:
 		- take Configurator as reference
@@ -171,6 +179,9 @@
 	- Dummy
 	- Configuration
 	- Clam
+
+- Moure helpers de test a un modul unic
+
 
 
 
