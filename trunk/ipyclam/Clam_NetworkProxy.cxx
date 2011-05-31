@@ -410,10 +410,10 @@ void deleteProcessing(CLAM::Network & network, const std::string & processingNam
 	network.RemoveProcessing(processingName);
 }
 
-py::object processingConfig(CLAM::Network & network, const std::string & processingName)
+ConfigurationProxy * processingConfig(CLAM::Network & network, const std::string & processingName)
 {
 	const CLAM::ProcessingConfig & config = network.GetProcessing(processingName).GetConfig();
-	return py::object(py::ptr(new ConfigurationProxy(config)));
+	return new ConfigurationProxy(config);
 }
 
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
@@ -510,6 +510,7 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			)
 		.def("processingConfig",
 			processingConfig,
+			return_value_policy<manage_new_object>(),
 			"Returns the config dictionary of the processing"
 			)
 		;
