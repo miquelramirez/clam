@@ -47,6 +47,10 @@ public: \
 	{ \
 		return *new CLASS_NAME(*this, shareData, deep); \
 	}\
+	CLAM::Component * Species() const\
+	{ \
+		return new CLASS_NAME(); \
+	}\
 protected: \
 	void MandatoryInit()\
 	{\
