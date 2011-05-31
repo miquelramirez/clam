@@ -412,8 +412,8 @@ void deleteProcessing(CLAM::Network & network, const std::string & processingNam
 
 ConfigurationProxy * processingConfig(CLAM::Network & network, const std::string & processingName)
 {
-	const CLAM::ProcessingConfig & config = network.GetProcessing(processingName).GetConfig();
-	return new ConfigurationProxy(config);
+	CLAM::Processing & processing = network.GetProcessing(processingName);
+	return new ConfigurationProxy(processing);
 }
 
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
