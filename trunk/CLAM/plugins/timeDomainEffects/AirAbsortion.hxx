@@ -80,6 +80,8 @@ public:
 		}
 		void run(unsigned bufferSize, const TData * input, TData * output, float distance, float attenuation)
 		{
+			// TODO: _distance.SetBounds(0,500);
+			// TODO: _attenuation.SetBounds(1,10);
 			const float S=1.0f;
 			const float freqHz=10000.0f;
 			float dBgain = -0.05 * distance * attenuation;
