@@ -29,9 +29,6 @@
 #include "InformationTextAdapter.hxx"
 #include "ProcessingFactory.hxx"
 #include "XmlStorageErr.hxx"
-#ifdef USE_LADSPA //TODO alway include it. move conditional code in LFactory.hxx
-#include "ProcessingFactory.hxx"
-#endif
 #include "ControlSink.hxx"
 #include "ControlSource.hxx"
 #include "CLAMVersion.hxx"
@@ -56,7 +53,6 @@ namespace CLAM
 	
 	Network::~Network()
 	{
-		//std::cerr <<" *\t\t\t~NETWORK"<<std::endl;
 		Clear();
 		if (_flowControl) delete _flowControl;
 		if (_player) delete _player;
