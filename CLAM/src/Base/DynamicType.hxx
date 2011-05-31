@@ -1,5 +1,5 @@
 /* DynamicType.hxx: interface for the DynamicType class.
- * written by Pau Arumí - May 2001
+ * written by Pau ArumÃ­ - May 2001
  * new version (that stores every type) : 21-July-2001
  *
  * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
@@ -170,7 +170,7 @@ protected:
 
 public:
 	unsigned GetNDynamicAttributes() const { return numAttr; }
-	const char * GetDynamicAttributeName(unsigned i) { return typeDescTable[i].id; }
+	const char * GetDynamicAttributeName(unsigned i) const { return typeDescTable[i].id; }
 	virtual const std::type_info & GetTypeId(unsigned i) const=0;
 	bool AttributeIsComponent(unsigned i) const {return typeDescTable[i].isComponent; }
 	bool AttributeIsDynamictype(unsigned i) const {return typeDescTable[i].isDynamicType; }
@@ -189,6 +189,7 @@ public:
 	void FullfilsInvariant() const;
 
 	virtual Component* DeepCopy() const;
+	virtual Component* Species() const =0;
 public:
 	enum {idLength = 120, typeLength = 120}; //TODO: rise exception if the type is too long
 
