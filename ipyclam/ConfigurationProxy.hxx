@@ -1,29 +1,49 @@
 #include <CLAM/Component.hxx>
 #include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/Processing.hxx>
 
 class ConfigurationProxy
 {
 	
 	const CLAM::ProcessingConfig & config() const
 	{
+		if (_processing) return _processing->GetConfig();
 		return *_processingConfig;
 	}
+	static unsigned & nInstances() { static unsigned nInstances=0; return nInstances; }
 public:
+	CLAM::Processing * _processing;
 	CLAM::ProcessingConfig * _processingConfig;
 	CLAM::ProcessingConfig * _processingConfigDefault;
 
-	ConfigurationProxy() : _processingConfig(0), _processingConfigDefault(0)
+	ConfigurationProxy()
+		: _processing(0)
+		, _processingConfig(0)
+		, _processingConfigDefault(0)
 	{
 		CLAM_ASSERT(false, "Unexpected use of ConfigurationProxy default constructor");
 	}
 	ConfigurationProxy(const ConfigurationProxy &)
+		: _processing(0)
+		, _processingConfig(0)
+		, _processingConfigDefault(0)
 	{
 		CLAM_ASSERT(false, "Unexpected use of ConfigurationProxy copy constructor");
 	}
-	ConfigurationProxy(const CLAM::ProcessingConfig & prototype)
+	ConfigurationProxy(CLAM::Processing & processing)
+		: _processing(&processing)
+		, _processingConfig(0)
+		, _processingConfigDefault(0)
 	{
+		std::cout << "Constructing with Proc " << ++nInstances() << std::endl;;
+	}
+	ConfigurationProxy(const CLAM::ProcessingConfig & prototype)
+		: _processing(0)
+		, _processingConfig(0)
+		, _processingConfigDefault(0)
+	{
+		std::cout << "Constructing with config " << ++nInstances() << std::endl;;
 		_processingConfig = (CLAM::ProcessingConfig*) prototype.DeepCopy();
-		_processingConfigDefault = 0;
 	}
 	template <typename value_type>
 	const value_type & attributeValue(unsigned i) const
@@ -65,6 +85,7 @@ public:
 	}
 	~ConfigurationProxy()
 	{
+		std::cout << "Deleting with config " << --nInstances() << std::endl;;
 		delete _processingConfig;
 		delete _processingConfigDefault;
 	}
