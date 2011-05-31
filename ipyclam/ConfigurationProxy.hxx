@@ -3,6 +3,11 @@
 
 class ConfigurationProxy
 {
+	
+	const CLAM::ProcessingConfig & config() const
+	{
+		return *_processingConfig;
+	}
 public:
 	CLAM::ProcessingConfig * _processingConfig;
 	CLAM::ProcessingConfig * _processingConfigDefault;
@@ -26,7 +31,7 @@ public:
 		CLAM_ASSERT(attributeType(i) == typeid(value_type),
 			"Asking for the wrong type of value in configuration");
 		return *(value_type *)
-			_processingConfig->GetAttributeAsVoidPtr(i );
+			config().GetAttributeAsVoidPtr(i );
 	}
 	template <typename value_type>
 	void setAttributeValue(unsigned i, const value_type & value)
@@ -37,15 +42,15 @@ public:
 	}
 	const std::type_info & attributeType(unsigned i) const
 	{
-		return _processingConfig->GetTypeId(i);
+		return config().GetTypeId(i);
 	}
 	const char * attributeName(unsigned i) const
 	{
-		return _processingConfig->GetDynamicAttributeName(i);
+		return config().GetDynamicAttributeName(i);
 	}
 	unsigned nAttributes() const
 	{
-		return _processingConfig->GetNDynamicAttributes();
+		return config().GetNDynamicAttributes();
 	}
 	void setDefaultConfig(const CLAM::ProcessingConfig & prototype)
 	{
@@ -56,7 +61,7 @@ public:
 	{
 		CLAM_ASSERT(attributeType(i) == typeid(value_type),
 			"Asking for the wrong type of value in configuration");
-		return !(*(value_type *) _processingConfig->GetAttributeAsVoidPtr(i) == *(value_type *) _processingConfigDefault->GetAttributeAsVoidPtr(i));
+		return !(attributeValue<value_type>(i) == *(value_type *) _processingConfigDefault->GetAttributeAsVoidPtr(i));
 	}
 	~ConfigurationProxy()
 	{
