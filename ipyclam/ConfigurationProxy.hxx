@@ -12,19 +12,16 @@ class ConfigurationProxy
 public:
 	CLAM::Processing * _processing;
 	CLAM::ProcessingConfig * _processingConfig;
-	CLAM::ProcessingConfig * _processingConfigDefault;
 
 	ConfigurationProxy()
 		: _processing(0)
 		, _processingConfig(0)
-		, _processingConfigDefault(0)
 	{
 		CLAM_ASSERT(false, "Unexpected use of ConfigurationProxy default constructor");
 	}
 	ConfigurationProxy(const ConfigurationProxy &)
 		: _processing(0)
 		, _processingConfig(0)
-		, _processingConfigDefault(0)
 	{
 		CLAM_ASSERT(false, "Unexpected use of ConfigurationProxy copy constructor");
 	}
@@ -32,17 +29,12 @@ public:
 	ConfigurationProxy(CLAM::Processing & processing)
 		: _processing(&processing)
 		, _processingConfig(0)
-		, _processingConfigDefault(0)
-	{
-		_processingConfigDefault = (CLAM::ProcessingConfig*) _processing->GetConfig().Species();
-	}
+	{}
 	ConfigurationProxy(const CLAM::ProcessingConfig & prototype)
 		: _processing(0)
 		, _processingConfig(0)
-		, _processingConfigDefault(0)
 	{
 		_processingConfig = (CLAM::ProcessingConfig*) prototype.DeepCopy();
-		_processingConfigDefault = (CLAM::ProcessingConfig*) prototype.Species();
 	}
 	template <typename value_type>
 	const value_type & attributeValue(unsigned i) const
@@ -93,7 +85,10 @@ public:
 	{
 		CLAM_ASSERT(attributeType(i) == typeid(value_type),
 			"Asking for the wrong type of value in configuration");
-		return !(attributeValue<value_type>(i) == *(value_type *) _processingConfigDefault->GetAttributeAsVoidPtr(i));
+		CLAM::ProcessingConfig * defaultConfig = (CLAM::ProcessingConfig*) config().Species();
+		bool nonDefault = !(attributeValue<value_type>(i) == *(value_type *) defaultConfig->GetAttributeAsVoidPtr(i));
+		delete defaultConfig;
+		return nonDefault;
 	}
 	void hold()
 	{
@@ -108,6 +103,5 @@ public:
 	~ConfigurationProxy()
 	{
 		delete _processingConfig;
-		delete _processingConfigDefault;
 	}
 };
