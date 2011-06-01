@@ -156,7 +156,6 @@ namespace CLAM
 				}
 			}
 		}
-
 		InformationTexts::const_iterator ibIt;
 		for(ibIt=BeginInformationTexts();ibIt!=EndInformationTexts();ibIt++)
 		{
@@ -251,7 +250,7 @@ namespace CLAM
 				throw XmlStorageErr(std::string("Unable to connect controls '")+fullOut+"->"+fullIn+".");
 		}
 
-		while(1)
+		while(true and not _inPasteMode1)
 		{
 			InformationTextAdapter infoTextDefinition;
 			XMLComponentAdapter xmlAdapter(infoTextDefinition, "information", true);
