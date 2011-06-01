@@ -184,13 +184,17 @@ operand_t vmachine::execute(
             case op_cos:
 						{	
 								--stack_ptr;
-#if 0
-								std::cout << "val=" << *stack_ptr
-									<< " cos=" << cos(*stack_ptr) 
-									<< " code=" <<  *(pc-1) 
-									<< std::endl;
-#endif		
 								operand_t val = cos(*stack_ptr);
+								*stack_ptr = val;
+				
+								++stack_ptr;
+								break;
+						}
+
+            case op_sqrt:
+						{	
+								--stack_ptr;
+								operand_t val = sqrt(*stack_ptr);
 								*stack_ptr = val;
 				
 								++stack_ptr;
