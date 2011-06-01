@@ -40,10 +40,7 @@ ConfigurationProxy * createConfigurationProxy(const std::string & type)
 {
 	CLAM::Processing * proc = CLAM::ProcessingFactory::GetInstance().CreateSafe( type );
 	const CLAM::ProcessingConfig & config = proc->GetConfig();
-
 	ConfigurationProxy * configurationProxy = new ConfigurationProxy(config);
-	configurationProxy->setDefaultConfig(config);
-
 	return configurationProxy;
 }
 

@@ -106,12 +106,10 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual( ["UnString", "UnAltreString"], proxy.keys() )
 
 	def test_nonDefault(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
-		proxy["IntAttribute"] = 27
-		proxy["BoolAttribute"] = True
-		self.assertEqual(True, proxy.nonDefault("IntAttribute"))
-		self.assertEqual(True, proxy.nonDefault("BoolAttribute"))
-		self.assertEqual(False, proxy.nonDefault("FloatAttribute"))
+		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
+		self.assertEqual(False, proxy.nonDefault("NSources"))
+		proxy["NSources"] = 2
+		self.assertEqual(True, proxy.nonDefault("NSources"))
 
 	def test_hold_apply(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
