@@ -113,6 +113,13 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual(True, proxy.nonDefault("BoolAttribute"))
 		self.assertEqual(False, proxy.nonDefault("FloatAttribute"))
 
+	def test_hold_apply(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
+		proxy.hold()
+		proxy["NSources"] = 2
+		self.assertEqual(1, proxy["NSources"])
+		proxy.apply()
+		self.assertEqual(2, proxy["NSources"])
 
 if __name__ == '__main__':
 	unittest.main()
