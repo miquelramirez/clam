@@ -31,6 +31,12 @@ class Configuration(object):
 		code += "\n"
 		return code
 
+	def hold(self):
+		self._proxy.hold()
+
+	def apply(self):
+		self._proxy.apply()
+
 import operator
 import unittest
 import TestFixtures

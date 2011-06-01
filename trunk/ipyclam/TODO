@@ -157,9 +157,9 @@
 [X]	- With a processing
 [X]		- test value change
 [X]		- test processing changed (in a AudioSource, the number of outputs)
-	- with a processing but holding configuration (calling hold() ) 
-		- test that the configuration changes but not the processing
-		- test that apply() actually aplies
+[X]	- with a processing but holding configuration (calling hold() ) 
+[X]		- test that the configuration changes but not the processing
+[X]		- test that apply() actually aplies
 - Type plugins for 
 	- Base class:
 		- take Configurator as reference
