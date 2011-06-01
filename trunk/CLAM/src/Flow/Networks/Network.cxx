@@ -250,7 +250,7 @@ namespace CLAM
 				throw XmlStorageErr(std::string("Unable to connect controls '")+fullOut+"->"+fullIn+".");
 		}
 
-		while(true and not _inPasteMode1)
+		while(true and not _inPasteMode)
 		{
 			InformationTextAdapter infoTextDefinition;
 			XMLComponentAdapter xmlAdapter(infoTextDefinition, "information", true);
