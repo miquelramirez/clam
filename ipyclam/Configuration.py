@@ -37,6 +37,9 @@ class Configuration(object):
 	def apply(self):
 		self._proxy.apply()
 
+	def clone(self):
+		return Configuration( self._proxy.clone() )
+
 import operator
 import unittest
 import TestFixtures
@@ -151,6 +154,13 @@ class ConfigurationTests(unittest.TestCase):
 	def test_nestedconfigs(self):
 		c = Configuration(self.nestedConfig())
 		self.assertEquals('defaultnested1', c.ConfigParam3.NestedParam1)
+
+	def test_clone(self):
+		c = Configuration(self.stringParametersConfig())
+		cClone = c.clone()
+		cClone['ConfigParam1'] = 'newvalue'
+		self.assertEqual("newvalue", cClone["ConfigParam1"])
+		self.assertEqual("Param1", c["ConfigParam1"])
 
 if __name__ == '__main__':
 	unittest.main()
