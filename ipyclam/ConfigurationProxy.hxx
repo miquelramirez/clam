@@ -4,14 +4,13 @@
 
 class ConfigurationProxy
 {
-	CLAM::Processing * _processing;
-
 	const CLAM::ProcessingConfig & config() const
 	{
 		if (_processing) return _processing->GetConfig();
 		return *_processingConfig;
 	}
 public:
+	CLAM::Processing * _processing;
 	CLAM::ProcessingConfig * _processingConfig;
 	ConfigurationProxy()
 		: _processing(0)

@@ -418,5 +418,17 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		c.apply()
 		self.assertEquals(2, net.p.NSources)
 
+	def test_clone_and_apply(self) :
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.p = "AudioSource"
+		c = net.p._config.clone()
+		c.NSources = 2
+		self.assertEquals(1, net.p.NSources)
+		self.assertEquals(2, c.NSources)
+		net.p._config = c
+		self.assertEquals(2, net.p.NSources)
+
 if __name__ == '__main__':
 	unittest.main()

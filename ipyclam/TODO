@@ -33,10 +33,10 @@
 [X]		- Test type check
 [X]		- Test name check on getting
 [X]		- Test name check on setting (differs from regular dict!)
-		- Push the check on Configuration down on the Dummy_ConfigurationProxy
+[X]		- Push the check on Configuration down on the Dummy_ConfigurationProxy
 		- Config information in dummy proxy (tests)
-		- config = proc._config.clone()
-		- proc._config = config
+[X]		- config = proc._config.clone()
+[X]		- proc._config = config
 [X]		- proc.config.Param1 = "illegal value" -> raise
 			- ask proxy.isCompatibleConfigurationValue(proc, param, value)
 [X]		- proc.config.Param1 = "value"
@@ -151,7 +151,7 @@
 [X]		- optional code() parameter fullConfig (False by default to keep) that always expands configuration values
 [X]		- in code(), use nonDefault() to print modified configuration prameters when not fullConfig
 	- Clam
-		- obtain a default constructed config (Species()?)
+[X]		- obtain a default constructed config (Species()?)
 - Configuration use cases
 	- With just a configuration (done?)
 [X]	- With a processing

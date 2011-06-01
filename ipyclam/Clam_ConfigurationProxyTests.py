@@ -111,7 +111,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		proxy["NSources"] = 2
 		self.assertEqual(True, proxy.nonDefault("NSources"))
 
-	def test_hold_apply(self):
+	def _test_hold_apply(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
 		proxy.hold()
 		proxy["NSources"] = 2
