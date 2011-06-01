@@ -47,6 +47,13 @@ ConfigurationProxy * createConfigurationProxy(const std::string & type)
 	return configurationProxy;
 }
 
+ConfigurationProxy * createConfigurationProxyWithProc(const std::string & type)
+{
+	CLAM::Processing * proc = CLAM::ProcessingFactory::GetInstance().CreateSafe( type );
+	ConfigurationProxy * configurationProxy = new ConfigurationProxy(*proc);
+	return configurationProxy;
+}
+
 std::string Dump(ConfigurationProxy & config)
 {
 	std::ostringstream str;
@@ -148,12 +155,27 @@ bool nonDefault(ConfigurationProxy & config, const std::string & attribute)
 	return false;
 }
 
+void hold(ConfigurationProxy & config)
+{
+	config.hold();
+}
+
+void apply(ConfigurationProxy & config)
+{
+	config.apply();
+}
+
 BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 {
 	using namespace boost::python;
 
 	def("createConfigurationProxy",
 		createConfigurationProxy,
+		return_value_policy<manage_new_object>()
+		);
+
+	def("createConfigurationProxyWithProc",
+		createConfigurationProxyWithProc,
 		return_value_policy<manage_new_object>()
 		);
 
@@ -177,6 +199,14 @@ BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 		.def("nonDefault",
 			nonDefault,
 			"Returns true if the attribute has been changed"
+			)
+		.def("hold",
+			hold,
+			"Tells the proxy that the changes should not be applied yet"
+			)
+		.def("apply",
+			apply,
+			"Applies all the changes done since hold"
 			)
 		;
 }
