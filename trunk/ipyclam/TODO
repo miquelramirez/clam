@@ -28,18 +28,18 @@
 	- Self generation code (network is able to generate python code to generate itself again)
 [X]		- Self writting code for processings
 [X]		- Self writting code for connections
-		- Self writting code for configurations
+[X]		- Self writting code for configurations
 	- Dummy Configurations
 [X]		- Test type check
 [X]		- Test name check on getting
 [X]		- Test name check on setting (differs from regular dict!)
 		- Push the check on Configuration down on the Dummy_ConfigurationProxy
 		- Config information in dummy proxy (tests)
-		- config = proc.config.clone()
-		- proc.config = config
-		- proc.config.Param1 = "illegal value" -> raise
+		- config = proc._config.clone()
+		- proc._config = config
+[X]		- proc.config.Param1 = "illegal value" -> raise
 			- ask proxy.isCompatibleConfigurationValue(proc, param, value)
-		- proc.config.Param1 = "value"
+[X]		- proc.config.Param1 = "value"
 			- config = proxy.setConfiguration(proc)
 			- config.setValue(param, value)
 			- proxy.Configure(proc, config)
