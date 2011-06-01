@@ -77,6 +77,7 @@ expression<Iterator>::expression(
         |   function_call
         |   sine_function										[op(op_sin)]
         |   cosine_function									[op(op_cos)]
+        |   sqrt_function									[op(op_sqrt)]
         |   pow_function										[op(op_pow)]
         |   log_function										[op(op_log)]
         |   floor_function									[op(op_floor)]
@@ -110,6 +111,9 @@ expression<Iterator>::expression(
 		cosine_function =	lit("cos") >> '(' > expr > lit(')')   												
         ;
 
+		sqrt_function =	lit("sqrt") >> '(' > expr > lit(')')   												
+        ;
+
 		pow_function =	lit("pow") >> '(' > expr > ',' > expr > lit(')')   												
         ;
 				
@@ -131,6 +135,7 @@ expression<Iterator>::expression(
     function_call.name("function-call");
 		sine_function.name("sine_function");
 		cosine_function.name("cosine_function");
+		sqrt_function.name("sqrt_function");
 		pow_function.name("pow_function");
 		log_function.name("log_function");
 		floor_function.name("floor_function");
