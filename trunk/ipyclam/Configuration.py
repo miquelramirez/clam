@@ -5,6 +5,9 @@ class Configuration(object):
 	def __getitem__(self, name):
 		return self._proxy[name]
 	def __setitem__(self, name, value):
+		if name == "_config":
+			self._proxy.copyConfig( value._proxy )
+			return
 		self._proxy[name] = value
 	def __getattr__(self, name):
 		try:

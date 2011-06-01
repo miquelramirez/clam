@@ -167,6 +167,11 @@ ConfigurationProxy * cloneConfig(ConfigurationProxy & config)
 	return config.cloneConfig();
 }
 
+void copyConfig(ConfigurationProxy & config, ConfigurationProxy & configuration)
+{
+	config._processing->Configure(*configuration._processingConfig);
+}
+
 BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 {
 	using namespace boost::python;
@@ -214,6 +219,10 @@ BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 			cloneConfig,
 			return_value_policy<manage_new_object>(),
 			"Returns a new proxy thats a clone of this one"
+			)
+		.def("copyConfig",
+			copyConfig,
+			"Copies the values from the config passed to itself"
 			)
 		;
 }
