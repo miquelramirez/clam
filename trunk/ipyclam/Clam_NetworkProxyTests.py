@@ -401,7 +401,9 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
 		net = Network.Network(proxy)
 		net.p = "AudioSource"
+		self.assertEquals(['1'], net.p._outports.__dir__() )
 		net.p.NSources = 2
+		self.assertEquals(['1', '2'], net.p._outports.__dir__() )
 		self.assertEquals(2, net.p.NSources)
 
 if __name__ == '__main__':
