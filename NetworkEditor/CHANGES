@@ -12,6 +12,7 @@
  * prefix_for_packaging scons option for better distribution packaging
  * FIX: Prototyper is a QtCoreApplication to avoid requiring X11
  * FIX: Prototyper stops the backend before exiting
+ * FIX: Cut and paste duplicates all the information text items
 
 
 2010-03-05 NetworkEditor 1.4.0
