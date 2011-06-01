@@ -10,7 +10,7 @@ class ConfigurationProxy
 		if (_processing) return _processing->GetConfig();
 		return *_processingConfig;
 	}
-	static unsigned & nInstances() { static unsigned nInstances=0; return nInstances; }
+//	static unsigned & nInstances() { static unsigned nInstances=0; return nInstances; }
 public:
 	CLAM::Processing * _processing;
 	CLAM::ProcessingConfig * _processingConfig;
@@ -35,14 +35,14 @@ public:
 		, _processingConfig(0)
 		, _processingConfigDefault(0)
 	{
-		std::cout << "Constructing with Proc " << ++nInstances() << std::endl;;
+//		std::cout << "Constructing with Proc " << ++nInstances() << std::endl;;
 	}
 	ConfigurationProxy(const CLAM::ProcessingConfig & prototype)
 		: _processing(0)
 		, _processingConfig(0)
 		, _processingConfigDefault(0)
 	{
-		std::cout << "Constructing with config " << ++nInstances() << std::endl;;
+//		std::cout << "Constructing with config " << ++nInstances() << std::endl;;
 		_processingConfig = (CLAM::ProcessingConfig*) prototype.DeepCopy();
 	}
 	template <typename value_type>
@@ -56,6 +56,16 @@ public:
 	template <typename value_type>
 	void setAttributeValue(unsigned i, const value_type & value)
 	{
+		if (_processing)
+		{
+			CLAM::ProcessingConfig * config = (CLAM::ProcessingConfig*) _processing->GetConfig().DeepCopy();
+			value_type & attribute = 
+				*(value_type *)config->GetAttributeAsVoidPtr( i );
+			attribute = value;
+			_processing->Configure(*config);
+			delete config;
+			return;
+		}
 		value_type & attribute = 
 			*(value_type *)_processingConfig->GetAttributeAsVoidPtr( i );
 		attribute = value;
@@ -85,7 +95,7 @@ public:
 	}
 	~ConfigurationProxy()
 	{
-		std::cout << "Deleting with config " << --nInstances() << std::endl;;
+//		std::cout << "Deleting with config " << --nInstances() << std::endl;;
 		delete _processingConfig;
 		delete _processingConfigDefault;
 	}

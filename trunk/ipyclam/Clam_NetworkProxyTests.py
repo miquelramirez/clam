@@ -396,5 +396,13 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		except AssertionError, e:
 			self.assertEquals(("NonExistingProcessing does not exist", ), e.args)
 
+	def test_set_config_attribute(self) :
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.p = "AudioSource"
+		net.p.NSources = 2
+		self.assertEquals(2, net.p.NSources)
+
 if __name__ == '__main__':
 	unittest.main()
