@@ -154,9 +154,9 @@
 		- obtain a default constructed config (Species()?)
 - Configuration use cases
 	- With just a configuration (done?)
-	- With a processing
-		- test value change
-		- test processing changed (in a AudioSource, the number of outputs)
+[X]	- With a processing
+[X]		- test value change
+[X]		- test processing changed (in a AudioSource, the number of outputs)
 	- with a processing but holding configuration (calling hold() ) 
 		- test that the configuration changes but not the processing
 		- test that apply() actually aplies
