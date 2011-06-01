@@ -20,6 +20,9 @@ class Dummy_ConfigurationProxy(object):
 	def nonDefault(self, attribute):
 		return not self._default[attribute] == self._dict[attribute]
 
+	def clone(self):
+		return Dummy_ConfigurationProxy( self._dict.copy() )
+
 import operator
 import unittest
 import TestFixtures
@@ -73,6 +76,12 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithNestedConfigs())
 		self.assertEquals('defaultnested1', c["ConfigParam3"]["NestedParam1"])
 
+	def test_clone(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		cClone = c.clone()
+		cClone["ConfigParam1"] = 'newvalue'
+		self.assertEqual(True, cClone.nonDefault("ConfigParam1"))
+		self.assertEqual(False, c.nonDefault("ConfigParam1"))
 
 if __name__ == '__main__':
 	unittest.main()

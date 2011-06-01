@@ -162,6 +162,11 @@ void apply(ConfigurationProxy & config)
 	config.apply();
 }
 
+ConfigurationProxy * cloneConfig(ConfigurationProxy & config)
+{
+	return config.cloneConfig();
+}
+
 BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 {
 	using namespace boost::python;
@@ -204,6 +209,11 @@ BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
 		.def("apply",
 			apply,
 			"Applies all the changes done since hold"
+			)
+		.def("clone",
+			cloneConfig,
+			return_value_policy<manage_new_object>(),
+			"Returns a new proxy thats a clone of this one"
 			)
 		;
 }

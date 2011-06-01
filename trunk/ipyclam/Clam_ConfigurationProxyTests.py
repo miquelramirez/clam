@@ -119,5 +119,12 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		proxy.apply()
 		self.assertEqual(2, proxy["NSources"])
 
+	def test_clone(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
+		configClone = proxy.clone()
+		configClone["NSources"] = 2
+		self.assertEqual(1, proxy["NSources"])
+		self.assertEqual(2, configClone["NSources"])
+
 if __name__ == '__main__':
 	unittest.main()
