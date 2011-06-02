@@ -73,17 +73,8 @@ bool nonDefault(ConfigurationProxy & config, const std::string & attribute)
 	if (index == -1)
 		throwPythonError(PyExc_KeyError, attribute.c_str());
 
-	if ( config.attributeType(index) == typeid(std::string) )
-		return config.nonDefault<std::string>(index);
-	if ( config.attributeType(index) == typeid(int) )
-		return config.nonDefault<int>(index);
-	if ( config.attributeType(index) == typeid(bool) )
-		return config.nonDefault<bool>(index);
-	if ( config.attributeType(index) == typeid(float) )
-		return config.nonDefault<float>(index);
-	if ( config.attributeType(index) == typeid(double) )
-		return config.nonDefault<double>(index);
-	return false;
+	ConfigurationProxyPlugin & plugin = ConfigurationProxyPlugin::GetPlugin(config, index);
+	return plugin.nonDefault(config, index);
 }
 
 void hold(ConfigurationProxy & config)

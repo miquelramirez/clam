@@ -151,17 +151,10 @@ public:
 		}
 		return nullPlugin;
 	}
-	virtual bool accepts(const ConfigurationProxy & object, unsigned index)
-	{
-		return true;
-	}
-	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
-	{
-		boost::python::object value(0);
-		return value;
-	}
-	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
-	{}
+	virtual bool accepts(const ConfigurationProxy & object, unsigned index)	{ return true; }
+	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index) { return boost::python::object(0); }
+	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value) {}
+	virtual bool nonDefault(ConfigurationProxy & object, unsigned index) { return false; }
 };
 
 class StringConfigurationProxyPlugin : public ConfigurationProxyPlugin
@@ -182,6 +175,10 @@ public:
 			throwPythonError(PyExc_TypeError, "str value expected, got " + pythonType(value.ptr()));
 
 		object.setAttributeValue<std::string>(index, boost::python::extract<std::string>(value) );
+	}
+	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	{
+		return object.nonDefault<std::string>(index);;
 	}
 };
 static StringConfigurationProxyPlugin stringRegistrator;
@@ -205,6 +202,10 @@ public:
 
 		object.setAttributeValue<int>(index, boost::python::extract<int>(value) );
 	}
+	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	{
+		return object.nonDefault<int>(index);;
+	}
 };
 static IntegerConfigurationProxyPlugin intRegistrator;
 
@@ -226,6 +227,10 @@ public:
 			throwPythonError(PyExc_TypeError, "bool value expected, got " + pythonType(value.ptr()) );
 
 		object.setAttributeValue<bool>(index, boost::python::extract<bool>(value) );
+	}
+	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	{
+		return object.nonDefault<bool>(index);;
 	}
 };
 static BooleanConfigurationProxyPlugin boolRegistrator;
@@ -249,6 +254,10 @@ public:
 
 		object.setAttributeValue<float>(index, boost::python::extract<float>(value) );
 	}
+	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	{
+		return object.nonDefault<float>(index);;
+	}
 };
 static FloatConfigurationProxyPlugin floatRegistrator;
 
@@ -270,6 +279,10 @@ public:
 			throwPythonError(PyExc_TypeError, "double value expected, got " + pythonType(value.ptr()) );
 
 		object.setAttributeValue<double>(index, boost::python::extract<double>(value) );
+	}
+	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	{
+		return object.nonDefault<double>(index);;
 	}
 };
 static DoubleConfigurationProxyPlugin doubleRegistrator;
