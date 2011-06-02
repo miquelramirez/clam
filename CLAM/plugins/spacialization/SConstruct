@@ -58,8 +58,8 @@ env.ParseConfig('pkg-config --cflags --libs spectral')
 
 if env['raytracing']=='traditional' or env['raytracing']=='convergent':
 	print 'linking with raytracing'
-	env.Append(CPPPATH=[os.path.join('..','..','..','..','imm_bm','src','raytracing')])
-	env.Append(LIBPATH=[os.path.join('..','..','..','..','imm_bm','src','raytracing')])
+	env.Append(CPPPATH=[os.path.join('..','..','..','..','imm_bm','other_src','raytracing')])
+	env.Append(LIBPATH=[os.path.join('..','..','..','..','imm_bm','other_src','raytracing')])
 	env.Append(LIBS=['raytracing',"GL","GLU","lo",'glut'])
 	env.ParseConfig('pkg-config --cflags --libs sdl')
 else :
