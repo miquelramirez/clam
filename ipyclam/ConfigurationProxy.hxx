@@ -1,6 +1,8 @@
 #ifndef ConfigurationProxy_hxx
 #define ConfigurationProxy_hxx
 
+#include <boost/python.hpp>
+
 #include <CLAM/Component.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/Processing.hxx>
@@ -111,5 +113,114 @@ public:
 		delete _processingConfig;
 	}
 };
+
+class ConfigurationProxyPlugin
+{
+public:
+	typedef std::list<ConfigurationProxyPlugin *> Map;
+	ConfigurationProxyPlugin()
+	{
+		GetList().push_back(this);
+	}
+	virtual ~ConfigurationProxyPlugin() {}
+	static Map & GetList()
+	{
+		static Map map;
+		return map;
+	}
+	static ConfigurationProxyPlugin & GetPlugin(const ConfigurationProxy & object, unsigned index)
+	{
+		static ConfigurationProxyPlugin nullPlugin;
+		for (Map::iterator it = GetList().begin(); it!=GetList().end(); it++)
+		{
+			if ((*it)->accepts(object,index)) return **it;
+		}
+		return nullPlugin;
+	}
+	virtual bool accepts(const ConfigurationProxy & object, unsigned index)
+	{
+		return true;
+	}
+	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	{
+		boost::python::object value(0);
+		return value;
+	}
+};
+
+class StringConfigurationProxyPlugin : public ConfigurationProxyPlugin
+{
+public:
+	virtual bool accepts(const ConfigurationProxy & object, unsigned index)
+	{
+		return object.attributeType(index) == typeid(std::string);
+	}
+	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	{
+		std::string value = object.attributeValue<std::string>(index);
+		return boost::python::object(value);
+	}
+};
+static StringConfigurationProxyPlugin stringRegistrator;
+
+class IntegerConfigurationProxyPlugin : public ConfigurationProxyPlugin
+{
+public:
+	virtual bool accepts(const ConfigurationProxy & object, unsigned index)
+	{
+		return object.attributeType(index) == typeid(int);
+	}
+	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	{
+		int value = object.attributeValue<int>(index);
+		return boost::python::object(value);
+	}
+};
+static IntegerConfigurationProxyPlugin intRegistrator;
+
+class BooleanConfigurationProxyPlugin : public ConfigurationProxyPlugin
+{
+public:
+	virtual bool accepts(const ConfigurationProxy & object, unsigned index)
+	{
+		return object.attributeType(index) == typeid(bool);
+	}
+	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	{
+		bool value = object.attributeValue<bool>(index);
+		return boost::python::object(value);
+	}
+};
+static BooleanConfigurationProxyPlugin boolRegistrator;
+
+class FloatConfigurationProxyPlugin : public ConfigurationProxyPlugin
+{
+public:
+	virtual bool accepts(const ConfigurationProxy & object, unsigned attribute)
+	{
+		return object.attributeType(attribute) == typeid(float);
+	}
+	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	{
+		float value = object.attributeValue<float>(index);
+		return boost::python::object(value);
+	}
+};
+static FloatConfigurationProxyPlugin floatRegistrator;
+
+class DoubleConfigurationProxyPlugin : public ConfigurationProxyPlugin
+{
+public:
+	virtual bool accepts(const ConfigurationProxy & object, unsigned attribute)
+	{
+		return object.attributeType(attribute) == typeid(double);
+	}
+	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	{
+		double value = object.attributeValue<double>(index);
+		return boost::python::object(value);
+	}
+};
+static DoubleConfigurationProxyPlugin doubleRegistrator;
 
 #endif

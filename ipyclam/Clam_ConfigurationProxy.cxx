@@ -58,23 +58,14 @@ std::string Dump(ConfigurationProxy & config)
 	return str.str();
 }
 
-static PyObject * getAttribute(ConfigurationProxy & config, const std::string & attribute)
+py::object getAttribute(ConfigurationProxy & config, const std::string & attribute)
 {
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
 		throwPythonError(PyExc_KeyError, attribute.c_str());
 
-	if ( config.attributeType(index) == typeid(std::string) )
-		return Py_BuildValue("s", config.attributeValue<std::string>(index).c_str() );
-	if ( config.attributeType(index) == typeid(int) )
-		return Py_BuildValue("i", config.attributeValue<int>(index));
-	if ( config.attributeType(index) == typeid(bool) )
-		return Py_BuildValue("b", config.attributeValue<bool>(index));
-	if ( config.attributeType(index) == typeid(float) )
-		return Py_BuildValue("f", config.attributeValue<float>(index));
-	if ( config.attributeType(index) == typeid(double) )
-		return Py_BuildValue("d", config.attributeValue<double>(index));
-	return Py_None;
+	ConfigurationProxyPlugin & plugin = ConfigurationProxyPlugin::GetPlugin(config, index);
+	return plugin.getAttribute(config, index);
 }
 
 void setAttribute(ConfigurationProxy & config, const std::string & attribute, PyObject * value)
