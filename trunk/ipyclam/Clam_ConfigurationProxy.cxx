@@ -7,25 +7,6 @@
 
 namespace py = boost::python;
 
-std::string pythonType(PyObject * value)
-{
-	if ( PyString_Check(value) )
-		return "str";
-	if ( PyBool_Check(value) )
-		return "bool";
-	if ( PyInt_Check(value) )
-		return "int";
-	if ( PyFloat_Check(value) )
-		return "float";
-	return "";
-}
-
-void throwPythonError(PyObject * type, std::string errorString)
-{
-	PyErr_SetString(type, errorString.c_str() );
-	py::throw_error_already_set();
-}
-
 int getAttributeIndex(const ConfigurationProxy & config, const std::string & attribute)
 {
 	for(unsigned int i = 0; i < config.nAttributes(); ++i)
@@ -68,52 +49,14 @@ py::object getAttribute(ConfigurationProxy & config, const std::string & attribu
 	return plugin.getAttribute(config, index);
 }
 
-void setAttribute(ConfigurationProxy & config, const std::string & attribute, PyObject * value)
+void setAttribute(ConfigurationProxy & config, const std::string & attribute, py::object value)
 {
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
 		throwPythonError(PyExc_KeyError, attribute.c_str());
 
-	if ( config.attributeType(index) == typeid(std::string) )
-	{
-		if (not PyString_Check(value) )
-			throwPythonError(PyExc_TypeError, "str value expected, got " + pythonType(value));
-		std::string stringvalue = PyString_AsString(value);
-		config.setAttributeValue<std::string>(index, stringvalue);
-		return;
-	}
-	if ( config.attributeType(index) == typeid(int) )
-	{
-		if (not PyInt_Check(value) )
-			throwPythonError(PyExc_TypeError, "int value expected, got " + pythonType(value));
-		int intvalue = PyInt_AsLong(value);
-		config.setAttributeValue<int>(index, intvalue);
-		return;
-	}
-	if ( config.attributeType(index) == typeid(bool) )
-	{
-		if (not PyBool_Check(value) )
-			throwPythonError(PyExc_TypeError, "bool value expected, got " + pythonType(value));
-		bool boolvalue = value==Py_True;
-		config.setAttributeValue<bool>(index, boolvalue);
-		return;
-	}
-	if ( config.attributeType(index) == typeid(float) )
-	{
-		if (not PyFloat_Check(value) )
-			throwPythonError(PyExc_TypeError, "float value expected, got " + pythonType(value));
-		float floatvalue = PyFloat_AsDouble(value);
-		config.setAttributeValue<float>(index, floatvalue);
-		return;
-	}
-	if ( config.attributeType(index) == typeid(double) )
-	{
-		if (not PyFloat_Check(value) )
-			throwPythonError(PyExc_TypeError, "double value expected, got " + pythonType(value));
-		double doublevalue = PyFloat_AsDouble(value);
-		config.setAttributeValue<double>(index, doublevalue);
-		return;
-	}
+	ConfigurationProxyPlugin & plugin = ConfigurationProxyPlugin::GetPlugin(config, index);
+	plugin.setAttribute(config, index, value);
 }
 
 py::list keys(ConfigurationProxy & config)

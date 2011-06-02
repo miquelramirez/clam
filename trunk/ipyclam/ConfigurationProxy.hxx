@@ -2,10 +2,24 @@
 #define ConfigurationProxy_hxx
 
 #include <boost/python.hpp>
-
 #include <CLAM/Component.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/Processing.hxx>
+
+std::string pythonType(PyObject * value)
+{
+	if ( PyString_Check(value) ) return "str";
+	if ( PyBool_Check(value) ) return "bool";
+	if ( PyInt_Check(value) ) return "int";
+	if ( PyFloat_Check(value) ) return "float";
+	return "";
+}
+
+void throwPythonError(PyObject * type, std::string errorString)
+{
+	PyErr_SetString(type, errorString.c_str() );
+	boost::python::throw_error_already_set();
+}
 
 class ConfigurationProxy
 {
@@ -146,6 +160,8 @@ public:
 		boost::python::object value(0);
 		return value;
 	}
+	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	{}
 };
 
 class StringConfigurationProxyPlugin : public ConfigurationProxyPlugin
@@ -159,6 +175,13 @@ public:
 	{
 		std::string value = object.attributeValue<std::string>(index);
 		return boost::python::object(value);
+	}
+	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	{
+		if (not PyString_Check(value.ptr()) )
+			throwPythonError(PyExc_TypeError, "str value expected, got " + pythonType(value.ptr()));
+
+		object.setAttributeValue<std::string>(index, boost::python::extract<std::string>(value) );
 	}
 };
 static StringConfigurationProxyPlugin stringRegistrator;
@@ -175,6 +198,13 @@ public:
 		int value = object.attributeValue<int>(index);
 		return boost::python::object(value);
 	}
+	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	{
+		if (not PyInt_Check(value.ptr()) )
+			throwPythonError(PyExc_TypeError, "int value expected, got " + pythonType(value.ptr()));
+
+		object.setAttributeValue<int>(index, boost::python::extract<int>(value) );
+	}
 };
 static IntegerConfigurationProxyPlugin intRegistrator;
 
@@ -189,6 +219,13 @@ public:
 	{
 		bool value = object.attributeValue<bool>(index);
 		return boost::python::object(value);
+	}
+	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	{
+		if (not PyBool_Check(value.ptr()) )
+			throwPythonError(PyExc_TypeError, "bool value expected, got " + pythonType(value.ptr()) );
+
+		object.setAttributeValue<bool>(index, boost::python::extract<bool>(value) );
 	}
 };
 static BooleanConfigurationProxyPlugin boolRegistrator;
@@ -205,6 +242,13 @@ public:
 		float value = object.attributeValue<float>(index);
 		return boost::python::object(value);
 	}
+	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	{
+		if (not PyFloat_Check(value.ptr()) )
+			throwPythonError(PyExc_TypeError, "float value expected, got " + pythonType(value.ptr()) );
+
+		object.setAttributeValue<float>(index, boost::python::extract<float>(value) );
+	}
 };
 static FloatConfigurationProxyPlugin floatRegistrator;
 
@@ -219,6 +263,13 @@ public:
 	{
 		double value = object.attributeValue<double>(index);
 		return boost::python::object(value);
+	}
+	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	{
+		if (not PyFloat_Check(value.ptr()) )
+			throwPythonError(PyExc_TypeError, "double value expected, got " + pythonType(value.ptr()) );
+
+		object.setAttributeValue<double>(index, boost::python::extract<double>(value) );
 	}
 };
 static DoubleConfigurationProxyPlugin doubleRegistrator;
