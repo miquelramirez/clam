@@ -1,3 +1,6 @@
+#ifndef ConfigurationProxy_hxx
+#define ConfigurationProxy_hxx
+
 #include <CLAM/Component.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/Processing.hxx>
@@ -108,3 +111,5 @@ public:
 		delete _processingConfig;
 	}
 };
+
+#endif
