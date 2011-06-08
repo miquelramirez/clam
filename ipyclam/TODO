@@ -125,6 +125,14 @@
 [X]	- code() uses numeric ports (like AudioSink.1) as attributes, instead of subscripts (first char should be letter or _)
 	- If an inconnector and outconnector have the same name, the processing will always think it's the incconnector
 [X]	- Adding an existing processing name asserts (c++), should raise
+	- When code uses subscripts it still adds the attribute point
+	- net.p > net.s, casca a CLAM
+	- net.p._outports > net.s._inports: retorn random, mai no fa res
+	- net.p._outports[::2] > net.s._inports[::2] nomes conecta el primer (tenint 4 ports)
+	- description uses repr
+		- escapar cometes
+		- carry return
+	- c = net.p._config; net.p._config = c  # detect and RunTimeError instead of segfault
 
 == Config ==
 
@@ -176,11 +184,17 @@
 [X]	- Configuration
 	- Clam
 - Optionality
-	- Dummy
-	- Configuration
-	- Clam
+	- What
+		- Attributes being None by default, get returns none
+		- Set to None -> get retorna None
+		- Being none set to something -> adds the attribute in clam
+	- Where
+		- Dummy
+		- Configuration
+		- Clam
 
 - Moure helpers de test a un modul unic
+
 
 
 
