@@ -65,21 +65,11 @@ public:
 	template <typename value_type>
 	void setAttributeValue(unsigned i, const value_type & value)
 	{
-		if (_processing && _processingConfig)
+		if (_processing and not _processingConfig)
 		{
-			value_type & attribute = 
-				*(value_type *)_processingConfig->GetAttributeAsVoidPtr( i );
-			attribute = value;
-			return;
-		}
-		if (_processing)
-		{
-			CLAM::ProcessingConfig * config = (CLAM::ProcessingConfig*) _processing->GetConfig().DeepCopy();
-			value_type & attribute = 
-				*(value_type *)config->GetAttributeAsVoidPtr( i );
-			attribute = value;
-			_processing->Configure(*config);
-			delete config;
+			hold();
+			setAttributeValue(i,value);
+			apply();
 			return;
 		}
 		value_type & attribute = 
@@ -142,43 +132,43 @@ public:
 		static Map map;
 		return map;
 	}
-	static ConfigurationProxyPlugin & GetPlugin(const ConfigurationProxy & object, unsigned index)
+	static ConfigurationProxyPlugin & GetPlugin(const ConfigurationProxy & config, unsigned index)
 	{
 		static ConfigurationProxyPlugin nullPlugin;
 		for (Map::iterator it = GetList().begin(); it!=GetList().end(); it++)
 		{
-			if ((*it)->accepts(object,index)) return **it;
+			if ((*it)->accepts(config,index)) return **it;
 		}
 		return nullPlugin;
 	}
-	virtual bool accepts(const ConfigurationProxy & object, unsigned index)	{ return true; }
-	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index) { return boost::python::object(0); }
-	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value) {}
-	virtual bool nonDefault(ConfigurationProxy & object, unsigned index) { return false; }
+	virtual bool accepts(const ConfigurationProxy & config, unsigned index)	{ return true; }
+	virtual boost::python::object getAttribute(const ConfigurationProxy & config, unsigned index) { return boost::python::object(0); }
+	virtual void setAttribute(ConfigurationProxy & config, unsigned index, boost::python::object value) {}
+	virtual bool nonDefault(ConfigurationProxy & config, unsigned index) { return false; }
 };
 
 class StringConfigurationProxyPlugin : public ConfigurationProxyPlugin
 {
 public:
-	virtual bool accepts(const ConfigurationProxy & object, unsigned index)
+	virtual bool accepts(const ConfigurationProxy & config, unsigned index)
 	{
-		return object.attributeType(index) == typeid(std::string);
+		return config.attributeType(index) == typeid(std::string);
 	}
-	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	virtual boost::python::object getAttribute(const ConfigurationProxy & config, unsigned index)
 	{
-		std::string value = object.attributeValue<std::string>(index);
+		std::string value = config.attributeValue<std::string>(index);
 		return boost::python::object(value);
 	}
-	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	virtual void setAttribute(ConfigurationProxy & config, unsigned index, boost::python::object value)
 	{
 		if (not PyString_Check(value.ptr()) )
 			throwPythonError(PyExc_TypeError, "str value expected, got " + pythonType(value.ptr()));
 
-		object.setAttributeValue<std::string>(index, boost::python::extract<std::string>(value) );
+		config.setAttributeValue<std::string>(index, boost::python::extract<std::string>(value) );
 	}
-	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	virtual bool nonDefault(ConfigurationProxy & config, unsigned index)
 	{
-		return object.nonDefault<std::string>(index);;
+		return config.nonDefault<std::string>(index);;
 	}
 };
 static StringConfigurationProxyPlugin stringRegistrator;
@@ -186,25 +176,25 @@ static StringConfigurationProxyPlugin stringRegistrator;
 class IntegerConfigurationProxyPlugin : public ConfigurationProxyPlugin
 {
 public:
-	virtual bool accepts(const ConfigurationProxy & object, unsigned index)
+	virtual bool accepts(const ConfigurationProxy & config, unsigned index)
 	{
-		return object.attributeType(index) == typeid(int);
+		return config.attributeType(index) == typeid(int);
 	}
-	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	virtual boost::python::object getAttribute(const ConfigurationProxy & config, unsigned index)
 	{
-		int value = object.attributeValue<int>(index);
+		int value = config.attributeValue<int>(index);
 		return boost::python::object(value);
 	}
-	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	virtual void setAttribute(ConfigurationProxy & config, unsigned index, boost::python::object value)
 	{
 		if (not PyInt_Check(value.ptr()) )
 			throwPythonError(PyExc_TypeError, "int value expected, got " + pythonType(value.ptr()));
 
-		object.setAttributeValue<int>(index, boost::python::extract<int>(value) );
+		config.setAttributeValue<int>(index, boost::python::extract<int>(value) );
 	}
-	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	virtual bool nonDefault(ConfigurationProxy & config, unsigned index)
 	{
-		return object.nonDefault<int>(index);;
+		return config.nonDefault<int>(index);;
 	}
 };
 static IntegerConfigurationProxyPlugin intRegistrator;
@@ -212,25 +202,25 @@ static IntegerConfigurationProxyPlugin intRegistrator;
 class BooleanConfigurationProxyPlugin : public ConfigurationProxyPlugin
 {
 public:
-	virtual bool accepts(const ConfigurationProxy & object, unsigned index)
+	virtual bool accepts(const ConfigurationProxy & config, unsigned index)
 	{
-		return object.attributeType(index) == typeid(bool);
+		return config.attributeType(index) == typeid(bool);
 	}
-	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	virtual boost::python::object getAttribute(const ConfigurationProxy & config, unsigned index)
 	{
-		bool value = object.attributeValue<bool>(index);
+		bool value = config.attributeValue<bool>(index);
 		return boost::python::object(value);
 	}
-	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	virtual void setAttribute(ConfigurationProxy & config, unsigned index, boost::python::object value)
 	{
 		if (not PyBool_Check(value.ptr()) )
 			throwPythonError(PyExc_TypeError, "bool value expected, got " + pythonType(value.ptr()) );
 
-		object.setAttributeValue<bool>(index, boost::python::extract<bool>(value) );
+		config.setAttributeValue<bool>(index, boost::python::extract<bool>(value) );
 	}
-	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	virtual bool nonDefault(ConfigurationProxy & config, unsigned index)
 	{
-		return object.nonDefault<bool>(index);;
+		return config.nonDefault<bool>(index);;
 	}
 };
 static BooleanConfigurationProxyPlugin boolRegistrator;
@@ -238,25 +228,25 @@ static BooleanConfigurationProxyPlugin boolRegistrator;
 class FloatConfigurationProxyPlugin : public ConfigurationProxyPlugin
 {
 public:
-	virtual bool accepts(const ConfigurationProxy & object, unsigned attribute)
+	virtual bool accepts(const ConfigurationProxy & config, unsigned attribute)
 	{
-		return object.attributeType(attribute) == typeid(float);
+		return config.attributeType(attribute) == typeid(float);
 	}
-	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	virtual boost::python::object getAttribute(const ConfigurationProxy & config, unsigned index)
 	{
-		float value = object.attributeValue<float>(index);
+		float value = config.attributeValue<float>(index);
 		return boost::python::object(value);
 	}
-	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	virtual void setAttribute(ConfigurationProxy & config, unsigned index, boost::python::object value)
 	{
 		if (not PyFloat_Check(value.ptr()) )
 			throwPythonError(PyExc_TypeError, "float value expected, got " + pythonType(value.ptr()) );
 
-		object.setAttributeValue<float>(index, boost::python::extract<float>(value) );
+		config.setAttributeValue<float>(index, boost::python::extract<float>(value) );
 	}
-	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	virtual bool nonDefault(ConfigurationProxy & config, unsigned index)
 	{
-		return object.nonDefault<float>(index);;
+		return config.nonDefault<float>(index);;
 	}
 };
 static FloatConfigurationProxyPlugin floatRegistrator;
@@ -264,25 +254,25 @@ static FloatConfigurationProxyPlugin floatRegistrator;
 class DoubleConfigurationProxyPlugin : public ConfigurationProxyPlugin
 {
 public:
-	virtual bool accepts(const ConfigurationProxy & object, unsigned attribute)
+	virtual bool accepts(const ConfigurationProxy & config, unsigned attribute)
 	{
-		return object.attributeType(attribute) == typeid(double);
+		return config.attributeType(attribute) == typeid(double);
 	}
-	virtual boost::python::object getAttribute(const ConfigurationProxy & object, unsigned index)
+	virtual boost::python::object getAttribute(const ConfigurationProxy & config, unsigned index)
 	{
-		double value = object.attributeValue<double>(index);
+		double value = config.attributeValue<double>(index);
 		return boost::python::object(value);
 	}
-	virtual void setAttribute(ConfigurationProxy & object, unsigned index, boost::python::object value)
+	virtual void setAttribute(ConfigurationProxy & config, unsigned index, boost::python::object value)
 	{
 		if (not PyFloat_Check(value.ptr()) )
 			throwPythonError(PyExc_TypeError, "double value expected, got " + pythonType(value.ptr()) );
 
-		object.setAttributeValue<double>(index, boost::python::extract<double>(value) );
+		config.setAttributeValue<double>(index, boost::python::extract<double>(value) );
 	}
-	virtual bool nonDefault(ConfigurationProxy & object, unsigned index)
+	virtual bool nonDefault(ConfigurationProxy & config, unsigned index)
 	{
-		return object.nonDefault<double>(index);;
+		return config.nonDefault<double>(index);;
 	}
 };
 static DoubleConfigurationProxyPlugin doubleRegistrator;
