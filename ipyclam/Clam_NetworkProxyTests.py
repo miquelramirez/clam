@@ -447,5 +447,25 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 			"network.proc1.Outcontrol2 > network.proc2.Incontrol2"
 			, net.code())
 
+	def test_connect_slice(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.proc1 = "AudioSource"
+		net.proc2 = "AudioSink"
+		net.proc1.NSources = 6
+		net.proc2.NSinks = 6
+		net.proc1._outports[::2] > net.proc2._inports[::2]
+		self.assertEquals(
+			"network.proc1 = 'AudioSource'\n"
+			"network.proc2 = 'AudioSink'\n"
+			"network.proc1.['NSources'] = '6'\n"
+			"network.proc2.['NSinks'] = '6'\n\n"
+			"network.proc1[\"1\"] > network.proc2[\"1\"]\n"
+			"network.proc1[\"3\"] > network.proc2[\"3\"]\n"
+			"network.proc1[\"5\"] > network.proc2[\"5\"]\n"
+			, net.code())
+
+
 if __name__ == '__main__':
 	unittest.main()
