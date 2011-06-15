@@ -269,6 +269,8 @@ py::list connectorPeers(CLAM::Network & network, const std::string & processingN
 			py::list connectorPeers;
 			CLAM::InPortBase & inport = network.GetInPortByCompleteName(connector);
 			CLAM::OutPortBase * outport = inport.GetVisuallyConnectedOutPort();
+			if (!outport)
+				return connectorPeers;
 			py::tuple peerTuple = py::make_tuple( network.GetProcessingName( *outport->GetProcessing() ), outport->GetName() );
 			connectorPeers.append(peerTuple);
 			return connectorPeers;
