@@ -325,15 +325,15 @@ private:
 public:
 	const char* GetClassName() const { return "DummyTypeProcessing2"; }
 	DummyTypeProcessing2(const Config& config = Config())
-		: mIn("InPort1", this)
-		, mIn2("InPort2", this)
-		, mOut("OutPort1", this)
-		, mOut2("OutPort2", this)
-		, mInControl("InControl1", this)
-		, mInControl2("InControl2", this)
-		, mInControl3("InControl3", this)
-		, mOutControl("OutControl1", this)
-		, mOutControl2("OutControl2", this)
+		: mIn("Inport1", this)
+		, mIn2("Inport2", this)
+		, mOut("Outport1", this)
+		, mOut2("Outport2", this)
+		, mInControl("Incontrol1", this)
+		, mInControl2("Incontrol2", this)
+		, mInControl3("Incontrol3", this)
+		, mOutControl("Outcontrol1", this)
+		, mOutControl2("Outcontrol2", this)
 	{
 		Configure( config );
 	}
@@ -437,6 +437,30 @@ public:
 };
 
 // Created for compatibility with Dummy Testing
+class PortSource : public CLAM::Processing
+{
+private:
+	CLAM::OutPort<float> mOut;
+public:
+	const char* GetClassName() const { return "PortSource"; }
+	PortSource(const Config& config = Config()) 
+		: mOut("OutPort1", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+};
+
+// Created for compatibility with Dummy Testing
 class DummyControlSink : public CLAM::Processing
 {
 private:
@@ -445,6 +469,30 @@ public:
 	const char* GetClassName() const { return "DummyControlSink"; }
 	DummyControlSink(const Config& config = Config()) 
 		: mInControl("InControl1", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+};
+
+// Created for compatibility with Dummy Testing
+class DummyControlSource : public CLAM::Processing
+{
+private:
+	CLAM::OutControl<float> mOutControl;
+public:
+	const char* GetClassName() const { return "DummyControlSource"; }
+	DummyControlSource(const Config& config = Config()) 
+		: mOutControl("OutControl1", this)
 	{
 		Configure( config );
 	}

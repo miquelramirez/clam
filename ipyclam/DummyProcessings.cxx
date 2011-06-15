@@ -91,10 +91,25 @@ static const char * metadata11[] = {
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, PortSink> registrator11(metadata11);
 
 static const char * metadata12[] = {
+	"key", "PortSource",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, PortSource> registrator12(metadata12);
+
+static const char * metadata13[] = {
 	"key", "DummyControlSink",
 	"category", "Dummy Processings",
 	0
 	};
 
-static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyControlSink> registrator12(metadata12);
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyControlSink> registrator13(metadata13);
 
+static const char * metadata14[] = {
+	"key", "DummyControlSource",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyControlSource> registrator14(metadata14);

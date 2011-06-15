@@ -57,6 +57,14 @@ _dummyPrototypes = dict(
 		incontrols = [],
 		outcontrols = [['OutControl1', 'ControlType']]
 	),
+	DummyControlSource = dict(
+		type = "DummyControlSource",
+		config = dict(),
+		inports = [],
+		outports = [],
+		incontrols = [],
+		outcontrols = [['OutControl1', 'ControlType']]
+	),
 	OtherControlSink = dict(
 		type = "OtherControlSink",
 		config = dict(),
