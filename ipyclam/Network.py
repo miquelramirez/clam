@@ -319,10 +319,24 @@ class NetworkTests(unittest.TestCase):
 		net.Processing1.ConfigParam1 = 'newvalue'
 		self.assertEquals(
 			"network.Processing1 = 'ProcessingWithConfig'\n"
-			"network.Processing1.['ConfigParam2'] = 'default2'\n"
-			"network.Processing1.['ConfigParam1'] = 'newvalue'\n"
+			"network.Processing1['ConfigParam2'] = 'default2'\n"
+			"network.Processing1['ConfigParam1'] = 'newvalue'\n"
 			"\n\n"
 			, net.code(fullConfig=True))
+
+class Clam_NetworkTests(NetworkTests):
+	def proxy(self):
+		import Clam_NetworkProxy
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		network = Network.Network(proxy)
+		network.Processing1 = "DummyTypeProcessing1"
+		network.Processing2 = "DummyTypeProcessing2"
+		return proxy
+
+	def empty(self):
+		import Clam_NetworkProxy
+		return Clam_NetworkProxy.Clam_NetworkProxy()
 
 if __name__ == '__main__':
 	unittest.main()

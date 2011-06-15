@@ -459,8 +459,8 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		self.assertEquals(
 			"network.proc1 = 'AudioSource'\n"
 			"network.proc2 = 'AudioSink'\n"
-			"network.proc1.['NSources'] = '6'\n"
-			"network.proc2.['NSinks'] = '6'\n\n"
+			"network.proc1['NSources'] = '6'\n"
+			"network.proc2['NSinks'] = '6'\n\n"
 			"network.proc1[\"1\"] > network.proc2[\"1\"]\n"
 			"network.proc1[\"3\"] > network.proc2[\"3\"]\n"
 			"network.proc1[\"5\"] > network.proc2[\"5\"]\n"

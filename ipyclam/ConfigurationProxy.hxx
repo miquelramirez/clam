@@ -112,6 +112,36 @@ public:
 	{
 		return new ConfigurationProxy( config() );
 	}
+	bool IsAttributeInstantiated(unsigned i)
+	{
+		return config().IsAttributeInstantiated(i);
+	}
+	void AddAttribute(unsigned i)
+	{
+		if (_processing)
+		{
+			hold();
+			_processingConfig->AddAttr_(i, sizeof(attributeType(i)));
+			_processingConfig->UpdateData();
+			apply();
+			return;
+		}
+		_processingConfig->AddAttr_(i, sizeof(attributeType(i)));
+		_processingConfig->UpdateData();
+	}
+	void RemoveAttribute(unsigned i)
+	{
+		if (_processing)
+		{
+			hold();
+			_processingConfig->RemoveAttr_(i);
+			_processingConfig->UpdateData();
+			apply();
+			return;
+		}
+		_processingConfig->RemoveAttr_(i);
+		_processingConfig->UpdateData();
+	}
 	~ConfigurationProxy()
 	{
 		delete _processingConfig;
