@@ -7,6 +7,8 @@ namespace IpyclamTests {
 	class DummyDTWithJustStrings;
 	class DummyDTWithJustIntegers;
 	class DummyDTWithEveryType;
+	class DummyDTWithOptionalAttributes;
+	class DummyTestsConfig;
 }
 
 class IpyclamTests::DummyDTWithJustStrings : public CLAM::ProcessingConfig
@@ -57,6 +59,38 @@ public:
 		SetBoolAttribute(0);
 		SetFloatAttribute(3.140000104904175);
 		SetDoubleAttribute(134.15);
+	}
+};
+
+class IpyclamTests::DummyDTWithOptionalAttributes : public CLAM::ProcessingConfig
+{
+public:
+	DYNAMIC_TYPE_USING_INTERFACE (DummyDTWithOptionalAttributes, 3, ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, std::string, StringAttribute);
+	DYN_ATTRIBUTE (1, public, int, FirstInt);
+	DYN_ATTRIBUTE (2, public, int, SecondInt);
+	void DefaultInit(void)
+	{
+		AddAll();
+		RemoveAttr_(2);
+		UpdateData();
+		SetStringAttribute("String Attribute");
+		SetFirstInt(42);
+	}
+};
+
+class IpyclamTests::DummyTestsConfig : public CLAM::ProcessingConfig
+{
+public:
+	DYNAMIC_TYPE_USING_INTERFACE (DummyTestsConfig, 2, ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, std::string, ConfigParam1);
+	DYN_ATTRIBUTE (1, public, std::string, ConfigParam2);
+	void DefaultInit(void)
+	{
+		AddAll();
+		UpdateData();
+		SetConfigParam1("default1");
+		SetConfigParam2("default2");
 	}
 };
 

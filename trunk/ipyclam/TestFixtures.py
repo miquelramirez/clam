@@ -7,7 +7,7 @@ def proxy() :
 	return Dummy_NetworkProxy.Dummy_NetworkProxy(
 		[
 			dict(
-				type = "AudioSource",
+				type = "DummyTypeProcessing1",
 				name = "Processing1",
 				config = dict(
 					ConfigParam1 = "default1",
@@ -33,7 +33,7 @@ def proxy() :
 				],
 			),
 			dict(
-				type = "AudioSink",
+				type = "DummyTypeProcessing2",
 				name = "Processing2",
 				config = dict(
 					ConfigParam1 = "default1",
