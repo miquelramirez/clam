@@ -410,6 +410,36 @@ void deleteProcessing(CLAM::Network & network, const std::string & processingNam
 	network.RemoveProcessing(processingName);
 }
 
+bool areConnectable(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
+{
+	const std::string producer = fromProcessing + "." + fromConnector;
+	const std::string consumer = toProcessing + "." + toConnector;
+
+	if ( !processingHasConnector(network, fromProcessing, kind, "Out", fromConnector) )
+	{
+		std::string errorMsg = fromProcessing + " does not have connector " + fromConnector;
+		throwPythonException(PyExc_AssertionError, errorMsg);
+	}
+	if ( !processingHasConnector(network, toProcessing, kind, "In", toConnector) )
+	{
+		std::string errorMsg = toProcessing + " does not have connector " + toConnector;
+		throwPythonException(PyExc_AssertionError, errorMsg);
+	}
+
+	if (kind == "Port")
+	{
+		CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(producer);
+		CLAM::InPortBase & inport = network.GetInPortByCompleteName(consumer);
+		return outport.IsConnectableTo(inport);
+	}
+	else
+	{
+		CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(producer);
+		CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(consumer);
+		return outcontrol.IsLinkable(incontrol);
+	}
+}
+
 ConfigurationProxy * processingConfig(CLAM::Network & network, const std::string & processingName)
 {
 	CLAM::Processing & processing = network.GetProcessing(processingName);
@@ -507,6 +537,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("deleteProcessing",
 			deleteProcessing,
 			"Removes a processing from the network."
+			)
+		.def("areConnectable",
+			areConnectable,
+			"Returns true if the two connectors are connectable."
 			)
 		.def("processingConfig",
 			processingConfig,

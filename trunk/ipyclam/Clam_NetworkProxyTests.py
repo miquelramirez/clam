@@ -430,5 +430,22 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		net.p._config = c
 		self.assertEquals(2, net.p.NSources)
 
+	def test_connect_from_processing_to_processing(self):
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		net = Network.Network(proxy)
+		net.proc1 = "DummyProcessingWithMultiplePortsAndControls"
+		net.proc2 = "DummyProcessingWithMultiplePortsAndControls"
+		self.assertEquals(4, net.proc1 > net.proc2)
+		self.assertEquals(
+			"network.proc1 = 'DummyProcessingWithMultiplePortsAndControls'\n"
+			"network.proc2 = 'DummyProcessingWithMultiplePortsAndControls'\n"
+			"\n"
+			"network.proc1.Outport1 > network.proc2.Inport1\n"
+			"network.proc1.Outport2 > network.proc2.Inport2\n"
+			"network.proc1.Outcontrol1 > network.proc2.Incontrol1\n"
+			"network.proc1.Outcontrol2 > network.proc2.Incontrol2"
+			, net.code())
+
 if __name__ == '__main__':
 	unittest.main()

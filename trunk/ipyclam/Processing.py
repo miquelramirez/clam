@@ -82,7 +82,7 @@ class Processing(object):
 		for connector in peer.__dict__["_incontrols"]:
 			if incontrols >= self.__dict__["_outcontrols"].__len__():
 				break
-			if self.__dict__["proxy"].areConnectable("Port", self.__dict__["name"], self.__dict__["_outcontrols"][incontrols].name, connector.host.name, connector.name):
+			if self.__dict__["proxy"].areConnectable("Control", self.__dict__["name"], self.__dict__["_outcontrols"][incontrols].name, connector.host.name, connector.name):
 				self.__dict__["_outcontrols"][incontrols] > connector
 				incontrols += 1
 		return inports + incontrols
