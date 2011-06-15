@@ -36,7 +36,7 @@ class Network(object):
 				return "[\"%s\"]"%name
 		code = ""
 		if self._proxy.getDescription() != "":
-			code += "%s.description = '%s'\n"%(networkVar, self._proxy.getDescription())
+			code += "%s.description = %s\n"%(networkVar, repr(self._proxy.getDescription()) )
 		code += "\n".join([
 			"%s%s = '%s'"%(networkVar, appendAttribute(name), self._proxy.processingType(name))
 			for name in self._proxy.processingNames()])

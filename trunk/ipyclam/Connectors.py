@@ -18,7 +18,10 @@ class Connectors(object):
 		if type(index) is str:
 			return self._dict[index]
 		if type(index) is slice:
-			return self._list[index]
+			import copy
+			connectors = copy.copy(self)
+			connectors._list = self._list[index]
+			return connectors
 	def __getattr__(self, name):
 		if not name in self._dict.keys():
 			raise AttributeError(name)
@@ -27,6 +30,15 @@ class Connectors(object):
 		return len(self._list)
 	def __dir__(self):
 		return self._dict.keys()
+
+	def connect(self, peer):
+		index = 0;
+		for connector in peer:
+			self._list[index].connect(connector)
+			index += 1
+
+	def __gt__(self, peer) :
+		return self.connect(peer)
 
 import unittest
 import TestFixtures
@@ -53,9 +65,9 @@ class ConnectorsTests(unittest.TestCase):
 	def test_sliceable(self):
 		ports = Connectors(TestFixtures.proxy(), "Processing1", Connector.Port, Connector.In)
 		portsSliced = ports[1:4]
-		self.assertEqual(portsSliced[0].name, 'InPort2')
-		self.assertEqual(portsSliced[1].name, 'InPort3')
-		self.assertEqual(portsSliced[2].name, 'InPort4')
+		listNames = [ connector.name for connector in portsSliced ]
+		self.assertEqual(listNames, ['InPort2', 'InPort3', 'InPort4'])
+		self.assertEqual(Connectors, type(portsSliced) )
 
 if __name__ == '__main__':
 	unittest.main()
