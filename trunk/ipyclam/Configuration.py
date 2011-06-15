@@ -26,10 +26,10 @@ class Configuration(object):
 		if not fullConfig:
 			for attribute in self._proxy.keys():
 				if self._proxy.nonDefault(attribute):
-					code += "%s.%s.['%s'] = '%s'\n"%(networkVar, processingName, attribute, self._proxy[attribute] )
+					code += "%s.%s['%s'] = '%s'\n"%(networkVar, processingName, attribute, self._proxy[attribute] )
 			return code
 		code += "\n".join([
-				"%s.%s.['%s'] = '%s'"%(networkVar, processingName, attribute, self._proxy[attribute])
+				"%s.%s['%s'] = '%s'"%(networkVar, processingName, attribute, self._proxy[attribute])
 				for attribute in self._proxy.keys()])
 		code += "\n"
 		return code
@@ -142,16 +142,16 @@ class ConfigurationTests(unittest.TestCase):
 		c = Configuration(self.stringParametersConfig())
 		c['ConfigParam1'] = 'newvalue'
 		self.assertEquals(
-			"network.Processing1.['ConfigParam1'] = 'newvalue'\n"
+			"network.Processing1['ConfigParam1'] = 'newvalue'\n"
 			, c.code("Processing1"))
 
 	def test_code_full(self):
 		c = Configuration(self.stringParametersConfig())
 		c['ConfigParam1'] = 'newvalue'
 		self.assertEquals(
-			"network.Processing1.['ConfigParam3'] = 'Param3'\n"
-			"network.Processing1.['ConfigParam2'] = 'Param2'\n"
-			"network.Processing1.['ConfigParam1'] = 'newvalue'\n"
+			"network.Processing1['ConfigParam3'] = 'Param3'\n"
+			"network.Processing1['ConfigParam2'] = 'Param2'\n"
+			"network.Processing1['ConfigParam1'] = 'newvalue'\n"
 			, c.code("Processing1", fullConfig = True))
 
 	def test_nestedconfigs(self):
