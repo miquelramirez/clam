@@ -69,5 +69,15 @@ class ConnectorsTests(unittest.TestCase):
 		self.assertEqual(listNames, ['InPort2', 'InPort3', 'InPort4'])
 		self.assertEqual(Connectors, type(portsSliced) )
 
+class Clam_ConnectorsTests(ConnectorsTests):
+	def proxy(self):
+		import Clam_NetworkProxy
+		import Network
+		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
+		network = Network.Network(proxy)
+		network.Processing1 = "DummyTypeProcessing1"
+		network.Processing2 = "DummyTypeProcessing2"
+		return proxy
+
 if __name__ == '__main__':
 	unittest.main()
