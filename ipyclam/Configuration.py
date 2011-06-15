@@ -165,6 +165,13 @@ class ConfigurationTests(unittest.TestCase):
 		self.assertEqual("newvalue", cClone["ConfigParam1"])
 		self.assertEqual("Param1", c["ConfigParam1"])
 
+	def test_optionality(self):
+		c = Configuration(self.stringParametersConfig())
+		c['ConfigParam1'] = None
+		self.assertEqual(None, c["ConfigParam1"])
+		c['ConfigParam1'] = 'new value'
+		self.assertEqual('new value', c["ConfigParam1"])
+
 if __name__ == '__main__':
 	unittest.main()
 
