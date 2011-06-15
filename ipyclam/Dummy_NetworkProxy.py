@@ -140,6 +140,17 @@ _dummyPrototypes = dict(
 		incontrols = [['1', 'ControlType'], ['2', 'ControlType']],
 		outcontrols = [['1', 'ControlType']]
 	),
+	DummyProcessingWithStringConfiguration = dict(
+		type = "DummyProcessingWithStringConfiguration",
+		config = dict(
+			UnString = "ValorPerDefecte",
+			UnAltreString = "Un altre valor per defecte",
+		),
+		inports = [],
+		outports = [],
+		incontrols = [],
+		outcontrols = []
+	),
 )
 
 class BadProcessingName(Exception):
