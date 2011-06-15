@@ -49,3 +49,52 @@ static const char * metadata6[] = {
 	};
 
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyProcessingWithCompleteConfiguration> registrator6(metadata6);
+
+static const char * metadata7[] = {
+	"key", "DummyProcessingWithOptionalAttributes",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyProcessingWithOptionalAttributes> registrator7(metadata7);
+
+static const char * metadata8[] = {
+	"key", "DummyTypeProcessing1",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyTypeProcessing1> registrator8(metadata8);
+
+static const char * metadata9[] = {
+	"key", "DummyTypeProcessing2",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyTypeProcessing2> registrator9(metadata9);
+
+static const char * metadata10[] = {
+	"key", "ProcessingWithPortsAndControls",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ProcessingWithPortsAndControls> registrator10(metadata10);
+
+static const char * metadata11[] = {
+	"key", "PortSink",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, PortSink> registrator11(metadata11);
+
+static const char * metadata12[] = {
+	"key", "DummyControlSink",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyControlSink> registrator12(metadata12);
+

@@ -171,7 +171,7 @@ class ConnectorTests(unittest.TestCase):
 	def test_host(self):
 		port = Connector(TestFixtures.proxy(), "Processing1", kind=Port, direction=In, name="OutPort1")
 		self.assertEqual(port.host.name, "Processing1")
-		self.assertEqual(port.host.type, "AudioSource")
+		self.assertEqual(port.host.type, "DummyTypeProcessing1")
 	# TODO: is host read only?
 	def test_peers_forInPorts(self):
 		port = Connector(TestFixtures.proxy(), "Processing2", kind=Port, direction=In, name="Inport2")
