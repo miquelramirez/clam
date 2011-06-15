@@ -10,6 +10,9 @@ class Dummy_ConfigurationProxy(object):
 		return self._dict[name]
 
 	def __setitem__(self, name, value):
+		if value == None:
+			self._dict[name] = value
+			return
 		if type(value) != type(self._default[name]):
 			raise TypeError("%s value expected, got %s"%( type(self._default[name]).__name__, type(value).__name__))
 		self._dict[name] = value
@@ -82,6 +85,13 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		cClone["ConfigParam1"] = 'newvalue'
 		self.assertEqual(True, cClone.nonDefault("ConfigParam1"))
 		self.assertEqual(False, c.nonDefault("ConfigParam1"))
+
+	def test_optionality(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		c["ConfigParam1"] = None
+		self.assertEqual(None, c["ConfigParam1"])
+		c["ConfigParam1"] = 'new value'
+		self.assertEqual('new value', c["ConfigParam1"])
 
 if __name__ == '__main__':
 	unittest.main()
