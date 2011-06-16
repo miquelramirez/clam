@@ -248,22 +248,22 @@ class NetworkTests(unittest.TestCase):
 			"\n"
 			"\n"
 			, net.code())
-#TODO: CREATE ALL THE PROCESSINGS IN CLAM
-	def _test_codeWhenNotAlphaNumericProcessingAndConnectorNames(self) :
+
+	def test_codeWhenNotAlphaNumericProcessingAndConnectorNames(self) :
 		net = Network(self.empty())
-		net["A processing with ports"] = "ProcessingWithNameSpacedPorts"
+		net.processing1 = "ProcessingWithNameSpacedPorts"
 		net.processing2 = "ProcessingWithNameSpacedPorts"
 		net.processing3 = "ProcessingWithNameSpacedControls"
 		net.processing4 = "ProcessingWithNameSpacedControls"
+		net.processing1["An outport"] > net.processing2["An inport"]
 		net.processing3["An outcontrol"] > net.processing4["An incontrol"]
-		net["A processing with ports"]["An outport"] > net.processing2["An inport"]
 		self.assertEquals(
+			"network.processing1 = 'ProcessingWithNameSpacedPorts'\n"
 			"network.processing2 = 'ProcessingWithNameSpacedPorts'\n"
 			"network.processing3 = 'ProcessingWithNameSpacedControls'\n"
 			"network.processing4 = 'ProcessingWithNameSpacedControls'\n"
-			"network[\"A processing with ports\"] = 'ProcessingWithNameSpacedPorts'\n"
 			"\n"
-			"network[\"A processing with ports\"][\"An outport\"] > network.processing2[\"An inport\"]\n"
+			"network.processing1[\"An outport\"] > network.processing2[\"An inport\"]\n"
 			"network.processing3[\"An outcontrol\"] > network.processing4[\"An incontrol\"]"
 			, net.code())
 
@@ -294,23 +294,17 @@ class NetworkTests(unittest.TestCase):
 			"\n"
 			"\n"
 			, net.code())
-#TODO: CREATE ALL THE PROCESSINGS IN CLAM
-	def _test_codeForNumericConnectors(self):
+
+	def test_codeForNumericConnectors(self):
 		net = Network(self.empty())
 		net.proc1 = "ProcessingWithNumericPorts"
 		net.proc2 = "ProcessingWithNumericPorts"
-		net.proc3 = "ControlSource"
-		net.proc4 = "ProcessingWithNumericControls"
 		net.proc1["2"] > net.proc2["1"]
-		net.proc3.OutControl1 > net.proc4["2"]
 		self.assertEquals(
-			"network.proc4 = 'ProcessingWithNumericControls'\n"
 			"network.proc1 = 'ProcessingWithNumericPorts'\n"
-			"network.proc3 = 'ControlSource'\n"
 			"network.proc2 = 'ProcessingWithNumericPorts'\n"
 			"\n"
 			"network.proc1[\"2\"] > network.proc2[\"1\"]\n"
-			"network.proc3.OutControl1 > network.proc4[\"2\"]"
 			, net.code())
 
 	def test_change_config_attributes(self):

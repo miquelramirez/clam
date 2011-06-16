@@ -113,3 +113,27 @@ static const char * metadata14[] = {
 	};
 
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DummyControlSource> registrator14(metadata14);
+
+static const char * metadata15[] = {
+	"key", "ProcessingWithNameSpacedPorts",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ProcessingWithNameSpacedPorts> registrator15(metadata15);
+
+static const char * metadata16[] = {
+	"key", "ProcessingWithNameSpacedControls",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ProcessingWithNameSpacedControls> registrator16(metadata16);
+
+static const char * metadata17[] = {
+	"key", "ProcessingWithNumericPorts",
+	"category", "Dummy Processings",
+	0
+	};
+
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ProcessingWithNumericPorts> registrator17(metadata17);
