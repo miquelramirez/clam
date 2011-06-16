@@ -508,4 +508,83 @@ public:
 	}
 };
 
+// Created for compatibility with Dummy Testing
+class ProcessingWithNameSpacedPorts : public CLAM::Processing
+{
+private:
+	CLAM::InPort<float> mIn;
+	CLAM::OutPort<float> mOut;
+public:
+	const char* GetClassName() const { return "ProcessingWithNameSpacedPorts"; }
+	ProcessingWithNameSpacedPorts(const Config& config = Config()) 
+		: mIn("An inport", this)
+		, mOut("An outport", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+};
+
+// Created for compatibility with Dummy Testing
+class ProcessingWithNameSpacedControls : public CLAM::Processing
+{
+private:
+	CLAM::InControl<float> mInControl;
+	CLAM::OutControl<float> mOutControl;
+public:
+	const char* GetClassName() const { return "ProcessingWithNameSpacedControls"; }
+	ProcessingWithNameSpacedControls(const Config& config = Config()) 
+		: mInControl("An incontrol", this)
+		, mOutControl("An outcontrol", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+};
+
+// Created for compatibility with Dummy Testing
+class ProcessingWithNumericPorts : public CLAM::Processing
+{
+private:
+	CLAM::InPort<float> mIn;
+	CLAM::OutPort<float> mOut;
+	CLAM::OutPort<float> mOut2;
+public:
+	const char* GetClassName() const { return "ProcessingWithNumericPorts"; }
+	ProcessingWithNumericPorts(const Config& config = Config()) 
+		: mIn("1", this)
+		, mOut("1", this)
+		, mOut2("2", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return 1;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
+};
 #endif // DummyProcessings_hxx
