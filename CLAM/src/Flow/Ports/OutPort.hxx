@@ -52,6 +52,7 @@ public:
 	virtual bool IsVisuallyConnectedTo(InPortBase & in) = 0;
 	virtual bool IsConnectableTo(InPortBase & ) = 0;
 	virtual bool CanProduce()=0;
+	virtual void Produce()=0;
 	virtual int GetSize()=0;
 	virtual void SetSize(int newSize)=0;
 	virtual int GetHop()=0;

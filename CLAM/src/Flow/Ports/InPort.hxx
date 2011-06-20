@@ -45,6 +45,7 @@ public:
 	bool HasProcessing();
 	Processing * GetProcessing();
 	virtual bool CanConsume()=0;
+	virtual void Consume()=0;
 	virtual int GetSize()=0;
 	virtual void SetSize(int newSize)=0;
 	virtual int GetHop()=0;
