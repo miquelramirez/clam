@@ -68,7 +68,7 @@ private:
 
 		double center = centerFinder.output();
 
-		CPPUNIT_ASSERT_EQUAL(expectedCenter, center);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCenter, center, 1e-7);
 	}
 
 	void testSilence()
@@ -132,7 +132,7 @@ private:
 
 		double center = centerFinder.output();
 
-		CPPUNIT_ASSERT_EQUAL(0.4, center);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(0.4, center, 1e-7);
 	}
 	void testBorderTunning_roundsToTheFirstDecimalUp()
 	{
