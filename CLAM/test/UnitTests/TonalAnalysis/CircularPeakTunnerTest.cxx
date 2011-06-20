@@ -300,7 +300,7 @@ private:
 	void testChromagramToSemitone_withNoDetunning_LowerBound()
 	{
 		CircularPeakTunner tunner(1.0);
-		double tunned = tunner.chromagramToSemitone(1.0, 35.50);
+		double tunned = tunner.chromagramToSemitone(1.0, 35.5001);
 		CPPUNIT_ASSERT_EQUAL(0.0,tunned);
 	}
 	void testChromagramToSemitone_withNoDetunning_PastLowerBound()
