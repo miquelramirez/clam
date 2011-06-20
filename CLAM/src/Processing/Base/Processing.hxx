@@ -72,21 +72,6 @@ namespace CLAM
 	void ConnectControls(
 			Processing & sender, const std::string & outControlName,
 			Processing & receiver, const std::string & inControlName );
-#if 0
-	/**
-	 * Free function that connects two typed controls.
-	 */
-	void ConnectTypedControls(
-			Processing & sender, unsigned typedOutControlNumber,
-			Processing & receiver, unsigned typedInControlNumber );
-	/**
-	 * Connects two typed controls of two processings selecting them by the control name.
-	 */
-	void ConnectTypedControls(
-			Processing & sender, const std::string & typedOutControlName,
-			Processing & receiver, const std::string & typedInControlName );
-
-#endif
 	/**
 	 * Connects a free port to one belonging to a processing selecting it by the port number.
 	 * Short hand for sender.ConnectToIn(receiver.GetOutPort(inPortName))
@@ -294,7 +279,7 @@ namespace CLAM
 		bool CanConsumeAndProduce();
 
 		/**
-		 * Acknoledges data tokens in published ports as read/writen
+		 * Marks data tokens in published ports as read/writen
 		 * by calling Produce() for all registered OutPorts and
 		 * Consume() to all registered InPorts.
 		 */
