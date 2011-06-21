@@ -38,6 +38,11 @@ namespace CLAM
  */
 class DopplerFractionalDelay : public Processing
 {
+
+	class Implementation 
+	{
+		
+	};
 public:
 	class Config : public ProcessingConfig
 	{
@@ -67,14 +72,22 @@ protected:
 	OutPort<Audio> _out1;
 	DelayBuffer _delayBuffer;
 	
-	Index _sampleRate, _delayBufferSize, _readIndex, _writeIndex, _modIndex;
-	float _centerTap, _width, _freqMod;
+	Index _sampleRate; 
+	Index _delayBufferSize; 
+	Index _readIndex; 
+	Index _writeIndex; 
+	Index _modIndex;
+	float _centerTap;
+	float _width;
+	float _freqMod;
 	enum { C = 340, FPS=25};
 	TData _pastModelayLine;
-	float _pastDist, _step,_interpDist;
+	float _pastDist;
+	float _step; 
+	float _interpDist;
 	bool _notInitialized;
 
-protected:
+private:
 	FloatInControl _distance;
 	FloatInControl _shiftGain;
 		
