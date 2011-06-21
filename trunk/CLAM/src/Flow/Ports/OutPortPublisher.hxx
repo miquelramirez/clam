@@ -161,6 +161,13 @@ public:
 		return mPublishedOutPort->CanProduce();
 	}	
 	
+	void Produce()
+	{
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::CanProduce() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
+		mPublishedOutPort->Produce();
+	}	
+	
 	void CenterEvenRegions()
 	{
 		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::CenterEvenRegions() A published port is missing. "

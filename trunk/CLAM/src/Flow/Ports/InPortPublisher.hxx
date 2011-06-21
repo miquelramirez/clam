@@ -87,6 +87,12 @@ public:
 				return false;
 		return true;	
 	}
+	void Consume()
+	{
+		typename ProperInPortsList::iterator it;
+		for(it=mPublishedInPortsList.begin(); it!=mPublishedInPortsList.end(); it++)
+			(*it)->Consume();
+	}
 	
 
 	typename ProperInPortsList::iterator BeginPublishedInPortsList()
