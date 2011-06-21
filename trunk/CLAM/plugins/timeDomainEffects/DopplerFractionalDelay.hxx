@@ -165,22 +165,11 @@ public:
 		
 	const ProcessingConfig & GetConfig() const { return _config; }
 	
-	bool Do()
+	void run(unsigned bufferSize, const float * inpointer, float * outpointer, bool newControlArrived)
 	{
-		bool newControlArrived = not _distance.HasBeenRead();
-		//std::cout<< (newControlArrived ? "newcontrol" : "noNewControl") << std::endl;
-			
 		const float C=340.0;
 		const float FPS=25;
 		const float shiftConstant=1000.0;		
-		const CLAM::Audio& in = _in1.GetData();
-		const TData* inpointer = in.GetBuffer().GetPtr();		
-		unsigned size = in.GetSize();
-		
-		CLAM::Audio& out = _out1.GetData();
-		out.SetSize(size);
-		TData* outpointer = out.GetBuffer().GetPtr();	
-	
 		if (newControlArrived)
 		{
 			TControlData distance = _distance.GetLastValue();
@@ -206,7 +195,7 @@ public:
 				
 		float shiftGain=shiftConstant*_shiftGain.GetLastValue();
 		
-		for (unsigned i = 0; i < size; ++i)
+		for (unsigned i = 0; i < bufferSize; ++i)
 		{			
 			//float delay=shiftGain + shiftGain*(_interpDist/C);
 			float delay=shiftGain*sqrt((_interpDist)*(_interpDist))/C;
@@ -217,6 +206,22 @@ public:
 			_pastModelayLine=outpointer[i];	
 			_interpDist+=_step;
 		}
+	}
+
+	bool Do()
+	{
+		bool newControlArrived = not _distance.HasBeenRead();
+		//std::cout<< (newControlArrived ? "newcontrol" : "noNewControl") << std::endl;
+			
+		const CLAM::Audio& in = _in1.GetData();
+		const TData* inpointer = in.GetBuffer().GetPtr();		
+		unsigned bufferSize = in.GetSize();
+		
+		CLAM::Audio& out = _out1.GetData();
+		out.SetSize(bufferSize);
+		TData* outpointer = out.GetBuffer().GetPtr();	
+
+		run(bufferSize, inpointer, outpointer, newControlArrived);
 		
 		_in1.Consume();
 		_out1.Produce();
