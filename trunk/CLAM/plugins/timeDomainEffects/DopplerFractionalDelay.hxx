@@ -70,6 +70,8 @@ protected:
 	typedef std::vector<TData> DelayBuffer;
 	InPort<Audio> _in1;
 	OutPort<Audio> _out1;
+	FloatInControl _distance;
+	FloatInControl _shiftGain;
 	DelayBuffer _delayBuffer;
 	
 	Index _sampleRate; 
@@ -88,8 +90,6 @@ protected:
 	bool _notInitialized;
 
 private:
-	FloatInControl _distance;
-	FloatInControl _shiftGain;
 		
 	void setDelay(float delaySamples) 
 	{
@@ -129,9 +129,9 @@ public:
 	DopplerFractionalDelay(const Config& config = Config()) 
 		: _in1("InputBuffer", this)
 		, _out1("OutputBuffer", this)
-		, _delayBufferSize(1)  		
 		, _distance("relative distance in mts", this)
 		, _shiftGain("freq shift scaler", this)
+		, _delayBufferSize(1)  		
 	{
 		Configure( config );
 	}
