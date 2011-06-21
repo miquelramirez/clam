@@ -114,14 +114,9 @@ private:
 		
 		_delayBuffer[writeindex] = x;
 
-		//TData y = frac*_delayBuffer[readindex2] + (1-frac)*_delayBuffer[readindex];	
-		TData y;
-		if (readindex==0) y = _delayBuffer.back() + (1-frac) * _delayBuffer[readindex]-(1-frac)*_pastModelayLine;				
-		else y = _delayBuffer[readindex-1] + (1-frac) * _delayBuffer[readindex] - (1-frac)*_pastModelayLine;		
+		if (readindex==0) return _delayBuffer.back() + (1-frac) * _delayBuffer[readindex]-(1-frac)*_pastModelayLine;				
+		return _delayBuffer[readindex-1] + (1-frac) * _delayBuffer[readindex] - (1-frac)*_pastModelayLine;		
 
-		
-
-		return y;
 	}
 
 public:
@@ -165,14 +160,13 @@ public:
 		
 	const ProcessingConfig & GetConfig() const { return _config; }
 	
-	void run(unsigned bufferSize, const float * inpointer, float * outpointer, bool newControlArrived)
+	void run(unsigned bufferSize, const float * inpointer, float * outpointer, bool newControlArrived, float distance, float shiftGain)
 	{
 		const float C=340.0;
 		const float FPS=25;
 		const float shiftConstant=1000.0;		
 		if (newControlArrived)
 		{
-			TControlData distance = _distance.GetLastValue();
 			if (_notInitialized)
 			{ 
 				_pastDist=distance;
@@ -193,12 +187,11 @@ public:
 			}
 		}
 				
-		float shiftGain=shiftConstant*_shiftGain.GetLastValue();
 		
 		for (unsigned i = 0; i < bufferSize; ++i)
 		{			
 			//float delay=shiftGain + shiftGain*(_interpDist/C);
-			float delay=shiftGain*sqrt((_interpDist)*(_interpDist))/C;
+			float delay=shiftGain*shiftConstant*sqrt((_interpDist)*(_interpDist))/C;
 			float D=floor(delay);			
 			float frac=delay-D;					
 			setDelay(D);
@@ -221,7 +214,9 @@ public:
 		out.SetSize(bufferSize);
 		TData* outpointer = out.GetBuffer().GetPtr();	
 
-		run(bufferSize, inpointer, outpointer, newControlArrived);
+		TControlData distance = _distance.GetLastValue();
+		float shiftGain=_shiftGain.GetLastValue();
+		run(bufferSize, inpointer, outpointer, newControlArrived, distance, shiftGain);
 		
 		_in1.Consume();
 		_out1.Produce();
