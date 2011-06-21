@@ -43,7 +43,7 @@ class DopplerFractionalDelay : public Processing
 	{
 	private:
 		typedef long long unsigned Index;
-		typedef std::vector<TData> DelayBuffer;
+		typedef std::vector<float> DelayBuffer;
 	private:
 		Index _sampleRate;
 		Index _delayBufferSize;
@@ -54,7 +54,7 @@ class DopplerFractionalDelay : public Processing
 		float _centerTap;
 		float _width;
 		float _freqMod;
-		TData _pastModelayLine;
+		float _pastModelayLine;
 		float _pastDist;
 		float _step;
 		float _interpDist;
@@ -72,6 +72,8 @@ class DopplerFractionalDelay : public Processing
 		, _interpDist(0)
 		, _notInitialized(true)
 		{
+			// TODO: This should be checked in an ok() method instead of asserting
+			CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
 		}
 
 		void setDelay(float delaySamples)
@@ -90,9 +92,8 @@ class DopplerFractionalDelay : public Processing
 
 		}
 
-		TData delayLine(TData x, float frac,Index D)
+		float delayLine(float x, float frac,Index D)
 		{
-			CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
 			Index writeindex = _writeIndex++ % _delayBufferSize;
 			Index readindex = _readIndex++ % _delayBufferSize;
 
