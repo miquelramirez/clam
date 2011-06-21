@@ -82,7 +82,6 @@ protected:
 	float _centerTap;
 	float _width;
 	float _freqMod;
-	enum { C = 340, FPS=25};
 	TData _pastModelayLine;
 	float _pastDist;
 	float _step; 
@@ -172,6 +171,7 @@ public:
 		//std::cout<< (newControlArrived ? "newcontrol" : "noNewControl") << std::endl;
 			
 		const float C=340.0;
+		const float FPS=25;
 		const float shiftConstant=1000.0;		
 		const CLAM::Audio& in = _in1.GetData();
 		const TData* inpointer = in.GetBuffer().GetPtr();		
@@ -182,19 +182,22 @@ public:
 		TData* outpointer = out.GetBuffer().GetPtr();	
 	
 		if (newControlArrived)
-			{						
+		{
 			TControlData distance = _distance.GetLastValue();
-			if (_notInitialized){ 
+			if (_notInitialized)
+			{ 
 				_pastDist=distance;
 				_interpDist=_pastDist;
 				_notInitialized=false; 
 			}
-			if (abs(distance-_pastDist)>10){
+			if (abs(distance-_pastDist)>10)
+			{
 				_step=0;
 				_pastDist=distance;
 				_interpDist=_pastDist;
 			}
-			else{			
+			else
+			{			
 				_step=(distance-_pastDist)*FPS/_sampleRate;
 				//if (distance > 0) _step=-_step;		
 				_pastDist=distance;
@@ -203,7 +206,8 @@ public:
 				
 		float shiftGain=shiftConstant*_shiftGain.GetLastValue();
 		
-		for (unsigned i = 0; i < size; ++i){			
+		for (unsigned i = 0; i < size; ++i)
+		{			
 			//float delay=shiftGain + shiftGain*(_interpDist/C);
 			float delay=shiftGain*sqrt((_interpDist)*(_interpDist))/C;
 			float D=floor(delay);			
@@ -211,10 +215,7 @@ public:
 			setDelay(D);
 			outpointer[i] = delayLine(inpointer[i],frac,D);
 			_pastModelayLine=outpointer[i];	
-			_interpDist=_interpDist+_step;
-			//if (step==0) std::cout << delay << "*************************************** " <<std::endl;	
-			//std::cout << delay << " " << _interpDist << " " << _step <<std::endl;
-			//std::cout << _pastDist << " " << distance <<std::endl;				
+			_interpDist+=_step;
 		}
 		
 		_in1.Consume();
