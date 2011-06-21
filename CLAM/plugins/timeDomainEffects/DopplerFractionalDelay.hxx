@@ -42,10 +42,109 @@ class DopplerFractionalDelay : public Processing
 	class Implementation 
 	{
 	public:
+		typedef long long unsigned Index;
+		typedef std::vector<TData> DelayBuffer;
+		DelayBuffer _delayBuffer;
+		Index _sampleRate; 
+		Index _delayBufferSize; 
+		Index _readIndex; 
+		Index _writeIndex; 
+		Index _modIndex;
+		float _centerTap;
+		float _width;
+		float _freqMod;
+		TData _pastModelayLine;
+		float _pastDist;
+		float _step; 
+		float _interpDist;
+		bool _notInitialized;
+	public:
 		Implementation(unsigned sampleRate, unsigned maxDelayInSamples)
+		: _delayBufferSize(1)  		
+
 		{
+			_sampleRate = sampleRate;
+			_delayBuffer.resize(maxDelayInSamples * _sampleRate);
+			_delayBufferSize = _delayBuffer.size(); 
+			_writeIndex = (_delayBufferSize-1); 
+			_readIndex = (_delayBufferSize-1);		
+			std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);		
+			
+			_pastModelayLine=0;
+			_pastDist=0;
+			_step=0;
+			_interpDist=0;
+			_notInitialized=true;
+		}
+		void setDelay(float delaySamples) 
+		{
+			CLAM_ASSERT(_delayBufferSize, "setDelay: Zero delay delay is not allowed!");
+			Index delayInSamples = round(delaySamples);
+			
+			if (delayInSamples > _delayBufferSize) 
+				return;
+			
+			Index readIndex = (_writeIndex - delayInSamples) % _delayBufferSize;
+			if (_readIndex % _delayBufferSize == readIndex)
+				return;
+			
+			_readIndex = readIndex;		
+			
 		}
 		
+		TData delayLine(TData x, float frac,Index D)	
+		{	
+			CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
+			Index writeindex = _writeIndex++ % _delayBufferSize;
+			Index readindex = _readIndex++ % _delayBufferSize;	
+			
+			_delayBuffer[writeindex] = x;
+
+			if (readindex==0) return _delayBuffer.back() + (1-frac) * _delayBuffer[readindex]-(1-frac)*_pastModelayLine;				
+			return _delayBuffer[readindex-1] + (1-frac) * _delayBuffer[readindex] - (1-frac)*_pastModelayLine;		
+
+		}
+		
+		void run(unsigned bufferSize, const float * inpointer, float * outpointer, bool newControlArrived, float distance, float shiftGain)
+		{
+			const float C=340.0;
+			const float FPS=25;
+			const float shiftConstant=1000.0;		
+			if (newControlArrived)
+			{
+				if (_notInitialized)
+				{ 
+					_pastDist=distance;
+					_interpDist=_pastDist;
+					_notInitialized=false; 
+				}
+				if (abs(distance-_pastDist)>10)
+				{
+					_step=0;
+					_pastDist=distance;
+					_interpDist=_pastDist;
+				}
+				else
+				{			
+					_step=(distance-_pastDist)*FPS/_sampleRate;
+					//if (distance > 0) _step=-_step;		
+					_pastDist=distance;
+				}
+			}
+					
+			
+			for (unsigned i = 0; i < bufferSize; ++i)
+			{			
+				//float delay=shiftGain + shiftGain*(_interpDist/C);
+				float delay=shiftGain*shiftConstant*sqrt((_interpDist)*(_interpDist))/C;
+				float D=floor(delay);			
+				float frac=delay-D;					
+				setDelay(D);
+				outpointer[i] = delayLine(inpointer[i],frac,D);
+				_pastModelayLine=outpointer[i];	
+				_interpDist+=_step;
+			}
+		}
 	};
 public:
 	class Config : public ProcessingConfig
@@ -70,8 +169,6 @@ public:
 //private: //TODO debugging	
 protected:
 	Config _config;
-	typedef long long unsigned Index;
-	typedef std::vector<TData> DelayBuffer;
 	InPort<Audio> _in1;
 	OutPort<Audio> _out1;
 	FloatInControl _distance;
@@ -79,51 +176,8 @@ protected:
 
 	Implementation * _impl;
 
-	DelayBuffer _delayBuffer;
-	Index _sampleRate; 
-	Index _delayBufferSize; 
-	Index _readIndex; 
-	Index _writeIndex; 
-	Index _modIndex;
-	float _centerTap;
-	float _width;
-	float _freqMod;
-	TData _pastModelayLine;
-	float _pastDist;
-	float _step; 
-	float _interpDist;
-	bool _notInitialized;
-
 private:
 		
-	void setDelay(float delaySamples) 
-	{
-		CLAM_ASSERT(_delayBufferSize, "setDelay: Zero delay delay is not allowed!");
-		Index delayInSamples = round(delaySamples);
-		
-		if (delayInSamples > _delayBufferSize) 
-			return;
-		
-		Index readIndex = (_writeIndex - delayInSamples) % _delayBufferSize;
-		if (_readIndex % _delayBufferSize == readIndex)
-			return;
-		
-		_readIndex = readIndex;		
-		
-	}
-	
-	TData delayLine(TData x, float frac,Index D)	
-	{	
-		CLAM_ASSERT(_delayBufferSize, "delayLine: Zero delay buffer is not allowed!");
-		Index writeindex = _writeIndex++ % _delayBufferSize;
-		Index readindex = _readIndex++ % _delayBufferSize;	
-		
-		_delayBuffer[writeindex] = x;
-
-		if (readindex==0) return _delayBuffer.back() + (1-frac) * _delayBuffer[readindex]-(1-frac)*_pastModelayLine;				
-		return _delayBuffer[readindex-1] + (1-frac) * _delayBuffer[readindex] - (1-frac)*_pastModelayLine;		
-
-	}
 
 public:
 	DopplerFractionalDelay(const Config& config = Config()) 
@@ -132,7 +186,6 @@ public:
 		, _distance("relative distance in mts", this)
 		, _shiftGain("freq shift scaler", this)
 		, _impl(0)
-		, _delayBufferSize(1)  		
 	{
 		Configure( config );
 	}
@@ -142,24 +195,11 @@ public:
 		CopyAsConcreteConfig(_config, c);
 		if (_impl) delete _impl;
 		_impl = new Implementation(BackendSampleRate(), _config.GetMaxDelayInSeconds());
-		_sampleRate = BackendSampleRate();
-		
-		_delayBuffer.resize(_config.GetMaxDelayInSeconds() * _sampleRate);
-		_delayBufferSize = _delayBuffer.size(); 
-		_writeIndex = (_delayBufferSize-1); 
-		_readIndex = (_delayBufferSize-1);		
-		std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);		
 		
 		_distance.DoControl(_config.GetDistance());
 		_distance.SetBounds(0,500);
 		_shiftGain.DoControl(_config.GetShiftGain());
 		_shiftGain.SetBounds(1,20);  //////////////////////added to exagerate the effect/////////////////////////
-		_pastModelayLine=0;
-		_pastDist=0;
-		_step=0;
-		_interpDist=0;
-		_notInitialized=true;
-
 		return true;
 	}
 	
@@ -169,46 +209,6 @@ public:
 		
 	const ProcessingConfig & GetConfig() const { return _config; }
 	
-	void run(unsigned bufferSize, const float * inpointer, float * outpointer, bool newControlArrived, float distance, float shiftGain)
-	{
-		const float C=340.0;
-		const float FPS=25;
-		const float shiftConstant=1000.0;		
-		if (newControlArrived)
-		{
-			if (_notInitialized)
-			{ 
-				_pastDist=distance;
-				_interpDist=_pastDist;
-				_notInitialized=false; 
-			}
-			if (abs(distance-_pastDist)>10)
-			{
-				_step=0;
-				_pastDist=distance;
-				_interpDist=_pastDist;
-			}
-			else
-			{			
-				_step=(distance-_pastDist)*FPS/_sampleRate;
-				//if (distance > 0) _step=-_step;		
-				_pastDist=distance;
-			}
-		}
-				
-		
-		for (unsigned i = 0; i < bufferSize; ++i)
-		{			
-			//float delay=shiftGain + shiftGain*(_interpDist/C);
-			float delay=shiftGain*shiftConstant*sqrt((_interpDist)*(_interpDist))/C;
-			float D=floor(delay);			
-			float frac=delay-D;					
-			setDelay(D);
-			outpointer[i] = delayLine(inpointer[i],frac,D);
-			_pastModelayLine=outpointer[i];	
-			_interpDist+=_step;
-		}
-	}
 
 	bool Do()
 	{
@@ -225,7 +225,7 @@ public:
 
 		TControlData distance = _distance.GetLastValue();
 		float shiftGain=_shiftGain.GetLastValue();
-		run(bufferSize, inpointer, outpointer, newControlArrived, distance, shiftGain);
+		_impl->run(bufferSize, inpointer, outpointer, newControlArrived, distance, shiftGain);
 		
 		_in1.Consume();
 		_out1.Produce();
