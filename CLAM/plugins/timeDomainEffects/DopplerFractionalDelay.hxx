@@ -41,6 +41,10 @@ class DopplerFractionalDelay : public Processing
 
 	class Implementation 
 	{
+	public:
+		Implementation(unsigned sampleRate, unsigned maxDelayInSamples)
+		{
+		}
 		
 	};
 public:
@@ -72,8 +76,10 @@ protected:
 	OutPort<Audio> _out1;
 	FloatInControl _distance;
 	FloatInControl _shiftGain;
+
+	Implementation * _impl;
+
 	DelayBuffer _delayBuffer;
-	
 	Index _sampleRate; 
 	Index _delayBufferSize; 
 	Index _readIndex; 
@@ -125,6 +131,7 @@ public:
 		, _out1("OutputBuffer", this)
 		, _distance("relative distance in mts", this)
 		, _shiftGain("freq shift scaler", this)
+		, _impl(0)
 		, _delayBufferSize(1)  		
 	{
 		Configure( config );
@@ -133,6 +140,8 @@ public:
 	bool ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(_config, c);
+		if (_impl) delete _impl;
+		_impl = new Implementation(BackendSampleRate(), _config.GetMaxDelayInSeconds());
 		_sampleRate = BackendSampleRate();
 		
 		_delayBuffer.resize(_config.GetMaxDelayInSeconds() * _sampleRate);
