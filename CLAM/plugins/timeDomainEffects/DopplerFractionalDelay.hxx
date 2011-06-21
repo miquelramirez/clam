@@ -41,9 +41,10 @@ class DopplerFractionalDelay : public Processing
 
 	class Implementation
 	{
-	public:
+	private:
 		typedef long long unsigned Index;
 		typedef std::vector<TData> DelayBuffer;
+	private:
 		DelayBuffer _delayBuffer;
 		Index _sampleRate;
 		Index _delayBufferSize;
@@ -61,7 +62,11 @@ class DopplerFractionalDelay : public Processing
 	public:
 		Implementation(unsigned sampleRate, unsigned maxDelayInSamples)
 		: _delayBufferSize(1)
-
+		, _pastModelayLine(0)
+		, _pastDist(0)
+		, _step(0)
+		, _interpDist(0)
+		, _notInitialized(true)
 		{
 			_sampleRate = sampleRate;
 			_delayBuffer.resize(maxDelayInSamples * _sampleRate);
@@ -70,11 +75,6 @@ class DopplerFractionalDelay : public Processing
 			_readIndex = (_delayBufferSize-1);
 			std::fill(_delayBuffer.begin(), _delayBuffer.end(), 0.);
 
-			_pastModelayLine=0;
-			_pastDist=0;
-			_step=0;
-			_interpDist=0;
-			_notInitialized=true;
 		}
 		void setDelay(float delaySamples)
 		{
