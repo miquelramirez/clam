@@ -92,7 +92,7 @@ class DopplerFractionalDelay : public Processing
 
 		}
 
-		float delayLine(float x, float frac,Index D)
+		float delayLine(float x, float frac)
 		{
 			Index writeindex = _writeIndex++ % _delayBufferSize;
 			Index readindex = _readIndex++ % _delayBufferSize;
@@ -139,7 +139,7 @@ class DopplerFractionalDelay : public Processing
 				float D=floor(delay);
 				float frac=delay-D;
 				setDelay(D);
-				outpointer[i] = delayLine(inpointer[i],frac,D);
+				outpointer[i] = delayLine(inpointer[i],frac);
 				_pastModelayLine=outpointer[i];
 				_interpDist+=_step;
 			}
