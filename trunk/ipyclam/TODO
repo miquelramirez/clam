@@ -125,11 +125,13 @@
 [X]	- code() uses numeric ports (like AudioSink.1) as attributes, instead of subscripts (first char should be letter or _)
 	- If an inconnector and outconnector have the same name, the processing will always think it's the incconnector
 [X]	- Adding an existing processing name asserts (c++), should raise
-	- When code uses subscripts it still adds the attribute point
-	- net.p > net.s, casca a CLAM
-	- net.p._outports > net.s._inports: retorn random, mai no fa res
-	- net.p._outports[::2] > net.s._inports[::2] nomes conecta el primer (tenint 4 ports)
-	- description uses repr
+[X]	- When code uses subscripts it still adds the attribute point
+[X]	- net.p > net.s, casca a CLAM
+[X]	- net.p._outports > net.s._inports: retorn random, mai no fa res
+		- XSR: Not implemented this way, correct way to use it is:
+			net.p > net.s._inports
+[X]	- net.p._outports[::2] > net.s._inports[::2] nomes conecta el primer (tenint 4 ports)
+[X]	- description uses repr
 		- escapar cometes
 		- carry return
 	- c = net.p._config; net.p._config = c  # detect and RunTimeError instead of segfault
@@ -169,7 +171,7 @@
 [X]		- test that the configuration changes but not the processing
 [X]		- test that apply() actually aplies
 - Type plugins for 
-	- Base class:
+[X]	- Base class:
 		- take Configurator as reference
 			- static function to access the list of plugins
 			- base constructor adds 'this' to the list
@@ -185,13 +187,14 @@
 	- Clam
 - Optionality
 	- What
-		- Attributes being None by default, get returns none
-		- Set to None -> get retorna None
-		- Being none set to something -> adds the attribute in clam
+[X]		- Attributes being None by default, get returns none
+[X]		- Set to None -> get retorna None
+[X]		- Being none set to something -> adds the attribute in clam
 	- Where
-		- Dummy
-		- Configuration
+[X]		- Dummy
+[X]		- Configuration
 		- Clam
+			- Pending revision of DynamicType methods
 
 - Moure helpers de test a un modul unic
 
