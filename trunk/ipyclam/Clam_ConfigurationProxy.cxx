@@ -115,7 +115,10 @@ ConfigurationProxy * cloneConfig(ConfigurationProxy & config)
 
 void copyConfig(ConfigurationProxy & config, ConfigurationProxy & configuration)
 {
-	config._processing->Configure(*configuration._processingConfig);
+	if (configuration._processingConfig)
+		config._processing->Configure(*configuration._processingConfig);
+	else
+		config._processing->Configure(configuration._processing->GetConfig());
 }
 
 BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)

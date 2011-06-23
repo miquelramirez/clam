@@ -126,6 +126,15 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual(1, proxy["NSources"])
 		self.assertEqual(2, configClone["NSources"])
 
+	def test_copyConfig(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
+		config = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
+		config["NSources"] = 2
+		self.assertEqual(1, proxy["NSources"])
+		proxy.copyConfig(config)
+		self.assertEqual(2, config["NSources"])
+		self.assertEqual(2, proxy["NSources"])
+
 	def test_get_optional_attribute(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
 		self.assertEqual(None, proxy["SecondInt"])
