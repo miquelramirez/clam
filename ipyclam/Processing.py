@@ -274,7 +274,7 @@ class ProcessingTests(unittest.TestCase):
 		self.assertEquals(12, net.proc1 > net.proc2._inports)
 
 class Clam_ProcessingTests(ProcessingTests):
-	def proxy(self):
+	def _proxy(self):
 		import Clam_NetworkProxy
 		import Network
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
@@ -283,7 +283,7 @@ class Clam_ProcessingTests(ProcessingTests):
 		network.Processing2 = "DummyTypeProcessing2"
 		return proxy
 
-	def empty(self):
+	def _empty(self):
 		import Clam_NetworkProxy
 		return Clam_NetworkProxy.Clam_NetworkProxy()
 
