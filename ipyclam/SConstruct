@@ -31,7 +31,7 @@ module = env.SharedLibrary (
 
 configurationModule = env.SharedLibrary (
 	target='Clam_ConfigurationProxy',
-	source='Clam_ConfigurationProxy.cxx',
+	source=['Clam_ConfigurationProxy.cxx', 'ConfigurationProxy.cxx'],
 	SHLIBPREFIX='',
 )
 
