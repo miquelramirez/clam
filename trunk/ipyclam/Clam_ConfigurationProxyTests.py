@@ -126,5 +126,19 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual(1, proxy["NSources"])
 		self.assertEqual(2, configClone["NSources"])
 
+	def test_get_optional_attribute(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
+		self.assertEqual(None, proxy["SecondInt"])
+
+	def _test_set_optional_attribute(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
+		proxy["SecondInt"] = 22
+		self.assertEqual(22, proxy["SecondInt"])
+
+	def _test_set_attribute_as_removed(self):
+		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
+		proxy["FirstInt"] = None
+		self.assertEqual(None, proxy["FirstInt"])
+
 if __name__ == '__main__':
 	unittest.main()

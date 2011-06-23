@@ -7,6 +7,12 @@
 
 namespace py = boost::python;
 
+void throwPythonException(PyObject * type, std::string errorString)
+{
+	PyErr_SetString(type, errorString.c_str() );
+	py::throw_error_already_set();
+}
+
 int getAttributeIndex(const ConfigurationProxy & config, const std::string & attribute)
 {
 	for(unsigned int i = 0; i < config.nAttributes(); ++i)
@@ -43,7 +49,10 @@ py::object getAttribute(ConfigurationProxy & config, const std::string & attribu
 {
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
-		throwPythonError(PyExc_KeyError, attribute.c_str());
+		throwPythonException(PyExc_KeyError, attribute.c_str());
+	
+	if ( !config.IsAttributeInstantiated(index) )
+		return py::object();
 
 	ConfigurationProxyPlugin & plugin = ConfigurationProxyPlugin::GetPlugin(config, index);
 	return plugin.getAttribute(config, index);
@@ -53,8 +62,20 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, py
 {
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
-		throwPythonError(PyExc_KeyError, attribute.c_str());
+		throwPythonException(PyExc_KeyError, attribute.c_str());
 
+/*
+	TODO: Commit when DynamicType AddAttr_ made public
+	
+	if (value.ptr() == Py_None)
+	{
+		config.RemoveAttribute(index);
+		return;
+	}
+
+	if ( !config.IsAttributeInstantiated(index) )
+		config.AddAttribute(index);
+*/
 	ConfigurationProxyPlugin & plugin = ConfigurationProxyPlugin::GetPlugin(config, index);
 	plugin.setAttribute(config, index, value);
 }
@@ -71,7 +92,7 @@ bool nonDefault(ConfigurationProxy & config, const std::string & attribute)
 {
 	int index = getAttributeIndex(config, attribute);
 	if (index == -1)
-		throwPythonError(PyExc_KeyError, attribute.c_str());
+		throwPythonException(PyExc_KeyError, attribute.c_str());
 
 	ConfigurationProxyPlugin & plugin = ConfigurationProxyPlugin::GetPlugin(config, index);
 	return plugin.nonDefault(config, index);
