@@ -132,9 +132,10 @@
 			net.p > net.s._inports
 [X]	- net.p._outports[::2] > net.s._inports[::2] nomes conecta el primer (tenint 4 ports)
 [X]	- description uses repr
-		- escapar cometes
-		- carry return
 	- c = net.p._config; net.p._config = c  # detect and RunTimeError instead of segfault
+		- XSR: Segfault caused by programming error, now fixed.
+		  Should throw error instead?
+		
 
 == Config ==
 
