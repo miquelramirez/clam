@@ -27,15 +27,12 @@
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Processing.hxx"
-#include "Storage.hxx"
  
 #include "OverlapAddConfig.hxx"
 #include "AudioInPort.hxx"
 #include "AudioOutPort.hxx"
 
 namespace CLAM {
-
-	class OverlapAdd;
 
 /*	  Was:
 	  For good results FrameSize should be the same as HopSize; and BufferSize should
