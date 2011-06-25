@@ -34,7 +34,6 @@
 #include "DynamicType.hxx"
 #include "Array.hxx"
 #include "ProcessingData.hxx"
-#include "ProcessingDataConfig.hxx"
 #include "DataTypes.hxx"
 
 namespace CLAM {
