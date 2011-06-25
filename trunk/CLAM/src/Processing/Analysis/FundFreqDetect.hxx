@@ -34,6 +34,10 @@
 
 namespace CLAM {
 
+	class SpectralPeakArray;
+	class Fundamental;
+	class IndexArray;
+
 	/**    This class estimates a fundamental frequency value
 	*     in the spectral domain for one single spectral Frame.
 	*     The input is a set of spectral peaks stored in the class CLAM::SpectralPeakArray

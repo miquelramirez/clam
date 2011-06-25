@@ -30,6 +30,7 @@
 #include "AudioOutPort.hxx"
 
 namespace CLAM {
+	class Spectrum;
 
 	/** This Processing class takes an input audio buffer and shifts it to get zero-phase
 	 *	conditions in the STFT 
