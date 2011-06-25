@@ -10,7 +10,7 @@ folders = [
 	'src/core',
 	'src/core/base',
 	'src/core/standard',
-	'src/core/processings',
+	'src/core/processing',
 	'src/core/ports',
 	'src/core/controls',
 	'src/Data/Base',
