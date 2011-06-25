@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _Array_
-#define _Array_
+#ifndef CLAM_Array_hxx
+#define CLAM_Array_hxx
 
 #include <cstdio>
 #include <cstdlib>
@@ -30,7 +30,7 @@
 #include "Err.hxx"
 #include "Assert.hxx"
 #include "ErrOutOfMemory.hxx"
-#include "Storage.hxx"
+#include "XMLStorage.hxx"
 #include "Component.hxx"
 #include "TypeInfo.hxx"
 
@@ -266,15 +266,13 @@ public:
 
 	void Apply( T (*f)(T) )
 	{
-		int i;
-		for (i=0; i<mSize; i++)
+		for (int i=0; i<mSize; i++)
 			(*this)[i] = f( (*this)[i] );
 	}
 
 	void Apply( T (*f)(T,int),int parameter )
 	{
-		int i;
-		for (i=0; i<mSize; i++)
+		for (int i=0; i<mSize; i++)
 			(*this)[i] = f( (*this)[i], parameter );
 	}
 
@@ -580,5 +578,5 @@ const char* Array<T>::msgDeleteOutOfRange =
 
 }
 
-#endif//_Array_
+#endif//CLAM_Array_hxx
 
