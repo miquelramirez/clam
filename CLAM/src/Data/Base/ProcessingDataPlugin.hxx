@@ -11,10 +11,29 @@
 #ifdef __GNUC__
 #include <cxxabi.h>
 #endif//__GNUC__
-namespace CLAM
-{
 
-class ProcessingDataPlugin
+namespace CLAM { class ProcessingDataPlugin; }
+
+/**
+	Provides custom metadata for processing data types: color and display name.
+	To define such properties for your own type, write the following code in a cxx file.
+	@code
+	static ProcessingDataPlugin::Registrator<MyType> dataRegistratorMyType("#003344", "My Own Type");
+	@endcode
+	It is not needed for a type to be used as processing data or control data,
+	but it is quite convenient to define it so that, for example, NetworkEditor
+	visualize ports and controls with a custom color.
+
+	You can access such metadata, use the provided static functions.
+	@code
+		std::string color = ProcessingDataPlugin::colorFor(typeid(myObject));
+		std::string displayName = ProcessingDataPlugin::displayNameFor(typeid(myObject));
+	@endcode
+	If there is no metadata registered, they return the demangled type name as display name 
+	and an empty string as color.
+*/
+
+class CLAM::ProcessingDataPlugin
 {
 public:
 	typedef std::string Key;
@@ -101,7 +120,6 @@ public:
 	};
 };
 
-}
 
 
 #endif//ProcessingDataPlugin_hxx
