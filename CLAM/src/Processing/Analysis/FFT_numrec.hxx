@@ -29,11 +29,6 @@
 
 namespace CLAM {
 
-	struct FFTConfig;
-	class Spectrum;
-	class Audio;
-	class ProcessingConfig;
-
 	/** Implementation of the FFT using the algorithm in Numerical Recipies
 	 * in C.
 	 * @see <a HREF="http://www.nr.com/"> Numerical Recipies Home Page</a>

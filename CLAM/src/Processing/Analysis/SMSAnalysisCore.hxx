@@ -40,11 +40,6 @@
 namespace CLAM 
 {
 
-class Segment;
-class Fundamental;
-class ProcessingConfig;
-class SpectralPeakArray;
-
 /** Class that encapsulates all the building blocks of the SegmentAnalysis example */
 class SMSAnalysisCore : public ProcessingComposite
 {

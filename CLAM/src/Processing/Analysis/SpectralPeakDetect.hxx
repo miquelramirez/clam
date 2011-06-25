@@ -31,10 +31,6 @@
 namespace CLAM
 {
 
-	class SpectralPeakArray;
-	class Storage;
-	class ProcessingConfig;
-
 	/**
 	 * This class is dedicated to find magnitude SpectralPeaks in a given spectral frame.
 	 * The spectral frame has to be in phase/magnitudes (in dB's) format for the algorithm.

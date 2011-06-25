@@ -31,10 +31,6 @@
 
 namespace CLAM {
 
-	class SpectralPeakArray;
-	class Segment;
-	class ProcessingConfig;
-
 	/* CleanTracksConfig moved to CleanTracksConfig.hxx */
 
 	typedef struct STrajectory

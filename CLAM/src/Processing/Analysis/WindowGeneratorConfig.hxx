@@ -30,8 +30,6 @@
 
 namespace CLAM {
 
-	class Component;
-
 	class EWindowNormalize : public Enum {
 	public:
 		EWindowNormalize() : Enum(ValueTable(), eAnalysis) {}

@@ -30,8 +30,6 @@ namespace CLAM {
 
 	class Spectrum;
 	class SpectralPeakArray;
-	class Storage;
-	class ProcessingConfig;
 
 	/** Configuration class for SpectralEnvelopeExtract objects
 	 *  @see ProcessingConfig, SpectralEnvelopeExtract
