@@ -34,10 +34,7 @@
 
 namespace CLAM {
 
-class Audio;
 class Spectrum;
-class Storage;
-class ProcessingConfig;
 
 /**
 * This class can be used for generating Windows and for zeropadding the 

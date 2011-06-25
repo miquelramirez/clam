@@ -35,9 +35,6 @@
 namespace CLAM
 {
 
-	class FFTConfig;
-	class Spectrum;
-	class Audio;
 	namespace Hidden { struct FFT_fftw3_Implementation; }
 
 	/** Implementation of the FFT using the Fastest Fourier Transform of the West version 3

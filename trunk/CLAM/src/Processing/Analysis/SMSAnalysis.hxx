@@ -33,8 +33,6 @@
 namespace CLAM 
 {
 
-class ProcessingConfig;
-
 /** Class that encapsulates all the building blocks of the SegmentAnalysis example */
 class SMSAnalysis : public ProcessingComposite
 {

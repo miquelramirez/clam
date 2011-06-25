@@ -34,10 +34,8 @@
 
 namespace CLAM {
 
-	class Fundamental;	
 	class SpectralPeak;
-	class ProcessingConfig;
-	
+
 	/**
 	 * Config class for the SinTracking Processing.
 	 */

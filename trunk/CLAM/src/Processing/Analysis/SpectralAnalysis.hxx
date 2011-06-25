@@ -42,7 +42,6 @@ namespace CLAM {
 
 class Frame;
 class Segment;
-class ProcessingConfig;
 
 /** Processing class for performing a STFT. Its main functionality is to obtain
  *  a spectrum out of an incoming audio signal, applying windowing, circular shift

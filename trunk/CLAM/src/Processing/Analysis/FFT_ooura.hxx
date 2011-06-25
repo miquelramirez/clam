@@ -30,10 +30,6 @@
 
 namespace CLAM {
 
-	struct FFTConfig;
-	class Spectrum;
-	class Audio;
-	class ProcessingConfig;
 	class IFFT_ooura;
 
 	/** Implementation of the FFT using the algorithm from Takuya OOURA

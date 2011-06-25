@@ -31,11 +31,6 @@
 
 namespace CLAM {
 
-	class Spectrum;
-	class Audio;
-	class Storage;
-	class ProcessingConfig;
-
 	/** This Processing class takes an input audio buffer and shifts it to get zero-phase
 	 *	conditions in the STFT 
 	 */
@@ -68,7 +63,7 @@ namespace CLAM {
 		bool Do(void);
 
 		bool Do( const DataArray& input, DataArray& out);
-		bool Do(Spectrum& input, Spectrum& out);
+		bool Do( Spectrum& input, Spectrum& out);
 		bool Do( const Audio& input, Audio& out);
 
 		// Port interfaces.

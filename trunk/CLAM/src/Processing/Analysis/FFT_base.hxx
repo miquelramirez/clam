@@ -34,11 +34,6 @@
 
 namespace CLAM {
 
-    class Storage;
-    class ProcessingConfig;
-    class Audio;
-    class Spectrum;
-
     /** Abstract base class for FFT classes */
     class FFT_base: public Processing
     {
