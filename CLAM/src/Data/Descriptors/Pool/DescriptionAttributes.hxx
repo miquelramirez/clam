@@ -24,7 +24,7 @@
 
 #include <typeinfo>
 #include "Assert.hxx"
-#include "Storage.hxx"
+#include "XMLStorage.hxx"
 #include "XMLAdapter.hxx"
 #include "XMLArrayAdapter.hxx"
 #include "XMLComponentAdapter.hxx"
