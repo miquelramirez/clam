@@ -101,20 +101,17 @@ public:
 	{
 		return config().IsAttributeInstantiated(i);
 	}
-/*
-	TODO: Commit when DynamicType AddAttr_ made public
-
 	void AddAttribute(unsigned i)
 	{
 		if (_processing)
 		{
 			hold();
-			_processingConfig->AddAttr_(i, sizeof(attributeType(i)));
+			_processingConfig->AddAttribute(i);
 			_processingConfig->UpdateData();
 			apply();
 			return;
 		}
-		_processingConfig->AddAttr_(i, sizeof(attributeType(i)));
+		_processingConfig->AddAttribute(i);
 		_processingConfig->UpdateData();
 	}
 	void RemoveAttribute(unsigned i)
@@ -122,15 +119,14 @@ public:
 		if (_processing)
 		{
 			hold();
-			_processingConfig->RemoveAttr_(i);
+			_processingConfig->RemoveAttribute(i);
 			_processingConfig->UpdateData();
 			apply();
 			return;
 		}
-		_processingConfig->RemoveAttr_(i);
+		_processingConfig->RemoveAttribute(i);
 		_processingConfig->UpdateData();
 	}
-*/
 	~ConfigurationProxy()
 	{
 		delete _processingConfig;
