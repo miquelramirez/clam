@@ -28,7 +28,7 @@
 #ifndef _Component_
 #define _Component_
 
-#include "Storage.hxx"
+#include "XMLStorage.hxx"
 
 namespace CLAM {
 /**
