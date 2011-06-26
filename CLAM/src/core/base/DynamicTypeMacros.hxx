@@ -275,7 +275,7 @@ ACCESS: \
 		_new_##NAME(pos, orig);\
 	}\
 	inline void Add##NAME() {\
-		AddAttr_(N, sizeof(TYPE));\
+		AddAttribute(N);\
 	}\
 	template <typename Visitor> \
 	inline void Visit##NAME(Visitor & visitor) { \
@@ -283,7 +283,7 @@ ACCESS: \
 			visitor.Accept(#NAME,Get##NAME()); \
 	}\
 	inline void Remove##NAME() { \
-		RemoveAttr_(N); \
+		RemoveAttribute(N); \
 	}\
 	inline bool Has##NAME() const { \
 		return ExistAttr(N); \
