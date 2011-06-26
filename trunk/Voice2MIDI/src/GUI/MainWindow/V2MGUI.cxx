@@ -27,7 +27,6 @@
 #include "V2MHelpViewer.hxx"
 
 V2MGUI::V2MGUI()
-	: Q3MainWindow(0,"main window",Qt::WStyle_Customize|Qt::WStyle_Title|Qt::WStyle_SysMenu|Qt::WStyle_Minimize|Qt::WDestructiveClose)
 {
     setFixedSize(640,480);
     setGeometry(100,100,640,480);
@@ -717,7 +716,7 @@ void V2MGUI::InitMenu()
 	help->insertSeparator();
     help->insertItem("About...",this,SLOT(about()));
 
-    menu = new QMenuBar(this);
+    menu = menuBar();
     CHECK_PTR(menu);
     menu->insertItem("&File",file);
     menu->insertItem("&Analysis",analysis);
