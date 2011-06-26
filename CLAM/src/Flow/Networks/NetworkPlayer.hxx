@@ -187,7 +187,7 @@ private:
 	typedef std::vector <ExportedPort> ExportedPorts;
 	ExportedPorts _audioSources;
 	ExportedPorts _audioSinks;
-protected:
+protected: // TODO: Remove access from LadspaNetworkExporter
 	ExportedPorts _controlSources;
 	ExportedPorts _controlSinks;
 private:
