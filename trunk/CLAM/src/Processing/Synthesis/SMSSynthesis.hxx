@@ -34,8 +34,6 @@
 #include "Segment.hxx"
 #include "InControl.hxx"
 #include "Spectrum.hxx"
-#include "ProcessingData.hxx"
-#include "ProcessingDataConfig.hxx"
 #include "Processing.hxx"
 #include "SynthSineSpectrum.hxx"
 #include "PhaseManagement.hxx"
