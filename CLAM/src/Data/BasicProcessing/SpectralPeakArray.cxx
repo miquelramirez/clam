@@ -38,9 +38,9 @@ namespace Hidden
 ///////////////////////////////////////////////////////
 
 
-SpectralPeakArray::SpectralPeakArray(const SpectralPeak& prototype):ProcessingData(eNumAttr)
+SpectralPeakArray::SpectralPeakArray(const SpectralPeak& prototype)
+	: ProcessingData(eNumAttr, TypeDescriptionTable())
 {
-	MandatoryInit();
 	InitFromPrototype(prototype);
 }
 

@@ -85,9 +85,9 @@ void SpectrumConfig::DefaultValues()
 //////////////////////////////////////////////////////////////////////
 
 
-Spectrum::Spectrum(const SpectrumConfig &newConfig) : ProcessingData(eNumAttr)
+Spectrum::Spectrum(const SpectrumConfig &newConfig)
+	: ProcessingData(eNumAttr, TypeDescriptionTable())
 {
-	MandatoryInit(); // Macro-expanded function. Necessary for some dynamic type initialization.
 	Configure(newConfig);
 }
 

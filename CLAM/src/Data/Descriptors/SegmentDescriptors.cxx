@@ -25,9 +25,9 @@
 namespace CLAM
 {
 
-SegmentDescriptors::SegmentDescriptors(Segment* pSegment): Descriptor(eNumAttr)
+SegmentDescriptors::SegmentDescriptors(Segment* pSegment)
+	: Descriptor(eNumAttr, TypeDescriptionTable())
 {
-	MandatoryInit();
 	mpSegment=pSegment;
 }
 

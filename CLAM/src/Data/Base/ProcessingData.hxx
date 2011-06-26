@@ -41,7 +41,7 @@ public:
 	/** Constructor of an object that will contain the number of attributes passed by parameter
 	 *  @param n Number of dynamic attributes that will be defined
 	 */
-	ProcessingData(const int n) : DynamicType(n) {};
+	ProcessingData(const int n, TAttr * attributeTable) : DynamicType(n, attributeTable) {};
 	/** Copy constructor of a ProcessingData object.
 	 *  @param prototype Another ProcessingData type from which the structure is taken
 	 *  @param shareData Tells whether the object will share the same data of the object passed by parameter or not, by default set to false

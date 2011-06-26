@@ -45,7 +45,7 @@ namespace CLAM {
 		 * of the derived classes.
 		 * @param n Number of dynamic attributes
 		 */
-		ProcessingConfig(const int n) : DynamicType(n) {};
+		ProcessingConfig(const int n, TAttr * attributeTable) : DynamicType(n, attributeTable) {};
 
 		/** Copy constructor.
 		 * @param prototype copy source.

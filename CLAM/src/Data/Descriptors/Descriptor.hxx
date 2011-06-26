@@ -40,7 +40,11 @@ template <bool abs>
 class DescriptorTmpl:public ProcessingData
 {
 public:
-	DescriptorTmpl(int n):ProcessingData(n){mpStats=0;}
+	DescriptorTmpl(int n, TAttr * typeDescriptorTable)
+		: ProcessingData(n, typeDescriptorTable)
+	{
+		mpStats=0;
+	}
 	DescriptorTmpl(const DescriptorTmpl<abs>& prototype, bool shareData=false, bool deep=true)
 		: ProcessingData(prototype, shareData, deep)
 	{

@@ -45,39 +45,39 @@ namespace CLAM {
 
 
 /**
- * This class implements a type that is dynamic. That is, it allows to add &
- * remove fields or attributes at run time, optimizing this way the memory used.
- * All the dynamic attributes are nevertheless perceived typed. So the compiler
- * can garant the type consistency in every access to the dynamic attributes.
- * It also allows herarchic structures and implements de Component interface
- * so it can be stored all the tree (to XML format, for example)
- * and can be copied (swallow or deep copy). (see the methods: SwallowCopy, 
- * DeepCopy and StoreOn )
- * <p>
- * In this class there is implemented all the memory management, but is an abstract
- * class: to work with dynamic types, is necessary to define a concrete dynamic 
- * type (derives from this). A concrete dynamic type must be defined following 
- * a very specific set of rules; basically the attributes are registered using a
- * macros mechanism that expand a known interface for accessing attributes.
- * <p>
- * As these methods are expanded by macros, they can not be documented inside the
- * concrete dynamic type. Hence they will be documented here:
- * 
- * @see Component
- * @see DynamicBranch
- *
+	This class implements a type that is dynamic. That is, it allows to add &
+	remove fields or attributes at run time, optimizing this way the memory used.
+	All the dynamic attributes are nevertheless perceived typed. So the compiler
+	can garant the type consistency in every access to the dynamic attributes.
+	It also allows herarchic structures and implements de Component interface
+	so it can be stored all the tree (to XML format, for example)
+	and can be copied (swallow or deep copy). (see the methods: SwallowCopy, 
+	DeepCopy and StoreOn )
+	<p>
+	In this class there is implemented all the memory management, but is an abstract
+	class: to work with dynamic types, is necessary to define a concrete dynamic 
+	type (derives from this). A concrete dynamic type must be defined following 
+	a very specific set of rules; basically the attributes are registered using a
+	macros mechanism that expand a known interface for accessing attributes.
+	<p>
+	As these methods are expanded by macros, they can not be documented inside the
+	concrete dynamic type. Hence they will be documented here:
+	
+	@see Component
  */
 class DynamicType : public Component
 {
+protected:
+	struct TAttr;
 public:
 	/**
-	* Constructs a DynamicType object that can hold @param nAttr attributes.
-	* <B>This constructor must be only used from the concrete dyn. type constructor.</B>
-	* This constructor creates a dynamic type that is a new prototype. That means
-	* that has its own dynamic information (which attrs. are instanciated, etc.)
-	* Furthermore, the new object is set owner of its memory.
+		Constructs a DynamicType object that can hold @param nAttr attributes.
+		<B>This constructor must be only used from the concrete dyn. type constructor.</B>
+		This constructor creates a dynamic type that is a new prototype. That means
+		that has its own dynamic information (which attrs. are instanciated, etc.)
+		Furthermore, the new object is set owner of its memory.
 	*/
-	DynamicType(const int nAttr);
+	DynamicType(const int nAttr, TAttr * attributeTable);
 
 	/**
 	* Copy constructor of a dynamic Type.
@@ -93,45 +93,6 @@ public:
 	virtual ~DynamicType();
 	
 	virtual const char* GetClassName() const =0;
-protected:
-	/**
-	* The concrete dynamic type constructor calls DefaultInit(). This allows user to initialize
-	* his/her object. But we define DefaultInit() here because we don't want to force writting
-	* one DefaultInit() function for each concrete dynamic type.
-	* If a dynamic type concrete class defines some (not-default) constructors, this should
-	* also call the DefaultInit().
-	* @see CopyInit()
-	*/
-	void DefaultInit() {
-	
-	};
-
-	/**
-	* implemented by the macros in the concrete class. Informs all attrs. to the typeDescTable.
-	* used in UpdateData(). @see UpdateData()
-	*/
-	virtual void InformAll() {
-			// lets calculates the offsets of the "Pre allocated mode"
-		CLAM_DEBUG_ASSERT(typeDescTable,"static table don't exist. in DT::InformAll()");
-		int adder=0;
-		for (unsigned int i=0; i<numAttr; i++) {
-			typeDescTable[i].offset = adder;
-			adder += typeDescTable[i].size;
-		}
-		maxAttrSize = adder;
-
-	};
-
-public:
-	/**
-	* This method allows custom code for the copy-constructor of a dynamic type, since the
-	* copy-constructor is macro expanded and can not be overwritted. If the writter of a 
-	* concrete dynamic type writes more copy-constructors, he/she should include manually
-	* the call of the CopyInit().
-	* Here we give the default (void) implementation.
-	*/
-	void CopyInit(const DynamicType & dt) {
-	};
 
 	/**
 	* Method used to resize the data space of the dynamic type, necessary when some
@@ -144,28 +105,6 @@ public:
 	*/
 	bool UpdateData();
 	
-private:
-	// Types of the constructors and destructors that all registerd type must have.
-	// A pointer to these functions is stored into the typeDescTable. (an array of TAttr) 
-	// The definition of TAttr is following:
-	typedef void* (*t_new)(void* pos);
-	typedef void* (*t_new_copy)(void* pos,void* orig);
-	typedef void (*t_destructor)(void* pos);
-
-	virtual void InformAttr_ (unsigned id, const char* name, unsigned size, const char* type, const bool isPtr,
-	                       const t_new, const t_new_copy, const t_destructor);
-
-protected:
-	inline void InformTypedAttr_(unsigned id, const char* name, unsigned size, const char *type, const bool isPtr,
-	                          const t_new, const t_new_copy, const t_destructor, const Component* ptr);
-
-	inline void InformTypedAttr_(unsigned id, const char* name, unsigned size, const char *type, const bool isPtr,
-	                          const t_new, const t_new_copy, const t_destructor, const DynamicType* ptr);
-
-	inline void InformTypedAttr_(unsigned id, const char* name, unsigned size, const char *type, const bool isPtr,
-	                          const t_new, const t_new_copy, const t_destructor, const void* ptr);
-	
-public:
 	/// Returns the number of dynamic attributes.
 	unsigned GetNDynamicAttributes() const { return numAttr; }
 
@@ -218,16 +157,93 @@ public:
 
 	void FullfilsInvariant() const;
 
-	virtual Component* DeepCopy() const;
-	virtual Component* Species() const =0;
+	/// Returns a deep copied object of the same class.
+	/// Receiver has to handle memory.
+	virtual Component * DeepCopy() const;
+
+	/// Returns a default constructed object of the same class.
+	/// Receiver has to handle memory.
+	virtual Component * Species() const=0;
+
 public:
 	enum {idLength = 120, typeLength = 120}; //TODO: rise exception if the type is too long
 
 protected:
+	/**
+		Redefine this method if you need to override the default
+		behaviour when initializing a default constructed object.
+		It is called at the end of the default constructor for 
+		the concrete type, expanded by the DYNAMIC_TYPE macros.
+		By default it does nothing.
+		@see CopyInit()
+	*/
+	void DefaultInit() {}
+
+	/**
+		Redefine this method if you need to override the default
+		behaviour when initializing a copy constructed object.
+		It is called at the end of the copy constructor for 
+		the concrete type, expanded by the DYNAMIC_TYPE macros.
+		By default it does nothing.
+		@see DefaultInit
+	*/
+	void CopyInit(const DynamicType & dt) {}
+
+	/**
+		You should NOT call or overwrite this method directly.
+		It is called by UpdateData() and reimplemented by
+		DYNAMIC_TYPE macros. It should create the table with
+		the dynamic attributes information.
+		@see UpdateData()
+	*/
+	virtual void InformAll()
+	{
+		// lets calculates the offsets of the "Pre allocated mode"
+		CLAM_DEBUG_ASSERT(typeDescTable,"static table don't exist. in DT::InformAll()");
+		int adder=0;
+		for (unsigned int i=0; i<numAttr; i++)
+		{
+			typeDescTable[i].offset = adder;
+			adder += typeDescTable[i].size;
+		}
+		maxAttrSize = adder;
+	};
+
+protected:
+	// Types of the constructors and destructors that all registerd type must have.
+	// A pointer to these functions is stored into the typeDescTable. (an array of TAttr) 
+	// The definition of TAttr is following:
+	typedef void* (*t_new)(void* pos);
+	typedef void* (*t_new_copy)(void* pos,void* orig);
+	typedef void (*t_destructor)(void* pos);
+
+private:
+	void static InformAttr_ (
+		TAttr* attributeTable, unsigned id, const char* name, unsigned size, const char* type,
+		const bool isPtr, const t_new, const t_new_copy, const t_destructor);
+
+protected:
+	inline static void InformTypedAttr_(
+		TAttr* attributeTable, unsigned id, const char* name, unsigned size, const char *type,
+		const bool isPtr, const t_new, const t_new_copy, const t_destructor,
+		const Component* typedNullPointer);
+
+	inline static void InformTypedAttr_(
+		TAttr* attributeTable, unsigned id, const char* name, unsigned size, const char *type,
+		const bool isPtr, const t_new, const t_new_copy, const t_destructor,
+		const DynamicType* typedNullPointer);
+
+	inline static void InformTypedAttr_(
+		TAttr* attributeTable, unsigned id, const char* name, unsigned size, const char *type,
+		const bool isPtr, const t_new, const t_new_copy, const t_destructor,
+		const void* typedNullPointer);
+	
+protected:
 	enum {shrinkThreshold = 80}; // Bytes.  That constant means that when updating data, if the
 	                             // used data disminish an amount superior that this threshold,
 	                             // data will be reallocated (shrunk)
-	// item of the typeDescTable, that is static created only once in the concrete class constructor
+
+	/// item of the typeDescTable, that is static created only once in the concrete class constructor
 	struct TAttr
 	{
 		char id[idLength];                   
@@ -238,11 +254,10 @@ protected:
 		t_new_copy newObjCopy;
 		t_destructor destructObj;
 
-//		bool isInformed : 1;   Deprecated!! Now the concrete constr. calls InformAll() chain.method.
-		bool isComponent : 1;
-		bool isStorable : 1;
-		bool isDynamicType : 1;
-		bool isPointer : 1;
+		bool isComponent : 1; ///< Whether the attribute is a Component
+		bool isStorable : 1; ///< Whether the attribute is basic storable (streamable)
+		bool isDynamicType : 1; ///< Whether the attribute is a DynamicType or not
+		bool isPointer : 1; ///< TODO: review this, seems to be always false
 	};
 
 	// item of the dynamicTable, that holds the dynamic information of the dynamic type
@@ -339,6 +354,8 @@ public:
 	virtual void LoadFrom(CLAM::Storage & storage) {
 		this->LoadDynAttributes(storage);
 	}
+
+protected:
 	template <unsigned int NAttrib> 
 	class AttributePositionBase { 
 	public:
@@ -420,33 +437,58 @@ inline void DynamicType::SetDataAsPtr_(const unsigned id, void* p)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-inline void DynamicType::InformTypedAttr_(unsigned val, const char*name, unsigned size, const char *type, const bool isPtr,
-                                       const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr, const void* ptr)
+inline void DynamicType::InformTypedAttr_(
+	TAttr * attributeTable,
+	unsigned index,
+	const char * name,
+	unsigned size,
+	const char * type,
+	const bool isPtr,
+	const t_new fnew,
+	const t_new_copy fcopy,
+	const t_destructor fdestr,
+	const void * typedNullPointer)
 {
-	InformAttr_(val, name, size, type, isPtr, fnew, fcopy, fdestr);
-	typeDescTable[val].isComponent = false;
-	typeDescTable[val].isDynamicType = false;
-	typeDescTable[val].isStorable = false;
+	InformAttr_(attributeTable, index, name, size, type, isPtr, fnew, fcopy, fdestr);
+	attributeTable[index].isComponent = false;
+	attributeTable[index].isDynamicType = false;
+	attributeTable[index].isStorable = false;
 }
 
-inline void DynamicType::InformTypedAttr_(unsigned val, const char*name, unsigned size, const char *type, const bool isPtr,
-                                       const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr, const Component* ptr)
+inline void DynamicType::InformTypedAttr_(
+	TAttr * attributeTable,
+	unsigned index,
+	const char * name,
+	unsigned size,
+	const char * type,
+	const bool isPtr,
+	const t_new fnew,
+	const t_new_copy fcopy,
+	const t_destructor fdestr,
+	const Component * typedNullPointer)
 {
-	InformAttr_(val, name, size, type, isPtr, fnew, fcopy, fdestr);
-	typeDescTable[val].isComponent = true;
-	typeDescTable[val].isDynamicType = false;
-	typeDescTable[val].isStorable = false;
+	InformAttr_(attributeTable, index, name, size, type, isPtr, fnew, fcopy, fdestr);
+	attributeTable[index].isComponent = true;
+	attributeTable[index].isDynamicType = false;
+	attributeTable[index].isStorable = false;
 }
 
-inline void DynamicType::InformTypedAttr_(unsigned val, const char*name, unsigned size, const char *type, const bool isPtr,
-                                       const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr, const DynamicType* ptr)
+inline void DynamicType::InformTypedAttr_(
+	TAttr * attributeTable,
+	unsigned index,
+	const char * name,
+	unsigned size,
+	const char * type,
+	const bool isPtr,
+	const t_new fnew,
+	const t_new_copy fcopy,
+	const t_destructor fdestr,
+	const DynamicType * typedNullPointer)
 {
-	InformAttr_(val, name, size, type, isPtr, fnew, fcopy, fdestr);
-	typeDescTable[val].isComponent = true;
-	typeDescTable[val].isDynamicType = true;
-	typeDescTable[val].isStorable = false;
+	InformAttr_(attributeTable, index, name, size, type, isPtr, fnew, fcopy, fdestr);
+	attributeTable[index].isComponent = true;
+	attributeTable[index].isDynamicType = true;
+	attributeTable[index].isStorable = false;
 }
 
 

@@ -41,7 +41,7 @@ public:
 	/** Constructor of an object that will contain the number of attributes passed by parameter
 	 *  @param n Number of dynamic attributes that will be defined
 	 */
-	ProcessingDataConfig(const int n) : DynamicType(n) {}
+	ProcessingDataConfig(const int n, TAttr* attributeTable) : DynamicType(n, attributeTable) {}
 
 	/** Copy constructor of a ProcessingData configuration object.
 	 *  @param prototype Another ProcessingDataConfig type from which the structure is taken
