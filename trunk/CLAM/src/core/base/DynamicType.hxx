@@ -165,11 +165,10 @@ protected:
 	inline void InformTypedAttr_(unsigned id, const char* name, unsigned size, const char *type, const bool isPtr,
 	                          const t_new, const t_new_copy, const t_destructor, const void* ptr);
 	
-	void AddAttr_ (const unsigned i, const unsigned size);
-	void RemoveAttr_ (const unsigned id);
-
 public:
 	unsigned GetNDynamicAttributes() const { return numAttr; }
+	void AddAttribute (const unsigned i);
+	void RemoveAttribute (const unsigned i);
 	const char * GetDynamicAttributeName(unsigned i) const { return typeDescTable[i].id; }
 	virtual const std::type_info & GetTypeId(unsigned i) const=0;
 	bool AttributeIsComponent(unsigned i) const {return typeDescTable[i].isComponent; }

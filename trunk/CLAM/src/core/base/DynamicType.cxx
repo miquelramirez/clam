@@ -151,41 +151,42 @@ void DynamicType::RemoveAllMem()
 }
 
 
-void DynamicType::InformAttr_(unsigned val, const char* name, unsigned size, const char* type, const bool isPtr,
+void DynamicType::InformAttr_(unsigned i, const char* name, unsigned size, const char* type, const bool isPtr,
                             const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr)
 {
-	CLAM_ASSERT(val<numAttr, 
+	CLAM_ASSERT(i<numAttr, 
 		"There are more registered Attributes than the "
 		"number defined in DYN_CLASS_TABLE macro.");
 	CLAM_ASSERT(fnew, "in DT: a dynamic attribute don't have default-constructor !");
 	CLAM_ASSERT(fcopy, "in DT: a dynamic attribute don't have copy constructor !");
 
-	strcpy(typeDescTable[val].id, name);
-	strcpy(typeDescTable[val].type, type);
-	typeDescTable[val].isPointer = isPtr;
-	typeDescTable[val].size = size;
+	strcpy(typeDescTable[i].id, name);
+	strcpy(typeDescTable[i].type, type);
+	typeDescTable[i].isPointer = isPtr;
+	typeDescTable[i].size = size;
 	// default value. This field is used in UpdateData in Fixed offsets mode.
-	typeDescTable[val].offset = -1;  
+	typeDescTable[i].offset = -1;  
 	// references to creation/destruction fuctions of the type/class
-	typeDescTable[val].newObj = fnew;
-	typeDescTable[val].newObjCopy = fcopy;
-	typeDescTable[val].destructObj = fdestr;
+	typeDescTable[i].newObj = fnew;
+	typeDescTable[i].newObjCopy = fcopy;
+	typeDescTable[i].destructObj = fdestr;
 	// informative flags:
 	// flags that will be set at the AddTypedAttr_ 
 	// (the overloaded function that calls this one)
-	typeDescTable[val].isComponent = false;
-	typeDescTable[val].isStorable = false;
-	typeDescTable[val].isDynamicType = false;
+	typeDescTable[i].isComponent = false;
+	typeDescTable[i].isStorable = false;
+	typeDescTable[i].isDynamicType = false;
 
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
-// Main memory management methods: AddAttr_, RemoveAttr_ and UpdateData
+// Main memory management methods: AddAttribute, RemoveAttribute and UpdateData
 
 
-void DynamicType::AddAttr_ (const unsigned val, const unsigned size)
+void DynamicType::AddAttribute (const unsigned i)
 {
 	// first we check if there is need to adding the attribute
-	TDynInfo &inf = dynamicTable[val];
+	TDynInfo &inf = dynamicTable[i];
+	const unsigned size = typeDescTable[i].size;
 
 	if (inf.hasBeenAdded) 
 		return;
@@ -210,7 +211,7 @@ void DynamicType::AddAttr_ (const unsigned val, const unsigned size)
 
 		return;
 	}
-	if (AttrHasData(val)) return;
+	if (AttrHasData(i)) return;
 	
 	// At this point, the actual attribute-adding is necessary
 
@@ -226,7 +227,7 @@ void DynamicType::AddAttr_ (const unsigned val, const unsigned size)
 
 	++numActiveAttr;
 	dataSize += size;
-	dynamicTable[val].hasBeenAdded = true;
+	dynamicTable[i].hasBeenAdded = true;
 	dynamicTable[numAttr].hasBeenAdded = true; //this is a global (for all attribute) flag that means that Update is necessary
 	// at this point the data and dynamicTable may contain gaps, 
 	// but they will be compacted at Update() time.
@@ -238,7 +239,7 @@ void DynamicType::AddAttr_ (const unsigned val, const unsigned size)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////7
-void DynamicType::RemoveAttr_(const unsigned i)
+void DynamicType::RemoveAttribute(const unsigned i)
 {
 	TDynInfo &inf = dynamicTable[i];
 
