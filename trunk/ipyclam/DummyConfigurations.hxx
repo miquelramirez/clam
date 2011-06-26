@@ -72,7 +72,7 @@ public:
 	void DefaultInit(void)
 	{
 		AddAll();
-		RemoveAttr_(2);
+		RemoveSecondInt();
 		UpdateData();
 		SetStringAttribute("String Attribute");
 		SetFirstInt(42);
