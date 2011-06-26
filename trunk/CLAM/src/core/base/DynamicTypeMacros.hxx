@@ -77,14 +77,6 @@ public: \
 	void VisitAll (Visitor & visitor) { \
 		VisitChainedAttr((AttributePosition<0>*)NULL, visitor); \
 	} \
-	/** Remove all Dynamic Attributes */ \
-	void RemoveAll () { \
-		RemoveChainedAttr((AttributePosition<0>*)NULL); \
-	} \
-	/** Add all Dynamic Attributes */ \
-	void AddAll () { \
-		AddChainedAttr((AttributePosition<0>*)NULL); \
-	} \
 private: \
 	/** Add all Dynamic Attributes */ \
 	void InformAll () { \
@@ -132,20 +124,6 @@ private: \
 		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}*/\
-	/** Undefined link for the Remove method chain (Remove) */ \
-	template <unsigned int NAttrib> \
-	void RemoveChainedAttr (AttributePosition<NAttrib>*a) { \
-		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
-		                (AttributePosition<NAttrib>*)NULL); \
-	}\
-	/** Undefined link for the Add method chain (Add) */ \
-	template <unsigned int NAttrib> \
-	void AddChainedAttr (AttributePosition<NAttrib>*a) { \
-		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
-		                (AttributePosition<NAttrib>*)NULL); \
-	}\
 	/** Undefined link for the Inform method chain (Inform) */ \
 	template <unsigned int NAttrib> \
 	void InformChainedAttr (AttributePosition<NAttrib>*a) { \
@@ -171,12 +149,6 @@ private: \
 	/** Method chain terminator */ \
 	template <typename Visitor> \
 	void VisitChainedAttr (AttributePosition<N>*, Visitor & visitor) { \
-	} \
-	/** Method chain terminator */ \
-	void RemoveChainedAttr (AttributePosition<N>*) { \
-	} \
-	/** Method chain terminator */ \
-	void AddChainedAttr (AttributePosition<N>*) { \
 	} \
 	/** Method chain terminator */ \
 	void InformChainedAttr (AttributePosition<N>*) { \
@@ -302,14 +274,6 @@ private: \
 	void VisitChainedAttr(AttributePosition<N>*, Visitor & visitor) { \
 		Visit##NAME(visitor); \
 		VisitChainedAttr((AttributePosition<(N)+1>*)NULL, visitor); \
-	} \
-	void RemoveChainedAttr(AttributePosition<N>*) { \
-		Remove##NAME(); \
-		RemoveChainedAttr((AttributePosition<(N)+1>*)NULL); \
-	} \
-	void AddChainedAttr(AttributePosition<N>*) { \
-		Add##NAME(); \
-		AddChainedAttr((AttributePosition<(N)+1>*)NULL); \
 	} \
 	void InformChainedAttr(AttributePosition<N>*) { \
 		Inform##NAME(); \
