@@ -292,6 +292,21 @@ void DynamicType::RemoveAttribute(const unsigned i)
 }
 
 
+void DynamicType::AddAll()
+{
+	unsigned nAttributes = GetNDynamicAttributes();
+	for (unsigned i=0; i<nAttributes; i++)
+		AddAttribute(i);
+}
+
+void DynamicType::RemoveAll()
+{
+	unsigned nAttributes = GetNDynamicAttributes();
+	for (unsigned i=0; i<nAttributes; i++)
+		RemoveAttribute(i);
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////7
 // return whether some update has been made.
 bool DynamicType::UpdateData()

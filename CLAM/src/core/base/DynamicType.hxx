@@ -166,25 +166,56 @@ protected:
 	                          const t_new, const t_new_copy, const t_destructor, const void* ptr);
 	
 public:
+	/// Returns the number of dynamic attributes.
 	unsigned GetNDynamicAttributes() const { return numAttr; }
+
+	/// Instantiates attribute at position i. Requires UpdateData() to be effective.
 	void AddAttribute (const unsigned i);
+
+	/// Deinstantiates attribute at position i. Requires UpdateData() to be effective.
 	void RemoveAttribute (const unsigned i);
+
+	/// Instantiates all attributes. Requires UpdateData() to be effective.
+	void AddAll();
+
+	/// Deinstantiates all attributes. Requires UpdateData() to be effective.
+	void RemoveAll();
+
+	/// Returns the name of the attribute at position i.
 	const char * GetDynamicAttributeName(unsigned i) const { return typeDescTable[i].id; }
+
+	/// Returns the type_info of attribute at position i.
 	virtual const std::type_info & GetTypeId(unsigned i) const=0;
+
+	/// Returns true if the attribute at position i is a component.
 	bool AttributeIsComponent(unsigned i) const {return typeDescTable[i].isComponent; }
+
+	/// Returns true if the attribute at position i is a dynamic type as well.
 	bool AttributeIsDynamictype(unsigned i) const {return typeDescTable[i].isDynamicType; }
+
+	/// Returns true if the attribute at position i is instantiated.
 	bool IsAttributeInstantiated(unsigned i) const {return dynamicTable[i].offs!=-1; }
+
+	/// Returns a void pointer to the data of the attribute at position 0.
+	/// @pre the attribute must be instantiated (undefined behaviour if not)
 	const void * GetAttributeAsVoidPtr(unsigned i) const {
 		return GetPtrToData_(i);
 	}
+
+	/// Convenience accessor for GetAttributeAsVoidPtr that cast it to a component if it is so.
+	/// @pre the attribute must be instantiated (undefined behaviour if not)
 	const Component * GetAttributeAsComponent(unsigned i) const {
 		if (!typeDescTable[i].isComponent) return 0;
 		return static_cast<const Component *> (GetPtrToData_(i));
 	}
+
+	/// Convenience accessor for GetAttributeAsVoidPtr that cast it to a component if it is so.
+	/// @pre the attribute must be instantiated (undefined behaviour if not)
 	Component * GetAttributeAsComponent(unsigned i) {
 		if (! (typeDescTable[i].isComponent)) return 0;
 		return static_cast<Component *> (GetPtrToData_(i));
 	}
+
 	void FullfilsInvariant() const;
 
 	virtual Component* DeepCopy() const;
