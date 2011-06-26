@@ -11,7 +11,7 @@
 
 #include <string>
 #include <list>
-#include <q3mainwindow.h>
+#include <QtGui/QMainWindow>
 #include <qmessagebox.h>
 #include "V2MFacade.hxx"
 
@@ -31,7 +31,7 @@ class V2MSegmentationEditor;
 class V2MPianoRoll;
 class V2MHelpViewer;
 
-class V2MGUI : public Q3MainWindow
+class V2MGUI : public QMainWindow
 { 
 	enum EUpdateEnabled {	eInit=0,
 							eLoadAudio,
