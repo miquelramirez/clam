@@ -33,20 +33,20 @@ namespace CLAM{
 	DataArray Multiply(TData &factor, DataArray &a);
 	DataArray Multiply(DataArray &a, DataArray &b); // scalar product
 
-SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray): Descriptor(eNumAttr)
+SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray)
+	: Descriptor(eNumAttr, TypeDescriptionTable())
 {
 	CLAM_ASSERT(pSpectralPeakArray->GetScale()==EScale::eLinear,
 		"Spectral Peak Descriptors require a linear magnitude SpectralPeakArray");
-	MandatoryInit();
 	mpSpectralPeakArray=pSpectralPeakArray;
 }
 
-SpectralPeakDescriptors::SpectralPeakDescriptors(TData initVal):Descriptor(eNumAttr)
+SpectralPeakDescriptors::SpectralPeakDescriptors(TData initVal)
+	: Descriptor(eNumAttr, TypeDescriptionTable())
 {
-	MandatoryInit();
 	AddAll();
 	UpdateData();
-	
+
 	SetMagnitudeMean(initVal);
 	SetHarmonicCentroid(initVal);
 	SetFirstTristimulus(initVal);

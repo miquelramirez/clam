@@ -98,17 +98,17 @@ DataArray Multiply(DataArray &a, DataArray &b) {
 	return result;
 }
 
-SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum):Descriptor(eNumAttr)
+SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum)
+	: Descriptor(eNumAttr, TypeDescriptionTable())
 {
 	CLAM_ASSERT(pSpectrum->GetScale()==EScale::eLinear,
 		"Spectral Descriptors require a linear magnitude Spectrum");
-	MandatoryInit();
 	mpSpectrum=pSpectrum;
 }
 
-SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
+SpectralDescriptors::SpectralDescriptors(TData initVal)
+	: Descriptor(eNumAttr, TypeDescriptionTable())
 {
-	MandatoryInit();
 	AddAll();
 	UpdateData();
 	SetMean(initVal);

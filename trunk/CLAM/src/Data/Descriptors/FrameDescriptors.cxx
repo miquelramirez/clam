@@ -29,15 +29,15 @@
 
 namespace CLAM{
 
-FrameDescriptors::FrameDescriptors(Frame* pFrame): Descriptor(eNumAttr)
+FrameDescriptors::FrameDescriptors(Frame* pFrame)
+	: Descriptor(eNumAttr, TypeDescriptionTable())
 {
-	MandatoryInit();
 	mpFrame=pFrame;
 }
 
-FrameDescriptors::FrameDescriptors(TData initVal): Descriptor(eNumAttr)
+FrameDescriptors::FrameDescriptors(TData initVal)
+	: Descriptor(eNumAttr, TypeDescriptionTable())
 {
-	MandatoryInit();
 	AddAll();
 	UpdateData();
 	SetSpectralPeakD(SpectralPeakDescriptors(initVal));

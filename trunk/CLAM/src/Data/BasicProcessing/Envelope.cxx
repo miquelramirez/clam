@@ -38,9 +38,9 @@ namespace CLAM {
 		SetInterpolationType(EInterpolation::eLinear);
 	}
 
-	Envelope::Envelope(const EnvelopeConfig &newConfig) : ProcessingData(eNumAttr)
+	Envelope::Envelope(const EnvelopeConfig &newConfig)
+		: ProcessingData(eNumAttr, TypeDescriptionTable())
 	{
-		MandatoryInit();
 		AddAmplitudeBPF();
 		UpdateData();
 		Configure(newConfig);

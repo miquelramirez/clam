@@ -46,10 +46,10 @@ namespace CLAM {
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-DynamicType::DynamicType(const int nAttr)
+DynamicType::DynamicType(const int nAttr, TAttr * attributeTable)
 {
-	// the typeDescTable is initialized into the concrete dynamic type. 
-	// because we want that table to be static.(one per concrete class)
+	typeDescTable = attributeTable;
+
 	numAttr = nAttr;
 	dynamicTable = new TDynInfo[numAttr + 1];
 	dynamicTable[numAttr].hasBeenAdded = dynamicTable[numAttr].hasBeenRemoved = false; // global modification flags.
@@ -63,7 +63,7 @@ DynamicType::DynamicType(const int nAttr)
 	data = 0;
 	dataSize = 0;
 	allocatedDataSize = 0;
-	maxAttrSize = 0;		// initialized in method InformAll()
+	maxAttrSize = typeDescTable[numAttr].offset;
 	bOwnsItsMemory = true;
 	bPreAllocateAllAttributes = false;
 	InitDynTableRefCounter();
@@ -81,6 +81,7 @@ DynamicType::DynamicType(const DynamicType& prototype, const bool shareData, con
 	dataSize = 0;
 	allocatedDataSize = 0;
 	bPreAllocateAllAttributes = false;
+	maxAttrSize = prototype.maxAttrSize;
 
 	if (prototype.IsInstanciate())
 	{
@@ -106,6 +107,7 @@ DynamicType::DynamicType(const DynamicType& prototype)
 	dataSize = 0;
 	allocatedDataSize = 0;
 	bPreAllocateAllAttributes = prototype.bPreAllocateAllAttributes;
+	maxAttrSize = prototype.maxAttrSize;
 
 
 	if (prototype.IsInstanciate())
@@ -151,31 +153,28 @@ void DynamicType::RemoveAllMem()
 }
 
 
-void DynamicType::InformAttr_(unsigned i, const char* name, unsigned size, const char* type, const bool isPtr,
+void DynamicType::InformAttr_(TAttr * attributeTable, unsigned i, const char* name, unsigned size, const char* type, const bool isPtr,
                             const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr)
 {
-	CLAM_ASSERT(i<numAttr, 
-		"There are more registered Attributes than the "
-		"number defined in DYN_CLASS_TABLE macro.");
 	CLAM_ASSERT(fnew, "in DT: a dynamic attribute don't have default-constructor !");
 	CLAM_ASSERT(fcopy, "in DT: a dynamic attribute don't have copy constructor !");
 
-	strcpy(typeDescTable[i].id, name);
-	strcpy(typeDescTable[i].type, type);
-	typeDescTable[i].isPointer = isPtr;
-	typeDescTable[i].size = size;
+	strcpy(attributeTable[i].id, name);
+	strcpy(attributeTable[i].type, type);
+	attributeTable[i].isPointer = isPtr;
+	attributeTable[i].size = size;
 	// default value. This field is used in UpdateData in Fixed offsets mode.
-	typeDescTable[i].offset = -1;  
+	attributeTable[i].offset = -1;  
 	// references to creation/destruction fuctions of the type/class
-	typeDescTable[i].newObj = fnew;
-	typeDescTable[i].newObjCopy = fcopy;
-	typeDescTable[i].destructObj = fdestr;
+	attributeTable[i].newObj = fnew;
+	attributeTable[i].newObjCopy = fcopy;
+	attributeTable[i].destructObj = fdestr;
 	// informative flags:
 	// flags that will be set at the AddTypedAttr_ 
 	// (the overloaded function that calls this one)
-	typeDescTable[i].isComponent = false;
-	typeDescTable[i].isStorable = false;
-	typeDescTable[i].isDynamicType = false;
+	attributeTable[i].isComponent = false;
+	attributeTable[i].isStorable = false;
+	attributeTable[i].isDynamicType = false;
 
 }
 /////////////////////////////////////////////////////////////////////////////////////////////

@@ -31,15 +31,15 @@ namespace CLAM {
 
 const TData AudioDescriptors::mEpsilon = 1e-5;
 
-AudioDescriptors::AudioDescriptors(Audio* pAudio): DescriptorAbs(eNumAttr)
+AudioDescriptors::AudioDescriptors(Audio* pAudio)
+	: DescriptorAbs(eNumAttr, TypeDescriptionTable())
 {
-	MandatoryInit();
 	mpAudio=pAudio;
 }
 
-AudioDescriptors::AudioDescriptors(TData initVal):DescriptorAbs(eNumAttr)
+AudioDescriptors::AudioDescriptors(TData initVal)
+	: DescriptorAbs(eNumAttr, TypeDescriptionTable())
 {
-	MandatoryInit();
 	AddAll();
 	UpdateData();
 	SetMean(initVal);

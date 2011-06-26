@@ -52,20 +52,14 @@ public: \
 		return new CLASS_NAME(); \
 	}\
 protected: \
-	void MandatoryInit()\
+	static TAttr * TypeDescriptionTable() \
 	{\
-		static bool staticTableInitialized = false;\
+		static bool alreadyInitialized = false;\
 		static TAttr staticTypeDescTable[N+1];\
-		typeDescTable = staticTypeDescTable;\
-		if(!staticTableInitialized)\
-		{\
-			staticTableInitialized=true;\
-			InformAll();\
-		}else \
-		{\
-			maxAttrSize = N ? (typeDescTable[N-1].offset+typeDescTable[N-1].size) : 0;\
-		}\
-	} \
+		if (not alreadyInitialized) \
+			InformChainedAttr((AttributePosition<0>*)NULL, staticTypeDescTable, 0); \
+		return staticTypeDescTable; \
+	}\
 public: \
 	/** Returns the type id of attribute n */ \
 	const std::type_info & GetTypeId(unsigned n) const \
@@ -76,12 +70,6 @@ public: \
 	template <typename Visitor> \
 	void VisitAll (Visitor & visitor) { \
 		VisitChainedAttr((AttributePosition<0>*)NULL, visitor); \
-	} \
-private: \
-	/** Add all Dynamic Attributes */ \
-	void InformAll () { \
-		InformChainedAttr((AttributePosition<0>*)NULL); \
-		DynamicType::InformAll(); \
 	} \
 protected: \
 	/** Store all Dynamic Attributes */ \
@@ -126,7 +114,7 @@ private: \
 	}*/\
 	/** Undefined link for the Inform method chain (Inform) */ \
 	template <unsigned int NAttrib> \
-	void InformChainedAttr (AttributePosition<NAttrib>*a) { \
+	static void InformChainedAttr (AttributePosition<NAttrib>*a, TAttr * typeDescTable, unsigned offset) { \
 		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
 		CheckAttribute ((InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
@@ -148,17 +136,16 @@ private: \
 private: \
 	/** Method chain terminator */ \
 	template <typename Visitor> \
-	void VisitChainedAttr (AttributePosition<N>*, Visitor & visitor) { \
+	void VisitChainedAttr (AttributePosition<N>*, Visitor & visitor) {} \
+	/** Method chain terminator */ \
+	static void InformChainedAttr (AttributePosition<N>*a, TAttr * typeDescTable, unsigned offset)\
+	{ \
+		typeDescTable[N].offset = offset; \
 	} \
 	/** Method chain terminator */ \
-	void InformChainedAttr (AttributePosition<N>*) { \
-	} \
+	void StoreChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) const {} \
 	/** Method chain terminator */ \
-	void StoreChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) const { \
-	} \
-	/** Method chain terminator */ \
-	void LoadChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) { \
-	} \
+	void LoadChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) {} \
 	/** Undefined link on the method chain (GetTypeId) */ \
 	const std::type_info & GetChainedTypeId(AttributePosition<N>*pos, unsigned n) const \
 	{ \
@@ -169,9 +156,8 @@ private: \
 
 #define DYNAMIC_TYPE(CLASS_NAME, N)\
 public: \
-	CLASS_NAME() : CLAM::DynamicType(N)\
+	CLASS_NAME() : CLAM::DynamicType(N, TypeDescriptionTable())\
 	{\
-		MandatoryInit(); \
 		DefaultInit();\
 	}\
 	CLASS_NAME(const CLASS_NAME& prototype, const bool shareData=false, const bool deep=true)\
@@ -183,9 +169,8 @@ public: \
 
 #define DYNAMIC_TYPE_USING_INTERFACE(CLASS_NAME, N, INTERFACE_NAME)\
 public: \
-	CLASS_NAME() : INTERFACE_NAME(N)\
+	CLASS_NAME() : INTERFACE_NAME(N, TypeDescriptionTable())\
 	{\
-		MandatoryInit(); \
 		DefaultInit();\
 	}\
 	CLASS_NAME(const CLASS_NAME& prototype, const bool shareData=false, const bool deep=true)\
@@ -261,23 +246,19 @@ ACCESS: \
 		return ExistAttr(N); \
 	} \
 private: \
-	inline void Inform##NAME() {\
-		InformTypedAttr_(N, #NAME, sizeof(TYPE), #TYPE, false, _new_##NAME, _new_##NAME, _destructor_##NAME, (TYPE*)0);\
-	}\
 	static inline int GetSize##NAME() { return sizeof(TYPE); } \
 	static inline const char* GetType##NAME() { return #TYPE; } \
 	static inline int GetId##NAME() { return N;}\
-public: \
-	/*inline TYPE* Get##NAME##Vector(unsigned n) { return Get_##TYPE##Vector(n); }*/ \
 private: \
 	template <typename Visitor> \
 	void VisitChainedAttr(AttributePosition<N>*, Visitor & visitor) { \
 		Visit##NAME(visitor); \
 		VisitChainedAttr((AttributePosition<(N)+1>*)NULL, visitor); \
 	} \
-	void InformChainedAttr(AttributePosition<N>*) { \
-		Inform##NAME(); \
-		InformChainedAttr((AttributePosition<(N)+1>*)NULL); \
+	static void InformChainedAttr(AttributePosition<N>*, TAttr * typeDescTable, unsigned offset) { \
+		InformTypedAttr_(typeDescTable, N, #NAME, sizeof(TYPE), #TYPE, false, _new_##NAME, _new_##NAME, _destructor_##NAME, (TYPE*)0);\
+		typeDescTable[N].offset = offset; \
+		InformChainedAttr((AttributePosition<(N)+1>*)NULL, typeDescTable, offset + sizeof(TYPE)); \
 	} \
 	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) const { \
 		Store##NAME(s); \
