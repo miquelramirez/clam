@@ -20,40 +20,50 @@
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-// Class Storable: Interface for objects to be stored on a Storage
+// Class Storable: Interface for objects to be stored on a XMLStorage
 ///////////////////////////////////////////////////////////////////////////////
 // Description: 
-// Subclasses of this abstract class define interfaces needed to store objects
-// on Storage subclasses.
-// All common queries about storability must be defined here as virtual 
-// functions
+// Abstract class that defines the interface a object needs to be stored on
+// a XMLStorage. An XML storage will need the information offered by those
+// methods in order to know the XML structure.
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef _Storable_
-#define _Storable_
+#ifndef CLAM_Storable_hxx
+#define CLAM_Storable_hxx
+
+#include <string>
 
 namespace CLAM {
+
 /**
- * Interface for objects to be stored on a Storage.
- * <P>
- * Subclasses of this abstract class define interfaces needed to store 
- * objects on each Storage subclasses.
- * <P>
- * All common queries about storability must be defined here as virtual
- * functions.
+ * Interface for objects to be stored on a XMLStorage.
+ * Abstract class that defines the interface a object needs to be stored on
+ * a XMLStorage. An XML storage will need the information offered by those
+ * methods in order to know the XML structure.
  */
+
 class Storable {
 // Construction/Destruction
 public:
-	//* The required virtual destructor
-	virtual ~Storable() {};
+	virtual ~Storable();
 // Redifinible methods
 public:
-//	virtual bool isXMLable()=0;
-//	virtual void beXMLable(bool amIXMLable=true)=0;
+	//* @return A pointer to the XMLName
+	virtual const char * XMLName() const =0;
+	//* @return A string with the extracted XML content
+	virtual std::string XMLContent() const =0;
+	//* @TODO Implement this
+	virtual bool XMLContent(std::istream & contentHolder)=0;
+	//* @return Whether the object represents an XML attribute or not
+	virtual bool IsXMLAttribute() const =0;
+	//* @return Whether the object represents an XML element or not
+	virtual bool IsXMLElement() const =0;
+	//* @return Whether the object represents an XML text or not
+	virtual bool IsXMLText() const =0;
 };
+
 
 }
 
-#endif//_Storable_
+#endif//CLAM_Storable_hxx
 

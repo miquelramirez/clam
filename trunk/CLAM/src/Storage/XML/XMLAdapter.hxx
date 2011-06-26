@@ -34,7 +34,7 @@ namespace CLAM {
 
 /**
  * @ingroup XmlAdapters
- * @brief This class adapts to the XMLable interface any basic object.
+ * @brief This class adapts to the Storable interface any basic object.
  *
  * A basic object is that one that has
  * the insertion (<<) and extractor (>>) operators defined to streams
@@ -52,7 +52,7 @@ namespace CLAM {
  *
  * <B>Pay attention to the management of the name memory</B>
  * @see BasicXMLable
- * @see XMLable
+ * @see Storable
  */
 template <class T> class XMLAdapter : public BasicXMLable {
 // Internal Types

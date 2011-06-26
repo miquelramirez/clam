@@ -34,10 +34,10 @@ namespace CLAM {
 /**
  * @ingroup XmlAdapters
  * @brief
- * This class adapts to the XMLable interface any object that is 
+ * This class adapts to the Storable interface any object that is 
  * a CLAM::Component.
  *
- * The XMLComponent adapter implements both the XMLable
+ * The XMLComponent adapter implements both the Storable
  * and the Component interface. So, implements the retrieval of
  * XML properties (naming, being Element, Atribute or Simple 
  * content...) and implements the StoreOn function that is called
@@ -50,13 +50,13 @@ namespace CLAM {
  *   with the XML stuff, but in some cases you need to store it as
  *   XML content.
  * 
- * Note: Simple content, (XMLable::XMLContent() implementation)
+ * Note: Simple content, (Storable::XMLContent() implementation)
  * returns an empty string.
  * 
  * <B>Pay attention to the management of the name memory</B>
  * (see CLAM::BasicXMLable).
  * 
- * @see XMLable
+ * @see Storable
  * @see Component
  */
 class XMLComponentAdapter : public BasicXMLable , public Component {
@@ -96,7 +96,7 @@ public:
 	}
 	virtual ~XMLComponentAdapter() {};
 
-// Accessors (for XMLable interface)
+// Accessors (for Storable interface)
 public:
 	//* @return The XML content: an empty string.
 	virtual std::string XMLContent() const

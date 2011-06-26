@@ -38,7 +38,7 @@ namespace CLAM {
 
 /**
  * @ingroup XmlAdapters
- * @brief This class adapts to the XMLable interface any STL like container
+ * @brief This class adapts to the Storable interface any STL like container
  * of basic objects or CLAM::Component's.
  *
  * It supports both kind of subitems: Components and Basic Types.
@@ -59,7 +59,7 @@ namespace CLAM {
  * <B>Pay attention to the management of the name memory</B>
  * (see CLAM::BasicXMLable).
  * 
- * @see XMLable
+ * @see Storable
  * @see XMLAdapter
  * @see XMLComponentAdapter
  */
