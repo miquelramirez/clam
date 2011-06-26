@@ -1,5 +1,7 @@
 #!/usr/bin/python
-import os, sys
+import os
+import sys
+import glob
 
 options = Variables('options.cache', ARGUMENTS)
 
@@ -23,7 +25,7 @@ env.AppendUnique(
 if '-Wstrict-prototypes' in env['CCFLAGS'] :
 	env['CCFLAGS'].remove('-Wstrict-prototypes')
 
-module = env.SharedLibrary (
+pythonc_module = env.SharedLibrary (
 	target='Clam_NetworkProxy',
 	source='Clam_NetworkProxy.cxx',
 	SHLIBPREFIX='',
@@ -46,15 +48,24 @@ program = env.Program(
 	source='ipyclam_console.cxx',
 )
 
+python_modules = [
+	source for source in  glob.glob('*.py')
+	if "Test" not in source ]
+
+prefix = os.path.expanduser('~/local')
+mod_dir = os.path.join(prefix,'lib','python')
+lib_dir = os.path.join(prefix,'lib','python')
+bin_dir = os.path.join(prefix, 'bin')
 
 install = [
 	env.Install(targetDir, files) for targetDir, files in [
-	( os.path.join(os.path.expanduser('~/local'),'lib','python'),[
-		module,
+	( lib_dir,[
+		pythonc_module,
+		python_modules,
 		configurationModule,
 		dummyProcessingsModule,
 	]),
-	( os.path.join(os.path.expanduser('~/local'),'bin'),[
+	( bin_dir,[
 		program,
 	]),
 ]]
@@ -62,7 +73,7 @@ install = [
 env.Alias('install', install)
 
 Default(
-	module,
+	pythonc_module,
 	configurationModule,
 	dummyProcessingsModule,
 	program,
