@@ -33,7 +33,7 @@ namespace CLAM {
 
 /**
  * @ingroup XmlAdapters
- * @brief This class adapts to the XMLable interface any array of basic objects.
+ * @brief This class adapts to the Storable interface any array of basic objects.
  *
  * A basic object is that one that has
  * the insertion (<<) and extractor (>>) operators defined to streams
@@ -52,7 +52,7 @@ namespace CLAM {
  * <B>Pay attention to the management of the name memory</B>
  * (see BasicXMLable).
  * 
- * @see XMLable
+ * @see Storable
  * @see XMLAdapter
  * @see XMLComponentAdapter
  */

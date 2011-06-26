@@ -22,13 +22,13 @@
 //////////////////////////////////////////////////////////////////////
 // Class BasicXMLable
 // Abstract class that defines some common implementation issues for
-// many XMLables that contains as member variables the XML name and
+// many Storables that contains as member variables the XML name and
 // whether is an XML element or not.
 
 #ifndef _BasicXMLable_h
 #define _BasicXMLable_h
 
-#include "XMLable.hxx"
+#include "Storable.hxx"
 #include "Assert.hxx"
 #include <ctype.h>
 #include <string>
@@ -37,13 +37,13 @@ namespace CLAM {
 
 /**
  * Abstract class that defines some common implementation issues for
- * many XMLables that contains as member variables the XML name and
+ * many Storables that contains as member variables the XML name and
  * whether is an XML element or not.
  * <P>
  * If you don't need those implementation issues consider using 
- * XMLable instead which defines only the interface.
+ * Storable instead which defines only the interface.
  */
-class BasicXMLable : public XMLable {
+class BasicXMLable : public Storable {
 // Attributes
 private:
 	const char * myXMLName;

@@ -27,7 +27,6 @@
 #ifndef _XMLStorage_hxx_
 #define _XMLStorage_hxx_
 
-#include "Storage.hxx"
 #include "XmlStorageErr.hxx"
 #include <iosfwd>
 #include <string>
@@ -36,12 +35,12 @@
 namespace CLAM
 {
 
-class XMLable;
+class Storable;
 class Component;
 class DomDocumentHandler;
 
 
-class XmlStorage : public Storage
+class XmlStorage
 {
 	DomDocumentHandler * _documentHandler;
 	bool _lastWasContent;
@@ -168,15 +167,16 @@ public:
 
 // Private helper functions
 private:
-	bool LoadContentAndChildren(XMLable* xmlable);
-	void StoreContentAndChildren(const XMLable * xmlable);
-	void StoreChildrenIfComponent(const XMLable * xmlable);
+	bool LoadContentAndChildren(Storable & storable);
+	void StoreContentAndChildren(const Storable & storable);
+	void StoreChildrenIfComponent(const Storable & storable);
 	void AddContentToElement(const std::string & content);
 
 };
 
 /** For maintaining compatibility with deprecated class name  */
 typedef XmlStorage XMLStorage;
+typedef XmlStorage Storage;
 
 } // namespace CLAM
 

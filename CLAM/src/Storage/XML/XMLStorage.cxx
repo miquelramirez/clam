@@ -27,7 +27,7 @@
 #include "XMLStorage.hxx"
 
 
-#include "XMLable.hxx"
+#include "Storable.hxx"
 #include "Component.hxx"
 #include "Assert.hxx"
 #include "DomDocumentHandler.hxx"
@@ -146,83 +146,79 @@ namespace CLAM
 // Interface for Components to load/store their subitems
 	void XmlStorage::Store(const Storable & storable)
 	{
-		const XMLable * xmlable = dynamic_cast<const XMLable *>(&storable);
-		const char * name = xmlable->XMLName();
+		const char * name = storable.XMLName();
 		if (!name)
 		{
-			StoreContentAndChildren(xmlable);
+			StoreContentAndChildren(storable);
 			return;
 		}
-		if (xmlable->IsXMLAttribute())
+		if (storable.IsXMLAttribute())
 		{
-			_documentHandler->GetWritingContext()->addAttribute(name,xmlable->XMLContent().c_str());
+			_documentHandler->GetWritingContext()->addAttribute(name,storable.XMLContent().c_str());
 			return;
 		}
-		if (xmlable->IsXMLElement())
+		if (storable.IsXMLElement())
 		{
 			_lastWasContent=false;
 			DomDocumentHandler::WritingContext newContext(_documentHandler->GetWritingContext(), name);
 			_documentHandler->SetWritingContext(& newContext);
-			StoreContentAndChildren(xmlable);
+			StoreContentAndChildren(storable);
 			_documentHandler->SetWritingContext(newContext.release());
 			_lastWasContent=false;
 			return;
 		}
-		CLAM_ASSERT(false,"A weird XMLable inserted");
+		CLAM_ASSERT(false,"A weird Storable inserted");
 	}
 
 	bool XmlStorage::Load(Storable & storable)
 	{
-		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
-		if (!xmlable) return false;
+		if (storable.IsXMLText())
+			return LoadContentAndChildren(storable);
 
-		if (xmlable->IsXMLText())
-			return LoadContentAndChildren(xmlable);
-
-		if (xmlable->IsXMLElement())
+		if (storable.IsXMLElement())
 		{
-			if (!_documentHandler->GetReadingContext()->findElement(xmlable->XMLName()))
+			if (!_documentHandler->GetReadingContext()->findElement(storable.XMLName()))
 				return false;
-			DomDocumentHandler::ReadingContext innerContext(_documentHandler->GetReadingContext(), xmlable->XMLName());
+			DomDocumentHandler::ReadingContext innerContext(_documentHandler->GetReadingContext(), storable.XMLName());
 			_documentHandler->SetReadingContext(&innerContext);
-			LoadContentAndChildren(xmlable);
+			LoadContentAndChildren(storable);
 			_documentHandler->SetReadingContext(innerContext.release());
 			_errors += join(innerContext.errors());
 			return true;
 		}
 
 		// TODO: Test Attributes
-		if (xmlable->IsXMLAttribute())
+		if (storable.IsXMLAttribute())
 		{
 			std::stringstream stream;
-			if (!_documentHandler->GetReadingContext()->extractAttribute(xmlable->XMLName(), stream))
+			if (!_documentHandler->GetReadingContext()->extractAttribute(storable.XMLName(), stream))
 				return false;
-			return xmlable->XMLContent(stream);
+			return storable.XMLContent(stream);
 		}
 
-		CLAM_ASSERT(false, "A weird XMLable inserted");
+		CLAM_ASSERT(false, "A weird Storable inserted");
 		return false;
 	}
 
 // Private helper functions
 
-	bool XmlStorage::LoadContentAndChildren(XMLable* xmlable)
+	bool XmlStorage::LoadContentAndChildren(Storable & xmlable)
 	{
-		bool result = xmlable->XMLContent(_documentHandler->GetReadingContext()->reachableContent());
-		Component * component = dynamic_cast<Component*>(xmlable);
+		bool result = xmlable.XMLContent(_documentHandler->GetReadingContext()->reachableContent());
+		Component * component = dynamic_cast<Component*>(&xmlable);
 		if (component) component->LoadFrom(*this);
 		return result;
 	}
 
-	void XmlStorage::StoreContentAndChildren(const XMLable * xmlable)
+	void XmlStorage::StoreContentAndChildren(const Storable & xmlable)
 	{
-		AddContentToElement(xmlable->XMLContent());
+		AddContentToElement(xmlable.XMLContent());
 		StoreChildrenIfComponent(xmlable);
 	}
 
-	void XmlStorage::StoreChildrenIfComponent(const XMLable * xmlable)
+	void XmlStorage::StoreChildrenIfComponent(const Storable & xmlable)
 	{
-		const Component * component = dynamic_cast<const Component *>(xmlable);
+		const Component * component = dynamic_cast<const Component *>(&xmlable);
 		if (component) component->StoreOn(*this);
 	}
 
