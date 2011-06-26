@@ -64,9 +64,6 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, py
 	if (index == -1)
 		throwPythonException(PyExc_KeyError, attribute.c_str());
 
-/*
-	TODO: Commit when DynamicType AddAttr_ made public
-	
 	if (value.ptr() == Py_None)
 	{
 		config.RemoveAttribute(index);
@@ -75,7 +72,7 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, py
 
 	if ( !config.IsAttributeInstantiated(index) )
 		config.AddAttribute(index);
-*/
+
 	ConfigurationProxyPlugin & plugin = ConfigurationProxyPlugin::GetPlugin(config, index);
 	plugin.setAttribute(config, index, value);
 }
