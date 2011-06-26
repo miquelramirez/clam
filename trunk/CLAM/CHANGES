@@ -12,6 +12,7 @@
  * Bug fixes:
    * InControls are initialized to the default value of the control type
      (0 for numerics), this could change the behaviour
+ * TypedIn/OutControl from deprecated to obsolete
  * NetworkPlayers and backends
    * Network backends for plugins are NetworkPlayers now
    * Common Backend code to inspect the network moved to base NetworkPlayer
@@ -23,8 +24,11 @@
    * Helper scripts to automatically generate lv2 rdf's
  * Added In/OutControl/PortBase::SetName to be able to change the name of a 
    connection without disconnecting it.
+ * Generic handling of optional DT attributes AddAttribute(i) and RemoveAttribute(i)
+ * Base classes Storage and XMLable are no more. Just XML kind of storage.
  * New plugins:
-   * Expression: Tranforms float control values using functions in C-like syntax.
+   * expression: Tranforms float control values using functions in C-like syntax.
+   * timeDomainEffects: DopplerEffects and more
  * Examples:
    * TickExtractor fixed assert failures when using in controls as out controls
    * TickExtractor now depends on libsamplerate instead of the ancient 
