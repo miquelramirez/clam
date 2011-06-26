@@ -324,7 +324,7 @@ class NetworkTests(unittest.TestCase):
 			, net.code(fullConfig=True))
 
 class Clam_NetworkTests(NetworkTests):
-	def proxy(self):
+	def _proxy(self):
 		import Clam_NetworkProxy
 		import Network
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
@@ -333,7 +333,7 @@ class Clam_NetworkTests(NetworkTests):
 		network.Processing2 = "DummyTypeProcessing2"
 		return proxy
 
-	def empty(self):
+	def _empty(self):
 		import Clam_NetworkProxy
 		return Clam_NetworkProxy.Clam_NetworkProxy()
 
