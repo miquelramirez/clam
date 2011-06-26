@@ -106,8 +106,8 @@ class XercesDomReader : private xercesc::HandlerBase
 			return doc;
 		}
 	private:
-		typedef std::list<std::string> Missatges;
-		Missatges _errors;
+		typedef std::list<std::string> Messages;
+		Messages _errors;
 		void error(const xercesc::SAXParseException& e)
 		{
 			report("Error", e);
@@ -136,7 +136,7 @@ class XercesDomReader : private xercesc::HandlerBase
 		std::string RecopilaErrors()
 		{
 			std::string result;
-			Missatges::iterator it = _errors.begin();
+			Messages::iterator it = _errors.begin();
 			for (; it!=_errors.end(); it++)
 				result += *it + "\n";
 			return result;
