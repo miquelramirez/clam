@@ -27,6 +27,7 @@
 #include "OutPort.hxx"
 #include "SpectralPeakDetectConfig.hxx"
 #include "Spectrum.hxx"
+#include "SpectralPeakArray.hxx"
 
 namespace CLAM
 {
