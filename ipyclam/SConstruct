@@ -47,10 +47,17 @@ program = env.Program(
 	target='ipyclam_console',
 	source='ipyclam_console.cxx',
 )
+blacklist = [
+	"runTests.py",
+	"Clam_ConfigurationProxyTests.py",
+	"Clam_NetworkProxyTests.py",
+]
 
 python_modules = [
 	source for source in  glob.glob('*.py')
-	if "Test" not in source ]
+	if source not in blacklist
+#	if "Test" not in source
+	]
 
 prefix = os.path.expanduser('~/local')
 mod_dir = os.path.join(prefix,'lib','python')

@@ -201,6 +201,19 @@
 
 
 
+- Widget
+	- QTermWidget
+		- grep metodes de k3process i pty
+		- mockup
+	- ipython
+		- mockup d'stdin, stdout per interceptar IPShell
+
+
+
+
+
+
+
 
 
 
