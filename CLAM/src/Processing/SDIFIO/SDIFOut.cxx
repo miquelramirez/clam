@@ -51,17 +51,6 @@ void SDIFOutConfig::DefaultInit()
 	SetSpectrumSize(513);
 }
 
-SDIFOut::SDIFOut():
-mPrevIndexArray(0),
-mInputFundamental("Fundamental", this),
-mInputSinSpectralPeaks("Sinusoidal Peaks", this),
-mInputResSpectrum("Residual Spectrum", this)
-{ 
-	mpFile=NULL;
-    ConnectAndPublishPorts();
-	Configure(SDIFOutConfig());
-}
-
 SDIFOut::SDIFOut(const SDIFOutConfig& c):
 mPrevIndexArray(0),
 mInputFundamental("Fundamental", this),
@@ -69,8 +58,6 @@ mInputSinSpectralPeaks("Sinusoidal Peaks", this),
 mInputResSpectrum("Residual Spectrum", this)
 { 
 	mpFile=NULL;
-
-    ConnectAndPublishPorts();
 	Configure(c);
 }
 	
@@ -78,12 +65,6 @@ SDIFOut::~SDIFOut()
 {
 	mpFile->Close();
 	delete mpFile;
-}
-
-void SDIFOut::ConnectAndPublishPorts()
-{
-    RegisterInPort( &mInputSinSpectralPeaks );
-    RegisterInPort( &mInputResSpectrum );    
 }
 
 bool SDIFOut::ConcreteStart()
