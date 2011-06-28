@@ -59,9 +59,7 @@ class SDIFOut: public Processing
 {
 public:
 
-	SDIFOut(const SDIFOutConfig& c);
-	SDIFOut();
-	
+	SDIFOut(const SDIFOutConfig& c = SDIFOutConfig());
 	virtual ~SDIFOut();
 	const char * GetClassName() const {return "SDIFOut";}
 	
@@ -84,14 +82,13 @@ protected:
 	bool ConcreteStop();
 
 	InPort<Fundamental>		mInputFundamental;
-    InPort<SpectralPeakArray>     mInputSinSpectralPeaks;
+	InPort<SpectralPeakArray>     mInputSinSpectralPeaks;
 	InPort<Spectrum>     mInputResSpectrum;
 
 private:
 	
 	bool ConcreteConfigure(const ProcessingConfig& c);
-    void ConnectAndPublishPorts();
-	
+
 	SDIFOutConfig mConfig;
 
 // member variables
