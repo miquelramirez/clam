@@ -20,6 +20,7 @@ public:
 		TEST_CASE( test_feedLine_ignoresEmptyLines );
 		TEST_CASE( test_feedLine_ignoresEmptyLinesButKeepsLineNumbers );
 		TEST_CASE( test_feedLine_ignoresComments );
+		TEST_CASE( test_errorMessage_trailingContent );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -187,13 +188,20 @@ public:
 		ASSERT( ok )
 		ASSERT_EQUALS(2, parser.intColumn())
 	}
+	void test_errorMessage_trailingContent()
+	{
+		std::istringstream os(
+			"1 2\n"
+		);
+		SingleIntColumn parser(os);
+		bool ok = parser.feedLine();
+		ASSERT( not ok )
+		ASSERT_EQUALS(
+			"Error in line 1: Unexpected content at the end of the line\n",
+			parser.errorMessage())
+		ASSERT( parser.hasError() )
+	}
 
-/*
-	TODO:
-	- Error on trailing line content
-	- 
-
-*/
 };
 
 REGISTER_FIXTURE(TableParserTest);
