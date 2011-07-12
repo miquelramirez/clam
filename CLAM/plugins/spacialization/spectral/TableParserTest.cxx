@@ -32,6 +32,8 @@ public:
 		TEST_CASE( test_errorMessage_errorOnSecondToken );
 		TEST_CASE( test_twoIntColumns_twoLines );
 		TEST_CASE( test_twoIntColumns_complexValidInput );
+
+		TEST_CASE( test_singlefloat_singleLine );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -338,6 +340,29 @@ public:
 		bool ok3 = parser.feedLine();
 		ASSERT_EQUALS("", parser.errorMessage());
 		ASSERT( not ok3 );
+		ASSERT( not parser.hasError() );
+	}
+
+	class SingleFloatColumn : public TableParser 
+	{
+	public:
+		FloatToken floatColumn;
+		SingleFloatColumn(std::istream & stream)
+			: TableParser(stream)
+			, floatColumn(this)
+		{
+		}
+	};
+
+	void test_singlefloat_singleLine()
+	{
+		std::istringstream os(
+			"1.3"
+		);
+		SingleFloatColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1.3f, parser.floatColumn());
 		ASSERT( not parser.hasError() );
 	}
 

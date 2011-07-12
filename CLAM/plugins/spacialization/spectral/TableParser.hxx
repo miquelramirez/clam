@@ -33,6 +33,24 @@ public:
 			return _value;
 		}
 	};
+	class FloatToken : public BaseToken
+	{
+	public:
+		float _value;
+		FloatToken(TableParser * parser)
+			: BaseToken(parser)
+		{
+		}
+		bool read(std::istream & stream)
+		{
+			stream >> _value;
+			return stream;
+		}
+		float operator() ()
+		{
+			return _value;
+		}
+	};
 private:
 	std::istream & _stream;
 	std::string _errorMessage;
