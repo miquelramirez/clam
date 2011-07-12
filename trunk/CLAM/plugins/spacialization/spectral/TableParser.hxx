@@ -128,6 +128,34 @@ public:
 		}
 	};
 
+	/// Label tokens parse as string until a stop token ':' is found
+	class LabelToken : public BaseToken
+	{
+	public:
+		char _stopChar;
+		std::string _value;
+		LabelToken(TableParser * parser, char stopChar=':')
+			: BaseToken(parser)
+			, _stopChar(stopChar)
+		{
+		}
+		bool read(std::istream & stream)
+		{
+			stream >> std::ws;
+			while (stream)
+			{
+				char c = stream.get();
+				if (c==_stopChar) return true;
+				_value.push_back(c);
+			}
+			return error("Label should end with a colon");
+		}
+		const std::string & operator() () const
+		{
+			return _value;
+		}
+	};
+
 private:
 	std::ifstream _fstream;
 	std::istream & _stream;
