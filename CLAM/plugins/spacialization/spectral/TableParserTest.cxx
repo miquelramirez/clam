@@ -4,7 +4,6 @@
 
 /*
 	TODO: Multi type
-	TODO: Ignore lines with just spaces, like an empty one
 */
 
 class TableParserTest : public TestFixture<TableParserTest>
@@ -26,6 +25,7 @@ public:
 		TEST_CASE( test_feedLine_ignoresComments );
 		TEST_CASE( test_errorMessage_trailingContent );
 		TEST_CASE( test_trailingSpacesIsNotError );
+		TEST_CASE( test_spaceOnliLine_isIgnoredAsEmpty );
 
 		TEST_CASE( test_twoIntColumns_singleLine );
 		TEST_CASE( test_errorMessage_errorOnFirstTokenOfTwo );
@@ -222,6 +222,18 @@ public:
 		SingleIntColumn parser(os);
 		bool ok = parser.feedLine();
 		ASSERT( ok );
+		ASSERT( not parser.hasError() );
+	}
+	void test_spaceOnliLine_isIgnoredAsEmpty()
+	{
+		std::istringstream os(
+			" \t  \t \n"
+			"1\n"
+		);
+		SingleIntColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.intColumn());
 		ASSERT( not parser.hasError() );
 	}
 
