@@ -3,12 +3,14 @@
 #include <sstream>
 
 /*
-	TODO: Error always says it expected an int
-	TODO: No test for filename based constructor
-	TODO: Comments not at the first char
-	TODO: Trailing tokens (parse as string what it is left in the line)
-	TODO: Label tokens (parse as string until a stop token is found)
-	TODO: Optional token decorator (if not enough content, a default value is given. pe Optional<Token<int> > initialized 
+
+TODO: Error always says it expected an int
+TODO: No test for filename based constructor
+TODO: Comments not at the first char
+TODO: Comments after the data columns
+TODO: Trailing tokens (parse as string what it is left in the line)
+TODO: Label tokens (parse as string until a stop token is found)
+TODO: Optional token decorator (if not enough content, a default value is given. pe Optional<Token<int> > initialized 
 */
 
 class TableParserTest : public TestFixture<TableParserTest>
@@ -31,6 +33,8 @@ public:
 		TEST_CASE( test_errorMessage_trailingContent );
 		TEST_CASE( test_trailingSpacesIsNotError );
 		TEST_CASE( test_spaceOnliLine_isIgnoredAsEmpty );
+		TEST_CASE( test_commentLine_notAtFirstPosition );
+		TEST_CASE( test_comment_afterContent );
 
 		TEST_CASE( test_twoIntColumns_singleLine );
 		TEST_CASE( test_errorMessage_errorOnFirstTokenOfTwo );
@@ -243,7 +247,30 @@ public:
 		ASSERT_EQUALS(1, parser.intColumn());
 		ASSERT( not parser.hasError() );
 	}
+	void test_commentLine_notAtFirstPosition()
+	{
+		std::istringstream os(
+			" \t# comment\n"
+			"1\n"
+		);
+		SingleIntColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.intColumn());
+		ASSERT( not parser.hasError() );
+	}
 
+	void test_comment_afterContent()
+	{
+		std::istringstream os(
+			"1 # comment\n"
+		);
+		SingleIntColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.intColumn());
+		ASSERT( not parser.hasError() );
+	}
 
 	class TwoIntColumns : public TableParser 
 	{
