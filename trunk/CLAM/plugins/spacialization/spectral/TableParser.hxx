@@ -1,5 +1,5 @@
-#ifndef TableParser_hxx
-#define TableParser_hxx
+#ifndef spectral_TableParser_hxx
+#define spectral_TableParser_hxx
 #include <sstream>
 #include <fstream>
 #include <vector>
@@ -8,6 +8,7 @@
 #endif//__GNUC__
 #include <cstdlib>
 
+namespace spectral { class TableParser; }
 
 
 /**
@@ -81,7 +82,7 @@ your own BaseToken subclass.
 
 */
 
-class TableParser
+class spectral::TableParser
 {
 public:
 	class BaseToken
@@ -267,5 +268,5 @@ private:
 
 };
 
-#endif//TableParser_hxx
+#endif//spectral_TableParser_hxx
 
