@@ -11,6 +11,8 @@ TODO: Further testing is needed on the 'ignore errors and continue parsing' mode
 
 class TableParserTest : public TestFixture<TableParserTest>
 {
+	typedef spectral::TableParser TableParser;
+
 public:
 	TEST_FIXTURE( TableParserTest )
 	{
