@@ -4,11 +4,8 @@
 
 /*
 
-TODO: Error always says it expected an int
 TODO: No test for filename based constructor
-TODO: Comments not at the first char
-TODO: Comments after the data columns
-TODO: Trailing tokens (parse as string what it is left in the line)
+TODO: Trailing text tokens (parse as string what it is left in the line)
 TODO: Label tokens (parse as string until a stop token is found)
 TODO: Optional token decorator (if not enough content, a default value is given. pe Optional<Token<int> > initialized 
 */
@@ -43,6 +40,11 @@ public:
 		TEST_CASE( test_twoIntColumns_complexValidInput );
 
 		TEST_CASE( test_singlefloat_singleLine );
+		TEST_CASE( test_singlefloat_badFloat );
+		TEST_CASE( test_singleString_singleLine );
+		TEST_CASE( test_singleString_spacesArround );
+		TEST_CASE( test_singleString_commentJoined );
+		TEST_CASE( test_singleString_manyHashes );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -132,7 +134,7 @@ public:
 		bool ok = parser.feedLine();
 		ASSERT( not ok );
 		ASSERT_EQUALS(
-			"Error in line 1, token 1: Expected an int\n",
+			"Error in line 1, field 1: Expected field of type int\n",
 			parser.errorMessage());
 		ASSERT( parser.hasError() );
 	}
@@ -147,7 +149,7 @@ public:
 		bool ok = parser.feedLine();
 		ASSERT( not ok );
 		ASSERT_EQUALS(
-			"Error in line 2, token 1: Expected an int\n",
+			"Error in line 2, field 1: Expected field of type int\n",
 			parser.errorMessage());
 		ASSERT( parser.hasError() );
 	}
@@ -166,8 +168,8 @@ public:
 		bool ok3 = parser.feedLine();
 		ASSERT( not ok3 );
 		ASSERT_EQUALS(
-			"Error in line 1, token 1: Expected an int\n"
-			"Error in line 3, token 1: Expected an int\n",
+			"Error in line 1, field 1: Expected field of type int\n"
+			"Error in line 3, field 1: Expected field of type int\n",
 			parser.errorMessage());
 		ASSERT( parser.hasError() );
 	}
@@ -196,7 +198,7 @@ public:
 		bool ok = parser.feedLine();
 		ASSERT( not ok );
 		ASSERT_EQUALS(
-			"Error in line 4, token 1: Expected an int\n",
+			"Error in line 4, field 1: Expected field of type int\n",
 			parser.errorMessage());
 	}
 	void test_feedLine_ignoresComments()
@@ -263,7 +265,7 @@ public:
 	void test_comment_afterContent()
 	{
 		std::istringstream os(
-			"1 # comment\n"
+			"1# comment\n"
 		);
 		SingleIntColumn parser(os);
 		bool ok1 = parser.feedLine();
@@ -308,7 +310,7 @@ public:
 		bool ok1 = parser.feedLine();
 		ASSERT( not ok1 );
 		ASSERT_EQUALS(
-			"Error in line 1, token 1: Expected an int\n",
+			"Error in line 1, field 1: Expected field of type int\n",
 			parser.errorMessage());
 		ASSERT( parser.hasError() );
 	}
@@ -322,7 +324,7 @@ public:
 		bool ok1 = parser.feedLine();
 		ASSERT( not ok1 );
 		ASSERT_EQUALS(
-			"Error in line 1, token 2: Expected an int\n",
+			"Error in line 1, field 2: Expected field of type int\n",
 			parser.errorMessage());
 		ASSERT( parser.hasError() );
 	}
@@ -395,6 +397,88 @@ public:
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
 		ASSERT_EQUALS(1.3f, parser.floatColumn());
+		ASSERT( not parser.hasError() );
+	}
+
+	void test_singlefloat_badFloat()
+	{
+		std::istringstream os(
+			"bad"
+		);
+		SingleFloatColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( not ok1 );
+		ASSERT_EQUALS(
+			"Error in line 1, field 1: Expected field of type float\n",
+			parser.errorMessage());
+		ASSERT( parser.hasError() );
+	}
+
+	class SingleWordColumn : public TableParser 
+	{
+	public:
+		Token<std::string> column1;
+		SingleWordColumn(std::istream & stream)
+			: TableParser(stream)
+			, column1(this)
+		{
+		}
+	};
+
+	void test_singleString_singleLine()
+	{
+		std::istringstream os(
+			"hola"
+		);
+		SingleWordColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS("hola", parser.column1());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( not ok2 );
+		ASSERT( not parser.hasError() );
+	}
+	void test_singleString_spacesArround()
+	{
+		std::istringstream os(
+			" hola \n"
+		);
+		SingleWordColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS("hola", parser.column1());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( not ok2 );
+		ASSERT( not parser.hasError() );
+	}
+	void test_singleString_commentJoined()
+	{
+		std::istringstream os(
+			" hola# comment"
+		);
+		SingleWordColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS("hola", parser.column1());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( not ok2 );
+		ASSERT( not parser.hasError() );
+	}
+	void test_singleString_manyHashes()
+	{
+		std::istringstream os(
+			" hola#### ## comment"
+		);
+		SingleWordColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS("hola", parser.column1());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( not ok2 );
 		ASSERT( not parser.hasError() );
 	}
 
