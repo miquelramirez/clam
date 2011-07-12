@@ -1,6 +1,6 @@
 #ifndef TableParser_hxx
 #define TableParser_hxx
-#include <iosfwd>
+#include <sstream>
 #include <vector>
 
 class TableParser
@@ -44,7 +44,7 @@ public:
 	bool feedLine()
 	{
 		std::string line;
-		while (line=="" or line[0]=='#')
+		while (isJustSpaces(line) or line[0]=='#')
 		{
 			if (not _stream) return false; // No content read
 			_line++;
@@ -67,6 +67,11 @@ private:
 	{
 		stream >> std::ws;
 		return stream.eof();
+	}
+	bool isJustSpaces(const std::string & string)
+	{
+		std::istringstream stream(string);
+		return isJustSpaces(stream);
 	}
 public:
 	const std::string & errorMessage() const
