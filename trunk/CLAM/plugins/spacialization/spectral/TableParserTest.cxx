@@ -53,6 +53,7 @@ public:
 		TEST_CASE( test_label_missingColon );
 		TEST_CASE( test_labelValue_normally );
 		TEST_CASE( test_labelValue_missingValue );
+		TEST_CASE( test_valueLabel_normally );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -562,12 +563,12 @@ public:
 		ASSERT( parser.hasError() );
 	}
 
-	class LableValue : public TableParser 
+	class LabelValue : public TableParser 
 	{
 	public:
 		LabelToken label;
 		Token<std::string> value;
-		LableValue(std::istream & stream)
+		LabelValue(std::istream & stream)
 			: TableParser(stream)
 			, label(this)
 			, value(this)
@@ -580,7 +581,7 @@ public:
 		std::istringstream os(
 			"one: two"
 		);
-		LableValue parser(os);
+		LabelValue parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
 		ASSERT_EQUALS("one", parser.label());
@@ -596,13 +597,42 @@ public:
 		std::istringstream os(
 			"one:"
 		);
-		LableValue parser(os);
+		LabelValue parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( not ok1 );
 		ASSERT_EQUALS(
 			"Error in line 1, field 2: Expected field of type std::string\n",
 			parser.errorMessage());
 		ASSERT( parser.hasError() );
+	}
+
+	class ValueLabel : public TableParser 
+	{
+	public:
+		Token<std::string> value;
+		LabelToken label;
+		ValueLabel(std::istream & stream)
+			: TableParser(stream)
+			, value(this)
+			, label(this)
+		{
+		}
+	};
+
+	void test_valueLabel_normally()
+	{
+		std::istringstream os(
+			"one two:"
+		);
+		ValueLabel parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS("one", parser.value());
+		ASSERT_EQUALS("two", parser.label());
+		ASSERT( ok1 );
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( not ok2 );
+		ASSERT( not parser.hasError() );
 	}
 
 };

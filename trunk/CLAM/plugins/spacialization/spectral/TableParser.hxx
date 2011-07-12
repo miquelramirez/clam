@@ -110,8 +110,9 @@ public:
 	template <typename TokenType>
 	class Token : public BaseToken
 	{
-	public:
+	protected:
 		TokenType _value;
+	public:
 		Token(TableParser * parser)
 			: BaseToken(parser)
 		{
@@ -129,21 +130,20 @@ public:
 		}
 	};
 
-	/// Label tokens parse as string until a stop token ':' is found
-	class LabelToken : public BaseToken
+	/// Label tokens parse a string until a stop token ':' is found
+	class LabelToken : public Token<std::string>
 	{
-	public:
 		char _stopChar;
-		std::string _value;
+	public:
 		LabelToken(TableParser * parser, char stopChar=':')
-			: BaseToken(parser)
+			: Token<std::string>(parser)
 			, _stopChar(stopChar)
 		{
 		}
 		bool read(std::istream & stream)
 		{
-			stream >> std::ws;
 			_value="";
+			stream >> std::ws;
 			while (stream)
 			{
 				char c = stream.get();
@@ -152,11 +152,8 @@ public:
 			}
 			return error("Label should end with a colon");
 		}
-		const std::string & operator() () const
-		{
-			return _value;
-		}
 	};
+
 
 private:
 	std::ifstream _fstream;
