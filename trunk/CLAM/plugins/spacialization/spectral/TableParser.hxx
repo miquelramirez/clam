@@ -9,6 +9,10 @@ class TableParser
 	{
 	public:
 		int _value;
+		IntToken(TableParser * parser)
+		{
+			parser->addColumn(this);
+		}
 		bool read(std::istream & stream)
 		{
 			stream >> _value;
@@ -31,6 +35,10 @@ public:
 		: _stream(stream)
 		, _line(0)
 		, _column(0)
+		, intColumn(this)
+	{
+	}
+	void addColumn(IntToken * column)
 	{
 		_columns.push_back(&intColumn);
 	}
