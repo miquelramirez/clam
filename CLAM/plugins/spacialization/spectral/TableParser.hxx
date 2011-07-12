@@ -46,17 +46,21 @@ public:
 		std::string line;
 		while (line=="" or line[0]=='#')
 		{
-			if (not _stream) return false;
+			if (not _stream) return false; // No content read
 			_line++;
 			std::getline(_stream, line);
 		}
 
 		_column=1;
 		std::istringstream lineStream(line);
-		if (not _columns[0]->read(lineStream))
-			return addError("Expected an int");
-		_column=2;
+		for (unsigned i=0; i<_columns.size(); i++)
+		{
+			if (not _columns[i]->read(lineStream))
+				return addError("Expected an int");
+			_column++;
+		}
 
+		lineStream >> std::ws;
 		std::string remainingContent;
 		std::getline(lineStream, remainingContent);
 		if (not remainingContent.empty())
@@ -75,7 +79,7 @@ public:
 	{
 		std::ostringstream os;
 		os << "Error in line " << _line;
-		if (_column==1) os << ", token " << _column;
+		if (_column<=_columns.size()) os << ", token " << _column;
 		os << ": " << message << "\n";
 		_errorMessage += os.str();
 		return false;
