@@ -21,6 +21,12 @@ public:
 		TEST_CASE( test_feedLine_ignoresEmptyLinesButKeepsLineNumbers );
 		TEST_CASE( test_feedLine_ignoresComments );
 		TEST_CASE( test_errorMessage_trailingContent );
+		TEST_CASE( test_trailingSpacesIsNotError );
+
+		TEST_CASE( test_twoIntColumns_singleLine );
+		TEST_CASE( test_errorMessage_errorOnFirstTokenOfTwo );
+		TEST_CASE( test_errorMessage_errorOnSecondToken );
+		TEST_CASE( test_twoIntColumns_twoLines );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -202,6 +208,93 @@ public:
 			"Error in line 1: Unexpected content at the end of the line\n",
 			parser.errorMessage());
 		ASSERT( parser.hasError() );
+	}
+	void test_trailingSpacesIsNotError()
+	{
+		std::istringstream os(
+			"1 \t  \t \n"
+		);
+		SingleIntColumn parser(os);
+		bool ok = parser.feedLine();
+		ASSERT( ok );
+		ASSERT( not parser.hasError() );
+	}
+
+
+	class TwoIntColumns : public TableParser 
+	{
+	public:
+		IntToken column1;
+		IntToken column2;
+		TwoIntColumns(std::istream & stream)
+			: TableParser(stream)
+			, column1(this)
+			, column2(this)
+		{
+		}
+	};
+
+	void test_twoIntColumns_singleLine()
+	{
+		std::istringstream os(
+			"1 2"
+		);
+		TwoIntColumns parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.column1());
+		ASSERT_EQUALS(2, parser.column2());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( not ok2 );
+	}
+	void test_errorMessage_errorOnFirstTokenOfTwo()
+	{
+		std::istringstream os(
+			"a 1"
+		);
+		TwoIntColumns parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( not ok1 );
+		ASSERT_EQUALS(
+			"Error in line 1, token 1: Expected an int\n",
+			parser.errorMessage());
+		ASSERT( parser.hasError() );
+	}
+
+	void test_errorMessage_errorOnSecondToken()
+	{
+		std::istringstream os(
+			"1 a"
+		);
+		TwoIntColumns parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( not ok1 );
+		ASSERT_EQUALS(
+			"Error in line 1, token 2: Expected an int\n",
+			parser.errorMessage());
+		ASSERT( parser.hasError() );
+	}
+
+	void test_twoIntColumns_twoLines()
+	{
+		std::istringstream os(
+			"1 2\n"
+			"3 4"
+		);
+		TwoIntColumns parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.column1());
+		ASSERT_EQUALS(2, parser.column2());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( ok2 );
+		ASSERT_EQUALS(3, parser.column1());
+		ASSERT_EQUALS(4, parser.column2());
+		bool ok3 = parser.feedLine();
+		ASSERT( not ok3 );
+		ASSERT( not parser.hasError() );
 	}
 
 };
