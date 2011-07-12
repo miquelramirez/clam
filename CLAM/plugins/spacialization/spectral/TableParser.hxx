@@ -5,6 +5,7 @@
 
 class TableParser
 {
+public:
 	class IntToken
 	{
 	public:
@@ -23,24 +24,22 @@ class TableParser
 			return _value;
 		}
 	};
-
+private:
 	std::istream & _stream;
 	std::string _errorMessage;
 	unsigned _line;
 	unsigned _column;
 	std::vector<IntToken*> _columns;
 public:
-	IntToken intColumn;
 	TableParser(std::istream & stream)
 		: _stream(stream)
 		, _line(0)
 		, _column(0)
-		, intColumn(this)
 	{
 	}
 	void addColumn(IntToken * column)
 	{
-		_columns.push_back(&intColumn);
+		_columns.push_back(column);
 	}
 	bool feedLine()
 	{
