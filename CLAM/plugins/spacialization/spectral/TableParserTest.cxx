@@ -5,7 +5,6 @@
 /*
 TODO: No test for filename based constructor
 TODO: Trailing text tokens (parse as string what it is left in the line)
-TODO: Label tokens (parse as string until a stop token is found)
 TODO: Optional token decorator (if not enough content, a default value is given. pe Optional<Token<int> > initialized 
 TODO: Further testing is needed on the 'ignore errors and continue parsing' mode
 */
@@ -45,6 +44,12 @@ public:
 		TEST_CASE( test_singleString_spacesArround );
 		TEST_CASE( test_singleString_commentJoined );
 		TEST_CASE( test_singleString_manyHashes );
+
+		TEST_CASE( test_label_normally );
+		TEST_CASE( test_label_multiword );
+		TEST_CASE( test_label_missingColon );
+		TEST_CASE( test_labelValue_normally );
+		TEST_CASE( test_labelValue_missingValue );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -480,6 +485,102 @@ public:
 		bool ok2 = parser.feedLine();
 		ASSERT( not ok2 );
 		ASSERT( not parser.hasError() );
+	}
+
+	class SingleLabel : public TableParser 
+	{
+	public:
+		LabelToken label;
+		SingleLabel(std::istream & stream)
+			: TableParser(stream)
+			, label(this)
+		{
+		}
+	};
+
+	void test_label_normally()
+	{
+		std::istringstream os(
+			"hola:"
+		);
+		SingleLabel parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS("hola", parser.label());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( not ok2 );
+		ASSERT( not parser.hasError() );
+	}
+	void test_label_multiword()
+	{
+		std::istringstream os(
+			"hola tu:"
+		);
+		SingleLabel parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS("hola tu", parser.label());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( not ok2 );
+		ASSERT( not parser.hasError() );
+	}
+	void test_label_missingColon()
+	{
+		std::istringstream os(
+			"hola"
+		);
+		SingleLabel parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS(
+			"Error in line 1, field 1: Label should end with a colon\n",
+			parser.errorMessage());
+		ASSERT( not ok1 );
+		ASSERT( parser.hasError() );
+	}
+
+	class LableValue : public TableParser 
+	{
+	public:
+		LabelToken label;
+		Token<std::string> value;
+		LableValue(std::istream & stream)
+			: TableParser(stream)
+			, label(this)
+			, value(this)
+		{
+		}
+	};
+
+	void test_labelValue_normally()
+	{
+		std::istringstream os(
+			"hola: tu"
+		);
+		LableValue parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS("hola", parser.label());
+		ASSERT_EQUALS("tu", parser.value());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( not ok2 );
+		ASSERT( not parser.hasError() );
+	}
+
+	void test_labelValue_missingValue()
+	{
+		std::istringstream os(
+			"hola:"
+		);
+		LableValue parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( not ok1 );
+		ASSERT_EQUALS(
+			"Error in line 1, field 2: Expected field of type std::string\n",
+			parser.errorMessage());
+		ASSERT( parser.hasError() );
 	}
 
 };
