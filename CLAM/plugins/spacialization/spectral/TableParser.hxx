@@ -51,13 +51,11 @@ public:
 			std::getline(_stream, line);
 		}
 
-		_column=1;
 		std::istringstream lineStream(line);
-		for (unsigned i=0; i<_columns.size(); i++)
+		for (_column=1; _column<=_columns.size(); _column++)
 		{
-			if (not _columns[i]->read(lineStream))
+			if (not _columns[_column-1]->read(lineStream))
 				return addError("Expected an int");
-			_column++;
 		}
 
 		lineStream >> std::ws;
