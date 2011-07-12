@@ -4,6 +4,11 @@
 
 /*
 	TODO: Error always says it expected an int
+	TODO: No test for filename based constructor
+	TODO: Comments not at the first char
+	TODO: Trailing tokens (parse as string what it is left in the line)
+	TODO: Label tokens (parse as string until a stop token is found)
+	TODO: Optional token decorator (if not enough content, a default value is given. pe Optional<Token<int> > initialized 
 */
 
 class TableParserTest : public TestFixture<TableParserTest>

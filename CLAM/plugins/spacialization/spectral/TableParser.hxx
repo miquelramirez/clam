@@ -1,8 +1,64 @@
 #ifndef TableParser_hxx
 #define TableParser_hxx
 #include <sstream>
+#include <fstream>
 #include <vector>
 
+
+/**
+	A TableParser parses table based files having a set of lines
+	containing each line the same set of fields of different types.
+	For example, a file containing:
+	@code
+		# list of items in my store
+		13 10.3 orange
+		24 20.6 apples
+	@endcode
+	could be parsed by a parser defined as:
+	@code
+	class StockParser : public TableParser
+	{
+	public:
+		Token<unsigned> quantity;
+		Token<float> price;
+		Token<string> item;
+		StockParser(std::istream & stream)
+			: TableParser(stream)
+			, quantity(this)
+			, price(this)
+			, item(this)
+		{}
+		StockParser(const std::string & filename)
+			: TableParser(filename)
+			, quantity(this)
+			, price(this)
+			, item(this)
+		{}
+	}
+	@endcode
+
+	After that, the parser can be used as follows:
+	@code
+	StockParser parser("myStock.db");
+	while (parser.feedLine())
+	{
+		std::cout 
+			<< "There are " << parser.quantity()
+			<< " items left of product " << parser.item()
+			<< " at the price of " << parser.price()
+			<< std::endl;
+	}
+	if (parser.hasError())
+		std::cerr << parser.errorMessage() << std::endl;
+	@endcode
+
+	For reading tokens, the Token template uses the 
+	extraction operator '>>'. 
+	If you want a custom field parser you can specialize
+	the Token<Type>::read method or you can even create
+	your own BaseToken subclass.
+
+*/
 class TableParser
 {
 public:
@@ -37,6 +93,7 @@ public:
 	};
 
 private:
+	std::ifstream _fstream;
 	std::istream & _stream;
 	std::string _errorMessage;
 	unsigned _line;
@@ -45,6 +102,13 @@ private:
 public:
 	TableParser(std::istream & stream)
 		: _stream(stream)
+		, _line(0)
+		, _column(0)
+	{
+	}
+	TableParser(const std::string & filename)
+		: _fstream(filename.c_str())
+		, _stream(_fstream)
 		, _line(0)
 		, _column(0)
 	{
