@@ -15,11 +15,13 @@ public:
 		}
 		virtual bool read(std::istream & stream) = 0;
 	};
-	class IntToken : public BaseToken
+
+	template <typename TokenType>
+	class Token : public BaseToken
 	{
 	public:
-		int _value;
-		IntToken(TableParser * parser)
+		TokenType _value;
+		Token(TableParser * parser)
 			: BaseToken(parser)
 		{
 		}
@@ -28,29 +30,12 @@ public:
 			stream >> _value;
 			return stream;
 		}
-		int operator() ()
+		const TokenType & operator() () const
 		{
 			return _value;
 		}
 	};
-	class FloatToken : public BaseToken
-	{
-	public:
-		float _value;
-		FloatToken(TableParser * parser)
-			: BaseToken(parser)
-		{
-		}
-		bool read(std::istream & stream)
-		{
-			stream >> _value;
-			return stream;
-		}
-		float operator() ()
-		{
-			return _value;
-		}
-	};
+
 private:
 	std::istream & _stream;
 	std::string _errorMessage;

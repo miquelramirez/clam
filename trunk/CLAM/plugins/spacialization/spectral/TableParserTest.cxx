@@ -3,7 +3,7 @@
 #include <sstream>
 
 /*
-	TODO: Multi type
+	TODO: Error always says it expected an int
 */
 
 class TableParserTest : public TestFixture<TableParserTest>
@@ -39,7 +39,7 @@ public:
 	class SingleIntColumn : public TableParser 
 	{
 	public:
-		IntToken intColumn;
+		Token<int> intColumn;
 		SingleIntColumn(std::istream & stream)
 			: TableParser(stream)
 			, intColumn(this)
@@ -243,8 +243,8 @@ public:
 	class TwoIntColumns : public TableParser 
 	{
 	public:
-		IntToken column1;
-		IntToken column2;
+		Token<int> column1;
+		Token<int> column2;
 		TwoIntColumns(std::istream & stream)
 			: TableParser(stream)
 			, column1(this)
@@ -346,7 +346,7 @@ public:
 	class SingleFloatColumn : public TableParser 
 	{
 	public:
-		FloatToken floatColumn;
+		Token<float> floatColumn;
 		SingleFloatColumn(std::istream & stream)
 			: TableParser(stream)
 			, floatColumn(this)
