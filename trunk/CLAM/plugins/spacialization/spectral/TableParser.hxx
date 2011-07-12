@@ -11,15 +11,16 @@
 
 
 /**
-	A TableParser parses table based files having a set of lines
-	containing each line the same set of fields of different types.
-	For example, a file containing:
+A TableParser parses table based files having a set of lines
+containing each line the same set of fields of different types.
+
+For example, a file containing:
 @code
 # list of items in my store
 13 10.3 orange
 24 20.6 apples
 @endcode
-	could be parsed by a parser defined as:
+could be parsed by a parser defined as:
 @code
 class StockParser : public TableParser
 {
@@ -42,7 +43,7 @@ public:
 };
 @endcode
 
-	After that, the parser can be used as follows:
+After that, the parser can be used as follows:
 @code
 StockParser parser("myStock.db");
 while (parser.feedLine())
@@ -57,11 +58,11 @@ if (parser.hasError())
 	std::cerr << parser.errorMessage() << std::endl;
 @endcode
 
-	For reading tokens, the Token template class uses the 
-	extraction operator '>>'. 
-	If you want a custom field parser you can specialize
-	the Token<Type>::read method or you can even create
-	your own BaseToken subclass.
+For reading tokens, the Token template class uses the 
+extraction operator '>>'. 
+If you want a custom field parser you can specialize
+the Token<Type>::read method or you can even create
+your own BaseToken subclass.
 
 */
 class TableParser
