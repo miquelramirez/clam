@@ -1,6 +1,7 @@
 #ifndef TableParser_hxx
 #define TableParser_hxx
 #include <iosfwd>
+#include <vector>
 
 class TableParser
 {
@@ -23,6 +24,7 @@ class TableParser
 	std::string _errorMessage;
 	unsigned _line;
 	unsigned _column;
+	std::vector<IntToken*> _columns;
 public:
 	IntToken intColumn;
 	TableParser(std::istream & stream)
@@ -30,6 +32,7 @@ public:
 		, _line(0)
 		, _column(0)
 	{
+		_columns.push_back(&intColumn);
 	}
 	bool feedLine()
 	{
@@ -43,7 +46,7 @@ public:
 
 		_column=1;
 		std::istringstream lineStream(line);
-		if (not intColumn.read(lineStream))
+		if (not _columns[0]->read(lineStream))
 			return addError("Expected an int");
 		_column=2;
 
