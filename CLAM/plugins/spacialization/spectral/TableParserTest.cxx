@@ -49,6 +49,7 @@ public:
 
 		TEST_CASE( test_label_normally );
 		TEST_CASE( test_label_multiword );
+		TEST_CASE( test_label_twoLines );
 		TEST_CASE( test_label_missingColon );
 		TEST_CASE( test_labelValue_normally );
 		TEST_CASE( test_labelValue_missingValue );
@@ -435,12 +436,12 @@ public:
 	void test_singleString_singleLine()
 	{
 		std::istringstream os(
-			"hola"
+			"one"
 		);
 		SingleWordColumn parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
-		ASSERT_EQUALS("hola", parser.column1());
+		ASSERT_EQUALS("one", parser.column1());
 		ASSERT( not parser.hasError() );
 		bool ok2 = parser.feedLine();
 		ASSERT( not ok2 );
@@ -449,12 +450,12 @@ public:
 	void test_singleString_spacesArround()
 	{
 		std::istringstream os(
-			" hola \n"
+			" one \n"
 		);
 		SingleWordColumn parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
-		ASSERT_EQUALS("hola", parser.column1());
+		ASSERT_EQUALS("one", parser.column1());
 		ASSERT( not parser.hasError() );
 		bool ok2 = parser.feedLine();
 		ASSERT( not ok2 );
@@ -463,12 +464,12 @@ public:
 	void test_singleString_commentJoined()
 	{
 		std::istringstream os(
-			" hola# comment"
+			" one# comment"
 		);
 		SingleWordColumn parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
-		ASSERT_EQUALS("hola", parser.column1());
+		ASSERT_EQUALS("one", parser.column1());
 		ASSERT( not parser.hasError() );
 		bool ok2 = parser.feedLine();
 		ASSERT( not ok2 );
@@ -477,12 +478,12 @@ public:
 	void test_singleString_manyHashes()
 	{
 		std::istringstream os(
-			" hola#### ## comment"
+			" one#### ## comment"
 		);
 		SingleWordColumn parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
-		ASSERT_EQUALS("hola", parser.column1());
+		ASSERT_EQUALS("one", parser.column1());
 		ASSERT( not parser.hasError() );
 		bool ok2 = parser.feedLine();
 		ASSERT( not ok2 );
@@ -503,12 +504,12 @@ public:
 	void test_label_normally()
 	{
 		std::istringstream os(
-			"hola:"
+			"one:"
 		);
 		SingleLabel parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
-		ASSERT_EQUALS("hola", parser.label());
+		ASSERT_EQUALS("one", parser.label());
 		ASSERT( not parser.hasError() );
 		bool ok2 = parser.feedLine();
 		ASSERT( not ok2 );
@@ -517,21 +518,40 @@ public:
 	void test_label_multiword()
 	{
 		std::istringstream os(
-			"hola tu:"
+			"one two:"
 		);
 		SingleLabel parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
-		ASSERT_EQUALS("hola tu", parser.label());
+		ASSERT_EQUALS("one two", parser.label());
 		ASSERT( not parser.hasError() );
 		bool ok2 = parser.feedLine();
 		ASSERT( not ok2 );
 		ASSERT( not parser.hasError() );
 	}
+	void test_label_twoLines()
+	{
+		std::istringstream os(
+			"one:\n"
+			"two:\n"
+		);
+		SingleLabel parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT( ok1 );
+		ASSERT_EQUALS("one", parser.label());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT( ok2 );
+		ASSERT_EQUALS("two", parser.label());
+		ASSERT( not parser.hasError() );
+		bool ok3 = parser.feedLine();
+		ASSERT( not ok3 );
+		ASSERT( not parser.hasError() );
+	}
 	void test_label_missingColon()
 	{
 		std::istringstream os(
-			"hola"
+			"one"
 		);
 		SingleLabel parser(os);
 		bool ok1 = parser.feedLine();
@@ -558,13 +578,13 @@ public:
 	void test_labelValue_normally()
 	{
 		std::istringstream os(
-			"hola: tu"
+			"one: two"
 		);
 		LableValue parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
-		ASSERT_EQUALS("hola", parser.label());
-		ASSERT_EQUALS("tu", parser.value());
+		ASSERT_EQUALS("one", parser.label());
+		ASSERT_EQUALS("two", parser.value());
 		ASSERT( not parser.hasError() );
 		bool ok2 = parser.feedLine();
 		ASSERT( not ok2 );
@@ -574,7 +594,7 @@ public:
 	void test_labelValue_missingValue()
 	{
 		std::istringstream os(
-			"hola:"
+			"one:"
 		);
 		LableValue parser(os);
 		bool ok1 = parser.feedLine();

@@ -143,6 +143,7 @@ public:
 		bool read(std::istream & stream)
 		{
 			stream >> std::ws;
+			_value="";
 			while (stream)
 			{
 				char c = stream.get();
