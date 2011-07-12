@@ -6,13 +6,22 @@
 class TableParser
 {
 public:
-	class IntToken
+	class BaseToken
+	{
+	public:
+		BaseToken(TableParser * parser)
+		{
+			parser->addColumn(this);
+		}
+		virtual bool read(std::istream & stream) = 0;
+	};
+	class IntToken : public BaseToken
 	{
 	public:
 		int _value;
 		IntToken(TableParser * parser)
+			: BaseToken(parser)
 		{
-			parser->addColumn(this);
 		}
 		bool read(std::istream & stream)
 		{
@@ -29,7 +38,7 @@ private:
 	std::string _errorMessage;
 	unsigned _line;
 	unsigned _column;
-	std::vector<IntToken*> _columns;
+	std::vector<BaseToken*> _columns;
 public:
 	TableParser(std::istream & stream)
 		: _stream(stream)
@@ -37,7 +46,7 @@ public:
 		, _column(0)
 	{
 	}
-	void addColumn(IntToken * column)
+	void addColumn(BaseToken * column)
 	{
 		_columns.push_back(column);
 	}
