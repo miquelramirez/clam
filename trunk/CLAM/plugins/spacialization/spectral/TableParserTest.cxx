@@ -2,6 +2,10 @@
 #include "TableParser.hxx"
 #include <sstream>
 
+/*
+	TODO: Multi type
+	TODO: Ignore lines with just spaces, like an empty one
+*/
 
 class TableParserTest : public TestFixture<TableParserTest>
 {
@@ -27,6 +31,7 @@ public:
 		TEST_CASE( test_errorMessage_errorOnFirstTokenOfTwo );
 		TEST_CASE( test_errorMessage_errorOnSecondToken );
 		TEST_CASE( test_twoIntColumns_twoLines );
+		TEST_CASE( test_twoIntColumns_complexValidInput );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -297,7 +302,35 @@ public:
 		ASSERT( not parser.hasError() );
 	}
 
+	void test_twoIntColumns_complexValidInput()
+	{
+		std::istringstream os(
+			"# comment\n"
+			"1 2\n"
+			"\n"
+			"3 4\n"
+			"\n"
+		);
+		TwoIntColumns parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.column1());
+		ASSERT_EQUALS(2, parser.column2());
+		ASSERT( not parser.hasError() );
+		bool ok2 = parser.feedLine();
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok2 );
+		ASSERT_EQUALS(3, parser.column1());
+		ASSERT_EQUALS(4, parser.column2());
+		bool ok3 = parser.feedLine();
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( not ok3 );
+		ASSERT( not parser.hasError() );
+	}
+
 };
+
 
 REGISTER_FIXTURE(TableParserTest);
 
