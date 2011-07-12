@@ -11,8 +11,8 @@
 
 
 /**
-A TableParser parses table based files having a set of lines
-containing each line the same set of fields of different types.
+A TableParser parses table based data files having a set of lines
+with the same structure of fields.
 
 For example, a file containing:
 @code
@@ -43,9 +43,24 @@ public:
 };
 @endcode
 
-After that, the parser can be used as follows:
+Such parser can be used as follows:
 @code
-StockParser parser("myStock.db");
+StockParser parser("mystore.db");
+while (parser.feedLine())
+{
+	std::cout 
+		<< "There are " << parser.quantity()
+		<< " items left of product " << parser.item()
+		<< " at the price of " << parser.price()
+		<< std::endl;
+}
+if (parser.hasError())
+	std::cerr << parser.errorMessage() << std::endl;
+@endcode
+
+If you want to ignore error lines and parse it until the end.
+@code
+StockParser parser("mystore.db");
 while (parser.feedLine())
 {
 	std::cout 
@@ -65,6 +80,7 @@ the Token<Type>::read method or you can even create
 your own BaseToken subclass.
 
 */
+
 class TableParser
 {
 public:
@@ -157,7 +173,9 @@ public:
 				return false;
 		}
 
-		if (not isJustSpaces(lineStream))
+		std::string remaining;
+		std::getline(lineStream, remaining);
+		if (remaining!="")
 			return addError("Unexpected content at the end of the line");
 		return true;
 	}
@@ -169,25 +187,14 @@ public:
 		return _errorMessage;
 	}
 	/**
-		Returns true if some parsing error happened
+		Returns true when some parsing error happened
 	*/
 	bool hasError() const
 	{
 		return _errorMessage!="";
 	}
 private:
-	bool isJustSpaces(std::istream & stream)
-	{
-		stream >> std::ws;
-		if (stream.eof()) return true;
-		if (stream.get()=='#') return true;
-		return stream.eof();
-	}
-	bool isJustSpaces(const std::string & string)
-	{
-		std::istringstream stream(string);
-		return isJustSpaces(stream);
-	}
+	/// Returns the meaningful content of a line, by removing trailing spaces and comments
 	std::string parseableContent(const std::string & string)
 	{
 		size_t firstNotSpace = string.find_first_not_of(" \t");
@@ -201,11 +208,12 @@ private:
 
 		return string.substr(firstNotSpace, size);
 	}
-		
+	/// Helper to be called from BaseToken constructor	
 	void addColumn(BaseToken * column)
 	{
 		_columns.push_back(column);
 	}
+	/// Appends an error message
 	bool addError(const std::string & message)
 	{
 		std::ostringstream os;
@@ -215,7 +223,7 @@ private:
 		_errorMessage += os.str();
 		return false;
 	}
-
+	/// Demangles a typeid name (just works with gcc)
 	static std::string demangle(const std::string & mangledName)
 	{
 		std::string result = mangledName;
