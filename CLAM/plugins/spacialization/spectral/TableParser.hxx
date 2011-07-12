@@ -9,50 +9,50 @@
 	A TableParser parses table based files having a set of lines
 	containing each line the same set of fields of different types.
 	For example, a file containing:
-	@code
-		# list of items in my store
-		13 10.3 orange
-		24 20.6 apples
-	@endcode
+@code
+# list of items in my store
+13 10.3 orange
+24 20.6 apples
+@endcode
 	could be parsed by a parser defined as:
-	@code
-	class StockParser : public TableParser
-	{
-	public:
-		Token<unsigned> quantity;
-		Token<float> price;
-		Token<string> item;
-		StockParser(std::istream & stream)
-			: TableParser(stream)
-			, quantity(this)
-			, price(this)
-			, item(this)
-		{}
-		StockParser(const std::string & filename)
-			: TableParser(filename)
-			, quantity(this)
-			, price(this)
-			, item(this)
-		{}
-	}
-	@endcode
+@code
+class StockParser : public TableParser
+{
+public:
+	Token<unsigned> quantity;
+	Token<float> price;
+	Token<string> item;
+	StockParser(std::istream & stream)
+		: TableParser(stream)
+		, quantity(this)
+		, price(this)
+		, item(this)
+	{}
+	StockParser(const std::string & filename)
+		: TableParser(filename)
+		, quantity(this)
+		, price(this)
+		, item(this)
+	{}
+}
+@endcode
 
 	After that, the parser can be used as follows:
-	@code
-	StockParser parser("myStock.db");
-	while (parser.feedLine())
-	{
-		std::cout 
-			<< "There are " << parser.quantity()
-			<< " items left of product " << parser.item()
-			<< " at the price of " << parser.price()
-			<< std::endl;
-	}
-	if (parser.hasError())
-		std::cerr << parser.errorMessage() << std::endl;
-	@endcode
+@code
+StockParser parser("myStock.db");
+while (parser.feedLine())
+{
+	std::cout 
+		<< "There are " << parser.quantity()
+		<< " items left of product " << parser.item()
+		<< " at the price of " << parser.price()
+		<< std::endl;
+}
+if (parser.hasError())
+	std::cerr << parser.errorMessage() << std::endl;
+@endcode
 
-	For reading tokens, the Token template uses the 
+	For reading tokens, the Token template class uses the 
 	extraction operator '>>'. 
 	If you want a custom field parser you can specialize
 	the Token<Type>::read method or you can even create
@@ -69,8 +69,13 @@ public:
 		{
 			parser->addColumn(this);
 		}
+		/**
+		Tries to read the token from stream.
+		@return false if an error happens
+		*/
 		virtual bool read(std::istream & stream) = 0;
 	};
+	friend class BaseToken;
 
 	template <typename TokenType>
 	class Token : public BaseToken
@@ -113,10 +118,12 @@ public:
 		, _column(0)
 	{
 	}
-	void addColumn(BaseToken * column)
-	{
-		_columns.push_back(column);
-	}
+	/**
+		Feeds a data line ignoring any empty or comment line.
+		Returns true if such data was found, and false if there is no more lines
+		or a line was malformed. With a malformed line, the parsing could continue
+		for the next line. If you need to, use hasError to discriminate such a case.
+	*/
 	bool feedLine()
 	{
 		std::string line;
@@ -138,10 +145,26 @@ public:
 			return addError("Unexpected content at the end of the line");
 		return true;
 	}
+	/**
+		Returns the error messages.
+	*/
+	const std::string & errorMessage() const
+	{
+		return _errorMessage;
+	}
+	/**
+		Returns true if some parsing error happened
+	*/
+	bool hasError() const
+	{
+		return _errorMessage!="";
+	}
 private:
 	bool isJustSpaces(std::istream & stream)
 	{
 		stream >> std::ws;
+		if (stream.eof()) return true;
+		if (stream.get()=='#') return true;
 		return stream.eof();
 	}
 	bool isJustSpaces(const std::string & string)
@@ -149,14 +172,9 @@ private:
 		std::istringstream stream(string);
 		return isJustSpaces(stream);
 	}
-public:
-	const std::string & errorMessage() const
+	void addColumn(BaseToken * column)
 	{
-		return _errorMessage;
-	}
-	bool hasError() const
-	{
-		return _errorMessage!="";
+		_columns.push_back(column);
 	}
 	bool addError(const std::string & message)
 	{
