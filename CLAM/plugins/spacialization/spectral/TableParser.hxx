@@ -58,13 +58,17 @@ public:
 				return addError("Expected an int");
 		}
 
-		lineStream >> std::ws;
-		std::string remainingContent;
-		std::getline(lineStream, remainingContent);
-		if (not remainingContent.empty())
+		if (not isJustSpaces(lineStream))
 			return addError("Unexpected content at the end of the line");
 		return true;
 	}
+private:
+	bool isJustSpaces(std::istream & stream)
+	{
+		stream >> std::ws;
+		return stream.eof();
+	}
+public:
 	const std::string & errorMessage() const
 	{
 		return _errorMessage;
