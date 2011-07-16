@@ -47,23 +47,24 @@ namespace CLAM {
 //////////////////////////////////////////////////////////////////////
 
 DynamicType::DynamicType(const int nAttr, TAttr * attributeTable)
+	: _typeDescTable(attributeTable)
+	, _numAttr(nAttr)
 {
-	_typeDescTable = attributeTable;
-
-	numAttr = nAttr;
-	dynamicTable = new TDynInfo[numAttr + 1];
-	dynamicTable[numAttr].hasBeenAdded = dynamicTable[numAttr].hasBeenRemoved = false; // global modification flags.
-	for ( unsigned i=0; i < numAttr; i++)
+	_dynamicTable = new TDynInfo[_numAttr + 1];
+	// global modification flags.
+	_dynamicTable[_numAttr].hasBeenRemoved = false;
+	_dynamicTable[_numAttr].hasBeenAdded = false;
+	for ( unsigned i=0; i < _numAttr; i++)
 	{
-		dynamicTable[i].offs = -1;
-		dynamicTable[i].hasBeenAdded = false;
-		dynamicTable[i].hasBeenRemoved = false;
+		_dynamicTable[i].offs = -1;
+		_dynamicTable[i].hasBeenAdded = false;
+		_dynamicTable[i].hasBeenRemoved = false;
 	}
 	numActiveAttr = 0;
 	data = 0;
-	dataSize = 0;
+	_dataSize = 0;
 	allocatedDataSize = 0;
-	maxAttrSize = _typeDescTable[numAttr].offset;
+	maxAttrSize = _typeDescTable[_numAttr].offset;
 	bOwnsItsMemory = true;
 	bPreAllocateAllAttributes = false;
 	InitDynTableRefCounter();
@@ -77,8 +78,8 @@ DynamicType::DynamicType(const DynamicType& prototype, const bool shareData, con
 
 	numActiveAttr = 0;
 	data = 0;
-	dynamicTable=0;
-	dataSize = 0;
+	_dynamicTable=0;
+	_dataSize = 0;
 	allocatedDataSize = 0;
 	bPreAllocateAllAttributes = false;
 	maxAttrSize = prototype.maxAttrSize;
@@ -103,8 +104,8 @@ DynamicType::DynamicType(const DynamicType& prototype)
 
 	numActiveAttr = 0;
 	data = 0;
-	dynamicTable=0;
-	dataSize = 0;
+	_dynamicTable=0;
+	_dataSize = 0;
 	allocatedDataSize = 0;
 	bPreAllocateAllAttributes = prototype.bPreAllocateAllAttributes;
 	maxAttrSize = prototype.maxAttrSize;
@@ -134,21 +135,21 @@ void DynamicType::RemoveAllMem()
 
 	if (data && bOwnsItsMemory)
 	{
-		for (unsigned i=0; i<numAttr; i++) 
+		for (unsigned i=0; i<_numAttr; i++) 
 			if (AttrHasData(i))
 			{
 				t_destructor dest = _typeDescTable[i].destructObj;
-				dest (data+dynamicTable[i].offs);
+				dest (data+_dynamicTable[i].offs);
 			}
 	}
 	if (data) 
 	{
 		delete [] data;
 	}
-	if (dynamicTable) {
+	if (_dynamicTable) {
 		DecrementDynTableRefCounter();
 		if (DynTableRefCounter() == 0)
-			delete [] dynamicTable;
+			delete [] _dynamicTable;
 	}
 }
 
@@ -184,7 +185,7 @@ void DynamicType::InformAttr_(TAttr * attributeTable, unsigned i, const char* na
 void DynamicType::AddAttribute (const unsigned i)
 {
 	// first we check if there is need to adding the attribute
-	TDynInfo &inf = dynamicTable[i];
+	TDynInfo &inf = _dynamicTable[i];
 	const unsigned size = _typeDescTable[i].size;
 
 	if (inf.hasBeenAdded) 
@@ -194,13 +195,13 @@ void DynamicType::AddAttribute (const unsigned i)
 	{
 		inf.hasBeenRemoved = false;
 		++numActiveAttr;
-		dataSize += size;
+		_dataSize += size;
 
 		// check if we can unset the global some-removed flag.
-		dynamicTable[numAttr].hasBeenRemoved = false;
-		for (unsigned int j=0; j<numAttr; j++) {
-			if (dynamicTable[j].hasBeenRemoved) {
-				dynamicTable[numAttr].hasBeenRemoved = true;
+		_dynamicTable[_numAttr].hasBeenRemoved = false;
+		for (unsigned int j=0; j<_numAttr; j++) {
+			if (_dynamicTable[j].hasBeenRemoved) {
+				_dynamicTable[_numAttr].hasBeenRemoved = true;
 				break;
 			}
 		}
@@ -215,20 +216,20 @@ void DynamicType::AddAttribute (const unsigned i)
 	// At this point, the actual attribute-adding is necessary
 
 	if (DynTableRefCounter() > 1) // then this object is different from the prototye that gave its shape
-	{  // so create a new dynamicTable
+	{  // so create a new _dynamicTable
 		DecrementDynTableRefCounter();
-		TDynInfo *oldTable = dynamicTable;
-		dynamicTable = new TDynInfo[numAttr + 1];
-		memcpy(dynamicTable, oldTable, sizeof(TDynInfo)*(numAttr+1));
+		TDynInfo *oldTable = _dynamicTable;
+		_dynamicTable = new TDynInfo[_numAttr + 1];
+		memcpy(_dynamicTable, oldTable, sizeof(TDynInfo)*(_numAttr+1));
 		InitDynTableRefCounter();
 		// dont delete the oldTable: it's still used by at least its prototype
 	}
 
 	++numActiveAttr;
-	dataSize += size;
-	dynamicTable[i].hasBeenAdded = true;
-	dynamicTable[numAttr].hasBeenAdded = true; //this is a global (for all attribute) flag that means that Update is necessary
-	// at this point the data and dynamicTable may contain gaps, 
+	_dataSize += size;
+	_dynamicTable[i].hasBeenAdded = true;
+	_dynamicTable[_numAttr].hasBeenAdded = true; //this is a global (for all attribute) flag that means that Update is necessary
+	// at this point the data and _dynamicTable may contain gaps, 
 	// but they will be compacted at Update() time.
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
@@ -240,7 +241,7 @@ void DynamicType::AddAttribute (const unsigned i)
 //////////////////////////////////////////////////////////////////////////////////////////////////7
 void DynamicType::RemoveAttribute(const unsigned i)
 {
-	TDynInfo &inf = dynamicTable[i];
+	TDynInfo &inf = _dynamicTable[i];
 
 	if (inf.hasBeenRemoved) return;
 
@@ -248,13 +249,13 @@ void DynamicType::RemoveAttribute(const unsigned i)
 	{
 		inf.hasBeenAdded=false;
 		--numActiveAttr;
-		dataSize -= _typeDescTable[i].size;
+		_dataSize -= _typeDescTable[i].size;
 		
 		// check if we can unset the global some-added flag.
-		dynamicTable[numAttr].hasBeenAdded = false;
-		for (unsigned int j=0; j<numAttr; j++) {
-			if (dynamicTable[j].hasBeenAdded) {
-				dynamicTable[numAttr].hasBeenAdded = true;
+		_dynamicTable[_numAttr].hasBeenAdded = false;
+		for (unsigned int j=0; j<_numAttr; j++) {
+			if (_dynamicTable[j].hasBeenAdded) {
+				_dynamicTable[_numAttr].hasBeenAdded = true;
 				break;
 			}
 		}
@@ -270,19 +271,19 @@ void DynamicType::RemoveAttribute(const unsigned i)
 	// but the actual deletion will take place at UpdateData() time.
 	
 	if (DynTableRefCounter() > 1) // then this object is different from the prototye that gave its shape
-	{  // so create a new dynamicTable
+	{  // so create a new _dynamicTable
 		DecrementDynTableRefCounter();
-		TDynInfo *oldTable = dynamicTable;
-		dynamicTable = new TDynInfo[numAttr + 1];
-		memcpy(dynamicTable, oldTable, sizeof(TDynInfo)*(numAttr+1));
+		TDynInfo *oldTable = _dynamicTable;
+		_dynamicTable = new TDynInfo[_numAttr + 1];
+		memcpy(_dynamicTable, oldTable, sizeof(TDynInfo)*(_numAttr+1));
 		InitDynTableRefCounter();
 		// dont delete the oldTable: it's still used by at least its prototype
 	}
 
 	--numActiveAttr;
-	dataSize -= _typeDescTable[i].size;
-	dynamicTable[i].hasBeenRemoved = 1;
-	dynamicTable[numAttr].hasBeenRemoved = 1; // global flag that means Update necessary;
+	_dataSize -= _typeDescTable[i].size;
+	_dynamicTable[i].hasBeenRemoved = 1;
+	_dynamicTable[_numAttr].hasBeenRemoved = 1; // global flag that means Update necessary;
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
@@ -322,27 +323,27 @@ bool DynamicType::UpdateData()
 	}
 
 	// if no AddXXX or RemoveXXX has been done then the update is not necessary
-	if (!dynamicTable[numAttr].hasBeenAdded && !dynamicTable[numAttr].hasBeenRemoved) 
+	if (!_dynamicTable[_numAttr].hasBeenAdded && !_dynamicTable[_numAttr].hasBeenRemoved) 
 		return false; 
 
 	// at this point. some Add / Remove has been done. 
 	
-	if (bPreAllocateAllAttributes) dataSize = maxAttrSize;
+	if (bPreAllocateAllAttributes) _dataSize = maxAttrSize;
 	
-	if (dataSize <= allocatedDataSize && int(allocatedDataSize-dataSize) > shrinkThreshold)  
+	if (_dataSize <= allocatedDataSize && int(allocatedDataSize-_dataSize) > shrinkThreshold)  
 		// this "shrinkThreshold" constant  decides when to 
 		// reallocate (and shrink or _compact_) memory
 	{
 		UpdateDataByShrinking();
 		return true;
-	} else if (dataSize==maxAttrSize && allocatedDataSize<maxAttrSize) 
-		// it's the first that dataSize reach the maximum. (probably by the use of bPreAllocatedAllAttr flag.
+	} else if (_dataSize==maxAttrSize && allocatedDataSize<maxAttrSize) 
+		// it's the first that _dataSize reach the maximum. (probably by the use of bPreAllocatedAllAttr flag.
 		// now the offsets will be taken from the static table 
 	{
 		UpdateDataGoingToPreAllocatedMode();
 		return true;
 
-	} else if (dataSize==maxAttrSize && dataSize<=allocatedDataSize) 
+	} else if (_dataSize==maxAttrSize && _dataSize<=allocatedDataSize) 
 	{
 		// in this PreAllocatedMode the attr. offsets are fixed by the static table.
 		UpdateDataInPreAllocatedMode();
@@ -364,37 +365,37 @@ bool DynamicType::UpdateData()
 void DynamicType::BeMemoryOwner()
 {
 		bOwnsItsMemory = true;
-		TDynInfo *originalTable = dynamicTable;
+		TDynInfo *originalTable = _dynamicTable;
 		char* originalData = data;
-		data = new char[dataSize];
+		data = new char[_dataSize];
 		if (DynTableRefCounter() > 1) // then this object is different from the prototye that gave its shape
-		{  // so create a new dynamicTable
+		{  // so create a new _dynamicTable
 			DecrementDynTableRefCounter();
-			dynamicTable = new TDynInfo[numAttr + 1];
-			memcpy(dynamicTable, originalTable, sizeof(TDynInfo)*(numAttr+1));
+			_dynamicTable = new TDynInfo[_numAttr + 1];
+			memcpy(_dynamicTable, originalTable, sizeof(TDynInfo)*(_numAttr+1));
 			InitDynTableRefCounter();
 			// dont delete the oldTable: it's still used by at least its prototype
 		}
 
 		unsigned offs=0;
-		for(unsigned i=0; i<numAttr; i++)
-			if ((AttrHasData(i) && !dynamicTable[i].hasBeenRemoved) || dynamicTable[i].hasBeenAdded) // owhterwise doesn't need allocation
+		for(unsigned i=0; i<_numAttr; i++)
+			if ((AttrHasData(i) && !_dynamicTable[i].hasBeenRemoved) || _dynamicTable[i].hasBeenAdded) // owhterwise doesn't need allocation
 			{
 
 				t_new_copy fnewcp=_typeDescTable[i].newObjCopy;
 				fnewcp(data+offs, originalData+originalTable[i].offs);
-				dynamicTable[i].offs = offs;
-				dynamicTable[i].hasBeenAdded = dynamicTable[i].hasBeenRemoved = false;
+				_dynamicTable[i].offs = offs;
+				_dynamicTable[i].hasBeenAdded = _dynamicTable[i].hasBeenRemoved = false;
 				offs += _typeDescTable[i].size;
 			}
 			else 
 			{	
-				dynamicTable[i].hasBeenRemoved = false;
-				dynamicTable[i].offs = -1;
+				_dynamicTable[i].hasBeenRemoved = false;
+				_dynamicTable[i].offs = -1;
 			}
 	
-		allocatedDataSize = dataSize;
-		dynamicTable[numAttr].hasBeenAdded = dynamicTable[numAttr].hasBeenRemoved = false;
+		allocatedDataSize = _dataSize;
+		_dynamicTable[_numAttr].hasBeenAdded = _dynamicTable[_numAttr].hasBeenRemoved = false;
 	
 	
 	}
@@ -405,13 +406,13 @@ void DynamicType::BeMemoryOwner()
 void DynamicType::UpdateDataByShrinking()
 {
 	
-		std::list< std::pair<int,int> > attrList(numAttr);  
+		std::list< std::pair<int,int> > attrList(_numAttr);  
 		std::list< std::pair<int,int> >::iterator it;
 
 		unsigned int i=0;
 		for (it=attrList.begin(); it!=attrList.end(); it++)
 		{
-			(*it).first = dynamicTable[i].offs;
+			(*it).first = _dynamicTable[i].offs;
 			(*it).second = i++;
 		}
 
@@ -422,63 +423,63 @@ void DynamicType::UpdateDataByShrinking()
 		for (it=attrList.begin(); it!=attrList.end(); it++)
 		{
 			j = (*it).second;
-			if (AttrHasData(j) && !dynamicTable[j].hasBeenRemoved)
+			if (AttrHasData(j) && !_dynamicTable[j].hasBeenRemoved)
 			{
-				if (unsigned(dynamicTable[j].offs) != offs) // only move data if necessary
+				if (unsigned(_dynamicTable[j].offs) != offs) // only move data if necessary
 				{
 					t_new_copy   newc  = _typeDescTable[j].newObjCopy;
 					t_destructor dest  = _typeDescTable[j].destructObj;
 					/** @todo: optimize for the case in which the intermediate
 					 *Copy is not needed. */
 					char* aux = new char[_typeDescTable[j].size];
-					newc(aux,data+dynamicTable[j].offs);
-					dest(data+dynamicTable[j].offs);
+					newc(aux,data+_dynamicTable[j].offs);
+					dest(data+_dynamicTable[j].offs);
 					newc(data+offs,aux);
 					dest(aux);
 					delete [] aux;
-					dynamicTable[j].offs = offs;
+					_dynamicTable[j].offs = offs;
 				}
 				offs += _typeDescTable[j].size;
 			}
-			else if (AttrHasData(j) && dynamicTable[j].hasBeenRemoved)
+			else if (AttrHasData(j) && _dynamicTable[j].hasBeenRemoved)
 			{
 				t_destructor dest = _typeDescTable[j].destructObj;
-				dest (data+dynamicTable[j].offs);
+				dest (data+_dynamicTable[j].offs);
 				
-				dynamicTable[j].offs = -1;
-				dynamicTable[j].hasBeenRemoved = false;
+				_dynamicTable[j].offs = -1;
+				_dynamicTable[j].hasBeenRemoved = false;
 			}
 		} 
 		// now it's time for the new (added) attributes
-		for (i=0; i<numAttr; i++)
+		for (i=0; i<_numAttr; i++)
 		{
-			if (dynamicTable[i].hasBeenAdded)
+			if (_dynamicTable[i].hasBeenAdded)
 			{
 				t_new fnew=_typeDescTable[i].newObj;
 				fnew(data+offs);
-				dynamicTable[i].offs = offs;
+				_dynamicTable[i].offs = offs;
 				offs += _typeDescTable[i].size;
-				dynamicTable[i].hasBeenAdded = false;
+				_dynamicTable[i].hasBeenAdded = false;
 			}
 		}
 
-		dynamicTable[numAttr].hasBeenRemoved = false;
-		dynamicTable[numAttr].hasBeenAdded = false;
+		_dynamicTable[_numAttr].hasBeenRemoved = false;
+		_dynamicTable[_numAttr].hasBeenAdded = false;
 }
 
 //  STANDARD MODE (reallocate and compact memory)
 void DynamicType::UpdateDataByStandardMode ()
 {
 	char* olddata = data;
-	data = new char[dataSize];
+	data = new char[_dataSize];
 
 	unsigned offs=0;
-	for (unsigned int i=0; i<numAttr; i++)
+	for (unsigned int i=0; i<_numAttr; i++)
 	{
-		TDynInfo & inf = dynamicTable[i];
+		TDynInfo & inf = _dynamicTable[i];
 		if (AttrHasData(i)) 
 		{
-			if (dynamicTable[i].hasBeenRemoved) 
+			if (_dynamicTable[i].hasBeenRemoved) 
 			{
 				t_destructor dest = _typeDescTable[i].destructObj;
 				dest (olddata+inf.offs);
@@ -512,8 +513,8 @@ void DynamicType::UpdateDataByStandardMode ()
 
 		
 	delete [] olddata;
-	allocatedDataSize = dataSize;
-	dynamicTable[numAttr].hasBeenAdded = dynamicTable[numAttr].hasBeenRemoved = false;
+	allocatedDataSize = _dataSize;
+	_dynamicTable[_numAttr].hasBeenAdded = _dynamicTable[_numAttr].hasBeenRemoved = false;
 }
 
 void DynamicType::UpdateDataGoingToPreAllocatedMode()
@@ -524,13 +525,13 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 	unsigned int i;
 	// from now one we'll use these pre-fixed offsets.
 	// the copy of attributes:
-	for (i=0; i<numAttr; i++)
+	for (i=0; i<_numAttr; i++)
 	{
-		TDynInfo & inf = dynamicTable[i];
+		TDynInfo & inf = _dynamicTable[i];
 		int offs = _typeDescTable[i].offset;
 		if (AttrHasData(i)) 
 		{
-			if (dynamicTable[i].hasBeenRemoved) 
+			if (_dynamicTable[i].hasBeenRemoved) 
 			{
 				t_destructor dest = _typeDescTable[i].destructObj;
 				dest (olddata+inf.offs);
@@ -561,8 +562,8 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 	} // for each attribute.
 
 	delete [] olddata;
-	allocatedDataSize = dataSize;
-	dynamicTable[numAttr].hasBeenAdded = dynamicTable[numAttr].hasBeenRemoved = false;
+	allocatedDataSize = _dataSize;
+	_dynamicTable[_numAttr].hasBeenAdded = _dynamicTable[_numAttr].hasBeenRemoved = false;
 	
 }
 
@@ -571,13 +572,13 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 	// now, no reallocation.
 	// we'll use these pre-fixed offsets. 
 	// we need no attributes-copies. only creations and destructions:
-	for (unsigned int i=0; i<numAttr; i++)
+	for (unsigned int i=0; i<_numAttr; i++)
 	{
-		TDynInfo & inf = dynamicTable[i];
+		TDynInfo & inf = _dynamicTable[i];
 		int offs = _typeDescTable[i].offset;
 		if (AttrHasData(i)) 
 		{
-			if (dynamicTable[i].hasBeenRemoved) 
+			if (_dynamicTable[i].hasBeenRemoved) 
 			{
 				t_destructor dest = _typeDescTable[i].destructObj;
 				dest (data+inf.offs);
@@ -599,7 +600,7 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 				
 	} // for each attribute.
 
-	dynamicTable[numAttr].hasBeenAdded = dynamicTable[numAttr].hasBeenRemoved = false;
+	_dynamicTable[_numAttr].hasBeenAdded = _dynamicTable[_numAttr].hasBeenRemoved = false;
 	
 }
 
@@ -609,11 +610,11 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 
 int DynamicType::DynTableRefCounter()
 {
-	return dynamicTable[numAttr].offs;
+	return _dynamicTable[_numAttr].offs;
 }
 void DynamicType::InitDynTableRefCounter()
 {
-	dynamicTable[numAttr].offs = 1;       //at least the object that has created the table points to it.
+	_dynamicTable[_numAttr].offs = 1;       //at least the object that has created the table points to it.
 }
 
 
@@ -622,11 +623,11 @@ void DynamicType::InitDynTableRefCounter()
 
 int DynamicType::DecrementDynTableRefCounter()
 {
-	return --dynamicTable[numAttr].offs;
+	return --_dynamicTable[_numAttr].offs;
 }
 int DynamicType::IncrementDynTableRefCounter()
 {
-	return ++dynamicTable[numAttr].offs;
+	return ++_dynamicTable[_numAttr].offs;
 }
 
 
@@ -654,12 +655,12 @@ void DynamicType::SelfCopyPrototype(const DynamicType &prototype)
 {
 	RemoveAllMem(); // deletes all mem in data and calls de destructor of every object.
 
-	numAttr = prototype.numAttr;
+	_numAttr = prototype._numAttr;
 	numActiveAttr = prototype.numActiveAttr;
-	dataSize = prototype.dataSize;
+	_dataSize = prototype._dataSize;
 	allocatedDataSize = prototype.allocatedDataSize;
 	maxAttrSize = prototype.maxAttrSize;
-	dynamicTable = prototype.dynamicTable;
+	_dynamicTable = prototype._dynamicTable;
 	data=0;
 	bOwnsItsMemory=true;
 	bPreAllocateAllAttributes = prototype.bPreAllocateAllAttributes;
@@ -678,8 +679,8 @@ void DynamicType::SelfSharedCopy(const DynamicType &prototype)
 void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 {
 	CLAM_ASSERT( 
-		!prototype.dynamicTable[prototype.numAttr].hasBeenAdded &&	
-		!prototype.dynamicTable[prototype.numAttr].hasBeenRemoved,
+		!prototype._dynamicTable[prototype._numAttr].hasBeenAdded &&	
+		!prototype._dynamicTable[prototype._numAttr].hasBeenRemoved,
 		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
 	);
 	if (this==&prototype) return;
@@ -689,7 +690,7 @@ void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 	data = new char[allocatedDataSize];
 
 	unsigned int i;
-	for (i = 0; i < numAttr; i++)
+	for (i = 0; i < _numAttr; i++)
 	{
 		if (!ExistAttr(i)) continue;
 		void* pos = GetPtrToData_(i);
@@ -701,8 +702,8 @@ void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 {
 	CLAM_ASSERT( 
-		!prototype.dynamicTable[prototype.numAttr].hasBeenAdded &&	
-		!prototype.dynamicTable[prototype.numAttr].hasBeenRemoved,
+		!prototype._dynamicTable[prototype._numAttr].hasBeenAdded &&	
+		!prototype._dynamicTable[prototype._numAttr].hasBeenRemoved,
 		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
 	);
 	if (this==&prototype) return;
@@ -714,9 +715,9 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 	// Copies (deepCopy) all the objects pointed by this dynamic type that derives from
 	// Component. Copies this object and then link the copy of this, with the
 	// children copies.
-	Component** copyChildren = new Component * [prototype.numAttr];   // could be done without a table if space efficency is needed
+	Component** copyChildren = new Component * [prototype._numAttr];   // could be done without a table if space efficency is needed
 	unsigned int i;
-	for (i = 0; i < numAttr; i++)
+	for (i = 0; i < _numAttr; i++)
 	{
 		if (prototype.ExistAttr(i) && _typeDescTable[i].isComponent && _typeDescTable[i].isPointer)
 			copyChildren[i] = static_cast<Component*>(prototype.GetDataAsPtr_(i))->DeepCopy();
@@ -724,7 +725,7 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 			copyChildren[i] = 0;
 	}
 
-	for (i = 0; i < numAttr; i++)
+	for (i = 0; i < _numAttr; i++)
 	{
 		if (!ExistAttr(i)) continue;
 		void* pos = GetPtrToData_(i);
@@ -768,7 +769,7 @@ void DynamicType::FullfilsInvariant() const
 							 "In that case the constructor MUST call the"
 							 "MandatoryInit() method (called from constructor). Check it !");
 
-	if (!dynamicTable)
+	if (!_dynamicTable)
 		return;
 
 	unsigned auxAllocatedSize=0;
@@ -778,9 +779,9 @@ void DynamicType::FullfilsInvariant() const
 	
 	for (unsigned j=0; j<allocatedDataSize; j++) usedblock[j] = false;
 
-	for (unsigned i=0; i<numAttr; i++)
+	for (unsigned i=0; i<_numAttr; i++)
 	{
-		TDynInfo & dyninfo = dynamicTable[i];
+		TDynInfo & dyninfo = _dynamicTable[i];
 		
 		// check state consistency.
 		if (dyninfo.hasBeenAdded && dyninfo.hasBeenRemoved) 
@@ -819,16 +820,16 @@ void DynamicType::FullfilsInvariant() const
 
 	}
 	if (!bPreAllocateAllAttributes) {
-		if (auxAllocatedSize+incData-decData != dataSize) 
-			throw ErrDynamicType("in FullfilsInvariant: dataSize attribute is not consistent. Class: ", GetClassName() );
-		if (auxAllocatedSize + incData - decData != dataSize)
-			throw ErrDynamicType("in FullfilsInvariant: the dataSize is not well calculated. Class: ", GetClassName() );
+		if (auxAllocatedSize+incData-decData != _dataSize) 
+			throw ErrDynamicType("in FullfilsInvariant: _dataSize attribute is not consistent. Class: ", GetClassName() );
+		if (auxAllocatedSize + incData - decData != _dataSize)
+			throw ErrDynamicType("in FullfilsInvariant: the _dataSize is not well calculated. Class: ", GetClassName() );
 	}
 	if (auxAllocatedSize > allocatedDataSize) 
 		throw ErrDynamicType("in FullfilsInvariant: allocatedDataSize attribute is not consistent. Class: ", GetClassName() );
-	if (dynamicTable[numAttr].hasBeenAdded != someAdded) 
+	if (_dynamicTable[_numAttr].hasBeenAdded != someAdded) 
 		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenAdded' flag inconsistent. Class: ", GetClassName() );
-	if (dynamicTable[numAttr].hasBeenRemoved != someRemoved) 
+	if (_dynamicTable[_numAttr].hasBeenRemoved != someRemoved) 
 		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenRemoved' flag inconsistent. Class: ", GetClassName() );
 	
 	delete[] usedblock;
@@ -840,11 +841,11 @@ void DynamicType::Debug() const
 	TAttr * attr = 0;
 	std::cout <<std::endl<<"Class Name: "<< GetClassName() << " at: " << this <<std::endl << "[#attr.], dyn_offs,statc_offs,name,type,{comp,dynType,ptr,strble},exist,size,Ptr"\
 		<< std::endl << "------------------------------------------------------------------------------"<<std::endl;
-	std::cout << "{ size, allocatedSize, maxAttrsSize } = { " << dataSize << " , " << allocatedDataSize << " , "
+	std::cout << "{ size, allocatedSize, maxAttrsSize } = { " << _dataSize << " , " << allocatedDataSize << " , "
 			<< maxAttrSize << " }\n";
-	for (unsigned i=0; i<numAttr; i++)
+	for (unsigned i=0; i<_numAttr; i++)
 	{
-		TDynInfo & dyninf = dynamicTable[i];
+		TDynInfo & dyninf = _dynamicTable[i];
 
 		attr = &_typeDescTable[i];
 		std::cout << std::endl;
