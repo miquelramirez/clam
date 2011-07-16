@@ -204,7 +204,7 @@ private: \
 	\
 ACCESS: \
 	inline TYPE& Get##NAME() const {\
-		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes()), \
+		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes(), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
 		CLAM_ASSERT(ExistAttr(N),\
