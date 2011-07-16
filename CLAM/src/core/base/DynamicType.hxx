@@ -121,16 +121,16 @@ public:
 	void RemoveAll();
 
 	/// Returns the name of the attribute at position i.
-	const char * GetDynamicAttributeName(unsigned i) const { return typeDescTable[i].id; }
+	const char * GetDynamicAttributeName(unsigned i) const { return _typeDescTable[i].id; }
 
 	/// Returns the type_info of attribute at position i.
 	virtual const std::type_info & GetTypeId(unsigned i) const=0;
 
 	/// Returns true if the attribute at position i is a component.
-	bool AttributeIsComponent(unsigned i) const {return typeDescTable[i].isComponent; }
+	bool AttributeIsComponent(unsigned i) const {return _typeDescTable[i].isComponent; }
 
 	/// Returns true if the attribute at position i is a dynamic type as well.
-	bool AttributeIsDynamictype(unsigned i) const {return typeDescTable[i].isDynamicType; }
+	bool AttributeIsDynamictype(unsigned i) const {return _typeDescTable[i].isDynamicType; }
 
 	/// Returns true if the attribute at position i is instantiated.
 	bool IsAttributeInstantiated(unsigned i) const {return dynamicTable[i].offs!=-1; }
@@ -144,14 +144,14 @@ public:
 	/// Convenience accessor for GetAttributeAsVoidPtr that cast it to a component if it is so.
 	/// @pre the attribute must be instantiated (undefined behaviour if not)
 	const Component * GetAttributeAsComponent(unsigned i) const {
-		if (!typeDescTable[i].isComponent) return 0;
+		if (!_typeDescTable[i].isComponent) return 0;
 		return static_cast<const Component *> (GetPtrToData_(i));
 	}
 
 	/// Convenience accessor for GetAttributeAsVoidPtr that cast it to a component if it is so.
 	/// @pre the attribute must be instantiated (undefined behaviour if not)
 	Component * GetAttributeAsComponent(unsigned i) {
-		if (! (typeDescTable[i].isComponent)) return 0;
+		if (! (_typeDescTable[i].isComponent)) return 0;
 		return static_cast<Component *> (GetPtrToData_(i));
 	}
 
@@ -199,12 +199,12 @@ protected:
 	virtual void InformAll()
 	{
 		// lets calculates the offsets of the "Pre allocated mode"
-		CLAM_DEBUG_ASSERT(typeDescTable,"static table don't exist. in DT::InformAll()");
+		CLAM_DEBUG_ASSERT(_typeDescTable,"static table don't exist. in DT::InformAll()");
 		int adder=0;
 		for (unsigned int i=0; i<numAttr; i++)
 		{
-			typeDescTable[i].offset = adder;
-			adder += typeDescTable[i].size;
+			_typeDescTable[i].offset = adder;
+			adder += _typeDescTable[i].size;
 		}
 		maxAttrSize = adder;
 	};
@@ -279,7 +279,7 @@ protected:
 	inline char*       GetData() const { return data; }
 	inline void        SetData(char* srcData) { data = srcData;}
 	inline TDynInfo*   GetDynamicTable() const { return dynamicTable; }
-	inline TAttr*      GetTypeDescTable() const { return typeDescTable; }
+	inline TAttr*      GetTypeDescTable() const { return _typeDescTable; }
 	inline unsigned    GetDataSize() const { return dataSize; }
 	inline bool        IsInstanciate() const { return (data != 0); }
 	inline bool        OwnsItsMemory() const { return bOwnsItsMemory; }
@@ -297,7 +297,7 @@ protected:
 	unsigned        numActiveAttr;
 	char            *data;
 	TDynInfo        *dynamicTable;
-	TAttr           *typeDescTable;
+	TAttr           *_typeDescTable;
 	unsigned        dataSize;
 	bool            bOwnsItsMemory;
 	unsigned		numAttr;    // the total number of dyn. attrs.
