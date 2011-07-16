@@ -106,7 +106,7 @@ public:
 	bool UpdateData();
 	
 	/// Returns the number of dynamic attributes.
-	unsigned GetNDynamicAttributes() const { return numAttr; }
+	unsigned GetNDynamicAttributes() const { return _numAttr; }
 
 	/// Instantiates attribute at position i. Requires UpdateData() to be effective.
 	void AddAttribute (const unsigned i);
@@ -133,7 +133,7 @@ public:
 	bool AttributeIsDynamictype(unsigned i) const {return _typeDescTable[i].isDynamicType; }
 
 	/// Returns true if the attribute at position i is instantiated.
-	bool IsAttributeInstantiated(unsigned i) const {return dynamicTable[i].offs!=-1; }
+	bool IsAttributeInstantiated(unsigned i) const {return _dynamicTable[i].offs!=-1; }
 
 	/// Returns a void pointer to the data of the attribute at position 0.
 	/// @pre the attribute must be instantiated (undefined behaviour if not)
@@ -201,7 +201,7 @@ protected:
 		// lets calculates the offsets of the "Pre allocated mode"
 		CLAM_DEBUG_ASSERT(_typeDescTable,"static table don't exist. in DT::InformAll()");
 		int adder=0;
-		for (unsigned int i=0; i<numAttr; i++)
+		for (unsigned int i=0; i<_numAttr; i++)
 		{
 			_typeDescTable[i].offset = adder;
 			adder += _typeDescTable[i].size;
@@ -260,7 +260,7 @@ protected:
 		bool isPointer : 1; ///< TODO: review this, seems to be always false
 	};
 
-	// item of the dynamicTable, that holds the dynamic information of the dynamic type
+	// item of the _dynamicTable, that holds the dynamic information of the dynamic type
 	struct TDynInfo
 	{
 		int offs;  // attribute offset of the data table. Has a -1 value when
@@ -274,13 +274,13 @@ protected:
 
 
 	// Public Accesors to protected data. Necesary in the implementation of Branches (aggregates)
-	inline unsigned    GetNumAttr() const { return numAttr; };
+	inline unsigned    GetNumAttr() const { return _numAttr; };
 	inline unsigned    GetNumActiveAttr() const { return numActiveAttr; }
 	inline char*       GetData() const { return data; }
 	inline void        SetData(char* srcData) { data = srcData;}
-	inline TDynInfo*   GetDynamicTable() const { return dynamicTable; }
+	inline TDynInfo*   GetDynamicTable() const { return _dynamicTable; }
 	inline TAttr*      GetTypeDescTable() const { return _typeDescTable; }
-	inline unsigned    GetDataSize() const { return dataSize; }
+	inline unsigned    GetDataSize() const { return _dataSize; }
 	inline bool        IsInstanciate() const { return (data != 0); }
 	inline bool        OwnsItsMemory() const { return bOwnsItsMemory; }
 	inline void        SetOwnsItsMemory(const bool owns) { bOwnsItsMemory = owns; }
@@ -292,15 +292,16 @@ public:
 	// Developing tools:
 	void Debug() const;
 
-protected:
-	
+private:
 	unsigned        numActiveAttr;
+protected:
 	char            *data;
-	TDynInfo        *dynamicTable;
-	TAttr           *_typeDescTable;
-	unsigned        dataSize;
+private:
+	TDynInfo *      _dynamicTable;
+	TAttr *         _typeDescTable;
+	unsigned        _dataSize;
 	bool            bOwnsItsMemory;
-	unsigned		numAttr;    // the total number of dyn. attrs.
+	unsigned		_numAttr;    // the total number of dyn. attrs.
 	unsigned		maxAttrSize;	// the total dyn. attrs. size
 	unsigned        allocatedDataSize;
 
@@ -310,7 +311,7 @@ protected:
 	inline int      IncrementDynTableRefCounter();
 
 private:
-	inline bool   AttrHasData(unsigned i) const { return (dynamicTable[i].offs > -1); };
+	inline bool   AttrHasData(unsigned i) const { return (_dynamicTable[i].offs > -1); };
 	inline void   RemoveAllMem();
 	inline void*  GetPtrToData_(const unsigned id) const;
 	inline void*  GetDataAsPtr_(const unsigned id) const;
@@ -415,23 +416,23 @@ inline bool DynamicType::ExistAttr(unsigned id) const
 
 	if (!data) return false;
 
-	TDynInfo &inf = dynamicTable[id];
+	TDynInfo &inf = _dynamicTable[id];
 	return (inf.offs != -1 && !inf.hasBeenAdded && !inf.hasBeenRemoved); 
 }
 
 inline void* DynamicType::GetDataAsPtr_(const unsigned id) const
 {
-	return *(void**)&data[dynamicTable[id].offs];
+	return *(void**)&data[_dynamicTable[id].offs];
 }
 
 inline void* DynamicType::GetPtrToData_(const unsigned id) const
 {
-	return (void*)&data[dynamicTable[id].offs];
+	return (void*)&data[_dynamicTable[id].offs];
 }
 
 inline void DynamicType::SetDataAsPtr_(const unsigned id, void* p)
 {
-	*(void**)&data[dynamicTable[id].offs] = p;
+	*(void**)&data[_dynamicTable[id].offs] = p;
 }
 
 

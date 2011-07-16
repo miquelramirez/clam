@@ -204,7 +204,7 @@ private: \
 	\
 ACCESS: \
 	inline TYPE& Get##NAME() const {\
-		CLAM_DEBUG_ASSERT((N<numAttr), \
+		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes()), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
 		CLAM_ASSERT(ExistAttr(N),\
@@ -212,13 +212,13 @@ ACCESS: \
 			" that is not Added or not Updated.");\
 		CLAM_DEBUG_ASSERT(data, \
 			"No data allocated for the accessed dynamic type:" #NAME );\
-		void *p=data + dynamicTable[N].offs;\
+		void *p=data + _dynamicTable[N].offs;\
 		return *static_cast<TYPE*>(p); \
 	}\
 	\
 	/** @pre already exist an object of the type in that position (that will be deleted)*/\
 	inline void Set##NAME(TYPE const & arg) {\
-		CLAM_DEBUG_ASSERT((N<numAttr), \
+		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes(), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
 		CLAM_ASSERT(ExistAttr(N),\
@@ -227,7 +227,7 @@ ACCESS: \
 		CLAM_DEBUG_ASSERT(data, \
 			"No data allocated for the accessed dynamic type." #NAME );\
 		void* orig = (void*)(&arg);\
-		char* pos = data+dynamicTable[N].offs;\
+		char* pos = data+_dynamicTable[N].offs;\
 		_destructor_##NAME(pos);\
 		_new_##NAME(pos, orig);\
 	}\
