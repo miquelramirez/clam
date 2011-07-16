@@ -708,8 +708,7 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 	// Component. Copies this object and then link the copy of this, with the
 	// children copies.
 	Component** copyChildren = new Component * [prototype._numAttr];   // could be done without a table if space efficency is needed
-	unsigned int i;
-	for (i = 0; i < _numAttr; i++)
+	for (unsigned i=0; i<_numAttr; i++)
 	{
 		if (prototype.ExistAttr(i) && _typeDescTable[i].isComponent && _typeDescTable[i].isPointer)
 			copyChildren[i] = static_cast<Component*>(prototype.GetDataAsPtr_(i))->DeepCopy();
@@ -717,7 +716,7 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 			copyChildren[i] = 0;
 	}
 
-	for (i = 0; i < _numAttr; i++)
+	for (unsigned i=0; i<_numAttr; i++)
 	{
 		if (!ExistAttr(i)) continue;
 		void* pos = GetPtrToData_(i);
