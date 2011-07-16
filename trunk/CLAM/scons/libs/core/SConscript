@@ -14,6 +14,9 @@ folders = [
 	'src/core/processing',
 	'src/core/ports',
 	'src/core/controls',
+	'src/core/sinksources',
+	'src/core/data',
+
 	'src/Data/Base',
 	'src/Data/BasicProcessing/Audio.*',
 	'src/Data/Descriptors/Pool',
@@ -21,16 +24,9 @@ folders = [
 	'src/Defines',
 	'src/Errors',
 	'src/Flow/Networks',
-	'src/Processing/AudioSink*xx',
-	'src/Processing/AudioSource*xx',
-	'src/Processing/AudioBufferSink*xx',
-	'src/Processing/AudioBufferSource*xx',
-	'src/Processing/ControlSink*xx',
-	'src/Processing/ControlSource*xx',
 	'src/Processing/Plugins',
 	'src/System',
 	'src/System/Threads',
-	'externals/CbLib',
 	'src/Tools/MIDIIO/Message',
 	]
 
