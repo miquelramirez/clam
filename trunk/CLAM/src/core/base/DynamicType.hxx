@@ -206,7 +206,7 @@ protected:
 			_typeDescTable[i].offset = adder;
 			adder += _typeDescTable[i].size;
 		}
-		maxAttrSize = adder;
+		_maxAttrSize = adder;
 	};
 
 protected:
@@ -275,17 +275,17 @@ protected:
 
 	// Public Accesors to protected data. Necesary in the implementation of Branches (aggregates)
 	inline unsigned    GetNumAttr() const { return _numAttr; };
-	inline unsigned    GetNumActiveAttr() const { return numActiveAttr; }
-	inline char*       GetData() const { return data; }
-	inline void        SetData(char* srcData) { data = srcData;}
+	inline unsigned    GetNumActiveAttr() const { return _numActiveAttr; }
+	inline char*       GetData() const { return _data; }
+	inline void        SetData(char* srcData) { _data = srcData;}
 	inline TDynInfo*   GetDynamicTable() const { return _dynamicTable; }
 	inline TAttr*      GetTypeDescTable() const { return _typeDescTable; }
 	inline unsigned    GetDataSize() const { return _dataSize; }
-	inline bool        IsInstanciate() const { return (data != 0); }
-	inline bool        OwnsItsMemory() const { return bOwnsItsMemory; }
-	inline void        SetOwnsItsMemory(const bool owns) { bOwnsItsMemory = owns; }
+	inline bool        IsInstanciate() const { return (_data != 0); }
+	inline bool        OwnsItsMemory() const { return _ownsItsMemory; }
+	inline void        SetOwnsItsMemory(const bool owns) { _ownsItsMemory = owns; }
 	inline bool        ExistAttr(unsigned id) const;
-	inline void        SetPreAllocateAllAttributes() { bPreAllocateAllAttributes=true; }
+	inline void        SetPreAllocateAllAttributes() { _preallocateAllAttributes=true; }
 
 
 public:
@@ -293,18 +293,20 @@ public:
 	void Debug() const;
 
 private:
-	unsigned        numActiveAttr;
+	TAttr * _typeDescTable; ///< Pointer to the shared type information
+	unsigned _numAttr;  ///< The total number of dynamic attributes
+	unsigned _numActiveAttr; ///< The number of added attributes
 protected:
-	char            *data;
+	char * _data; ///< Pointer to memory holding attribute data
+	TDynInfo * _dynamicTable; ///< Dynamic state of each attribute
 private:
-	TDynInfo *      _dynamicTable;
-	TAttr *         _typeDescTable;
-	unsigned        _dataSize;
-	bool            bOwnsItsMemory;
-	unsigned		_numAttr;    // the total number of dyn. attrs.
-	unsigned		maxAttrSize;	// the total dyn. attrs. size
-	unsigned        allocatedDataSize;
+	unsigned _dataSize;
+	bool _ownsItsMemory;
+	unsigned _maxAttrSize;	// the total dyn. attrs. size
+	unsigned _allocatedDataSize;
+	bool _preallocateAllAttributes;
 
+private:
 	inline int      DynTableRefCounter();
 	inline void     InitDynTableRefCounter();
 	inline int      DecrementDynTableRefCounter();
@@ -346,7 +348,6 @@ private:
 	void SelfSharedCopy(const DynamicType &orig);
 	void SelfShallowCopy(const DynamicType &orig);
 	void SelfDeepCopy(const DynamicType &orig);
-	bool bPreAllocateAllAttributes;
 
 public:
 	virtual void StoreOn(CLAM::Storage & storage) const {
@@ -414,7 +415,7 @@ template <unsigned int NAttrib> const int DynamicType::AttributePositionBase<NAt
 inline bool DynamicType::ExistAttr(unsigned id) const 
 { 
 
-	if (!data) return false;
+	if (!_data) return false;
 
 	TDynInfo &inf = _dynamicTable[id];
 	return (inf.offs != -1 && !inf.hasBeenAdded && !inf.hasBeenRemoved); 
@@ -422,17 +423,17 @@ inline bool DynamicType::ExistAttr(unsigned id) const
 
 inline void* DynamicType::GetDataAsPtr_(const unsigned id) const
 {
-	return *(void**)&data[_dynamicTable[id].offs];
+	return *(void**)&_data[_dynamicTable[id].offs];
 }
 
 inline void* DynamicType::GetPtrToData_(const unsigned id) const
 {
-	return (void*)&data[_dynamicTable[id].offs];
+	return (void*)&_data[_dynamicTable[id].offs];
 }
 
 inline void DynamicType::SetDataAsPtr_(const unsigned id, void* p)
 {
-	*(void**)&data[_dynamicTable[id].offs] = p;
+	*(void**)&_data[_dynamicTable[id].offs] = p;
 }
 
 
@@ -494,6 +495,16 @@ inline void DynamicType::InformTypedAttr_(
 
 
 } //namespace CLAM
+
+
+namespace {
+class Dummy : public CLAM::DynamicType
+{
+public:
+	DYNAMIC_TYPE(Dummy, 1);
+	DYN_ATTRIBUTE(0, public, int, Attribute);
+};
+}
 
 #endif // !defined _DynamicType_
 

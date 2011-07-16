@@ -204,35 +204,35 @@ private: \
 	\
 ACCESS: \
 	inline TYPE& Get##NAME() const {\
-		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes(), \
+		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes()), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
 		CLAM_ASSERT(ExistAttr(N),\
 			"You are trying to access attribute " #NAME \
 			" that is not Added or not Updated.");\
-		CLAM_DEBUG_ASSERT(data, \
+		CLAM_DEBUG_ASSERT(GetData(), \
 			"No data allocated for the accessed dynamic type:" #NAME );\
-		void *p=data + _dynamicTable[N].offs;\
+		void *p=_data + _dynamicTable[N].offs;\
 		return *static_cast<TYPE*>(p); \
 	}\
 	\
 	/** @pre already exist an object of the type in that position (that will be deleted)*/\
 	inline void Set##NAME(TYPE const & arg) {\
-		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes(), \
+		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes()), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
 		CLAM_ASSERT(ExistAttr(N),\
 			"You are trying to access attribute " #NAME \
 			" that is not Added or not Updated.");\
-		CLAM_DEBUG_ASSERT(data, \
+		CLAM_DEBUG_ASSERT(GetData(), \
 			"No data allocated for the accessed dynamic type." #NAME );\
 		void* orig = (void*)(&arg);\
-		char* pos = data+_dynamicTable[N].offs;\
+		char* pos = _data+_dynamicTable[N].offs;\
 		_destructor_##NAME(pos);\
 		_new_##NAME(pos, orig);\
 	}\
 	inline void Add##NAME() {\
-		AddAttribute(N);\
+		DynamicType::AddAttribute(N);\
 	}\
 	template <typename Visitor> \
 	inline void Visit##NAME(Visitor & visitor) { \
@@ -240,7 +240,7 @@ ACCESS: \
 			visitor.Accept(#NAME,Get##NAME()); \
 	}\
 	inline void Remove##NAME() { \
-		RemoveAttribute(N); \
+		DynamicType::RemoveAttribute(N); \
 	}\
 	inline bool Has##NAME() const { \
 		return ExistAttr(N); \
@@ -277,14 +277,19 @@ private: \
 #define DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 	__COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 protected: \
-	void Store##NAME(CLAM::Storage & s) const { \
-		if (Has##NAME()) { \
-			StoreAttribute((CLAM::TypeInfo<TYPE >::StorableAsLeaf*)NULL, s, Get##NAME(), #NAME); \
-		} \
+	void Store##NAME(CLAM::Storage & s) const \
+	{ \
+		if (not Has##NAME())  return; \
+		DynamicType::StoreAttribute( \
+			(CLAM::TypeInfo<TYPE >::StorableAsLeaf*)NULL, \
+			s, Get##NAME(), #NAME); \
 	} \
 	bool Load##NAME(CLAM::Storage & s) { \
 		TYPE obj; \
-		if (!LoadAttribute((CLAM::TypeInfo<TYPE >::StorableAsLeaf*)NULL, s, obj, #NAME)) { \
+		if (!DynamicType::LoadAttribute( \
+			(CLAM::TypeInfo<TYPE >::StorableAsLeaf*)NULL, \
+			s, obj, #NAME)) \
+		{ \
 			Remove##NAME(); \
 			return false; \
 		} \
