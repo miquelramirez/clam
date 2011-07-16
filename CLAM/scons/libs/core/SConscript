@@ -17,8 +17,6 @@ folders = [
 	'src/core/sinksources',
 	'src/core/data',
 
-	'src/Data/Base',
-	'src/Data/BasicProcessing/Audio.*',
 	'src/Data/Descriptors/Pool',
 	'src/Data/Editable',
 	'src/Defines',
