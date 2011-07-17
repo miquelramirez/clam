@@ -310,12 +310,14 @@ private:
 	unsigned _maxAttrSize;	// the total dyn. attrs. size
 	unsigned _allocatedDataSize;
 	bool _preallocateAllAttributes;
+	unsigned _attributesNeedingUpdate;
 
 private:
 	inline int      DynTableRefCounter();
 	inline void     InitDynTableRefCounter();
 	inline int      DecrementDynTableRefCounter();
 	inline int      IncrementDynTableRefCounter();
+	inline void     CopyOnWriteDynamicTable();
 
 private:
 	inline bool   AttrHasData(unsigned i) const { return (_dynamicTable[i].offs > -1); };
