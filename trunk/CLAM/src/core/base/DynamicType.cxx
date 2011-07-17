@@ -148,8 +148,16 @@ void DynamicType::RemoveAllMem()
 }
 
 
-void DynamicType::InformAttr_(TAttr * attributeTable, unsigned i, const char* name, unsigned size, const char* type, const bool isPtr,
-                            const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr)
+void DynamicType::InformAttr_(
+	TAttr * attributeTable,
+	unsigned i,
+	const char* name,
+	unsigned size,
+	const char* type,
+	const bool isPtr,
+	const t_new fnew,
+	const t_new_copy fcopy,
+	const t_destructor fdestr)
 {
 	CLAM_ASSERT(fnew, "in DT: a dynamic attribute don't have default-constructor !");
 	CLAM_ASSERT(fcopy, "in DT: a dynamic attribute don't have copy constructor !");
@@ -168,10 +176,9 @@ void DynamicType::InformAttr_(TAttr * attributeTable, unsigned i, const char* na
 	// flags that will be set at the AddTypedAttr_ 
 	// (the overloaded function that calls this one)
 	attributeTable[i].isComponent = false;
-	attributeTable[i].isStorable = false;
 	attributeTable[i].isDynamicType = false;
-
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Main memory management methods: AddAttribute, RemoveAttribute and UpdateData
 
@@ -792,7 +799,7 @@ void DynamicType::Debug() const
 		<< _maxAttrSize << ", "
 		<< _attributesNeedingUpdate << " }\n"
 		<< std::endl
-		<< "[#attr.], dyn_offs,statc_offs,name,type,{comp,dynType,ptr,strble},exist,size,Ptr" << std::endl
+		<< "[#attr.], dyn_offs,statc_offs,name,type,{comp,dynType,ptr},exist,size,Ptr" << std::endl
 		<< "--------------------------------------------------------------------------------" << std::endl;
 	for (unsigned i=0; i<_numAttr; i++)
 	{
@@ -806,7 +813,7 @@ void DynamicType::Debug() const
 
 		std::cout << dyninf.offs << " , "<<attr->offset<<" , "<<attr->id<<" , "<<attr->type<<" , {"\
 			<<attr->isComponent<<","<<attr->isDynamicType<<","<<attr->isPointer<<","\
-			<<attr->isStorable<<"} , "<<ExistAttr(i)<<" , "<<attr->size\
+			<<ExistAttr(i)<<" , "<<attr->size\
 			<<" , ";
 		if(ExistAttr(i)) 
 			std::cout << GetPtrToData_(i);
