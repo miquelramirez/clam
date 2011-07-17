@@ -806,6 +806,30 @@ void DynamicType::AttributeTableSetFields_(
 	attributeTable[index].newObjCopy = copyConstructor;
 	attributeTable[index].destructObj = destructor;
 }
+void DynamicType::AttributeTableSetTypeFlags_(
+	TAttr * attributeTable, unsigned index,
+	const void * typedNullPointer)
+{
+	attributeTable[index].isComponent = false;
+	attributeTable[index].isDynamicType = false;
+}
+
+void DynamicType::AttributeTableSetTypeFlags_(
+	TAttr * attributeTable, unsigned index,
+	const Component * typedNullPointer)
+{
+	attributeTable[index].isComponent = true;
+	attributeTable[index].isDynamicType = false;
+}
+
+void DynamicType::AttributeTableSetTypeFlags_(
+	TAttr * attributeTable, unsigned index,
+	const DynamicType * typedNullPointer)
+{
+	attributeTable[index].isComponent = true;
+	attributeTable[index].isDynamicType = true;
+}
+
 
 }; //namespace CLAM
 
