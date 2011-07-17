@@ -507,7 +507,8 @@ void DynamicType::UpdateDataByStandardMode ()
 		
 	delete [] olddata;
 	_allocatedDataSize = _dataSize;
-	_dynamicTable[_numAttr].hasBeenAdded = _dynamicTable[_numAttr].hasBeenRemoved = false;
+	_dynamicTable[_numAttr].hasBeenAdded = false;
+	_dynamicTable[_numAttr].hasBeenRemoved = false;
 }
 
 void DynamicType::UpdateDataGoingToPreAllocatedMode()
@@ -556,7 +557,8 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 
 	delete [] olddata;
 	_allocatedDataSize = _dataSize;
-	_dynamicTable[_numAttr].hasBeenAdded = _dynamicTable[_numAttr].hasBeenRemoved = false;
+	_dynamicTable[_numAttr].hasBeenAdded = false;
+	_dynamicTable[_numAttr].hasBeenRemoved = false;
 	
 }
 
@@ -593,8 +595,8 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 				
 	} // for each attribute.
 
-	_dynamicTable[_numAttr].hasBeenAdded = _dynamicTable[_numAttr].hasBeenRemoved = false;
-	
+	_dynamicTable[_numAttr].hasBeenAdded = false;
+	_dynamicTable[_numAttr].hasBeenRemoved = false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -609,10 +611,6 @@ void DynamicType::InitDynTableRefCounter()
 {
 	_dynamicTable[_numAttr].offs = 1;       //at least the object that has created the table points to it.
 }
-
-
-
-
 
 int DynamicType::DecrementDynTableRefCounter()
 {
@@ -761,7 +759,7 @@ void DynamicType::FullfilsInvariant() const
 	unsigned auxAllocatedSize=0;
 	bool someAdded = false, someRemoved = false;
 	int incData=0, decData=0;
-	bool *usedblock = new bool[_allocatedDataSize];
+	bool usedblock[_allocatedDataSize];
 	
 	for (unsigned j=0; j<_allocatedDataSize; j++) usedblock[j] = false;
 
@@ -817,8 +815,6 @@ void DynamicType::FullfilsInvariant() const
 		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenAdded' flag inconsistent. Class: ", GetClassName() );
 	if (_dynamicTable[_numAttr].hasBeenRemoved != someRemoved) 
 		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenRemoved' flag inconsistent. Class: ", GetClassName() );
-	
-	delete[] usedblock;
 }
 
 
