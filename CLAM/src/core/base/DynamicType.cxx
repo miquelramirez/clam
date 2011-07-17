@@ -649,12 +649,12 @@ void DynamicType::SelfCopyPrototype(const DynamicType &prototype)
 	RemoveAllMem(); // deletes all mem in _data and calls de destructor of every object.
 
 	_numAttr = prototype._numAttr;
-	_dataSize = prototype._dataSize;
-	_allocatedDataSize = prototype._allocatedDataSize;
-	_maxAttrSize = prototype._maxAttrSize;
-	_dynamicTable = prototype._dynamicTable;
 	_data=0;
+	_dynamicTable = prototype._dynamicTable;
+	_dataSize = prototype._dataSize;
 	_ownsItsMemory=true;
+	_maxAttrSize = prototype._maxAttrSize;
+	_allocatedDataSize = prototype._allocatedDataSize;
 	_preallocateAllAttributes = prototype._preallocateAllAttributes;
 	IncrementDynTableRefCounter();
 }
@@ -670,9 +670,7 @@ void DynamicType::SelfSharedCopy(const DynamicType &prototype)
 
 void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 {
-	CLAM_ASSERT( 
-		!prototype._dynamicTable[prototype._numAttr].hasBeenAdded &&	
-		!prototype._dynamicTable[prototype._numAttr].hasBeenRemoved,
+	CLAM_ASSERT( not prototype.NeedsUpdate(),
 		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
 	);
 	if (this==&prototype) return;
@@ -681,8 +679,7 @@ void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 
 	_data = new char[_allocatedDataSize];
 
-	unsigned int i;
-	for (i = 0; i < _numAttr; i++)
+	for (unsigned i=0; i<_numAttr; i++)
 	{
 		if (!ExistAttr(i)) continue;
 		void* pos = GetPtrToData_(i);
@@ -693,9 +690,7 @@ void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 
 void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 {
-	CLAM_ASSERT( 
-		!prototype._dynamicTable[prototype._numAttr].hasBeenAdded &&	
-		!prototype._dynamicTable[prototype._numAttr].hasBeenRemoved,
+	CLAM_ASSERT( not prototype.NeedsUpdate(),
 		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
 	);
 	if (this==&prototype) return;

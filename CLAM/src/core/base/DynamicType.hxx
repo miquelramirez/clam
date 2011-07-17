@@ -275,7 +275,6 @@ protected:
 
 	// Public Accesors to protected data. Necesary in the implementation of Branches (aggregates)
 	inline unsigned    GetNumAttr() const { return _numAttr; };
-	inline unsigned    GetNumActiveAttr() const { return _numActiveAttr; }
 	inline char*       GetData() const { return _data; }
 	inline void        SetData(char* srcData) { _data = srcData;}
 	inline TDynInfo*   GetDynamicTable() const { return _dynamicTable; }
@@ -295,7 +294,6 @@ public:
 private:
 	TAttr * _typeDescTable; ///< Pointer to the shared type information
 	unsigned _numAttr;  ///< The total number of dynamic attributes
-	unsigned _numActiveAttr; ///< The number of added attributes
 protected:
 	char * _data; ///< Pointer to memory holding attribute data
 	TDynInfo * _dynamicTable; ///< Dynamic state of each attribute
@@ -315,6 +313,7 @@ private:
 private:
 	inline bool   AttrHasData(unsigned i) const { return (_dynamicTable[i].offs > -1); };
 	inline void   RemoveAllMem();
+	inline bool   NeedsUpdate() const;
 	inline void*  GetPtrToData_(const unsigned id) const;
 	inline void*  GetDataAsPtr_(const unsigned id) const;
 	inline void   SetDataAsPtr_(const unsigned id, void* p);
@@ -412,11 +411,17 @@ template <unsigned int NAttrib> const int DynamicType::AttributePositionBase<NAt
 //////////////////////////////////////////////////////////////////
 // IMPLEMENTATION OF INLINE FUNCTIONS
 
+inline bool DynamicType::NeedsUpdate() const
+{
+	return
+		_dynamicTable[_numAttr].hasBeenRemoved or 
+		_dynamicTable[_numAttr].hasBeenAdded;
+}
+
 inline bool DynamicType::ExistAttr(unsigned id) const 
 { 
 
 	if (!_data) return false;
-
 	TDynInfo &inf = _dynamicTable[id];
 	return (inf.offs != -1 && !inf.hasBeenAdded && !inf.hasBeenRemoved); 
 }
@@ -502,7 +507,7 @@ class Dummy : public CLAM::DynamicType
 {
 public:
 	DYNAMIC_TYPE(Dummy, 1);
-	DYN_ATTRIBUTE(0, public, int, Attribute);
+	DYN_ATTRIBUTE(0, public, int, AnAttribute);
 };
 }
 
