@@ -317,7 +317,7 @@ bool DynamicType::UpdateData()
 	}
 
 	// if no AddXXX or RemoveXXX has been done then the update is not necessary
-	if (!_dynamicTable[_numAttr].hasBeenAdded && !_dynamicTable[_numAttr].hasBeenRemoved) 
+	if (!_attributesNeedingUpdate)
 		return false; 
 
 	// at this point. some Add / Remove has been done. 
@@ -327,26 +327,19 @@ bool DynamicType::UpdateData()
 	if (_dataSize <= _allocatedDataSize && int(_allocatedDataSize-_dataSize) > shrinkThreshold)  
 		// this "shrinkThreshold" constant  decides when to 
 		// reallocate (and shrink or _compact_) memory
-	{
 		UpdateDataByShrinking();
-		return true;
-	} else if (_dataSize==_maxAttrSize && _allocatedDataSize<_maxAttrSize) 
+	else if (_dataSize==_maxAttrSize && _allocatedDataSize<_maxAttrSize) 
 		// it's the first that _dataSize reach the maximum. (probably by the use of bPreAllocatedAllAttr flag.
 		// now the offsets will be taken from the static table 
-	{
 		UpdateDataGoingToPreAllocatedMode();
-		return true;
 
-	} else if (_dataSize==_maxAttrSize && _dataSize<=_allocatedDataSize) 
-	{
+	else if (_dataSize==_maxAttrSize && _dataSize<=_allocatedDataSize) 
 		// in this PreAllocatedMode the attr. offsets are fixed by the static table.
 		UpdateDataInPreAllocatedMode();
-		return true;
-	}
-	
-	// else: memory has increasead or the amount decreased is bigger than the threshold
-	// so do it in the STANDARD MODE (reallocate and compact memory)
-	UpdateDataByStandardMode();
+	else
+		// else: memory has increasead or the amount decreased is bigger than the threshold
+		// so do it in the STANDARD MODE (reallocate and compact memory)
+		UpdateDataByStandardMode();
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
@@ -668,7 +661,7 @@ void DynamicType::SelfSharedCopy(const DynamicType &prototype)
 
 void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 {
-	CLAM_ASSERT( not prototype.NeedsUpdate(),
+	CLAM_ASSERT( not prototype._attributesNeedingUpdate,
 		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
 	);
 	if (this==&prototype) return;
@@ -688,7 +681,7 @@ void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 
 void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 {
-	CLAM_ASSERT( not prototype.NeedsUpdate(),
+	CLAM_ASSERT( not prototype._attributesNeedingUpdate,
 		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
 	);
 	if (this==&prototype) return;
@@ -807,7 +800,8 @@ void DynamicType::FullfilsInvariant() const
 			throw ErrDynamicType(" in FullfilsInvariant: attribute not informed with dynamic offset <> -1");
 
 	}
-	if (!_preallocateAllAttributes) {
+	if (!_preallocateAllAttributes)
+	{
 		if (auxAllocatedSize+incData-decData != _dataSize) 
 			throw ErrDynamicType("in FullfilsInvariant: _dataSize attribute is not consistent. Class: ", GetClassName() );
 		if (auxAllocatedSize + incData - decData != _dataSize)
@@ -817,12 +811,12 @@ void DynamicType::FullfilsInvariant() const
 		throw ErrDynamicType("in FullfilsInvariant: allocatedDataSize attribute is not consistent. Class: ", GetClassName() );
 	if (_dynamicTable[_numAttr].hasBeenAdded != someAdded) 
 		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenAdded' flag inconsistent. Class: ", GetClassName() );
+	if (_dynamicTable[_numAttr].hasBeenRemoved != someRemoved) 
+		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenRemoved' flag inconsistent. Class: ", GetClassName() );
 	if ((_dynamicTable[_numAttr].hasBeenAdded or _dynamicTable[_numAttr].hasBeenRemoved) != (_attributesNeedingUpdate!=0))
 		throw ErrDynamicType("in FullfilsInvariant: hasBeenAdded/Removed inconsistent with _attributesNeedingUpdate. Class: ", GetClassName() );
 	if ((nAdded + nRemoved) != _attributesNeedingUpdate)
 		throw ErrDynamicType("in FullfilsInvariant: _attributesNeedingUpdate is not consistent with hasBeenAdded/Removed flags. Class: ", GetClassName() );
-	if (_dynamicTable[_numAttr].hasBeenRemoved != someRemoved) 
-		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenRemoved' flag inconsistent. Class: ", GetClassName() );
 }
 
 
