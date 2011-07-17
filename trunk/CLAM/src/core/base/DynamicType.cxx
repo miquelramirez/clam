@@ -700,7 +700,7 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 	// Copies (deepCopy) all the objects pointed by this dynamic type that derives from
 	// Component. Copies this object and then link the copy of this, with the
 	// children copies.
-	Component** copyChildren = new Component * [prototype._numAttr];   // could be done without a table if space efficency is needed
+	Component * copyChildren[prototype._numAttr];   // could be done without a table if space efficency is needed
 	for (unsigned i=0; i<_numAttr; i++)
 	{
 		if (prototype.ExistAttr(i) && _typeDescTable[i].isComponent && _typeDescTable[i].isPointer)
@@ -723,7 +723,6 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 			fcopy(pos, prototype.GetPtrToData_(i));
 		}
 	}
-	delete [] copyChildren;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -757,7 +756,10 @@ void DynamicType::FullfilsInvariant() const
 		return;
 
 	unsigned auxAllocatedSize=0;
-	bool someAdded = false, someRemoved = false;
+	bool someAdded = false;
+	bool someRemoved = false;
+	bool nAdded = 0;
+	bool nRemoved = 0;
 	int incData=0, decData=0;
 	bool usedblock[_allocatedDataSize];
 	
@@ -772,7 +774,9 @@ void DynamicType::FullfilsInvariant() const
 			throw ErrDynamicType("in FullfilsInvariant: an attribute has both Added & Removed flags set. Class: ", GetClassName() );
 
 		if (dyninfo.hasBeenAdded) someAdded = true;
+		if (dyninfo.hasBeenAdded) nAdded++;
 		if (dyninfo.hasBeenRemoved) someRemoved = true;
+		if (dyninfo.hasBeenRemoved) nRemoved++;
 
 		if (dyninfo.offs < -1) 
 			throw ErrDynamicType("in FullfilsInvariant: a dynamic offset < -1");
@@ -813,6 +817,10 @@ void DynamicType::FullfilsInvariant() const
 		throw ErrDynamicType("in FullfilsInvariant: allocatedDataSize attribute is not consistent. Class: ", GetClassName() );
 	if (_dynamicTable[_numAttr].hasBeenAdded != someAdded) 
 		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenAdded' flag inconsistent. Class: ", GetClassName() );
+	if ((_dynamicTable[_numAttr].hasBeenAdded or _dynamicTable[_numAttr].hasBeenRemoved) != (_attributesNeedingUpdate!=0))
+		throw ErrDynamicType("in FullfilsInvariant: hasBeenAdded/Removed inconsistent with _attributesNeedingUpdate. Class: ", GetClassName() );
+	if ((nAdded + nRemoved) != _attributesNeedingUpdate)
+		throw ErrDynamicType("in FullfilsInvariant: _attributesNeedingUpdate is not consistent with hasBeenAdded/Removed flags. Class: ", GetClassName() );
 	if (_dynamicTable[_numAttr].hasBeenRemoved != someRemoved) 
 		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenRemoved' flag inconsistent. Class: ", GetClassName() );
 }
@@ -821,10 +829,21 @@ void DynamicType::FullfilsInvariant() const
 void DynamicType::Debug() const
 {
 	TAttr * attr = 0;
-	std::cout <<std::endl<<"Class Name: "<< GetClassName() << " at: " << this <<std::endl << "[#attr.], dyn_offs,statc_offs,name,type,{comp,dynType,ptr,strble},exist,size,Ptr"\
+	std::cout <<std::endl
+		<< "Class Name: "<< GetClassName() 
+		<< " at: " << this
+		<< "{ someAdded, someRemoved, Pending update } = { "
+		<< _dynamicTable[_numAttr].hasBeenAdded << " , " 
+		<< _dynamicTable[_numAttr].hasBeenRemoved << " , " 
+		<< _attributesNeedingUpdate << " , "
+		<< std::endl
+		<< "{ size, allocatedSize, maxAttrsSize } = { "
+		<< _dataSize << " , " 
+		<< _allocatedDataSize << " , "
+		<< _maxAttrSize << " }\n"
+		<< std::endl
+		<< "[#attr.], dyn_offs,statc_offs,name,type,{comp,dynType,ptr,strble},exist,size,Ptr"
 		<< std::endl << "------------------------------------------------------------------------------"<<std::endl;
-	std::cout << "{ size, allocatedSize, maxAttrsSize } = { " << _dataSize << " , " << _allocatedDataSize << " , "
-			<< _maxAttrSize << " }\n";
 	for (unsigned i=0; i<_numAttr; i++)
 	{
 		TDynInfo & dyninf = _dynamicTable[i];
