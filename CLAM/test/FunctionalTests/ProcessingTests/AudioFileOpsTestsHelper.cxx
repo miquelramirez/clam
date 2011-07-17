@@ -48,11 +48,11 @@ namespace CLAMTest
 
 		stream->PrepareReading();
 
-		int* channelBuff = new int[2];
+		int channelBuff[2];
 		channelBuff[0] = 0;
 		channelBuff[1] = 1;
 		
-		CLAM::TData** samplesMatrix = new CLAM::TData*[2];
+		CLAM::TData* samplesMatrix[2];
 		samplesMatrix[0] = samplesExtractedLeft.GetPtr();
 		samplesMatrix[1] = samplesExtractedRight.GetPtr();
 
@@ -64,8 +64,6 @@ namespace CLAMTest
 		similarityLeft = evaluateSimilarity( samplesExtractedLeft, left.GetBuffer() );
 		similarityRight = evaluateSimilarity( samplesExtractedRight, right.GetBuffer() );
 
-		delete channelBuff;
-		delete samplesMatrix;
 		delete stream;
 		
 	}
