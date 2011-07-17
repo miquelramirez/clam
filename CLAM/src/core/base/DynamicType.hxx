@@ -322,7 +322,6 @@ private:
 private:
 	inline bool   AttrHasData(unsigned i) const { return (_dynamicTable[i].offs > -1); };
 	inline void   RemoveAllMem();
-	inline bool   NeedsUpdate() const;
 	inline void*  GetPtrToData_(const unsigned id) const;
 	inline void*  GetDataAsPtr_(const unsigned id) const;
 	inline void   SetDataAsPtr_(const unsigned id, void* p);
@@ -420,13 +419,6 @@ template <unsigned int NAttrib> const int DynamicType::AttributePositionBase<NAt
 //////////////////////////////////////////////////////////////////
 // IMPLEMENTATION OF INLINE FUNCTIONS
 
-inline bool DynamicType::NeedsUpdate() const
-{
-	return
-		_dynamicTable[_numAttr].hasBeenRemoved or 
-		_dynamicTable[_numAttr].hasBeenAdded;
-}
-
 inline bool DynamicType::ExistAttr(unsigned id) const 
 { 
 
@@ -512,6 +504,7 @@ inline void DynamicType::InformTypedAttr_(
 
 
 namespace {
+/// Dummy DT to force errors on Macros to appear soon in compilation
 class Dummy : public CLAM::DynamicType
 {
 public:
