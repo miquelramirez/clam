@@ -212,10 +212,10 @@ ACCESS: \
 			" that is not Added or not Updated.");\
 		CLAM_DEBUG_ASSERT(GetData(), \
 			"No data allocated for the accessed dynamic type:" #NAME );\
-		void *p=_data + _dynamicTable[N].offs;\
-		return *static_cast<TYPE*>(p); \
+		const void *p=GetAttributeAsVoidPtr(N);\
+		return *static_cast<TYPE*>(const_cast<void*>(p)); \
 	}\
-	\
+\
 	/** @pre already exist an object of the type in that position (that will be deleted)*/\
 	inline void Set##NAME(TYPE const & arg) {\
 		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes()), \
