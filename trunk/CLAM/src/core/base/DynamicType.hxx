@@ -290,7 +290,7 @@ public:
 
 private:
 	TAttr * _typeDescTable; ///< Pointer to the shared type information
-	unsigned _numAttr;  ///< The total number of dynamic attributes
+	const unsigned _numAttr;  ///< The total number of dynamic attributes
 	char * _data; ///< Pointer to memory holding attribute data
 	TDynInfo * _dynamicTable; ///< Dynamic state of each attribute
 	unsigned _dataSize;
