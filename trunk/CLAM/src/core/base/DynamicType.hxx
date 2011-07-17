@@ -225,6 +225,17 @@ protected:
 	}
 
 protected:
+	/** 
+		Fills the attribute description entry for the ith attribute.
+		Do not use this method directly, It is used from the macro 
+		expanded code.
+		@arg attributeTable The table to fill
+		@arg id The entry to fill
+		@arg name The name of the attribute
+		@arg type The name of the attribute type
+		@arg offset The offset of the argument data in preallocated mode.
+		@returns the offset for the next attribute
+	*/
 	template <typename Type>
 	inline static int InformAttr_(
 		TAttr* attributeTable, unsigned id, const char* name, const char* type, int offset);
@@ -241,13 +252,13 @@ private:
 		t_destructor destructor
 		);
 
-	inline static void AttributeTableSetTypeFlags_(
+	static void AttributeTableSetTypeFlags_(
 		TAttr* attributeTable, unsigned id, const Component* typedNullPointer);
 
-	inline static void AttributeTableSetTypeFlags_(
+	static void AttributeTableSetTypeFlags_(
 		TAttr* attributeTable, unsigned id, const DynamicType* typedNullPointer);
 
-	inline static void AttributeTableSetTypeFlags_(
+	static void AttributeTableSetTypeFlags_(
 		TAttr* attributeTable, unsigned id, const void* typedNullPointer);
 	
 protected:
@@ -451,31 +462,6 @@ inline int DynamicType::InformAttr_(
 	AttributeTableSetTypeFlags_(attributeTable, i, (Type*)0);
 	return offset + sizeof(Type);
 }
-
-inline void DynamicType::AttributeTableSetTypeFlags_(
-	TAttr * attributeTable, unsigned index,
-	const void * typedNullPointer)
-{
-	attributeTable[index].isComponent = false;
-	attributeTable[index].isDynamicType = false;
-}
-
-inline void DynamicType::AttributeTableSetTypeFlags_(
-	TAttr * attributeTable, unsigned index,
-	const Component * typedNullPointer)
-{
-	attributeTable[index].isComponent = true;
-	attributeTable[index].isDynamicType = false;
-}
-
-inline void DynamicType::AttributeTableSetTypeFlags_(
-	TAttr * attributeTable, unsigned index,
-	const DynamicType * typedNullPointer)
-{
-	attributeTable[index].isComponent = true;
-	attributeTable[index].isDynamicType = true;
-}
-
 
 } //namespace CLAM
 
