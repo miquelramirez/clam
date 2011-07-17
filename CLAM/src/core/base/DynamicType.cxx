@@ -40,6 +40,7 @@
 
 // Anyway this flag should be defined in the project/makefile of the test.
 
+
 namespace CLAM {
 
 //////////////////////////////////////////////////////////////////////
@@ -148,37 +149,6 @@ void DynamicType::RemoveAllMem()
 }
 
 
-void DynamicType::InformAttr_(
-	TAttr * attributeTable,
-	unsigned i,
-	const char* name,
-	unsigned size,
-	const char* type,
-	const bool isPtr,
-	const t_new fnew,
-	const t_new_copy fcopy,
-	const t_destructor fdestr)
-{
-	CLAM_ASSERT(fnew, "in DT: a dynamic attribute don't have default-constructor !");
-	CLAM_ASSERT(fcopy, "in DT: a dynamic attribute don't have copy constructor !");
-
-	strcpy(attributeTable[i].id, name);
-	strcpy(attributeTable[i].type, type);
-	attributeTable[i].isPointer = isPtr;
-	attributeTable[i].size = size;
-	// default value. This field is used in UpdateData in Fixed offsets mode.
-	attributeTable[i].offset = -1;  
-	// references to creation/destruction fuctions of the type/class
-	attributeTable[i].newObj = fnew;
-	attributeTable[i].newObjCopy = fcopy;
-	attributeTable[i].destructObj = fdestr;
-	// informative flags:
-	// flags that will be set at the AddTypedAttr_ 
-	// (the overloaded function that calls this one)
-	attributeTable[i].isComponent = false;
-	attributeTable[i].isDynamicType = false;
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Main memory management methods: AddAttribute, RemoveAttribute and UpdateData
 
@@ -221,7 +191,7 @@ void DynamicType::AddAttribute (const unsigned i)
 
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////7
+//////////////////////////////////////////////////////////////////////////////////////////////////
 void DynamicType::RemoveAttribute(const unsigned i)
 {
 	TDynInfo &inf = _dynamicTable[i];
@@ -352,7 +322,8 @@ void DynamicType::BeMemoryOwner()
 				t_new_copy fnewcp=_typeDescTable[i].newObjCopy;
 				fnewcp(_data+offs, originalData+originalTable[i].offs);
 				_dynamicTable[i].offs = offs;
-				_dynamicTable[i].hasBeenAdded = _dynamicTable[i].hasBeenRemoved = false;
+				_dynamicTable[i].hasBeenAdded = false;
+				_dynamicTable[i].hasBeenRemoved = false;
 				offs += _typeDescTable[i].size;
 			}
 			else 
@@ -667,30 +638,14 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 	_data = new char[_allocatedDataSize];
 
 	// Copies (deepCopy) all the objects pointed by this dynamic type that derives from
-	// Component. Copies this object and then link the copy of this, with the
-	// children copies.
-	Component * copyChildren[prototype._numAttr];   // could be done without a table if space efficency is needed
-	for (unsigned i=0; i<_numAttr; i++)
-	{
-		if (prototype.ExistAttr(i) && _typeDescTable[i].isComponent && _typeDescTable[i].isPointer)
-			copyChildren[i] = static_cast<Component*>(prototype.GetDataAsPtr_(i))->DeepCopy();
-		else
-			copyChildren[i] = 0;
-	}
-
 	for (unsigned i=0; i<_numAttr; i++)
 	{
 		if (!ExistAttr(i)) continue;
 		void* pos = GetPtrToData_(i);
-		if(copyChildren[i])
-			SetDataAsPtr_(i, copyChildren[i]);
-		else
-		{
-			//now a nested object must be replaced. It maight be a pointer not registered as it.
-			//the nested object will be copied from the nested object at "this"
-			t_new_copy fcopy = _typeDescTable[i].newObjCopy;
-			fcopy(pos, prototype.GetPtrToData_(i));
-		}
+		//now a nested object must be replaced. It maight be a pointer not registered as it.
+		//the nested object will be copied from the nested object at "this"
+		t_new_copy fcopy = _typeDescTable[i].newObjCopy;
+		fcopy(pos, prototype.GetPtrToData_(i));
 	}
 }
 
@@ -806,19 +761,21 @@ void DynamicType::Debug() const
 		TDynInfo & dyninf = _dynamicTable[i];
 
 		attr = &_typeDescTable[i];
-		std::cout << std::endl << " ";
-		std::cout << (dyninf.hasBeenAdded? "A" : "-");
-		std::cout << (dyninf.hasBeenRemoved? "R" : "-" );
-		std::cout << " [" <<i<<"] ";
-
-		std::cout << dyninf.offs << " , "<<attr->offset<<" , "<<attr->id<<" , "<<attr->type<<" , {"\
-			<<attr->isComponent<<","<<attr->isDynamicType<<","<<attr->isPointer<<","\
-			<<ExistAttr(i)<<" , "<<attr->size\
-			<<" , ";
-		if(ExistAttr(i)) 
-			std::cout << GetPtrToData_(i);
-		
-		if(attr->isPointer && ExistAttr(i)) std::cout << " points -> " << GetDataAsPtr_(i);
+		std::cout
+			<< " "
+			<< (dyninf.hasBeenAdded? "A" : "-")
+			<< (dyninf.hasBeenRemoved? "R" : "-" )
+			<< " [" <<i<<"] "
+			<< dyninf.offs << " ,"
+			<< attr->offset << " ,"
+			<< attr->id << ", "
+			<< attr->type << ", {"
+			<< attr->isComponent << ", "
+			<< attr->isDynamicType << ", "
+			<< ExistAttr(i) << ", "
+			<< attr->size << ", "
+			<< (ExistAttr(i)? GetPtrToData_(i):"X")
+			<< std::endl;
 	}
 	std::cout<<std::endl;
 
@@ -826,6 +783,28 @@ void DynamicType::Debug() const
 	#ifdef CLAM_USE_XML
 	XMLStorage::Dump(*this, GetClassName(), "Debug.xml");
 	#endif// CLAM_USE_XML
+}
+
+void DynamicType::AttributeTableSetFields_(
+	TAttr * attributeTable, unsigned index,
+	const char* name,
+	const char* typeName,
+	unsigned size,
+	int offset,
+	t_new constructor,
+	t_new_copy copyConstructor,
+	t_destructor destructor
+	)
+{
+	strcpy(attributeTable[index].id, name);
+	strcpy(attributeTable[index].type, typeName);
+	attributeTable[index].size = size;
+	// default value. This field is used in UpdateData in Fixed offsets mode.
+	attributeTable[index].offset = offset;
+	// references to creation/destruction fuctions of the type/class
+	attributeTable[index].newObj = constructor;
+	attributeTable[index].newObjCopy = copyConstructor;
+	attributeTable[index].destructObj = destructor;
 }
 
 }; //namespace CLAM
