@@ -281,20 +281,8 @@ protected:
 	virtual Component* ShallowCopy() const;
 	DynamicType& operator= (const DynamicType& source);
 
-
-	// Public Accesors to protected data. Necesary in the implementation of Branches (aggregates)
-	inline unsigned    GetNumAttr() const { return _numAttr; };
-	inline char*       GetData() const { return _data; }
-	inline void        SetData(char* srcData) { _data = srcData;}
-	inline TDynInfo*   GetDynamicTable() const { return _dynamicTable; }
-	inline TAttr*      GetTypeDescTable() const { return _typeDescTable; }
-	inline unsigned    GetDataSize() const { return _dataSize; }
-	inline bool        IsInstanciate() const { return (_data != 0); }
-	inline bool        OwnsItsMemory() const { return _ownsItsMemory; }
-	inline void        SetOwnsItsMemory(const bool owns) { _ownsItsMemory = owns; }
-	inline bool        ExistAttr(unsigned id) const;
 	inline void        SetPreAllocateAllAttributes() { _preallocateAllAttributes=true; }
-
+	inline bool        ExistAttr(unsigned id) const;
 
 public:
 	// Developing tools:

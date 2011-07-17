@@ -210,8 +210,6 @@ ACCESS: \
 		CLAM_ASSERT(ExistAttr(N),\
 			"You are trying to access attribute " #NAME \
 			" that is not Added or not Updated.");\
-		CLAM_DEBUG_ASSERT(GetData(), \
-			"No data allocated for the accessed dynamic type:" #NAME );\
 		const void *p=GetAttributeAsVoidPtr(N);\
 		return *static_cast<TYPE*>(const_cast<void*>(p)); \
 	}\
@@ -224,8 +222,6 @@ ACCESS: \
 		CLAM_ASSERT(ExistAttr(N),\
 			"You are trying to access attribute " #NAME \
 			" that is not Added or not Updated.");\
-		CLAM_DEBUG_ASSERT(GetData(), \
-			"No data allocated for the accessed dynamic type." #NAME );\
 		void * orig = (void*)(&arg);\
 		void * pos = GetAttributeAsVoidPtr(N);\
 		_destructor_##NAME(pos);\

@@ -36,7 +36,7 @@
 // So it can only be set (defined) when developing, testing or maintaining
 // dynamic types.
 
-#define CLAM_EXTRA_CHECKS_ON_DT
+// #define CLAM_EXTRA_CHECKS_ON_DT
 
 // Anyway this flag should be defined in the project/makefile of the test.
 
@@ -84,7 +84,7 @@ DynamicType::DynamicType(const DynamicType& prototype, const bool shareData, con
 	// the concrete class. So if you try to pass a prototype 
 	// of a different concrete class the compiler will complain!
 
-	if (not prototype.IsInstanciate())
+	if (not prototype._data)
 		SelfCopyPrototype(prototype);
 	else if (shareData)
 		SelfSharedCopy(prototype);
@@ -107,7 +107,7 @@ DynamicType::DynamicType(const DynamicType& prototype)
 	, _attributesNeedingUpdate(0)
 {
 
-	if (prototype.IsInstanciate())
+	if (prototype._data)
 		SelfDeepCopy(prototype);
 	else
 		SelfCopyPrototype(prototype);
@@ -142,7 +142,8 @@ void DynamicType::RemoveAllMem()
 	{
 		delete [] _data;
 	}
-	if (_dynamicTable) {
+	if (_dynamicTable)
+	{
 		DecrementDynTableRefCounter();
 		if (DynTableRefCounter() == 0)
 			delete [] _dynamicTable;
@@ -721,10 +722,8 @@ void DynamicType::FullfilsInvariant() const
 		return;
 
 	unsigned auxAllocatedSize=0;
-	bool someAdded = false;
-	bool someRemoved = false;
-	bool nAdded = 0;
-	bool nRemoved = 0;
+	unsigned nAdded = 0;
+	unsigned nRemoved = 0;
 	int incData=0, decData=0;
 	bool usedblock[_allocatedDataSize];
 	
@@ -738,9 +737,7 @@ void DynamicType::FullfilsInvariant() const
 		if (dyninfo.hasBeenAdded && dyninfo.hasBeenRemoved) 
 			throw ErrDynamicType("in FullfilsInvariant: an attribute has both Added & Removed flags set. Class: ", GetClassName() );
 
-		if (dyninfo.hasBeenAdded) someAdded = true;
 		if (dyninfo.hasBeenAdded) nAdded++;
-		if (dyninfo.hasBeenRemoved) someRemoved = true;
 		if (dyninfo.hasBeenRemoved) nRemoved++;
 
 		if (dyninfo.offs < -1) 
@@ -792,28 +789,23 @@ void DynamicType::Debug() const
 	std::cout <<std::endl
 		<< "Class Name: "<< GetClassName() 
 		<< " at: " << this
-		<< "{ someAdded, someRemoved, Pending update } = { "
-		<< _attributesNeedingUpdate << " , "
 		<< std::endl
-		<< "{ size, allocatedSize, maxAttrsSize } = { "
-		<< _dataSize << " , " 
-		<< _allocatedDataSize << " , "
-		<< _maxAttrSize << " }\n"
+		<< "{ size, allocatedSize, maxAttrsSize, pendingUpdates } = { "
+		<< _dataSize << ", " 
+		<< _allocatedDataSize << ", "
+		<< _maxAttrSize << ", "
+		<< _attributesNeedingUpdate << " }\n"
 		<< std::endl
-		<< "[#attr.], dyn_offs,statc_offs,name,type,{comp,dynType,ptr,strble},exist,size,Ptr"
-		<< std::endl << "------------------------------------------------------------------------------"<<std::endl;
+		<< "[#attr.], dyn_offs,statc_offs,name,type,{comp,dynType,ptr,strble},exist,size,Ptr" << std::endl
+		<< "--------------------------------------------------------------------------------" << std::endl;
 	for (unsigned i=0; i<_numAttr; i++)
 	{
 		TDynInfo & dyninf = _dynamicTable[i];
 
 		attr = &_typeDescTable[i];
-		std::cout << std::endl;
-		if (dyninf.hasBeenAdded) std::cout << " A";
-		else std::cout << " -";
-		if (dyninf.hasBeenRemoved) std::cout << "R";
-		else std::cout << "-";
-		
-
+		std::cout << std::endl << " ";
+		std::cout << (dyninf.hasBeenAdded? "A" : "-");
+		std::cout << (dyninf.hasBeenRemoved? "R" : "-" );
 		std::cout << " [" <<i<<"] ";
 
 		std::cout << dyninf.offs << " , "<<attr->offset<<" , "<<attr->id<<" , "<<attr->type<<" , {"\
