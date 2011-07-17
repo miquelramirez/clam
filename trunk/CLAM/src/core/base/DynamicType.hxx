@@ -198,26 +198,6 @@ protected:
 	*/
 	void CopyInit(const DynamicType & dt) {}
 
-	/**
-		You should NOT call or overwrite this method directly.
-		It is called by UpdateData() and reimplemented by
-		DYNAMIC_TYPE macros. It should create the table with
-		the dynamic attributes information.
-		@see UpdateData()
-	*/
-	virtual void InformAll()
-	{
-		// lets calculates the offsets of the "Pre allocated mode"
-		CLAM_DEBUG_ASSERT(_typeDescTable,"static table don't exist. in DT::InformAll()");
-		int adder=0;
-		for (unsigned int i=0; i<_numAttr; i++)
-		{
-			_typeDescTable[i].offset = adder;
-			adder += _typeDescTable[i].size;
-		}
-		_maxAttrSize = adder;
-	};
-
 protected:
 	// Types of the constructors and destructors that all registerd type must have.
 	// A pointer to these functions is stored into the typeDescTable. (an array of TAttr) 
@@ -226,26 +206,49 @@ protected:
 	typedef void* (*t_new_copy)(void* pos,void* orig);
 	typedef void (*t_destructor)(void* pos);
 
-private:
-	void static InformAttr_ (
-		TAttr* attributeTable, unsigned id, const char* name, unsigned size, const char* type,
-		const bool isPtr, const t_new, const t_new_copy, const t_destructor);
+	template <typename Type>
+	static void* _attributeDefaultConstruct_(void* p)
+	{
+		return static_cast<void*> (new(p) Type());
+	}
+	\
+	template <typename Type>
+	static void* _attributeCopyConstruct_(void* pos, void* orig)
+	{
+		Type* typed = static_cast< Type*>(orig);
+		return static_cast<void*>( new(pos) Type(*typed) );
+	}
+	template <typename Type>
+	static void _attributeDestruct_(void* p)
+	{
+		static_cast<Type*>(p)->~Type();
+	}
 
 protected:
-	inline static void InformTypedAttr_(
-		TAttr* attributeTable, unsigned id, const char* name, unsigned size, const char *type,
-		const bool isPtr, const t_new, const t_new_copy, const t_destructor,
-		const Component* typedNullPointer);
+	template <typename Type>
+	inline static int InformAttr_(
+		TAttr* attributeTable, unsigned id, const char* name, const char* type, int offset);
 
-	inline static void InformTypedAttr_(
-		TAttr* attributeTable, unsigned id, const char* name, unsigned size, const char *type,
-		const bool isPtr, const t_new, const t_new_copy, const t_destructor,
-		const DynamicType* typedNullPointer);
+private:
+	static void AttributeTableSetFields_(
+		TAttr * attributeTable, unsigned index,
+		const char* name,
+		const char* typeName,
+		unsigned size,
+		int offset,
+		t_new constructor,
+		t_new_copy copyConstructor,
+		t_destructor destructor
+		);
 
-	inline static void InformTypedAttr_(
-		TAttr* attributeTable, unsigned id, const char* name, unsigned size, const char *type,
-		const bool isPtr, const t_new, const t_new_copy, const t_destructor,
-		const void* typedNullPointer);
+	inline static void AttributeTableSetTypeFlags_(
+		TAttr* attributeTable, unsigned id, const Component* typedNullPointer);
+
+	inline static void AttributeTableSetTypeFlags_(
+		TAttr* attributeTable, unsigned id, const DynamicType* typedNullPointer);
+
+	inline static void AttributeTableSetTypeFlags_(
+		TAttr* attributeTable, unsigned id, const void* typedNullPointer);
 	
 protected:
 	enum {shrinkThreshold = 80}; // Bytes.  That constant means that when updating data, if the
@@ -265,7 +268,6 @@ protected:
 
 		bool isComponent : 1; ///< Whether the attribute is a Component
 		bool isDynamicType : 1; ///< Whether the attribute is a DynamicType or not
-		bool isPointer : 1; ///< TODO: review this, seems to be always false
 	};
 
 	// item of the _dynamicTable, that holds the dynamic information of the dynamic type
@@ -431,54 +433,45 @@ inline void DynamicType::SetDataAsPtr_(const unsigned id, void* p)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-inline void DynamicType::InformTypedAttr_(
+template <typename Type>
+inline int DynamicType::InformAttr_(
 	TAttr * attributeTable,
-	unsigned index,
-	const char * name,
-	unsigned size,
-	const char * type,
-	const bool isPtr,
-	const t_new fnew,
-	const t_new_copy fcopy,
-	const t_destructor fdestr,
+	unsigned i,
+	const char* name,
+	const char* typeName,
+	int offset)
+{
+	AttributeTableSetFields_(
+		attributeTable, i, name, typeName,
+		sizeof(Type), offset,
+		_attributeDefaultConstruct_<Type>,
+		_attributeCopyConstruct_<Type>,
+		_attributeDestruct_<Type>);
+
+	AttributeTableSetTypeFlags_(attributeTable, i, (Type*)0);
+	return offset + sizeof(Type);
+}
+
+inline void DynamicType::AttributeTableSetTypeFlags_(
+	TAttr * attributeTable, unsigned index,
 	const void * typedNullPointer)
 {
-	InformAttr_(attributeTable, index, name, size, type, isPtr, fnew, fcopy, fdestr);
 	attributeTable[index].isComponent = false;
 	attributeTable[index].isDynamicType = false;
 }
 
-inline void DynamicType::InformTypedAttr_(
-	TAttr * attributeTable,
-	unsigned index,
-	const char * name,
-	unsigned size,
-	const char * type,
-	const bool isPtr,
-	const t_new fnew,
-	const t_new_copy fcopy,
-	const t_destructor fdestr,
+inline void DynamicType::AttributeTableSetTypeFlags_(
+	TAttr * attributeTable, unsigned index,
 	const Component * typedNullPointer)
 {
-	InformAttr_(attributeTable, index, name, size, type, isPtr, fnew, fcopy, fdestr);
 	attributeTable[index].isComponent = true;
 	attributeTable[index].isDynamicType = false;
 }
 
-inline void DynamicType::InformTypedAttr_(
-	TAttr * attributeTable,
-	unsigned index,
-	const char * name,
-	unsigned size,
-	const char * type,
-	const bool isPtr,
-	const t_new fnew,
-	const t_new_copy fcopy,
-	const t_destructor fdestr,
+inline void DynamicType::AttributeTableSetTypeFlags_(
+	TAttr * attributeTable, unsigned index,
 	const DynamicType * typedNullPointer)
 {
-	InformAttr_(attributeTable, index, name, size, type, isPtr, fnew, fcopy, fdestr);
 	attributeTable[index].isComponent = true;
 	attributeTable[index].isDynamicType = true;
 }

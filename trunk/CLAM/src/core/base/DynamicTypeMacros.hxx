@@ -182,23 +182,6 @@ public: \
 
 #define __COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 private: \
-	static void* _new_##NAME(void* p)\
-	{\
-		return static_cast<void*> (new(p) TYPE());\
-	}\
-	\
-	static void* _new_##NAME(void* pos, void* orig)\
-	{\
-		TYPE* typed = static_cast< TYPE*>(orig);\
-		return static_cast<void*>( new(pos) TYPE(*typed) );\
-	}\
-	\
-	static void _destructor_##NAME(void* p)\
-	{\
-		typedef TYPE __Ty;\
-		static_cast<__Ty*>(p)->~__Ty();\
-	}\
-	\
 /** This declaration to detect compile-time-err of repeated attribute IDs(num), without having to relay in templates*/\
 	struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##N;\
 	\
@@ -224,8 +207,8 @@ ACCESS: \
 			" that is not Added or not Updated.");\
 		void * orig = (void*)(&arg);\
 		void * pos = GetAttributeAsVoidPtr(N);\
-		_destructor_##NAME(pos);\
-		_new_##NAME(pos, orig);\
+		_attributeDestruct_<TYPE>(pos);\
+		_attributeCopyConstruct_<TYPE>(pos, orig);\
 	}\
 	inline void Add##NAME() {\
 		DynamicType::AddAttribute(N);\
@@ -252,10 +235,11 @@ private: \
 		VisitChainedAttr((AttributePosition<(N)+1>*)NULL, visitor); \
 	} \
 	static void InformChainedAttr( \
-		AttributePosition<N>*, TAttr * typeDescTable, unsigned offset) { \
-		InformTypedAttr_(typeDescTable, N, #NAME, sizeof(TYPE), #TYPE, false, _new_##NAME, _new_##NAME, _destructor_##NAME, (TYPE*)0);\
-		typeDescTable[N].offset = offset; \
-		InformChainedAttr((AttributePosition<(N)+1>*)NULL, typeDescTable, offset + sizeof(TYPE)); \
+		AttributePosition<N>*, TAttr * typeDescTable, unsigned offset)\
+	{ \
+		int newOffset = \
+			InformAttr_<TYPE>(typeDescTable, N, #NAME, #TYPE, offset);\
+		InformChainedAttr((AttributePosition<(N)+1>*)NULL, typeDescTable, newOffset); \
 	} \
 	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) const { \
 		Store##NAME(s); \
