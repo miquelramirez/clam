@@ -64,9 +64,6 @@ DynamicType::DynamicType(const int nAttr, TAttr * attributeTable)
 		_dynamicTable[i].hasBeenAdded = false;
 		_dynamicTable[i].hasBeenRemoved = false;
 	}
-	// global modification flags.
-	_dynamicTable[_numAttr].hasBeenRemoved = false;
-	_dynamicTable[_numAttr].hasBeenAdded = false;
 	InitDynTableRefCounter();
 }
 
@@ -195,14 +192,6 @@ void DynamicType::AddAttribute (const unsigned i)
 		_dataSize += size;
 
 		_attributesNeedingUpdate--;
-		// check if we can unset the global some-removed flag.
-		_dynamicTable[_numAttr].hasBeenRemoved = false;
-		for (unsigned int j=0; j<_numAttr; j++)
-		{
-			if (not _dynamicTable[j].hasBeenRemoved) continue;
-			_dynamicTable[_numAttr].hasBeenRemoved = true;
-			break;
-		}
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
 #	endif //CLAM_EXTRA_CHECKS_ON_DT
@@ -217,7 +206,6 @@ void DynamicType::AddAttribute (const unsigned i)
 
 	_dataSize += size;
 	_dynamicTable[i].hasBeenAdded = true;
-	_dynamicTable[_numAttr].hasBeenAdded = true; //this is a global (for all attribute) flag that means that Update is necessary
 	_attributesNeedingUpdate++;
 	// at this point the data and _dynamicTable may contain gaps, 
 	// but they will be compacted at Update() time.
@@ -241,14 +229,6 @@ void DynamicType::RemoveAttribute(const unsigned i)
 		_dataSize -= _typeDescTable[i].size;
 		
 		_attributesNeedingUpdate--;
-		// check if we can unset the global some-added flag.
-		_dynamicTable[_numAttr].hasBeenAdded = false;
-		for (unsigned int j=0; j<_numAttr; j++) {
-			if (_dynamicTable[j].hasBeenAdded) {
-				_dynamicTable[_numAttr].hasBeenAdded = true;
-				break;
-			}
-		}
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
 #	endif //CLAM_EXTRA_CHECKS_ON_DT
@@ -264,7 +244,6 @@ void DynamicType::RemoveAttribute(const unsigned i)
 
 	_dataSize -= _typeDescTable[i].size;
 	_dynamicTable[i].hasBeenRemoved = 1;
-	_dynamicTable[_numAttr].hasBeenRemoved = 1; // global flag that means Update necessary;
 	_attributesNeedingUpdate++;
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
@@ -809,12 +788,6 @@ void DynamicType::FullfilsInvariant() const
 	}
 	if (auxAllocatedSize > _allocatedDataSize) 
 		throw ErrDynamicType("in FullfilsInvariant: allocatedDataSize attribute is not consistent. Class: ", GetClassName() );
-	if (_dynamicTable[_numAttr].hasBeenAdded != someAdded) 
-		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenAdded' flag inconsistent. Class: ", GetClassName() );
-	if (_dynamicTable[_numAttr].hasBeenRemoved != someRemoved) 
-		throw ErrDynamicType("in FullfilsInvariant: global 'hasBeenRemoved' flag inconsistent. Class: ", GetClassName() );
-	if ((_dynamicTable[_numAttr].hasBeenAdded or _dynamicTable[_numAttr].hasBeenRemoved) != (_attributesNeedingUpdate!=0))
-		throw ErrDynamicType("in FullfilsInvariant: hasBeenAdded/Removed inconsistent with _attributesNeedingUpdate. Class: ", GetClassName() );
 	if ((nAdded + nRemoved) != _attributesNeedingUpdate)
 		throw ErrDynamicType("in FullfilsInvariant: _attributesNeedingUpdate is not consistent with hasBeenAdded/Removed flags. Class: ", GetClassName() );
 }
@@ -827,8 +800,6 @@ void DynamicType::Debug() const
 		<< "Class Name: "<< GetClassName() 
 		<< " at: " << this
 		<< "{ someAdded, someRemoved, Pending update } = { "
-		<< _dynamicTable[_numAttr].hasBeenAdded << " , " 
-		<< _dynamicTable[_numAttr].hasBeenRemoved << " , " 
 		<< _attributesNeedingUpdate << " , "
 		<< std::endl
 		<< "{ size, allocatedSize, maxAttrsSize } = { "
