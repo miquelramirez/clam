@@ -264,7 +264,6 @@ protected:
 		t_destructor destructObj;
 
 		bool isComponent : 1; ///< Whether the attribute is a Component
-		bool isStorable : 1; ///< Whether the attribute is basic storable (streamable)
 		bool isDynamicType : 1; ///< Whether the attribute is a DynamicType or not
 		bool isPointer : 1; ///< TODO: review this, seems to be always false
 	};
@@ -448,7 +447,6 @@ inline void DynamicType::InformTypedAttr_(
 	InformAttr_(attributeTable, index, name, size, type, isPtr, fnew, fcopy, fdestr);
 	attributeTable[index].isComponent = false;
 	attributeTable[index].isDynamicType = false;
-	attributeTable[index].isStorable = false;
 }
 
 inline void DynamicType::InformTypedAttr_(
@@ -466,7 +464,6 @@ inline void DynamicType::InformTypedAttr_(
 	InformAttr_(attributeTable, index, name, size, type, isPtr, fnew, fcopy, fdestr);
 	attributeTable[index].isComponent = true;
 	attributeTable[index].isDynamicType = false;
-	attributeTable[index].isStorable = false;
 }
 
 inline void DynamicType::InformTypedAttr_(
@@ -484,7 +481,6 @@ inline void DynamicType::InformTypedAttr_(
 	InformAttr_(attributeTable, index, name, size, type, isPtr, fnew, fcopy, fdestr);
 	attributeTable[index].isComponent = true;
 	attributeTable[index].isDynamicType = true;
-	attributeTable[index].isStorable = false;
 }
 
 
