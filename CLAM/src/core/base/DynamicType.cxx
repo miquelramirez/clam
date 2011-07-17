@@ -69,7 +69,7 @@ DynamicType::DynamicType(const int nAttr, TAttr * attributeTable)
 
 DynamicType::DynamicType(const DynamicType& prototype, const bool shareData, const bool deepCopy=true)
 	: _typeDescTable(prototype._typeDescTable)
-	// TOCHECK: _numAttr ??
+	, _numAttr(prototype._numAttr)
 	, _data(0)
 	, _dynamicTable(0)
 	, _dataSize(0)
@@ -96,7 +96,7 @@ DynamicType::DynamicType(const DynamicType& prototype, const bool shareData, con
 
 DynamicType::DynamicType(const DynamicType& prototype)
 	: _typeDescTable(prototype._typeDescTable)
-	// TOCHECK: _numAttr ??
+	, _numAttr(prototype._numAttr)
 	, _data(0)
 	, _dynamicTable(0)
 	, _dataSize(0)
@@ -132,16 +132,13 @@ void DynamicType::RemoveAllMem()
 	if (_data && _ownsItsMemory)
 	{
 		for (unsigned i=0; i<_numAttr; i++) 
-			if (AttrHasData(i))
-			{
-				t_destructor dest = _typeDescTable[i].destructObj;
-				dest (_data+_dynamicTable[i].offs);
-			}
+		{
+			if (not AttrHasData(i)) continue;
+			t_destructor dest = _typeDescTable[i].destructObj;
+			dest (_data+_dynamicTable[i].offs);
+		}
 	}
-	if (_data) 
-	{
-		delete [] _data;
-	}
+	if (_data) delete [] _data;
 	if (_dynamicTable)
 	{
 		DecrementDynTableRefCounter();
@@ -612,7 +609,6 @@ void DynamicType::SelfCopyPrototype(const DynamicType &prototype)
 {
 	RemoveAllMem(); // deletes all mem in _data and calls de destructor of every object.
 
-	_numAttr = prototype._numAttr;
 	_data=0;
 	_dynamicTable = prototype._dynamicTable;
 	_dataSize = prototype._dataSize;
