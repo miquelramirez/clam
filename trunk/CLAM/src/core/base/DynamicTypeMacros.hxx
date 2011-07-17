@@ -226,8 +226,8 @@ ACCESS: \
 			" that is not Added or not Updated.");\
 		CLAM_DEBUG_ASSERT(GetData(), \
 			"No data allocated for the accessed dynamic type." #NAME );\
-		void* orig = (void*)(&arg);\
-		char* pos = _data+_dynamicTable[N].offs;\
+		void * orig = (void*)(&arg);\
+		void * pos = GetAttributeAsVoidPtr(N);\
 		_destructor_##NAME(pos);\
 		_new_##NAME(pos, orig);\
 	}\
@@ -255,7 +255,8 @@ private: \
 		Visit##NAME(visitor); \
 		VisitChainedAttr((AttributePosition<(N)+1>*)NULL, visitor); \
 	} \
-	static void InformChainedAttr(AttributePosition<N>*, TAttr * typeDescTable, unsigned offset) { \
+	static void InformChainedAttr( \
+		AttributePosition<N>*, TAttr * typeDescTable, unsigned offset) { \
 		InformTypedAttr_(typeDescTable, N, #NAME, sizeof(TYPE), #TYPE, false, _new_##NAME, _new_##NAME, _destructor_##NAME, (TYPE*)0);\
 		typeDescTable[N].offset = offset; \
 		InformChainedAttr((AttributePosition<(N)+1>*)NULL, typeDescTable, offset + sizeof(TYPE)); \
@@ -303,18 +304,16 @@ ACCESS: \
 	__COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 protected: \
 	void Store##NAME(CLAM::Storage & s) const { \
-		if (Has##NAME()) { \
+		if (Has##NAME()) \
 			StoreIterableAttribute(s, Get##NAME(), #NAME, #ENAME); \
-		} \
 	} \
 	bool Load##NAME(CLAM::Storage & s) { \
 		Add##NAME(); \
 		UpdateData(); \
-		if (! LoadIterableAttribute(s, Get##NAME(), #NAME, #ENAME)) { \
-			Remove##NAME(); \
-			return false; \
-		} \
-		return true; \
+		if (LoadIterableAttribute(s, Get##NAME(), #NAME, #ENAME)) \
+			return true; \
+		Remove##NAME(); \
+		return false; \
 	} \
 ACCESS: \
 
