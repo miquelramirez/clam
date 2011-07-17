@@ -36,7 +36,7 @@
 // So it can only be set (defined) when developing, testing or maintaining
 // dynamic types.
 
-// #define CLAM_EXTRA_CHECKS_ON_DT
+#define CLAM_EXTRA_CHECKS_ON_DT
 
 // Anyway this flag should be defined in the project/makefile of the test.
 
@@ -188,27 +188,27 @@ void DynamicType::AddAttribute (const unsigned i)
 
 	if (inf.hasBeenRemoved)
 	{
-		inf.hasBeenRemoved = false;
+		// Undoing a previous pending removal
 		_dataSize += size;
-
+		inf.hasBeenRemoved = false;
 		_attributesNeedingUpdate--;
+
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
 #	endif //CLAM_EXTRA_CHECKS_ON_DT
 
 		return;
 	}
-	if (AttrHasData(i)) return;
-	
-	// At this point, the actual attribute-adding is necessary
+	if (AttrHasData(i)) return; // Already instantiated, no change
 
+	// Need to modify the dynamic table, copy it if it is shared
 	CopyOnWriteDynamicTable();
 
 	_dataSize += size;
 	_dynamicTable[i].hasBeenAdded = true;
 	_attributesNeedingUpdate++;
-	// at this point the data and _dynamicTable may contain gaps, 
-	// but they will be compacted at Update() time.
+
+	// At this point a UpdateData call is needed
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
@@ -220,31 +220,34 @@ void DynamicType::AddAttribute (const unsigned i)
 void DynamicType::RemoveAttribute(const unsigned i)
 {
 	TDynInfo &inf = _dynamicTable[i];
+	const unsigned size = _typeDescTable[i].size;
 
 	if (inf.hasBeenRemoved) return;
 
 	if (inf.hasBeenAdded) 
 	{
+		// Undoing a previous pending addition
+		_dataSize -= size;
 		inf.hasBeenAdded=false;
-		_dataSize -= _typeDescTable[i].size;
-		
 		_attributesNeedingUpdate--;
+
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
 #	endif //CLAM_EXTRA_CHECKS_ON_DT
 
 		return;
 	}
-	if (!AttrHasData(i) || !_data) return;
+	if (!AttrHasData(i)) return; // Already deinstantiated, no change
+	if (!_data) return; // No attribute instantiated at all
 
-	// at this point the actual attribute-deletion has to be done.
-	// but the actual deletion will take place at UpdateData() time.
-	
+	// Need to modify the dynamic table, copy it if it is shared
 	CopyOnWriteDynamicTable();
 
-	_dataSize -= _typeDescTable[i].size;
-	_dynamicTable[i].hasBeenRemoved = 1;
+	_dataSize -= size;
+	_dynamicTable[i].hasBeenRemoved = true;
 	_attributesNeedingUpdate++;
+
+	// At this point a UpdateData call is needed
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
@@ -354,8 +357,6 @@ void DynamicType::BeMemoryOwner()
 			}
 	
 		_allocatedDataSize = _dataSize;
-		_dynamicTable[_numAttr].hasBeenAdded = false;
-		_dynamicTable[_numAttr].hasBeenRemoved = false;
 		_attributesNeedingUpdate=0;
 	
 	
@@ -424,8 +425,6 @@ void DynamicType::UpdateDataByShrinking()
 			}
 		}
 
-		_dynamicTable[_numAttr].hasBeenRemoved = false;
-		_dynamicTable[_numAttr].hasBeenAdded = false;
 		_attributesNeedingUpdate=0;
 }
 
@@ -476,8 +475,6 @@ void DynamicType::UpdateDataByStandardMode ()
 		
 	delete [] olddata;
 	_allocatedDataSize = _dataSize;
-	_dynamicTable[_numAttr].hasBeenAdded = false;
-	_dynamicTable[_numAttr].hasBeenRemoved = false;
 	_attributesNeedingUpdate=0;
 }
 
@@ -527,8 +524,6 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 
 	delete [] olddata;
 	_allocatedDataSize = _dataSize;
-	_dynamicTable[_numAttr].hasBeenAdded = false;
-	_dynamicTable[_numAttr].hasBeenRemoved = false;
 	_attributesNeedingUpdate=0;
 	
 }
@@ -566,8 +561,6 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 				
 	} // for each attribute.
 
-	_dynamicTable[_numAttr].hasBeenAdded = false;
-	_dynamicTable[_numAttr].hasBeenRemoved = false;
 	_attributesNeedingUpdate=0;
 }
 
