@@ -137,8 +137,17 @@ public:
 
 	/// Returns a void pointer to the data of the attribute at position 0.
 	/// @pre the attribute must be instantiated (undefined behaviour if not)
-	const void * GetAttributeAsVoidPtr(unsigned i) const {
+	const void * GetAttributeAsVoidPtr(unsigned i) const
+	{
 		return GetPtrToData_(i);
+	}
+
+	/// Returns a void pointer to the data of the attribute at position 0.
+	/// @pre the attribute must be instantiated (undefined behaviour if not)
+	void * GetAttributeAsVoidPtr(unsigned i)
+	{
+		// TODO: This const_cast should not be needed
+		return const_cast<void*>(GetPtrToData_(i));
 	}
 
 	/// Convenience accessor for GetAttributeAsVoidPtr that cast it to a component if it is so.
@@ -294,10 +303,8 @@ public:
 private:
 	TAttr * _typeDescTable; ///< Pointer to the shared type information
 	unsigned _numAttr;  ///< The total number of dynamic attributes
-protected:
 	char * _data; ///< Pointer to memory holding attribute data
 	TDynInfo * _dynamicTable; ///< Dynamic state of each attribute
-private:
 	unsigned _dataSize;
 	bool _ownsItsMemory;
 	unsigned _maxAttrSize;	// the total dyn. attrs. size
