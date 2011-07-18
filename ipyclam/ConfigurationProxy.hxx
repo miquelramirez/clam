@@ -97,9 +97,9 @@ public:
 	{
 		return new ConfigurationProxy( config() );
 	}
-	bool IsAttributeInstantiated(unsigned i)
+	bool HasAttribute(unsigned i)
 	{
-		return config().IsAttributeInstantiated(i);
+		return config().HasAttribute(i);
 	}
 	void AddAttribute(unsigned i)
 	{

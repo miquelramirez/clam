@@ -113,11 +113,9 @@ public:
 	/// Deinstantiates attribute at position i. Requires UpdateData() to be effective.
 	void RemoveAttribute (const unsigned i);
 
-	/// Instantiates all attributes. Requires UpdateData() to be effective.
-	void AddAll();
-
-	/// Deinstantiates all attributes. Requires UpdateData() to be effective.
-	void RemoveAll();
+	/// Returns true if the attribute at position i is ready to use.
+	/// Use AddX and UpdateData() tot get it added
+	inline bool HasAttribute(unsigned i) const;
 
 	/// Returns the name of the attribute at position i.
 	const char * GetDynamicAttributeName(unsigned i) const { return _typeDescTable[i].id; }
@@ -130,6 +128,12 @@ public:
 
 	/// Returns true if the attribute at position i is a dynamic type as well.
 	bool AttributeIsDynamictype(unsigned i) const {return _typeDescTable[i].isDynamicType; }
+
+	/// Instantiates all attributes. Requires UpdateData() to be effective.
+	void AddAll();
+
+	/// Deinstantiates all attributes. Requires UpdateData() to be effective.
+	void RemoveAll();
 
 	/// Returns a void pointer to the data of the attribute at position 0.
 	/// @pre the attribute must be instantiated (undefined behaviour if not)
@@ -288,8 +292,7 @@ protected:
 	virtual DynamicType& GetDynamicTypeCopy() const =0;
 	DynamicType& operator= (const DynamicType& source);
 
-	inline void        SetPreAllocateAllAttributes() { _preallocateAllAttributes=true; }
-	inline bool ExistAttr(unsigned id) const;
+	inline void SetPreAllocateAllAttributes() { _preallocateAllAttributes=true; }
 
 public:
 	// Developing tools:
@@ -412,12 +415,13 @@ template <unsigned int NAttrib> const int DynamicType::AttributePositionBase<NAt
 //////////////////////////////////////////////////////////////////
 // IMPLEMENTATION OF INLINE FUNCTIONS
 
-inline bool DynamicType::ExistAttr(unsigned id) const 
+inline bool DynamicType::HasAttribute(unsigned id) const 
 { 
-
-	if (!_data) return false;
+	if (!_data) return false; // No data instantiated at all
 	TDynInfo &inf = _dynamicTable[id];
-	return (inf.offs != -1 && !inf.hasBeenAdded && !inf.hasBeenRemoved); 
+	if (inf.offs == -1) return false; // Attribute not instantiated
+	if (inf.hasBeenRemoved) return false; // Attribute instantiated but pending of removal
+	return true;
 }
 
 inline void* DynamicType::GetPtrToData_(const unsigned id) const

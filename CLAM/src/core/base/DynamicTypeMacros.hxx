@@ -191,7 +191,7 @@ ACCESS: \
 		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes()), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
-		CLAM_ASSERT(ExistAttr(N),\
+		CLAM_ASSERT(HasAttribute(N),\
 			"You are trying to access attribute " #NAME \
 			" that is not Added or not Updated.");\
 		const void *p=GetAttributeAsVoidPtr(N);\
@@ -203,7 +203,7 @@ ACCESS: \
 		CLAM_DEBUG_ASSERT((N<GetNDynamicAttributes()), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
-		CLAM_ASSERT(ExistAttr(N),\
+		CLAM_ASSERT(HasAttribute(N),\
 			"You are trying to access attribute " #NAME \
 			" that is not Added or not Updated.");\
 		void * orig = (void*)(&arg);\
@@ -223,7 +223,7 @@ ACCESS: \
 		DynamicType::RemoveAttribute(N); \
 	}\
 	inline bool Has##NAME() const { \
-		return ExistAttr(N); \
+		return HasAttribute(N); \
 	} \
 private: \
 	static inline int GetSize##NAME() { return sizeof(TYPE); } \

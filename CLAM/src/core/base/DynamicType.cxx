@@ -540,7 +540,7 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 	// Copies (deepCopy) all the objects pointed by this dynamic type that derives from
 	for (unsigned i=0; i<_numAttr; i++)
 	{
-		if (!ExistAttr(i)) continue;
+		if (!HasAttribute(i)) continue;
 		void* pos = GetPtrToData_(i);
 		//now a nested object must be replaced. It maight be a pointer not registered as it.
 		//the nested object will be copied from the nested object at "this"
@@ -663,9 +663,9 @@ void DynamicType::Debug() const
 			<< attr->type << ", {"
 			<< attr->isComponent << ", "
 			<< attr->isDynamicType << ", "
-			<< ExistAttr(i) << ", "
+			<< HasAttribute(i) << ", "
 			<< attr->size << ", "
-			<< (ExistAttr(i)? GetPtrToData_(i):"X")
+			<< (HasAttribute(i)? GetPtrToData_(i):"X")
 			<< std::endl;
 	}
 	std::cout<<std::endl;
