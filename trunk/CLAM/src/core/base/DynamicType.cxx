@@ -41,6 +41,11 @@
 // Anyway this flag should be defined in the project/makefile of the test.
 
 
+// TODO: strcpy is nos safe for name and typeName
+// TODO: shallow and deep copies has no sense as long as we don't have pointers
+// TODO: Review in which cases shared prototype is useful
+// TODO: Review in which cases shared data is useful
+
 namespace CLAM {
 
 //////////////////////////////////////////////////////////////////////
@@ -285,17 +290,22 @@ bool DynamicType::UpdateData()
 		// this "shrinkThreshold" constant  decides when to 
 		// reallocate (and shrink or _compact_) memory
 		UpdateDataByShrinking();
+
 	else if (_dataSize==_maxAttrSize && _allocatedDataSize<_maxAttrSize) 
-		// it's the first that _dataSize reach the maximum. (probably by the use of bPreAllocatedAllAttr flag.
+		// it's the first that _dataSize reach the maximum.
+		// (probably by the use of bPreAllocatedAllAttr flag
 		// now the offsets will be taken from the static table 
 		UpdateDataGoingToPreAllocatedMode();
 
 	else if (_dataSize==_maxAttrSize && _dataSize<=_allocatedDataSize) 
-		// in this PreAllocatedMode the attr. offsets are fixed by the static table.
+		// in this PreAllocatedMode the attr. offsets are fixed by the
+		// static table.
 		UpdateDataInPreAllocatedMode();
+
 	else
-		// else: memory has increasead or the amount decreased is bigger than the threshold
-		// so do it in the STANDARD MODE (reallocate and compact memory)
+		// else: memory has increasead or the amount decreased is bigger
+		// than the threshold so do it in the STANDARD MODE (reallocate 
+		// and compact memory)
 		UpdateDataByStandardMode();
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
@@ -304,6 +314,7 @@ bool DynamicType::UpdateData()
 
 	return true;
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 /** Updata support function */
 void DynamicType::BeMemoryOwner()
