@@ -377,21 +377,32 @@ void DynamicType::UpdateDataByShrinking()
 		}
 
 		// If don't reallocate it, just if offset changed
+		int size = _typeDescTable[j].size;
 		if (unsigned(_dynamicTable[j].offs) != offs)
 		{
 			// New location, so move it
-			t_new_copy   newc = _typeDescTable[j].newObjCopy;
+			t_new_copy   copy = _typeDescTable[j].newObjCopy;
 			t_destructor dest = _typeDescTable[j].destructObj;
-			/** @todo: optimize for the case in which the intermediate
-			 *Copy is not needed. */
-			char tmpData[_typeDescTable[j].size];
-			newc(tmpData,_data+_dynamicTable[j].offs);
-			dest(_data+_dynamicTable[j].offs);
-			newc(_data+offs,tmpData);
-			dest(tmpData);
+			char * newLocation = _data+offs;
+			char * oldLocation =_data+_dynamicTable[j].offs;
+			if (newLocation + size <= oldLocation)
+			{
+				// No overlap, no temporary needed
+				copy(newLocation, oldLocation);
+				dest(oldLocation);
+			}
+			else
+			{
+				// Overlap, need a temporary
+				char tmpData[size];
+				copy(tmpData, oldLocation);
+				dest(oldLocation);
+				copy(newLocation, tmpData);
+				dest(tmpData);
+			}
 			_dynamicTable[j].offs = offs;
 		}
-		offs += _typeDescTable[j].size;
+		offs += size;
 	} 
 	// now it's time for the new (added) attributes
 	for (unsigned i=0; i<_numAttr; i++)
