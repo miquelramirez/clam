@@ -37,7 +37,7 @@
 // So it can only be set (defined) when developing, testing or maintaining
 // dynamic types.
 
-#define CLAM_EXTRA_CHECKS_ON_DT
+// #define CLAM_EXTRA_CHECKS_ON_DT
 
 // Anyway this flag should be defined in the project/makefile of the test.
 
