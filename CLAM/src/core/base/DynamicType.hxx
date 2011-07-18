@@ -305,7 +305,6 @@ private:
 	const unsigned _numAttr;  ///< The total number of dynamic attributes
 	char * _data; ///< Pointer to memory holding attribute data
 	TDynInfo * _dynamicTable; ///< Dynamic state of each attribute
-	unsigned _dataSize;
 	bool _ownsItsMemory;
 	unsigned _maxAttrSize;	// the total dyn. attrs. size
 	unsigned _allocatedDataSize;
@@ -337,7 +336,7 @@ private:
 	 *  STANDARD MODE: a new reallocation of data table is done.
 	 *  and all existing attributes copies (copy constructor)
 	 */
-	void UpdateDataByStandardMode();
+	void UpdateDataByReallocating(unsigned newSize);
 	
 	/** support method for UpdateData(). @see UpdateData() 
 	 *  Going to Pre Allocated Mode: the last reallocation is done, and the fixed offs are used.
@@ -348,6 +347,12 @@ private:
 	 * typeDescTable are used.
 	 */
 	void UpdateDataInPreAllocatedMode();
+
+	/**
+		Returns the requested size for the data chunk, taking into account
+		later AddX and RemoveX calls and SetPreAllocateAllAttributes().
+	*/
+	unsigned RequestedSize() const;
 
 	void SelfCopyPrototype(const DynamicType &orig);
 	void SelfSharedCopy(const DynamicType &orig);
