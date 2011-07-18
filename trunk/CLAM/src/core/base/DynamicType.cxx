@@ -26,7 +26,8 @@
 
 #include <iostream>  // needed for Debug() method
 #include <fstream>  // idem
-#include <list>	   // needed in UpdateData 
+#include <vector> // needed in UpdateData 
+#include <algorithm> // needed in UpdateData 
 
 #include "XMLStorage.hxx"
 
@@ -352,53 +353,48 @@ void DynamicType::BeMemoryOwner()
  */
 void DynamicType::UpdateDataByShrinking()
 {
-
-	std::list< std::pair<int,int> > attrList(_numAttr);  
-	std::list< std::pair<int,int> >::iterator it;
-
-	unsigned int i=0;
-	for (it=attrList.begin(); it!=attrList.end(); it++)
-	{
-		(*it).first = _dynamicTable[i].offs;
-		(*it).second = i++;
-	}
-
-	attrList.sort();
+	std::vector< std::pair<int,unsigned> > sortedOffsets(_numAttr);  
+	for (unsigned i=0; i<_numAttr; i++)
+		sortedOffsets[i]=std::make_pair(_dynamicTable[i].offs, i);
+	std::sort(sortedOffsets.begin(), sortedOffsets.end());
 
 	unsigned offs=0;
-	unsigned j; // ordered attribute indes
-	for (it=attrList.begin(); it!=attrList.end(); it++)
+	for (unsigned i=0; i<_numAttr; i++)
 	{
-		j = (*it).second;
-		if (AttrHasData(j) && !_dynamicTable[j].hasBeenRemoved)
-		{
-			if (unsigned(_dynamicTable[j].offs) != offs) // only move data if necessary
-			{
-				t_new_copy   newc  = _typeDescTable[j].newObjCopy;
-				t_destructor dest  = _typeDescTable[j].destructObj;
-				/** @todo: optimize for the case in which the intermediate
-				 *Copy is not needed. */
-				char* aux = new char[_typeDescTable[j].size];
-				newc(aux,_data+_dynamicTable[j].offs);
-				dest(_data+_dynamicTable[j].offs);
-				newc(_data+offs,aux);
-				dest(aux);
-				delete [] aux;
-				_dynamicTable[j].offs = offs;
-			}
-			offs += _typeDescTable[j].size;
-		}
-		else if (AttrHasData(j) && _dynamicTable[j].hasBeenRemoved)
+		unsigned j = sortedOffsets[i].second;
+		// First loop, just consider previously existing attributes
+		if (not AttrHasData(j)) continue;
+
+		// Remove if marked as so
+		if (_dynamicTable[j].hasBeenRemoved)
 		{
 			t_destructor dest = _typeDescTable[j].destructObj;
 			dest (_data+_dynamicTable[j].offs);
 			
 			_dynamicTable[j].offs = -1;
 			_dynamicTable[j].hasBeenRemoved = false;
+			continue;
 		}
+
+		// If don't reallocate it, just if offset changed
+		if (unsigned(_dynamicTable[j].offs) != offs)
+		{
+			// New location, so move it
+			t_new_copy   newc = _typeDescTable[j].newObjCopy;
+			t_destructor dest = _typeDescTable[j].destructObj;
+			/** @todo: optimize for the case in which the intermediate
+			 *Copy is not needed. */
+			char tmpData[_typeDescTable[j].size];
+			newc(tmpData,_data+_dynamicTable[j].offs);
+			dest(_data+_dynamicTable[j].offs);
+			newc(_data+offs,tmpData);
+			dest(tmpData);
+			_dynamicTable[j].offs = offs;
+		}
+		offs += _typeDescTable[j].size;
 	} 
 	// now it's time for the new (added) attributes
-	for (i=0; i<_numAttr; i++)
+	for (unsigned i=0; i<_numAttr; i++)
 	{
 		if (_dynamicTable[i].hasBeenAdded)
 		{
