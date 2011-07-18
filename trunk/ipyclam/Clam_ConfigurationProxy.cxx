@@ -51,7 +51,7 @@ py::object getAttribute(ConfigurationProxy & config, const std::string & attribu
 	if (index == -1)
 		throwPythonException(PyExc_KeyError, attribute.c_str());
 	
-	if ( !config.IsAttributeInstantiated(index) )
+	if ( !config.HasAttribute(index) )
 		return py::object();
 
 	ConfigurationProxyPlugin & plugin = ConfigurationProxyPlugin::GetPlugin(config, index);
@@ -70,7 +70,7 @@ void setAttribute(ConfigurationProxy & config, const std::string & attribute, py
 		return;
 	}
 
-	if ( !config.IsAttributeInstantiated(index) )
+	if ( !config.HasAttribute(index) )
 		config.AddAttribute(index);
 
 	ConfigurationProxyPlugin & plugin = ConfigurationProxyPlugin::GetPlugin(config, index);

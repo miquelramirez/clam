@@ -65,7 +65,7 @@ private:
 		}
 		for (unsigned i=0; i<_data->GetNDynamicAttributes(); i++)
 		{
-			if (!_data->IsAttributeInstantiated(i)) continue;
+			if (!_data->HasAttribute(i)) continue;
 			const char * name = _data->GetDynamicAttributeName(i);
 			ConfiguratorPlugin & plugin = ConfiguratorPlugin::GetPlugin(*_data, i);
 			QHBoxLayout * cell = new QHBoxLayout;
@@ -81,7 +81,7 @@ private:
 	{
 		for (unsigned i=0; i<_data->GetNDynamicAttributes(); i++)
 		{
-			if (!_data->IsAttributeInstantiated(i)) continue;
+			if (!_data->HasAttribute(i)) continue;
 			ConfiguratorPlugin & plugin = ConfiguratorPlugin::GetPlugin(*_data, i);
 			const char * name = _data->GetDynamicAttributeName(i);
 			QWidget * editorWidget = GetWidget(name);
