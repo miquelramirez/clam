@@ -319,100 +319,98 @@ bool DynamicType::UpdateData()
 /** Updata support function */
 void DynamicType::BeMemoryOwner()
 {
-		_ownsItsMemory = true;
-		TDynInfo *originalTable = _dynamicTable;
-		char* originalData = _data;
-		_data = new char[_dataSize];
-		CopyOnWriteDynamicTable();
+	_ownsItsMemory = true;
+	TDynInfo *originalTable = _dynamicTable;
+	char* originalData = _data;
+	_data = new char[_dataSize];
+	CopyOnWriteDynamicTable();
 
-		unsigned offs=0;
-		for(unsigned i=0; i<_numAttr; i++)
-			if ((AttrHasData(i) && !_dynamicTable[i].hasBeenRemoved) || _dynamicTable[i].hasBeenAdded) // owhterwise doesn't need allocation
-			{
+	unsigned offs=0;
+	for(unsigned i=0; i<_numAttr; i++)
+		if ((AttrHasData(i) && !_dynamicTable[i].hasBeenRemoved) || _dynamicTable[i].hasBeenAdded) // owhterwise doesn't need allocation
+		{
 
-				t_new_copy fnewcp=_typeDescTable[i].newObjCopy;
-				fnewcp(_data+offs, originalData+originalTable[i].offs);
-				_dynamicTable[i].offs = offs;
-				_dynamicTable[i].hasBeenAdded = false;
-				_dynamicTable[i].hasBeenRemoved = false;
-				offs += _typeDescTable[i].size;
-			}
-			else 
-			{	
-				_dynamicTable[i].hasBeenRemoved = false;
-				_dynamicTable[i].offs = -1;
-			}
-	
-		_allocatedDataSize = _dataSize;
-		_attributesNeedingUpdate=0;
-	
-	
-	}
+			t_new_copy fnewcp=_typeDescTable[i].newObjCopy;
+			fnewcp(_data+offs, originalData+originalTable[i].offs);
+			_dynamicTable[i].offs = offs;
+			_dynamicTable[i].hasBeenAdded = false;
+			_dynamicTable[i].hasBeenRemoved = false;
+			offs += _typeDescTable[i].size;
+		}
+		else 
+		{	
+			_dynamicTable[i].hasBeenRemoved = false;
+			_dynamicTable[i].offs = -1;
+		}
+
+	_allocatedDataSize = _dataSize;
+	_attributesNeedingUpdate=0;
+}
 
 /** SHRINK MODE: now we'll reuse the allocated data table.
  * two traversals: the first one is for moving the existing attributes:
  */
 void DynamicType::UpdateDataByShrinking()
 {
-	
-		std::list< std::pair<int,int> > attrList(_numAttr);  
-		std::list< std::pair<int,int> >::iterator it;
 
-		unsigned int i=0;
-		for (it=attrList.begin(); it!=attrList.end(); it++)
+	std::list< std::pair<int,int> > attrList(_numAttr);  
+	std::list< std::pair<int,int> >::iterator it;
+
+	unsigned int i=0;
+	for (it=attrList.begin(); it!=attrList.end(); it++)
+	{
+		(*it).first = _dynamicTable[i].offs;
+		(*it).second = i++;
+	}
+
+	attrList.sort();
+
+	unsigned offs=0;
+	unsigned j; // ordered attribute indes
+	for (it=attrList.begin(); it!=attrList.end(); it++)
+	{
+		j = (*it).second;
+		if (AttrHasData(j) && !_dynamicTable[j].hasBeenRemoved)
 		{
-			(*it).first = _dynamicTable[i].offs;
-			(*it).second = i++;
+			if (unsigned(_dynamicTable[j].offs) != offs) // only move data if necessary
+			{
+				t_new_copy   newc  = _typeDescTable[j].newObjCopy;
+				t_destructor dest  = _typeDescTable[j].destructObj;
+				/** @todo: optimize for the case in which the intermediate
+				 *Copy is not needed. */
+				char* aux = new char[_typeDescTable[j].size];
+				newc(aux,_data+_dynamicTable[j].offs);
+				dest(_data+_dynamicTable[j].offs);
+				newc(_data+offs,aux);
+				dest(aux);
+				delete [] aux;
+				_dynamicTable[j].offs = offs;
+			}
+			offs += _typeDescTable[j].size;
 		}
-
-		attrList.sort();
-
-		unsigned offs=0;
-		unsigned j; // ordered attribute indes
-		for (it=attrList.begin(); it!=attrList.end(); it++)
+		else if (AttrHasData(j) && _dynamicTable[j].hasBeenRemoved)
 		{
-			j = (*it).second;
-			if (AttrHasData(j) && !_dynamicTable[j].hasBeenRemoved)
-			{
-				if (unsigned(_dynamicTable[j].offs) != offs) // only move data if necessary
-				{
-					t_new_copy   newc  = _typeDescTable[j].newObjCopy;
-					t_destructor dest  = _typeDescTable[j].destructObj;
-					/** @todo: optimize for the case in which the intermediate
-					 *Copy is not needed. */
-					char* aux = new char[_typeDescTable[j].size];
-					newc(aux,_data+_dynamicTable[j].offs);
-					dest(_data+_dynamicTable[j].offs);
-					newc(_data+offs,aux);
-					dest(aux);
-					delete [] aux;
-					_dynamicTable[j].offs = offs;
-				}
-				offs += _typeDescTable[j].size;
-			}
-			else if (AttrHasData(j) && _dynamicTable[j].hasBeenRemoved)
-			{
-				t_destructor dest = _typeDescTable[j].destructObj;
-				dest (_data+_dynamicTable[j].offs);
-				
-				_dynamicTable[j].offs = -1;
-				_dynamicTable[j].hasBeenRemoved = false;
-			}
-		} 
-		// now it's time for the new (added) attributes
-		for (i=0; i<_numAttr; i++)
-		{
-			if (_dynamicTable[i].hasBeenAdded)
-			{
-				t_new fnew=_typeDescTable[i].newObj;
-				fnew(_data+offs);
-				_dynamicTable[i].offs = offs;
-				offs += _typeDescTable[i].size;
-				_dynamicTable[i].hasBeenAdded = false;
-			}
+			t_destructor dest = _typeDescTable[j].destructObj;
+			dest (_data+_dynamicTable[j].offs);
+			
+			_dynamicTable[j].offs = -1;
+			_dynamicTable[j].hasBeenRemoved = false;
 		}
+	} 
+	// now it's time for the new (added) attributes
+	for (i=0; i<_numAttr; i++)
+	{
+		if (_dynamicTable[i].hasBeenAdded)
+		{
+			t_new fnew=_typeDescTable[i].newObj;
+			fnew(_data+offs);
+			_dynamicTable[i].offs = offs;
+			offs += _typeDescTable[i].size;
+			_dynamicTable[i].hasBeenAdded = false;
+		}
+	}
 
-		_attributesNeedingUpdate=0;
+	_attributesNeedingUpdate=0;
 }
 
 //  STANDARD MODE (reallocate and compact memory)
