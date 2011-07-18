@@ -48,8 +48,8 @@ public:
 	 *  @param shareData Tells whether the object will share the same data of the object passed by parameter or not, by default set to false
 	 *  @param deep If this parameter is set to true, all the data pointed by the prototype will be copied to the new object; true by default
 	 */
-	ProcessingDataConfig(const ProcessingDataConfig& prototype, bool shareData=false, bool deep=true)
-		: DynamicType(prototype, shareData, deep)
+	ProcessingDataConfig(const ProcessingDataConfig& prototype)
+		: DynamicType(prototype)
 	{};
 	virtual ~ProcessingDataConfig();
 };

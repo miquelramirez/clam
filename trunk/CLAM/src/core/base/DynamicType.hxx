@@ -88,7 +88,6 @@ public:
 	* same data of the prototype, or not.
 	*/
 
-	DynamicType(const DynamicType& prototype, const bool shareData, const bool deepCopy);
 	DynamicType(const DynamicType& prototype);
 	virtual ~DynamicType();
 	
@@ -131,9 +130,6 @@ public:
 
 	/// Returns true if the attribute at position i is a dynamic type as well.
 	bool AttributeIsDynamictype(unsigned i) const {return _typeDescTable[i].isDynamicType; }
-
-	/// Returns true if the attribute at position i is instantiated.
-	bool IsAttributeInstantiated(unsigned i) const {return _dynamicTable[i].offs!=-1; }
 
 	/// Returns a void pointer to the data of the attribute at position 0.
 	/// @pre the attribute must be instantiated (undefined behaviour if not)
@@ -289,12 +285,11 @@ protected:
 		bool hasBeenAdded : 1;
 		bool hasBeenRemoved : 1;
 	};
-	virtual DynamicType& GetDynamicTypeCopy(const bool shareData = false, const bool deep = false) const =0;
-	virtual Component* ShallowCopy() const;
+	virtual DynamicType& GetDynamicTypeCopy() const =0;
 	DynamicType& operator= (const DynamicType& source);
 
 	inline void        SetPreAllocateAllAttributes() { _preallocateAllAttributes=true; }
-	inline bool        ExistAttr(unsigned id) const;
+	inline bool ExistAttr(unsigned id) const;
 
 public:
 	// Developing tools:
@@ -305,7 +300,6 @@ private:
 	const unsigned _numAttr;  ///< The total number of dynamic attributes
 	char * _data; ///< Pointer to memory holding attribute data
 	TDynInfo * _dynamicTable; ///< Dynamic state of each attribute
-	bool _ownsItsMemory;
 	unsigned _maxAttrSize;	// the total dyn. attrs. size
 	unsigned _allocatedDataSize;
 	bool _preallocateAllAttributes;
@@ -323,8 +317,6 @@ private:
 	inline void   RemoveAllMem();
 	inline void*  GetPtrToData_(const unsigned id) const;
 
-	/** support method for UpdateData() @see UpdateData() */
-	void BeMemoryOwner();
 	/** support method for UpdateData(). @see UpdateData() 
 	 *  SHRINK MODE: now we'll reuse the allocated data table deleting the gaps.
 	 *  two traversals: the first one is for moving the existing attributes:
@@ -355,8 +347,6 @@ private:
 	unsigned RequestedSize() const;
 
 	void SelfCopyPrototype(const DynamicType &orig);
-	void SelfSharedCopy(const DynamicType &orig);
-	void SelfShallowCopy(const DynamicType &orig);
 	void SelfDeepCopy(const DynamicType &orig);
 
 public:
