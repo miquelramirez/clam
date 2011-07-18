@@ -50,8 +50,8 @@ namespace CLAM {
 		/** Copy constructor.
 		 * @param prototype copy source.
 		 * @param shareData true if the new object is to share its data with the source */
-		ProcessingConfig(const ProcessingConfig& prototype, bool shareData=false, bool deep=true)
-			: DynamicType(prototype, shareData, deep)
+		ProcessingConfig(const ProcessingConfig& prototype)
+			: DynamicType(prototype)
 			{};
 
 

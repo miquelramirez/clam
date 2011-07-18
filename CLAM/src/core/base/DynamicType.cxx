@@ -59,7 +59,6 @@ DynamicType::DynamicType(const int nAttr, TAttr * attributeTable)
 	, _numAttr(nAttr)
 	, _data(0)
 	, _dynamicTable(new TDynInfo[_numAttr + 1])
-	, _ownsItsMemory(true)
 	, _maxAttrSize(_typeDescTable[_numAttr].offset)
 	, _allocatedDataSize(0)
 	, _preallocateAllAttributes(false)
@@ -74,38 +73,11 @@ DynamicType::DynamicType(const int nAttr, TAttr * attributeTable)
 	InitDynTableRefCounter();
 }
 
-DynamicType::DynamicType(const DynamicType& prototype, const bool shareData, const bool deepCopy=true)
-	: _typeDescTable(prototype._typeDescTable)
-	, _numAttr(prototype._numAttr)
-	, _data(0)
-	, _dynamicTable(0)
-	// TOCHECK: _ownsItsMemory?
-	, _maxAttrSize(prototype._maxAttrSize)
-	, _allocatedDataSize(0)
-	, _preallocateAllAttributes(false)
-	, _attributesNeedingUpdate(0)
-{
-	// no need of checking the concret class of the prototype,
-	// because always is called the copy-constructor of
-	// the concrete class. So if you try to pass a prototype 
-	// of a different concrete class the compiler will complain!
-
-	if (not prototype._data)
-		SelfCopyPrototype(prototype);
-	else if (shareData)
-		SelfSharedCopy(prototype);
-	else if (deepCopy)
-		SelfDeepCopy(prototype);
-	else
-		SelfShallowCopy(prototype);
-}
-
 DynamicType::DynamicType(const DynamicType& prototype)
 	: _typeDescTable(prototype._typeDescTable)
 	, _numAttr(prototype._numAttr)
 	, _data(0)
 	, _dynamicTable(0)
-	// TOCHECK: _ownsItsMemory?
 	, _maxAttrSize(prototype._maxAttrSize)
 	, _allocatedDataSize(0)
 	, _preallocateAllAttributes(prototype._preallocateAllAttributes)
@@ -134,7 +106,7 @@ void DynamicType::RemoveAllMem()
 		FullfilsInvariant();
 #	endif //CLAM_EXTRA_CHECKS_ON_DT
 
-	if (_data && _ownsItsMemory)
+	if (_data)
 	{
 		for (unsigned i=0; i<_numAttr; i++) 
 		{
@@ -278,12 +250,6 @@ bool DynamicType::UpdateData()
 		FullfilsInvariant();
 #	endif //CLAM_EXTRA_CHECKS_ON_DT
 
-	// Become owner if we werent
-	if (!_ownsItsMemory )
-	{
-		BeMemoryOwner();
-		return true;
-	}
 	// Skip if no AddX or RemoveX methods are pending
 	if (!_attributesNeedingUpdate) return false; 
 
@@ -318,37 +284,6 @@ bool DynamicType::UpdateData()
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-/** Updata support function */
-void DynamicType::BeMemoryOwner()
-{
-	unsigned requestedSize = RequestedSize();
-	_ownsItsMemory = true;
-	TDynInfo *originalTable = _dynamicTable;
-	char* originalData = _data;
-	_data = new char[requestedSize];
-	CopyOnWriteDynamicTable();
-
-	unsigned offs=0;
-	for(unsigned i=0; i<_numAttr; i++)
-		if ((AttrHasData(i) && !_dynamicTable[i].hasBeenRemoved) || _dynamicTable[i].hasBeenAdded) // owhterwise doesn't need allocation
-		{
-
-			t_new_copy copy=_typeDescTable[i].newObjCopy;
-			copy(_data+offs, originalData+originalTable[i].offs);
-			_dynamicTable[i].offs = offs;
-			_dynamicTable[i].hasBeenAdded = false;
-			_dynamicTable[i].hasBeenRemoved = false;
-			offs += _typeDescTable[i].size;
-		}
-		else 
-		{	
-			_dynamicTable[i].hasBeenRemoved = false;
-			_dynamicTable[i].offs = -1;
-		}
-
-	_allocatedDataSize = requestedSize;
-	_attributesNeedingUpdate=0;
-}
 
 /** SHRINK MODE: now we'll reuse the allocated data table.
  * two traversals: the first one is for moving the existing attributes:
@@ -446,7 +381,7 @@ void DynamicType::UpdateDataByReallocating (unsigned newSize)
 		}
 		else if (_dynamicTable[i].hasBeenRemoved) 
 		{
-			// There bur has been removed, remove it
+			// There but has been removed, remove it
 			t_destructor dest = _typeDescTable[i].destructObj;
 			dest (olddata+inf.offs);
 			inf.hasBeenRemoved = false;
@@ -572,18 +507,9 @@ int DynamicType::IncrementDynTableRefCounter()
 // Component interface implementation
 //////////////////////////////////////////////////////////////////////
 
-Component* DynamicType::ShallowCopy() const
-{
-	DynamicType* selfCopy = &(GetDynamicTypeCopy(false,false));
-
-	return selfCopy;
-}
-
-
 Component* DynamicType::DeepCopy() const
 {	
-	DynamicType* selfCopy = &(GetDynamicTypeCopy(false,true));
-
+	DynamicType* selfCopy = &GetDynamicTypeCopy();
 	return selfCopy;
 };
 
@@ -594,40 +520,10 @@ void DynamicType::SelfCopyPrototype(const DynamicType &prototype)
 
 	_data=0;
 	_dynamicTable = prototype._dynamicTable;
-	_ownsItsMemory=true;
 	_maxAttrSize = prototype._maxAttrSize;
 	_allocatedDataSize = prototype._allocatedDataSize;
 	_preallocateAllAttributes = prototype._preallocateAllAttributes;
 	IncrementDynTableRefCounter();
-}
-
-void DynamicType::SelfSharedCopy(const DynamicType &prototype)
-{
-	SelfCopyPrototype(prototype);
-
-	_data = prototype._data;
-
-	_ownsItsMemory = false;
-}
-
-void DynamicType::SelfShallowCopy(const DynamicType &prototype)
-{
-	CLAM_ASSERT( not prototype._attributesNeedingUpdate,
-		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
-	);
-	if (this==&prototype) return;
-
-	SelfCopyPrototype(prototype);
-
-	_data = new char[_allocatedDataSize];
-
-	for (unsigned i=0; i<_numAttr; i++)
-	{
-		if (!ExistAttr(i)) continue;
-		void* pos = GetPtrToData_(i);
-		t_new_copy fcopy = _typeDescTable[i].newObjCopy;
-		fcopy(pos, prototype.GetPtrToData_(i));
-	}
 }
 
 void DynamicType::SelfDeepCopy(const DynamicType &prototype)
@@ -648,8 +544,8 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 		void* pos = GetPtrToData_(i);
 		//now a nested object must be replaced. It maight be a pointer not registered as it.
 		//the nested object will be copied from the nested object at "this"
-		t_new_copy fcopy = _typeDescTable[i].newObjCopy;
-		fcopy(pos, prototype.GetPtrToData_(i));
+		t_new_copy copy = _typeDescTable[i].newObjCopy;
+		copy(pos, prototype.GetPtrToData_(i));
 	}
 }
 

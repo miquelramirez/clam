@@ -43,9 +43,9 @@ public: \
 		return #CLASS_NAME; \
 	}\
 	enum { eNumAttr= N }; \
-	CLAM::DynamicType& GetDynamicTypeCopy(const bool shareData=false, const bool deep=false) const\
+	CLAM::DynamicType& GetDynamicTypeCopy() const\
 	{ \
-		return *new CLASS_NAME(*this, shareData, deep); \
+		return *new CLASS_NAME(*this); \
 	}\
 	CLAM::Component * Species() const\
 	{ \
@@ -156,12 +156,13 @@ private: \
 
 #define DYNAMIC_TYPE(CLASS_NAME, N)\
 public: \
-	CLASS_NAME() : CLAM::DynamicType(N, TypeDescriptionTable())\
+	CLASS_NAME() \
+		: CLAM::DynamicType(N, TypeDescriptionTable()) \
 	{\
 		DefaultInit();\
 	}\
-	CLASS_NAME(const CLASS_NAME& prototype, const bool shareData=false, const bool deep=true)\
-		: CLAM::DynamicType(prototype, shareData, deep) { \
+	CLASS_NAME(const CLASS_NAME& prototype)\
+		: CLAM::DynamicType(prototype) { \
 		CopyInit(prototype);\
 		}\
 	__COMMON_DYNAMIC_TYPE(CLASS_NAME,N); \
@@ -173,8 +174,8 @@ public: \
 	{\
 		DefaultInit();\
 	}\
-	CLASS_NAME(const CLASS_NAME& prototype, const bool shareData=false, const bool deep=true)\
-		: INTERFACE_NAME(prototype, shareData, deep) { \
+	CLASS_NAME(const CLASS_NAME& prototype)\
+		: INTERFACE_NAME(prototype) { \
 		CopyInit(prototype); \
 		}\
 	__COMMON_DYNAMIC_TYPE(CLASS_NAME,N); \

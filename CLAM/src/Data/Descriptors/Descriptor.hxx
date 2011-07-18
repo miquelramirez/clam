@@ -45,8 +45,8 @@ public:
 	{
 		mpStats=0;
 	}
-	DescriptorTmpl(const DescriptorTmpl<abs>& prototype, bool shareData=false, bool deep=true)
-		: ProcessingData(prototype, shareData, deep)
+	DescriptorTmpl(const DescriptorTmpl<abs>& prototype)
+		: ProcessingData(prototype)
 	{
 		mpStats=0;
 	};
