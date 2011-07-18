@@ -46,6 +46,7 @@
 // TODO: shallow and deep copies has no sense as long as we don't have pointers
 // TODO: Review in which cases shared prototype is useful
 // TODO: Review in which cases shared data is useful
+// TODO: Is there any need of precomputing fixed offsets in preallocated mode
 
 namespace CLAM {
 
@@ -273,41 +274,52 @@ bool DynamicType::UpdateData()
 		FullfilsInvariant();
 #	endif //CLAM_EXTRA_CHECKS_ON_DT
 
-	if (!_ownsItsMemory ) // if !_ownsItsMemory then it will own it from that point.
+	// Become owner if we werent
+	if (!_ownsItsMemory )
 	{
 		BeMemoryOwner();
 		return true;
 	}
+	// Skip if no AddX or RemoveX methods are pending
+	if (!_attributesNeedingUpdate) return false; 
 
-	// if no AddXXX or RemoveXXX has been done then the update is not necessary
-	if (!_attributesNeedingUpdate)
-		return false; 
-
-	// at this point. some Add / Remove has been done. 
-	
-	if (_preallocateAllAttributes) _dataSize = _maxAttrSize;
-	
-	if (_dataSize <= _allocatedDataSize && int(_allocatedDataSize-_dataSize) > shrinkThreshold)  
-		// this "shrinkThreshold" constant  decides when to 
-		// reallocate (and shrink or _compact_) memory
-		UpdateDataByShrinking();
-
-	else if (_dataSize==_maxAttrSize && _allocatedDataSize<_maxAttrSize) 
-		// it's the first that _dataSize reach the maximum.
-		// (probably by the use of bPreAllocatedAllAttr flag
-		// now the offsets will be taken from the static table 
-		UpdateDataGoingToPreAllocatedMode();
-
-	else if (_dataSize==_maxAttrSize && _dataSize<=_allocatedDataSize) 
-		// in this PreAllocatedMode the attr. offsets are fixed by the
-		// static table.
-		UpdateDataInPreAllocatedMode();
-
+	unsigned requesteDataSize = 0;
+	if (_preallocateAllAttributes) requesteDataSize = _maxAttrSize;
 	else
-		// else: memory has increasead or the amount decreased is bigger
-		// than the threshold so do it in the STANDARD MODE (reallocate 
-		// and compact memory)
-		UpdateDataByStandardMode();
+	{
+		for (unsigned i=0; i<=_numAttr; i++)
+		{
+			if (_dynamicTable[i].hasBeenRemoved) continue;
+			if (not AttrHasData(i) and not _dynamicTable[i].hasBeenAdded)
+				continue;
+			requesteDataSize+=_typeDescTable[i].size;
+		}
+	}
+	if (_preallocateAllAttributes) _dataSize = _maxAttrSize;
+
+	CLAM_ASSERT(requesteDataSize==_dataSize,
+		"requesteDataSize and _dataSize dont match");
+
+	if (_dataSize==_maxAttrSize) // Preallocated mode
+	{
+		// Different depending if we are just getting in to it or we already got
+		if (_allocatedDataSize<_maxAttrSize)
+			UpdateDataGoingToPreAllocatedMode();
+		else
+			UpdateDataInPreAllocatedMode();
+	}
+	else
+	{
+		// Just reuse existing memory if we don't need more memory
+		// and the shrinking is small enough (shrinkThreshold constant)
+		if (
+			_dataSize <= _allocatedDataSize and 
+			_dataSize + shrinkThreshold < _allocatedDataSize
+		)
+			UpdateDataByShrinking();
+		else
+			UpdateDataByStandardMode();
+	}
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
@@ -353,38 +365,39 @@ void DynamicType::BeMemoryOwner()
  */
 void DynamicType::UpdateDataByShrinking()
 {
-	std::vector< std::pair<int,unsigned> > sortedOffsets(_numAttr);  
+	std::vector< std::pair<int,unsigned> > sortedByOffset(_numAttr);  
 	for (unsigned i=0; i<_numAttr; i++)
-		sortedOffsets[i]=std::make_pair(_dynamicTable[i].offs, i);
-	std::sort(sortedOffsets.begin(), sortedOffsets.end());
+		sortedByOffset[i]=std::make_pair(_dynamicTable[i].offs, i);
+	std::sort(sortedByOffset.begin(), sortedByOffset.end());
 
 	unsigned offs=0;
 	for (unsigned i=0; i<_numAttr; i++)
 	{
-		unsigned j = sortedOffsets[i].second;
+		unsigned j = sortedByOffset[i].second;
 		// First loop, just consider previously existing attributes
 		if (not AttrHasData(j)) continue;
+		TDynInfo & attrib = _dynamicTable[j];
 
 		// Remove if marked as so
-		if (_dynamicTable[j].hasBeenRemoved)
+		if (attrib.hasBeenRemoved)
 		{
 			t_destructor dest = _typeDescTable[j].destructObj;
-			dest (_data+_dynamicTable[j].offs);
+			dest (_data+attrib.offs);
 			
-			_dynamicTable[j].offs = -1;
-			_dynamicTable[j].hasBeenRemoved = false;
+			attrib.offs = -1;
+			attrib.hasBeenRemoved = false;
 			continue;
 		}
 
 		// If don't reallocate it, just if offset changed
 		int size = _typeDescTable[j].size;
-		if (unsigned(_dynamicTable[j].offs) != offs)
+		if (unsigned(attrib.offs) != offs)
 		{
 			// New location, so move it
 			t_new_copy   copy = _typeDescTable[j].newObjCopy;
 			t_destructor dest = _typeDescTable[j].destructObj;
 			char * newLocation = _data+offs;
-			char * oldLocation =_data+_dynamicTable[j].offs;
+			char * oldLocation =_data+attrib.offs;
 			if (newLocation + size <= oldLocation)
 			{
 				// No overlap, no temporary needed
@@ -400,23 +413,23 @@ void DynamicType::UpdateDataByShrinking()
 				copy(newLocation, tmpData);
 				dest(tmpData);
 			}
-			_dynamicTable[j].offs = offs;
+			attrib.offs = offs;
 		}
 		offs += size;
 	} 
 	// now it's time for the new (added) attributes
 	for (unsigned i=0; i<_numAttr; i++)
 	{
-		if (_dynamicTable[i].hasBeenAdded)
+		TDynInfo & attrib = _dynamicTable[i];
+		if (attrib.hasBeenAdded)
 		{
 			t_new fnew=_typeDescTable[i].newObj;
 			fnew(_data+offs);
-			_dynamicTable[i].offs = offs;
+			attrib.hasBeenAdded = false;
+			attrib.offs = offs;
 			offs += _typeDescTable[i].size;
-			_dynamicTable[i].hasBeenAdded = false;
 		}
 	}
-
 	_attributesNeedingUpdate=0;
 }
 
@@ -430,41 +443,36 @@ void DynamicType::UpdateDataByStandardMode ()
 	for (unsigned int i=0; i<_numAttr; i++)
 	{
 		TDynInfo & inf = _dynamicTable[i];
-		if (AttrHasData(i)) 
+		if (not AttrHasData(i))
 		{
-			if (_dynamicTable[i].hasBeenRemoved) 
-			{
-				t_destructor dest = _typeDescTable[i].destructObj;
-				dest (olddata+inf.offs);
-				inf.hasBeenRemoved = false;
-				inf.offs = -1;
-			}
-			else 
-			{
-				t_new_copy   newc = _typeDescTable[i].newObjCopy;
-				t_destructor dest = _typeDescTable[i].destructObj;
-				newc(_data+offs,olddata+inf.offs);
-				dest(olddata+inf.offs);
-				inf.offs = offs;
-				offs += _typeDescTable[i].size;
-			}
+			if (not inf.hasBeenAdded) continue; // Not there and still not, skip
+
+			// Not there but has been added, add it
+			t_new fnew=_typeDescTable[i].newObj;
+			fnew(_data+offs);
+			inf.hasBeenAdded = false;
+			inf.offs = offs;
+			offs += _typeDescTable[i].size;
 		}
-		else  // !AttrHasData(i)
+		else if (_dynamicTable[i].hasBeenRemoved) 
 		{
-			if (inf.hasBeenAdded)
-			{
-				t_new fnew=_typeDescTable[i].newObj;
-				fnew(_data+offs);
-				inf.hasBeenAdded = false;
-				inf.offs = offs;
-				offs += _typeDescTable[i].size;
-			}
-
+			// There bur has been removed, remove it
+			t_destructor dest = _typeDescTable[i].destructObj;
+			dest (olddata+inf.offs);
+			inf.hasBeenRemoved = false;
+			inf.offs = -1;
 		}
-				
-	} // for
-
-		
+		else
+		{
+			// There and still there, copy it
+			t_new_copy   copy = _typeDescTable[i].newObjCopy;
+			t_destructor dest = _typeDescTable[i].destructObj;
+			copy(_data+offs, olddata+inf.offs);
+			dest(olddata+inf.offs);
+			inf.offs = offs;
+			offs += _typeDescTable[i].size;
+		}
+	}
 	delete [] olddata;
 	_allocatedDataSize = _dataSize;
 	_attributesNeedingUpdate=0;
@@ -475,49 +483,41 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 	// the last reallocation:
 	char* olddata = _data;
 	_data = new char[_maxAttrSize];
-	unsigned int i;
-	// from now one we'll use these pre-fixed offsets.
-	// the copy of attributes:
-	for (i=0; i<_numAttr; i++)
+
+	for (unsigned i=0; i<_numAttr; i++)
 	{
 		TDynInfo & inf = _dynamicTable[i];
-		int offs = _typeDescTable[i].offset;
-		if (AttrHasData(i)) 
+		int offs = _typeDescTable[i].offset; // Fixed offset
+		if (not AttrHasData(i))
 		{
-			if (_dynamicTable[i].hasBeenRemoved) 
-			{
-				t_destructor dest = _typeDescTable[i].destructObj;
-				dest (olddata+inf.offs);
-				inf.hasBeenRemoved = false;
-				inf.offs = -1;
-			}
-			else 
-			{
-				t_new_copy   newc = _typeDescTable[i].newObjCopy;
-				t_destructor dest = _typeDescTable[i].destructObj;
-				
-				newc(_data+offs,olddata+inf.offs);
-				dest(olddata+inf.offs);
-				inf.offs = offs;
-			}
-		}
-		else  // !AttrHasData(i)
-		{
-			if (inf.hasBeenAdded)
-			{
-				t_new fnew=_typeDescTable[i].newObj;
-				fnew(_data+offs);
-				inf.hasBeenAdded = false;
-				inf.offs = offs;
-			}
-		}
-				
-	} // for each attribute.
+			if (not inf.hasBeenAdded) continue; // Not there and still not, skip
 
+			// Not there but has been added, add it
+			t_new fnew=_typeDescTable[i].newObj;
+			fnew(_data+offs);
+			inf.hasBeenAdded = false;
+			inf.offs = offs;
+		}
+		else if (_dynamicTable[i].hasBeenRemoved) 
+		{
+			t_destructor dest = _typeDescTable[i].destructObj;
+			dest (olddata+inf.offs);
+			inf.hasBeenRemoved = false;
+			inf.offs = -1;
+		}
+		else 
+		{
+			t_new_copy   copy = _typeDescTable[i].newObjCopy;
+			t_destructor dest = _typeDescTable[i].destructObj;
+
+			copy(_data+offs, olddata+inf.offs);
+			dest(olddata+inf.offs);
+			inf.offs = offs;
+		}
+	}
 	delete [] olddata;
 	_allocatedDataSize = _dataSize;
 	_attributesNeedingUpdate=0;
-	
 }
 
 void DynamicType::UpdateDataInPreAllocatedMode()
@@ -550,8 +550,7 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 				inf.offs = offs;
 			}
 		}
-				
-	} // for each attribute.
+	}
 
 	_attributesNeedingUpdate=0;
 }
