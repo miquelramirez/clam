@@ -323,9 +323,7 @@ private:
 	inline bool   AttrHasData(unsigned i) const { return (_dynamicTable[i].offs > -1); };
 	inline void   RemoveAllMem();
 	inline void*  GetPtrToData_(const unsigned id) const;
-	inline void*  GetDataAsPtr_(const unsigned id) const;
-	inline void   SetDataAsPtr_(const unsigned id, void* p);
-	
+
 	/** support method for UpdateData() @see UpdateData() */
 	void BeMemoryOwner();
 	/** support method for UpdateData(). @see UpdateData() 
@@ -427,19 +425,9 @@ inline bool DynamicType::ExistAttr(unsigned id) const
 	return (inf.offs != -1 && !inf.hasBeenAdded && !inf.hasBeenRemoved); 
 }
 
-inline void* DynamicType::GetDataAsPtr_(const unsigned id) const
-{
-	return *(void**)&_data[_dynamicTable[id].offs];
-}
-
 inline void* DynamicType::GetPtrToData_(const unsigned id) const
 {
 	return (void*)&_data[_dynamicTable[id].offs];
-}
-
-inline void DynamicType::SetDataAsPtr_(const unsigned id, void* p)
-{
-	*(void**)&_data[_dynamicTable[id].offs] = p;
 }
 
 
