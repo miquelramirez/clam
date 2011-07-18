@@ -37,7 +37,7 @@
 // So it can only be set (defined) when developing, testing or maintaining
 // dynamic types.
 
-// #define CLAM_EXTRA_CHECKS_ON_DT
+#define CLAM_EXTRA_CHECKS_ON_DT
 
 // Anyway this flag should be defined in the project/makefile of the test.
 
@@ -59,7 +59,6 @@ DynamicType::DynamicType(const int nAttr, TAttr * attributeTable)
 	, _numAttr(nAttr)
 	, _data(0)
 	, _dynamicTable(new TDynInfo[_numAttr + 1])
-	, _dataSize(0)
 	, _ownsItsMemory(true)
 	, _maxAttrSize(_typeDescTable[_numAttr].offset)
 	, _allocatedDataSize(0)
@@ -80,7 +79,6 @@ DynamicType::DynamicType(const DynamicType& prototype, const bool shareData, con
 	, _numAttr(prototype._numAttr)
 	, _data(0)
 	, _dynamicTable(0)
-	, _dataSize(0)
 	// TOCHECK: _ownsItsMemory?
 	, _maxAttrSize(prototype._maxAttrSize)
 	, _allocatedDataSize(0)
@@ -107,7 +105,6 @@ DynamicType::DynamicType(const DynamicType& prototype)
 	, _numAttr(prototype._numAttr)
 	, _data(0)
 	, _dynamicTable(0)
-	, _dataSize(0)
 	// TOCHECK: _ownsItsMemory?
 	, _maxAttrSize(prototype._maxAttrSize)
 	, _allocatedDataSize(0)
@@ -162,16 +159,13 @@ void DynamicType::RemoveAllMem()
 
 void DynamicType::AddAttribute (const unsigned i)
 {
-	// first we check if there is need to adding the attribute
 	TDynInfo &inf = _dynamicTable[i];
-	const unsigned size = _typeDescTable[i].size;
 
-	if (inf.hasBeenAdded) return;
+	if (inf.hasBeenAdded) return; // No need to add again
 
 	if (inf.hasBeenRemoved)
 	{
 		// Undoing a previous pending removal
-		_dataSize += size;
 		inf.hasBeenRemoved = false;
 		_attributesNeedingUpdate--;
 
@@ -186,7 +180,6 @@ void DynamicType::AddAttribute (const unsigned i)
 	// Need to modify the dynamic table, copy it if it is shared
 	CopyOnWriteDynamicTable();
 
-	_dataSize += size;
 	_dynamicTable[i].hasBeenAdded = true;
 	_attributesNeedingUpdate++;
 
@@ -202,14 +195,12 @@ void DynamicType::AddAttribute (const unsigned i)
 void DynamicType::RemoveAttribute(const unsigned i)
 {
 	TDynInfo &inf = _dynamicTable[i];
-	const unsigned size = _typeDescTable[i].size;
 
-	if (inf.hasBeenRemoved) return;
+	if (inf.hasBeenRemoved) return; // No need to remove again
 
 	if (inf.hasBeenAdded) 
 	{
 		// Undoing a previous pending addition
-		_dataSize -= size;
 		inf.hasBeenAdded=false;
 		_attributesNeedingUpdate--;
 
@@ -225,7 +216,6 @@ void DynamicType::RemoveAttribute(const unsigned i)
 	// Need to modify the dynamic table, copy it if it is shared
 	CopyOnWriteDynamicTable();
 
-	_dataSize -= size;
 	_dynamicTable[i].hasBeenRemoved = true;
 	_attributesNeedingUpdate++;
 
@@ -265,6 +255,20 @@ void DynamicType::RemoveAll()
 }
 
 
+unsigned DynamicType::RequestedSize() const
+{
+	if (_preallocateAllAttributes) return _maxAttrSize;
+	unsigned requestedSize = 0;
+	for (unsigned i=0; i<=_numAttr; i++)
+	{
+		if (_dynamicTable[i].hasBeenRemoved) continue;
+		if (not AttrHasData(i) and not _dynamicTable[i].hasBeenAdded)
+			continue;
+		requestedSize+=_typeDescTable[i].size;
+	}
+	return requestedSize;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////7
 // return whether some update has been made.
 bool DynamicType::UpdateData()
@@ -283,24 +287,9 @@ bool DynamicType::UpdateData()
 	// Skip if no AddX or RemoveX methods are pending
 	if (!_attributesNeedingUpdate) return false; 
 
-	unsigned requesteDataSize = 0;
-	if (_preallocateAllAttributes) requesteDataSize = _maxAttrSize;
-	else
-	{
-		for (unsigned i=0; i<=_numAttr; i++)
-		{
-			if (_dynamicTable[i].hasBeenRemoved) continue;
-			if (not AttrHasData(i) and not _dynamicTable[i].hasBeenAdded)
-				continue;
-			requesteDataSize+=_typeDescTable[i].size;
-		}
-	}
-	if (_preallocateAllAttributes) _dataSize = _maxAttrSize;
+	unsigned requestedSize = RequestedSize();
 
-	CLAM_ASSERT(requesteDataSize==_dataSize,
-		"requesteDataSize and _dataSize dont match");
-
-	if (_dataSize==_maxAttrSize) // Preallocated mode
+	if (requestedSize==_maxAttrSize) // Preallocated mode
 	{
 		// Different depending if we are just getting in to it or we already got
 		if (_allocatedDataSize<_maxAttrSize)
@@ -313,12 +302,12 @@ bool DynamicType::UpdateData()
 		// Just reuse existing memory if we don't need more memory
 		// and the shrinking is small enough (shrinkThreshold constant)
 		if (
-			_dataSize <= _allocatedDataSize and 
-			_dataSize + shrinkThreshold < _allocatedDataSize
+			requestedSize <= _allocatedDataSize and 
+			requestedSize + shrinkThreshold < _allocatedDataSize
 		)
 			UpdateDataByShrinking();
 		else
-			UpdateDataByStandardMode();
+			UpdateDataByReallocating(requestedSize);
 	}
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
@@ -332,10 +321,11 @@ bool DynamicType::UpdateData()
 /** Updata support function */
 void DynamicType::BeMemoryOwner()
 {
+	unsigned requestedSize = RequestedSize();
 	_ownsItsMemory = true;
 	TDynInfo *originalTable = _dynamicTable;
 	char* originalData = _data;
-	_data = new char[_dataSize];
+	_data = new char[requestedSize];
 	CopyOnWriteDynamicTable();
 
 	unsigned offs=0;
@@ -343,8 +333,8 @@ void DynamicType::BeMemoryOwner()
 		if ((AttrHasData(i) && !_dynamicTable[i].hasBeenRemoved) || _dynamicTable[i].hasBeenAdded) // owhterwise doesn't need allocation
 		{
 
-			t_new_copy fnewcp=_typeDescTable[i].newObjCopy;
-			fnewcp(_data+offs, originalData+originalTable[i].offs);
+			t_new_copy copy=_typeDescTable[i].newObjCopy;
+			copy(_data+offs, originalData+originalTable[i].offs);
 			_dynamicTable[i].offs = offs;
 			_dynamicTable[i].hasBeenAdded = false;
 			_dynamicTable[i].hasBeenRemoved = false;
@@ -356,7 +346,7 @@ void DynamicType::BeMemoryOwner()
 			_dynamicTable[i].offs = -1;
 		}
 
-	_allocatedDataSize = _dataSize;
+	_allocatedDataSize = requestedSize;
 	_attributesNeedingUpdate=0;
 }
 
@@ -434,10 +424,10 @@ void DynamicType::UpdateDataByShrinking()
 }
 
 //  STANDARD MODE (reallocate and compact memory)
-void DynamicType::UpdateDataByStandardMode ()
+void DynamicType::UpdateDataByReallocating (unsigned newSize)
 {
 	char* olddata = _data;
-	_data = new char[_dataSize];
+	_data = new char[newSize];
 
 	unsigned offs=0;
 	for (unsigned int i=0; i<_numAttr; i++)
@@ -474,7 +464,7 @@ void DynamicType::UpdateDataByStandardMode ()
 		}
 	}
 	delete [] olddata;
-	_allocatedDataSize = _dataSize;
+	_allocatedDataSize = newSize;
 	_attributesNeedingUpdate=0;
 }
 
@@ -516,7 +506,7 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 		}
 	}
 	delete [] olddata;
-	_allocatedDataSize = _dataSize;
+	_allocatedDataSize = _maxAttrSize;
 	_attributesNeedingUpdate=0;
 }
 
@@ -604,7 +594,6 @@ void DynamicType::SelfCopyPrototype(const DynamicType &prototype)
 
 	_data=0;
 	_dynamicTable = prototype._dynamicTable;
-	_dataSize = prototype._dataSize;
 	_ownsItsMemory=true;
 	_maxAttrSize = prototype._maxAttrSize;
 	_allocatedDataSize = prototype._allocatedDataSize;
@@ -740,14 +729,6 @@ void DynamicType::FullfilsInvariant() const
 		
 		else if (dyninfo.offs != -1) 
 			throw ErrDynamicType(" in FullfilsInvariant: attribute not informed with dynamic offset <> -1");
-
-	}
-	if (!_preallocateAllAttributes)
-	{
-		if (auxAllocatedSize+incData-decData != _dataSize) 
-			throw ErrDynamicType("in FullfilsInvariant: _dataSize attribute is not consistent. Class: ", GetClassName() );
-		if (auxAllocatedSize + incData - decData != _dataSize)
-			throw ErrDynamicType("in FullfilsInvariant: the _dataSize is not well calculated. Class: ", GetClassName() );
 	}
 	if (auxAllocatedSize > _allocatedDataSize) 
 		throw ErrDynamicType("in FullfilsInvariant: allocatedDataSize attribute is not consistent. Class: ", GetClassName() );
@@ -763,8 +744,7 @@ void DynamicType::Debug() const
 		<< "Class Name: "<< GetClassName() 
 		<< " at: " << this
 		<< std::endl
-		<< "{ size, allocatedSize, maxAttrsSize, pendingUpdates } = { "
-		<< _dataSize << ", " 
+		<< "{ allocatedSize, maxAttrsSize, pendingUpdates } = { "
 		<< _allocatedDataSize << ", "
 		<< _maxAttrSize << ", "
 		<< _attributesNeedingUpdate << " }\n"
