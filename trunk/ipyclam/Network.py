@@ -27,6 +27,11 @@ class Network(object):
 
 	def code(self, networkVar = "network", fullConfig = False):
 
+		def configCode(networkVar, fullConfig):
+			configCode = ""
+			for name in self._proxy.processingNames():
+				configCode += self.__getitem__(name)._config.code(name, networkVar, fullConfig)
+			return configCode
 		def appendAttribute(name):
 			if name[0].isdigit():
 				return "[\"%s\"]"%name
@@ -41,7 +46,7 @@ class Network(object):
 			"%s%s = '%s'"%(networkVar, appendAttribute(name), self._proxy.processingType(name))
 			for name in self._proxy.processingNames()])
 		code += "\n"
-		code += self.configCode(networkVar, fullConfig)
+		code += configCode(networkVar, fullConfig)
 		code += "\n"
 		code += "\n".join([
 				"%s%s%s > %s%s%s"%(networkVar, appendAttribute(fromProcessing), appendAttribute(fromConnector), networkVar, appendAttribute(toProcessing), appendAttribute(toConnector))
@@ -52,11 +57,6 @@ class Network(object):
 				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.controlConnections()])
 		return code
 
-	def configCode(self, networkVar, fullConfig):
-		configCode = ""
-		for name in self._proxy.processingNames():
-			configCode += self.__getitem__(name)._config.code(name, networkVar, fullConfig)
-		return configCode
 
 	def __setattr__(self, name, type) :
 		if name == "description":
