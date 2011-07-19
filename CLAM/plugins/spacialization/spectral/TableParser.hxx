@@ -94,15 +94,14 @@ public:
 		{
 			parser->addColumn(this);
 		}
-		/**
-		Tries to read the token from stream.
-		@return false if an error happens
-		*/
+		/// Tries to read the token from stream.
+		/// @return false if an error happens
 		virtual bool read(std::istream & stream) = 0;
 	protected:
 		bool error(const std::string & error)
 		{
 			_parser->addError(error);
+			return false;
 		}
 	};
 	friend class BaseToken;
@@ -154,6 +153,38 @@ public:
 		}
 	};
 
+	/// Quoted tokens parse a single word string or multiple words enclosed by single or double quotes
+	class QuotedToken : public Token<std::string>
+	{
+	public:
+		QuotedToken(TableParser * parser)
+			: Token<std::string>(parser)
+		{
+		}
+		bool read(std::istream & stream)
+		{
+			stream >> std::ws;
+			char firstChar=stream.get();
+			if (not stream) return error("Expected quoted string");
+			if (firstChar!='\'' and firstChar!='"')
+			{
+				_value.push_back(firstChar);
+				firstChar=0;
+			}
+				
+			while (stream)
+			{
+				char c = stream.get();
+				if (not stream and firstChar)
+					return error("Unclosed quote");
+				if (not firstChar and not stream) return true;
+				if (firstChar and c==firstChar) return true;
+				if (not firstChar and isspace(c)) return true;
+				_value.push_back(c);
+			}
+			return false;
+		}
+	};
 
 private:
 	std::ifstream _fstream;
@@ -224,12 +255,12 @@ private:
 	/// Returns the meaningful content of a line, by removing trailing spaces and comments
 	std::string parseableContent(const std::string & string)
 	{
-		size_t firstNotSpace = string.find_first_not_of(" \t");
+		size_t firstNotSpace = string.find_first_not_of(" \t\r\n");
 		if (firstNotSpace==std::string::npos) return ""; // all spaces
 		size_t firstHash = string.find_first_of("#");
 		if (firstHash==0) return "";
 		if (firstHash!=std::string::npos) firstHash--;
-		size_t lastNotSpace = string.find_last_not_of(" \t", firstHash);
+		size_t lastNotSpace = string.find_last_not_of(" \t\r\n", firstHash);
 		if (lastNotSpace==std::string::npos) return "";
 		size_t size = lastNotSpace-firstNotSpace+1;
 
@@ -265,6 +296,34 @@ private:
 	}
 
 };
+
+namespace spectral
+{
+template <>
+bool TableParser::Token<std::string>::read(std::istream & stream)
+{
+	stream >> std::ws;
+	char firstChar=stream.get();
+	if (not stream) return error("Expected field of type std::string");
+	if (firstChar!='\'' and firstChar!='"')
+	{
+		_value.push_back(firstChar);
+		firstChar=0;
+	}
+		
+	while (stream)
+	{
+		char c = stream.get();
+		if (not stream and firstChar)
+			return error("Unclosed quote");
+		if (not firstChar and not stream) return true;
+		if (firstChar and c==firstChar) return true;
+		if (not firstChar and isspace(c)) return true;
+		_value.push_back(c);
+	}
+	return false;
+}
+}
 
 #endif//spectral_TableParser_hxx
 
