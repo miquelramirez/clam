@@ -61,6 +61,8 @@ public:
 		TEST_CASE( test_quotedToken_singleQuotedWithSpaces );
 		TEST_CASE( test_quotedToken_missingColumn );
 		TEST_CASE( test_quotedToken_unfinishedQuote );
+		TEST_CASE( test_quotedToken_secondLine );
+		TEST_CASE( test_quotedToken_trailingContent );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -135,9 +137,7 @@ public:
 		SingleIntColumn parser(os);
 		parser.feedLine();
 		bool ok = parser.feedLine();
-		ASSERT_EQUALS(
-			"",
-			parser.errorMessage());
+		ASSERT_EQUALS("", parser.errorMessage());
 		ASSERT( not parser.hasError() );
 	}
 	void test_errorMessage_inTheFirstLine()
@@ -148,10 +148,10 @@ public:
 		SingleIntColumn parser(os);
 		parser.feedLine();
 		bool ok = parser.feedLine();
-		ASSERT( not ok );
 		ASSERT_EQUALS(
 			"Error in line 1, field 1: Expected field of type int\n",
 			parser.errorMessage());
+		ASSERT( not ok );
 		ASSERT( parser.hasError() );
 	}
 	void test_errorMessage_inTheSecondLine()
@@ -163,10 +163,10 @@ public:
 		SingleIntColumn parser(os);
 		parser.feedLine();
 		bool ok = parser.feedLine();
-		ASSERT( not ok );
 		ASSERT_EQUALS(
 			"Error in line 2, field 1: Expected field of type int\n",
 			parser.errorMessage());
+		ASSERT( not ok );
 		ASSERT( parser.hasError() );
 	}
 	void test_errorMessage_multipleErrors()
@@ -182,11 +182,11 @@ public:
 		bool ok2 = parser.feedLine();
 		ASSERT( ok2 );
 		bool ok3 = parser.feedLine();
-		ASSERT( not ok3 );
 		ASSERT_EQUALS(
 			"Error in line 1, field 1: Expected field of type int\n"
 			"Error in line 3, field 1: Expected field of type int\n",
 			parser.errorMessage());
+		ASSERT( not ok3 );
 		ASSERT( parser.hasError() );
 	}
 	void test_feedLine_ignoresEmptyLines()
@@ -757,6 +757,34 @@ public:
 			"Error in line 1, field 2: Unclosed quote\n"
 			, parser.errorMessage());
 		ASSERT_EQUALS("one", parser.value1());
+		ASSERT( not ok1 );
+	}
+	void test_quotedToken_secondLine()
+	{
+		std::istringstream os(
+			"one 'two' 'three'\n"
+			"four five six\n"
+		);
+		QuotedColumn parser(os);
+		bool ok1 = parser.feedLine();
+		bool ok2 = parser.feedLine();
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok1 );
+		ASSERT_EQUALS("four", parser.value1());
+		ASSERT_EQUALS("five", parser.value2());
+		ASSERT_EQUALS("six", parser.value3());
+		
+	}
+	void test_quotedToken_trailingContent()
+	{
+		std::istringstream os(
+			"one 'two' 'three' more\n"
+		);
+		QuotedColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS(
+			"Error in line 1: Unexpected content at the end of the line\n"
+			, parser.errorMessage());
 		ASSERT( not ok1 );
 	}
 

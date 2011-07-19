@@ -163,6 +163,7 @@ public:
 		}
 		bool read(std::istream & stream)
 		{
+			_value="";
 			stream >> std::ws;
 			char firstChar=stream.get();
 			if (not stream) return error("Expected quoted string");
@@ -302,6 +303,7 @@ namespace spectral
 template <>
 bool TableParser::Token<std::string>::read(std::istream & stream)
 {
+	_value="";
 	stream >> std::ws;
 	char firstChar=stream.get();
 	if (not stream) return error("Expected field of type std::string");
