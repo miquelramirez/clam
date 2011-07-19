@@ -30,9 +30,10 @@ public:
 		TEST_CASE( test_feedLine_ignoresComments );
 		TEST_CASE( test_errorMessage_trailingContent );
 		TEST_CASE( test_trailingSpacesIsNotError );
-		TEST_CASE( test_spaceOnliLine_isIgnoredAsEmpty );
+		TEST_CASE( test_spaceOnlyLine_isIgnoredAsEmpty );
 		TEST_CASE( test_commentLine_notAtFirstPosition );
 		TEST_CASE( test_comment_afterContent );
+		TEST_CASE( test_dosLineFeeds );
 
 		TEST_CASE( test_twoIntColumns_singleLine );
 		TEST_CASE( test_errorMessage_errorOnFirstTokenOfTwo );
@@ -54,6 +55,12 @@ public:
 		TEST_CASE( test_labelValue_normally );
 		TEST_CASE( test_labelValue_missingValue );
 		TEST_CASE( test_valueLabel_normally );
+		TEST_CASE( test_quotedToken_singleQuoted );
+		TEST_CASE( test_quotedToken_unquoted );
+		TEST_CASE( test_quotedToken_doubleQuoted );
+		TEST_CASE( test_quotedToken_singleQuotedWithSpaces );
+		TEST_CASE( test_quotedToken_missingColumn );
+		TEST_CASE( test_quotedToken_unfinishedQuote );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -246,7 +253,7 @@ public:
 		ASSERT( ok );
 		ASSERT( not parser.hasError() );
 	}
-	void test_spaceOnliLine_isIgnoredAsEmpty()
+	void test_spaceOnlyLine_isIgnoredAsEmpty()
 	{
 		std::istringstream os(
 			" \t  \t \n"
@@ -281,6 +288,24 @@ public:
 		ASSERT( ok1 );
 		ASSERT_EQUALS(1, parser.intColumn());
 		ASSERT( not parser.hasError() );
+	}
+	void test_dosLineFeeds()
+	{
+		std::istringstream os(
+			"1\x0d\x0a"
+			"2\x0d\x0a"
+		);
+		SingleIntColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS( "", parser.errorMessage());
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.intColumn());
+		bool ok2 = parser.feedLine();
+		ASSERT( ok2 );
+		ASSERT_EQUALS(2, parser.intColumn());
+		bool ok3 = parser.feedLine();
+		ASSERT( not parser.hasError() );
+		ASSERT( not ok3 );
 	}
 
 	class TwoIntColumns : public TableParser 
@@ -633,6 +658,106 @@ public:
 		bool ok2 = parser.feedLine();
 		ASSERT( not ok2 );
 		ASSERT( not parser.hasError() );
+	}
+
+	class QuotedColumn : public TableParser 
+	{
+	public:
+		QuotedToken value1;
+		QuotedToken value2;
+		QuotedToken value3;
+		QuotedColumn(std::istream & stream)
+			: TableParser(stream)
+			, value1(this)
+			, value2(this)
+			, value3(this)
+		{
+		}
+	};
+
+	void test_quotedToken_singleQuoted()
+	{
+		std::istringstream os(
+			"'one' 'two' 'three'"
+		);
+		QuotedColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS("one", parser.value1());
+		ASSERT_EQUALS("two", parser.value2());
+		ASSERT_EQUALS("three", parser.value3());
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok1 );
+		
+	}
+	void test_quotedToken_unquoted()
+	{
+		std::istringstream os(
+			"one two three"
+		);
+		QuotedColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS("one", parser.value1());
+		ASSERT_EQUALS("two", parser.value2());
+		ASSERT_EQUALS("three", parser.value3());
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok1 );
+		
+	}
+	void test_quotedToken_doubleQuoted()
+	{
+		std::istringstream os(
+			"\"one\" \"two\" \"three\""
+		);
+		QuotedColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS("one", parser.value1());
+		ASSERT_EQUALS("two", parser.value2());
+		ASSERT_EQUALS("three", parser.value3());
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok1 );
+		
+	}
+	void test_quotedToken_singleQuotedWithSpaces()
+	{
+		std::istringstream os(
+			"' one word ' 'two' 'three'"
+		);
+		QuotedColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS(" one word ", parser.value1());
+		ASSERT_EQUALS("two", parser.value2());
+		ASSERT_EQUALS("three", parser.value3());
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok1 );
+		
+	}
+	void test_quotedToken_missingColumn()
+	{
+		std::istringstream os(
+			"'one' 'two' "
+		);
+		QuotedColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS(
+			"Error in line 1, field 3: Expected quoted string\n"
+			, parser.errorMessage());
+		ASSERT_EQUALS("one", parser.value1());
+		ASSERT_EQUALS("two", parser.value2());
+		ASSERT( not ok1 );
+		
+	}
+	void test_quotedToken_unfinishedQuote()
+	{
+		std::istringstream os(
+			"'one' 'two "
+		);
+		QuotedColumn parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS(
+			"Error in line 1, field 2: Unclosed quote\n"
+			, parser.errorMessage());
+		ASSERT_EQUALS("one", parser.value1());
+		ASSERT( not ok1 );
 	}
 
 };
