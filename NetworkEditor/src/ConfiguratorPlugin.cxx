@@ -191,7 +191,8 @@ public:
 	virtual QWidget * editorWidget(const CLAM::DynamicType & object, unsigned attribute)
 	{
 		const CLAM::Enum & value = *(CLAM::Enum *)object.GetAttributeAsVoidPtr(attribute);
-		QComboBox * input = new QComboBox(/*editable*/ false);
+		QComboBox * input = new QComboBox;
+		input->setEditable(false);
 		const CLAM::Enum::tEnumValue * mapping = value.GetSymbolMap();
 		for (unsigned i = 0; mapping[i].name; i++) {
 			input->addItem( mapping[i].name );
