@@ -27,34 +27,57 @@ class Network(object):
 
 	def code(self, networkVar = "network", fullConfig = False):
 
+		codeLines = []
+
 		def configCode(networkVar, fullConfig):
 			configCode = ""
 			for name in self._proxy.processingNames():
 				configCode += self.__getitem__(name)._config.code(name, networkVar, fullConfig)
 			return configCode
 		def appendAttribute(name):
-			if name[0].isdigit():
+			if name[0].isdigit() or not name.isalnum() :
 				return "[\"%s\"]"%name
-			if name.isalnum():
+			else :
 				return "."+name
-			else:
-				return "[\"%s\"]"%name
 		code = ""
 		if self._proxy.getDescription() != "":
-			code += "%s.description = %s\n"%(networkVar, repr(self._proxy.getDescription()) )
+			code += "%s.description = %s\n"%(
+				networkVar,
+				repr(self._proxy.getDescription()),
+				)
 		code += "\n".join([
-			"%s%s = '%s'"%(networkVar, appendAttribute(name), self._proxy.processingType(name))
+			"%s%s = '%s'"%(
+				networkVar,
+				appendAttribute(name),
+				self._proxy.processingType(name),
+				)
 			for name in self._proxy.processingNames()])
 		code += "\n"
 		code += configCode(networkVar, fullConfig)
 		code += "\n"
 		code += "\n".join([
-				"%s%s%s > %s%s%s"%(networkVar, appendAttribute(fromProcessing), appendAttribute(fromConnector), networkVar, appendAttribute(toProcessing), appendAttribute(toConnector))
-				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.portConnections()])
+				"%s%s%s > %s%s%s"%(
+					networkVar,
+					appendAttribute(fromProcessing),
+					appendAttribute(fromConnector),
+					networkVar,
+					appendAttribute(toProcessing),
+					appendAttribute(toConnector),
+					)
+				for fromProcessing, fromConnector, toProcessing, toConnector
+				in self._proxy.portConnections()])
 		code += "\n"
 		code += "\n".join([
-				"%s%s%s > %s%s%s"%(networkVar, appendAttribute(fromProcessing), appendAttribute(fromConnector), networkVar, appendAttribute(toProcessing), appendAttribute(toConnector))
-				for fromProcessing, fromConnector, toProcessing, toConnector in self._proxy.controlConnections()])
+				"%s%s%s > %s%s%s"%(
+					networkVar,
+					appendAttribute(fromProcessing),
+					appendAttribute(fromConnector),
+					networkVar,
+					appendAttribute(toProcessing),
+					appendAttribute(toConnector),
+					)
+				for fromProcessing, fromConnector, toProcessing, toConnector
+				in self._proxy.controlConnections()])
 		return code
 
 
