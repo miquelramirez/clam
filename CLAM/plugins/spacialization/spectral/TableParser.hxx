@@ -116,7 +116,7 @@ public:
 			: BaseToken(parser)
 		{
 		}
-		bool read(std::istream & stream)
+		inline bool read(std::istream & stream)
 		{
 			stream >> _value;
 			if (stream) return true;
@@ -187,6 +187,21 @@ public:
 		}
 	};
 
+	/// A token that takes the remaining text in a line (multiple words stripping spaces at the end)
+	class RemainingToken : public Token<std::string>
+	{
+	public:
+		RemainingToken(TableParser * parser)
+			: Token<std::string>(parser)
+		{}
+		bool read(std::istream & stream)
+		{
+			stream >> std::ws;
+			std::getline(stream, _value);
+			return true;
+		}
+	};
+
 private:
 	std::ifstream _fstream;
 	std::istream & _stream;
@@ -207,6 +222,8 @@ public:
 		, _line(0)
 		, _column(0)
 	{
+		if (not _fstream)
+			_errorMessage+="Could not open file '"+filename+"'\n";
 	}
 	/**
 		Feeds a data line ignoring any empty or comment line.
@@ -301,7 +318,7 @@ private:
 namespace spectral
 {
 template <>
-bool TableParser::Token<std::string>::read(std::istream & stream)
+inline bool TableParser::Token<std::string>::read(std::istream & stream)
 {
 	_value="";
 	stream >> std::ws;
