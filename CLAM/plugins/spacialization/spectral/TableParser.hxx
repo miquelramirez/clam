@@ -80,6 +80,16 @@ If you want a custom field parser you can specialize
 the Token<Type>::read method or you can even create
 your own BaseToken subclass.
 
+Some already provided special tokens tokens
+- Token<std::string>, redefines read so that you can 
+  use ' or " to enclose multiword fields.
+- LabelToken, loads a string until a special caracter
+  is found (':', by default)
+- RemainingToken, loads the remainig line as string,
+  striping spaces at both sides.
+- QuotedToken, is equivalent to Token<std::string> as
+  it already supports quoted strings.
+
 */
 
 class spectral::TableParser
