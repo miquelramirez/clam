@@ -3,7 +3,6 @@
 #include <sstream>
 
 /*
-TODO: No test for filename based constructor
 TODO: Trailing text tokens (parse as string what it is left in the line)
 TODO: Optional token decorator (if not enough content, a default value is given. pe Optional<Token<int> > initialized 
 TODO: Further testing is needed on the 'ignore errors and continue parsing' mode
@@ -63,6 +62,12 @@ public:
 		TEST_CASE( test_quotedToken_unfinishedQuote );
 		TEST_CASE( test_quotedToken_secondLine );
 		TEST_CASE( test_quotedToken_trailingContent );
+		TEST_CASE( test_filenameBased_badFileName );
+		TEST_CASE( test_filenameBased_goodFile );
+		TEST_CASE( test_remaining_whenEmpty );
+		TEST_CASE( test_remaining_whenSingleWord );
+		TEST_CASE( test_remaining_whenSingleWord );
+		TEST_CASE( test_remaining_withTwoLines );
 	}
 
 	class SingleIntColumn : public TableParser 
@@ -315,6 +320,12 @@ public:
 		Token<int> column2;
 		TwoIntColumns(std::istream & stream)
 			: TableParser(stream)
+			, column1(this)
+			, column2(this)
+		{
+		}
+		TwoIntColumns(const std::string & filename)
+			: TableParser(filename)
 			, column1(this)
 			, column2(this)
 		{
@@ -787,6 +798,98 @@ public:
 			, parser.errorMessage());
 		ASSERT( not ok1 );
 	}
+
+	void test_filenameBased_badFileName()
+	{
+		TwoIntColumns parser("nonexisting");
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS(
+			"Could not open file 'nonexisting'\n"
+			, parser.errorMessage());
+		ASSERT( parser.hasError() );
+	}
+	void test_filenameBased_goodFile()
+	{
+		{
+			std::ofstream os("fileToParse");
+			os << "2 4";
+		}
+		TwoIntColumns parser("fileToParse");
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS(
+			""
+			, parser.errorMessage());
+		ASSERT( not parser.hasError() );
+		ASSERT_EQUALS(2, parser.column1());
+		ASSERT_EQUALS(4, parser.column2());
+
+		unlink("fileToParse");
+	}
+
+	class RemainingParser : public TableParser
+	{
+	public:
+		Token<int> column;
+		RemainingToken remaining;
+		RemainingParser(std::istream & stream)
+			: TableParser(stream)
+			, column(this)
+			, remaining(this)
+		{}
+	};
+
+	void test_remaining_whenEmpty()
+	{
+		std::istringstream os(
+			"1\n"
+		);
+		RemainingParser parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.column());
+		ASSERT_EQUALS("", parser.remaining());
+	}
+	void test_remaining_whenSingleWord()
+	{
+		std::istringstream os(
+			"1 word\n"
+		);
+		RemainingParser parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.column());
+		ASSERT_EQUALS("word", parser.remaining());
+	}
+
+	void test_remaining_whenMultipleWord()
+	{
+		std::istringstream os(
+			"1 many words\n"
+		);
+		RemainingParser parser(os);
+		bool ok1 = parser.feedLine();
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok1 );
+		ASSERT_EQUALS(1, parser.column());
+		ASSERT_EQUALS("many words", parser.remaining());
+	}
+	void test_remaining_withTwoLines()
+	{
+		std::istringstream os(
+			"1 many words\n"
+			"2 other words\n"
+		);
+		RemainingParser parser(os);
+		parser.feedLine();
+		bool ok2 = parser.feedLine();
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok2 );
+		ASSERT_EQUALS(2, parser.column());
+		ASSERT_EQUALS("other words", parser.remaining());
+	}
+	
 
 };
 
