@@ -105,7 +105,7 @@ namespace Hidden
 	Configure(IFFTConfig());
   }
 
-  IFFT_ooura::IFFT_ooura(const IFFTConfig &c) throw(ErrDynamicType)
+  IFFT_ooura::IFFT_ooura(const IFFTConfig &c)
 	: ip(0), w(0)
   { 
 	Configure(c);
