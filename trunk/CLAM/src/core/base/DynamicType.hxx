@@ -233,12 +233,10 @@ protected:
 		@arg id The entry to fill
 		@arg name The name of the attribute
 		@arg type The name of the attribute type
-		@arg offset The offset of the argument data in preallocated mode.
-		@returns the offset for the next attribute
 	*/
 	template <typename Type>
-	inline static int InformAttr_(
-		TAttr* attributeTable, unsigned id, const char* name, const char* type, int offset);
+	inline static void InformAttr_(
+		TAttr* attributeTable, unsigned id, const char* name, const char* type);
 
 private:
 	static void AttributeTableSetFields_(
@@ -246,7 +244,6 @@ private:
 		const char* name,
 		const char* typeName,
 		unsigned size,
-		int offset,
 		t_new constructor,
 		t_new_copy copyConstructor,
 		t_destructor destructor
@@ -272,7 +269,6 @@ protected:
 		char id[idLength];                   
 		char type[typeLength];
 		int size;
-		int offset;
 		t_new newObj;
 		t_new_copy newObjCopy;
 		t_destructor destructObj;
@@ -299,11 +295,11 @@ public:
 	void Debug() const;
 
 private:
-	TAttr * _typeDescTable; ///< Pointer to the shared type information
+	const TAttr * _typeDescTable; ///< Pointer to the shared type information
 	const unsigned _numAttr;  ///< The total number of dynamic attributes
-	char * _data; ///< Pointer to memory holding attribute data
+	const unsigned _maxAttrSize; // the total dyn. attrs. size
 	TDynInfo * _dynamicTable; ///< Dynamic state of each attribute
-	unsigned _maxAttrSize;	// the total dyn. attrs. size
+	char * _data; ///< Pointer to memory holding attribute data
 	unsigned _allocatedDataSize;
 	bool _preallocateAllAttributes;
 	unsigned _attributesNeedingUpdate;
@@ -432,22 +428,21 @@ inline void* DynamicType::GetPtrToData_(const unsigned id) const
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename Type>
-inline int DynamicType::InformAttr_(
+inline void DynamicType::InformAttr_(
 	TAttr * attributeTable,
 	unsigned i,
 	const char* name,
-	const char* typeName,
-	int offset)
+	const char* typeName
+	)
 {
 	AttributeTableSetFields_(
 		attributeTable, i, name, typeName,
-		sizeof(Type), offset,
+		sizeof(Type),
 		_attributeDefaultConstruct_<Type>,
 		_attributeCopyConstruct_<Type>,
 		_attributeDestruct_<Type>);
 
 	AttributeTableSetTypeFlags_(attributeTable, i, (Type*)0);
-	return offset + sizeof(Type);
 }
 
 } //namespace CLAM
