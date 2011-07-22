@@ -24,7 +24,6 @@
 #define _IFFT_fftw3_
 
 #include "IFFT_base.hxx"
-#include "ErrDynamicType.hxx"
 #include "SpectrumConfig.hxx"
 
 namespace CLAM {
