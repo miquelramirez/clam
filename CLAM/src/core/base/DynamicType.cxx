@@ -79,10 +79,7 @@ DynamicType::DynamicType(const DynamicType& prototype)
 	, _attributesNeedingUpdate(0)
 {
 
-	if (prototype._data)
-		SelfDeepCopy(prototype);
-	else
-		SelfCopyPrototype(prototype);
+	SelfDeepCopy(prototype);
 
 #	ifdef CLAM_EXTRA_CHECKS_ON_DT
 		FullfilsInvariant();
@@ -489,7 +486,8 @@ int DynamicType::DynTableRefCounter()
 }
 void DynamicType::InitDynTableRefCounter()
 {
-	_dynamicTable[_numAttr].offs = 1;       //at least the object that has created the table points to it.
+	//at least the object that has created the table points to it.
+	_dynamicTable[_numAttr].offs = 1;
 }
 
 int DynamicType::DecrementDynTableRefCounter()
@@ -515,8 +513,6 @@ Component* DynamicType::DeepCopy() const
 
 void DynamicType::SelfCopyPrototype(const DynamicType &prototype)
 {
-	RemoveAllMem(); // deletes all mem in _data and calls de destructor of every object.
-
 	_data=0;
 	_dynamicTable = prototype._dynamicTable;
 	_allocatedDataSize = prototype._allocatedDataSize;
@@ -530,7 +526,8 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
 	);
 	if (this==&prototype) return;
-		
+
+	RemoveAllMem(); // deletes all mem in _data and calls de destructor of every object.
 	SelfCopyPrototype(prototype);
 
 	if (not prototype._data) return;
