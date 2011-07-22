@@ -1,9 +1,18 @@
 
-
 2010-??-?? CLAM 1.4.1 SVN $Revision$ 
+ * NetworkPlayers and backends
+   * Network backends for plugins are NetworkPlayers now
+   * Common Backend code to inspect the network moved to base NetworkPlayer
+   * ControlSources and ControlSinks with multiple controls
+ * New LV2 backend:
+   * CLAM builds LV2 plugins from networks (see wiki tutorials)
+   * Helper scripts to automatically generate lv2 rdf's
+ * OfflinePlayer accepts a control sequence script, containing in each line: 
+   SMPTE controlSourceName and value.
  * Infrastructure: 
    * Network added a GetProcessingName interface
-   * Network flow control orders port-less processings (control-based sources, sinks and filters) using its y-position. Reasoning: make the order predictable
+   * Network flow control orders port-less processings (control-based sources,
+     sinks and filters) using its y-position. Reasoning: make the order predictable
  * Dependencies:
    * xerces-c 2.8 -> xerces-c 3.0 (requires pkg-config file)
  * Removed some deprecated symbols
@@ -11,24 +20,29 @@
    * Untemplatized ComplexTmpl/PolarTmpl -> Complex/Polar
  * Bug fixes:
    * InControls are initialized to the default value of the control type
-     (0 for numerics), this could change the behaviour
- * TypedIn/OutControl from deprecated to obsolete
- * NetworkPlayers and backends
-   * Network backends for plugins are NetworkPlayers now
-   * Common Backend code to inspect the network moved to base NetworkPlayer
-   * ControlSources and ControlSinks with multiple controls
- * OfflinePlayer accepts a control sequence script, containing in each line: 
-   SMPTE controlSourceName and value.
- * New backend:
-   * CLAM builds LV2 plugins from networks (see wiki tutorials)
-   * Helper scripts to automatically generate lv2 rdf's
- * Added In/OutControl/PortBase::SetName to be able to change the name of a 
-   connection without disconnecting it.
- * Generic handling of optional DT attributes AddAttribute(i) and RemoveAttribute(i)
+     (0 for numerics), this could change the behaviour (previously undefined)
+ * Ports and Controls enhancements:
+   * TypedIn/OutControl from deprecated to obsolete
+   * Added In/OutControl/PortBase::SetName to be able to change the name of a 
+     connection without disconnecting it.
  * Base classes Storage and XMLable are no more. Just XML kind of storage.
  * New plugins:
    * expression: Tranforms float control values using functions in C-like syntax.
-   * timeDomainEffects: DopplerEffects and more
+   * timeDomainEffects: DopplerEffect, Flanger and more
+ * DynamicType clean up:
+   * Generic handling of optional DT attributes AddAttribute(i) and RemoveAttribute(i)
+   * A lot of internal simplification (more needed)
+   * New way of calling DynamicType constructor relying on the output of static methods
+   * Fields information is available without instantiating an object
+   * Shared and Shallow copies no more supported (until requested again)
+   * Removed isPtr flag for fields types (always false).
+   * Removed offset precomputation for preallocated mode
+   * New generic accessors: AddAttribute(i), RemoveAttribute(i), HasAttribute(i)
+   * ExistsAttr(i) removed in favor of HasAttribute(i)
+   * Removed macro generated GetTypeX, GetSizeX, GetIdX
+   * Removed unused protected methods which exposed implementation too much:
+     Get/SetData, GetNumActiveAttr, GetDynamicTable, GetTypeDescTable,
+     GetDataSize, Get/SetOwnsItsMemory
  * Examples:
    * TickExtractor fixed assert failures when using in controls as out controls
    * TickExtractor now depends on libsamplerate instead of the ancient 
