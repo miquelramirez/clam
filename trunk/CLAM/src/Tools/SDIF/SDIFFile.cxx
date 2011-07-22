@@ -21,7 +21,6 @@
 
 #include "SDIFFile.hxx"
 #include "ErrOpenFile.hxx"	// error handling on openfile error
-#include "ErrFormat.hxx"		// error handling on format error
 
 #ifdef WIN32
 	#include <io.h>
