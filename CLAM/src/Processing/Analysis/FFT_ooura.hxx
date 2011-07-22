@@ -79,7 +79,7 @@ namespace CLAM {
 
 		FFT_ooura();
 
-		FFT_ooura(const FFTConfig &c) throw(ErrDynamicType);
+		FFT_ooura(const FFTConfig &c);
 
 		~FFT_ooura();
 

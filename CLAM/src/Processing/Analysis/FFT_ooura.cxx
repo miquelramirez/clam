@@ -83,7 +83,7 @@ namespace Hidden
 	Configure(FFTConfig());
   }
 
-  FFT_ooura::FFT_ooura(const FFTConfig &c) throw(ErrDynamicType)
+  FFT_ooura::FFT_ooura(const FFTConfig &c)
 	: ip(0), w(0)
   { 
 	Configure(c);
