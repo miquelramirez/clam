@@ -29,7 +29,6 @@
 #include "DataTypes.hxx"
 #include "Err.hxx"
 #include "Assert.hxx"
-#include "ErrOutOfMemory.hxx"
 #include "XMLStorage.hxx"
 #include "Component.hxx"
 #include "TypeInfo.hxx"
