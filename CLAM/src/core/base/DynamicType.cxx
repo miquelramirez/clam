@@ -43,10 +43,7 @@
 
 
 // TODO: strcpy is nos safe for name and typeName
-// TODO: shallow and deep copies has no sense as long as we don't have pointers
 // TODO: Review in which cases shared prototype is useful
-// TODO: Review in which cases shared data is useful
-// TODO: Is there any need of precomputing fixed offsets in preallocated mode
 
 namespace CLAM {
 
@@ -57,9 +54,9 @@ namespace CLAM {
 DynamicType::DynamicType(const int nAttr, TAttr * attributeTable)
 	: _typeDescTable(attributeTable)
 	, _numAttr(nAttr)
-	, _data(0)
+	, _maxAttrSize(_typeDescTable[_numAttr].size)
 	, _dynamicTable(new TDynInfo[_numAttr + 1])
-	, _maxAttrSize(_typeDescTable[_numAttr].offset)
+	, _data(0)
 	, _allocatedDataSize(0)
 	, _preallocateAllAttributes(false)
 	, _attributesNeedingUpdate(0)
@@ -76,9 +73,9 @@ DynamicType::DynamicType(const int nAttr, TAttr * attributeTable)
 DynamicType::DynamicType(const DynamicType& prototype)
 	: _typeDescTable(prototype._typeDescTable)
 	, _numAttr(prototype._numAttr)
-	, _data(0)
-	, _dynamicTable(0)
 	, _maxAttrSize(prototype._maxAttrSize)
+	, _dynamicTable(0)
+	, _data(0)
 	, _allocatedDataSize(0)
 	, _preallocateAllAttributes(prototype._preallocateAllAttributes)
 	, _attributesNeedingUpdate(0)
@@ -114,8 +111,8 @@ void DynamicType::RemoveAllMem()
 			t_destructor dest = _typeDescTable[i].destructObj;
 			dest (_data+_dynamicTable[i].offs);
 		}
+		delete [] _data;
 	}
-	if (_data) delete [] _data;
 	if (_dynamicTable)
 	{
 		DecrementDynTableRefCounter();
@@ -408,11 +405,10 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 	// the last reallocation:
 	char* olddata = _data;
 	_data = new char[_maxAttrSize];
-
+	int offs = 0;
 	for (unsigned i=0; i<_numAttr; i++)
 	{
 		TDynInfo & inf = _dynamicTable[i];
-		int offs = _typeDescTable[i].offset; // Fixed offset
 		if (not AttrHasData(i))
 		{
 			if (not inf.hasBeenAdded) continue; // Not there and still not, skip
@@ -425,6 +421,7 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 		}
 		else if (_dynamicTable[i].hasBeenRemoved) 
 		{
+			// There, but has to be removed
 			t_destructor dest = _typeDescTable[i].destructObj;
 			dest (olddata+inf.offs);
 			inf.hasBeenRemoved = false;
@@ -432,6 +429,7 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 		}
 		else 
 		{
+			// There, has to be copied
 			t_new_copy   copy = _typeDescTable[i].newObjCopy;
 			t_destructor dest = _typeDescTable[i].destructObj;
 
@@ -439,6 +437,8 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 			dest(olddata+inf.offs);
 			inf.offs = offs;
 		}
+		// Preallocated, so 
+		offs += _typeDescTable[i].size;
 	}
 	delete [] olddata;
 	_allocatedDataSize = _maxAttrSize;
@@ -450,10 +450,10 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 	// now, no reallocation.
 	// we'll use these pre-fixed offsets. 
 	// we need no attributes-copies. only creations and destructions:
+	int offs = 0;
 	for (unsigned int i=0; i<_numAttr; i++)
 	{
 		TDynInfo & inf = _dynamicTable[i];
-		int offs = _typeDescTable[i].offset;
 		if (AttrHasData(i)) 
 		{
 			if (_dynamicTable[i].hasBeenRemoved) 
@@ -475,6 +475,7 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 				inf.offs = offs;
 			}
 		}
+		offs += _typeDescTable[i].size;
 	}
 
 	_attributesNeedingUpdate=0;
@@ -520,7 +521,6 @@ void DynamicType::SelfCopyPrototype(const DynamicType &prototype)
 
 	_data=0;
 	_dynamicTable = prototype._dynamicTable;
-	_maxAttrSize = prototype._maxAttrSize;
 	_allocatedDataSize = prototype._allocatedDataSize;
 	_preallocateAllAttributes = prototype._preallocateAllAttributes;
 	IncrementDynTableRefCounter();
@@ -535,17 +535,18 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 		
 	SelfCopyPrototype(prototype);
 
+	if (not prototype._data) return;
+
 	_data = new char[_allocatedDataSize];
 
 	// Copies (deepCopy) all the objects pointed by this dynamic type that derives from
 	for (unsigned i=0; i<_numAttr; i++)
 	{
 		if (!HasAttribute(i)) continue;
-		void* pos = GetPtrToData_(i);
 		//now a nested object must be replaced. It maight be a pointer not registered as it.
 		//the nested object will be copied from the nested object at "this"
 		t_new_copy copy = _typeDescTable[i].newObjCopy;
-		copy(pos, prototype.GetPtrToData_(i));
+		copy(GetPtrToData_(i), prototype.GetPtrToData_(i));
 	}
 }
 
@@ -583,8 +584,8 @@ void DynamicType::FullfilsInvariant() const
 	unsigned nAdded = 0;
 	unsigned nRemoved = 0;
 	int incData=0, decData=0;
+
 	bool usedblock[_allocatedDataSize];
-	
 	for (unsigned j=0; j<_allocatedDataSize; j++) usedblock[j] = false;
 
 	for (unsigned i=0; i<_numAttr; i++)
@@ -593,49 +594,66 @@ void DynamicType::FullfilsInvariant() const
 		
 		// check state consistency.
 		if (dyninfo.hasBeenAdded && dyninfo.hasBeenRemoved) 
-			throw ErrDynamicType("in FullfilsInvariant: an attribute has both Added & Removed flags set. Class: ", GetClassName() );
+			throw ErrDynamicType(
+				"in FullfilsInvariant: "
+				"an attribute has both Added & Removed flags set."
+				" Class: ", GetClassName() );
 
 		if (dyninfo.hasBeenAdded) nAdded++;
 		if (dyninfo.hasBeenRemoved) nRemoved++;
 
 		if (dyninfo.offs < -1) 
-			throw ErrDynamicType("in FullfilsInvariant: a dynamic offset < -1");
+			throw ErrDynamicType("in FullfilsInvariant: "
+				"a dynamic offset < -1");
 		if( !AttrHasData(i) && dyninfo.hasBeenRemoved)  
-			throw ErrDynamicType(" in FullfilsInvariant: an attribute has\
-				no data (offs==-1) but do has the hasBeenRemoved flag set. Class: ", GetClassName() );
+			throw ErrDynamicType(" in FullfilsInvariant: "
+				"an attribute has no data (offs==-1) but do has the hasBeenRemoved flag set."
+				" Class: ", GetClassName() );
 		
 		if( AttrHasData(i) && dyninfo.hasBeenAdded)  
-			throw ErrDynamicType(" in FullfilsInvariant: an attribute has\
-				data (offs>0) but do has the hasBeenAdded flag set. Class: ", GetClassName() );
+			throw ErrDynamicType(" in FullfilsInvariant: "
+				"an attribute has\
+				data (offs>0) but do has the hasBeenAdded flag set."
+				" Class: ", GetClassName() );
 		// data size calculation
 		if (dyninfo.offs >= 0) 
 		{
 			auxAllocatedSize += _typeDescTable[i].size;
 			for (unsigned j=unsigned(dyninfo.offs); j<unsigned(dyninfo.offs+_typeDescTable[i].size); j++)
-				if (usedblock[j]) throw ErrDynamicType("in FullfilsInvariant: overlaped area in data table");
-				else usedblock[j]=true;
+			{
+				if (usedblock[j])
+					throw ErrDynamicType("in FullfilsInvariant: "
+						"overlaped area in data table");
+				usedblock[j]=true;
+			}
 		}
 		if (AttrHasData(i)) 
 		{
 			if (dyninfo.hasBeenRemoved) decData += _typeDescTable[i].size;
-			if (!_data) throw ErrDynamicType("in FullfilsInvariant: An attr. has data but _data==0");
+			if (!_data)
+				throw ErrDynamicType("in FullfilsInvariant: "
+					"An attr. has data but _data==0");
 		}
 		else 
 			if (dyninfo.hasBeenAdded) incData += _typeDescTable[i].size;
 		
 		else if (dyninfo.offs != -1) 
-			throw ErrDynamicType(" in FullfilsInvariant: attribute not informed with dynamic offset <> -1");
+			throw ErrDynamicType(" in FullfilsInvariant: "
+				"attribute not informed with dynamic offset <> -1");
 	}
 	if (auxAllocatedSize > _allocatedDataSize) 
-		throw ErrDynamicType("in FullfilsInvariant: allocatedDataSize attribute is not consistent. Class: ", GetClassName() );
+		throw ErrDynamicType("in FullfilsInvariant: "
+			"allocatedDataSize attribute is not consistent."
+			" Class: ", GetClassName() );
 	if ((nAdded + nRemoved) != _attributesNeedingUpdate)
-		throw ErrDynamicType("in FullfilsInvariant: _attributesNeedingUpdate is not consistent with hasBeenAdded/Removed flags. Class: ", GetClassName() );
+		throw ErrDynamicType("in FullfilsInvariant: "
+			"_attributesNeedingUpdate is not consistent with hasBeenAdded/Removed flags."
+			" Class: ", GetClassName() );
 }
 
 
 void DynamicType::Debug() const
 {
-	TAttr * attr = 0;
 	std::cout <<std::endl
 		<< "Class Name: "<< GetClassName() 
 		<< " at: " << this
@@ -651,14 +669,13 @@ void DynamicType::Debug() const
 	{
 		TDynInfo & dyninf = _dynamicTable[i];
 
-		attr = &_typeDescTable[i];
+		const TAttr * attr = &_typeDescTable[i];
 		std::cout
 			<< " "
 			<< (dyninf.hasBeenAdded? "A" : "-")
 			<< (dyninf.hasBeenRemoved? "R" : "-" )
 			<< " [" <<i<<"] "
 			<< dyninf.offs << " ,"
-			<< attr->offset << " ,"
 			<< attr->id << ", "
 			<< attr->type << ", {"
 			<< attr->isComponent << ", "
@@ -681,7 +698,6 @@ void DynamicType::AttributeTableSetFields_(
 	const char* name,
 	const char* typeName,
 	unsigned size,
-	int offset,
 	t_new constructor,
 	t_new_copy copyConstructor,
 	t_destructor destructor
@@ -690,8 +706,6 @@ void DynamicType::AttributeTableSetFields_(
 	strcpy(attributeTable[index].id, name);
 	strcpy(attributeTable[index].type, typeName);
 	attributeTable[index].size = size;
-	// default value. This field is used in UpdateData in Fixed offsets mode.
-	attributeTable[index].offset = offset;
 	// references to creation/destruction fuctions of the type/class
 	attributeTable[index].newObj = constructor;
 	attributeTable[index].newObjCopy = copyConstructor;

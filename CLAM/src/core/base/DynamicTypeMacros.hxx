@@ -140,7 +140,7 @@ private: \
 	/** Method chain terminator */ \
 	static void InformChainedAttr (AttributePosition<N>*a, TAttr * typeDescTable, unsigned offset)\
 	{ \
-		typeDescTable[N].offset = offset; \
+		typeDescTable[N].size = offset; \
 	} \
 	/** Method chain terminator */ \
 	void StoreChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) const {} \
@@ -223,7 +223,7 @@ ACCESS: \
 		DynamicType::RemoveAttribute(N); \
 	}\
 	inline bool Has##NAME() const { \
-		return HasAttribute(N); \
+		return DynamicType::HasAttribute(N); \
 	} \
 private: \
 	static inline int GetSize##NAME() { return sizeof(TYPE); } \
@@ -238,9 +238,8 @@ private: \
 	static void InformChainedAttr( \
 		AttributePosition<N>*, TAttr * typeDescTable, unsigned offset)\
 	{ \
-		int newOffset = \
-			InformAttr_<TYPE>(typeDescTable, N, #NAME, #TYPE, offset);\
-		InformChainedAttr((AttributePosition<(N)+1>*)NULL, typeDescTable, newOffset); \
+		InformAttr_<TYPE>(typeDescTable, N, #NAME, #TYPE);\
+		InformChainedAttr((AttributePosition<(N)+1>*)NULL, typeDescTable, offset+sizeof(TYPE)); \
 	} \
 	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) const { \
 		Store##NAME(s); \
