@@ -226,10 +226,6 @@ ACCESS: \
 		return DynamicType::HasAttribute(N); \
 	} \
 private: \
-	static inline int GetSize##NAME() { return sizeof(TYPE); } \
-	static inline const char* GetType##NAME() { return #TYPE; } \
-	static inline int GetId##NAME() { return N;}\
-private: \
 	template <typename Visitor> \
 	void VisitChainedAttr(AttributePosition<N>*, Visitor & visitor) { \
 		Visit##NAME(visitor); \
