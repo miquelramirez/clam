@@ -26,7 +26,6 @@
 #include "FFT_base.hxx"
 #include "DataTypes.hxx"
 #include "SpecTypeFlags.hxx"
-#include "ErrDynamicType.hxx"
 
 namespace CLAM {
 

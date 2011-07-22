@@ -26,7 +26,6 @@
 #include "IFFT_base.hxx"
 #include "DataTypes.hxx"
 #include "SpecTypeFlags.hxx"
-#include "ErrDynamicType.hxx"
 
 namespace CLAM {
 
@@ -85,7 +84,7 @@ namespace CLAM {
 
 		IFFT_ooura();
 
-		IFFT_ooura(const IFFTConfig &c) throw(ErrDynamicType);
+		IFFT_ooura(const IFFTConfig &c);
 
 		~IFFT_ooura();
 
