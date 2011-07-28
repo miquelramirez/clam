@@ -51,6 +51,7 @@ blacklist = [
 	"runTests.py",
 	"Clam_ConfigurationProxyTests.py",
 	"Clam_NetworkProxyTests.py",
+	"ProxyAPI.py"
 ]
 
 python_modules = [
@@ -60,8 +61,8 @@ python_modules = [
 	]
 
 prefix = os.path.expanduser('~/local')
-mod_dir = os.path.join(prefix,'lib','python')
-lib_dir = os.path.join(prefix,'lib','python')
+mod_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
+lib_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
 bin_dir = os.path.join(prefix, 'bin')
 
 install = [
