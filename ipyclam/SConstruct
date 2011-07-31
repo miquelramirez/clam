@@ -60,6 +60,7 @@ python_modules = [
 #	if "Test" not in source
 	]
 
+# TODO: Use distutils to get the paths given a prefix or a home schema
 prefix = os.path.expanduser('~/local')
 mod_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
 lib_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
@@ -86,3 +87,4 @@ Default(
 	dummyProcessingsModule,
 	program,
 )
+
