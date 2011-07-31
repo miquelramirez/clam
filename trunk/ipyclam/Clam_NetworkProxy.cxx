@@ -456,7 +456,7 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 
 	typedef const std::string & cstringref;
 	
-	import("Clam_ConfigurationProxy");
+	import("ipyclam.Clam_ConfigurationProxy");
 
 	class_<Processing, boost::noncopyable>("Processing", no_init);
 
