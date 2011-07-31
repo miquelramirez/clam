@@ -1,14 +1,28 @@
 
 class Configuration(object):
+	"""A Configuration represents the static parameters of an Processing.
+	Parameters are typed. If they are optional they can be None.
+	You can obtain the configuration from an existing processing.
+	Configurations maybe bound, unbound or hold.
+	When a configuration is unbound they are unrelated to any processing.
+	When they are bound to a processing, any change to a parameter
+	reconfigures the processing. This can be quite bad if your are
+	changing many parameters and the configuration is expensive,
+	so you can hold() a configuration and then apply().
+	"""
+
 	def __init__(self, proxy):
 		object.__setattr__(self, "_proxy", proxy)
+
 	def __getitem__(self, name):
 		return self._proxy[name]
+
 	def __setitem__(self, name, value):
 		if name == "_config":
 			self._proxy.copyConfig( value._proxy )
 			return
 		self._proxy[name] = value
+
 	def __getattr__(self, name):
 		try:
 			return self.__getitem__(name)
@@ -21,6 +35,7 @@ class Configuration(object):
 			raise AttributeError(e.args[0])
 	def __dir__(self):
 		return self._proxy.keys()
+
 	def code(self, processingName, networkVar = "network", fullConfig = False):
 		code = ""
 		if not fullConfig:
@@ -53,9 +68,11 @@ class ConfigurationTests(unittest.TestCase):
 	def stringParametersConfig(self) :
 		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(
 			TestFixtures.dummyConfigWithStrings())
+
 	def nestedConfig(self) :
 		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(
 			TestFixtures.dummyConfigWithNestedConfigs())
+
 	def test_getItem(self):
 		c = Configuration(self.stringParametersConfig())
 		self.assertEqual(c["ConfigParam1"], "Param1")
