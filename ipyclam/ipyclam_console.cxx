@@ -21,20 +21,20 @@ public:
 
 	void setupClamNetwork(CLAM::Network & network)
 	{
-		py::object clamProxyModule = py::import("Clam_NetworkProxy");
+		py::object clamProxyModule = py::import("ipyclam");
 		py::object proxy = py::object(py::ptr(&network));
 		setupNetwork(proxy);
 	}
 
 	void setupDummyNetwork()
 	{
-		py::object proxy = py::import("Dummy_NetworkProxy").attr("Dummy_NetworkProxy")();
+		py::object proxy = py::import("ipyclam").attr("Dummy_NetworkProxy")();
 		setupNetwork(proxy);
 	}
 private:
 	void setupNetwork(py::object & proxy)
 	{
-		py::object networkClass = py::import("Network").attr("Network");
+		py::object networkClass = py::import("ipyclam").attr("Network");
 		_main_ns["net"] = networkClass(proxy);
 	}
 public:

@@ -57,7 +57,7 @@ blacklist = [
 python_modules = [
 	source for source in  glob.glob('*.py')
 	if source not in blacklist
-#	if "Test" not in source
+	and "Test" not in source
 	]
 
 # TODO: Use distutils to get the paths given a prefix or a home schema
@@ -72,7 +72,6 @@ install = [
 		pythonc_module,
 		python_modules,
 		configurationModule,
-		dummyProcessingsModule,
 	]),
 	( bin_dir,[
 		program,

@@ -197,8 +197,6 @@
 		- Clam
 			- Pending revision of DynamicType methods
 
-- Moure helpers de test a un modul unic
-
 
 
 - Widget
@@ -209,8 +207,16 @@
 		- mockup d'stdin, stdout per interceptar IPShell
 
 
+- Not tested Configuration.hold/apply in Dummy
+- Turn basic configuration plugins into a template (with few specialized functions)
+- 
+- connectProcessings, connectWithConnector, connectWithConnectors, why are they there when you tab a connector?
+- Moure helpers de test a un modul unic
 
-
+- Implement net.source[2::2] > net.sink[2::2] (gives key error, works with _inports and _outports)
+- Implement net.source._outports.disconnect()
+- Implement net.source.disconnect()
+- net.processing.[tab] should include 'name' as it includes 'type'
 
 
 
