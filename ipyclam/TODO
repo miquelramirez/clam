@@ -216,6 +216,15 @@
 - Implement net.source._outports.disconnect()
 - Implement net.source.disconnect()
 + net.processing.[tab] should include 'name' as it includes 'type'
+- code() generates net.proc.in, does not even compile, 'in' is a python keywords, same for 'as', 'for', 'is'....
+	- http://docs.python.org/release/2.5.2/ref/keywords.html
+	- and del from not while as elif global or with assert else if pass yield break except 
+	- import print class exec in raise continue finally is return def for lambda try
+- Obtaining type metadata (category, description, icon...) (how? attributes, dictionary...)
+- How to know whether the configuration failed
+- Obtaining the configuration error
+- Is the network ready to play
+- Why it is not if so
 
 
 
