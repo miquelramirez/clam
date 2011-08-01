@@ -112,5 +112,8 @@ class Network(object):
 	def play(self) :
 		self._proxy.play()
 
+	def pause(self) :
+		self._proxy.pause()
+
 	def stop(self) :
 		self._proxy.stop()
