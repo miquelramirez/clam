@@ -448,6 +448,16 @@ ConfigurationProxy * processingConfig(CLAM::Network & network, const std::string
 	return new ConfigurationProxy(processing);
 }
 
+void play(CLAM::Network & network)
+{
+	network.Start();
+}
+
+void stop(CLAM::Network & network)
+{
+	network.Stop();
+}
+
 /// Modification of boost::python::import
 py::object relative_import(py::str name)
 {
@@ -459,7 +469,6 @@ py::object relative_import(py::str name)
 			n, globals.ptr(), globals.ptr(), 0, -1));
 	return py::object(module);
 }
-
 
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 {
@@ -560,6 +569,14 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			processingConfig,
 			return_value_policy<manage_new_object>(),
 			"Returns the config dictionary of the processing"
+			)
+		.def("play",
+			play,
+			"Starts to play the network"
+			)
+		.def("stop",
+			stop,
+			"Stops playing the network"
 			)
 		;
 }
