@@ -10,17 +10,17 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n"
 		"<Configuration>\n"
 		"\n"
-		"  <UnString>DefaultValue</UnString>\n"
+		"  <AString>DefaultValue</AString>\n"
 		"\n"
-		"  <UnAltreString>Un altre valor per defecte</UnAltreString>\n"
+		"  <OtherString>Another default value</OtherString>\n"
 		"\n"
 		"</Configuration>\n"
 		, proxy.xml())
 
-	def _test_getValueFromStringAttributes(self):
+	def test_getValueFromStringAttributes(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
-		self.assertEqual("DefaultValue", proxy["UnString"])
-		self.assertEqual("Un altre valor per defecte", proxy["UnAltreString"])
+		self.assertEqual("DefaultValue", proxy["AString"])
+		self.assertEqual("Another default value", proxy["OtherString"])
 
 	def test_raiseAttributeErrorGettingValueFromWrongAttribute(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
@@ -44,8 +44,8 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 
 	def test_setValueFromStringAttributes(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
-		proxy["UnString"] = "newvalue"
-		self.assertEqual("newvalue", proxy["UnString"])
+		proxy["AString"] = "newvalue"
+		self.assertEqual("newvalue", proxy["AString"])
 
 	def test_setValueFromIntegerAttributes(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
@@ -72,11 +72,11 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 	def test_set_wrongTypeForString(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		try:
-			proxy["UnString"] = 2
+			proxy["AString"] = 2
 			self.fail("Exception expected")
 		except TypeError, e:
 			self.assertEquals(
-				"While setting parameter 'UnString', "
+				"While setting parameter 'AString', "
 				"cannot convert a Python value of type 'int' "
 				"into a C++ value of type 'string'."
 				, e.args[0])
@@ -119,7 +119,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 
 	def test_keys(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
-		self.assertEqual( ["UnString", "UnAltreString"], proxy.keys() )
+		self.assertEqual( ["AString", "OtherString"], proxy.keys() )
 
 	def test_nonDefault(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
@@ -127,8 +127,8 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		proxy["NSources"] = 2
 		self.assertEqual(True, proxy.nonDefault("NSources"))
 
-	# TODO: Not the expected behaviour
-	def _test_hold_apply(self):
+	# TODO: reevaluate if this is the required behaviour
+	def test_hold_apply(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
 		proxy.hold()
 		proxy["NSources"] = 2
