@@ -42,7 +42,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual(3.140000104904175, proxy["FloatAttribute"])
 		self.assertEqual(134.15, proxy["DoubleAttribute"])
 
-	def _test_setValueFromStringAttributes(self):
+	def test_setValueFromStringAttributes(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		proxy["UnString"] = "newvalue"
 		self.assertEqual("newvalue", proxy["UnString"])
@@ -69,13 +69,17 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		except KeyError, e:
 			self.assertEquals("WrongAttribute", e.args[0])
 
-	def _test_set_wrongTypeForString(self):
+	def test_set_wrongTypeForString(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		try:
 			proxy["UnString"] = 2
 			self.fail("Exception expected")
 		except TypeError, e:
-			self.assertEquals("str value expected, got int", e.args[0])
+			self.assertEquals(
+				"While setting parameter 'UnString', "
+				"cannot convert a Python value of type 'int' "
+				"into a C++ value of type 'string'."
+				, e.args[0])
 
 	def test_set_wrongTypeForInt(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
@@ -83,7 +87,11 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 			proxy["FirstInt"] = "WrongType"
 			self.fail("Exception expected")
 		except TypeError, e:
-			self.assertEquals("int value expected, got str", e.args[0])
+			self.assertEquals(
+				"While setting parameter 'FirstInt', "
+				"cannot convert a Python value of type 'str' "
+				"into a C++ value of type 'int'."
+				, e.args[0])
 
 	def test_set_wrongTypeForBool(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
@@ -91,15 +99,23 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 			proxy["BoolAttribute"] = 2.15
 			self.fail("Exception expected")
 		except TypeError, e:
-			self.assertEquals("bool value expected, got float", e.args[0])
+			self.assertEquals(
+				"While setting parameter 'BoolAttribute', "
+				"cannot convert a Python value of type 'float' "
+				"into a C++ value of type 'bool'."
+				, e.args[0])
 
 	def test_set_wrongTypeForFloat(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
 		try:
-			proxy["FloatAttribute"] = False
+			proxy["FloatAttribute"] = "Value"
 			self.fail("Exception expected")
 		except TypeError, e:
-			self.assertEquals("float value expected, got bool", e.args[0])
+			self.assertEquals(
+				"While setting parameter 'FloatAttribute', "
+				"cannot convert a Python value of type 'str' "
+				"into a C++ value of type 'float'."
+				, e.args[0])
 
 	def test_keys(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
@@ -111,6 +127,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		proxy["NSources"] = 2
 		self.assertEqual(True, proxy.nonDefault("NSources"))
 
+	# TODO: Not the expected behaviour
 	def _test_hold_apply(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
 		proxy.hold()
