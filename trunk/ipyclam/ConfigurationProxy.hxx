@@ -103,29 +103,17 @@ public:
 	}
 	void AddAttribute(unsigned i)
 	{
-		if (_processing)
-		{
-			hold();
-			_processingConfig->AddAttribute(i);
-			_processingConfig->UpdateData();
-			apply();
-			return;
-		}
+		if (_processing) hold();
 		_processingConfig->AddAttribute(i);
 		_processingConfig->UpdateData();
+		if (_processing) apply();
 	}
 	void RemoveAttribute(unsigned i)
 	{
-		if (_processing)
-		{
-			hold();
-			_processingConfig->RemoveAttribute(i);
-			_processingConfig->UpdateData();
-			apply();
-			return;
-		}
+		if (_processing) hold();
 		_processingConfig->RemoveAttribute(i);
 		_processingConfig->UpdateData();
+		if (_processing) apply();
 	}
 	~ConfigurationProxy()
 	{

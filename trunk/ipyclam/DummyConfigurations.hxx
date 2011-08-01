@@ -15,14 +15,14 @@ class IpyclamTests::DummyDTWithJustStrings : public CLAM::ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (DummyDTWithJustStrings, 2, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, UnString);
-	DYN_ATTRIBUTE (1, public, std::string, UnAltreString);
+	DYN_ATTRIBUTE (0, public, std::string, AString);
+	DYN_ATTRIBUTE (1, public, std::string, OtherString);
 	void DefaultInit(void)
 	{
 		AddAll();
 		UpdateData();
-		SetUnString("DefaultValue");
-		SetUnAltreString("Un altre valor per defecte");
+		SetAString("DefaultValue");
+		SetOtherString("Another default value");
 	}
 };
 

@@ -38,15 +38,17 @@ class Configuration(object):
 
 	def code(self, processingName, networkVar = "network", fullConfig = False):
 		code = ""
-		if not fullConfig:
-			for attribute in self._proxy.keys():
-				if self._proxy.nonDefault(attribute):
-					code += "%s.%s['%s'] = '%s'\n"%(networkVar, processingName, attribute, self._proxy[attribute] )
-			return code
 		code += "\n".join([
-				"%s.%s['%s'] = '%s'"%(networkVar, processingName, attribute, self._proxy[attribute])
-				for attribute in self._proxy.keys()])
-		code += "\n"
+				"%s.%s['%s'] = '%s'"%(
+					networkVar, 
+					processingName,
+					attribute,
+					self._proxy[attribute],
+					)
+				for attribute in self._proxy.keys()
+				if fullConfig or self._proxy.nonDefault(attribute)
+			])
+		if code: code += "\n"
 		return code
 
 	def hold(self):

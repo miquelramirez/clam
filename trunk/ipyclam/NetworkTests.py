@@ -228,16 +228,16 @@ class NetworkTests(unittest.TestCase):
 	def test_code_for_changing_config_attributes(self):
 		net = Network(self.empty())
 		net.Processing1 = "DummyProcessingWithStringConfiguration"
-		net.Processing1.UnString = 'newvalue'
+		net.Processing1.AString = 'newvalue'
 		self.assertEquals(
 			"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
-			"network.Processing1['UnString'] = 'newvalue'\n"
-			"network.Processing1['UnAltreString'] = 'Un altre valor per defecte'\n"
+			"network.Processing1['OtherString'] = 'Another default value'\n"
+			"network.Processing1['AString'] = 'newvalue'\n"
 			"\n\n"
 			, net.code(fullConfig=True))
 
 class Clam_NetworkTests(NetworkTests):
-	def _proxy(self):
+	def proxy(self):
 		import Clam_NetworkProxy
 		import Network
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
@@ -246,9 +246,22 @@ class Clam_NetworkTests(NetworkTests):
 		network.Processing2 = "DummyTypeProcessing2"
 		return proxy
 
-	def _empty(self):
+	def empty(self):
 		import Clam_NetworkProxy
 		return Clam_NetworkProxy.Clam_NetworkProxy()
+
+	# Overwritten because dummy use alphabetical order while
+	# clam uses positional order
+	def test_code_for_changing_config_attributes(self):
+		net = Network(self.empty())
+		net.Processing1 = "DummyProcessingWithStringConfiguration"
+		net.Processing1.AString = 'newvalue'
+		self.assertEquals(
+			"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
+			"network.Processing1['AString'] = 'newvalue'\n"
+			"network.Processing1['OtherString'] = 'Another default value'\n"
+			"\n\n"
+			, net.code(fullConfig=True))
 
 
 if __name__ == '__main__':
