@@ -110,7 +110,7 @@ class Network(object):
 		return self.code()
 
 	def play(self) :
-		proxy.play()
+		self._proxy.play()
 
 	def stop(self) :
-		proxy.stop()
+		self._proxy.stop()
