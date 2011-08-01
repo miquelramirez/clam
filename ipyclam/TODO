@@ -207,8 +207,17 @@
 		- mockup d'stdin, stdout per interceptar IPShell
 
 
+- Proxy accesor to say whether we can play the network (see conditions in NetworkEditor)
+- Proxy accessor for the conditions which does not meet.
+- Network raises if play and conditions do not meet
+- Network accessor for ok to run and why not
+- Network accessors to status (isPlaying, isStoped, isPaused)
+- Processing accessor to configuration errors
 - Not tested Configuration.hold/apply in Dummy
-- Turn basic configuration plugins into a c++ template (with few specialized functions)
++ Turn basic configuration plugins into a c++ template (with few specialized functions)
+- Configuration parameters for other basic types (unsigned, long, short, char.... see the ones in Configurator and in StorageAsLeaf)
+- Configuration parameters for CLAM basic types: CLAM::Enum, CLAM::Text, CLAM::InFilename... (see Configurator)
+- Add DynamicTypes (hierarchy)
 - connectProcessings, connectWithConnector, connectWithConnectors, why are they there when you tab a connector?
 - Moure helpers de test a un modul unic
 - Moure Excepcions comunes de Clam i Dummy to a common module (Network if feasible)
@@ -223,8 +232,6 @@
 - Obtaining type metadata (category, description, icon...) (how? attributes, dictionary...)
 - How to know whether the configuration failed
 - Obtaining the configuration error
-- Is the network ready to play
-- Why it is not if so
 
 
 
