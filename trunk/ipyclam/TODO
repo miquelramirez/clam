@@ -208,15 +208,14 @@
 
 
 - Not tested Configuration.hold/apply in Dummy
-- Turn basic configuration plugins into a template (with few specialized functions)
-- 
+- Turn basic configuration plugins into a c++ template (with few specialized functions)
 - connectProcessings, connectWithConnector, connectWithConnectors, why are they there when you tab a connector?
 - Moure helpers de test a un modul unic
-
+- Moure Excepcions comunes de Clam i Dummy to a common module (Network if feasible)
 - Implement net.source[2::2] > net.sink[2::2] (gives key error, works with _inports and _outports)
 - Implement net.source._outports.disconnect()
 - Implement net.source.disconnect()
-- net.processing.[tab] should include 'name' as it includes 'type'
++ net.processing.[tab] should include 'name' as it includes 'type'
 
 
 

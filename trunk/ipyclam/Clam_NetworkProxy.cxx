@@ -448,6 +448,19 @@ ConfigurationProxy * processingConfig(CLAM::Network & network, const std::string
 	return new ConfigurationProxy(processing);
 }
 
+/// Modification of boost::python::import
+py::object relative_import(py::str name)
+{
+	char *n = py::extract<char *>(name);
+	py::object globals = py::scope().attr("__dict__");
+
+	py::handle<> module(
+		PyImport_ImportModuleLevel(
+			n, globals.ptr(), globals.ptr(), 0, -1));
+	return py::object(module);
+}
+
+
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 {
 	// Keep 'using namespace' in the inner scope
@@ -455,8 +468,7 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 	using namespace CLAM;
 
 	typedef const std::string & cstringref;
-	
-	import("ipyclam.Clam_ConfigurationProxy");
+	relative_import("Clam_ConfigurationProxy");
 
 	class_<Processing, boost::noncopyable>("Processing", no_init);
 

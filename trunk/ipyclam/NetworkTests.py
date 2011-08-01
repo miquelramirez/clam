@@ -250,5 +250,6 @@ class Clam_NetworkTests(NetworkTests):
 		import Clam_NetworkProxy
 		return Clam_NetworkProxy.Clam_NetworkProxy()
 
+
 if __name__ == '__main__':
 	unittest.main()
