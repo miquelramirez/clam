@@ -48,9 +48,6 @@ program = env.Program(
 	source='ipyclam_console.cxx',
 )
 blacklist = [
-	"runTests.py",
-	"Clam_ConfigurationProxyTests.py",
-	"Clam_NetworkProxyTests.py",
 	"ProxyAPI.py"
 ]
 

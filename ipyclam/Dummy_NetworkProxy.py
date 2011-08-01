@@ -143,7 +143,7 @@ _dummyPrototypes = dict(
 	DummyProcessingWithStringConfiguration = dict(
 		type = "DummyProcessingWithStringConfiguration",
 		config = dict(
-			UnString = "ValorPerDefecte",
+			UnString = "DefaultValue",
 			UnAltreString = "Un altre valor per defecte",
 		),
 		inports = [],

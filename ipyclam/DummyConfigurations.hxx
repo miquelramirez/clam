@@ -21,7 +21,7 @@ public:
 	{
 		AddAll();
 		UpdateData();
-		SetUnString("ValorPerDefecte");
+		SetUnString("DefaultValue");
 		SetUnAltreString("Un altre valor per defecte");
 	}
 };
