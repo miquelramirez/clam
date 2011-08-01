@@ -453,6 +453,12 @@ void play(CLAM::Network & network)
 	network.Start();
 }
 
+// need a prefix since 'pause' is a POSIX call
+void network_pause(CLAM::Network & network)
+{
+	network.Pause();
+}
+
 void stop(CLAM::Network & network)
 {
 	network.Stop();
@@ -572,7 +578,11 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			)
 		.def("play",
 			play,
-			"Starts to play the network"
+			"Starts to play the network or resumes a pause status"
+			)
+		.def("pause",
+			network_pause,
+			"Makes the backend to skip the network"
 			)
 		.def("stop",
 			stop,
