@@ -1,5 +1,6 @@
 #include <CLAM/Network.hxx>
 #include <CLAM/CLAMVersion.hxx>
+#include <CLAM/JACKNetworkPlayer.hxx>
 #include <boost/python.hpp>
 #include <iostream>
 #include <string>
@@ -65,6 +66,13 @@ int main( int argc, char ** argv )
 		Py_Initialize();
 
 		CLAM::Network network;
+		CLAM::NetworkPlayer * networkPlayer = 0;
+		CLAM::JACKNetworkPlayer *jackPlayer = new CLAM::JACKNetworkPlayer();
+		if ( jackPlayer->IsWorking() )
+		{
+			networkPlayer = jackPlayer;
+		}
+		network.SetPlayer( networkPlayer );
 		IpyclamShell shell;
 		if (argc>1 and std::string(argv[1])=="--dummy")
 			shell.setupDummyNetwork();

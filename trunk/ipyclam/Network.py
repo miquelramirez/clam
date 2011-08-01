@@ -109,3 +109,8 @@ class Network(object):
 	def __repr__(self) :
 		return self.code()
 
+	def play(self) :
+		proxy.play()
+
+	def stop(self) :
+		proxy.stop()
