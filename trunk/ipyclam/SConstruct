@@ -49,6 +49,7 @@ program = env.Program(
 )
 blacklist = [
 	"ProxyAPI.py"
+	"ipyclamqt_sms.py",
 ]
 
 python_modules = [
