@@ -85,6 +85,9 @@ class Network(object):
 		if name == "description":
 			self._proxy.setDescription(type)
 			return
+		if name == "backend":
+			self._proxy.setBackend(type)
+			return
 		if name in self.__dict__['methods']:
 			raise AssertionError("Wrong processing name: %s is a method"%(name))
 		# TODO: fail on existing attributes (not processings)
