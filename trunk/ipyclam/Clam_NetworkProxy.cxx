@@ -5,6 +5,8 @@
 #include <CLAM/OutPort.hxx>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/PANetworkPlayer.hxx>
+#include <CLAM/JACKNetworkPlayer.hxx>
 #include "ConfigurationProxy.hxx"
 
 namespace py = boost::python;
@@ -450,6 +452,24 @@ ConfigurationProxy * processingConfig(CLAM::Network & network, const std::string
 
 void play(CLAM::Network & network)
 {
+	if ( network.IsEmpty() )
+	{
+		std::string errorMsg = "Unable to play the network: A network without processings is not playable.";
+		throwPythonException(PyExc_RuntimeError, errorMsg);
+		return;
+	}
+	if ( network.HasMisconfiguredProcessings() )
+	{
+		std::string errorMsg = "Unable to play the network: Not all the processings are properly configured.";
+		throwPythonException(PyExc_RuntimeError, errorMsg);
+		return;
+	}
+	if ( network.HasUnconnectedInPorts() )
+	{
+		std::string errorMsg = "Unable to play the network: Some inports in the network are not connected.";
+		throwPythonException(PyExc_RuntimeError, errorMsg);
+		return;
+	}
 	network.Start();
 }
 
@@ -462,6 +482,20 @@ void network_pause(CLAM::Network & network)
 void stop(CLAM::Network & network)
 {
 	network.Stop();
+}
+
+void setBackend(CLAM::Network & network, const std::string & backend)
+{
+	CLAM::NetworkPlayer * player = 0;
+	if (backend == "JACK")
+		player = new CLAM::JACKNetworkPlayer();
+	if (backend == "PortAudio")
+		player = new CLAM::PANetworkPlayer();
+
+	if (player->IsWorking())
+		network.SetPlayer( player );
+	else
+		throwPythonException(PyExc_RuntimeError, "Unable to set player.");
 }
 
 /// Modification of boost::python::import
@@ -587,6 +621,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("stop",
 			stop,
 			"Stops playing the network"
+			)
+		.def("setBackend",
+			setBackend,
+			"Sets a backend to play the network"
 			)
 		;
 }
