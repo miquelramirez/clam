@@ -23,13 +23,14 @@ class ipyclam_controller(QtGui.QWidget):
 		hbox.addWidget(button)
 
 		button = QtGui.QPushButton("Code")
-		self.connect(button, QtCore.SIGNAL('clicked()'), self.printCode)
+		self.connect(button, QtCore.SIGNAL('clicked()'), self.showCode)
 		hbox.addWidget(button)
 
 		self.setLayout(hbox)
 
 	def createNetwork(self):
 		self._network = ipyclam.Network( ipyclam.Clam_NetworkProxy() )
+		self._network.backend = "PortAudio"
 		# Processings
 		self._network.source = "AudioSource"
 		self._network.sink = "AudioSink"
@@ -48,6 +49,9 @@ class ipyclam_controller(QtGui.QWidget):
 		self._network.smsresidualgain > self._network.synthesizer
 		self._network.synthesizer.OutputAudio > self._network.sink["1"]
 		self._network.outcontrolsender > self._network.smsfreqshift
+
+	def showCode(self):
+		QtGui.QMessageBox.about(self, "Code to build the network", self._network.code())
 
 	def printCode(self):
 		print self._network.code()
