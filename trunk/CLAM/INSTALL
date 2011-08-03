@@ -58,18 +58,24 @@ Checkout the subversion repository
  returns: "scons/libs/core/src/Processing.cxx:56: error: ..." you should not edit this 
  file but the one in src/ (searchable by  $ find  src/ -name "Processing.cxx")
 
- 3. Compile CLAM applications.
+ 3. Compile CLAM applications and extensions plugins.
 
- Applications can be download from the CLAM website in separate tarballs.
- If you are using svn they are folders at the clam trunk.
- Go to the root of the application source tree (e.g. NetworkEditor) 
- and issue: (maybe changing the prefix)
+ Applications and plugins can be download from the CLAM website in separate tarballs.
+ If you are using svn, applications are folders at the clam trunk.
+ Plugins are inside CLAM/plugins/.
+ Go to the root of the application or plugin source tree (e.g. NetworkEditor or
+ CLAM/plugin/osc) and issue: (maybe changing the prefix)
 
         $ scons prefix=/usr/local clam_prefix=/usr/local
+
+		$ scons install   # with 'sudo' if the prefix requires it
 
  For further building options do :
 
         $ scons --help
+
+ Some of the projects do not follow this general rule so refer to their
+ INSTALL file for extra dependencies and the concrete procedure.
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -119,8 +125,9 @@ http://clam-project.org/wiki/Devel/Mac_OSX_build
 See instructions on the wiki for native compilation with MinGW 
 or cross compilation from Linux
 
+ http://www.clam-project.org/wiki/Devel/Windows_MinGW_cross_compile (recommended)
  http://www.clam-project.org/wiki/Devel/Windows_MinGW_build
- http://www.clam-project.org/wiki/Devel/Windows_MinGW_cross_compile
+
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  
@@ -161,3 +168,8 @@ or cross compilation from Linux
 
  Generating fftw wisdom has been tested under linux, for using wisdom on other 
  operating systems consult your fftw3 user documentation.
+
+
+
+
+
