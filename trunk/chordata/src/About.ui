@@ -1,196 +1,165 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>About</class>
- <widget class="QDialog" name="About" >
-  <property name="geometry" >
+ <widget class="QDialog" name="About">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>517</width>
-    <height>399</height>
+    <width>744</width>
+    <height>586</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>About</string>
   </property>
-  <property name="windowIcon" >
-   <iconset/>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
-  <property name="modal" >
+  <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="spacing" >
+  <layout class="QVBoxLayout">
+   <property name="spacing">
     <number>6</number>
    </property>
-   <property name="leftMargin" >
-    <number>9</number>
-   </property>
-   <property name="topMargin" >
-    <number>9</number>
-   </property>
-   <property name="rightMargin" >
-    <number>9</number>
-   </property>
-   <property name="bottomMargin" >
+   <property name="margin">
     <number>9</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QLabel" name="label_2" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Maximum" hsizetype="Maximum" >
+      <widget class="QLabel" name="label_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="pixmap" >
-        <pixmap/>
+       <property name="pixmap">
+        <pixmap resource="images.qrc">:/icons/images/keyspace.svg</pixmap>
        </property>
-       <property name="scaledContents" >
+       <property name="scaledContents">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="versionInfo" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Maximum" hsizetype="Minimum" >
+      <widget class="QLabel" name="versionInfo">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text" >
-        <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Chordata v%1&lt;/span> &lt;/p>
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Based on CLAM v%2&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Chordata v%1&lt;/span&gt; &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Based on CLAM v%2&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="pixmapLabel1" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Maximum" hsizetype="Maximum" >
+      <widget class="QLabel" name="pixmapLabel1">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="pixmap" >
-        <pixmap/>
+       <property name="pixmap">
+        <pixmap resource="images.qrc">:/logos/images/clamlogo.png</pixmap>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QTabWidget" name="Contributors" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+    <widget class="QTabWidget" name="Contributors">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="currentIndex" >
-      <number>0</number>
+     <property name="currentIndex">
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="TabPage" >
-      <attribute name="title" >
+     <widget class="QWidget" name="TabPage">
+      <attribute name="title">
        <string>About</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>9</number>
-       </property>
-       <property name="topMargin" >
-        <number>9</number>
-       </property>
-       <property name="rightMargin" >
-        <number>9</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin">
         <number>9</number>
        </property>
        <item>
-        <widget class="QLabel" name="textLabel1_2_2" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <widget class="QLabel" name="textLabel1_2_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
-          <string>Chordata is a tool for tonal analysis of audio files. It can analyse a song and show the chords played.</string>
+         <property name="text">
+          <string>CLAM Chordata is a chord detection tool that can be used to browse the chords of your favourite mp3/ogg/wav music.
+
+You can freely move arround the song, listening and getting insight of its tonal features by using several available views: Chord segments, Chord ranking, Tonnetz, Keyspace, Chromatic peaks, PCPgram...</string>
          </property>
-         <property name="alignment" >
+         <property name="alignment">
           <set>Qt::AlignTop</set>
          </property>
-         <property name="wordWrap" >
+         <property name="wordWrap">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" >
-         <property name="spacing" >
+        <layout class="QHBoxLayout">
+         <property name="spacing">
           <number>6</number>
          </property>
-         <property name="leftMargin" >
-          <number>0</number>
-         </property>
-         <property name="topMargin" >
-          <number>0</number>
-         </property>
-         <property name="rightMargin" >
-          <number>0</number>
-         </property>
-         <property name="bottomMargin" >
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
           <spacer>
-           <property name="orientation" >
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>0</width>
+             <height>0</height>
             </size>
            </property>
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label_4" >
-           <property name="frameShape" >
+          <widget class="QLabel" name="label_4">
+           <property name="frameShape">
             <enum>QFrame::StyledPanel</enum>
            </property>
-           <property name="frameShadow" >
+           <property name="frameShadow">
             <enum>QFrame::Sunken</enum>
            </property>
-           <property name="pixmap" >
+           <property name="pixmap">
             <pixmap/>
            </property>
           </widget>
@@ -199,119 +168,98 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
        <string>Authors</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>9</number>
-       </property>
-       <property name="topMargin" >
-        <number>9</number>
-       </property>
-       <property name="rightMargin" >
-        <number>9</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin">
         <number>9</number>
        </property>
        <item>
-        <widget class="QLabel" name="textLabel1_2" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <widget class="QLabel" name="textLabel1_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
-          <string>&lt;p>The authors of the application are:&lt;/p>
-&lt;ul>
-&lt;li>Pawel Bartkiewicz&amp;lt;tuuresairon@gmail.com&amp;gt; &lt;/li>
-&lt;li>David Garcia Garzón &amp;lt;david.garcia@upf.edu&amp;gt; &lt;/li>
-&lt;li>The CLAM project &amp;lt;clam@clam-project.org&amp;gt;:&lt;/li>
-&lt;/ul>
-&lt;p>Contributors:&lt;/p>
-&lt;ul>
-&lt;li>Christopher Harte &amp;lt;harte@elec.qmul.ac.uk&amp;gt; ("Tonnetz" view, Chord extraction algorithm)&lt;/li>
-&lt;li>Emilia Gómez &amp;lt;egomez@iua.upf.edu&amp;gt; ("Key Space" view)&lt;/li>
-&lt;li>Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; ("Key Space" view)&lt;/li>
-&lt;li>Roman Goj &amp;lt;Roman Goj&amp;gt; (real-time algorithm refinements)&lt;/li>
-&lt;/ul>
+         <property name="text">
+          <string>&lt;p&gt;The authors of the application are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Pawel Bartkiewicz&amp;lt;tuuresairon@gmail.com&amp;gt; &lt;/li&gt;
+&lt;li&gt;David Garcia Garzón &amp;lt;david.garcia@upf.edu&amp;gt; &lt;/li&gt;
+&lt;li&gt;The CLAM project &amp;lt;clam@clam-project.org&amp;gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Contributors:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Christopher Harte &amp;lt;harte@elec.qmul.ac.uk&amp;gt; (&quot;Tonnetz&quot; view, Chord extraction algorithm)&lt;/li&gt;
+&lt;li&gt;Emilia Gómez &amp;lt;egomez@iua.upf.edu&amp;gt; (&quot;Key Space&quot; view)&lt;/li&gt;
+&lt;li&gt;Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; (&quot;Key Space&quot; view)&lt;/li&gt;
+&lt;li&gt;Roman Goj &amp;lt;Roman Goj&amp;gt; (real-time algorithm refinements)&lt;/li&gt;
+&lt;/ul&gt;
 </string>
          </property>
-         <property name="alignment" >
+         <property name="alignment">
           <set>Qt::AlignTop</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
        <string>Acknoledgements</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>9</number>
-       </property>
-       <property name="topMargin" >
-        <number>9</number>
-       </property>
-       <property name="rightMargin" >
-        <number>9</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin">
         <number>9</number>
        </property>
        <item>
-        <widget class="QLabel" name="textLabel1_2_3" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <widget class="QLabel" name="textLabel1_2_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
-          <string>&lt;p>This software is partially founded by:&lt;/p>
-&lt;ul>
-&lt;li>Google - Chordata was originally a Google Summer of Code project&lt;/li>
-&lt;/ul></string>
+         <property name="text">
+          <string>&lt;p&gt;This software is partially founded by:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Google - Chordata was originally a Google Summer of Code project&lt;/li&gt;
+&lt;/ul&gt;</string>
          </property>
-         <property name="alignment" >
+         <property name="alignment">
           <set>Qt::AlignTop</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" >
-         <property name="spacing" >
+        <layout class="QHBoxLayout">
+         <property name="spacing">
           <number>6</number>
          </property>
-         <property name="leftMargin" >
-          <number>0</number>
-         </property>
-         <property name="topMargin" >
-          <number>0</number>
-         </property>
-         <property name="rightMargin" >
-          <number>0</number>
-         </property>
-         <property name="bottomMargin" >
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
           <spacer>
-           <property name="orientation" >
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
              <height>20</height>
@@ -320,14 +268,14 @@ p, li { white-space: pre-wrap; }
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label_3" >
-           <property name="text" >
+          <widget class="QLabel" name="label_3">
+           <property name="text">
             <string/>
            </property>
-           <property name="pixmap" >
+           <property name="pixmap">
             <pixmap/>
            </property>
-           <property name="alignment" >
+           <property name="alignment">
             <set>Qt::AlignHCenter|Qt::AlignTop</set>
            </property>
           </widget>
@@ -336,36 +284,28 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="TabPage" >
-      <attribute name="title" >
+     <widget class="QWidget" name="TabPage">
+      <attribute name="title">
        <string>License</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>0</number>
-       </property>
-       <property name="topMargin" >
-        <number>0</number>
-       </property>
-       <property name="rightMargin" >
-        <number>0</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
-        <widget class="QTextBrowser" name="textBrowser" >
-         <property name="html" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+        <widget class="QTextBrowser" name="textBrowser">
+         <property name="html">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p>
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p>
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc.,&lt;/p>
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">59 Temple Place - Suite 330, Boston, MA 02111-1307, USAa &lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc.,&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USAa &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -375,9 +315,9 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="images.qrc" />
+  <include location="images.qrc"/>
  </resources>
  <connections/>
 </ui>
