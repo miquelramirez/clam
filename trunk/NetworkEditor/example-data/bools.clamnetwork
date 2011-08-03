@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed">
+
+  <description>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'DejaVu Sans'; font-size:11pt; font-weight:400; font-style:normal;"&gt;
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</description>
+
+  <processing id="BinaryCounter" position="242,16" size="191,63" type="BinaryCounter"/>
+
+  <processing id="BoolControlPrinter" position="6,164" size="228,84" type="BoolControlPrinter">
+    <NInputs>4</NInputs>
+  </processing>
+
+  <processing id="BoolControlPrinter_1" position="231,164" size="248,84" type="BoolControlPrinter">
+    <NInputs>8</NInputs>
+  </processing>
+
+  <processing id="BoolControlSender" position="21,13" size="230,84" type="BoolControlSender">
+    <NOutputs>4</NOutputs>
+  </processing>
+
+  <processing id="ControlGate" position="483,123" size="170,63" type="ControlGate">
+    <Threshold>0.5</Threshold>
+    <HysteresisWidth>0.1</HysteresisWidth>
+    <Inverted>0</Inverted>
+  </processing>
+
+  <processing id="GateOutput" position="485,200" size="165,84" type="BoolControlPrinter">
+    <NInputs>1</NInputs>
+  </processing>
+
+  <processing id="Input" position="486,11" size="193,86" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <control_connection>
+    <out>BinaryCounter.0</out>
+    <in>BoolControlPrinter_1.1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BinaryCounter.1</out>
+    <in>BoolControlPrinter_1.2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BinaryCounter.2</out>
+    <in>BoolControlPrinter_1.3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BinaryCounter.3</out>
+    <in>BoolControlPrinter_1.4</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BinaryCounter.4</out>
+    <in>BoolControlPrinter_1.5</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BinaryCounter.5</out>
+    <in>BoolControlPrinter_1.6</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BinaryCounter.6</out>
+    <in>BoolControlPrinter_1.7</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BinaryCounter.7</out>
+    <in>BoolControlPrinter_1.8</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BoolControlSender.1</out>
+    <in>BoolControlPrinter.1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BoolControlSender.2</out>
+    <in>BoolControlPrinter.2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BoolControlSender.3</out>
+    <in>BoolControlPrinter.3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>BoolControlSender.4</out>
+    <in>BoolControlPrinter.4</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ControlGate.Output</out>
+    <in>GateOutput.1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Input.out</out>
+    <in>ControlGate.Input</in>
+  </control_connection>
+
+</network>
