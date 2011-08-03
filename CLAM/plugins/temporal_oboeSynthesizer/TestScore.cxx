@@ -24,6 +24,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <stdlib.h>
 
 namespace CLAM {
 
