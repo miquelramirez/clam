@@ -20,9 +20,12 @@ installed clam into, you can follow this process:
 
 	cd spectral
 	scons prefix=$CLAM_PREFIX
-	scons install # sudo if you need to
+	scons install    # sudo if you need to
 	cd ..
 	PKG_CONFIG_PATH=$CLAM_PREFIX/lib/pkgconfig scons clam_prefix=$CLAM_PREFIX
-	PKG_CONFIG_PATH=$CLAM_PREFIX/lib/pkgconfig scons install # sudo if you need to
+	PKG_CONFIG_PATH=$CLAM_PREFIX/lib/pkgconfig scons install    # sudo if you need to
+
+You can get more build and installation options by typing 'scons --help'.
+For either the spectral/ and this directory)
 
 
