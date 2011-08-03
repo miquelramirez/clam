@@ -30,35 +30,11 @@
 #include <QtCore/QTimer>
 
 
-#include "Oscilloscope.hxx"
-#include "OscilloscopeMonitor.hxx"
-#include "Vumeter.hxx"
-#include "VumeterMonitor.hxx"
-#include "SpectrumView.hxx"
-#include "SpectrumViewMonitor.hxx"
-#include "PeakView.hxx"
-#include "PeakViewMonitor.hxx"
-#include "Tonnetz.hxx"
-#include "TonnetzMonitor.hxx"
-#include "KeySpace.hxx"
-#include "KeySpaceMonitor.hxx"
-#include "Spectrogram.hxx"
-#include "SpectrogramMonitor.hxx"
-#include "PolarChromaPeaks.hxx"
-#include "PolarChromaPeaksMonitor.hxx"
-#include "ChordRanking.hxx"
-#include "ChordRankingMonitor.hxx"
-#include "LPModelView.hxx"
-#include "LPModelViewMonitor.hxx"
-#include "MelSpectrumView.hxx"
-#include "MelSpectrumViewMonitor.hxx"
-#include "MelCepstrumView.hxx"
-#include "MelCepstrumViewMonitor.hxx"
-#include "SegmentationView.hxx"
-#include "SegmentationViewMonitor.hxx"
 #include "ProgressControl.hxx"
 #include "ProgressControlWidget.hxx"
 #include <CLAM/ControlSource.hxx>
+
+#include "QtBinder.hxx"
 
 namespace
 {
@@ -102,40 +78,25 @@ public:
 	virtual ~PrototypeBinder() {}
 	virtual void bindWidgets(Network & network, QWidget * userInterface) =0;
 
-protected:
-	std::string GetNetworkNameFromWidgetName(const char * widgetName)
+public: // eventually protected:
+	static std::string GetNetworkNameFromWidgetName(const char * widgetName)
 	{
 		std::string networkName(widgetName);
 		Substitute(networkName,"___", " ");
 		Substitute(networkName,"__", ".");
 		return networkName;
 	}
-	bool reportIfMissingProcessing(const std::string & processingName, Network & network, QWidget * userInterface)
+	static bool reportIfMissingProcessing(const std::string & processingName, Network & network, QWidget * userInterface)
 	{
 		if (network.HasProcessing(processingName))
 			return false;
 		QMessageBox::warning(userInterface,
-			QString("Error connecting controls"),
+			QString("Error binding processing"),
 			QString("The interface asked to connect to the processing '%1' which is not in the network.")
 				.arg(processingName.c_str()));
 		return true;
 	}
-	bool reportIfMissingOutPort(const std::string & portName, Network & network, QWidget * userInterface)
-	{
-		std::string processingName = network.GetProcessingIdentifier(portName);
-		if (reportIfMissingProcessing(processingName,network,userInterface)) return true;
-		std::string shortPortName = network.GetConnectorIdentifier(portName);
-		if (network.GetProcessing(processingName).HasOutPort(shortPortName))
-			return false; // no problem :-)
-		QMessageBox::warning(userInterface,
-			QString("Error connecting controls"),
-			QString("The interface asked to connect to a port '%1' not available in the processing '%2'.") // TODO: Try with...
-				.arg(shortPortName.c_str())
-				.arg(processingName.c_str()
-				));
-		return true;
-	}
-	bool reportIfMissingInControl(const std::string & controlName, Network & network, QWidget * userInterface)
+	static bool reportIfMissingInControl(const std::string & controlName, Network & network, QWidget * userInterface)
 	{
 		std::string processingName = network.GetProcessingIdentifier(controlName);
 		if (reportIfMissingProcessing(processingName,network,userInterface)) return true;
@@ -143,47 +104,12 @@ protected:
 		if (network.GetProcessing(processingName).HasInControl(shortControlName))
 			return false; // no problem :-)
 		QMessageBox::warning(userInterface,
-			QString("Error connecting controls"),
+			QString("Error binding control"),
 			QString("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
 				.arg(shortControlName.c_str())
 				.arg(processingName.c_str()
 				));
 		return true;
-	}
-};
-
-template < typename PlotClass, typename MonitorType>
-class MonitorBinder : public PrototypeBinder
-{
-	const char * _prefix;
-	const char * _plotClassName;
-public:
-	MonitorBinder(const char* prefix, const char* plotClassName)
-		: _prefix(prefix)
-		, _plotClassName(plotClassName)
-	{}
-	virtual void bindWidgets(Network & network, QWidget * userInterface)
-	{
-		std::cout << "Looking for " << _plotClassName << " widgets..." << std::endl;
-		QList<QWidget*> widgets = userInterface->findChildren<QWidget*>(QRegExp(_prefix));
-		for (typename QList<QWidget*>::Iterator it=widgets.begin();
-				it!=widgets.end();
-				it++)
-		{
-			QWidget * aWidget = *it;
-			if (aWidget->metaObject()->className() != std::string(_plotClassName)) continue;
-			std::string portName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(9).toAscii());
-			std::cout << "* " << _plotClassName << " connected to port " << portName << std::endl;
-
-			if (reportIfMissingOutPort(portName,network,userInterface)) continue;
-
-			MonitorType * portMonitor = new MonitorType;
-			std::string monitorName = network.GetUnusedName("PrototyperMonitor");
-			network.AddProcessing(monitorName, portMonitor);
-			network.ConnectPorts(portName, monitorName+".Input");
-			PlotClass * plot = (PlotClass*) aWidget;
-			plot->setDataSource(*portMonitor);
-		}
 	}
 };
 
@@ -227,33 +153,6 @@ public:
 };
 
 static ControlSourceBinder controlSourceBinder;
-
-static MonitorBinder<Oscilloscope,OscilloscopeMonitor> oscilloscopeBinder
-	("OutPort__.*", "Oscilloscope");
-static MonitorBinder<Vumeter,VumeterMonitor> vumeterBinder
-	("OutPort__.*", "Vumeter");
-static MonitorBinder<SpectrumView,SpectrumViewMonitor> spectrumViewBinder
-	("OutPort__.*", "SpectrumView");
-static MonitorBinder<PeakView,PeakViewMonitor> peakMonitorBinder
-	("OutPort__.*", "PeakView");
-static MonitorBinder<CLAM::VM::Tonnetz,TonnetzMonitor> tonnetzBinder
-	("OutPort__.*", "CLAM::VM::Tonnetz");
-static MonitorBinder<CLAM::VM::KeySpace,KeySpaceMonitor> keyspaceBinder
-	("OutPort__.*", "CLAM::VM::KeySpace");
-static MonitorBinder<CLAM::VM::Spectrogram,SpectrogramMonitor> spectrogramBinder
-	("OutPort__.*", "CLAM::VM::Spectrogram");
-static MonitorBinder<PolarChromaPeaks,PolarChromaPeaksMonitor> polarChromaPeaksBinder
-	("OutPort__.*", "PolarChromaPeaks");
-static MonitorBinder<CLAM::VM::ChordRanking,ChordRankingMonitor> chordRankingBinder
-	("OutPort__.*", "CLAM::VM::ChordRanking");
-static MonitorBinder<CLAM::VM::LPModelView,LPModelViewMonitor> lpModelBinder
-	("OutPort__.*", "CLAM::VM::LPModelView");
-static MonitorBinder<CLAM::VM::MelCepstrumView,MelCepstrumViewMonitor> melCepstrumBinder
-	("OutPort__.*", "CLAM::VM::MelCepstrumView");
-static MonitorBinder<CLAM::VM::MelSpectrumView,MelSpectrumViewMonitor> melSpectrumBinder
-	("OutPort__.*", "CLAM::VM::MelSpectrumView");
-static MonitorBinder<SegmentationView,SegmentationViewMonitor> segmentationBinder
-	("OutPort__.*", "SegmentationView");
 
 
 class ConfigurationBinder : public PrototypeBinder
@@ -521,6 +420,11 @@ void PrototypeLoader::ConnectUiWithNetwork()
 
 	for (Binders::iterator it=binders().begin(); it!=binders().end(); it++)
 		(*it)->bindWidgets(_network, _interface);
+	QStringList errors;
+	QtBinder::bindAllBinders(_interface, _network, errors);
+	if (not errors.empty())
+		reportError( QString("Interface Binding Errors"), errors.join("\n"));
+		
 
 	_playButton = _interface->findChild<QPushButton*>("PlayButton");
 	_pauseButton = _interface->findChild<QPushButton*>("PauseButton");
@@ -659,21 +563,6 @@ bool PrototypeLoader::reportIfMissingProcessing(const std::string & processingNa
 		tr("Error connecting controls"),
 		tr("The interface asked to connect to the processing '%1' which is not in the network.")
 			.arg(processingName.c_str()));
-	return true;
-}
-bool PrototypeLoader::reportIfMissingOutPort(const std::string & portName)
-{
-	std::string processingName = _network.GetProcessingIdentifier(portName);
-	if (reportIfMissingProcessing(processingName)) return true;
-	std::string shortPortName = _network.GetConnectorIdentifier(portName);
-	if (_network.GetProcessing(processingName).HasOutPort(shortPortName))
-		return false; // no problem :-)
-	reportWarning(
-		tr("Error connecting controls"),
-		tr("The interface asked to connect to a port '%1' not available in the processing '%2'.") // TODO: Try with...
-			.arg(shortPortName.c_str())
-			.arg(processingName.c_str()
-			));
 	return true;
 }
 bool PrototypeLoader::reportIfMissingInControl(const std::string & controlName)
