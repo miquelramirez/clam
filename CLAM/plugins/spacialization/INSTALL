@@ -1,0 +1,23 @@
+== Dependencies ==
+
+This is a CLAM plugin so it depends on CLAM (http://clam-project.org)
+It also depends on fftw3 and sndfile which are also CLAM dependencies.
+
+The 'raytracing' dependency is a non-released library and it is disabled 
+by default. If you develop a library with the same API you can just
+enable the option.
+
+== Installing ==
+
+In order to build this plugin you need to compile the inner project 'spectral'.
+Provided that you defined CLAM_PREFIX to the prefix you installed clam into,
+you can follow this process: 
+
+	cd spectral
+	scons prefix=$CLAM_PREFIX
+	scons install # sudo if you need to
+	cd ..
+	PKG_CONFIG_PATH=$CLAM_PREFIX/lib/pkgconfig scons clam_prefix=$CLAM_PREFIX
+	PKG_CONFIG_PATH=$CLAM_PREFIX/lib/pkgconfig scons install # sudo if you need to
+
+
