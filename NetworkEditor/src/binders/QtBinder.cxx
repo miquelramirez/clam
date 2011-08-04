@@ -42,7 +42,7 @@ CLAM::QtBinder * CLAM::QtBinder::findHandler(QObject * uiElement)
 	return 0;
 }
 
-std::string QtBinder::widget2NetworkName(const QString & prefix, const QString & widgetName)
+std::string CLAM::QtBinder::widget2NetworkName(const QString & prefix, const QString & widgetName)
 {
 	return widgetName
 		.mid(prefix.length())
