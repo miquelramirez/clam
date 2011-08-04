@@ -103,15 +103,13 @@ public:
 		return propertyValue.value<ValueType>() == value;
 	}
 
-	std::string widget2NetworkName(const QString & prefix, const QString & widgetName)
-	{
-		return widgetName
-			.mid(prefix.length())
-			.replace("___", " ")
-			.replace("__", ".")
-			.toStdString()
-			;
-	}
+	/**
+		Helper that turns a mangled widget name into a network name.
+		- Removes the prefix
+		- Demangles mangled '.' and ' ' that were turned underlines.
+		- Converts the QString into std::string to be used with CLAM
+	*/
+	static std::string widget2NetworkName(const QString & prefix, const QString & widgetName);
 
 // Helpers for subclass implementation of bind
 	/**
