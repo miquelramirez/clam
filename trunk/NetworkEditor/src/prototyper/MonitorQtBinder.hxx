@@ -72,7 +72,7 @@ public:
 
 		std::string portName;
 		if (uiElement->objectName().startsWith(_prefix))
-			portName = widget2NetworkName(uiElement->objectName());
+			portName = widget2NetworkName(_prefix, uiElement->objectName());
 		else if (hasProperty(uiElement, _portProperty))
 			portName = uiElement->property(_portProperty).toString().toStdString();
 		else return error(errors,
@@ -105,25 +105,6 @@ public:
 		MonitorWidget * plot = (MonitorWidget*) uiElement;
 		plot->setDataSource(*monitorProcessing);
 		return true;
-	}
-protected:
-	std::string widget2NetworkName(const QString & widgetName)
-	{
-		return widgetName
-			.mid(_prefix.length())
-			.replace("___", " ")
-			.replace("__", ".")
-			.toStdString()
-			;
-	}
-	static void Substitute(std::string & subject, const char * pattern, const char * substitution)
-	{
-		for (std::string::size_type position = subject.find(pattern, 0);
-			position!=std::string::npos;
-			position = subject.find(pattern, position))
-		{
-			subject.replace(position, strlen(pattern), substitution);
-		}
 	}
 };
 
