@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.4.1" id="Unnamed Network">
+
+  <processing id="AudioSink" position="302,105" size="149,111" type="AudioSink">
+    <NSinks>1</NSinks>
+  </processing>
+
+  <processing id="My Processing" position="41,89" size="204,63" type="SimpleOscillator">
+    <Frequency>440</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <port_connection>
+    <out>My Processing.Audio Output</out>
+    <in>AudioSink.1</in>
+  </port_connection>
+
+</network>

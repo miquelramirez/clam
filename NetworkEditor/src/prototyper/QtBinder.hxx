@@ -103,6 +103,16 @@ public:
 		return propertyValue.value<ValueType>() == value;
 	}
 
+	std::string widget2NetworkName(const QString & prefix, const QString & widgetName)
+	{
+		return widgetName
+			.mid(prefix.length())
+			.replace("___", " ")
+			.replace("__", ".")
+			.toStdString()
+			;
+	}
+
 // Helpers for subclass implementation of bind
 	/**
 		Enables the following idiom:
