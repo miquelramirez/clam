@@ -1,7 +1,14 @@
 2011-??-?? NetworkEditor 1.4.1 SVN $Revision$
 ''
- * Migration scripts are called automatically when a network from an 
-   old version is loaded
+ * Auto-upgrade old networks on load, calling the migration script..
+ * New UI Binders architecture:
+   * Not tied to the Prototyper, you can use them in your own application
+   * Available by linking to qtmonitors library
+   * Use of custom properties: no name collisions, you can set more binding information
+   * Configuration binders to open the configurator of a given processing in prototyper
+ * More examples:
+   * Boolean controls example
+   * Configuration binder example
  * CheckClamNetwork: a new program to test networks load properly.
  * Cartesian2PolarControl : moved from NetworkEditor to spacialization plugin
  * GenderChange prototype: 
@@ -12,8 +19,7 @@
  * prefix_for_packaging scons option for better distribution packaging
  * FIX: Prototyper is a QtCoreApplication to avoid requiring X11
  * FIX: Prototyper stops the backend before exiting
- * FIX: Cut and paste duplicates all the information text items
-
+ * FIX: Cut and paste duplicated all the information text items
 
 2010-03-05 NetworkEditor 1.4.0
 '3D moluscs in the space release'
