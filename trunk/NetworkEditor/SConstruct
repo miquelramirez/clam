@@ -109,6 +109,7 @@ sourcePaths = [
 extraPaths = [
 	os.path.join('src','monitors'),
 	os.path.join('src','widgets'),
+	os.path.join('src','binders'),
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 ]
@@ -150,7 +151,11 @@ env.Depends("src/generated/NetworkUpgrader.o", [
 	clamRefactorLocation,
 	])
 
-qtmonitorDirs = env.recursiveDirs(os.path.join('src','widgets')) + env.recursiveDirs(os.path.join('src','monitors'))
+qtmonitorDirs = [ os.path.join('src',dir) for dir in [
+		'widgets',
+		'monitors',
+		'binders',
+		]]
 qtmonitorSources = env.scanFiles('*.cxx', qtmonitorDirs,
 	patternblacklist=[ 'moc_', 'qrc_', ],
 	)

@@ -6,7 +6,6 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/Enum.hxx>
-#include <QtGui/QWidget>
 
 namespace CLAM
 {
