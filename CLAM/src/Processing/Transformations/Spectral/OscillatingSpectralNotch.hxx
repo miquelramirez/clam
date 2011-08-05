@@ -84,11 +84,16 @@ namespace CLAM{
 			return true;
 		}
 		
-/*		virtual bool InitControls()
-		{ 
+		bool ConcreteStart()
+		{
+			mOscillator.Start();
 			return true;
 		}
-*/		
+		bool ConcreteStop()
+		{
+			mOscillator.Stop();
+			return true;
+		}
 		bool Do(const Frame& in, Frame& out)
 		{
 			return Do(in.GetSpectrum(), 
