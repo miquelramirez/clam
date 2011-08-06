@@ -48,7 +48,8 @@ program = env.Program(
 	source='ipyclam_console.cxx',
 )
 blacklist = [
-	"ProxyAPI.py"
+	"ProxyAPI.py",
+	"ipyclamqt_sms.py",
 ]
 
 python_modules = [
