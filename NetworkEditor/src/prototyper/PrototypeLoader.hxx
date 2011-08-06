@@ -43,47 +43,19 @@ public:
 	
 	void ConnectUiWithNetwork();
 	void Show();
-	typedef std::list<PrototypeBinder*> Binders;
-	static Binders & binders();
 
 public slots:
 	void Start();
 	void Pause();
 	void Stop();
-	void OpenAudioFile();
 
 private:
-	std::string GetNetworkNameFromWidgetName(const char * widgetName);
-
-	void ConnectWidgetsWithIntegerControls();
-	void ConnectWidgetsWithMappedControls();
-	void ConnectWidgetsUsingControlBounds();
-	void ConnectWidgetsWithAudioFileReaders();
-	void ConnectWidgetsWithBooleanControls();
-	
-	bool reportIfMissingProcessing(const std::string & processingName);
-	bool reportIfMissingInControl(const std::string & fullControlName);
-	bool reportIfMissingOutPort(const std::string & fullControlName);
 	void reportError(const QString & title, const QString & message);
 	void reportWarning(const QString & title, const QString & message);
 
 	void UpdatePlayStatus();
 private slots:
 	void periodicPlaybackStatusUpdate();
-};
-
-class ControlSource;
-class ControlSourceSender : public QObject
-{
-	Q_OBJECT
-	ControlSource * _source;
-public:
-	ControlSourceSender(ControlSource * processing)
-		: _source(processing)
-	{
-	}
-public slots:
-	void send(int value);
 };
 
 

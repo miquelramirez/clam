@@ -12,11 +12,14 @@ ProgressControlWidget::ProgressControlWidget(CLAM::Processing *processing, QWidg
 {
 	setOrientation(Qt::Horizontal);
 
-	connect(this, SIGNAL(valueChanged(int)), 
+	connect(
+		this, SIGNAL(valueChanged(int)), 
 		this, SLOT(sliderValueChanged(int)));
-	connect(this, SIGNAL(sliderPressed()), 
+	connect(
+		this, SIGNAL(sliderPressed()), 
 		this, SLOT(sliderPressed()));
-	connect(this, SIGNAL(sliderReleased()), 
+	connect(
+		this, SIGNAL(sliderReleased()), 
 		this, SLOT(sliderReleased()));
 	
 	startTimer(50);

@@ -17,7 +17,6 @@
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <CLAM/XMLStorage.hxx>
-#include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include <fstream>
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -29,10 +28,6 @@
 #include <QtCore/QVariant>
 #include <QtCore/QTimer>
 
-
-#include "ProgressControl.hxx"
-#include "ProgressControlWidget.hxx"
-#include <CLAM/ControlSource.hxx>
 
 #include "QtBinder.hxx"
 
@@ -47,187 +42,10 @@ static bool FileExists( const std::string filename )
 	return true;
 }
 
-static void Substitute(std::string & subject, const char * pattern, const char * substitution)
-{
-	for (std::string::size_type position = subject.find(pattern, 0);
-		position!=std::string::npos;
-		position = subject.find(pattern, position))
-	{
-		subject.replace(position, strlen(pattern), substitution);
-	}
-}
 }
 
 namespace CLAM
 {
-
-class PrototypeBinder
-{
-public:
-	typedef std::list<PrototypeBinder*> Binders;
-	static Binders & binders()
-	{
-		static Binders theBinders;
-		return theBinders;
-	}
-
-	PrototypeBinder()
-	{
-		binders().push_back(this);
-	}
-	virtual ~PrototypeBinder() {}
-	virtual void bindWidgets(Network & network, QWidget * userInterface) =0;
-
-public: // eventually protected:
-	static std::string GetNetworkNameFromWidgetName(const char * widgetName)
-	{
-		std::string networkName(widgetName);
-		Substitute(networkName,"___", " ");
-		Substitute(networkName,"__", ".");
-		return networkName;
-	}
-	static bool reportIfMissingProcessing(const std::string & processingName, Network & network, QWidget * userInterface)
-	{
-		if (network.HasProcessing(processingName))
-			return false;
-		QMessageBox::warning(userInterface,
-			QString("Error binding processing"),
-			QString("The interface asked to connect to the processing '%1' which is not in the network.")
-				.arg(processingName.c_str()));
-		return true;
-	}
-	static bool reportIfMissingInControl(const std::string & controlName, Network & network, QWidget * userInterface)
-	{
-		std::string processingName = network.GetProcessingIdentifier(controlName);
-		if (reportIfMissingProcessing(processingName,network,userInterface)) return true;
-		std::string shortControlName = network.GetConnectorIdentifier(controlName);
-		if (network.GetProcessing(processingName).HasInControl(shortControlName))
-			return false; // no problem :-)
-		QMessageBox::warning(userInterface,
-			QString("Error binding control"),
-			QString("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
-				.arg(shortControlName.c_str())
-				.arg(processingName.c_str()
-				));
-		return true;
-	}
-};
-
-void ControlSourceSender::send(int value)
-{
-	_source->Do(value/100.);
-}
-
-class ControlSourceBinder : public PrototypeBinder
-{
-	std::list<ControlSourceSender *> _toDelete;
-public:
-	ControlSourceBinder()
-	{
-	}
-	~ControlSourceBinder()
-	{
-		for (std::list<ControlSourceSender *>::iterator it=_toDelete.begin();
-			it!=_toDelete.end(); it++)
-			delete *it;
-	}
-	virtual void bindWidgets(Network & network, QWidget * userInterface)
-	{
-		std::cout << "Looking for ControlSource widgets..." << std::endl;
-		QList<QAbstractSlider*> widgets = userInterface->findChildren<QAbstractSlider*>(QRegExp("ControlSource__.*"));
-		for (QList<QAbstractSlider*>::Iterator it=widgets.begin();
-			it!=widgets.end();
-			it++)
-		{
-			QAbstractSlider * aWidget = *it;
-			std::string processingName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(QString("ControlSource__").size()).toAscii());
-			std::cout << "* Slider connected to ControlSource port " << processingName << std::endl;
-			Processing & processing = network.GetProcessing(processingName);
-			ControlSource * source = dynamic_cast<ControlSource*> (&processing);
-			CLAM_ASSERT(source, "TODO: Handle not proper processing class");
-			_toDelete.push_back(new ControlSourceSender(source));
-			QObject::connect(aWidget, SIGNAL(valueChanged(int)), _toDelete.back(), SLOT(send(int)));
-		}
-	}
-
-};
-
-static ControlSourceBinder controlSourceBinder;
-
-
-class ConfigurationBinder : public PrototypeBinder
-{
-public:
-	virtual void bindWidgets(Network & network, QWidget * userInterface)
-	{
-		std::cout << "Looking for configuration actions..." << std::endl;
-		static QRegExp pattern("Config__(.*)");
-		QList<QAction*> actions = userInterface->findChildren<QAction*>(pattern);
-		for (QList<QAction*>::iterator it=actions.begin(); it!=actions.end(); it++)
-		{
-			std::cout << "Action: " << (*it)->objectName().toLocal8Bit().constData() << std::endl;
-			if (not pattern.exactMatch((*it)->objectName())) continue;
-			std::string processing = GetNetworkNameFromWidgetName(pattern.cap(1).toStdString().c_str());
-			if (reportIfMissingProcessing(processing,network,userInterface)) continue;
-	//		QObject::connect(*it, SIGNAL(triggered()), this, SLOT(lauchDialog()));
-		}
-	}
-};
-static ConfigurationBinder configurationBinder;
-
-template <typename PlotClass, typename MonitorType>
-class ProgressControlBinder : public PrototypeBinder
-{
-	const char * _prefix;
-	const char * _plotClassName;
-public:
-	ProgressControlBinder(const char* prefix, const char* plotClassName)
-		: _prefix(prefix)
-		, _plotClassName(plotClassName)
-	{}
-	
-	virtual void bindWidgets(Network & network, QWidget * userInterface)
-	{
-		std::cout << "Looking for " << _plotClassName << " widgets..." << std::endl;
-		QList<QWidget*> widgets = userInterface->findChildren<QWidget*>(QRegExp(_prefix));
-		for (typename QList<QWidget*>::Iterator it=widgets.begin();
-			it!=widgets.end();
-			it++)
-		{
-			QWidget * aWidget = *it;
-			if (aWidget->metaObject()->className() != std::string(_plotClassName)) continue;
-
-			MonitorType * portMonitor = new MonitorType;
-			std::string monitorName = network.GetUnusedName("PrototyperProgressControl");
-			network.AddProcessing(monitorName, portMonitor);
-			dynamic_cast<PlotClass*>(aWidget)->SetProcessing(portMonitor);
-		}
-	}	
-};
-static ProgressControlBinder<ProgressControlWidget, ProgressControl> progressControlBinder
-	("ProgressControl__.*", "ProgressControlWidget");
-
-
-class ProgressControlBinder2 : public PrototypeBinder
-{
-public:
-	virtual void bindWidgets(Network & network, QWidget * userInterface)
-	{
-		QList<QWidget*> widgets = userInterface->findChildren<QWidget*>(QRegExp("ProgressControl__.*"));
-		for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
-		{
-			QWidget * aWidget = *it;
-			std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(17).toAscii());
-			std::cout << "* Progress Control: " << fullControlName << std::endl;
-
-			CLAM::Processing * sender = ((ProgressControlWidget *) aWidget)->GetProcessing();
-			CLAM::Processing & receiver = network.GetProcessing(fullControlName);
-			ConnectControls(*sender, "Progress Jump", receiver, "Current Time Position (%)");
-			ConnectControls(receiver, "Current Time Position", *sender, "Progress Update");
-		}
-	}
-};
-static ProgressControlBinder2 progressControlBinder2;
 
 
 PrototypeLoader::PrototypeLoader()
@@ -241,10 +59,6 @@ PrototypeLoader::PrototypeLoader()
 	periodicPlaybackStatusUpdate();
 }
 
-PrototypeLoader::Binders & PrototypeLoader::binders()
-{
-	return PrototypeBinder::binders();
-}
 void PrototypeLoader::reportWarning(const QString & title, const QString & message)
 {
 	if (_useGui)
@@ -412,14 +226,6 @@ void PrototypeLoader::ConnectUiWithNetwork()
 {
 	CLAM_ASSERT( _player, "Connecting interface without having chosen a backend");
 	
-	ConnectWidgetsWithIntegerControls();
-	ConnectWidgetsWithMappedControls();
-	ConnectWidgetsUsingControlBounds();
-	ConnectWidgetsWithBooleanControls();
-	ConnectWidgetsWithAudioFileReaders();
-
-	for (Binders::iterator it=binders().begin(); it!=binders().end(); it++)
-		(*it)->bindWidgets(_network, _interface);
 	QStringList errors;
 	QtBinder::bindAllBinders(_interface, _network, errors);
 	if (not errors.empty())
@@ -445,27 +251,6 @@ void PrototypeLoader::ConnectUiWithNetwork()
 			.arg(_backendName.c_str())
 			.arg(backendIcon));
 	}
-}
-
-void PrototypeLoader::OpenAudioFile()
-{
-	QObject * loadButton = sender();
-	std::string processingName = loadButton->objectName().mid(12).toStdString();
-	std::cout << "Loading audio for " << processingName << std::endl;
-	CLAM::Processing & processing = _network.GetProcessing(processingName);
-	CLAM::MonoAudioFileReaderConfig config =
-		dynamic_cast<const CLAM::MonoAudioFileReaderConfig &> (processing.GetConfig());
-	QString filename = 
-		QFileDialog::getOpenFileName(_interface, 
-			tr("Choose an audio file"),
-			QString::fromLocal8Bit(config.GetSourceFile().c_str()),
-			tr("Audio files (*.wav *.ogg *.mp3)")
-			);
-	if (filename.isEmpty()) return;
-	config.SetSourceFile(filename.toLocal8Bit().constData());
-	Stop();
-	processing.Configure(config);
-	Start();
 }
 
 
@@ -545,143 +330,6 @@ void PrototypeLoader::UpdatePlayStatus()
 	if (_playButton) _playButton->setEnabled(not _network.IsPlaying());
 	if (_pauseButton) _pauseButton->setEnabled(_network.IsPlaying());
 	if (_stopButton) _stopButton->setEnabled(not _network.IsStopped());
-}
-
-std::string PrototypeLoader::GetNetworkNameFromWidgetName(const char * widgetName)
-{
-	std::string networkName(widgetName);
-	Substitute(networkName,"___", " ");
-	Substitute(networkName,"__", ".");
-	return networkName;
-}
-
-bool PrototypeLoader::reportIfMissingProcessing(const std::string & processingName)
-{
-	if (_network.HasProcessing(processingName))
-		return false;
-	reportWarning(
-		tr("Error connecting controls"),
-		tr("The interface asked to connect to the processing '%1' which is not in the network.")
-			.arg(processingName.c_str()));
-	return true;
-}
-bool PrototypeLoader::reportIfMissingInControl(const std::string & controlName)
-{
-	std::string processingName = _network.GetProcessingIdentifier(controlName);
-	if (reportIfMissingProcessing(processingName)) return true;
-	std::string shortControlName = _network.GetConnectorIdentifier(controlName);
-	if (_network.GetProcessing(processingName).HasInControl(shortControlName))
-		return false; // no problem :-)
-	reportWarning(
-		tr("Error connecting controls"),
-		tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
-			.arg(shortControlName.c_str())
-			.arg(processingName.c_str()
-			));
-	return true;
-}
-
-void PrototypeLoader::ConnectWidgetsWithIntegerControls()
-{
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("InControlInteger__.*"));
-	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
-	{
-		QWidget * aWidget = *it;
-		std::string controlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(18).toAscii());
-		std::cout << "* Control: " << controlName << std::endl;
-
-		if (reportIfMissingInControl(controlName)) continue;
-		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(controlName);
-		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str()); // TODO: Memory leak here
-		notifier->linkControl(receiver);
-		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
-				  SLOT(sendControl(int)));
-	}
-}
-
-void PrototypeLoader::ConnectWidgetsWithMappedControls()
-{
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("InControlFloat__.*"));
-	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
-	{
-		QWidget * aWidget = *it;
-		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(16).toAscii());
-		std::cout << "* Mapped Control (100:1): " << fullControlName << std::endl;
-
-		if (reportIfMissingInControl(fullControlName)) continue;
-		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(fullControlName);
-		QtSlot2Control * notifier = new QtSlot2Control(fullControlName.c_str()); // TODO: Memory leak here
-		notifier->linkControl(receiver);
-		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
-				  SLOT(sendMappedControl(int)));
-	}
-}
-
-void PrototypeLoader::ConnectWidgetsUsingControlBounds()
-{
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("InControl__.*"));
-	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
-	{
-		QWidget * aWidget = *it;
-		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(11).toAscii());
-		std::cout << "* Widget using control bounds (map: 100:1->bounds): " << fullControlName << std::endl;
-
-		if (reportIfMissingInControl(fullControlName)) continue;
-
-		if (aWidget->metaObject()->indexOfProperty("minimum") >= 0)
-			aWidget->setProperty("minimum", QVariant(0));
-		if (aWidget->metaObject()->indexOfProperty("maximum") >= 0)
-			aWidget->setProperty("maximum", QVariant(200));
-		if (aWidget->metaObject()->indexOfProperty("singleStep") >= 0)
-			aWidget->setProperty("singleStep", QVariant(1));
-		if (aWidget->metaObject()->indexOfProperty("pageStep") >= 0)
-			aWidget->setProperty("pageStep", QVariant(5));
-		if (aWidget->metaObject()->indexOfProperty("value") >= 0)
-			aWidget->setProperty("value", QVariant(100));
-
-		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(fullControlName);
-		QtSlot2Control * notifier = new QtSlot2Control(
-					fullControlName.c_str(), 
-					receiver.LowerBound(),
-					receiver.UpperBound()
-				); // TODO: Memory leak here
-		notifier->linkControl(receiver);
-		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
-				  SLOT(sendMappedControl(int)));
-	}
-}
-
-void PrototypeLoader::ConnectWidgetsWithBooleanControls()
-{
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("InControlBool__.*"));
-	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
-	{
-		QWidget * aWidget = *it;
-		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(15).toAscii());
-		std::cout << "* Bool Control (100:1): " << fullControlName << std::endl;
-
-		if (reportIfMissingInControl(fullControlName)) continue;
-		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(fullControlName);
-		QtSlot2Control * notifier = new QtSlot2Control(fullControlName.c_str()); // TODO: Memory leak here
-		notifier->linkControl(receiver);
-		notifier->connect(aWidget,SIGNAL(toggled(bool)),
-				  SLOT(sendBooleanControl(bool)));
-	}
-}
-
-void PrototypeLoader::ConnectWidgetsWithAudioFileReaders()
-{
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("AudioFile__.*"));
-	for (QList<QWidget*>::Iterator it=widgets.begin();
-			it!=widgets.end();
-		   	it++)
-	{
-		QWidget * loadButton = *it;
-		std::string processingName = loadButton->objectName().mid(12).toStdString();
-		std::cout << "* Load Audio File Button connected to Audio file reader '" << processingName << "'" << std::endl;
-		if (reportIfMissingProcessing(processingName)) continue;
-		connect(loadButton, SIGNAL(clicked()), this, SLOT(OpenAudioFile()));
-	}
 }
 
 
