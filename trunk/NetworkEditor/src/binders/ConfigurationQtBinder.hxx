@@ -7,9 +7,7 @@
 #include <CLAM/Network.hxx>
 #include "Configurator.hxx"
 
-namespace CLAM {
-	class ConfigurationQtBinder;
-}
+namespace CLAM { class ConfigurationQtBinder; }
 
 
 class ConfigurationLauncher : public QObject
