@@ -1,21 +1,12 @@
 #include "PrototypeLoader.hxx"
-#include "QtSlot2Control.hxx"
 #include <QtUiTools/QUiLoader>
-#include <QtDesigner/QFormBuilder>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
-#include <QtGui/QDialog>
 #include <QtGui/QPushButton>
-#include <QtGui/QVBoxLayout>
+#include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QLabel>
-#include <QtGui/QPixmap>
-#include <QtCore/QRegExp>
 #include <QtCore/QFile>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QList>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
+#include <QtCore/QTimer>
 #include <CLAM/XMLStorage.hxx>
 #include <fstream>
 #ifdef USE_JACK
@@ -24,9 +15,6 @@
 #ifdef USE_PORTAUDIO
 #include <CLAM/PANetworkPlayer.hxx>
 #endif
-#include <QtGui/QWidget>
-#include <QtCore/QVariant>
-#include <QtCore/QTimer>
 
 
 #include "QtBinder.hxx"
