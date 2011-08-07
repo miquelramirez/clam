@@ -12,56 +12,76 @@ CLAM::InControlQtBinder::InControlQtBinder()
 
 bool CLAM::InControlQtBinder::handles(QObject * uiElement)
 {
-	if (not isSubClassOf<QWidget>(uiElement)) return false;
+	if (not isSubClassOf<QAbstractSlider>(uiElement)) return false;
 	if (uiElement->objectName().startsWith(_prefix)) return true;
 	if (not hasProperty(uiElement, _controlProperty)) return false;
 	// TODO: Check the network control type
 	return true;
 }
 
-bool CLAM::InControlQtBinder::bind(QObject * uiElement, CLAM::Network & network, QStringList & errors)
+static std::string networkName(QObject * uiElement, const QString & prefix, const char * property, QStringList & errors)
 {
-	// TODO: Double check, handles
-	std::string controlName;
-	if (uiElement->objectName().startsWith(_prefix))
-		controlName=widget2NetworkName(_prefix,uiElement->objectName());
-	else if (hasProperty(uiElement, _controlProperty))
-		controlName = uiElement->property(_controlProperty).toString().toStdString();
-	else return error(errors,
+	if (uiElement->objectName().startsWith(prefix))
+		return CLAM::QtBinder::widget2NetworkName(prefix,uiElement->objectName());
+
+	if (CLAM::QtBinder::hasProperty(uiElement, property))
+		return uiElement->property(property).toString().toStdString();
+
+	CLAM::QtBinder::error(errors,
 		QString("InControlQtBinder: Widget name '%1' should start by with '%2', "
 			"or have the '%3' custom property defined")
 			.arg(uiElement->objectName())
-			.arg(_prefix)
-			.arg(_controlProperty)
+			.arg(prefix)
+			.arg(property)
 			);
+	return "";
+}
+
+bool CLAM::InControlQtBinder::bind(QObject * slider, CLAM::Network & network, QStringList & errors)
+{
+	std::string controlName = networkName(
+		slider, _prefix, _controlProperty, errors);
+
+	if (controlName.empty()) return false;
 
 	std::cout << "* Mapped widget using control bounds (map: 200:1->bounds): " << controlName << std::endl;
 
 	if (missingInControl(controlName, network, errors)) return false;
 
-	setPropertyIfPresent(uiElement, "minimum", 0);
-	setPropertyIfPresent(uiElement, "maximum", 100);
-	setPropertyIfPresent(uiElement, "singleStep", 1);
-	setPropertyIfPresent(uiElement, "pageStep", 5);
-	setPropertyIfPresent(uiElement, "value", 100);
-
 	CLAM::InControlBase & receiver = network.GetInControlByCompleteName(controlName);
-	QtSlot2Control * notifier = new QtSlot2Control(
-				controlName.c_str(), 
-				receiver.LowerBound(),
-				receiver.UpperBound()
+
+	if (receiver.GetTypeId() != typeid(CLAM::TControlData)) error(errors,
+		QString("InControlQtBinder: '%1' is not a Float control.")
+			.arg(controlName.c_str())
 			);
-	notifier->setParent(uiElement);
+
+	float widgetMinimum = propertyDefault( slider, "minimum", 0);
+	float widgetMaximum = propertyDefault( slider, "maximum", 100);
+
+	float minimum = propertyDefault( slider, "clamMinimum",
+		receiver.IsBounded()? receiver.LowerBound() : widgetMinimum);
+	float maximum = propertyDefault( slider, "clamMaximum",
+		receiver.IsBounded()? receiver.UpperBound() : widgetMaximum);
+
+	std::cout
+		<< "Mapping bounds " << widgetMinimum << "," << widgetMaximum
+		<< " to " << minimum << "," << maximum << std::endl;
+
+	QtSlot2Control * notifier = new QtSlot2Control(
+		controlName.c_str(), 
+		minimum, maximum,
+		widgetMinimum, widgetMaximum);
+	notifier->setParent(slider);
 	notifier->linkControl(receiver);
 	notifier->connect(
-		uiElement,SIGNAL(valueChanged(int)),
+		slider,SIGNAL(valueChanged(int)),
 		SLOT(sendMappedControl(int)));
 	return true;
 }
 
 void CLAM::InControlQtBinder::setPropertyIfPresent(QObject * uiElement, const char * property, int value)
 {
-	if (hasProperty(uiElement,property))
+	if (hasProperty(uiElement, property))
 		uiElement->setProperty(property, QVariant(value));
 }
 

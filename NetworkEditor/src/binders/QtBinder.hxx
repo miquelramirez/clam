@@ -102,6 +102,18 @@ public:
 
 		return propertyValue.value<ValueType>() == value;
 	}
+	template <typename ValueType>
+	static ValueType propertyDefault(QObject * object, const char * propertyName, const ValueType & defaultValue)
+	{
+		const QVariant & propertyValue = object->property(propertyName);
+		if (not propertyValue.isValid()) return defaultValue;
+		if (not propertyValue.canConvert<ValueType>()) return defaultValue;
+		// TODO documentation says that convert is safer than canConvert
+		// but how do i get the QVariant::Type of ValueType
+//		if (not propertyValue.convert(QVariant::<ValueType>())) return defaultValue;
+
+		return propertyValue.value<ValueType>();
+	}
 
 	/**
 		Helper that turns a mangled widget name into a network name.

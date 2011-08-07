@@ -14,12 +14,16 @@ class QtSlot2Control : public QObject
 	const char * _name;
 	float _controlMinBound;
 	float _controlMaxBound;
+	int _widgetMin;
+	int _widgetMax;
 public:
-	QtSlot2Control(const char * name, float min=0.f, float max=1.f)
+	QtSlot2Control(const char * name, float min=0.f, float max=1.f, float wMin=0, float wMax=200)
 		: _sender(name)
 		, _name(name)
 		, _controlMinBound(min)
 		, _controlMaxBound(max)
+		, _widgetMin(wMin)
+		, _widgetMax(wMax)
 	{
 
 	}
@@ -34,10 +38,17 @@ public slots:
 		CLAM::TControlData mappedValue = CLAM::TControlData(value?0.0:1.0);
 		_sender.SendControl(mappedValue);
 	}
+	float map(float value)
+	{
+		return (value-_widgetMin)
+			* (_controlMaxBound-_controlMinBound)
+			/ (_widgetMax-_widgetMin)
+			+ _controlMinBound;
+	}
 	void sendMappedControl(int value)
 	{
-		CLAM::TControlData mappedValue = CLAM::TControlData(value)*(_controlMaxBound-_controlMinBound)/199.0 + _controlMinBound;
-		_sender.SendControl(mappedValue);
+		std::cout << "Mapping " << map(value) << std::endl;
+		_sender.SendControl(map(value));
 	}
 	void sendControl(int value)
 	{
