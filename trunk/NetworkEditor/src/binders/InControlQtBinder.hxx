@@ -1,7 +1,6 @@
 #ifndef CLAM_InControlQtBinder_hxx
 #define CLAM_InControlQtBinder_hxx
 
-#include <QAbstractSlider> // New line by Murray to solve compile errors
 #include "QtBinder.hxx"
 
 namespace CLAM { class InControlQtBinder; }
