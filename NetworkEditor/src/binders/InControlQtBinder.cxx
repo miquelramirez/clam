@@ -1,5 +1,6 @@
 #include "InControlQtBinder.hxx"
 #include "QtSlot2Control.hxx"
+#include <QAbstractSlider>
 
 static CLAM::InControlQtBinder inControlBinder;
 
