@@ -26,7 +26,8 @@ namespace SigSlot
 {
 
 	Connection::Connection()
-		: mMustFreeSignal(false), mConnectedSignal( NULL )
+		: mMustFreeSignal(false)
+		, mConnectedSignal( 0 )
 	{
 	}
 
