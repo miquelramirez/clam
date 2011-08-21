@@ -33,7 +33,7 @@ namespace MIDI
 	private:
 		class SongPlayerImpl* mImpl; // hide implementation
 	public:
-		SongPlayer(Song* song = NULL);
+		SongPlayer(Song* song = 0);
 		void Init(Song* song);
 		~SongPlayer();
 
