@@ -38,7 +38,6 @@ env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 # spectral lib
 spectral_sources = [ x for x in glob.glob('*.cxx') if "Test" not in x ]
-print spectral_sources
 spectral_headers = Glob('*.hxx')
 
 env.ParseConfig('pkg-config --cflags --libs fftw3f')
