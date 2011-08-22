@@ -147,8 +147,6 @@ public:
 		const CLAM::DataArray& x =_x.GetAudio().GetBuffer();
 		const CLAM::DataArray& y =_y.GetAudio().GetBuffer();
 		const CLAM::DataArray& z =_z.GetAudio().GetBuffer();
-		const float sqrt2 = sqrt(2);
-		const float sqrtN = sqrt(_nChannels);
 		CLAM::TData* channels[_nChannels];
 		const float wGain = 1.;
 		const float velocitiesGain = 2.;
