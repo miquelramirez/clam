@@ -16,6 +16,7 @@ env.SConsignFile() # Single signature file
 env.ParseConfig('python-config --cflags')
 env.ParseConfig('python-config --libs')
 env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
+env.ParseConfig('pkg-config clam_qtmonitors QtGui QtCore --cflags --libs') # UI binding
 
 env.AppendUnique(
 	LIBS=['boost_python']
@@ -27,7 +28,7 @@ if '-Wstrict-prototypes' in env['CCFLAGS'] :
 
 pythonc_module = env.SharedLibrary (
 	target='Clam_NetworkProxy',
-	source='Clam_NetworkProxy.cxx',
+	source=['Clam_NetworkProxy.cxx', 'sipunwrap.cxx'],
 	SHLIBPREFIX='',
 )
 
