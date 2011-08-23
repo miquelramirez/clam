@@ -212,7 +212,7 @@ public:
 		}
 	};
 
-private:
+protected:
 	std::ifstream _fstream;
 	std::istream & _stream;
 	std::string _errorMessage;
@@ -279,7 +279,7 @@ public:
 	{
 		return _errorMessage!="";
 	}
-private:
+protected:
 	/// Returns the meaningful content of a line, by removing trailing spaces and comments
 	std::string parseableContent(const std::string & string)
 	{
