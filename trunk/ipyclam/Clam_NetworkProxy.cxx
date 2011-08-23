@@ -504,8 +504,7 @@ void setBackend(CLAM::Network & network, const std::string & backend)
 
 void bindUI(CLAM::Network & network, PyObject * object)
 {
-	QObject * qobject = (QWidget*) sipUnwrap(object);
-//	std::cout << "M'ha arribat: " << qobject->objectName().toStdString() << std::endl;
+	QObject * qobject = (QObject*) sipUnwrap(object);
 	
 	QStringList errors;
 	CLAM::QtBinder::bindAllBinders(qobject, network, errors);
