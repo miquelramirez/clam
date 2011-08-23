@@ -26,11 +26,15 @@ class ipyclam_controller(QtGui.QWidget):
 		self.connect(button, QtCore.SIGNAL('clicked()'), self.showCode)
 		hbox.addWidget(button)
 
+		button = QtGui.QPushButton("Configure Processing")
+		self.connect(button, QtCore.SIGNAL('clicked()'), self.configure)
+		hbox.addWidget(button)
+
 		self.setLayout(hbox)
 
 	def createNetwork(self):
 		self._network = ipyclam.Network( ipyclam.Clam_NetworkProxy() )
-		self._network.backend = "PortAudio"
+#		self._network.backend = "JACK"
 		# Processings
 		self._network.source = "AudioSource"
 		self._network.sink = "AudioSink"
@@ -67,6 +71,16 @@ class ipyclam_controller(QtGui.QWidget):
 	def stop(self):
 		self._network.stop()
 		print 'Stopped'
+
+	def configure(self):
+		processings = dir(self._network)
+		processings.remove("description")
+		processing, ok = QtGui.QInputDialog.getItem(self, 'Choose processing to configure', "", processings, 0, False)
+		print "You chose", processing
+		w = QtGui.QWidget()
+		w.setObjectName("PyQt Powered!")
+		self._network.bindUI(w)
+#		w.show()
 
 if __name__ == "__main__" :
 	app = QtGui.QApplication(sys.argv)

@@ -7,7 +7,11 @@
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/JACKNetworkPlayer.hxx>
+#include <CLAM/qtmonitors/QtBinder.hxx>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
 #include "ConfigurationProxy.hxx"
+#include "sipunwrap.hxx"
 
 namespace py = boost::python;
 
@@ -498,6 +502,15 @@ void setBackend(CLAM::Network & network, const std::string & backend)
 		throwPythonException(PyExc_RuntimeError, "Unable to set player.");
 }
 
+void bindUI(CLAM::Network & network, PyObject * object)
+{
+	QObject * qobject = (QWidget*) sipUnwrap(object);
+//	std::cout << "M'ha arribat: " << qobject->objectName().toStdString() << std::endl;
+	
+	QStringList errors;
+	CLAM::QtBinder::bindAllBinders(qobject, network, errors);
+}
+
 /// Modification of boost::python::import
 py::object relative_import(py::str name)
 {
@@ -625,6 +638,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("setBackend",
 			setBackend,
 			"Sets a backend to play the network"
+			)
+		.def("bindUI",
+			bindUI,
+			"Binds..."
 			)
 		;
 }
