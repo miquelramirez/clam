@@ -3,7 +3,7 @@ ipyclam: Interactive CLAM for Python
 What is this
 ============
 
-This project is about providing interactive exploration and
+ipyclam provides interactive exploration and
 manipulation of CLAM networks from a python console.
 
 How similar is that to pyCLAM
