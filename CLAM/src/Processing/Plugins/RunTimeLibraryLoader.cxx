@@ -14,7 +14,7 @@
 
 #include "ProcessingFactory.hxx"
 
-static bool debug = false;
+static bool debug = true;
 
 
 void RunTimeLibraryLoader::ReLoad() 
