@@ -53,6 +53,11 @@ X boost-python
 	+ libmng
 		+ jpeg
 		+ lcms
+- clam-chordata
+- Packaging
+	- Dependencies
+	- Full SDK
+	- Apps
 - Asio, Vst
 - Seems to be a race condition in the clam test program for pthreads that makes it segfault sometimes
 - bzip and ladspa-sdk, do not append EXE to binaries
@@ -1118,7 +1123,10 @@ package( "qt",
 
 package("clam",
 	uri = "http://clam-project.org",
-	checkVersion = "echo 1.5", # TODO Take the real version
+	checkVersion =
+		""" svn cat http://clam-project.org/clam/trunk/CLAM/scons/sconstools/versionInfo.py | """
+		""" python - CLAM | """
+		""" cut -f1 -d' ' """,
 	downloadUri = "", # TODO svn download method
 	checkout = """ svn co http://clam-project.org/clam/trunk/CLAM %(srcdir)s """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
@@ -1166,7 +1174,10 @@ package("clam",
 
 package("clam-networkeditor",
 	uri = "http://clam-project.org",
-	checkVersion = "echo 1.5",
+	checkVersion =
+		""" svn cat http://clam-project.org/clam/trunk/CLAM/scons/sconstools/versionInfo.py | """
+		""" python - NetworkEditor | """
+		""" cut -f1 -d' ' """,
 	downloadUri = "",
 	checkout = "svn co http://clam-project.org/clam/trunk/NetworkEditor %(srcdir)s ",
 	tarballName = "%(name)s-%(version)s.tar.gz",
@@ -1180,7 +1191,56 @@ package("clam-networkeditor",
 			""" sandbox_path=%(prefix)s/.. """
 			""" external_dll_path=%(prefix)s/bin  """
 			""" enable_python=0 """
-			""" verbose=1 """
+			""" && """
+		""" echo Package %(name)s done."""
+)
+
+package("clam-chordata",
+	uri = "http://clam-project.org",
+	checkVersion =
+		""" svn cat http://clam-project.org/clam/trunk/CLAM/scons/sconstools/versionInfo.py | """
+		""" python - chordata | """
+		""" cut -f1 -d' ' """,
+	downloadUri = "",
+	checkout = "svn co http://clam-project.org/clam/trunk/chordata %(srcdir)s ",
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" scons install """
+			""" clam_prefix=%(prefix)s """
+			""" prefix=%(prefix)s """
+			""" crossmingw=1 """
+			""" release=1 """
+			""" sandbox_path=%(prefix)s/.. """
+			""" external_dll_path=%(prefix)s/bin  """
+			""" && """
+		""" echo Package %(name)s done."""
+)
+
+package("clam-annotator",
+	uri = "http://clam-project.org",
+	checkVersion =
+		""" svn cat http://clam-project.org/clam/trunk/CLAM/scons/sconstools/versionInfo.py | """
+		""" python - Annotator | """
+		""" cut -f1 -d' ' """,
+	downloadUri = "",
+	checkout = "svn co http://clam-project.org/clam/trunk/Annotator %(srcdir)s ",
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	buildCommand =
+		""" cd %(srcdir)s/vmqt && """
+		""" scons """
+			""" clam_prefix=%(prefix)s """
+			""" crossmingw=1 """
+			""" release=1 """
+			""" && """
+		""" cd %(srcdir)s && """
+		""" scons install """
+			""" clam_prefix=%(prefix)s """
+			""" prefix=%(prefix)s """
+			""" crossmingw=1 """
+			""" release=1 """
+			""" sandbox_path=%(prefix)s/.. """
+			""" external_dll_path=%(prefix)s/bin  """
 			""" && """
 		""" echo Package %(name)s done."""
 )
