@@ -252,13 +252,18 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	print "srcdir:", subst['srcdir']
 
 	if not skipDeploy :
-		if not skipDownload :
+		if not checkout and not skipDownload :
 			download(downloadUri % subst)
 		patches = glob.glob(scriptRelative("mingw-"+name+"*.patch"))
 		patches.sort()
 		if patches and subst['srcdir'] :
 			run("rm -rf %(srcdir)s/"%subst)
-		extractSource(subst['tarball'])
+		if checkout :
+			if not skipDownload :
+				run(checkout%subst)
+		else :
+			extractSource(subst['tarball'])
+
 		for patch in patches :
 			applyPatch(subst['srcdir'], patch, level=1)
 
@@ -298,6 +303,7 @@ os.environ.update(
 	QTDIR = prefix,
 	PKG_CONFIG_LIBDIR = "/usr/%s/lib/pkgconfig"%target, # default debian installation
 	PKG_CONFIG_PATH = os.path.join(prefix, 'lib', 'pkgconfig'), # our prefix installation
+	WINEDLLPATH = os.path.join(prefix, 'bin'),
 #	PKG_CONFIG_ALLOW_SYSTEM_CFLAGS = "1", # do not strip system include path
 #	PKG_CONFIG_ALLOW_SYSTEM_LIBS = "1", # do not strip system lib path
 	)
@@ -342,7 +348,9 @@ package( "fftw",
 	buildCommand =
 		"cd %(srcdir)s && "
 		"autoconf && "
-		"./configure --host='%(target)s' --prefix='%(prefix)s' && "
+		"./configure --host='%(target)s' --prefix='%(prefix)s' "
+			" --enable-single "
+			" && "
 		"make install "
 	)
 
@@ -657,6 +665,7 @@ package( "bzip2",
 
 package( "boost",
 	uri = "http://www.boost.org/",
+	pinnedVersion = '1_46_1', # because native bjam is still that version
 	checkVersion =
 		""" wget -q -O- 'http://sourceforge.net/projects/boost/files/boost/' | """
 		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
@@ -876,18 +885,38 @@ package( "jpeg",
 		""" make install """
 	)
 
-package( "lcms",
+package( "lcms2",
 	uri = "http://www.littlecms.com/",
 	deps = "jpeg zlib", # TODO: tiff?
 	checkVersion = 
 		""" wget -q -O- 'http://sourceforge.net/projects/lcms/files/lcms/' | """
 		""" sed -n 's,.*/\([0-9][^"]*\)/".*,\\1,p' | """
 		""" head -1 """,
-	tarballName = "lcms%(majorversion)s-%(version)s.tar.gz",
+	tarballName = "%(name)s-%(version)s.tar.gz",
 	downloadUri = "%(sfmirror)s/project/lcms/lcms/%(minorversion)s/%(tarball)s",
-	srcdir = "lcms%(majorversion)s-%(version)s",
+	srcdir = "%(name)s-%(version)s",
 	buildCommand =
 		""" cd %(srcdir)s && """
+		""" ./configure  --prefix='%(prefix)s' --host='%(target)s' """
+			""" CPPFLAGS='-I%(prefix)s/include' """
+			""" LDFLAGS='-L%(prefix)s/lib' """
+			""" && """ 
+		""" make install """
+	)
+
+package( "lcms",
+	uri = "http://www.littlecms.com/",
+	deps = "jpeg zlib", # TODO: tiff?
+	checkVersion = 
+		""" wget -q -O- 'http://sourceforge.net/projects/lcms/files/lcms/' | """
+		""" sed -n 's,.*/\([1][^"]*\)/".*,\\1,p' | """
+		""" head -1 """,
+	tarballName = "%(name)s-%(version)s.tar.gz",
+	downloadUri = "%(sfmirror)s/project/lcms/lcms/%(minorversion)s/%(tarball)s",
+	srcdir = "%(name)s-%(version)s",
+	buildCommand =
+		""" cd %(srcdir)s && """
+		""" sed -i 's,cross_compiling=no,cross_compiling=yes,' 'configure' && """
 		""" ./configure  --prefix='%(prefix)s' --host='%(target)s' """
 			""" CPPFLAGS='-I%(prefix)s/include' """
 			""" LDFLAGS='-L%(prefix)s/lib' """
@@ -1010,6 +1039,7 @@ package( "tiff",
 package( "qt",
 	uri = "http://qt.nokia.com/",
 	deps = "gcc zlib libpng jpeg libmng tiff giflib libodbc++ postgresql freetds openssl libgcrypt sqlite libiconv",
+	pinnedVersion = "4.7.3",
 	checkVersion =
 		""" wget -q -O- 'http://qt.gitorious.org/qt/qt/commits' | """
 		""" grep '<li><a href="/qt/qt/commit/' | """
@@ -1040,6 +1070,7 @@ package( "qt",
 			""" -prefix-install """
 			""" -opengl desktop """
 #			""" -no-webkit """
+#			""" -javascript-jit """
 #			""" -no-glib """
 #			""" -no-gstreamer """
 			""" -no-phonon """
@@ -1069,6 +1100,7 @@ package( "qt",
 #			""" -L'%(prefix)s/lib' """
 			""" -v """
 			""" && """
+		""" make && """
 		""" make install """
 	)
 
@@ -1076,9 +1108,9 @@ package("clam",
 	uri = "http://clam-project.org",
 	checkVersion = "echo 1.5", # TODO Take the real version
 	downloadUri = "", # TODO svn download method
+	checkout = """ svn co http://clam-project.org/clam/trunk/CLAM %(srcdir)s """,
 	tarballName = "%(name)s-%(version)s.tar.gz",
 	buildCommand =
-		""" svn co http://clam-project.org/clam/trunk/CLAM %(srcdir)s && """
 		""" cd %(srcdir)s && """
 		""" scons configure """
 			""" prefix='%(prefix)s' """
@@ -1090,6 +1122,15 @@ package("clam",
 			""" with_fftw3=1 """
 			""" && """
 		""" scons install && """
+		+
+		""" cd %(srcdir)s/plugins/spacialization/spectral && """
+		""" scons install """
+			""" prefix=%(prefix)s """
+			""" crossmingw=1 """
+			""" release=1 """
+			""" sandbox_path=%(prefix)s/.. """
+			""" external_dll_path=%(prefix)s/bin  """
+			""" && """ 
 		+ "".join((
 		""" cd %%(srcdir)s/plugins/%s && """
 		""" scons install """
@@ -1115,9 +1156,9 @@ package("clam-networkeditor",
 	uri = "http://clam-project.org",
 	checkVersion = "echo 1.5",
 	downloadUri = "",
+	checkout = "svn co http://clam-project.org/clam/trunk/NetworkEditor %(srcdir)s ",
 	tarballName = "%(name)s-%(version)s.tar.gz",
 	buildCommand =
-#		""" svn co http://clam-project.org/clam/trunk/NetworkEditor %(srcdir)s && """
 		""" cd %(srcdir)s && """
 		""" scons install """
 			""" clam_prefix=%(prefix)s """
@@ -1149,6 +1190,7 @@ package( "python",
 		""" tail -1 """,
 	srcdir = "Python-%(version)s",
 	tarballName = "Python-%(version)s.tar.bz2",
+#	pinnedVersion = "2.7",
 	downloadUri = "http://www.python.org/ftp/python/%(version)s/%(tarball)s",
 	buildCommand = 
 		""" cd %(srcdir)s && """
