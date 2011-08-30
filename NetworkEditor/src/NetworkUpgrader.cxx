@@ -1,13 +1,17 @@
+#ifdef CLAM_USE_PYTHON
 #include "Python.h"
+#endif
 
 #include "NetworkUpgrader.hxx"
+
+#ifdef CLAM_USE_PYTHON
+
 #include <CLAM/EmbeddedFile.hxx>
 #include <CLAM/Assert.hxx>
 #include <iostream>
 
 CLAM_EMBEDDED_FILE(migrationScript, "migrationScript")
 CLAM_EMBEDDED_FILE(clamrefactor, CLAM_PREFIX "/share/clam/clamrefactor.py")
-
 
 /**
 	Scoped python initialization and finalization
@@ -179,4 +183,25 @@ const char * NetworkUpgrader::Impl::run(const std::string & filename)
 	return _result.c_str();
 }
 
+#else // CLAM_USE_PYTHON not defined
+
+NetworkUpgrader::NetworkUpgrader()
+	: _impl(0)
+{
+}
+NetworkUpgrader::~NetworkUpgrader()
+{
+}
+
+const char * NetworkUpgrader::run(const std::string & filename)
+{
+	return 0;
+}
+
+const char * NetworkUpgrader::errorMessage() const
+{
+	return "Python support is disabled. Python is required to upgrade networks on the fly.";
+}
+
+#endif
 
