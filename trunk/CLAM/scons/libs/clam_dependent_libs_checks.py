@@ -287,7 +287,7 @@ def test_fftw3( env, conf) :
 		if not conf.CheckHeader( 'fftw3.h' ) :
 			return config_error( "FFTW3 header not found" )
 		if not any((conf.CheckLib( libname, 'fftw_plan_dft_r2c_1d')
-				for libname in ['fftw3', 'fftw3-3'] )) :
+				for libname in ['fftw3', 'fftw3f'] )) :
 			return config_error( "Unable to link FFTW3" )
 
 	env.Append( CPPFLAGS=['-DUSE_FFTW3=1'] )
