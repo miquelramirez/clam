@@ -137,7 +137,7 @@ public:
 	void test_errorMessage_whenNoError()
 	{
 		std::istringstream os(
-			"1"
+			"-1"
 		);
 		SingleIntColumn parser(os);
 		parser.feedLine();
@@ -436,12 +436,12 @@ public:
 	void test_singlefloat_singleLine()
 	{
 		std::istringstream os(
-			"1.3"
+			"-1.3"
 		);
 		SingleFloatColumn parser(os);
 		bool ok1 = parser.feedLine();
 		ASSERT( ok1 );
-		ASSERT_EQUALS(1.3f, parser.floatColumn());
+		ASSERT_EQUALS(-1.3f, parser.floatColumn());
 		ASSERT( not parser.hasError() );
 	}
 
