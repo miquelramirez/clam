@@ -11,7 +11,7 @@ options.Add(BoolVariable('release', 'Enabling compiler optimizations', 'no') )
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(PathVariable('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
-options.Add(BoolVariable('enable_python', 'Enables python dependant features', 'true'))
+options.Add(BoolVariable('enable_python', 'Enables python dependant features, such as network version upgrade', 'true'))
 if sys.platform=="linux2" :
 	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
@@ -49,7 +49,7 @@ if env['enable_python'] :
 	# g++ complaints about -Wstrict-prototypes added by python-config
 	if '-Wstrict-prototypes' in env['CCFLAGS'] :
 		env['CCFLAGS'].remove("-Wstrict-prototypes")
-	env.AppendUnique(DEFINES=[ "CLAM_USE_PYTHON" ])
+	env.AppendUnique(CPPDEFINES=[ "CLAM_USE_PYTHON" ])
 
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
