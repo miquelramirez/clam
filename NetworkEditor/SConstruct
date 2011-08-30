@@ -280,11 +280,6 @@ if isWindowsPlatform :
 	if crosscompiling : winclampath = absolutePosixPathToWine(winclampath)
 	if crosscompiling :
 		env.AddPostAction(programs, env.Action(["i586-mingw32msvc-strip $TARGET"], "== Stripping $SOURCE"))
-	installTargets += [
-		env.Install(
-			env['prefix_for_packaging']+"/bin",
-			os.path.join(env['QTDIR'],'bin',"Qt"+dll+"4.dll")
-			) for dll in 'Core', 'Gui', 'OpenGL','Svg']
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=%s'%winqtdir ])
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalDllPath ])
