@@ -1,0 +1,20 @@
+--- qt-everywhere-opensource-src-4.7.3/tools/designer/src/plugins/plugins.pro	2011-03-30 07:16:34.000000000 +0200
++++ qt-everywhere-opensource-src-4.7.3-new/tools/designer/src/plugins/plugins.pro	2011-08-30 02:02:46.000000000 +0200
+@@ -3,7 +3,6 @@
+ 
+ REQUIRES = !CONFIG(static,shared|static)
+ contains(QT_CONFIG, qt3support): SUBDIRS += widgets
+-win32: SUBDIRS += activeqt
+ # contains(QT_CONFIG, opengl): SUBDIRS += tools/view3d
+ contains(QT_CONFIG, webkit): SUBDIRS += qwebview
+ contains(QT_CONFIG, phonon): SUBDIRS += phononwidgets
+--- qt-everywhere-opensource-src-4.7.3/tools/tools.pro	2011-03-30 07:16:26.000000000 +0200
++++ qt-everywhere-opensource-src-4.7.3-new/tools/tools.pro	2011-08-30 02:08:04.000000000 +0200
+@@ -21,7 +21,6 @@
+             }
+         }
+         unix:!mac:!embedded:contains(QT_CONFIG, qt3support):SUBDIRS += qtconfig
+-        win32:!wince*:SUBDIRS += activeqt
+     }
+     contains(QT_CONFIG, declarative):SUBDIRS += qml
+ }
