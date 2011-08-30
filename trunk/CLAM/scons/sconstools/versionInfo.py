@@ -1,4 +1,5 @@
 import os, re
+import tempfile
 #reminder if we want to use the date: datetime.date.today()
 
 # private methods:
@@ -46,9 +47,9 @@ def versionFromLocalInfo( product='CLAM', changesFile="CHANGES" ):
 	return version, _svnVersion(version, revision)
 
 def versionFromRemoteSvn( product="CLAM", revisionOption="" ) :
-	os.system("rm CHANGES*" )
-	os.system("svn export "+revisionOption+" "+remoteRepository + product + "/CHANGES" )
-	version, revision = _parseChangesFile( "CHANGES", product ) 
+	f, changesFile = tempfile.mkstemp()
+	os.system("svn cat "+revisionOption+" "+remoteRepository + product + "/CHANGES > '%s'"%changesFile )
+	version, revision = _parseChangesFile( changesFile, product ) 
 	if not revision : return version, version
 	revision = _svnRevisionOf( remoteRepository, revisionOption )
 	return version, _svnVersion(version, revision)
@@ -63,4 +64,9 @@ def generateVersionSources(fileBase, namespace, versionString, fullVersionString
 	source.write('namespace %s { const char * GetFullVersion() {return "%s";} }\n'%(namespace,fullVersionString))
 	source.write('namespace %s { const char * GetVersion() {return "%s";} }\n'%(namespace,versionString))
 	source.close()
+
+if __name__ == "__main__" :
+	import sys
+	print "%s %s"%versionFromRemoteSvn(sys.argv[1])
+
 
