@@ -42,12 +42,12 @@ Legend: - todo, * working on it, + done, X failed, child means dependency
 		+ libsigc++
 		+ glib
 			+ gettext
-- lv2core
-	- lv2-ui
-	- lv2 other extensions
++ lv2core
+- lv2-ui
+- lv2 other extensions
 + boost
-X libpython
-* qt: supported by mingw-cross-env
+X boost-python
++ qt: supported by mingw-cross-env
 	+ libpng
 		+ zlib
 	+ libmng
@@ -64,6 +64,10 @@ Script TODO:
 - Options for prefix, target...
 - Config file
 - Declarative + dependencies
+
+- previous step: setting the wine path to %(prefix)s/bin
+- extra step: zcat /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > %(prefix)s/bin/mingwm10.dll
+
 """
 
 
@@ -308,6 +312,9 @@ os.environ.update(
 #	PKG_CONFIG_ALLOW_SYSTEM_LIBS = "1", # do not strip system lib path
 	)
 
+# TODO: Ensure that %{prefix}s/bin/ is in path
+
+# TODO: This is required by some mingw generated programs to work
 "zcat /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > %{prefix}s/bin/mingwm10.dll"
 
 
@@ -346,12 +353,16 @@ package( "fftw",
 	tarballName = "fftw-%(version)s.tar.gz",
 	downloadUri = "http://www.fftw.org/%(tarball)s",
 	buildCommand =
-		"cd %(srcdir)s && "
-		"autoconf && "
-		"./configure --host='%(target)s' --prefix='%(prefix)s' "
-			" --enable-single "
-			" && "
-		"make install "
+		"""cd %(srcdir)s && """
+		"""autoconf && """
+		"""./configure --host='%(target)s' --prefix='%(prefix)s' """
+			""" --enable-single """
+			""" && """
+		"""make install && """
+		"""./configure --host='%(target)s' --prefix='%(prefix)s' """
+			""" && """
+		"""make install && """
+		"""echo Done """
 	)
 
 
@@ -732,10 +743,11 @@ package( "ladspa-sdk",
 	uri = "http://www.ladspa.org/",
 	deps = "dlfcn-win32",
 	checkVersion =
-		""" wget -q -O- 'http://www.ladspa.org/download/' | """
-		""" sed -n 's,.*ladspa_sdk_\([0-9][.0-9]*\)\.tgz.*,\\1,p' | """
-		""" sort -n | """
-		""" tail -1 """,
+		""" echo 1.13 """, # TODO: While the website is broken
+#		""" wget -q -O- 'http://www.ladspa.org/download/' | """
+#		""" sed -n 's,.*ladspa_sdk_\([0-9][.0-9]*\)\.tgz.*,\\1,p' | """
+#		""" sort -n | """
+#		""" tail -1 """,
 	tarballName = "ladspa_sdk_%(version)s.tgz",
 	srcdir = "ladspa_sdk",
 	downloadUri = "http://www.ladspa.org/download/%(tarball)s",
@@ -1167,6 +1179,8 @@ package("clam-networkeditor",
 			""" release=1 """
 			""" sandbox_path=%(prefix)s/.. """
 			""" external_dll_path=%(prefix)s/bin  """
+			""" enable_python=0 """
+			""" verbose=1 """
 			""" && """
 		""" echo Package %(name)s done."""
 )
