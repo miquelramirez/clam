@@ -278,8 +278,9 @@ if isWindowsPlatform :
 	if crosscompiling : externalDllPath = absolutePosixPathToWine(externalDllPath)
 	winclampath = CLAMInstallDir
 	if crosscompiling : winclampath = absolutePosixPathToWine(winclampath)
-	if crosscompiling :
-		env.AddPostAction(programs, env.Action(["i586-mingw32msvc-strip $TARGET"], "== Stripping $SOURCE"))
+	# Commented out to check whether this is the problem with plugins
+#	if crosscompiling :
+#		env.AddPostAction(programs, env.Action(["i586-mingw32msvc-strip $TARGET"], "== Stripping $SOURCE"))
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=%s'%winqtdir ])
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalDllPath ])
