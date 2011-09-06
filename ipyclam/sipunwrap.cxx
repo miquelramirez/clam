@@ -6,7 +6,7 @@
 #error Requires at least sip>=4
 #endif
 
-const sipAPIDef *sip_api()
+static const sipAPIDef *sip_api()
 {
 	static const sipAPIDef *sip_API = 0;
 	if (sip_API) return sip_API;
@@ -33,6 +33,13 @@ const sipAPIDef *sip_api()
 	return sip_API;
 }
 
+static PyObject * incref(PyObject * object)
+{
+	Py_INCREF(object);
+	return object;
+}
+
+
 void * sipUnwrap(PyObject *obj_ptr)
 {
 	if (!PyObject_TypeCheck(obj_ptr, sip_api()->api_wrapper_type))
@@ -55,28 +62,16 @@ void * sipUnwrap(PyObject *obj_ptr)
 }
 
 
-PyObject * incref(PyObject * object)
-{
-	Py_INCREF(object);
-	return object;
-}
-
 PyObject * sipWrap(QObject * object)
 {
 	if (!object) return incref(Py_None);
 
-#if SIP_API_MAJOR_NR >=4
 	const sipTypeDef *type = sip_api()->api_find_type("QObject");
-#else     
-	sipWrapperType *type = sip_api()->api_find_class("QObject");
-#endif
+
 	if (!type) return incref(Py_None);
 
-#if SIP_API_MAJOR_NR >=4
 	PyObject *sip_obj = sip_api()->api_convert_from_type(object, type, 0);
-#else
-	PyObject *sip_obj = sip_api()->api_convert_from_instance(object, type, 0);
-#endif
+
 	if (!sip_obj) return incref(Py_None);
 
 	return incref(sip_obj);
