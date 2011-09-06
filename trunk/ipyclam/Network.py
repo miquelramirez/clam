@@ -124,3 +124,5 @@ class Network(object):
 	def bindUI(self, pyqt_object) :
 		self._proxy.bindUI(pyqt_object)
 
+	def loadUi(self, uiFilename) :
+		return self._proxy.loadUi(uiFilename)

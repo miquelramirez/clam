@@ -10,8 +10,14 @@
 #include <CLAM/qtmonitors/QtBinder.hxx>
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
+#include <QtGui/QMessageBox>
 #include "ConfigurationProxy.hxx"
 #include "sipunwrap.hxx"
+#include <QtUiTools/QUiLoader>
+#include <QtGui/QApplication>
+#include <QtGui/QIcon>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
 
 namespace py = boost::python;
 
@@ -508,9 +514,41 @@ void bindUI(CLAM::Network & network, PyObject * object)
 	
 	QStringList errors;
 	CLAM::QtBinder::bindAllBinders(qobject, network, errors);
+	if (errors.empty()) return;
+	QMessageBox::warning((QWidget*)qobject, 
+		QObject::tr("Error binding interface"),
+		errors.join("\n"));
 }
 
-/// Modification of boost::python::import
+
+PyObject * loadUi(CLAM::Network & network, const std::string & uifilename)
+{
+	QString uiFile = uifilename.c_str();
+	QFile file(uiFile);
+	file.open(QFile::ReadOnly);
+	QUiLoader loader;
+	loader.addPluginPath("/user/share/NetworkEditor/qtplugins"); //TODO Make that an option
+	QDir dir(QApplication::applicationDirPath());
+	loader.addPluginPath( QString(dir.absolutePath())+"/../plugins" ); //TODO do only for mac?
+
+	QStringList paths = loader.pluginPaths();
+	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
+	{
+		std::cout << "Looking for plugins at path: " << it->toLocal8Bit().constData() << std::endl;
+	}
+	QWidget * userInterface = loader.load(&file, 0 );
+	if (userInterface)
+	{
+		if (userInterface->windowIcon().isNull())
+			userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
+	}
+	file.close();
+	PyObject * object = sipWrap(userInterface);
+	PyObject_Print(object, stdout, Py_PRINT_RAW);
+	return object;
+}
+
+/// ModificatioNetwork.pyn of boost::python::import
 py::object relative_import(py::str name)
 {
 	char *n = py::extract<char *>(name);
@@ -533,6 +571,7 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 
 	class_<Processing, boost::noncopyable>("Processing", no_init);
 
+	
 	class_<Network>("Clam_NetworkProxy")
 		.def("xml",
 			Dump,
@@ -641,6 +680,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("bindUI",
 			bindUI,
 			"Binds..."
+			)
+		.def("loadUi",
+			loadUi,
+			"Returns a QWidget filled with the given qt ui."
 			)
 		;
 }
