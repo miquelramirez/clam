@@ -30,12 +30,12 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		except KeyError, e:
 			self.assertEqual("WrongAttribute", e.args[0])
 
-	def test_getValueFromIntAttributes(self):
+	def test_getDefaultValue_whenInt(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
 		self.assertEqual(42, proxy["FirstInt"])
 		self.assertEqual(15, proxy["SecondInt"])
 
-	def test_getValueFromDifferentTypesOfAttributes(self):
+	def test_getDefaultValue_whenOtherTypes(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
 		self.assertEqual(42, proxy["IntAttribute"])
 		self.assertEqual(False, proxy["BoolAttribute"])
