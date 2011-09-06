@@ -513,13 +513,19 @@ void setBackend(CLAM::Network & network, const std::string & backend)
 	CLAM::NetworkPlayer * player = 0;
 	if (backend == "JACK")
 		player = new CLAM::JACKNetworkPlayer();
-	if (backend == "PortAudio")
+	else if (backend == "PortAudio")
 		player = new CLAM::PANetworkPlayer();
-
-	if (player->IsWorking())
-		network.SetPlayer( player );
 	else
-		throwPythonException(PyExc_RuntimeError, "Unable to set player.");
+		throwPythonException(PyExc_RuntimeError, "No such backend.");
+
+	if (not player->IsWorking())
+	{
+		std::string reason = player->NonWorkingReason();
+		delete player;
+		throwPythonException(PyExc_RuntimeError,
+			"Unable to set backend:" + reason);
+	}
+	network.SetPlayer( player );
 }
 
 void bindUi(CLAM::Network & network, PyObject * object)
@@ -558,8 +564,17 @@ PyObject * loadUi(CLAM::Network & network, const std::string & uifilename)
 	}
 	file.close();
 	PyObject * object = sipWrap(userInterface);
-	PyObject_Print(object, stdout, Py_PRINT_RAW);
 	return object;
+}
+
+PyObject * createWidget(CLAM::Network & network, const std::string & className)
+{
+	QUiLoader loader;
+	foreach (const QString & availableClassName, loader.availableWidgets())
+	{
+		std::cout << availableClassName.toStdString() << std::endl;
+	}
+	return sipWrap(loader.createWidget(className.c_str()));
 }
 
 /// ModificatioNetwork.pyn of boost::python::import
@@ -698,6 +713,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("loadUi",
 			loadUi,
 			"Returns a QWidget filled with the given qt ui."
+			)
+		.def("createWidget",
+			createWidget,
+			"Returns a QWidget of the named class."
 			)
 		;
 }
