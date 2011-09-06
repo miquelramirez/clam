@@ -64,7 +64,6 @@ PyObject * incref(PyObject * object)
 PyObject * sipWrap(QObject * object)
 {
 	if (!object) return incref(Py_None);
-	std::cout << "Not null" << std::endl;
 
 #if SIP_API_MAJOR_NR >=4
 	const sipTypeDef *type = sip_api()->api_find_type("QObject");
@@ -72,7 +71,6 @@ PyObject * sipWrap(QObject * object)
 	sipWrapperType *type = sip_api()->api_find_class("QObject");
 #endif
 	if (!type) return incref(Py_None);
-	std::cout << "Type exists" << std::endl;
 
 #if SIP_API_MAJOR_NR >=4
 	PyObject *sip_obj = sip_api()->api_convert_from_type(object, type, 0);
@@ -80,8 +78,7 @@ PyObject * sipWrap(QObject * object)
 	PyObject *sip_obj = sip_api()->api_convert_from_instance(object, type, 0);
 #endif
 	if (!sip_obj) return incref(Py_None);
-	std::cout << "Convertible" << std::endl;
-	PyObject_Print(sip_obj, stdout, Py_PRINT_RAW);
+
 	return incref(sip_obj);
 }
 
