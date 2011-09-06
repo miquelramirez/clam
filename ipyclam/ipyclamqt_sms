@@ -11,6 +11,7 @@ class ipyclam_controller(QtGui.QWidget):
 		self.createNetwork()
 
 		grid = QtGui.QGridLayout()
+		self.setLayout(grid)
 		button = QtGui.QPushButton("Play")
 		self.connect(button, QtCore.SIGNAL('clicked()'), self.play)
 		grid.addWidget(button, 0, 0)
@@ -31,7 +32,14 @@ class ipyclam_controller(QtGui.QWidget):
 		self.connect(button, QtCore.SIGNAL('clicked()'), self.configure)
 		grid.addWidget(button, 1, 1)
 
-		self.setLayout(grid)
+		button = QtGui.QPushButton("Configure")
+		grid.addWidget(button, 1, 2)
+		button.setProperty("clamConfiguration", "SMSAnalysisCore")
+
+		self.ui = self._network.loadUi("SMSmess.ui")
+		grid.addWidget(self.ui, 2,0,10,3)
+
+		self._network.bindUI(self)
 
 	def createNetwork(self):
 		self._network = ipyclam.Network( ipyclam.Clam_NetworkProxy() )
@@ -39,22 +47,22 @@ class ipyclam_controller(QtGui.QWidget):
 		# Processings
 		self._network.source = "AudioSource"
 		self._network.sink = "AudioSink"
-		self._network.smsanalysis = "SMSAnalysisCore"
-		self._network.smssinusoidalgain = "SMSSinusoidalGain"
-		self._network.smsresidualgain = "SMSResidualGain"
-		self._network.smsfreqshift = "SMSFreqShift"
-		self._network.synthesizer = "SMSSynthesis"
+		self._network.SMSAnalysisCore = "SMSAnalysisCore"
+		self._network.SMSSinusoidalGain = "SMSSinusoidalGain"
+		self._network.SMSResidualGain = "SMSResidualGain"
+		self._network.SMSFreqShift = "SMSFreqShift"
+		self._network.SMSSynthesis = "SMSSynthesis"
 		self._network.outcontrolsender = "OutControlSender"
 		self._network.outcontrolsender._config.ControlRepresentation = 1000
 		# Connections
-		self._network.source > self._network.smsanalysis
-		self._network.smsanalysis["Sinusoidal Peaks"] > self._network.smssinusoidalgain["In SpectralPeaks"]
-		self._network.smsanalysis > self._network.smsresidualgain
-		self._network.smssinusoidalgain > self._network.smsfreqshift
-		self._network.smsfreqshift > self._network.synthesizer
-		self._network.smsresidualgain > self._network.synthesizer
-		self._network.synthesizer.OutputAudio > self._network.sink["1"]
-		self._network.outcontrolsender > self._network.smsfreqshift
+		self._network.source > self._network.SMSAnalysisCore
+		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network.SMSSinusoidalGain["In SpectralPeaks"]
+		self._network.SMSAnalysisCore > self._network.SMSResidualGain
+		self._network.SMSSinusoidalGain > self._network.SMSFreqShift
+		self._network.SMSFreqShift > self._network.SMSSynthesis
+		self._network.SMSResidualGain > self._network.SMSSynthesis
+		self._network.SMSSynthesis.OutputAudio > self._network.sink["1"]
+		self._network.outcontrolsender > self._network.SMSFreqShift
 
 	def showCode(self):
 		QtGui.QMessageBox.about(self, "Code to build the network", self._network.code())
@@ -75,8 +83,9 @@ class ipyclam_controller(QtGui.QWidget):
 		print 'Stopped'
 
 	def configure(self):
-		self.ui = uic.loadUi("SMSmess.ui")
-		self._network.bindUI(self.ui)
+#		self.ui = uic.loadUi("SMSmess.ui")
+		self.ui = self._network.loadUi("SMSmess.ui")
+#		self._network.bindUI(self.ui)
 		self.ui.show()
 
 if __name__ == "__main__" :
