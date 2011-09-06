@@ -570,11 +570,13 @@ PyObject * loadUi(CLAM::Network & network, const std::string & uifilename)
 PyObject * createWidget(CLAM::Network & network, const std::string & className)
 {
 	QUiLoader loader;
-	foreach (const QString & availableClassName, loader.availableWidgets())
+	QString qClassName = className.c_str();
+	if (not loader.availableWidgets().contains(qClassName))
 	{
-		std::cout << availableClassName.toStdString() << std::endl;
+		foreach (const QString & availableClassName, loader.availableWidgets())
+			std::cout << availableClassName.toStdString() << std::endl;
 	}
-	return sipWrap(loader.createWidget(className.c_str()));
+	return sipWrap(loader.createWidget(qClassName));
 }
 
 /// ModificatioNetwork.pyn of boost::python::import
