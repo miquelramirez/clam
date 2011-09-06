@@ -41,7 +41,7 @@ class CLAM::AudioFileReaderQtBinder : public CLAM::QtBinder
 public:
 
 	AudioFileReaderQtBinder()
-		: _prefix("AudioFile__")
+		: _prefix("AudioFile___")
 	{}
 	bool handles(QObject * uiElement);
 	bool bind(QObject * uiElement, CLAM::Network & network, QStringList & errors);
