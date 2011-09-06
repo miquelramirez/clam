@@ -39,7 +39,7 @@ class ipyclam_controller(QtGui.QWidget):
 		self.ui = self._network.loadUi("SMSmess.ui")
 		grid.addWidget(self.ui, 2,0,10,3)
 
-		self._network.bindUI(self)
+		self._network.bindUi(self)
 
 	def createNetwork(self):
 		self._network = ipyclam.Network( ipyclam.Clam_NetworkProxy() )
@@ -85,7 +85,7 @@ class ipyclam_controller(QtGui.QWidget):
 	def configure(self):
 #		self.ui = uic.loadUi("SMSmess.ui")
 		self.ui = self._network.loadUi("SMSmess.ui")
-#		self._network.bindUI(self.ui)
+#		self._network.bindUi(self.ui)
 		self.ui.show()
 
 if __name__ == "__main__" :
