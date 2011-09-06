@@ -141,6 +141,7 @@ public:
 
 		if (missingInControl(xcontrol.toStdString(), network, errors)) return false;
 		if (missingInControl(ycontrol.toStdString(), network, errors)) return false;
+		return true;
 	}
 };
 
