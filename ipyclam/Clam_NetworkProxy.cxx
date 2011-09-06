@@ -508,7 +508,7 @@ void setBackend(CLAM::Network & network, const std::string & backend)
 		throwPythonException(PyExc_RuntimeError, "Unable to set player.");
 }
 
-void bindUI(CLAM::Network & network, PyObject * object)
+void bindUi(CLAM::Network & network, PyObject * object)
 {
 	QObject * qobject = (QObject*) sipUnwrap(object);
 	
@@ -677,8 +677,8 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			setBackend,
 			"Sets a backend to play the network"
 			)
-		.def("bindUI",
-			bindUI,
+		.def("bindUi",
+			bindUi,
 			"Binds..."
 			)
 		.def("loadUi",
