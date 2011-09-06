@@ -376,10 +376,17 @@ py::list portConnections(CLAM::Network & network)
 			CLAM::OutPortBase::InPortsList::iterator itInPort;
 			std::string processingName = it->first;
 			CLAM::OutPortBase & outport = it->second->GetOutPort(i);
-			for (itInPort=outport.BeginVisuallyConnectedInPorts(); itInPort!=outport.EndVisuallyConnectedInPorts(); itInPort++)
+			for (itInPort=outport.BeginVisuallyConnectedInPorts();
+				itInPort!=outport.EndVisuallyConnectedInPorts();
+				itInPort++)
 			{
 				CLAM::InPortBase & inPort = **itInPort;
-				py::tuple peer = py::make_tuple( processingName, outport.GetName(), network.GetProcessingName(*inPort.GetProcessing()), inPort.GetName() );
+				py::tuple peer = py::make_tuple(
+					processingName,
+					outport.GetName(),
+					network.GetProcessingName(*inPort.GetProcessing()),
+					inPort.GetName()
+				);
 				portConnections.append(peer);
 			}
 		}
@@ -398,10 +405,16 @@ py::list controlConnections(CLAM::Network & network)
 			CLAM::OutControlBase::Peers::iterator itInControl;
 			std::string processingName = it->first;
 			CLAM::OutControlBase & outcontrol = it->second->GetOutControl(i);
-			for (itInControl=outcontrol.BeginInControlsConnected(); itInControl!=outcontrol.EndInControlsConnected(); itInControl++)
+			for (itInControl=outcontrol.BeginInControlsConnected();
+				itInControl!=outcontrol.EndInControlsConnected();
+				itInControl++)
 			{
 				CLAM::InControlBase & incontrol = **itInControl;
-				py::tuple peer = py::make_tuple( processingName, outcontrol.GetName(), network.GetProcessingName(*incontrol.GetProcessing()), incontrol.GetName() );
+				py::tuple peer = py::make_tuple(
+					processingName,
+					outcontrol.GetName(),
+					network.GetProcessingName(*incontrol.GetProcessing()),
+					incontrol.GetName() );
 				controlConnections.append(peer);
 			}
 		}
@@ -462,22 +475,23 @@ ConfigurationProxy * processingConfig(CLAM::Network & network, const std::string
 
 void play(CLAM::Network & network)
 {
+	static const std::string problem = "Unable to play the network: ";
 	if ( network.IsEmpty() )
 	{
-		std::string errorMsg = "Unable to play the network: A network without processings is not playable.";
-		throwPythonException(PyExc_RuntimeError, errorMsg);
+		std::string cause = "A network without processings is not playable.";
+		throwPythonException(PyExc_RuntimeError, problem+cause);
 		return;
 	}
 	if ( network.HasMisconfiguredProcessings() )
 	{
-		std::string errorMsg = "Unable to play the network: Not all the processings are properly configured.";
-		throwPythonException(PyExc_RuntimeError, errorMsg);
+		std::string cause = "Not all the processings are properly configured.";
+		throwPythonException(PyExc_RuntimeError, problem+cause);
 		return;
 	}
 	if ( network.HasUnconnectedInPorts() )
 	{
-		std::string errorMsg = "Unable to play the network: Some inports in the network are not connected.";
-		throwPythonException(PyExc_RuntimeError, errorMsg);
+		std::string cause = "Some inports in the network are not connected.";
+		throwPythonException(PyExc_RuntimeError, problem+cause);
 		return;
 	}
 	network.Start();
