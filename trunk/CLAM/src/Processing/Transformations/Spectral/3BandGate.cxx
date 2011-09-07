@@ -29,8 +29,8 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "ThreeBandGate",
-	//	"category", "Spectral Transformations",
-	//	"description", "ThreeBandGate",
+		"category", "Spectral Transformations",
+		"description", "ThreeBandGate",
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, ThreeBandGate> reg = metadata;
@@ -49,7 +49,7 @@ bool ThreeBandGate::Do(const Spectrum& in, Spectrum& out)
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
 	
 	int lowCutoff = Round(mLowCutoffFreqCtl.GetLastValue()* spectralResolution);
-	int highCutoff = 	Round(mHighCutoffFreqCtl.GetLastValue()* spectralResolution);
+	int highCutoff = Round(mHighCutoffFreqCtl.GetLastValue()* spectralResolution);
 
 	//note: control is supposed to be sent as dB's
 	TData lowThreshold = 	log2lin(mLowThresholdCtl.GetLastValue());
@@ -57,7 +57,6 @@ bool ThreeBandGate::Do(const Spectrum& in, Spectrum& out)
 	TData highThreshold = 	log2lin(mHighThresholdCtl.GetLastValue());
 	
 	int i;
-	TData currentThreshold = lowThreshold;
 	for( i = 0; i<lowCutoff; i++)
 	{
 		if(iMag[i]<lowThreshold)

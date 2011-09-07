@@ -73,7 +73,7 @@ namespace SDIF
 			CLAM::TUInt32 nElems = mHeader.mnColumns*mHeader.mnRows;
 			CLAM::TUInt32 elemSize = mHeader.mDataType&0xFF;
 			CLAM::TUInt32 size = nElems*elemSize;
-			CLAM::TUInt32 padding = 8-size&7;
+			CLAM::TUInt32 padding = 8-(size&7);
 
 			return mHeader.SizeInFile()+size+padding;
 		}
