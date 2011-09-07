@@ -12,7 +12,7 @@
 		(proxy,processingname,kind,direction,connectorname...)
 
 - Network interface:
-	- Method to list all the processings on the network
+[X]	- Method to list all the processings on the network
 	- Given a dummy defined network net=Network(dummyProxy)
 [X]		- Getting a processing with net.procesingName
 [X]		- Getting a processing with net["processingName"]

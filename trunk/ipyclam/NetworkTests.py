@@ -23,6 +23,10 @@ class NetworkTests(unittest.TestCase):
 		net = Network(self.proxy())
 		self.assertEquals(["Processing1", "Processing2", "description"], dir(net))
 
+	def test_processingNames(self):
+		net = Network(self.proxy())
+		self.assertEquals(["Processing1", "Processing2"], net.processingNames())
+
 	def test_ProcessingAsAttributesGettingAndFailing(self):
 		net = Network(self.proxy())
 		self.assertRaises(AttributeError, getattr, net, "NonExistingProcessing")
@@ -262,7 +266,6 @@ class Clam_NetworkTests(NetworkTests):
 			"network.Processing1['OtherString'] = 'Another default value'\n"
 			"\n\n"
 			, net.code(fullConfig=True))
-
 
 if __name__ == '__main__':
 	unittest.main()
