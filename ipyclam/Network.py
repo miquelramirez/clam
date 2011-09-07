@@ -129,3 +129,6 @@ class Network(object):
 
 	def createWidget(self, className) :
 		return self._proxy.createWidget(className)
+
+	def processingNames(self):
+		return self._proxy.processingNames()
