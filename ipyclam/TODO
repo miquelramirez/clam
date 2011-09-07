@@ -12,6 +12,7 @@
 		(proxy,processingname,kind,direction,connectorname...)
 
 - Network interface:
+	- Method to list all the processings on the network
 	- Given a dummy defined network net=Network(dummyProxy)
 [X]		- Getting a processing with net.procesingName
 [X]		- Getting a processing with net["processingName"]
@@ -44,9 +45,10 @@
 			- config.setValue(param, value)
 			- proxy.Configure(proc, config)
 	- CLAM Configurations
-		- Implement the visitor
+[X]		- Implement the visitor
 			- from a CLAM::Configuration get a proper ipyclam::Configuration
 			- from a ipyclam::Configuration obtain a CLAM::Configuration
+		- Implement all the types in ConfiguratorPlugin
 	- Multilevel configs
 	- Additional features
 [X]		- dir(network.types) should give all the available types as symbols
@@ -123,7 +125,7 @@
 [X]	- net.desc[tab]ription (description in __dir__)
 [X]	- net.code() adds the description if it is not empty
 [X]	- code() uses numeric ports (like AudioSink.1) as attributes, instead of subscripts (first char should be letter or _)
-	- If an inconnector and outconnector have the same name, the processing will always think it's the incconnector
+	- code() always returns ['___'] for config parameters.
 [X]	- Adding an existing processing name asserts (c++), should raise
 [X]	- When code uses subscripts it still adds the attribute point
 [X]	- net.p > net.s, casca a CLAM
