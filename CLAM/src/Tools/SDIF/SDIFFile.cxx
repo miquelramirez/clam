@@ -315,7 +315,7 @@ namespace SDIF
 	{
 		CLAM::TUInt32 size = matrix.mHeader.mnColumns*matrix.mHeader.mnRows*
 			((matrix.mHeader.mDataType)&0xFF);
-		CLAM::TUInt32 padding = 8-size&7;
+		CLAM::TUInt32 padding = 8-(size&7);
 		Pos(Pos()+size+padding);
 	}
 
@@ -427,7 +427,7 @@ namespace SDIF
 		CLAM::TUInt32 elemSize = matrix.mHeader.mDataType&0xFF;
 		CLAM::TUInt32 size = nElems*elemSize;
 
-		CLAM::TUInt32 padding = 8-size&7;
+		CLAM::TUInt32 padding = 8-(size&7);
 
 		matrix.Resize(nElems);
 		matrix.SetSize(nElems);
@@ -445,7 +445,7 @@ namespace SDIF
 		CLAM::TUInt32 elemSize = matrix.mHeader.mDataType&0xFF;
 		CLAM::TUInt32 size = nElems*elemSize;
 
-		CLAM::TUInt32 padding = 8-size&7;
+		CLAM::TUInt32 padding = 8-(size&7);
 
 		CLAM::TByte tmp[1024];
 		const CLAM::TByte *ptr = (const CLAM::TByte*) const_cast<Matrix&>(matrix).GetPtr();

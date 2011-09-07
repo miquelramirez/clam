@@ -24,7 +24,7 @@ void ThreadPool::EmptyPool()
 	Mutex::ScopedLock lock( dequeMutex );
 
 	// First we stop and delete all the busy threads
-	for (int counter = 0; counter < busyThreads.size(); counter++)
+	for (unsigned counter = 0; counter < busyThreads.size(); counter++)
 	{
 		PooledThread* threadPtr = busyThreads.at( counter );
 		if (threadPtr != NULL)
@@ -37,7 +37,7 @@ void ThreadPool::EmptyPool()
 	busyThreads.clear();
 
 	// Next we delete all the idle threads
-	for (int counter = 0; counter < idleThreads.size(); counter++)
+	for (unsigned counter = 0; counter < idleThreads.size(); counter++)
 	{
 
 		PooledThread* threadPtr = idleThreads.at( counter );

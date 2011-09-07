@@ -223,9 +223,9 @@ namespace AudioCodecs
 			if (filePos >= previousFrameFilePos) break;
 		}
 		mBitstream.SynthesizeCurrent();
-
-		unsigned long filePos = mBitstream.CurrentFrameFileOffset();
 /*
+		unsigned long filePos = mBitstream.CurrentFrameFileOffset();
+
 		std::cout << "Jump n target: " 
 			<< _mp3Frame << " "
 			<< targetMp3Frame << " "

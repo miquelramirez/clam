@@ -170,14 +170,14 @@ void ProcessingClass2LadspaBase::DoControls()
 
 void ProcessingClass2LadspaBase::SetPortSizes(int size)
 {		
-	for(int i=0;i<_nInControls;i++)
+	for(unsigned i=0;i<_nInControls;i++)
 	{
 		if(_proc->GetInPort(i).GetSize() == size ) continue;
 		_proc->GetInPort(i).SetSize( size );
 		mWrappersList[i]->SetSize( size );
 	}
 
-	for(int i=0;i<_nOutPorts;i++)
+	for(unsigned i=0;i<_nOutPorts;i++)
 	{
 		if(_proc->GetOutPort(i).GetSize() == size ) continue;
 		_proc->GetOutPort(i).SetSize( size );
@@ -186,14 +186,14 @@ void ProcessingClass2LadspaBase::SetPortSizes(int size)
 
 void ProcessingClass2LadspaBase::DoProc(unsigned long nSamples)
 {
-	for(int i=0;i<_nInPorts;i++)
+	for(unsigned i=0;i<_nInPorts;i++) 
 	{
 		memcpy( &(mWrappersList[i]->GetData()), _inportBuffers[i], nSamples*sizeof(CLAM::TData) );
 		mWrappersList[i]->Produce();
 	}
 
 	std::vector<CLAM::TData*> dataList(_nOutPorts);
-	for(int i=0;i<_nOutPorts;i++)
+	for(unsigned i=0;i<_nOutPorts;i++) 
 	{
 		CLAM::OutPortBase & port = _proc->GetOutPort(i);
 		CLAM::AudioOutPort & audioPort = dynamic_cast<CLAM::AudioOutPort&>(port);
@@ -202,7 +202,7 @@ void ProcessingClass2LadspaBase::DoProc(unsigned long nSamples)
 
 	_proc->Do();
 
-	for(int i=0; i<_nOutControls; i++)
+	for(unsigned i=0; i<_nOutControls; i++) 
 		memcpy(_outcontrolBuffers[i], dataList[i], nSamples*sizeof(CLAM::TData) );		
 }
 

@@ -132,12 +132,12 @@ void FourierTransform::doItGeneric(const T * input)
 			_realInput[i] = input[i];
 		}
 		fftw_execute(_plan);
-		for (int i=0; i<mFrameSize; i+=2)
+		for (unsigned long  i=0; i<mFrameSize; i+=2)
 		{
 			spectrum[i] = complexOutput[i/2][0];
 			spectrum[i+1] = - complexOutput[i/2][1];
 		}
-		for (int i=1; i<mFrameSize; i+=2)
+		for (unsigned long  i=1; i<mFrameSize; i+=2)
 		{
 			unsigned j = mFrameSize*2-i;
 			spectrum[j] = complexOutput[i/2][0];
