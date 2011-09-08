@@ -132,3 +132,6 @@ class Network(object):
 
 	def processingNames(self):
 		return self._proxy.processingNames()
+
+	def load(self, filename):
+		self._proxy.load(filename)
