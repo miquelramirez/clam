@@ -39,7 +39,7 @@ class ipyclam_controller(QtGui.QWidget):
 		self.configButton.setProperty("clamConfiguration", self.box.currentText())
 		self.grid.addWidget(self.configButton, 1, 2)
 
-		self.ui = self._network.loadUi("SMSmess.ui")
+		self.ui = self._network.loadUi("SMSTransposition.ui")
 		self.setMinimumWidth(600)
 		self.setMinimumHeight(600)
 		self.grid.addWidget(self.ui, 2, 0, 10, 3)
@@ -49,25 +49,41 @@ class ipyclam_controller(QtGui.QWidget):
 	def createNetwork(self):
 		self._network = ipyclam.Network( ipyclam.Clam_NetworkProxy() )
 		self._network.backend = "JACK"
-		# Processings
-		self._network.source = "AudioSource"
-		self._network.sink = "AudioSink"
-		self._network.SMSAnalysisCore = "SMSAnalysisCore"
-		self._network.SMSSinusoidalGain = "SMSSinusoidalGain"
-		self._network.SMSResidualGain = "SMSResidualGain"
-		self._network.SMSFreqShift = "SMSFreqShift"
-		self._network.SMSSynthesis = "SMSSynthesis"
-		self._network.outcontrolsender = "OutControlSender"
-		self._network.outcontrolsender._config.ControlRepresentation = 1000
-		# Connections
-		self._network.source > self._network.SMSAnalysisCore
-		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network.SMSSinusoidalGain["In SpectralPeaks"]
-		self._network.SMSAnalysisCore > self._network.SMSResidualGain
-		self._network.SMSSinusoidalGain > self._network.SMSFreqShift
-		self._network.SMSFreqShift > self._network.SMSSynthesis
-		self._network.SMSResidualGain > self._network.SMSSynthesis
-		self._network.SMSSynthesis.OutputAudio > self._network.sink["1"]
-		self._network.outcontrolsender > self._network.SMSFreqShift
+		self._network.Input = 'AudioSource'
+		self._network["Oscilloscope_0"] = 'Oscilloscope'
+		self._network["PeakView_0"] = 'PeakView'
+		self._network["PeakView_1"] = 'PeakView'
+		self._network["PeakView_2"] = 'PeakView'
+		self._network.SMSAnalysisCore = 'SMSAnalysisCore'
+		self._network["SMSSynthesis_0"] = 'SMSSynthesis'
+		self._network["SMSSynthesis_1"] = 'SMSSynthesis'
+		self._network["SMSTranspose_0"] = 'SMSTranspose'
+		self._network["SMSTranspose_1"] = 'SMSTranspose'
+		self._network["Transpose amount"] = 'OutControlSender'
+		self._network["Transpose amount_0"] = 'OutControlSender'
+		self._network["Transposed_0"] = 'AudioSink'
+		self._network["Transposed_1"] = 'AudioSink'
+		self._network["Transpose amount"]['Min'] = -36.0
+		self._network["Transpose amount"]['Max'] = 36.0
+		self._network["Transpose amount"]['Step'] = 0.360000014305
+		self._network["Transpose amount_0"]['Min'] = -36.0
+		self._network["Transpose amount_0"]['Max'] = 36.0
+		self._network["Transpose amount_0"]['Step'] = 0.360000014305
+		self._network.Input["1"] > self._network.SMSAnalysisCore["Input Audio"]
+		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network["SMSTranspose_0"]["In SpectralPeaks"]
+		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network["PeakView_1"].Input
+		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network["SMSTranspose_1"]["In SpectralPeaks"]
+		self._network.SMSAnalysisCore["Residual Spectrum"] > self._network["SMSSynthesis_0"].InputResSpectrum
+		self._network.SMSAnalysisCore["Residual Spectrum"] > self._network["SMSSynthesis_1"].InputResSpectrum
+		self._network["SMSSynthesis_0"].OutputAudio > self._network["Transposed_0"]["1"]
+		self._network["SMSSynthesis_0"].OutputAudio > self._network["Oscilloscope_0"].Input
+		self._network["SMSSynthesis_1"].OutputAudio > self._network["Transposed_1"]["1"]
+		self._network["SMSTranspose_0"]["Out SpectralPeaks"] > self._network["SMSSynthesis_0"].InputSinPeaks
+		self._network["SMSTranspose_0"]["Out SpectralPeaks"] > self._network["PeakView_0"].Input
+		self._network["SMSTranspose_1"]["Out SpectralPeaks"] > self._network["SMSSynthesis_1"].InputSinPeaks
+		self._network["SMSTranspose_1"]["Out SpectralPeaks"] > self._network["PeakView_2"].Input
+		self._network["Transpose amount"].out > self._network["SMSTranspose_0"]["Transpose amount"]
+		self._network["Transpose amount_0"].out > self._network["SMSTranspose_1"]["Transpose amount"]
 
 	def showCode(self):
 		QtGui.QMessageBox.about(self, "Code to build the network", self._network.code())
