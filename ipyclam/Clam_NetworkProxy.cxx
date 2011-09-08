@@ -18,6 +18,7 @@
 #include <QtGui/QIcon>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
+#include <CLAM/XMLStorage.hxx>
 
 namespace py = boost::python;
 
@@ -579,6 +580,11 @@ PyObject * createWidget(CLAM::Network & network, const std::string & className)
 	return sipWrap(loader.createWidget(qClassName));
 }
 
+void load(CLAM::Network & network, const std::string & filename)
+{
+	CLAM::XMLStorage::Restore(network, filename);
+}
+
 /// ModificatioNetwork.pyn of boost::python::import
 py::object relative_import(py::str name)
 {
@@ -719,6 +725,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("createWidget",
 			createWidget,
 			"Returns a QWidget of the named class."
+			)
+		.def("load",
+			load,
+			"Loads a Network."
 			)
 		;
 }
