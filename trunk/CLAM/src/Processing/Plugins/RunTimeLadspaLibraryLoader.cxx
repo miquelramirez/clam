@@ -7,7 +7,7 @@ void RunTimeLadspaLibraryLoader::SetupLibrary(void* handle, const std::string & 
 	void * clam_marker= GetSymbol(handle, "clam_library_marker");
 	if (clam_marker and _disableLoadingClamLadspas)
 	{
-		//std::cout << "[LADSPA Plugin] Skipping clam-ladspa plugin: " << pluginFullFilename << std::endl;
+		std::cout << "[LADSPA Plugin] Skipping clam-ladspa plugin: " << pluginFullFilename << std::endl;
 		return;
 	}
 
