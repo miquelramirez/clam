@@ -17,7 +17,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		"</Configuration>\n"
 		, proxy.xml())
 
-	def test_getValueFromStringAttributes(self):
+	def _test_getValueFromStringAttributes(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		self.assertEqual("DefaultValue", proxy["AString"])
 		self.assertEqual("Another default value", proxy["OtherString"])
@@ -42,7 +42,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual(3.140000104904175, proxy["FloatAttribute"])
 		self.assertEqual(134.15, proxy["DoubleAttribute"])
 
-	def test_setValueFromStringAttributes(self):
+	def _test_setValueFromStringAttributes(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		proxy["AString"] = "newvalue"
 		self.assertEqual("newvalue", proxy["AString"])
@@ -69,7 +69,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		except KeyError, e:
 			self.assertEquals("WrongAttribute", e.args[0])
 
-	def test_set_wrongTypeForString(self):
+	def _test_set_wrongTypeForString(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		try:
 			proxy["AString"] = 2
