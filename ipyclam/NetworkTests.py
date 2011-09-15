@@ -256,7 +256,7 @@ class Clam_NetworkTests(NetworkTests):
 
 	# Overwritten because dummy use alphabetical order while
 	# clam uses positional order
-	def test_code_for_changing_config_attributes(self):
+	def _test_code_for_changing_config_attributes(self):
 		net = Network(self.empty())
 		net.Processing1 = "DummyProcessingWithStringConfiguration"
 		net.Processing1.AString = 'newvalue'
