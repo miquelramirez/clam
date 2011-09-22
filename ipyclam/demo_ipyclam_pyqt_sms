@@ -50,10 +50,6 @@ class ipyclam_controller(QtGui.QWidget):
 		self._network = ipyclam.Network( ipyclam.Clam_NetworkProxy() )
 		self._network.backend = "JACK"
 		self._network.Input = 'AudioSource'
-		self._network["Oscilloscope_0"] = 'Oscilloscope'
-		self._network["PeakView_0"] = 'PeakView'
-		self._network["PeakView_1"] = 'PeakView'
-		self._network["PeakView_2"] = 'PeakView'
 		self._network.SMSAnalysisCore = 'SMSAnalysisCore'
 		self._network["SMSSynthesis_0"] = 'SMSSynthesis'
 		self._network["SMSSynthesis_1"] = 'SMSSynthesis'
@@ -71,17 +67,13 @@ class ipyclam_controller(QtGui.QWidget):
 		self._network["Transpose amount_0"]['Step'] = 0.360000014305
 		self._network.Input["1"] > self._network.SMSAnalysisCore["Input Audio"]
 		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network["SMSTranspose_0"]["In SpectralPeaks"]
-		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network["PeakView_1"].Input
 		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network["SMSTranspose_1"]["In SpectralPeaks"]
 		self._network.SMSAnalysisCore["Residual Spectrum"] > self._network["SMSSynthesis_0"].InputResSpectrum
 		self._network.SMSAnalysisCore["Residual Spectrum"] > self._network["SMSSynthesis_1"].InputResSpectrum
 		self._network["SMSSynthesis_0"].OutputAudio > self._network["Transposed_0"]["1"]
-		self._network["SMSSynthesis_0"].OutputAudio > self._network["Oscilloscope_0"].Input
 		self._network["SMSSynthesis_1"].OutputAudio > self._network["Transposed_1"]["1"]
 		self._network["SMSTranspose_0"]["Out SpectralPeaks"] > self._network["SMSSynthesis_0"].InputSinPeaks
-		self._network["SMSTranspose_0"]["Out SpectralPeaks"] > self._network["PeakView_0"].Input
 		self._network["SMSTranspose_1"]["Out SpectralPeaks"] > self._network["SMSSynthesis_1"].InputSinPeaks
-		self._network["SMSTranspose_1"]["Out SpectralPeaks"] > self._network["PeakView_2"].Input
 		self._network["Transpose amount"].out > self._network["SMSTranspose_0"]["Transpose amount"]
 		self._network["Transpose amount_0"].out > self._network["SMSTranspose_1"]["Transpose amount"]
 
@@ -104,7 +96,7 @@ class ipyclam_controller(QtGui.QWidget):
 		self.configButton = QtGui.QPushButton("Configure")
 		self.configButton.setProperty("clamConfiguration", self.box.currentText())
 		self.grid.addWidget(self.configButton, 1, 2)
-		self._network.bindUi(self)
+		self._network.bindUi(self.configButton)
 
 if __name__ == "__main__" :
 	app = QtGui.QApplication(sys.argv)
