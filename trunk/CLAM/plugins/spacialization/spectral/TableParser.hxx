@@ -299,6 +299,7 @@ protected:
 	{
 		_columns.push_back(column);
 	}
+public:
 	/// Appends an error message
 	bool addError(const std::string & message)
 	{
