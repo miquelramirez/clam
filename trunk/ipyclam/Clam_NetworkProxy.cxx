@@ -509,6 +509,21 @@ void stop(CLAM::Network & network)
 	network.Stop();
 }
 
+bool isStopped(CLAM::Network & network)
+{
+	return network.IsStopped();
+}
+
+bool isPlaying(CLAM::Network & network)
+{
+	return network.IsPlaying();
+}
+
+bool isPaused(CLAM::Network & network)
+{
+	return network.IsPaused();
+}
+
 void setBackend(CLAM::Network & network, const std::string & backend)
 {
 	CLAM::NetworkPlayer * player = 0;
@@ -747,6 +762,18 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("save",
 			save,
 			"Saves the Network on an xml file."
+			)
+		.def("isStopped",
+			isStopped,
+			"Returns true if the network is stooped."
+			)
+		.def("isPlaying",
+			isPlaying,
+			"Returns true if the network is playing."
+			)
+		.def("isPaused",
+			isPaused,
+			"Returns true if the network is paused."
 			)
 		;
 }
