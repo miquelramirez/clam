@@ -582,7 +582,21 @@ PyObject * createWidget(CLAM::Network & network, const std::string & className)
 
 void load(CLAM::Network & network, const std::string & filename)
 {
-	CLAM::XMLStorage::Restore(network, filename);
+	try
+	{
+		CLAM::XMLStorage::Restore(network, filename);
+	}
+	catch(CLAM::XmlStorageErr &e)
+	{
+		std::string reason = e.what();
+		throwPythonException(PyExc_RuntimeError,
+			"Unable to load the network: " + reason);
+	}
+}
+
+void save(CLAM::Network & network, const std::string & filename)
+{
+	CLAM::XMLStorage::Dump(network, "network", filename);
 }
 
 /// ModificatioNetwork.pyn of boost::python::import
@@ -728,7 +742,11 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			)
 		.def("load",
 			load,
-			"Loads a Network."
+			"Loads a Network from an xml file."
+			)
+		.def("save",
+			save,
+			"Saves the Network on an xml file."
 			)
 		;
 }

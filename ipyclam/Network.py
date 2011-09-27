@@ -135,3 +135,6 @@ class Network(object):
 
 	def load(self, filename):
 		self._proxy.load(filename)
+
+	def save(self, filename):
+		self._proxy.save(filename)
