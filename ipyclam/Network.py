@@ -118,6 +118,15 @@ class Network(object):
 	def pause(self) :
 		self._proxy.pause()
 
+	def isStopped(self) :
+		return self._proxy.isStopped()
+
+	def isPlaying(self) :
+		return self._proxy.isPlaying()
+
+	def isPaused(self) :
+		return self._proxy.isPaused()
+
 	def stop(self) :
 		self._proxy.stop()
 

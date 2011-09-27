@@ -240,6 +240,10 @@ class NetworkTests(unittest.TestCase):
 			"\n\n"
 			, net.code(fullConfig=True))
 
+"""
+	Tests for isStopped, isPlaying, isPaused
+"""
+
 class Clam_NetworkTests(NetworkTests):
 	def proxy(self):
 		import Clam_NetworkProxy
