@@ -39,11 +39,11 @@ class Configuration(object):
 	def code(self, processingName, networkVar = "network", fullConfig = False):
 		code = ""
 		code += "\n".join([
-				"%s.%s['%s'] = '%s'"%(
+				"%s.%s['%s'] = %s"%(
 					networkVar, 
 					processingName,
 					attribute,
-					self._proxy[attribute],
+					self._proxy[attribute].__repr__(),
 					)
 				for attribute in self._proxy.keys()
 				if fullConfig or self._proxy.nonDefault(attribute)
