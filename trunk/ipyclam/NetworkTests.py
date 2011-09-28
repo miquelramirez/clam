@@ -224,12 +224,12 @@ class NetworkTests(unittest.TestCase):
 			"network.proc1[\"2\"] > network.proc2[\"1\"]\n"
 			, net.code())
 
-	def _test_change_config_attributes(self):
+	def test_change_config_attributes(self):
 		net = Network(self.proxy())
 		net.Processing1["ConfigParam1"] = 'newvalue'
 		self.assertEqual(net.Processing1["ConfigParam1"], "newvalue")
 
-	def _test_code_for_changing_config_attributes(self):
+	def test_code_for_changing_config_attributes(self):
 		net = Network(self.empty())
 		net.Processing1 = "DummyProcessingWithStringConfiguration"
 		net.Processing1.AString = 'newvalue'
@@ -260,7 +260,7 @@ class Clam_NetworkTests(NetworkTests):
 
 	# Overwritten because dummy use alphabetical order while
 	# clam uses positional order
-	def _test_code_for_changing_config_attributes(self):
+	def test_code_for_changing_config_attributes(self):
 		net = Network(self.empty())
 		net.Processing1 = "DummyProcessingWithStringConfiguration"
 		net.Processing1.AString = 'newvalue'
