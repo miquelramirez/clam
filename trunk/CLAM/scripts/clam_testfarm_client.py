@@ -246,7 +246,7 @@ if '--slow-tests' in sys.argv :
 		'clam/CLAM/plugins/MIDI',
 		'clam/CLAM/plugins/resampling',
 		'clam/CLAM/plugins/samplebysample',
-		'clam/CLAM/plugins/spacialization',
+#		'clam/CLAM/plugins/spacialization',
 		'clam/CLAM/plugins/speech',
 		]
 	for d in dirs :
