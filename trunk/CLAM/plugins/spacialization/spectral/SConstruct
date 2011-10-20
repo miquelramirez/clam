@@ -32,7 +32,7 @@ tests = []
 if env['compile_test'] :
 	testEnv = env.Clone()
 	testEnv.ParseConfig('pkg-config --cflags --libs mini_cppunit')
-	tests += [ testEnv.Program("UnitTests", Glob("*Test.cxx")) ]
+	tests += [ testEnv.Program("spectral_unittests", Glob("*Test.cxx")) ]
 
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
