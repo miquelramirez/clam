@@ -1,5 +1,6 @@
 
 2010-??-?? CLAM 1.4.1 SVN $Revision$ 
+''
  * NetworkPlayers and backends
    * Network backends for plugins are NetworkPlayers now
    * Common Backend code to inspect the network moved to base NetworkPlayer
