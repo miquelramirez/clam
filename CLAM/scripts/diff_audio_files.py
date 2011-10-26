@@ -83,7 +83,7 @@ def diff_files(expected, result, diffbase) :
 		print "Result file not found: ", result
 		return "Result was not generated: '%s'"%result
 	if not os.access(expected, os.R_OK):
-		print "Expected file not found: ", result
+		print "Expectation file not found for: ", result
 		return "No expectation for the output. Check the results and accept them with the --accept option."
 	extension = os.path.splitext(result)[-1]
 
