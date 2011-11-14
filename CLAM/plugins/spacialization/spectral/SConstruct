@@ -42,10 +42,13 @@ spectral_headers = Glob('*.hxx')
 
 env.ParseConfig('pkg-config --cflags --libs fftw3f')
 
-if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
-	env.Append( LIBPATH=['/opt/local/lib'] )
 
 spectral_lib = env.SharedLibrary('spectral',spectral_sources)
+
+if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
+	env.Append( LIBPATH=['/opt/local/lib'] )
+	env.Append(CPPFLAGS=['-arch', 'i386'] )
+	env.Append(LINKFLAGS=['-arch', 'i386'] )
 
 spectral_dll = []
 if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
