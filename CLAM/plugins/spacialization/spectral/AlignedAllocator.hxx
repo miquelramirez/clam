@@ -27,6 +27,7 @@
 #include <fftw3.h>
 #endif
 #include <limits>
+#include <cassert>
 
 template<typename T>
 class AlignedAllocator
@@ -50,15 +51,17 @@ public:
 	inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer = 0)
 	{
 		size_t bytes = cnt * sizeof(T);
-#ifdef AVOID_FFTW
 		void * result = 0;
+#if !defined(AVOID_FFTW)
+		result = fftwf_malloc(bytes); // The standard one
+#elif defined(macintosh) || defined(__APPLE__) || defined(__APPLE_CC__)
+        result = malloc(bytes); // Apple always aligns to 16
+#else
 		// NOTE: on OSX, posix_memalign requires SDK 10.6
 		if (posix_memalign(&result, 16, bytes)) return 0;
-		return reinterpret_cast<pointer>(result);
-#else
-		return reinterpret_cast<pointer>(
-			fftwf_malloc(bytes)); // The standard one
 #endif
+        //std::assert(((*result)&0xFF)==0);
+		return reinterpret_cast<pointer>(result);
 	}
 	inline void deallocate(pointer p, size_type)
 	{
