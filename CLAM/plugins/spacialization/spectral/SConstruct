@@ -10,6 +10,7 @@ requires = ['fftw3f'] # used for pc file
 otherDependencies = [
 	'fftw3f',
 	]
+cflags = []
 
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('prefix', 'Installation prefix (default /usr/local)', "/usr/local"))
@@ -47,6 +48,7 @@ if env['avoid_fftw'] :
 		env.Append(CPPDEFINES=['AVOID_FFTW'])
 		requires= []
 		otherDependencies = []
+		cflags = ['-DAVOID_FFTW']
 else: 
 		env.ParseConfig('pkg-config --cflags --libs fftw3f')
 
@@ -72,7 +74,8 @@ spectral_pcfile = env.PkgConfigFile(
 	prefix=env['prefix'],
 	description='spectral utilities',
 	url=url,
-	requires=requires
+	requires=requires,
+	cflags=cflags
 )
 
 default = [spectral_lib, spectral_pcfile, tests]
