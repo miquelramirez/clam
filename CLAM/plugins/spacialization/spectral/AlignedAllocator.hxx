@@ -60,7 +60,7 @@ public:
 		// NOTE: on OSX, posix_memalign requires SDK 10.6
 		if (posix_memalign(&result, 16, bytes)) return 0;
 #endif
-        //std::assert(((*result)&0xFF)==0);
+		assert((int(result)&0xFF)==0);
 		return reinterpret_cast<pointer>(result);
 	}
 	inline void deallocate(pointer p, size_type)
