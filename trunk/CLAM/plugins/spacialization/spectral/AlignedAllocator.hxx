@@ -28,6 +28,7 @@
 #endif
 #include <limits>
 #include <cassert>
+#include <stdint.h> //for uintptr_t
 
 template<typename T>
 class AlignedAllocator
