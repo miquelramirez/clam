@@ -35,12 +35,12 @@ namespace CLAM
 
 		//check for zero valued coefficients in the higher power terms
 		//(not be needed for use w/ LPC formants, but just in case of future uses)
-		while(Abs(coefficients[0]) < epsilon){ 
+		while(Abs(coefficients[0]) < DBL_EPSILON){ 
 			coefficients.DeleteElem(0);
 		}
     
 		//check for zero valued coefficients in the lower powered terms
-		while(Abs(coefficients[coefficients.Size()-1]) < epsilon ) {
+		while(Abs(coefficients[coefficients.Size()-1]) < DBL_EPSILON ) {
 			coefficients.DeleteElem(coefficients.Size()-1);
 			roots.AddElem(0);
 		}
@@ -194,7 +194,7 @@ namespace CLAM
 				unsigned int l;  // note l is lowercase L
 				for (l = n; l >= 1; l--) 
 				{
-					if (Abs( M[l][l-1] ) <= epsilon * ( Abs( M[l-1][l-1]) + Abs(M[l][l]) ) )
+					if (Abs( M[l][l-1] ) <= DBL_EPSILON * ( Abs( M[l-1][l-1]) + Abs(M[l][l]) ) )
 						break;
 				}
 				x = M[n][n];
@@ -269,7 +269,7 @@ namespace CLAM
 					if(m == l) 
 						break;  //from for(m=n-1; ...
 					if( Abs(M[m][m-1]) * ( Abs(q)+Abs(r) ) <=
-					    epsilon  * Abs(p)  * ( Abs(M[m-1][m-1]) + Abs(z) + Abs(M[m+1][m+1]) )  )
+					    DBL_EPSILON  * Abs(p)  * ( Abs(M[m-1][m-1]) + Abs(z) + Abs(M[m+1][m+1]) )  )
 						break; //from for(m=n-1; ...
 				} //for(m=n-1; ...
 	    

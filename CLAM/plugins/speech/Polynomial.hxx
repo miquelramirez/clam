@@ -38,8 +38,6 @@ namespace CLAM
 		void DefaultInit();
 	private:
 		std::vector <std::vector <double> > M;
-    
-		static const double epsilon = DBL_EPSILON;
 	};
 }
 
