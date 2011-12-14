@@ -8,37 +8,26 @@ namespace Hidden
 	static const char* metadata[] = {
 		"key", "CardinalVowel",
 		"category", "[plugin] Speech (experimental, GSoC)",
-		"description", "Cardinal Vowel Formant Control Sender: outputs f1 and f2 values from the curve defined by the cardinal vowels for setting the controls of the vowel resonator.",
+		"description", "Cardinal Vowel Formant Control Sender",
+		"help", "Computes formant frequencies given f1 and f2 from the curve defined by the cardinal vowels for setting the controls of the vowel resonator.",
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, CardinalVowel> reg=metadata ;
 }
 
-void CardinalVowelConfig::DefaultInit()
+void CardinalVowel::Config::DefaultInit()
 {
 	AddAll();
 	UpdateData();
 	SetAmount( 1.0 );
-	
-
 }
 
-CardinalVowel::CardinalVowel()
+CardinalVowel::CardinalVowel( const Config& cfg ) 
 	: mVowelControl( "Vowel Position", this )
 	, mStepControl( "Number of Steps", this )
 	, mF1Control( "F1 Out", this )
 	, mF2Control( "F2 Out", this )
 	, mF3Control( "F3 Out", this )
-{
-	Configure( mConfig );	
-}
-
-CardinalVowel::CardinalVowel( const CardinalVowelConfig& cfg ) 
-	: mVowelControl( "Vowel Position", this )
-	, mStepControl( "Number of Steps", this )
-	, mF1Control( "F1 Out", this )
-	, mF2Control( "F2 Out", this )
-	, mF3Control( "F2 Out", this )
 { 
 	Configure( cfg );
 }
@@ -62,23 +51,17 @@ bool CardinalVowel::Do()
 float CardinalVowel::CalcF1() 
 {
 	TControlData vowelLocation = mVowelControl.GetLastValue();
-	TControlData numSteps = mStepControl.GetLastValue();
 	//piecewise function: f1 rises from IY to AE, falls from AA to UW
 	if(vowelLocation < .5)
-	{
 		return 200 + 539*vowelLocation;
-	}
 	else
-	{
 		return 715 - 462*vowelLocation;
-	}
 }
 
 //function to approximate f2 through the cardinal vowel series
 float CardinalVowel::CalcF2() 
 {
 	TControlData vowelLocation = mVowelControl.GetLastValue();
-	TControlData numSteps = mStepControl.GetLastValue();
 	return 2400 - 1679*vowelLocation;
 }
 
@@ -86,7 +69,6 @@ float CardinalVowel::CalcF2()
 float CardinalVowel::CalcF3() 
 {
 	TControlData vowelLocation = mVowelControl.GetLastValue();
-	TControlData numSteps = mStepControl.GetLastValue();
 	return 3300 - 900*vowelLocation;
 }
 	
