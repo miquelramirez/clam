@@ -19,87 +19,83 @@
  *
  */
 
-#ifndef _CardinalVowel_
-#define _CardinalVowel_
+#ifndef CardinalVowel_hxx
+#define CardinalVowel_hxx
 
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/Processing.hxx>
-#include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
 
-namespace CLAM
-{
+namespace CLAM { class CardinalVowel; }
 	
-	class CardinalVowelConfig : public ProcessingConfig
+	
+/*
+  \class CardinalVowel
+  \brief  This class returns formants 1 and 2 for the cardinal vowels
+  
+  The cardinal vowels are reference vowels that can be used to
+  place vowels from unstudied languages.  There are 4 front
+  and 4 back vowels, starting with the high front IY and
+  ending with the high back UW: IY EY EH AE AA AO OW UW
+ 
+  This class assumes as input a continuum from 0 (IY) to 1
+  (UW) and maps the values between 0 and 1 to first and second
+  formant of vowels along the cardinal vowel progression
+  
+  \TODO the second input, the number of steps will represent
+  discrete steps along the path of cardinal vowels.  For the
+  cardinal vowels series, the number of steps = 8.  Setting
+  this to different values can be seen as roughly a parameter
+  to say how many vowels for a given language.
+
+  \TODO, the mapping of the [0,1] interval to f1 and f2 values
+  was done by hand by fitting linear (piecewise in the case of
+  f1) functions.  In the future, it would be cool to have the
+  interpolation of values between vowels to be done
+  automatically.  The interpolation of formant values between
+  vowels could be done with some of the clam tools.  Also,
+  this can be seen as a dimension reduction problem, where the
+  f1 and f2 space is reduced to a single dimension.
+
+*/
+class CLAM::CardinalVowel : public CLAM::Processing
+{
+public:
+	class Config : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (CardinalVowelConfig, 1, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (Config, 1, ProcessingConfig);
 		DYN_ATTRIBUTE ( 0, public, TData, Amount );
 		
 	private:
 		void DefaultInit();
 	};
+private:
+	Config mConfig;
+	FloatInControl mVowelControl;
+	FloatInControl mStepControl;
+	FloatOutControl mF1Control;
+	FloatOutControl mF2Control;
+	FloatOutControl mF3Control;
+private:
+	float CalcF1();
+	float CalcF2();
+	float CalcF3();
 	
+public:
 	
-	/*
-	  \class CardinalVowel
-	  \brief  This class returns formants 1 and 2 for the cardinal vowels
-	  
-	  The cardinal vowels are reference vowels that can be used to
-	  place vowels from unstudied languages.  There are 4 front
-	  and 4 back vowels, starting with the high front IY and
-	  ending with the high back UW: IY EY EH AE AA AO OW UW
-	 
-	  This class assumes as input a continuum from 0 (IY) to 1
-	  (UW) and maps the values between 0 and 1 to first and second
-	  formant of vowels along the cardinal vowel progression
-	  
-	  \TODO the second input, the number of steps will represent
-	  discrete steps along the path of cardinal vowels.  For the
-	  cardinal vowels series, the number of steps = 8.  Setting
-	  this to different values can be seen as roughly a parameter
-	  to say how many vowels for a given language.
-
-	  \TODO, the mapping of the [0,1] interval to f1 and f2 values
-	  was done by hand by fitting linear (piecewise in the case of
-	  f1) functions.  In the future, it would be cool to have the
-	  interpolation of values between vowels to be done
-	  automatically.  The interpolation of formant values between
-	  vowels could be done with some of the clam tools.  Also,
-	  this can be seen as a dimension reduction problem, where the
-	  f1 and f2 space is reduced to a single dimension.
-
-	*/
-	class CardinalVowel : public Processing
-	{
-		CardinalVowelConfig mConfig;
-		FloatInControl mVowelControl;
-		FloatInControl mStepControl;
-		FloatOutControl mF1Control;
-		FloatOutControl mF2Control;
-		FloatOutControl mF3Control;
-		float CalcF1();
-		float CalcF2();
-		float CalcF3();
-		
-	public:
-		
-		const char *GetClassName() const { return "CardinalVowel"; }
-		
-		
-		CardinalVowel();
-		CardinalVowel( const CardinalVowelConfig& cfg );
-		
-		bool ConcreteConfigure( const ProcessingConfig& cfg ); 
-		
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-		
-		bool Do();
-		
-	};
+	const char *GetClassName() const { return "CardinalVowel"; }
 	
-}
-
-#endif
+	CardinalVowel( const Config& cfg = Config() );
+	
+	bool ConcreteConfigure( const ProcessingConfig& cfg ); 
+	
+	const ProcessingConfig& GetConfig() const { return mConfig; }
+	
+	bool Do();
+	
+};
+	
+#endif//CardinalVowel_hxx
 
