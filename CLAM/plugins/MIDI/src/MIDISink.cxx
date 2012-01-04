@@ -1,9 +1,10 @@
 #include "MIDISink.hxx"
 #include <CLAM/ProcessingFactory.hxx>
-#include <cstdlib>
-namespace CLAM
-{
+#include <iostream>
+#include "../RtMidi.hxx"
 
+namespace CLAM
+{ 
 namespace Hidden
 {
 	static const char * metadata[] = {
@@ -13,48 +14,58 @@ namespace Hidden
 		};
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MIDISink> registrator(metadata);	
 }
-
-	MIDISink::MIDISink(const Config& config) 
-		: mMIDIMessage("MIDI Message In", this, &MIDISink::DoCallback)
-	{
-		// Create RtMidiIn Object
-		try {
-			mMIDIout = new RtMidiOut();
-		}
-		catch ( RtError &error ) {
-			error.printMessage();
-			std::exit( EXIT_FAILURE );
-		}
-
-		// Open Virtual Port
-		try {
-			mMIDIout->openVirtualPort("CLAM - MIDISink Out");
-		}
-		catch ( RtError &error ) {
-			error.printMessage();
-		}
-		
-		// Make default message
-		mLastMessage.Update(0,0,0,0);
-		Configure( config );
-	}
-
-	MIDISink::~MIDISink() {
-		if ( mMIDIout )
-			delete mMIDIout;
-	}
-
-	void MIDISink::DoCallback(MIDI::Message inMessage){
-		inMessage = mMIDIMessage.GetLastValue();
-		
-		std::vector< unsigned char > message;
-
-		message.push_back((inMessage)[0]);
-		message.push_back((inMessage)[1]);
-		message.push_back((inMessage)[2]);
-// 		message.push_back((inMessage)[3]);
-
-		mMIDIout->sendMessage( &message );
-	};
-
 }
+
+CLAM::MIDISink::MIDISink(const Config& config) 
+	: mMIDIMessage("MIDI Message In", this, &MIDISink::DoCallback)
+	, mMIDIout(0)
+{
+	Configure(config);
+}
+bool CLAM::MIDISink::ConcreteConfigure(const ProcessingConfig & config)
+{
+	if (mMIDIout)
+	{
+		delete mMIDIout;
+		mMIDIout = 0;
+	}
+	// Create RtMidiIn Object
+	try
+	{
+		mMIDIout = new RtMidiOut();
+	}
+	catch ( RtError &error )
+	{
+		return AddConfigErrorMessage(error.getMessage());
+	}
+
+	// Open Virtual Port
+	try
+	{
+		mMIDIout->openVirtualPort("CLAM - MIDISink Out");
+	}
+	catch ( RtError &error )
+	{
+		return AddConfigErrorMessage(error.getMessage());
+	}
+	
+	// Make default message
+	mLastMessage.Update(0,0,0,0);
+	return true;
+}
+
+CLAM::MIDISink::~MIDISink()
+{
+	if ( mMIDIout )
+		delete mMIDIout;
+}
+
+void CLAM::MIDISink::DoCallback(MIDI::Message inMessage)
+{
+	inMessage = mMIDIMessage.GetLastValue();
+	_message3bytes[0] = inMessage[0];
+	_message3bytes[1] = inMessage[1];
+	_message3bytes[2] = inMessage[2];
+
+	mMIDIout->sendMessage( &_message3bytes );
+};
