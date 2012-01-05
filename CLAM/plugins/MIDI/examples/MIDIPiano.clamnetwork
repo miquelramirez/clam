@@ -12,7 +12,7 @@ p, li { white-space: pre-wrap; }
   <processing id="ControlPrinterTyped" position="12,236" size="267,115" type="ControlPrinterTyped">
     <Identifier>ControlPrinterTyped</Identifier>
     <TypesMask>M</TypesMask>
-    <GuiOnly>1</GuiOnly>
+    <GuiOnly>0</GuiOnly>
   </processing>
 
   <processing id="MIDISink" position="283,240" size="111,63" type="MIDISink"/>
