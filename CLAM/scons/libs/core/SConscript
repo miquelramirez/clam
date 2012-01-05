@@ -16,6 +16,7 @@ folders = [
 	'src/core/controls',
 	'src/core/sinksources',
 	'src/core/data',
+	'src/core/schedulers',
 
 	'src/Data/Descriptors/Pool',
 	'src/Data/Editable',

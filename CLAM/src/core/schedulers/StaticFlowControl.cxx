@@ -29,8 +29,7 @@
 namespace CLAM
 {
 
-StaticFlowControl::StaticFlowControl( int frameSize, StaticCycle& c )
-	: FlowControl (frameSize)
+StaticFlowControl::StaticFlowControl(StaticCycle& c )
 {
 	SetCycle(c);
 }
