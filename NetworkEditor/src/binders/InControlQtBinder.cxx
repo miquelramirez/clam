@@ -29,7 +29,8 @@ static std::string networkName(QObject * uiElement, const QString & prefix, cons
 		return uiElement->property(property).toString().toStdString();
 
 	CLAM::QtBinder::error(errors,
-		QString("InControlQtBinder: Widget name '%1' should start by with '%2', "
+		QString("InControlQtBinder: "
+			"Widget name '%1' should start by with '%2', "
 			"or have the '%3' custom property defined")
 			.arg(uiElement->objectName())
 			.arg(prefix)
