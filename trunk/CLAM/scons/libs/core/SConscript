@@ -25,7 +25,6 @@ folders = [
 	'src/Processing/Plugins',
 	'src/System',
 	'src/System/Threads',
-	'src/Tools/MIDIIO/Message',
 	'externals/CbLib',
 	]
 

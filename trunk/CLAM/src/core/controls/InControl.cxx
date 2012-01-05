@@ -22,7 +22,7 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "Processing.hxx"
-
+/**
 //TODO: review this include!!!!
 #include "MIDIMessage.hxx"
 
@@ -38,4 +38,4 @@ const std::string InControl<MIDI::Message>::GetLastValueAsString() // TODO: Use 
 }
 
 }; // namespace CLAM
-
+*/
