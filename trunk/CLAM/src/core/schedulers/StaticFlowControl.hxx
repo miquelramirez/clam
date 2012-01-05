@@ -25,6 +25,7 @@
 
 #include "FlowControl.hxx"
 #include <list>
+#include <string>
 
 namespace CLAM
 {
@@ -42,7 +43,7 @@ typedef std::list<StaticCycleBranch> StaticCycle;
 class StaticFlowControl : public FlowControl
 {
 public:
-	StaticFlowControl( int frameSize , StaticCycle& c );
+	StaticFlowControl(StaticCycle& c );
 	virtual ~StaticFlowControl(){}
 
 	void Do();
