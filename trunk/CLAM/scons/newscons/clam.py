@@ -3,6 +3,11 @@ import sys, os, glob
 from SCons.Action import Action
 from SCons.Builder import Builder
 
+# Collecting module information
+import collections
+Module = collections.namedtuple("Module",
+	"Dependencies CustomTests Configure Variables Targets")
+
 def scanFiles(env, pattern, paths, recursive=False, blacklist=[], patternblacklist=[]) :
 	files = []
 	if recursive : paths = list(set(sum((env.recursiveDirs(path) for path in paths),[])))
@@ -12,9 +17,7 @@ def scanFiles(env, pattern, paths, recursive=False, blacklist=[], patternblackli
 		if file not in blacklist and all((file.rfind(blackpattern)==-1 for blackpattern in patternblacklist)) ]))
 
 def recursiveDirs(env, root) :
-	return filter( 
-		(lambda a : a.rfind( ".svn")==-1 ), 
-		[ a[0] for a in os.walk(root)]  )
+	return [ a[0] for a in os.walk(root) if not a[0].endswith(('.svn','.git','CVS'))]
 
 def moveIntermediateInto(env, subfolder) :
 	env['SHOBJPREFIX']       = os.path.join(subfolder,'')
@@ -29,6 +32,59 @@ def activateColorCommandLine(env) :
 		sys.stdout.flush()
 	env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
 
+def requiredDependencies(modules, targets) :
+	"""
+	Returns the set of modules, represented as module->[dependencies] map,
+	that are needed to build modules in targets list.
+	>>> requiredDependencies({ 1:[], 2:[1], 3:[1,4], 4: [1,2] }, [4])
+	{ 1:[], 2:[1], 4: [1,2] }
+	"""
+	requirements = set()
+	remainingTargets = targets[:]
+	while remainingTargets :
+		target = remainingTargets.pop()
+		if target in requirements : continue
+		requirements.append(target)
+		remainingTargets+=modules[target]
+	return requirements
+
+def sortModules(modules) :
+	"""
+	Returns a valid dependency order of a set of modules represented as a module->[dependencies] map
+	>>> sortModules({ 1:[], 2:[1], 3:[1,4], 4: [1,2] })
+	[1, 2, 4, 3]
+	>>> sortModules({ 1:[], 2:[3,5] })
+	Traceback (most recent call last):
+		...
+	Exception: Module '2' depends on modules not available: '3', '5'
+	>>> sortModules({ 1:[2], 2:[3], 3: [1]  })
+	Traceback (most recent call last):
+		...
+	Exception: Cyclic dependencies among modules '1', '2', '3'
+	"""
+	def findFree(modules, remaining) :
+		for module, deps in modules.items() :
+			if module  not in remaining : continue
+			if any(( dep in remaining for dep in deps )) : continue
+			return module
+		raise Exception("Cyclic dependencies among modules '%s'"%("', '".join(
+			(str(mod) for mod in remaining) )))
+
+	remaining = modules.keys()
+	for module, deps in modules.items() :
+		aliens = [ dep for dep in deps if dep not in remaining ]
+		if not aliens : continue
+		raise Exception(
+			"Module '%s' depends on modules not available: '%s'"%(
+				module,"', '".join((str(i) for i in aliens))))
+
+	result = []
+	while remaining :
+		free = findFree(modules, remaining)
+		remaining.remove(free)
+		result.append(free)
+	return result
+
 
 def ClamModule(env, moduleName, version,
 		description="",
@@ -41,7 +97,7 @@ def ClamModule(env, moduleName, version,
 	try: env.PkgConfigFile
 	except : env.Tool('pkgconfig', toolpath=[os.path.dirname(__file__)])
 
-	crosscompiling = env.get('crossmingw')
+	crosscompiling = env.GetOption('target') and env.GetOption("target").rfind('mingw') != -1 or False
 	windowsTarget = sys.platform == 'win32' or crosscompiling
 
 	env.AppendUnique(CPPDEFINES=[('CLAM_MODULE',moduleName)])
