@@ -1,3 +1,5 @@
+#!/usr/bin/python 
+
 import sys, os
 
 Variables = [
@@ -35,7 +37,7 @@ def CustomTests() :
 	return {}
 
 def Configure(sconf) :
-	sconf.CheckPkgConfigModule("libxml++-2.6", minimum_version="2.9") or die(
+	sconf.CheckPkgConfigModule("libxml++-2.6", minimum_version="2.6") or die(
 		"libxml++ library required")
 	return
 	sconf.CheckPkgConfigModule("gl") or die(
@@ -46,8 +48,15 @@ def Configure(sconf) :
 		"QtOpenGL library required")
 
 def Targets(env) :
-	headers = env.scanFiles("*.hxx", ["core"], recursive=True)
-	sources = env.scanFiles("*.cxx", ["core"], recursive=True)
+	sourceDirs = [
+		'core',
+		'core/Base',
+		'core/Storage',
+		'core/Defines',
+		'core/Errors',
+		]
+	headers = env.scanFiles("*.hxx", sourceDirs, recursive=True)
+	sources = env.scanFiles("*.cxx", sourceDirs, recursive=True)
 	env.AppendUnique(CPPPATH = [ os.path.dirname(header) for header in headers ])
 
 	return env.ClamModule(
@@ -60,8 +69,8 @@ def Targets(env) :
 		headers = headers,
 		)
 
-Import("Module")
-module = Module(
+Import("clam")
+module = clam.Module(
 	Variables = Variables,
 	Dependencies = Dependencies,
 	CustomTests = CustomTests,
