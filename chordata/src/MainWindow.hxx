@@ -21,12 +21,12 @@
 
 #include <string>
 
+#include <CLAM/MIDIMessage.hxx>
 #include <CLAM/Network.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 #include "PoolFloatArrayDataSource.hxx"
 #include "PoolPeakDataSource.hxx"
 #include "PoolSegmentationDataSource.hxx"
-#include <CLAM/qtmonitors/ProgressControlWidget.hxx>
 #include "FrameDivision.hxx"
 
 namespace CLAM
@@ -42,6 +42,7 @@ namespace VM
 	class ChordRanking;
 }
 }
+class ProgressControlWidget;
 class PolarChromaPeaks;
 class SegmentationView;
 

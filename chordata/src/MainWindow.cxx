@@ -23,15 +23,16 @@
 #include <QtGui/QProgressDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QVBoxLayout>
-#include <QSettings>
-#include <QDesktopServices>
+#include <QtCore/QSettings>
+#include <QtGui/QDesktopServices>
 
 #include <CLAM/CLAMVersion.hxx>
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/AudioFileMemoryLoader.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 #include <CLAM/AudioTextDescriptors.hxx>
-#include <CLAM/ControlPiano.hxx>
+//#include <CLAM/ControlPiano.hxx>
+#include <CLAM/qtmonitors/ProgressControlWidget.hxx>
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -47,7 +48,7 @@
 #include <CLAM/qtmonitors/PolarChromaPeaks.hxx>
 #include <CLAM/qtmonitors/SegmentationView.hxx>
 #include <CLAM/qtmonitors/ProgressControl.hxx>
-#include <CLAM/qtmonitors/MIDIPianoWidget.hxx>
+//#include <CLAM/qtmonitors/MIDIPianoWidget.hxx>
 #include "FloatVectorStorage.hxx"
 #include "FloatPairVectorStorage.hxx"
 
@@ -110,13 +111,14 @@ MainWindow::MainWindow()
 	_segmentationView->beCentred(true);
 	vboxLayout->addWidget(_segmentationView);
 
+/*
 	CLAM::ControlPiano * control = new CLAM::ControlPiano;
 	_controlPiano = _network.GetUnusedName("ControlPiano");
 	_network.AddProcessing(_controlPiano, control);
 	_pianoView = new CLAM::MIDIPianoWidget(control, _ui.centralwidget);
 	_pianoView->setClickEnabled(false);
 	vboxLayout->addWidget(_pianoView);
-
+*/
 	_tonalAnalysis = new CLAM::TonalAnalysis;
 
 	_aboutDialog = new QDialog(this);
@@ -134,7 +136,7 @@ MainWindow::MainWindow()
 	connect(_ui.viewChromaPeaksAction, SIGNAL(toggled(bool)), _polarChromaPeaks, SLOT(setVisible(bool)));
 	connect(_ui.viewChordRankingAction, SIGNAL(toggled(bool)), _chordRanking, SLOT(setVisible(bool)));
 	connect(_ui.viewSegmentationAction, SIGNAL(toggled(bool)), _segmentationView, SLOT(setVisible(bool)));
-	connect(_ui.viewPianoAction, SIGNAL(toggled(bool)), _pianoView, SLOT(setVisible(bool)));
+//	connect(_ui.viewPianoAction, SIGNAL(toggled(bool)), _pianoView, SLOT(setVisible(bool)));
 
 	QSettings settings;
 	_recentFiles = settings.value("RecentFiles").toStringList();
@@ -145,6 +147,7 @@ MainWindow::MainWindow()
 	_ui.viewChromaPeaksAction->setChecked(settings.value("ChromaPeaksVisible", true).toBool());
 	_ui.viewChordRankingAction->setChecked(settings.value("ChordRankingVisible", true).toBool());
 	_ui.viewSegmentationAction->setChecked(settings.value("SegmentationVisible", true).toBool());
+	_ui.viewPianoAction->setEnabled(false);
 	_ui.viewPianoAction->setChecked(settings.value("PianoVisible", true).toBool());
 
 	//Below lines are a workaround since setChecked should raise the toggled signal and since is connected, call setVisible() but seems there is no call, with the consequent bug at startup
@@ -154,7 +157,7 @@ MainWindow::MainWindow()
 	_polarChromaPeaks->setVisible(settings.value("ChromaPeaksVisible", true).toBool());
 	_chordRanking->setVisible(settings.value("ChordRankingVisible", true).toBool());
 	_segmentationView->setVisible(settings.value("SegmentationVisible", true).toBool());
-	_pianoView->setVisible(settings.value("PianoVisible", true).toBool());
+//	_pianoView->setVisible(settings.value("PianoVisible", true).toBool());
 }
 
 MainWindow::~MainWindow()
@@ -300,7 +303,7 @@ void MainWindow::loadAudioFile(const std::string & fileName)
 	_keySpace->noDataSource();
 	_chordRanking->noDataSource();
 	_segmentationView->noDataSource();
-	_pianoView->noDataSource();
+//	_pianoView->noDataSource();
 	
 	// Point the data sources to no storage and delete old storages
 	_pcpSource.clearData();
@@ -413,7 +416,7 @@ void MainWindow::loadAudioFile(const std::string & fileName)
 	_pcpSource.setStorage(_pcpStorage, sampleRate, &_frameDivision, nFrames);
 	_spectrogram->setDataSource(_pcpSource);
 	_tonnetz->setDataSource(_pcpSource);
-	_pianoView->setDataSource(_pcpSource);
+//	_pianoView->setDataSource(_pcpSource);
 
 	const char * minorChords[] = { 
 		"g", "g#", "a", "a#",
@@ -547,3 +550,4 @@ void MainWindow::setBackend(QString &backend)
 	_network.SetPlayer( _networkPlayer );
 	std::cout << "Audio backend: " << backend.toStdString() << std::endl;
 }
+
