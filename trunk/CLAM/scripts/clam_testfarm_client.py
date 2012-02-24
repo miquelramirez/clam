@@ -32,8 +32,6 @@ localDefinitions = dict(
 	repositories = "clam clam/testdata",
 	private_repositories = "",
 	sandbox= os.path.expanduser('~/'),
-	qt3dir='',
-	qt4dir='',
 	extraLibOptions = 'release=0',
 	extraAppOptions = '',
 )
@@ -53,7 +51,7 @@ client.brief_description = localDefinitions['description']
 clam = Task(
 	project = Project('CLAM','<a href="http://clam-project.org">clam web</a>' ), 
 	client = client, 
-	task_name='svn up|DEBUG' 
+	task_name='Full Tests' if '--slow-tests' in sys.argv else 'Quick Tests',
 	)
 
 clam.set_repositories_to_keep_state_of(repositories + localDefinitions['private_repositories'].split())
