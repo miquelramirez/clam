@@ -36,32 +36,32 @@ namespace CLAM
 
 class EnumTypedTypes: public CLAM::Enum {
 public:
-        EnumTypedTypes() : CLAM::Enum(ValueTable(), eFloat) {}
-        EnumTypedTypes(tValue v) : CLAM::Enum(ValueTable(), v) {};
-        EnumTypedTypes(const std::string & s) : CLAM::Enum(ValueTable(), s) {};
+		EnumTypedTypes() : CLAM::Enum(ValueTable(), eFloat) {}
+		EnumTypedTypes(tValue v) : CLAM::Enum(ValueTable(), v) {};
+		EnumTypedTypes(const std::string & s) : CLAM::Enum(ValueTable(), s) {};
 
-        virtual CLAM::Component * Species() const {return new EnumTypedTypes();}
+		virtual CLAM::Component * Species() const {return new EnumTypedTypes();}
 
-        typedef enum {
-                eString=0,
-                eFloat=1,
-                eDouble=2,
-                eInt=3,
-                eMidi=4,
-        } tEnum;
-        static tEnumValue * ValueTable()
-        {
-                static tEnumValue sValueTable[] =
-                {
-                        {eString,"s"},
-                        {eFloat,"f"},
-                        {eDouble,"d"},
-                        {eInt,"i"},
-                        {eMidi,"M"},
-                        {0,NULL}
-                };
-                return sValueTable;
-        }
+		typedef enum {
+				eString=0,
+				eFloat=1,
+				eDouble=2,
+				eInt=3,
+//				eMidi=4,
+		} tEnum;
+		static tEnumValue * ValueTable()
+		{
+				static tEnumValue sValueTable[] =
+				{
+						{eString,"s"},
+						{eFloat,"f"},
+						{eDouble,"d"},
+						{eInt,"i"},
+//						{eMidi,"M"},
+						{0,NULL}
+				};
+				return sValueTable;
+		}
 };
 
 
