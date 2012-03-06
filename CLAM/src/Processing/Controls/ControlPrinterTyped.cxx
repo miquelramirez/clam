@@ -3,7 +3,7 @@
 #include <sstream>
 #include "ProcessingFactory.hxx"
 
-#include <CLAM/MIDIMessage.hxx>
+//#include <CLAM/MIDIMessage.hxx>
 
 namespace CLAM
 {
@@ -44,9 +44,15 @@ namespace Hidden
 		for (nInputs=0; nInputs<typespec.size();nInputs++)
 		{
 			const char type = typespec[nInputs];
-			if (type != 's' and type != 'i' 
-				and type != 'f' and type != 'd'
-				and type != 'h' and type != 'M')
+			if (
+				type != 's' and
+				type != 'i' and
+				type != 'f' and
+				type != 'd' and
+				type != 'h' and
+// TODO: Review midi support
+//				type != 'M' and
+				true)
 				return 0; // return 0 if there is any non-compatible type
 		}
 		return nInputs;
@@ -79,8 +85,9 @@ namespace Hidden
 			return new InControl<double> (name,this);
 		if (type=="i")
 			return new InControl<int> (name,this);
-		if (type=="M")
-			return new InControl<MIDI::Message> (name,this);
+// TODO: Review midi support
+//		if (type=="M")
+//			return new InControl<MIDI::Message> (name,this);
 		// TODO: Decide whether ASSERTing (contract) or throw (control) 
 		return 0;
 	}
@@ -115,7 +122,14 @@ namespace Hidden
 		unsigned nInputs = GetInputsNumber();
 		if (nInputs == 0)
 		{
-			AddConfigErrorMessage("No proper OSCTypeSpec setup. Use: 'f' for float, 'd' for double, 'i' for integer, 'h' for integer 64, 'M' for MIDI Message.");
+			AddConfigErrorMessage("No proper OSCTypeSpec setup. Use: "
+				"'f' for float, "
+				"'d' for double, "
+				"'i' for integer, "
+				"'h' for integer 64, "
+// TODO: Review midi support
+//				"'M' for MIDI Message, "
+				);
 			return false;
 		}
 		std::string baseName = nInputs==1 ?  "In Control" : _config.GetIdentifier();
