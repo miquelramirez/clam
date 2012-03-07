@@ -25,6 +25,8 @@ def ellapsedTime():
 	global startTime
 	return time.time() - startTime
 
+slowTests = '--slow-tests' in sys.argv :
+
 localDefinitions = dict(
 	name= 'BM_lucid_32',
 	description= '<img src="http://clam-project.org/images/linux_icon.png"/> <img src="http://clam-project.org/images/ubuntu_icon.png"/>',
@@ -36,6 +38,7 @@ localDefinitions = dict(
 	extraAppOptions = '',
 )
 localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"local")
+if slowTests : localDefinitions['name']+="_slow"
 repositories = localDefinitions['repositories'].split()
 private_repositories = localDefinitions['private_repositories'].split()
 os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitions
@@ -233,7 +236,7 @@ clam.add_subtask('pyCLAM Unit Tests', [
 ])
 """
 
-if '--slow-tests' in sys.argv :
+if slowTests :
 	dirs = [
 		'clam/NetworkEditor',
 		'clam/CLAM/plugins/continuousExcitationSynthesizer',
