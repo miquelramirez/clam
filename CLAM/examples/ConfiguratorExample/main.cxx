@@ -7,7 +7,7 @@
 #include <CLAM/AudioInFilename.hxx>
 #include <CLAM/AudioOutFilename.hxx>
 #include <CLAM/BPF.hxx>
-#include "Configurator.hxx"
+#include <CLAM/Configurator.hxx>
 
 /**
  * @example Configurators_example.cxx
