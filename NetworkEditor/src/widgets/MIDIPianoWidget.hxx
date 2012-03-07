@@ -28,7 +28,7 @@
 #include <CLAM/MIDIMessage.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/InControlBase.hxx>
-#include <CLAM/ControlPiano.hxx>
+#include "ControlPiano.hxx"
 
 typedef unsigned int TSize;
 
