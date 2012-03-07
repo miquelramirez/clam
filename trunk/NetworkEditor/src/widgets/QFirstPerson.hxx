@@ -6,6 +6,8 @@
 #include <QtGui/QKeyEvent>
 #include <iostream>
 #include <cmath>
+#include <GL/glu.h>
+
 static float * vColor(const QColor & color)
 {
 	static float vcolor[4];
