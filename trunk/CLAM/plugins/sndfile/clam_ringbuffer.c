@@ -54,7 +54,7 @@ clam_ringbuffer_create (size_t sz)
 	rb->size = sz;
 	rb->write_ptr = 0;
 	rb->read_ptr = 0;
-	if ((rb->buf = malloc (rb->size)) == NULL) {
+	if ((rb->buf = (char*)malloc (rb->size)) == NULL) {
 		free (rb);
 		return NULL;
 	}
