@@ -25,7 +25,7 @@ def ellapsedTime():
 	global startTime
 	return time.time() - startTime
 
-slowTests = '--slow-tests' in sys.argv :
+slowTests = '--slow-tests' in sys.argv
 
 localDefinitions = dict(
 	name= 'BM_lucid_32',
