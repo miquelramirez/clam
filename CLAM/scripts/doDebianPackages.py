@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import os.path
 import glob
@@ -10,6 +11,7 @@ from versionInfo import versionFromRemoteSvn
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
 revisionOption="-r14035 " # empty for current, -r34 for revision 34
+revisionOption=" " # empty for current, -r34 for revision 34
 distributions = [
 #	('debian', 'lenny',   "http://ftp.de.debian.org/debian/", ['main']),
 #	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
@@ -19,15 +21,17 @@ distributions = [
 #	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('ubuntu', 'karmic', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 	('ubuntu', 'lucid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'maverick', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'natty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 ]
 repositoryBase = "http://clam-project.org/clam/trunk/"
 repositories = [
-	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[1] ),
-	( 'CLAM/plugins',  'clam-plugins',       versionFromRemoteSvn('CLAM')[1] ),
-	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
+#	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[1] ),
+#	( 'CLAM/plugins',  'clam-plugins',       versionFromRemoteSvn('CLAM')[1] ),
+#	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
+	( 'chordata',      'clam-chordata',      versionFromRemoteSvn('chordata')[1] ),
 #	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
 #	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
-	( 'chordata',      'clam-chordata',      versionFromRemoteSvn('chordata')[1] ),
 ]
 
 hooks = {
@@ -50,7 +54,7 @@ failedSteps = []
 def run(command) :
 	print "\033[32m:: ", command, " \033[0m"
 	sys.stdout.flush()
-	retcode = os.system(command)
+	retcode = os.system(command.encode("utf8"))
 	if retcode != 0 : failedSteps.append(command)
 	return retcode
 	for line in os.popen(command) :
@@ -87,15 +91,18 @@ for package, srcpackage, version in repositories :
 	module = repositoryBase + package
 	modulePackaging = module + '/debian'
 	srcdir = srcpackage + "-" + version
+	pkgname = srcpackage + "_" + version
 	tarball = srcpackage + "_" + version + ".orig.tar.gz"
 	run( "svn export %s --force %s %s"%(revisionOption, module, srcdir) )
 	run( "rm -rf  %s/debian"%(srcdir) )
 	run( "tar cvfz %s %s"%(tarball, srcdir) )
 	run( "svn export %s --force %s %s/debian"%(revisionOption, modulePackaging, srcdir) )
-	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='developers@clam-project.org' dch -d 'Autobuilt package' --distribution='unstable' --force-distribution"%(srcdir) )
-	run( "dpkg-source -b %s"%(srcdir))
+	run( u"cd %s; DEBFULLNAME='David García Garzón' DEBEMAIL='david.garcia@upf.edu' dch -d 'New upstream subversion revision' --distribution='maverick' --force-distribution"%(srcdir) )
+#	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='developers@clam-project.org' dch -d 'New upstream subversion revision' --distribution='unstable' --force-distribution"%(srcdir) )
+	run( "cd %s; dpkg-buildpackage -nc -kBB3426E8 -S"%(srcdir))
+#	run( "dput ppa:dgarcia-ubuntu/ppa %s-1_source.changes"%pkgname)
 
-
+sys.exit()
 for (maindistro, distribution, mirror, components) in distributions :
 	phase( "Preparing chroot for '%s'"%distribution )
 	resultdir = '/var/cache/pbuilder/result'
