@@ -11,6 +11,7 @@ from project import Project
 from client import Client
 from runner import Runner
 from commands import getoutput
+from mail import MailReporter
 
 def countLines( path ):
 	print 'loc for path:', path
@@ -264,5 +265,8 @@ Runner( clam,
 	first_run_always = forceRun,
 	remote_server_url = 'http://84.88.76.14/testfarm_server',
 #	local_base_dir='/tmp',
+	extra_listeners = [
+		MailReporter(repositories = repositories),
+	]
 )
 
