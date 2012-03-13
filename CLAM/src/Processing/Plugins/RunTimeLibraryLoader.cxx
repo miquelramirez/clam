@@ -14,8 +14,9 @@
 
 #include "ProcessingFactory.hxx"
 
-static bool debug = false;
 
+/// Environment variable to enable verbose plugin loading message
+static const char * debugEnvFlag = "CLAM_DEBUG_PLUGINS";
 
 void RunTimeLibraryLoader::ReLoad() 
 {
@@ -77,7 +78,7 @@ void RunTimeLibraryLoader::Load()
 	std::vector <std::string> environmentPaths = SplitPathVariable(path);
 	for (unsigned i=0; i<environmentPaths.size(); i++)
 	{
-		if (getenv("CLAM_DEBUG_PLUGINS"))
+		if (getenv(debugEnvFlag))
 			std::cout << "RunTimeLibraryLoader: Scanning for libraries in " << environmentPaths[i] << std::endl;
 		LoadLibrariesFromPath(environmentPaths[i]);
 	}
@@ -113,13 +114,13 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path)
 		std::string pluginFilename(dirEntry->d_name);
 		if(pluginFilename == "." || pluginFilename == ".." || not isDynamicLibrary(pluginFilename))
 			continue;
-		if (getenv("CLAM_DEBUG_PLUGINS"))
+		if (getenv(debugEnvFlag))
 			std::cout << "RunTimeLibraryLoader: Found file " << pluginFilename << std::endl;
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
 
 		if (factory.isLibraryLoaded( pluginFullFilename ))
 		{
-			if (getenv("CLAM_DEBUG_PLUGINS"))
+			if (getenv(debugEnvFlag))
 				std::cout << "RunTimeLibraryLoader: Already loaded, skiping..." << std::endl;
 			continue;
 		}
@@ -134,7 +135,7 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path)
 					  << " reason: " << LibraryLoadError()
 					  << std::endl;
 		}
-		else if (getenv("CLAM_DEBUG_PLUGINS"))
+		else if (getenv(debugEnvFlag))
 			std::cout << "RunTimeLibraryLoader: Loaded" << std::endl;
 
 		SetupLibrary( handle, pluginFullFilename );
