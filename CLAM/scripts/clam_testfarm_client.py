@@ -266,7 +266,16 @@ Runner( clam,
 	remote_server_url = 'http://84.88.76.14/testfarm_server',
 #	local_base_dir='/tmp',
 	extra_listeners = [
-		MailReporter(repositories = repositories),
+		MailReporter(
+#			server = localDefinitions['mailServer'],
+#			port = localDefinitions['mailPort'],
+#			user = localDefinitions['mailUser'],
+#			password = localDefinitions['mailPassword'],
+#			from_email = localDefinitions['mailSender'],
+#			to_email = localDefinitions['mailRecipients'],
+#			subject_template = "CLAM project is {task_status}",
+#			more_url = "http://clam-project.org/testfarm.html",
+		),
 	]
 )
 
