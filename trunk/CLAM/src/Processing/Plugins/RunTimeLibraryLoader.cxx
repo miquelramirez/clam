@@ -77,7 +77,8 @@ void RunTimeLibraryLoader::Load()
 	std::vector <std::string> environmentPaths = SplitPathVariable(path);
 	for (unsigned i=0; i<environmentPaths.size(); i++)
 	{
-		debug && std::cout << "RunTimeLibraryLoader: Scanning for libraries in " << environmentPaths[i] << std::endl;
+		if (getenv("CLAM_DEBUG_PLUGINS")
+			std::cout << "RunTimeLibraryLoader: Scanning for libraries in " << environmentPaths[i] << std::endl;
 		LoadLibrariesFromPath(environmentPaths[i]);
 	}
 }
@@ -112,11 +113,14 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path)
 		std::string pluginFilename(dirEntry->d_name);
 		if(pluginFilename == "." || pluginFilename == ".." || not isDynamicLibrary(pluginFilename))
 			continue;
-		debug && std::cout << "RunTimeLibraryLoader: Found file " << pluginFilename << std::endl;
+		if (getenv("CLAM_DEBUG_PLUGINS"))
+			std::cout << "RunTimeLibraryLoader: Found file " << pluginFilename << std::endl;
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
 
 		if (factory.isLibraryLoaded( pluginFullFilename ))
 		{
+			if (getenv("CLAM_DEBUG_PLUGINS")
+				std::cout << "RunTimeLibraryLoader: Already loaded, skiping..." << std::endl;
 			continue;
 		}
 		factory.setLibraryAsLoaded( pluginFullFilename );
@@ -126,10 +130,12 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path)
 		// TODO: throw exception and have catch in main()
 		if (handle == NULL)
 		{
-			std::cout << "Error loading: " << pluginFullFilename 
+			std::cout << "RunTimeLibraryLoader: Error loading: " << pluginFullFilename 
 					  << " reason: " << LibraryLoadError()
 					  << std::endl;
 		}
+		else if (getenv("CLAM_DEBUG_PLUGINS")
+			std::cout << "RunTimeLibraryLoader: Loaded" << std::endl;
 
 		SetupLibrary( handle, pluginFullFilename );
 	}
