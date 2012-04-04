@@ -7,6 +7,7 @@
 #include <cxxabi.h>
 #endif//__GNUC__
 #include <cstdlib>
+#include "DebugUtils.hxx"
 
 namespace spectral { class TableParser; }
 
@@ -310,6 +311,7 @@ public:
 		_errorMessage += os.str();
 		return false;
 	}
+/*
 	/// Demangles a typeid name (just works with gcc)
 	static std::string demangle(const std::string & mangledName)
 	{
@@ -323,7 +325,7 @@ public:
 		#endif//__GNUC__
 		return result;
 	}
-
+*/
 };
 
 namespace spectral
