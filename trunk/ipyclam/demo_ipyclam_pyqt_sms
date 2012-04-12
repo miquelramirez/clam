@@ -47,35 +47,38 @@ class ipyclam_controller(QtGui.QWidget):
 		self._network.bindUi(self)
 
 	def createNetwork(self):
-		self._network = ipyclam.Network( ipyclam.Clam_NetworkProxy() )
-		self._network.backend = "JACK"
-		self._network.Input = 'AudioSource'
-		self._network.SMSAnalysisCore = 'SMSAnalysisCore'
-		self._network["SMSSynthesis_0"] = 'SMSSynthesis'
-		self._network["SMSSynthesis_1"] = 'SMSSynthesis'
-		self._network["SMSTranspose_0"] = 'SMSTranspose'
-		self._network["SMSTranspose_1"] = 'SMSTranspose'
-		self._network["Transpose amount"] = 'OutControlSender'
-		self._network["Transpose amount_0"] = 'OutControlSender'
-		self._network["Transposed_0"] = 'AudioSink'
-		self._network["Transposed_1"] = 'AudioSink'
-		self._network["Transpose amount"]['Min'] = -36.0
-		self._network["Transpose amount"]['Max'] = 36.0
-		self._network["Transpose amount"]['Step'] = 0.360000014305
-		self._network["Transpose amount_0"]['Min'] = -36.0
-		self._network["Transpose amount_0"]['Max'] = 36.0
-		self._network["Transpose amount_0"]['Step'] = 0.360000014305
-		self._network.Input["1"] > self._network.SMSAnalysisCore["Input Audio"]
-		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network["SMSTranspose_0"]["In SpectralPeaks"]
-		self._network.SMSAnalysisCore["Sinusoidal Peaks"] > self._network["SMSTranspose_1"]["In SpectralPeaks"]
-		self._network.SMSAnalysisCore["Residual Spectrum"] > self._network["SMSSynthesis_0"].InputResSpectrum
-		self._network.SMSAnalysisCore["Residual Spectrum"] > self._network["SMSSynthesis_1"].InputResSpectrum
-		self._network["SMSSynthesis_0"].OutputAudio > self._network["Transposed_0"]["1"]
-		self._network["SMSSynthesis_1"].OutputAudio > self._network["Transposed_1"]["1"]
-		self._network["SMSTranspose_0"]["Out SpectralPeaks"] > self._network["SMSSynthesis_0"].InputSinPeaks
-		self._network["SMSTranspose_1"]["Out SpectralPeaks"] > self._network["SMSSynthesis_1"].InputSinPeaks
-		self._network["Transpose amount"].out > self._network["SMSTranspose_0"]["Transpose amount"]
-		self._network["Transpose amount_0"].out > self._network["SMSTranspose_1"]["Transpose amount"]
+		net = ipyclam.Network( ipyclam.Clam_NetworkProxy() )
+		net.backend = "JACK"
+		net.Input = 'AudioSource'
+		net.SMSAnalysisCore = 'SMSAnalysisCore'
+		net.SMSSynthesis_0 = 'SMSSynthesis'
+		net.SMSSynthesis_1 = 'SMSSynthesis'
+		net.SMSTranspose_0 = 'SMSTranspose'
+		net.SMSTranspose_1 = 'SMSTranspose'
+		net.Semitones_0 = 'OutControlSender'
+		net.Semitones_0.Min = -36
+		net.Semitones_0.Max = 36
+		net.Semitones_0.Step = 1
+		net.Semitones_1 = 'OutControlSender'
+		net.Semitones_1.Min = -36
+		net.Semitones_1.Max = 36
+		net.Semitones_1.Step = 1
+		net.DryOutput = 'AudioSink'
+		net.Transposed_0 = 'AudioSink'
+		net.Transposed_1 = 'AudioSink'
+		net.Input["1"] > net.SMS:!AnalysisCore["Input Audio"]
+		net.SMSAnalysisCore["Sinusoidal Peaks"] > net.SMSTranspose_0["In SpectralPeaks"]
+		net.SMSAnalysisCore["Sinusoidal Peaks"] > net.SMSTranspose_1["In SpectralPeaks"]
+		net.SMSAnalysisCore["Residual Spectrum"] > net.SMSSynthesis_0.InputResSpectrum
+		net.SMSAnalysisCore["Residual Spectrum"] > net.SMSSynthesis_1.InputResSpectrum
+		net.AudioSource > net.DryOutput
+		net.SMSSynthesis_0.OutputAudio > net.Transposed_0["1"]
+		net.SMSSynthesis_1.OutputAudio > net.Transposed_1["1"]
+		net.SMSTranspose_0["Out SpectralPeaks"] > net.SMSSynthesis_0.InputSinPeaks
+		net.SMSTranspose_1["Out SpectralPeaks"] > net.SMSSynthesis_1.InputSinPeaks
+		net.Semitones_0.out > net.SMSTranspose_0["Transpose amount"]
+		net.Semitones_1.out > net.SMSTranspose_1["Transpose amount"]
+		self._network = net
 
 	def showCode(self):
 		QtGui.QMessageBox.about(self, "Code to build the network", self._network.code())
