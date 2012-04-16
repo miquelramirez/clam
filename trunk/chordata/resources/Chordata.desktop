@@ -11,7 +11,7 @@ MimeType=application/ogg;audio/basic;audio/mpeg;audio/x-aiff;audio/x-mp3;audio/x
 
 [Desktop Action Edit]
 Exec=chordata %f
-Name=Analize chords (Chordata)
+Name=Analyze chords (Chordata)
 
 
 
