@@ -26,7 +26,9 @@
 #include <CLAM/Processing.hxx>
 #include "ComplexSpectrum.hxx"
 #include <algorithm>
-
+#ifdef __SSE3__
+#include <immintrin.h>
+#endif
 namespace CLAM
 {
 
@@ -82,13 +84,39 @@ public:
 		const unsigned nBins = in1.bins.size(); 
 		if (out.bins.size()!=nBins) // Also protects against resizing when out is one of the ins
 			out.bins.resize( nBins );
+
 		std::complex<float> * outBins = & out.bins[0];
 		const std::complex<float> * in1Bins = & in1.bins[0];
 		const std::complex<float> * in2Bins = & in2.bins[0];
+
+		C_Complex * coutBins = reinterpret_cast<C_Complex*>(outBins);
+		const C_Complex * cin1Bins = reinterpret_cast<const C_Complex*>(in1Bins);
+		const C_Complex * cin2Bins = reinterpret_cast<const C_Complex*>(in2Bins);
+
+		#ifndef __SSE3__
 		for (unsigned i=0; i<nBins; i++)
 		{
-			outBins[i] = in1Bins[i] * in2Bins[i];
+			coutBins[i] = cin1Bins[i] * cin2Bins[i];
 		}
+		#else
+		for (unsigned i=0; i<nBins-1; i+=2)
+		{
+			// TODO: If we could ensure that the buffers are aligned, 
+			// we could save the loadups and storeups instructions providing 
+			// the buffers directly as parameters
+			register __m128 i1 = _mm_loadu_ps((const float*)&cin1Bins[i]);
+			register __m128 i2 = _mm_loadu_ps((const float*)&cin2Bins[i]);
+			register __m128 real2 = _mm_moveldup_ps(i2);
+			register __m128 imag2 = _mm_movehdup_ps(i2);
+			register __m128 mulr = _mm_mul_ps(i1, real2);
+			register __m128 muli = _mm_mul_ps(i1, imag2);
+			register __m128 shuf = _mm_shuffle_ps(muli,muli,0xB1);
+			register __m128 result = _mm_addsub_ps(mulr,shuf);
+			_mm_storeu_ps((float*)&coutBins[i], result);
+		}
+		if (nBins&1) coutBins[nBins-1] = cin1Bins[nBins-1] * cin2Bins[nBins-1];
+		#endif
+
 		return true;
 	}
 	bool Do()
