@@ -168,7 +168,12 @@ qtmonitorHeaders = env.scanFiles('*.hxx', qtmonitorDirs,
 	)
 qtmonitorEnv = env.Clone()
 pluginDefines=['-DQT_PLUGIN','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
-qtmonitorEnv.AppendUnique(CPPFLAGS=pluginDefines)
+qtmonitorEnv.AppendUnique(
+	CPPFLAGS=pluginDefines,
+	)
+if sys.platform != 'darwin':
+	qtmonitorEnv.AppendUnique(LINKFLAGS=['-Wl,--no-as-needed'])
+
 if isWindowsPlatform :
 	qtmonitorEnv.AppendUnique(LINKFLAGS=['-Wl,--export-all-symbols'])
 qtmonitorSources += qtmonitorEnv.Qrc(source=qrcfiles)
