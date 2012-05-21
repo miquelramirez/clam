@@ -51,7 +51,7 @@ env.EnableClamModules([
 env.Append( CPPFLAGS = ['-DTEST_DATA_PATH="\\"%s\\""' % env['test_data_path'] ] )
 env.Append( CPPFLAGS = ['-DCLAM_MODULE="\\"tests\\""'] )
 
-env.ParseConfig( 'pkg-config --cflags --libs cppunit')
+env.ParseConfig( 'pkg-config --cflags --libs cppunit xerces-c')
 
 if sys.platform == 'darwin':
 	env.AppendUnique( LIBS=['xerces-c'] )
