@@ -28,9 +28,10 @@ Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
-if sys.platform in ["linux2","darwin"] :
+if sys.platform in ["darwin"] :
 	env['QT_LIB']='qt-mt'
 if sys.platform=="linux2":
+	env.ParseConfig('pkg-config qt-mt')
 	env.AppendUnique(LIBS=['GL'])
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
