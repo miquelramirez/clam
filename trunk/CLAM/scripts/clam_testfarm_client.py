@@ -11,6 +11,7 @@ from project import Project
 from client import Client
 from runner import Runner
 from commands import getoutput
+from utils import loadDictFile
 from mail import MailReporter
 
 def countLines( path ):
@@ -29,15 +30,22 @@ def ellapsedTime():
 slowTests = '--slow-tests' in sys.argv
 
 localDefinitions = dict(
-	name= 'BM_lucid_32',
 	description= '<img src="http://clam-project.org/images/linux_icon.png"/> <img src="http://clam-project.org/images/ubuntu_icon.png"/>',
 #	repositories = "clam acustica clam/testdata clam/padova-speech-sms",
-	repositories = "clam clam/testdata",
+	repositories = "clam clam-test-data",
 	private_repositories = "",
 	sandbox= os.path.expanduser('~/'),
 	extraLibOptions = 'release=0',
 	extraAppOptions = '',
 )
+try :
+	localDefinitions.update(loadDictFile(os.path.expanduser('~/.config/testfarmrc')))
+	localDefinitions['name'] # ensure that name is defined
+	localDefinitions['description']
+except :
+	print >> sys.stderr, "ERROR: You should create ~/.config/testfarmrc with at least the name and description attributes of your client"
+	raise
+
 localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"local")
 if slowTests : localDefinitions['name']+="_slow"
 repositories = localDefinitions['repositories'].split()
@@ -58,29 +66,20 @@ clam = Task(
 	task_name='Full Tests' if '--slow-tests' in sys.argv else 'Quick Tests',
 	)
 
-clam.set_repositories_to_keep_state_of(repositories + localDefinitions['private_repositories'].split())
+#clam.set_repositories_to_keep_state_of(repositories + localDefinitions['private_repositories'].split())
+
+for repository in repositories :
+	clam.add_sandbox(SvnSandbox(os.path.join(localDefinitions['sandbox'], repository)))
+
+for repository in localDefinitions['private_repositories'].split() :
+	clam.add_sandbox(SvnSandbox(os.path.join(localDefinitions['sandbox'], repository)))
 
 clam.set_check_for_new_commits( 
-	checking_cmd='for a in %(repositories)s; do ( cd %(sandbox)s/$a && svn status -u); done | grep \'[*!]\''%localDefinitions,
+#	checking_cmd='for a in %(repositories)s; do ( cd %(sandbox)s/$a && svn status -u); done | grep \'[*!]\''%localDefinitions,
+	checking_cmd='false'%localDefinitions,
 	minutes_idle=15
 )
 
-clam.add_subtask( 'List of new commits', [
-	'cd %(sandbox)s/'%localDefinitions,
-	] + [
-		# 'true' is needed in order testfarm not to catch the 'cd'
-		{CMD: 'true ; cd %s; svn log -r BASE:HEAD; cd -'%repo, INFO: lambda x:x }
-		for repo in repositories if repo not in private_repositories
-	] + [
-		{CMD: 'true ; cd %s; svn log -q -r BASE:HEAD; cd -'%repo, INFO: lambda x:x }
-		for repo in private_repositories
-	] + [
-		{CMD: '(cd %s ; svn up --accept postpone )'%repo, INFO: lambda x:x }
-		for repo in repositories if repo not in private_repositories
-	] + [
-		{CMD: '(cd %s ; svn up --accept postpone )'%repo, INFO: lambda x:'No available' }
-		for repo in private_repositories
-	] )
 clam.add_subtask('count lines of code', [
 	{CMD:'echo %(sandbox)s/clam/CLAM'%localDefinitions, STATS: lambda x: {'clam_loc': countLines(x) } },
 	{CMD:'echo %(sandbox)s/clam/SMSTools'%localDefinitions, STATS: lambda x: {'smstools_loc': countLines(x) } },
@@ -89,7 +88,8 @@ clam.add_subtask('count lines of code', [
 clam.add_deployment( [
 	'cd %(sandbox)s/clam/CLAM'%localDefinitions,
 	'rm -rf %(installPath)s/*'%localDefinitions,
-	'scons configure prefix=%(installPath)s %(extraLibOptions)s'%localDefinitions,
+	'mkdir -p %(installPath)s'%localDefinitions,
+	'scons configure prefix=%(installPath)s xmlbackend=both %(extraLibOptions)s'%localDefinitions,
 	'scons',
 	'scons install',
 	'mkdir -p %(installPath)s/bin'%localDefinitions,
@@ -97,7 +97,7 @@ clam.add_deployment( [
 
 clam.add_subtask('Unit Tests', [
 	'cd %(sandbox)s/clam/CLAM/test'%localDefinitions,
-	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions, # TODO: test_data_path and release
+	'scons test_data_path=%(sandbox)s/clam-test-data clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions, # TODO: test_data_path and release
 	'cd UnitTests',
 	{INFO : lambda x:startTimer() },
 	{CMD: './UnitTests'},
@@ -105,7 +105,7 @@ clam.add_subtask('Unit Tests', [
 ] )
 clam.add_subtask('Functional Tests', [
 	'cd %(sandbox)s/clam/CLAM/test'%localDefinitions,
-	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
+	'scons test_data_path=%(sandbox)s/clam-test-data clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
 	'cd FunctionalTests',
 	{INFO : lambda x:startTimer() },
 	{CMD:'./FunctionalTests'},
@@ -126,7 +126,6 @@ clam.add_subtask('CLAM Plugins', [
 	'scons install',
 
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization/ladspa/'%localDefinitions,
-	'scons -c',
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
