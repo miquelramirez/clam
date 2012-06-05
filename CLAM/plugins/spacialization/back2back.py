@@ -6,8 +6,10 @@ Create a link to clam-test-data/b2b to this directory.
 Create links to imm_bm/bformat2binaural/{Ew,Ex,Ey,Ez} to this directory.
 
 Needed setup:
- cd ~/imm_bm/HRTFs/ && ./prepareAll.sh 
- cd ~/imm_bm/bformat2binaural/ && ./generateAllEquivalent.sh 
+ sandboxespath=../../../..
+ ln -sf $sandboxespath/clam-test-data/b2b/
+ cd $sandboxespath/imm_bm/HRTFs/ && ./prepareAll.sh 
+ cd $sandboxespath/imm_bm/bformat2binaural/ && ./generateAllEquivalent.sh 
 """
 
 import sys, os
