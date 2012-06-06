@@ -135,7 +135,7 @@ private:
 	xmlpp::Element * absoluteSelection(const std::string & path)
 	{
 		xmlpp::Element * root = _document->get_root_node();
-		unsigned int nextSlash = std::string(path).find('/',1);
+		size_t nextSlash = std::string(path).find('/',1);
 		std::string rootStep = std::string(path).substr(1,nextSlash-1);
 		std::string rootName = root->get_name();
 		if (rootStep=="") return root;
@@ -145,11 +145,11 @@ private:
 
 		throw XmlStorageErr("Wrong root name, expected '"+rootStep+"' but found '"+rootName+"'");
 	}
-	xmlpp::Element * recursiveSelection(xmlpp::Element * current, const std::string & path, unsigned int pos)
+	xmlpp::Element * recursiveSelection(xmlpp::Element * current, const std::string & path, size_t pos)
 	{
 		if (pos >= path.length()) return current;
-		unsigned int slashPosition = path.find('/', pos);
-		unsigned int stepSize = 
+		size_t slashPosition = path.find('/', pos);
+		size_t stepSize = 
 			slashPosition == std::string::npos ? 
 				std::string::npos : slashPosition-pos;
 		std::string step = path.substr(pos, stepSize);
