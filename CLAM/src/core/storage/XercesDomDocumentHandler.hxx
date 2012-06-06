@@ -142,7 +142,7 @@ private:
 	xercesc::DOMElement * absoluteSelection(const std::string & path)
 	{
 		xercesc::DOMElement * root = (xercesc::DOMElement*) _document->getDocumentElement();
-		unsigned int nextSlash = std::string(path).find('/',1);
+		size_t nextSlash = std::string(path).find('/',1);
 		std::string rootStep = std::string(path).substr(1,nextSlash-1);
 		std::string rootName = L(root->getNodeName());
 		if (rootStep=="") return root;
@@ -152,11 +152,11 @@ private:
 
 		throw XmlStorageErr("Wrong root name, expected '"+rootStep+"' but found '"+rootName+"'");
 	}
-	xercesc::DOMElement * recursiveSelection(xercesc::DOMElement * current, const std::string & path, unsigned int pos)
+	xercesc::DOMElement * recursiveSelection(xercesc::DOMElement * current, const std::string & path, size_t pos)
 	{
 		if (pos >= path.length()) return current;
-		unsigned int slashPosition = path.find('/', pos);
-		unsigned int stepSize = 
+		size_t slashPosition = path.find('/', pos);
+		size_t stepSize = 
 			slashPosition == std::string::npos ? 
 				std::string::npos : slashPosition-pos;
 		std::string step = path.substr(pos, stepSize);
