@@ -82,7 +82,7 @@ public:
 			_orientations.push_back(Orientation(azimuth, elevation));
 			_waveFiles.push_back(base+filename);
 		}
-		if (_storage.size() == 0) return error(errorMsg, "Empty database");
+		if (_orientations.size() == 0) return error(errorMsg, "Empty database");
 		return true;
 	}
 	bool loadImpulseResponseDatabaseData( 
