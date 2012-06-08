@@ -35,6 +35,7 @@ elif sys.platform=="linux2":
 	env.ParseConfig('pkg-config qt-mt')
 	env.AppendUnique(LIBS=['GL'])
 	env['QT_UIC']='/usr/bin/uic-qt3'
+	env['QT_MOC']='/usr/bin/moc-qt3'
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
 
