@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<SMSAnalysisSynthesisConfig>
+
+  <Name></Name>
+
+  <InputSoundFile>example-data/sweep.wav</InputSoundFile>
+
+  <OutputSoundFile>example-data/sweep-outputSound.wav</OutputSoundFile>
+
+  <OutputAnalysisFile>example-data/sweep-outputAnalysis.sdif</OutputAnalysisFile>
+
+  <InputAnalysisFile></InputAnalysisFile>
+
+  <AnalysisWindowSize>2049</AnalysisWindowSize>
+
+  <AnalysisHopSize>256</AnalysisHopSize>
+
+  <AnalysisWindowType>BlackmanHarris92</AnalysisWindowType>
+
+  <ResAnalysisWindowSize>1025</ResAnalysisWindowSize>
+
+  <ResAnalysisWindowType>BlackmanHarris92</ResAnalysisWindowType>
+
+  <AnalysisZeroPaddingFactor>2</AnalysisZeroPaddingFactor>
+
+  <AnalysisPeakDetectMagThreshold>-150</AnalysisPeakDetectMagThreshold>
+
+  <AnalysisPeakDetectMaxFreq>10000</AnalysisPeakDetectMaxFreq>
+
+  <AnalysisSinTrackingFreqDeviation>20</AnalysisSinTrackingFreqDeviation>
+
+  <AnalysisReferenceFundFreq>1000</AnalysisReferenceFundFreq>
+
+  <AnalysisLowestFundFreq>40</AnalysisLowestFundFreq>
+
+  <AnalysisHighestFundFreq>6000</AnalysisHighestFundFreq>
+
+  <AnalysisHarmonic>1</AnalysisHarmonic>
+
+  <DoCleanTracks>0</DoCleanTracks>
+
+  <CleanTracksMaxDropOut>8</CleanTracksMaxDropOut>
+
+  <CleanTracksMinLength>4</CleanTracksMinLength>
+
+  <SynthesisFrameSize>256</SynthesisFrameSize>
+
+  <SynthesisWindowType>Triangular</SynthesisWindowType>
+
+  <MorphSoundFile></MorphSoundFile>
+
+</SMSAnalysisSynthesisConfig>

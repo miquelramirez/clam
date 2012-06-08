@@ -1,0 +1,30 @@
+This file explains how to compile and install the CLAM applications 
+from the source tarballs.
+
+ 1. Install CLAM dependencies
+
+ Please refere to the INSTALL file in the CLAM (library) tarball.
+ 
+   
+ 2. Compile CLAM libraries from the tarball
+ 
+ Please refere to the INSTALL file in the CLAM (library) tarball.
+
+
+ 3. Compile the CLAM application.
+ Change dir to the scons/ directory and issue
+
+	$ scons
+
+ If you wish to use CLAM libs installed in a non-standard dir, you 
+ will need to specify the clam_prefix :
+
+        $ scons clam_prefix=~/mylibs/ install
+ 
+ For further building options do :
+
+	$ scons --help
+
+ Notice that if you are using a non-standard clam_prefix, you might 
+ need to make the LD_LIBRARY_PATH to point to the CLAM lib directory.
+
