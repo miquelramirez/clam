@@ -1,0 +1,21 @@
+This package was debianized by CLAM development team <developers@clam-project.org>
+on Mon, 29 Aug 2005 15:19:44 +0200.
+
+The original source can be found at: http://clam-project.org/ .
+
+Copyright (c) 2001-2007 MUSIC TECHNOLOGY GROUP (MTG)
+                UNIVERSITAT POMPEU FABRA
+Copyright (c) 2007-2009 UNIVERSITAT POMPEU FABRA
+
+Upstream Authors: CLAM development team <developers@clam-project.org>
+
+License:
+
+The entire code base may be distributed under the terms of the GNU General
+Public License (GPL) or, at your option, any later version.
+
+On Debian systems, the complete text of the GNU General Public
+License, version 2, can be found in /usr/share/common-licenses/GPL.
+
+
+
