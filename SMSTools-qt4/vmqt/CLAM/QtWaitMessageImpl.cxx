@@ -1,6 +1,10 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <QCloseEvent>
+#include <Q3BoxLayout>
+#include <Q3VBoxLayout>
 #include <CLAM/WaitMsgIndicator.hxx>
 #include <CLAM/QtWaitMessageImpl.hxx>
 
@@ -15,7 +19,7 @@ namespace CLAM
 			mIndicator = new WaitMsgIndicator(this);
 			mIndicator->setFixedHeight(25);
 
-			QBoxLayout* layout = new QVBoxLayout(this);
+			Q3BoxLayout* layout = new Q3VBoxLayout(this);
 			layout->setMargin(15);
 			layout->setSpacing(10);
 

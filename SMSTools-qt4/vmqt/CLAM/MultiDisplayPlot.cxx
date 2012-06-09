@@ -1,6 +1,8 @@
-#include <qframe.h>
+#include <q3frame.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QKeyEvent>
 #include <CLAM/Assert.hxx>
 #include <CLAM/Ruler.hxx>
 #include <CLAM/HScrollGroup.hxx>
@@ -13,7 +15,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		MultiDisplayPlot::MultiDisplayPlot(QWidget* parent,  const char * name, WFlags f)
+		MultiDisplayPlot::MultiDisplayPlot(QWidget* parent,  const char * name, Qt::WFlags f)
 			: QtPlot(parent,name,f)
 			, mMasterId(-1)
 			, mXRuler(0)
@@ -249,7 +251,7 @@ namespace CLAM
 			QFont f("Sans",8);
 			f.setBold(true);
 			
-			mToggleContainer = new QFrame(this);
+			mToggleContainer = new Q3Frame(this);
 			mToggleContainer->setFixedSize(XRULER_HEIGHT,XRULER_HEIGHT);
 			mToggleButton = new QPushButton(mToggleContainer);
 			mToggleButton->setFont(f);

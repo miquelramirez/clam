@@ -19,9 +19,12 @@
  *
  */
 #include <qlayout.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3HBoxLayout>
 #include <CLAM/IconData.hxx>
 #include <CLAM/QtPlayer.hxx>
 
@@ -44,9 +47,9 @@ namespace CLAM
 		{
 			winBackground = this->paletteBackgroundColor();
 
-			layout = new QHBoxLayout(this);
+			layout = new Q3HBoxLayout(this);
 	    
-			container = new QFrame(this);
+			container = new Q3Frame(this);
 			container->setFixedSize(75,30);
 
 			mPlay = new QPushButton(container);

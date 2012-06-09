@@ -1,7 +1,11 @@
 #include <qlayout.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
+//Added by qt3to4:
+#include <Q3BoxLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 #include <CLAM/BPFEditor.hxx>
 #include "Qt_SMS_BPF_Editor.hxx"
 
@@ -61,7 +65,7 @@ namespace QtSMS
 
 	void Qt_SMS_BPF_Editor::WhatsThis(const char* text)
 	{
-		QWhatsThis::add(mBPFEditor,text);
+		Q3WhatsThis::add(mBPFEditor,text);
 	}
 
 	void Qt_SMS_BPF_Editor::showGrid()
@@ -125,15 +129,15 @@ namespace QtSMS
 		mColorScheme->insertItem("Background black");
 		mColorScheme->insertItem("Background white");
 
-		QBoxLayout* checkControls = new QVBoxLayout;
+		Q3BoxLayout* checkControls = new Q3VBoxLayout;
 		checkControls->addWidget(mShowGrid);
 		checkControls->addWidget(mSnapToGrid);
 
-		QBoxLayout* bottomLayout = new QHBoxLayout;
+		Q3BoxLayout* bottomLayout = new Q3HBoxLayout;
 		bottomLayout->addLayout(checkControls);
 		bottomLayout->addWidget(mColorScheme);
 
-		QBoxLayout* mainLayout = new QVBoxLayout(this);
+		Q3BoxLayout* mainLayout = new Q3VBoxLayout(this);
 		mainLayout->addWidget(mBPFEditor);
 		mainLayout->addLayout(bottomLayout);
 

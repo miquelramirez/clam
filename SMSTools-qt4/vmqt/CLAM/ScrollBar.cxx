@@ -20,15 +20,17 @@
  */
 
 #include <CLAM/ScrollBar.hxx>
+//Added by qt3to4:
+#include <QMouseEvent>
 
 namespace CLAM
 {
 	namespace VM
 	{
-		ScrollBar::ScrollBar(Orientation orientation, QWidget * parent)
+		ScrollBar::ScrollBar(Qt::Orientation orientation, QWidget * parent)
 			: QScrollBar(orientation,parent)
 		{
-			setFocusPolicy(QWidget::NoFocus);
+			setFocusPolicy(Qt::NoFocus);
 		}
 
 		ScrollBar::~ScrollBar()

@@ -1,5 +1,5 @@
 #include <qlayout.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qradiobutton.h>
 #include <qcombobox.h>
 #include <qtooltip.h>
@@ -331,7 +331,7 @@ namespace CLAM
 			int midiLabelWidth = fm.width("MIDI");
 
 			// play mode panel
-			radioPanel = new QFrame(this);
+			radioPanel = new Q3Frame(this);
 
 			mPlayAudio = new QRadioButton(radioPanel);
 			mPlayAudio->setChecked(true); // defaut 
@@ -353,7 +353,7 @@ namespace CLAM
 			layout->addStretch(1);
 
 			// MIDI settings panel
-			midiSettingsPanel = new QFrame(this);
+			midiSettingsPanel = new Q3Frame(this);
 	    
 			mMIDIInstrumentsCB = new QComboBox(midiSettingsPanel);
 			mMIDIInstrumentsCB->setGeometry(0,5,85,20);

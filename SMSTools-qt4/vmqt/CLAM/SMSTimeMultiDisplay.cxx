@@ -1,9 +1,16 @@
 #include <qlayout.h>
 #include <qsplitter.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3GridLayout>
+#include <QHideEvent>
+#include <Q3VBoxLayout>
+#include <Q3BoxLayout>
+#include <QCloseEvent>
 #include <CLAM/Ruler.hxx>
 #include <CLAM/VScrollGroup.hxx>
 #include <CLAM/TimeSegmentLabelsGroup.hxx>
@@ -20,7 +27,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		SMSTimeMultiDisplay::SMSTimeMultiDisplay(QWidget* parent, const char * name, WFlags f)
+		SMSTimeMultiDisplay::SMSTimeMultiDisplay(QWidget* parent, const char * name, Qt::WFlags f)
 			: MultiDisplayPlot(parent,name,f)
 			, mShowOnNewData(true)
 			, mHasMasterData(false)
@@ -46,8 +53,8 @@ namespace CLAM
 		{
 			QSplitter* splitter = new QSplitter(Qt::Vertical,this);
 
-			mAudioDisplaysContainer = new QFrame(splitter);
-			mFreqDisplaysContainer = new QFrame(splitter);
+			mAudioDisplaysContainer = new Q3Frame(splitter);
+			mFreqDisplaysContainer = new Q3Frame(splitter);
 
 			mAudioDisplaysContainer->hide();
 			mFreqDisplaysContainer->hide();
@@ -65,12 +72,12 @@ namespace CLAM
 			SetYRulersWidth(y_ruler_width);
 			
 			// holes
-			QFrame* topHole = new QFrame(this);
-			QFrame* sleftHole = new QFrame(this);
-			QFrame* srightHole = new QFrame(this);
+			Q3Frame* topHole = new Q3Frame(this);
+			Q3Frame* sleftHole = new Q3Frame(this);
+			Q3Frame* srightHole = new Q3Frame(this);
 			
-			leftHole = new QFrame(this);
-			rightHole = new QFrame(this);
+			leftHole = new Q3Frame(this);
+			rightHole = new Q3Frame(this);
 
 			topHole->setFixedSize(20,GetXRuler()->height());
 			sleftHole->setFixedSize(y_ruler_width,20);
@@ -93,7 +100,7 @@ namespace CLAM
 			CreateFrequencyDisplays();
 
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this,5,3,1);
+			Q3GridLayout* innerLayout = new Q3GridLayout(this,5,3,1);
 			innerLayout->addWidget(GetToggleColorFrame(),0,0);
 			innerLayout->addWidget(GetXRuler(),0,1);
 			innerLayout->addWidget(topHole,0,2);
@@ -782,10 +789,10 @@ namespace CLAM
 		{
 			mAudioVScroll = new VScrollGroup(mAudioDisplaysContainer);
 
-			QBoxLayout* displayLayout = new QHBoxLayout(mAudioDisplaysContainer,0,1);
-			QBoxLayout* rulersLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* surferLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* scrollLayout = new QVBoxLayout(displayLayout); 
+			Q3BoxLayout* displayLayout = new Q3HBoxLayout(mAudioDisplaysContainer,0,1);
+			Q3BoxLayout* rulersLayout = new Q3VBoxLayout(displayLayout);
+			Q3BoxLayout* surferLayout = new Q3VBoxLayout(displayLayout);
+			Q3BoxLayout* scrollLayout = new Q3VBoxLayout(displayLayout); 
 			// add widgets
 			for(unsigned i=MASTER; i <= RESIDUAL; i++)
 			{
@@ -799,10 +806,10 @@ namespace CLAM
 		{
 			mFrequencyVScroll = new VScrollGroup(mFreqDisplaysContainer);
 
-			QBoxLayout* displayLayout = new QHBoxLayout(mFreqDisplaysContainer,0,1);
-			QBoxLayout* rulersLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* surferLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* scrollLayout = new QVBoxLayout(displayLayout); 
+			Q3BoxLayout* displayLayout = new Q3HBoxLayout(mFreqDisplaysContainer,0,1);
+			Q3BoxLayout* rulersLayout = new Q3VBoxLayout(displayLayout);
+			Q3BoxLayout* surferLayout = new Q3VBoxLayout(displayLayout);
+			Q3BoxLayout* scrollLayout = new Q3VBoxLayout(displayLayout); 
 			// add widgets
 			rulersLayout->addWidget(mYRulers[FUNDAMENTAL]);
 			rulersLayout->addWidget(mYRulers[SINTRACKS]);
@@ -818,17 +825,17 @@ namespace CLAM
 		QLayout* SMSTimeMultiDisplay::CreateSpectrogramPanel()
 		{
 			// left panel
-			leftGroup = new QFrame(this);
-			leftGroup->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+			leftGroup = new Q3Frame(this);
+			leftGroup->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
 			QFontMetrics fm(font());
 			int width = fm.width("Frequency (Hz): 00000")+6;
 			leftGroup->setFixedSize(width,66);
 
-			QBoxLayout* lfMainLayout = new QVBoxLayout(leftGroup);
+			Q3BoxLayout* lfMainLayout = new Q3VBoxLayout(leftGroup);
 			lfMainLayout->setMargin(3);
-			QBoxLayout* lfInnerTopLayout = new QHBoxLayout(lfMainLayout);
-			QBoxLayout* lfInnerMiddleLayout = new QHBoxLayout(lfMainLayout);
-			QBoxLayout* lfInnerBottomLayout = new QHBoxLayout(lfMainLayout);
+			Q3BoxLayout* lfInnerTopLayout = new Q3HBoxLayout(lfMainLayout);
+			Q3BoxLayout* lfInnerMiddleLayout = new Q3HBoxLayout(lfMainLayout);
+			Q3BoxLayout* lfInnerBottomLayout = new Q3HBoxLayout(lfMainLayout);
 
 			freqTxtLabel = new QLabel(leftGroup);
 			freqTxtLabel->setText("Frequency (Hz): ");
@@ -858,16 +865,16 @@ namespace CLAM
 			lfInnerBottomLayout->addWidget(mSlice);
 
 			// right panel
-			rightGroup = new QFrame(this);
-			rightGroup->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+			rightGroup = new Q3Frame(this);
+			rightGroup->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
 			rightGroup->setFixedHeight(66);
 
-			QBoxLayout* rfMainLayout = new QVBoxLayout(rightGroup);
+			Q3BoxLayout* rfMainLayout = new Q3VBoxLayout(rightGroup);
 			rfMainLayout->setMargin(3);
-			QBoxLayout* rfInnerTopLayout = new QHBoxLayout(rfMainLayout);
+			Q3BoxLayout* rfInnerTopLayout = new Q3HBoxLayout(rfMainLayout);
 			rfInnerTopLayout->setSpacing(5);
-			QBoxLayout* rfInnerMiddleLayout = new QHBoxLayout(rfMainLayout);
-			QBoxLayout* rfInnerBottomLayout = new QHBoxLayout(rfMainLayout);
+			Q3BoxLayout* rfInnerMiddleLayout = new Q3HBoxLayout(rfMainLayout);
+			Q3BoxLayout* rfInnerBottomLayout = new Q3HBoxLayout(rfMainLayout);
 			rfInnerBottomLayout->setSpacing(3);
 
 			mFFTSize = new QLabel(rightGroup);
@@ -891,7 +898,7 @@ namespace CLAM
 			rfInnerBottomLayout->addStretch();
 
 			// main layout
-			QBoxLayout* mainLayout = new QHBoxLayout;
+			Q3BoxLayout* mainLayout = new Q3HBoxLayout;
 		   
 			mainLayout->addWidget(leftGroup);
 			mainLayout->addWidget(rightGroup);
@@ -912,7 +919,7 @@ namespace CLAM
 			((QtSMSPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
 			AddToPlayList();
 
-			middleHole = new QFrame(this);
+			middleHole = new Q3Frame(this);
 			middleHole->setFixedSize(50,30);
 
 			mCBPlayList = new QComboBox(this);
@@ -927,7 +934,7 @@ namespace CLAM
 			mLabelsGroup = new TimeSegmentLabelsGroup(this);
 			mLabelsGroup->setMinimumSize(186,25);
 
-			QBoxLayout* play_panel = new QHBoxLayout;
+			Q3BoxLayout* play_panel = new Q3HBoxLayout;
 			play_panel->addWidget(mPlayer);
 			play_panel->addWidget(middleHole);
 			play_panel->addWidget(mCBPlayList);

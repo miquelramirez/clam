@@ -21,6 +21,8 @@
 
 #include <qpainter.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3Frame>
 #include <CLAM/VZLabel.hxx>
 
 namespace CLAM
@@ -28,8 +30,8 @@ namespace CLAM
 	namespace VM
 	{
 		VZLabel::VZLabel(QWidget* parent) 
-			: QFrame(parent)
-			, mAlign(AlignCenter) 
+			: Q3Frame(parent)
+			, mAlign(Qt::AlignCenter) 
 		{
 			InitLabel();
 		} 

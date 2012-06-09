@@ -1,10 +1,12 @@
 #include <string>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qaction.h>
 #include <qlabel.h>
 #include <qstatusbar.h>
 #include <qapplication.h>
 #include <qmessagebox.h>
+//Added by qt3to4:
+#include <Q3Frame>
 #include "Engine.hxx"
 #include "ViewManager.hxx"
 #include "SMSConfigDlg.hxx"
@@ -18,7 +20,7 @@
 #ifdef WIN32
 #include <CLAM/CLAM_windows.h>
 #else
-#include <qprocess.h>
+#include <q3process.h>
 #endif
 
 #ifndef DATA_EXAMPLES_PATH
@@ -28,7 +30,7 @@
 namespace QtSMS
 {
 	QtSMSTools::QtSMSTools()
-		: SMSToolsBase(0,"SMSTools",WDestructiveClose)
+		: SMSToolsBase(0,"SMSTools",Qt::WDestructiveClose)
 	{
 		InitSMSTools();
 	}
@@ -62,7 +64,7 @@ namespace QtSMS
 #else
 		examplesPath = DATA_EXAMPLES_PATH;
 #endif
-		QString filename = QFileDialog::getOpenFileName(examplesPath, "(*.xml *.sdif)",this);
+		QString filename = Q3FileDialog::getOpenFileName(examplesPath, "(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
 		if(!mEngine->LoadConfiguration(filename.ascii()))
 		{
@@ -92,7 +94,7 @@ namespace QtSMS
 		if( configDlg.exec() != QDialog::Accepted ) return;
 		configDlg.Apply();
 		if(!mEngine->HasValidAudioInput()) return;
-		QString filename = QFileDialog::getSaveFileName("new_config.xml","*.xml",this);
+		QString filename = Q3FileDialog::getSaveFileName("new_config.xml","*.xml",this);
 		if(filename.isEmpty()) return;
 		mShowOriginalAudio=true;
 		mEngine->StoreConfiguration(filename.ascii());
@@ -114,14 +116,14 @@ namespace QtSMS
 
 	void QtSMSTools::storeExtractedMelody()
 	{
-		QString filename = QFileDialog::getSaveFileName("extracted_melody_out.xml","*.xml",this);
+		QString filename = Q3FileDialog::getSaveFileName("extracted_melody_out.xml","*.xml",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreMelody(filename.ascii());
 	}
 
 	void QtSMSTools::loadAnalysisData()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
+		QString filename = Q3FileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
 		mShowOriginalAudio=false;
 		Engine::DisplayManager()->Flush();
@@ -134,7 +136,7 @@ namespace QtSMS
 	{
 		std::string fn = (!mEngine->GetGlobalConfig().GetOutputAnalysisFile().empty()) ? 
 			mEngine->GetGlobalConfig().GetOutputAnalysisFile() : "outputAnalysis.xml";
-		QString filename = QFileDialog::getSaveFileName(fn.c_str(),"(*.xml *.sdif)",this);
+		QString filename = Q3FileDialog::getSaveFileName(fn.c_str(),"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreAnalysis(filename.ascii());
 	}
@@ -143,28 +145,28 @@ namespace QtSMS
 	{
 		std::string fn = (!mEngine->GetGlobalConfig().GetOutputSoundFile().empty()) ? 
 			mEngine->GetGlobalConfig().GetOutputSoundFile() : "outputSound.wav";
-		QString filename = QFileDialog::getSaveFileName(fn.c_str(),"Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = Q3FileDialog::getSaveFileName(fn.c_str(),"Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreOutputSound(filename.ascii());
 	}
 
 	void QtSMSTools::saveSynthesizedSinusoidal()
 	{
-		QString filename = QFileDialog::getSaveFileName("synthesized_sinusoidal_out.wav","Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = Q3FileDialog::getSaveFileName("synthesized_sinusoidal_out.wav","Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreOutputSoundSinusoidal(filename.ascii());
 	}
 
 	void QtSMSTools::saveSynthesizedResidua()
 	{
-		QString filename = QFileDialog::getSaveFileName("synthesized_residual_out.wav","Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = Q3FileDialog::getSaveFileName("synthesized_residual_out.wav","Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreOutputSoundResidual(filename.ascii());
 	}
 
 	void QtSMSTools::loadTransformationScore()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"*.xml *",this);
+		QString filename = Q3FileDialog::getOpenFileName(QString::null,"*.xml *",this);
 		if(filename.isEmpty()) return;
 		mEngine->LoadTransformationScore(filename.ascii());	
 		UpdateState();
@@ -183,7 +185,7 @@ namespace QtSMS
 			QMessageBox::information(0,"SMS Tools 2","The score has not been changed or it's empty.");
 			return;
 		}
-		QString filename = QFileDialog::getSaveFileName("new_score.xml","*.xml",this);
+		QString filename = Q3FileDialog::getSaveFileName("new_score.xml","*.xml",this);
 		if (filename.isEmpty()) return;
 
 		mEngine->SetCurrentTransformationScore(scoreDlg.GetTransformationChain());
@@ -406,7 +408,7 @@ namespace QtSMS
 	{
 	    const std::string url="http://www.iua.upf.es/mtg/clam/";
 #ifndef WIN32
-		QProcess sysCall(this);
+		Q3Process sysCall(this);
     #if defined(Q_WS_MAC)
 		sysCall.addArgument("open");
 		sysCall.addArgument(url.c_str());
@@ -586,11 +588,11 @@ namespace QtSMS
 	void QtSMSTools::InitStatusBar()
 	{
 		mLeftSBLabel = new QLabel(this);
-		mLeftSBLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+		mLeftSBLabel->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
 		mLeftSBLabel->setAlignment(AlignLeft);
 		mLeftSBLabel->setText("ready");
 		mRightSBLabel = new QLabel(this);
-		mRightSBLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+		mRightSBLabel->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
 		mRightSBLabel->setAlignment(AlignLeft);
 		mRightSBLabel->setText("sr: --      dur: --:--,--- ");
 		statusBar()->addWidget(mLeftSBLabel,1);

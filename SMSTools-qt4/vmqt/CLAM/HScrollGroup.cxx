@@ -23,6 +23,9 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3HBoxLayout>
 #include <CLAM/IconData.hxx>
 #include <CLAM/ScrollBar.hxx>
 #include <CLAM/HScrollGroup.hxx>
@@ -34,7 +37,7 @@ namespace CLAM
 		HScrollGroup::HScrollGroup(QWidget* parent) 
 			: QWidget(parent)
 		{
-			setFocusPolicy(QWidget::NoFocus);
+			setFocusPolicy(Qt::NoFocus);
 			Init();
 		}
 		
@@ -47,8 +50,8 @@ namespace CLAM
 			QFont f("Sans",8);
 			f.setBold(true);
 
-			QHBoxLayout* layout = new QHBoxLayout(this);
-			mScrollBar = new ScrollBar(QScrollBar::Horizontal,this);
+			Q3HBoxLayout* layout = new Q3HBoxLayout(this);
+			mScrollBar = new ScrollBar(Qt::Horizontal,this);
 			mScrollBar->setFixedHeight(mScrollBar->sizeHint().height());
 			mScrollBar->setRange(0,0);
 			mScrollBar->setSteps(20,100);
@@ -65,7 +68,7 @@ namespace CLAM
 			mZIn = new QPushButton(this);
 			mZIn->setAutoRepeat(true);
 			mZIn->setFixedSize(20,20);
-			mZIn->setFocusPolicy(QWidget::NoFocus);
+			mZIn->setFocusPolicy(Qt::NoFocus);
 			mZIn->setPixmap(QPixmap((const char**)icon_zoomin));
 			QToolTip::add(mZIn,"Zoom In");
 			layout->addWidget(mZIn,0);
@@ -73,7 +76,7 @@ namespace CLAM
 			mZOut = new QPushButton(this);
 			mZOut->setAutoRepeat(true);
 			mZOut->setFixedSize(20,20);
-			mZOut->setFocusPolicy(QWidget::NoFocus);
+			mZOut->setFocusPolicy(Qt::NoFocus);
 			mZOut->setPixmap(QPixmap((const char**)icon_zoomout));
 			QToolTip::add(mZOut,"Zoom Out");
 			layout->addWidget(mZOut,0);

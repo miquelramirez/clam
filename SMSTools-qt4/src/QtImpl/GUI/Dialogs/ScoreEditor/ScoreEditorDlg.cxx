@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <qlayout.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qtabwidget.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
 #include "SMSConfigurator.hxx"
 #include "ScoreEditorDlg.hxx"
 
@@ -211,8 +213,8 @@ namespace QtSMS
 
 	void ScoreEditorDlg::InitScoreEditor()
 	{
-		mTabPage0Layout = new QVBoxLayout(mTabWidget->page(0));
-		mTabPage1Layout = new QVBoxLayout(mTabWidget->page(1));
+		mTabPage0Layout = new Q3VBoxLayout(mTabWidget->page(0));
+		mTabPage1Layout = new Q3VBoxLayout(mTabWidget->page(1));
 		GetAvailableTransformations();
 	}
 }

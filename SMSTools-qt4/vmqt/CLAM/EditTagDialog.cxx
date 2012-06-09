@@ -2,6 +2,10 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3BoxLayout>
+#include <Q3HBoxLayout>
 #include <CLAM/EditTagDialog.hxx>
 
 namespace CLAM
@@ -27,11 +31,11 @@ namespace CLAM
 		void EditTagDialog::InitEditTagDialog(const QString& contents)
 		{
 			// main layout
-			QBoxLayout* mainLayout = new QVBoxLayout(this,5);
+			Q3BoxLayout* mainLayout = new Q3VBoxLayout(this,5);
 			mainLayout->addStretch();
 
 			// top: label and lineedit
-			QBoxLayout* topLayout = new QHBoxLayout(mainLayout);
+			Q3BoxLayout* topLayout = new Q3HBoxLayout(mainLayout);
 			mLabel = new QLabel(this);
 			mLabel->setText("Tag");
 			mLineEdit = new QLineEdit(contents,this);
@@ -41,7 +45,7 @@ namespace CLAM
 			mainLayout->addStretch();
 
 			// bottom: ok and cancel buttons
-			QBoxLayout* bottomLayout = new QHBoxLayout(mainLayout);
+			Q3BoxLayout* bottomLayout = new Q3HBoxLayout(mainLayout);
 			mOkButton = new QPushButton(this);
 			mOkButton->setText("Ok");
 			mOkButton->setDefault(true);

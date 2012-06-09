@@ -1,4 +1,10 @@
 #include <qtimer.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QFocusEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QEvent>
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/BPFEditorController.hxx>
 #include <CLAM/BPFEditorDisplaySurface.hxx>
@@ -17,7 +23,7 @@ namespace CLAM
 			, mIsPlaying(false)
 		{
 			setMouseTracking(true);
-			setFocusPolicy(StrongFocus);
+			setFocusPolicy(Qt::StrongFocus);
 			setAutoBufferSwap(false);
 			SetBackgroundColor(0.0f,0.0f,0.0f);
 
@@ -84,7 +90,7 @@ namespace CLAM
 		{
 			if(mController)
 			{
-				if(e->button() == LeftButton)
+				if(e->button() == Qt::LeftButton)
 				{
 					mController->SetLeftButtonPressed(true);
 					double xcoord = double(e->x());
@@ -98,7 +104,7 @@ namespace CLAM
 					mController->SetPoint(TData(xcoord),TData(ycoord));
 				}
 
-				if(e->button() == RightButton)
+				if(e->button() == Qt::RightButton)
 				{
 					mController->SetRightButtonPressed(true);
 				}
@@ -109,7 +115,7 @@ namespace CLAM
 		{
 			if(mController)
 			{
-				if(e->button() == LeftButton)
+				if(e->button() == Qt::LeftButton)
 				{
 					mController->SetLeftButtonPressed(false);
 					double xcoord = double(e->x());
@@ -123,7 +129,7 @@ namespace CLAM
 					mController->SetPoint(TData(xcoord),TData(ycoord));			
 				}
 
-				if(e->button() == RightButton)
+				if(e->button() == Qt::RightButton)
 				{
 					mController->SetRightButtonPressed(false);
 				}
@@ -149,7 +155,7 @@ namespace CLAM
 		void BPFEditorDisplaySurface::keyReleaseEvent(QKeyEvent * e)
 		{
 			if (!mController) return;
-			int step = (e->state() & ControlButton) ? 1:5;
+			int step = (e->state() & Qt::ControlModifier) ? 1:5;
 			switch (e->key())
 			{
 				case Qt::Key_Up:
@@ -164,10 +170,10 @@ namespace CLAM
 				case Qt::Key_Left:
 					mController->MoveCurrentPointDelta(-step,0);
 					break;
-				case Qt::Key_Prior:
+				case Qt::Key_PageUp:
 					mController->ChooseCurrentPointByJumping(-1);
 					break;
-				case Qt::Key_Next:
+				case Qt::Key_PageDown:
 					mController->ChooseCurrentPointByJumping(1);
 					break;
 			}

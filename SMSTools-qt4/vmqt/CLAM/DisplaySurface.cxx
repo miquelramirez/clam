@@ -21,6 +21,11 @@
 
 #include <qtimer.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QFocusEvent>
+#include <QMouseEvent>
+#include <QEvent>
 #include <CLAM/PlotController.hxx>
 #include <CLAM/DisplaySurface.hxx>
 
@@ -46,7 +51,7 @@ namespace CLAM
 		{
 			setMouseTracking(true);
 			setAutoBufferSwap(false);
-			setFocusPolicy(StrongFocus);
+			setFocusPolicy(Qt::StrongFocus);
 
 			mToolTipFont.setFamily("fixed");
 			mToolTipFont.setPointSize(8);
@@ -186,7 +191,7 @@ namespace CLAM
 
 		void DisplaySurface::mouseDoubleClickEvent(QMouseEvent* e)
 		{
-			if(e->button()==LeftButton)
+			if(e->button()==Qt::LeftButton)
 			{
 				mController->OnDoubleClick();
 			}
