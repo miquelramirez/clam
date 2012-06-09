@@ -100,14 +100,14 @@ namespace CLAM
 					QColor c;
 
 					c = mColorMap.entryColor(FIRST_INDEX + k);
-					R1 = (TUInt16)c.red();
-					G1 = (TUInt16)c.green();
-					B1 = (TUInt16)c.blue();
+					R1 = (TUInt16)c.Qt::red();
+					G1 = (TUInt16)c.Qt::green();
+					B1 = (TUInt16)c.Qt::blue();
 
 					c = mColorMap.entryColor(FIRST_INDEX + k+nDif);
-					R2 = (TUInt16)c.red();
-					G2 = (TUInt16)c.green();
-					B2 = (TUInt16)c.blue();
+					R2 = (TUInt16)c.Qt::red();
+					G2 = (TUInt16)c.Qt::green();
+					B2 = (TUInt16)c.Qt::blue();
 					
 							
 					float factor = (float)i / nDif;

@@ -2,6 +2,9 @@
 #include <qpushbutton.h>
 #include <qlcdnumber.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3BoxLayout>
+#include <Q3HBoxLayout>
 #include <CLAM/Message.hxx>
 #include <CLAM/Navigator.hxx>
 
@@ -98,7 +101,7 @@ namespace CLAM
 			mDisplay->setSegmentStyle(QLCDNumber::Flat);
 			mDisplay->display(mCurrentValue);
 
-			QBoxLayout* layout = new QHBoxLayout(this);
+			Q3BoxLayout* layout = new Q3HBoxLayout(this);
 			layout->addWidget(mFirst);
 			layout->addWidget(mPrior);
 			layout->addWidget(mDisplay);

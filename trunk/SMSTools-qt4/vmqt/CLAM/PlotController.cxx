@@ -21,6 +21,9 @@
 
 #include <algorithm>
 #include <CLAM/PlotController.hxx>
+//Added by qt3to4:
+#include <QKeyEvent>
+#include <QMouseEvent>
 
 namespace CLAM
 {
@@ -510,7 +513,7 @@ namespace CLAM
 		{
 			mHit=false;
 		    mIsAbleToEdit=false;
-			QCursor cursor(ArrowCursor);
+			QCursor cursor(Qt::ArrowCursor);
 			emit cursorChanged(cursor);
 			emit mouseOverDisplay(false);
 			mSegmentEditor.LeaveMouse();
@@ -830,7 +833,7 @@ namespace CLAM
 
 		void PlotController::MousePressEvent(QMouseEvent* e)
 		{			
-			if(e->button() != LeftButton) return;
+			if(e->button() != Qt::LeftButton) return;
 			SetLeftButtonPressed(true);;
 			std::pair<double,double> coords = GetXY(e);
 			SetSelPos(coords.first,true);
@@ -839,7 +842,7 @@ namespace CLAM
 
 		void PlotController::MouseReleaseEvent(QMouseEvent* e)
 		{
-			if(e->button() != LeftButton) return;
+			if(e->button() != Qt::LeftButton) return;
 			SetLeftButtonPressed(false);
 			std::pair<double,double> coords = GetXY(e);
 			mSegmentEditor.MouseReleased(coords.first,coords.second);

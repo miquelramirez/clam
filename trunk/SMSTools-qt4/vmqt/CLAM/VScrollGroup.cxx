@@ -22,6 +22,9 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3VBoxLayout>
 #include <CLAM/IconData.hxx>
 #include <CLAM/VZLabel.hxx>
 #include <CLAM/ScrollBar.hxx>
@@ -34,7 +37,7 @@ namespace CLAM
 		VScrollGroup::VScrollGroup(QWidget* parent) 
 			: QWidget(parent)
 		{
-			setFocusPolicy(QWidget::NoFocus);
+			setFocusPolicy(Qt::NoFocus);
 			Init();
 		}
 		
@@ -47,11 +50,11 @@ namespace CLAM
 			QFont f("Sans",8);
 			f.setBold(true);
 
-			QVBoxLayout* layout = new QVBoxLayout(this);
+			Q3VBoxLayout* layout = new Q3VBoxLayout(this);
 			mZOut = new QPushButton(this);
 			mZOut->setAutoRepeat(true);
 			mZOut->setFixedSize(20,20);
-			mZOut->setFocusPolicy(QWidget::NoFocus);
+			mZOut->setFocusPolicy(Qt::NoFocus);
 			mZOut->setPixmap(QPixmap((const char**)icon_zoomout));
 			QToolTip::add(mZOut,"Zoom Out");
 			layout->addWidget(mZOut,0);
@@ -59,7 +62,7 @@ namespace CLAM
 			mZIn = new QPushButton(this);
 			mZIn->setAutoRepeat(true);
 			mZIn->setFixedSize(20,20);
-			mZIn->setFocusPolicy(QWidget::NoFocus);
+			mZIn->setFocusPolicy(Qt::NoFocus);
 			mZIn->setPixmap(QPixmap((const char**)icon_zoomin));
 			QToolTip::add(mZIn,"Zoom In");
 			layout->addWidget(mZIn,0);
@@ -67,7 +70,7 @@ namespace CLAM
 			mLabel = new VZLabel(this);
 			layout->addWidget(mLabel);
 
-			mScrollBar= new ScrollBar(QScrollBar::Vertical,this);
+			mScrollBar= new ScrollBar(Qt::Vertical,this);
 			mScrollBar->setFixedWidth(mScrollBar->sizeHint().width());
 			mScrollBar->setRange(0,0);
 			mScrollBar->setSteps(20,100);

@@ -1,5 +1,10 @@
 #include <qlayout.h>
-#include <qframe.h>
+#include <q3frame.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3BoxLayout>
+#include <Q3GridLayout>
+#include <Q3VBoxLayout>
 #include <CLAM/Ruler.hxx>
 #include <CLAM/VScrollGroup.hxx>
 #include <CLAM/DisplaySurface.hxx>
@@ -10,7 +15,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		SMSFreqMultiDisplay::SMSFreqMultiDisplay(QWidget* parent, const char * name, WFlags f )
+		SMSFreqMultiDisplay::SMSFreqMultiDisplay(QWidget* parent, const char * name, Qt::WFlags f )
 			: MultiDisplayPlot(parent,name,f)
 			, mShowOnNewData(true)
 			, mHasMasterData(false)
@@ -38,10 +43,10 @@ namespace CLAM
 			SetYRulersWidth(y_ruler_width);
 			
 			// holes
-			QFrame* topHole = new QFrame(this);
-			QFrame* leftHole = new QFrame(this);
-			QFrame* rightHole = new QFrame(this);
-			QFrame* bottomHole = new QFrame(this);
+			Q3Frame* topHole = new Q3Frame(this);
+			Q3Frame* leftHole = new Q3Frame(this);
+			Q3Frame* rightHole = new Q3Frame(this);
+			Q3Frame* bottomHole = new Q3Frame(this);
 
 			topHole->setFixedSize(20,GetXRuler()->height());
 			leftHole->setFixedSize(y_ruler_width,20);
@@ -56,10 +61,10 @@ namespace CLAM
 			CreateHScrollGroup();
 			mVScrollBar = new VScrollGroup(this);
 
-			QBoxLayout* displayLayout = new QHBoxLayout;
-			QBoxLayout* rulersLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* surferLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* scrollLayout = new QVBoxLayout(displayLayout); 
+			Q3BoxLayout* displayLayout = new Q3HBoxLayout;
+			Q3BoxLayout* rulersLayout = new Q3VBoxLayout(displayLayout);
+			Q3BoxLayout* surferLayout = new Q3VBoxLayout(displayLayout);
+			Q3BoxLayout* scrollLayout = new Q3VBoxLayout(displayLayout); 
 			// add widgets
 			for(unsigned i=0; i < mYRulers.size(); i++)
 			{
@@ -69,7 +74,7 @@ namespace CLAM
 			scrollLayout->addWidget(mVScrollBar);
 
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this,4,3,1);
+			Q3GridLayout* innerLayout = new Q3GridLayout(this,4,3,1);
 			innerLayout->addWidget(GetToggleColorFrame(),0,0);
 			innerLayout->addWidget(GetXRuler(),0,1);
 			innerLayout->addWidget(topHole,0,2);

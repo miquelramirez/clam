@@ -1,13 +1,15 @@
 #include "Qt_Help_View.hxx"
+//Added by qt3to4:
+#include <QKeyEvent>
 
 namespace QtSMS
 {
 	Qt_Help_View::Qt_Help_View(QWidget* parent)
-		: QTextEdit(parent)
+		: Q3TextEdit(parent)
 	{
-		setFocusPolicy(StrongFocus);
-		setHScrollBarMode(QScrollView::Auto);
-		setVScrollBarMode(QScrollView::Auto);
+		setFocusPolicy(Qt::StrongFocus);
+		setHScrollBarMode(Q3ScrollView::Auto);
+		setVScrollBarMode(Q3ScrollView::Auto);
 		setReadOnly(true);
 	}
 

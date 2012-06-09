@@ -1,6 +1,10 @@
 #include <qlayout.h>
 #include <qsplitter.h>
-#include <qframe.h>
+#include <q3frame.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3BoxLayout>
+#include <Q3VBoxLayout>
 #include <CLAM/Navigator.hxx>
 #include <CLAM/SMSTimeMultiDisplay.hxx>
 #include <CLAM/SMSFreqMultiDisplay.hxx>
@@ -207,8 +211,8 @@ namespace QtSMS
 		QWidget* view = new QWidget(parent);
 		QSplitter* splitter = new QSplitter(Qt::Vertical,view);
 
-		mTimeViewContainer = new QFrame(splitter);
-		mSpecViewContainer = new QFrame(splitter);
+		mTimeViewContainer = new Q3Frame(splitter);
+		mSpecViewContainer = new Q3Frame(splitter);
 
 		mTimeViewContainer->hide();
 		mSpecViewContainer->hide();
@@ -216,8 +220,8 @@ namespace QtSMS
 		mPlotList.push_back(new CLAM::VM::SMSTimeMultiDisplay(mTimeViewContainer));
 		mPlotList.push_back(new CLAM::VM::SMSFreqMultiDisplay(mSpecViewContainer));
 
-		timeViewLayout = new QHBoxLayout(mTimeViewContainer);
-		specViewLayout = new QHBoxLayout(mSpecViewContainer);
+		timeViewLayout = new Q3HBoxLayout(mTimeViewContainer);
+		specViewLayout = new Q3HBoxLayout(mSpecViewContainer);
 
 		timeViewLayout->addWidget(mPlotList[TIME_GROUP_VIEW]);
 		specViewLayout->addWidget(mPlotList[SPECTRUM_GROUP_VIEW]);
@@ -226,7 +230,7 @@ namespace QtSMS
 		mFrameNavigator = new CLAM::VM::Navigator(view);
 		mFrameNavigator->setEnabled(false);
 		mFrameNavigator->hide();
-		hole = new QFrame(view);
+		hole = new Q3Frame(view);
 		hole->setFixedSize(GetHoleWidth(),mFrameNavigator->height());
 		hole->hide();
 
@@ -235,12 +239,12 @@ namespace QtSMS
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->ShowDisplayOnNewData(false);
 		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->ShowDisplayOnNewData(false);
 
-		QBoxLayout* navigator = new QHBoxLayout;
+		Q3BoxLayout* navigator = new Q3HBoxLayout;
 		navigator->addWidget(hole);
 		navigator->addWidget(mFrameNavigator);
 		navigator->addStretch();
 
-		QBoxLayout* layout = new QVBoxLayout(view);
+		Q3BoxLayout* layout = new Q3VBoxLayout(view);
 		layout->addWidget(splitter);
 		layout->addLayout(navigator);
 
@@ -312,10 +316,10 @@ namespace QtSMS
 		mHasSpecViewFocus = false;
 		specViewLayout->setMargin(0);
 		mSpecViewContainer->setLineWidth(0);
-		mSpecViewContainer->setFrameStyle(QFrame::MenuBarPanel | QFrame::Plain);
+		mSpecViewContainer->setFrameStyle(QFrame::StyledPanel | Q3Frame::Plain);
 		timeViewLayout->setMargin(4);
 		mTimeViewContainer->setLineWidth(4);
-		mTimeViewContainer->setFrameStyle(QFrame::Box | QFrame::Plain);
+		mTimeViewContainer->setFrameStyle(Q3Frame::Box | Q3Frame::Plain);
 	}
 
 	void ViewManager::onSpectrumViewFocusIn()
@@ -325,10 +329,10 @@ namespace QtSMS
 		mHasTimeViewFocus = false;
 		timeViewLayout->setMargin(0);
 		mTimeViewContainer->setLineWidth(0);
-		mTimeViewContainer->setFrameStyle(QFrame::MenuBarPanel | QFrame::Plain);
+		mTimeViewContainer->setFrameStyle(QFrame::StyledPanel | Q3Frame::Plain);
 		specViewLayout->setMargin(4);
 		mSpecViewContainer->setLineWidth(4);
-		mSpecViewContainer->setFrameStyle(QFrame::Box | QFrame::Plain);
+		mSpecViewContainer->setFrameStyle(Q3Frame::Box | Q3Frame::Plain);
 	}
 
 	int ViewManager::GetFrameNumber()

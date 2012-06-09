@@ -1,4 +1,6 @@
 #include <qpainter.h>
+//Added by qt3to4:
+#include <QPaintEvent>
 #include <CLAM/Ruler.hxx>
 #include <CLAM/CLAM_Math.hxx>
 
@@ -24,7 +26,7 @@ namespace CLAM
 			mLabelHeight = font_metrics.height();
 
 			updateRange(0.0,1.0);
-			setFocusPolicy(QWidget::NoFocus);
+			setFocusPolicy(Qt::NoFocus);
 		}
 
 		Ruler::~Ruler()
@@ -109,7 +111,7 @@ namespace CLAM
 				painter.drawLine(x0,y1,x1,y1); // draw ticks
 				int y = y1 - mLabelHeight/2;
 				painter.drawText(rect().left()+2, y, rect().right()-10, mLabelHeight,
-								 AlignRight | AlignVCenter, GetLabel(i));  // draw text
+								 Qt::AlignRight | Qt::AlignVCenter, GetLabel(i));  // draw text
 			}
 			painter.drawLine(x1,y0,x1,rect().top()); // draw axis
 		}
@@ -139,7 +141,7 @@ namespace CLAM
 				painter.drawLine(x0,y1,x1,y1);
 				int y = y1-mLabelHeight/2;
 				painter.drawText(rect().left()+10, y, rect().right()-10, mLabelHeight,
-								 AlignLeft | AlignVCenter, GetLabel(i));
+								 Qt::AlignLeft | Qt::AlignVCenter, GetLabel(i));
 			}
 			painter.drawLine(x0,y0,x0,rect().top());
 		}
@@ -170,7 +172,7 @@ namespace CLAM
 				painter.drawLine(x1,y0,x1,y1);
 				int x = x1-mMaxLabelWidth/2;
 				painter.drawText(x, y0+2, mMaxLabelWidth, mLabelHeight,
-								 AlignHCenter | AlignTop, GetLabel(i));
+								 Qt::AlignHCenter | Qt::AlignTop, GetLabel(i));
 			}
 			painter.drawLine(x0,y1,rect().right(),y1);
 		}
@@ -201,7 +203,7 @@ namespace CLAM
 				painter.drawLine(x1,y0,x1,y1);
 				int x = x1-mMaxLabelWidth/2;
 				painter.drawText(x, y1-mLabelHeight-2, mMaxLabelWidth, mLabelHeight,
-								 AlignHCenter | AlignBottom, GetLabel(i));
+								 Qt::AlignHCenter | Qt::AlignBottom, GetLabel(i));
 			}
 			painter.drawLine(x0,y0,rect().right(),y0);
 		}

@@ -1,7 +1,14 @@
 #include <qlayout.h>
 #include <qlabel.h>
-#include <qframe.h>
-#include <qpopupmenu.h>
+#include <q3frame.h>
+#include <q3popupmenu.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <QKeyEvent>
+#include <QHideEvent>
+#include <Q3VBoxLayout>
+#include <Q3BoxLayout>
+#include <QShowEvent>
 #include <CLAM/VScrollGroup.hxx>
 #include <CLAM/HScrollGroup.hxx>
 #include <CLAM/Ruler.hxx>
@@ -15,7 +22,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		BPFEditor::BPFEditor(int eFlags, QWidget* parent,const char* name, WFlags f)
+		BPFEditor::BPFEditor(int eFlags, QWidget* parent,const char* name, Qt::WFlags f)
 			: QWidget(parent,name,f)
 			, mEFlags(eFlags)
 			, mActivePlayer(true)
@@ -267,28 +274,28 @@ namespace CLAM
 			mController = new BPFEditorController(mEFlags);
 			
 			// main layout
-			mainLayout = new QVBoxLayout(this);
+			mainLayout = new Q3VBoxLayout(this);
 
 			if((mEFlags & CLAM::VM::HasHorizontalScroll) 
 			   && !(mEFlags & CLAM::VM::AllowZoomByMouse))
 			{
 			    // top area xRuler
-			    topLayout = new QHBoxLayout(mainLayout);
+			    topLayout = new Q3HBoxLayout(mainLayout);
 			    mXRuler = new Ruler(this,CLAM::VM::Top);
-			    topLeftHole = new QFrame(this);
+			    topLeftHole = new Q3Frame(this);
 			    topLayout->addWidget(topLeftHole);
 			    topLayout->addWidget(mXRuler);
 			    if((mEFlags & CLAM::VM::HasVerticalScroll) 
 			       && !(mEFlags & CLAM::VM::AllowZoomByMouse))
 			    {
-					topRightHole = new QFrame(this);
+					topRightHole = new Q3Frame(this);
 					topLayout->addWidget(topRightHole);
 			    }
 			
 			}
 
 			// middle area: left ruler and display surface
-			middleLayout = new QHBoxLayout(mainLayout);
+			middleLayout = new Q3HBoxLayout(mainLayout);
 
 			mYRuler = new Ruler(this,CLAM::VM::Left);
 
@@ -308,7 +315,7 @@ namespace CLAM
 			middleLayout->addWidget(mDisplaySurface);
 
 			// bottom area:info labels and bottom ruler
-			bottomLayout = new QHBoxLayout(mainLayout);
+			bottomLayout = new Q3HBoxLayout(mainLayout);
 			
 			int middle_panel_height=0;
 			
@@ -346,7 +353,7 @@ namespace CLAM
 
 			if(topLeftHole) topLeftHole->setFixedSize(mYRuler->width(),mXRuler->height());
 
-			labelsContainer = new QFrame(this);
+			labelsContainer = new Q3Frame(this);
 			labelsContainer->setFixedSize(mYRuler->width(),middle_panel_height);
 			
 
@@ -384,10 +391,10 @@ namespace CLAM
 
 			bottomLayout->addWidget(labelsContainer);
 
-			QBoxLayout* middlePanel = new QVBoxLayout(bottomLayout);
+			Q3BoxLayout* middlePanel = new Q3VBoxLayout(bottomLayout);
 			if(mHScroll)
 			{
-			    playerHole = new QFrame(this);
+			    playerHole = new Q3Frame(this);
 			    playerHole->setFixedHeight(labelsContainer->height()-mHScroll->height()+10);
 			    middlePanel->addWidget(mHScroll);
 			    middlePanel->addWidget(playerHole);
@@ -578,7 +585,7 @@ namespace CLAM
 		{
 			mVScroll = new VScrollGroup(this);
 			middleLayout->addWidget(mVScroll);
-			bottomRightHole = new QFrame(this);
+			bottomRightHole = new Q3Frame(this);
 			bottomRightHole->setFixedSize(mVScroll->width(),labelsContainer->height());
 			bottomLayout->addWidget(bottomRightHole);
 
@@ -720,7 +727,7 @@ namespace CLAM
 				delete mPopupMenu;
 				mPopupMenu = 0;
 			}
-			mPopupMenu = new QPopupMenu();
+			mPopupMenu = new Q3PopupMenu();
 			mPopupMenu->setCheckable(true);
 			if(mPlayer)
 			{

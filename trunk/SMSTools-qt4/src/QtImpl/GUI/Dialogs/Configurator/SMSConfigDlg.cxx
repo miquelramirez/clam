@@ -1,4 +1,4 @@
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
@@ -134,35 +134,35 @@ namespace QtSMS
 
 	void SMSConfigDlg::browseInputSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = Q3FileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mInputSoundLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseOutputSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = Q3FileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mOutputSoundLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseInputAnalysisFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
+		QString filename = Q3FileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
 		mInputAnalysisLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseOutputAnalysisFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
+		QString filename = Q3FileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
 		mOutputAnalysisLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseMorphSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = Q3FileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mMorphSoundFileLineEdit->setText(filename);
 	}

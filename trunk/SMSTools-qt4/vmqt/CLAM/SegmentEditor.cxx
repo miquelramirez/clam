@@ -2,6 +2,8 @@
 #include <CLAM/Segmentation.hxx>
 #include <CLAM/SegmentEditor.hxx>
 #include <iostream>
+//Added by qt3to4:
+#include <QKeyEvent>
 
 /*
 #define __SEGMENT_EDITOR__DEBUG__
