@@ -3,7 +3,7 @@
 
 #include <string>
 
-class QProgressDialog;
+class Q3ProgressDialog;
 
 namespace CLAM
 {
@@ -22,7 +22,7 @@ namespace CLAM
 			void Show();
 	
 		private:
-			QProgressDialog* mProgressDlg;
+			Q3ProgressDialog* mProgressDlg;
 	};
 	}
 }

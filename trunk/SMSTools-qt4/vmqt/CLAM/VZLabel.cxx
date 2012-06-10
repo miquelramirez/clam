@@ -30,7 +30,7 @@ namespace CLAM
 	namespace VM
 	{
 		VZLabel::VZLabel(QWidget* parent) 
-			: Q3Frame(parent)
+			: QFrame(parent)
 			, mAlign(Qt::AlignCenter) 
 		{
 			InitLabel();

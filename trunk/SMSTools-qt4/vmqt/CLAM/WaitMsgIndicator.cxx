@@ -2,7 +2,7 @@
 #include <qpainter.h>
 //Added by qt3to4:
 #include <QPaintEvent>
-#include <Q3Frame>
+#include <QFrame>
 #include <CLAM/Message.hxx>
 #include <CLAM/WaitMsgIndicator.hxx>
 
@@ -11,11 +11,11 @@ namespace CLAM
 	namespace VM
 	{
 		WaitMsgIndicator::WaitMsgIndicator(QWidget* parent)
-			: Q3Frame(parent)
+			: QFrame(parent)
 			, mLeftXCoord(0)
 			, mState(MOV_TO_RIGHT)
 		{
-			setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
+			setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
 			QTimer* timer = new QTimer(this);
 			timer->start(REFRESH_INTERVAL);
@@ -28,7 +28,7 @@ namespace CLAM
 
 		void WaitMsgIndicator::paintEvent(QPaintEvent* pe)
 		{
-			Q3Frame::paintEvent(pe);
+			QFrame::paintEvent(pe);
 			QColor brush(0,0,0);
 			QPainter painter(this);
 			painter.setBrush(brush);

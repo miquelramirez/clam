@@ -34,7 +34,7 @@ namespace CLAM
 		class QtPlot : public QWidget
 		{	
 		public:
-			QtPlot(QWidget* parent = 0, const char * name = 0, WFlags f = 0);
+			QtPlot(QWidget* parent = 0, const char * name = 0);
 			virtual ~QtPlot();
 			
 			virtual void Label(const std::string& label)=0;

@@ -15,8 +15,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		SMSFreqMultiDisplay::SMSFreqMultiDisplay(QWidget* parent, const char * name, Qt::WFlags f )
-			: MultiDisplayPlot(parent,name,f)
+		SMSFreqMultiDisplay::SMSFreqMultiDisplay(QWidget* parent, const char * name)
+			: MultiDisplayPlot(parent,name)
 			, mShowOnNewData(true)
 			, mHasMasterData(false)
 		{

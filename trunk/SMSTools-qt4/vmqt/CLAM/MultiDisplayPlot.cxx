@@ -15,8 +15,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		MultiDisplayPlot::MultiDisplayPlot(QWidget* parent,  const char * name, Qt::WFlags f)
-			: QtPlot(parent,name,f)
+		MultiDisplayPlot::MultiDisplayPlot(QWidget* parent,  const char * name)
+			: QtPlot(parent,name)
 			, mMasterId(-1)
 			, mXRuler(0)
 			, mHScrollBar(0)
