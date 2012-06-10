@@ -15,7 +15,7 @@ using SigSlot::Slotv1;
 class QLabel;
 class QFrame;
 class QBoxLayout;
-class QPopupMenu;
+class Q3PopupMenu;
 
 namespace CLAM
 {
@@ -40,7 +40,7 @@ namespace CLAM
 			Q_OBJECT
 
 		public:
-			BPFEditor(int eFlags=CLAM::VM::AllowAll, QWidget* parent=0, const char* name=0, WFlags f=0);
+			BPFEditor(int eFlags=CLAM::VM::AllowAll, QWidget* parent=0, const char* name=0);
 			~BPFEditor();
 	    
 			void Label(const std::string& label);
@@ -163,7 +163,7 @@ namespace CLAM
 			bool mWhiteOverBlackScheme;
 			bool mUseFocusColors;
 
-			QPopupMenu*      mPopupMenu;
+			Q3PopupMenu*      mPopupMenu;
 			ListItemChooser* mChooseBPFDialog;
 
 			Slotv1<TData> mSlotPlayingTimeReceived;

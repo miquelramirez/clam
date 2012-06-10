@@ -15,7 +15,7 @@ namespace CLAM
 		{
 			Q_OBJECT
 		public:
-			SMSFreqMultiDisplay(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
+			SMSFreqMultiDisplay(QWidget* parent=0, const char * name = 0);
 			~SMSFreqMultiDisplay();
 
 			void SetSpectrumAndPeaks(const Spectrum& spec, const SpectralPeakArray& peaks, bool update=false);

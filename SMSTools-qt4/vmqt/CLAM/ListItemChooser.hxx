@@ -4,7 +4,7 @@
 #include <list>
 #include <qdialog.h>
 
-class QListView;
+class Q3ListView;
 class QPushButton;
 
 namespace CLAM
@@ -24,7 +24,7 @@ namespace CLAM
 			void resizeEvent(QResizeEvent* e);
 
 		private:
-			QListView*   mListView;
+			Q3ListView*   mListView;
 			QPushButton* mOkButton; 
 			QPushButton* mCancelButton;
 

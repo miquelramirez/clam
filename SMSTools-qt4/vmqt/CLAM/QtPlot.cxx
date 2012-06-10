@@ -25,8 +25,8 @@ namespace CLAM
 {
     namespace VM
     {
-		QtPlot::QtPlot(QWidget* parent, const char * name, Qt::WFlags f) 
-			: QWidget(parent,name,f)
+		QtPlot::QtPlot(QWidget* parent, const char * name) 
+			: QWidget(parent,name)
 		{
 		}
 		

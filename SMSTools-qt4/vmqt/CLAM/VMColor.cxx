@@ -32,9 +32,9 @@ namespace CLAM
 		{}
 
 		Color::Color(TUInt16 red, TUInt16 green, TUInt16 blue)
-			: r(Qt::red)
-			, g(Qt::green)
-			, b(Qt::blue)
+			: r(red)
+			, g(green)
+			, b(blue)
 		{}
 
 		Color::Color(const Color& c)

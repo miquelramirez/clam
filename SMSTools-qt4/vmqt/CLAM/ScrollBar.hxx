@@ -33,7 +33,7 @@ namespace CLAM
 			Q_OBJECT
 			
 		public: 
-			ScrollBar(Orientation orientation, QWidget * parent);
+			ScrollBar(Qt::Orientation orientation, QWidget * parent);
 			~ScrollBar();
 
 		signals:

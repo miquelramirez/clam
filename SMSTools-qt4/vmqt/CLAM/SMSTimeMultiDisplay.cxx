@@ -27,8 +27,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		SMSTimeMultiDisplay::SMSTimeMultiDisplay(QWidget* parent, const char * name, Qt::WFlags f)
-			: MultiDisplayPlot(parent,name,f)
+		SMSTimeMultiDisplay::SMSTimeMultiDisplay(QWidget* parent, const char * name)
+			: MultiDisplayPlot(parent,name)
 			, mShowOnNewData(true)
 			, mHasMasterData(false)
 			, mHasAudioData(false)

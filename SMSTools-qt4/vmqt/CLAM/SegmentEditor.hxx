@@ -3,6 +3,7 @@
 
 #include <qobject.h>
 #include <qcursor.h>
+#include <QtGui/QKeyEvent>
 #include <CLAM/SegmentRenderer.hxx>
 
 namespace CLAM

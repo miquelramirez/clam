@@ -22,8 +22,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		BPFEditor::BPFEditor(int eFlags, QWidget* parent,const char* name, Qt::WFlags f)
-			: QWidget(parent,name,f)
+		BPFEditor::BPFEditor(int eFlags, QWidget* parent,const char* name)
+			: QWidget(parent,name)
 			, mEFlags(eFlags)
 			, mActivePlayer(true)
 			, mXRuler(0)

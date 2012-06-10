@@ -22,7 +22,7 @@ namespace CLAM
 			Q_OBJECT
 
 		public:
-			MultiDisplayPlot(QWidget* parent=0,  const char * name = 0, WFlags f = 0);
+			MultiDisplayPlot(QWidget* parent=0,  const char * name = 0);
 			virtual ~MultiDisplayPlot();
 
 			void Label(const std::string& label);

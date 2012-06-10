@@ -6,6 +6,7 @@
 #include <Q3BoxLayout>
 #include <Q3HBoxLayout>
 #include <Q3VBoxLayout>
+#include <Q3ListView>
 #include <CLAM/ListItemChooser.hxx>
 
 namespace CLAM
