@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/icons" >
+        <file>images/SMSTools-icon.svg</file>
+        <file>images/clamlogo.png</file>
+        <file>images/upf-mtg-logo.png</file>
+    </qresource>
+</RCC>
