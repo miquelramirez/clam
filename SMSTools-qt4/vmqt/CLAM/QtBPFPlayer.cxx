@@ -331,7 +331,7 @@ namespace CLAM
 			int midiLabelWidth = fm.width("MIDI");
 
 			// play mode panel
-			radioPanel = new Q3Frame(this);
+			radioPanel = new QFrame(this);
 
 			mPlayAudio = new QRadioButton(radioPanel);
 			mPlayAudio->setChecked(true); // defaut 
@@ -353,7 +353,7 @@ namespace CLAM
 			layout->addStretch(1);
 
 			// MIDI settings panel
-			midiSettingsPanel = new Q3Frame(this);
+			midiSettingsPanel = new QFrame(this);
 	    
 			mMIDIInstrumentsCB = new QComboBox(midiSettingsPanel);
 			mMIDIInstrumentsCB->setGeometry(0,5,85,20);

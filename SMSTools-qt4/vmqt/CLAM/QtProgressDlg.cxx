@@ -1,4 +1,4 @@
-#include <q3progressdialog.h>
+#include <QtGui/QProgressDialog>
 #include <CLAM/QtProgressDlg.hxx>
 
 namespace CLAM
@@ -7,7 +7,7 @@ namespace CLAM
 	{
 		QtProgressDlg::QtProgressDlg()
 		{		
-			mProgressDlg = new Q3ProgressDialog(0);
+			mProgressDlg = new QProgressDialog(0);
 			mProgressDlg->setCancelButton(0);
 			mProgressDlg->setGeometry(mProgressDlg->x(),mProgressDlg->y(),250,60);
 			mProgressDlg->setModal(true);
@@ -31,12 +31,12 @@ namespace CLAM
 
 		void QtProgressDlg::TotalSteps(int steps)
 		{
-			mProgressDlg->setTotalSteps(steps);
+			mProgressDlg->setMaximum(steps);
 		}
 
 		void QtProgressDlg::Update(int val)
 		{
-			mProgressDlg->setProgress(val);
+			mProgressDlg->setValue(val);
 		}
 
 		void QtProgressDlg::Show()

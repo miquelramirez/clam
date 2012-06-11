@@ -2,12 +2,12 @@
 #include <qlabel.h>
 #include <q3frame.h>
 #include <q3popupmenu.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
+#include <QtGui/QHBoxLayout>
 #include <QKeyEvent>
 #include <QHideEvent>
-#include <Q3VBoxLayout>
-#include <Q3BoxLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QBoxLayout>
+#include <QtGui/QInputDialog>
 #include <QShowEvent>
 #include <CLAM/VScrollGroup.hxx>
 #include <CLAM/HScrollGroup.hxx>
@@ -15,7 +15,6 @@
 #include <CLAM/BPFEditorController.hxx>
 #include <CLAM/BPFEditorDisplaySurface.hxx>
 #include <CLAM/QtBPFPlayer.hxx>
-#include <CLAM/ListItemChooser.hxx>
 #include <CLAM/BPFEditor.hxx>
 
 namespace CLAM
@@ -40,7 +39,6 @@ namespace CLAM
 			, mWhiteOverBlackScheme(false)
 			, mUseFocusColors(false)
 			, mPopupMenu(0)
-			, mChooseBPFDialog(0)
 		{
 			mSlotPlayingTimeReceived.Wrap(this,&BPFEditor::PlayingTime);
 			mSlotStopPlayingReceived.Wrap(this,&BPFEditor::StopPlaying);
@@ -274,28 +272,28 @@ namespace CLAM
 			mController = new BPFEditorController(mEFlags);
 			
 			// main layout
-			mainLayout = new Q3VBoxLayout(this);
+			mainLayout = new QVBoxLayout(this);
 
 			if((mEFlags & CLAM::VM::HasHorizontalScroll) 
 			   && !(mEFlags & CLAM::VM::AllowZoomByMouse))
 			{
 			    // top area xRuler
-			    topLayout = new Q3HBoxLayout(mainLayout);
+			    topLayout = new QHBoxLayout(mainLayout);
 			    mXRuler = new Ruler(this,CLAM::VM::Top);
-			    topLeftHole = new Q3Frame(this);
+			    topLeftHole = new QFrame(this);
 			    topLayout->addWidget(topLeftHole);
 			    topLayout->addWidget(mXRuler);
 			    if((mEFlags & CLAM::VM::HasVerticalScroll) 
 			       && !(mEFlags & CLAM::VM::AllowZoomByMouse))
 			    {
-					topRightHole = new Q3Frame(this);
+					topRightHole = new QFrame(this);
 					topLayout->addWidget(topRightHole);
 			    }
 			
 			}
 
 			// middle area: left ruler and display surface
-			middleLayout = new Q3HBoxLayout(mainLayout);
+			middleLayout = new QHBoxLayout(mainLayout);
 
 			mYRuler = new Ruler(this,CLAM::VM::Left);
 
@@ -315,7 +313,7 @@ namespace CLAM
 			middleLayout->addWidget(mDisplaySurface);
 
 			// bottom area:info labels and bottom ruler
-			bottomLayout = new Q3HBoxLayout(mainLayout);
+			bottomLayout = new QHBoxLayout(mainLayout);
 			
 			int middle_panel_height=0;
 			
@@ -353,7 +351,7 @@ namespace CLAM
 
 			if(topLeftHole) topLeftHole->setFixedSize(mYRuler->width(),mXRuler->height());
 
-			labelsContainer = new Q3Frame(this);
+			labelsContainer = new QFrame(this);
 			labelsContainer->setFixedSize(mYRuler->width(),middle_panel_height);
 			
 
@@ -391,10 +389,10 @@ namespace CLAM
 
 			bottomLayout->addWidget(labelsContainer);
 
-			Q3BoxLayout* middlePanel = new Q3VBoxLayout(bottomLayout);
+			QBoxLayout* middlePanel = new QVBoxLayout(bottomLayout);
 			if(mHScroll)
 			{
-			    playerHole = new Q3Frame(this);
+			    playerHole = new QFrame(this);
 			    playerHole->setFixedHeight(labelsContainer->height()-mHScroll->height()+10);
 			    middlePanel->addWidget(mHScroll);
 			    middlePanel->addWidget(playerHole);
@@ -585,7 +583,7 @@ namespace CLAM
 		{
 			mVScroll = new VScrollGroup(this);
 			middleLayout->addWidget(mVScroll);
-			bottomRightHole = new Q3Frame(this);
+			bottomRightHole = new QFrame(this);
 			bottomRightHole->setFixedSize(mVScroll->width(),labelsContainer->height());
 			bottomLayout->addWidget(bottomRightHole);
 
@@ -722,21 +720,22 @@ namespace CLAM
 
 		void BPFEditor::InitPopupMenu()
 		{
-			if(mPopupMenu) 
+			if(mPopupMenu)
 			{
 				delete mPopupMenu;
 				mPopupMenu = 0;
 			}
-			mPopupMenu = new Q3PopupMenu();
+			mPopupMenu = new QMenu();
 			mPopupMenu->setCheckable(true);
 			if(mPlayer)
 			{
-				mPopupMenu->insertItem("Auralize",this,SLOT(activePlayer()),0,0);
-				if(mActivePlayer) mPopupMenu->setItemChecked(0,true);
+				QAction * auralizeAction = mPopupMenu->addAction("Auralize",this,SLOT(activePlayer()));
+				auralizeAction->setCheckable(true);
+				auralizeAction->setChecked(mActivePlayer);
 			}
 			if(mController->HasMultipleBPF())
 			{
-				mPopupMenu->insertItem("Select...",this,SLOT(showChooseBPFDlg()),0,1);
+				mPopupMenu->addAction("Select...",this,SLOT(showChooseBPFDlg()));
 			}
 		}
 
@@ -775,18 +774,22 @@ namespace CLAM
 
 		void BPFEditor::showChooseBPFDlg()
 		{
-			if(mChooseBPFDialog)
-			{
-				delete mChooseBPFDialog;
-				mChooseBPFDialog=0;    
-			}
-
-			mChooseBPFDialog = new ListItemChooser("Choose BPF","Available BPFs",mController->GetBPFNamesList(),this);
-			if( mChooseBPFDialog->exec() == QDialog::Accepted )
-			{
-				mController->SetCurrentBPF(mChooseBPFDialog->selection().ascii());
-				if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetCurrentBPF(mChooseBPFDialog->selection().ascii());
-			}
+			typedef std::list<QString> Names;
+			const Names & names = mController->GetBPFNamesList();
+			QStringList qlist;
+			for (Names::const_iterator it = names.begin(); it != names.end(); it++)
+				qlist.append(*it);
+			bool ok=false;
+			QString chosen = QInputDialog::getItem(this,
+				tr("Choose BPF"),
+				tr("Available BPFs"),
+				qlist,
+				0, // selected item
+				false, // editable
+				&ok);
+			if (not ok) return;
+			mController->SetCurrentBPF(chosen.toStdString());
+			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetCurrentBPF(chosen.toStdString());
 		}
 
 		void BPFEditor::ActiveLocator(bool active)

@@ -24,7 +24,7 @@
 #include <qtooltip.h>
 //Added by qt3to4:
 #include <QPixmap>
-#include <Q3VBoxLayout>
+#include <QtGui/QVBoxLayout>
 #include <CLAM/IconData.hxx>
 #include <CLAM/VZLabel.hxx>
 #include <CLAM/ScrollBar.hxx>
@@ -50,7 +50,7 @@ namespace CLAM
 			QFont f("Sans",8);
 			f.setBold(true);
 
-			Q3VBoxLayout* layout = new Q3VBoxLayout(this);
+			QVBoxLayout* layout = new QVBoxLayout(this);
 			mZOut = new QPushButton(this);
 			mZOut->setAutoRepeat(true);
 			mZOut->setFixedSize(20,20);

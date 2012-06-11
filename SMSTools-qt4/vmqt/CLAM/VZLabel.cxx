@@ -21,8 +21,7 @@
 
 #include <qpainter.h>
 #include <qtooltip.h>
-//Added by qt3to4:
-#include <Q3Frame>
+#include <QtGui/QFrame>
 #include <CLAM/VZLabel.hxx>
 
 namespace CLAM

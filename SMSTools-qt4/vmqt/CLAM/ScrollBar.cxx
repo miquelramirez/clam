@@ -20,8 +20,7 @@
  */
 
 #include <CLAM/ScrollBar.hxx>
-//Added by qt3to4:
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 
 namespace CLAM
 {
