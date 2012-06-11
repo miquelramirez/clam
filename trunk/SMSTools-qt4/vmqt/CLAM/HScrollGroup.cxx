@@ -25,7 +25,7 @@
 #include <qtooltip.h>
 //Added by qt3to4:
 #include <QPixmap>
-#include <Q3HBoxLayout>
+#include <QtGui/QHBoxLayout>
 #include <CLAM/IconData.hxx>
 #include <CLAM/ScrollBar.hxx>
 #include <CLAM/HScrollGroup.hxx>
@@ -50,7 +50,7 @@ namespace CLAM
 			QFont f("Sans",8);
 			f.setBold(true);
 
-			Q3HBoxLayout* layout = new Q3HBoxLayout(this);
+			QHBoxLayout* layout = new QHBoxLayout(this);
 			mScrollBar = new ScrollBar(Qt::Horizontal,this);
 			mScrollBar->setFixedHeight(mScrollBar->sizeHint().height());
 			mScrollBar->setRange(0,0);

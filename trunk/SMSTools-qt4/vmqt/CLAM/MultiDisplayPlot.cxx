@@ -251,7 +251,7 @@ namespace CLAM
 			QFont f("Sans",8);
 			f.setBold(true);
 			
-			mToggleContainer = new Q3Frame(this);
+			mToggleContainer = new QFrame(this);
 			mToggleContainer->setFixedSize(XRULER_HEIGHT,XRULER_HEIGHT);
 			mToggleButton = new QPushButton(mToggleContainer);
 			mToggleButton->setFont(f);

@@ -15,7 +15,7 @@ using SigSlot::Slotv1;
 class QLabel;
 class QFrame;
 class QBoxLayout;
-class Q3PopupMenu;
+class QMenu;
 
 namespace CLAM
 {
@@ -163,8 +163,7 @@ namespace CLAM
 			bool mWhiteOverBlackScheme;
 			bool mUseFocusColors;
 
-			Q3PopupMenu*      mPopupMenu;
-			ListItemChooser* mChooseBPFDialog;
+			QMenu *      mPopupMenu;
 
 			Slotv1<TData> mSlotPlayingTimeReceived;
 			Slotv1<TData> mSlotStopPlayingReceived;

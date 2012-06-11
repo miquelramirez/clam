@@ -23,9 +23,9 @@
 #include <qlabel.h>
 #include <qtooltip.h>
 //Added by qt3to4:
-#include <Q3Frame>
-#include <Q3BoxLayout>
-#include <Q3HBoxLayout>
+#include <QtGui/QFrame>
+#include <QtGui/QBoxLayout>
+#include <QtGui/QHBoxLayout>
 #include <CLAM/TimeSegmentLabelsGroup.hxx>
 
 namespace CLAM
@@ -44,7 +44,7 @@ namespace CLAM
 
 		void TimeSegmentLabelsGroup::InitLabelsGroup()
 		{
-			Q3BoxLayout* layout = new Q3HBoxLayout(this);
+			QBoxLayout* layout = new QHBoxLayout(this);
 			layout->setMargin(0);
 			layout->setSpacing(0);
 			
@@ -52,7 +52,7 @@ namespace CLAM
 			f.setBold(true);
 
 			mBeginTimeLab = new QLabel(this);
-			mBeginTimeLab->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
+			mBeginTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			mBeginTimeLab->setLineWidth(2);
 			mBeginTimeLab->setFixedHeight(20);
 			mBeginTimeLab->setFont(f);
@@ -62,7 +62,7 @@ namespace CLAM
 			layout->addWidget(mBeginTimeLab);
 
 			mEndTimeLab = new QLabel(this);
-			mEndTimeLab->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
+			mEndTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			mEndTimeLab->setLineWidth(2);
 			mEndTimeLab->setFixedHeight(20);
 			mEndTimeLab->setFont(f);
@@ -72,7 +72,7 @@ namespace CLAM
 			layout->addWidget(mEndTimeLab);
 
 			mDurTimeLab = new QLabel(this);
-			mDurTimeLab->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
+			mDurTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			mDurTimeLab->setLineWidth(2);
 			mDurTimeLab->setFixedHeight(20);
 			mDurTimeLab->setFont(f);
