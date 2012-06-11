@@ -163,7 +163,7 @@ public:
 			computeRelativeOrientation
 				( 0,0,0, 0,0,0, 1,0,0 );
 		ASSERT_EQUALS(Orientation(0, 0), orientation);
-	}	
+	}
 	void testRelativeOrientation_behind()
 	{
 		Orientation orientation = CLAM::AbsoluteCoordinates2RelativeAngles::
@@ -177,7 +177,7 @@ public:
 			computeRelativeOrientation
 				( 0,0,0, 30,45,0, 1,1,1 );
 		ASSERT_EQUALS(Orientation(12.340705747005989323, -8.5938519506549795324), orientation);
-	}	
+	}
 	void testRelativeOrientation_arbitraryNegativeAzimuth()
 	{
 		Orientation orientation = CLAM::AbsoluteCoordinates2RelativeAngles::
