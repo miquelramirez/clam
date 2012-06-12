@@ -19,20 +19,20 @@
 #	quit: ends the tcp connection
 #	quit_irc: ends the irc connection
 
-import sys
 import string
-from collections import deque
 import socket, SocketServer
 import threading, time
 import Queue
 
-HOST="irc.freenode.net"
-PORT=6667
-NICK="testfarmbot"
-IDENT="testfarmbot"
-REALNAME="testfarmbot"
-DFT_CHANNEL="#clam"
-DFT_MSG="hi clam folks"
+class config
+	host="irc.freenode.net"
+	port=6667
+	nick="testfarmbot"
+	ident="testfarmbot"
+	realname="Testfarm IRC Bot for CLAM"
+	channel="#clam"
+	join_message="hi clam folks"
+	deamon_port = 2222
 
 MessageQ = Queue.Queue()
 
@@ -48,9 +48,9 @@ class IRC_Connection( threading.Thread ):
 		print "Starting irc connection..."
 		
 		readbuffer = ""
-		self.irc_socket.connect( (HOST, PORT) )
-		self.irc_socket.send( "NICK %s\r\n" % NICK )
-		self.irc_socket.send( "USER %s %s bla :%s\r\n" % (IDENT, HOST, REALNAME) )
+		self.irc_socket.connect( (config.host, config.port) )
+		self.irc_socket.send( "NICK %s\r\n" % config.nick )
+		self.irc_socket.send( "USER %s %s bla :%s\r\n" % (config.ident, config.host, config.realname) )
 	
 		while True:
 			self.irc_socket.setblocking(0)
@@ -78,9 +78,9 @@ class IRC_Connection( threading.Thread ):
 				print line
 
 				if line.find('End of /MOTD command') != -1:
-					print "Connected to " + HOST
-					self.join_channel( DFT_CHANNEL )
-					self.send_message( DFT_MSG )
+					print "Connected to " + config.host
+					self.join_channel( config.channel )
+					self.send_message( config.join_message )
 
 				line = string.rstrip(line)
 				line = string.split(line)
@@ -101,15 +101,15 @@ class IRC_Connection( threading.Thread ):
 		self.irc_socket.send( 'PRIVMSG ' + channel + ' :' + msg + '\r\n' )
 	
 	def send_msg_dft_channel( self, msg ):
-		self.irc_socket.send( 'PRIVMSG ' + DFT_CHANNEL + ' :' + msg + '\r\n' )
+		self.irc_socket.send( 'PRIVMSG ' + config.channel + ' :' + msg + '\r\n' )
 
 	def send_action_msg_dft_channel( self, msg ):
 		"""/me like message"""
-		self.irc_socket.send( 'PRIVMSG ' + DFT_CHANNEL + ' :\01ACTION ' + msg + '\r\n' )
+		self.irc_socket.send( 'PRIVMSG ' + config.channel + ' :\01ACTION ' + msg + '\r\n' )
 	
 	def send_notice_dft_channel( self, msg ):
 		print "send_notice_dft_channel: ",msg
-		self.irc_socket.send( 'NOTICE ' + DFT_CHANNEL + ' :' + msg + '\r\n' )
+		self.irc_socket.send( 'NOTICE ' + config.channel + ' :' + msg + '\r\n' )
 
 	def quit( self, msg="" ):
 		self.irc_socket.send( 'QUIT' + ' :' + msg + '\r\n' )
@@ -139,5 +139,6 @@ class Handler( SocketServer.StreamRequestHandler ):
 
 
 IRC_Connection().start()
-server = MyTCPServer( ("localhost", 2222), Handler )
+server = MyTCPServer( ("localhost", config.deamon_port), Handler )
 server.serve_forever()
+
