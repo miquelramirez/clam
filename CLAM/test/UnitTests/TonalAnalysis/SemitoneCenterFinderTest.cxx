@@ -145,7 +145,7 @@ private:
 	void testBorderTunning_roundsToTheFirstDecimalDown()
 	{
 		const unsigned nPeaks=1;
-		double positions[]={1.95};
+		double positions[]={1.949999999999};
 		double values   []={8.0};
 		
 		assertFoundCenterIs(1.9, nPeaks, positions, values);
