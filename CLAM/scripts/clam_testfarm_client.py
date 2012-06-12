@@ -11,7 +11,8 @@ from project import Project
 from client import Client
 from runner import Runner
 from utils import loadDictFile
-from mail import MailReporter
+from mailreporter import MailReporter
+from ircreporter import IrcReporter
 from commands import getoutput
 
 def countLines( path ):
@@ -31,8 +32,7 @@ slowTests = '--slow-tests' in sys.argv
 
 localDefinitions = dict(
 	description= '<img src="http://clam-project.org/images/linux_icon.png"/> <img src="http://clam-project.org/images/ubuntu_icon.png"/>',
-#	repositories = "clam acustica clam/testdata clam/padova-speech-sms",
-	repositories = "clam clam-test-data",
+	repositories = "clam clam-test-data", # "acustica clam/padova-speech-sms",
 	private_repositories = "",
 	sandbox= os.path.expanduser('~/'),
 	extraLibOptions = 'release=0',
@@ -51,7 +51,7 @@ if slowTests : localDefinitions['name']+="_slow"
 repositories = localDefinitions['repositories'].split()
 private_repositories = localDefinitions['private_repositories'].split()
 os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitions
-os.environ['PATH']='%(installPath)s/bin:' % localDefinitions + os.environ['PATH']
+os.environ['PATH']='%(installPath)s/bin:~/bin:' % localDefinitions + os.environ['PATH']
 os.environ['CLAM_PLUGIN_PATH']='%(installPath)s/lib/clam' % localDefinitions
 os.environ['LADSPA_PATH']='%(installPath)s/lib/ladspa' % localDefinitions
 os.environ['PKG_CONFIG_PATH']='%(installPath)s/lib/pkgconfig' % localDefinitions
@@ -209,7 +209,6 @@ clam.add_subtask('ipyclam compilation and test', [
 	'./runTests.py',
 ] )
 
-
 """
 clam.add_subtask('Padova Speech SMS (external repository)', [
 	'cd %(sandbox)s/clam/padova-speech-sms/'%localDefinitions,
@@ -255,22 +254,31 @@ if slowTests :
 forceRun = len(sys.argv)>1
 print "force Run: ", forceRun
 
+extra_listeners = []
+
+if 'mail_report' in localDefinitions :
+	mail_report_args = localDefinitions['mail_report'].__dict__
+	del mail_report_args["__module__"]
+	del mail_report_args["__doc__"]
+	extra_listeners.append(
+		MailReporter(
+			testfarm_page="http://clam-project.org/testfarm.html",
+			**mail_report_args))
+
+if 'irc_report' in localDefinitions :
+	irc_report_args = localDefinitions['irc_report'].__dict__
+	del irc_report_args["__module__"]
+	del irc_report_args["__doc__"]
+	extra_listeners.append(
+		IrcReporter(
+			testfarm_page="http://clam-project.org/testfarm.html",
+			**irc_report_args))
+
 Runner( clam, 
 	continuous = False,
 	first_run_always = forceRun,
 	remote_server_url = 'http://84.88.76.14/testfarm_server',
 #	local_base_dir='/tmp',
-	extra_listeners = [
-		MailReporter(
-#			server = localDefinitions['mailServer'],
-#			port = localDefinitions['mailPort'],
-#			user = localDefinitions['mailUser'],
-#			password = localDefinitions['mailPassword'],
-#			from_email = localDefinitions['mailSender'],
-#			to_email = localDefinitions['mailRecipients'],
-#			subject_template = "CLAM project is {task_status}",
-#			more_url = "http://clam-project.org/testfarm.html",
-		),
-	]
+	extra_listeners = extra_listeners,
 )
 
