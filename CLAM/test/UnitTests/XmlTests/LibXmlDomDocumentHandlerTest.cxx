@@ -22,14 +22,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION( LibXmlDomDocumentHandlerTest );
 class LibXmlDomDocumentHandlerTest : public CppUnit::TestCase
 {
 	CPPUNIT_TEST_SUITE( LibXmlDomDocumentHandlerTest );
-
 	CPPUNIT_TEST(testDefaultConstructor_PointsNoWhere);
 	CPPUNIT_TEST(testSetDocument_ChangesSelectionToRoot);
 	CPPUNIT_TEST(testCreate);
 	CPPUNIT_TEST(testCreate_whenTwice);
 	CPPUNIT_TEST(testRead);
 	CPPUNIT_TEST(testRead_withErrors);
-//	CPPUNIT_TEST(testWriteSelection);
+	CPPUNIT_TEST(testWriteSelection);
 	CPPUNIT_TEST(testWriteDocument);
 	CPPUNIT_TEST(testSelect_withEmptyPathKeepsTheSelection);
 	CPPUNIT_TEST(testSelect_withRelativePathMovesTheSelection);
@@ -44,17 +43,16 @@ class LibXmlDomDocumentHandlerTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testSelect_absoluteWithBadRootNameFails);
 	CPPUNIT_TEST(testSelect_absoluteFailsKeepsOldSelection);
 	CPPUNIT_TEST(testSelect_withASingleBarGoesToRoot);
-/*
 	CPPUNIT_TEST(testWriteSelection_withAMovedSelection);
-*/
 	CPPUNIT_TEST(testWriteDocument_withAMovedSelectionBehavesTheSame);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	/// Common initialization, executed before each test method
-	void setUp() 
+	void setUp()
 	{
 		mTargetStream.str("");
+		_xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	}
 
 	/// Common clean up, executed after each test method
@@ -63,6 +61,7 @@ public:
 	}
 
 private:
+	std::string _xmlHead;
 	std::stringstream mTargetStream;
 
 	void testDefaultConstructor_PointsNoWhere()
@@ -129,11 +128,10 @@ private:
 		}
 		CPPUNIT_ASSERT_EQUAL((xmlpp::Element*)0,doc.getSelection());
 	}
-/*
 	void testWriteSelection()
 	{
 		LibXmlDomDocumentHandler doc;
-		std::istringstream is("<LoadedRoot><Child/></LoadedRoot>");
+		std::istringstream is(_xmlHead+"<LoadedRoot><Child/></LoadedRoot>\n");
 
 		doc.read(is);
 
@@ -143,7 +141,6 @@ private:
 		CPPUNIT_ASSERT_EQUAL(is.str(),os.str());
 
 	}
-*/
 	void testWriteDocument()
 	{
 		LibXmlDomDocumentHandler doc;
@@ -154,7 +151,7 @@ private:
 		std::ostringstream os;
 		doc.writeDocument(os);
 
-		CPPUNIT_ASSERT_EQUAL("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+is.str()+"\n",os.str());
+		CPPUNIT_ASSERT_EQUAL(_xmlHead+is.str()+"\n",os.str());
 
 	}
 	void testSelect_withEmptyPathKeepsTheSelection()
@@ -365,7 +362,6 @@ private:
 
 		CPPUNIT_ASSERT_EQUAL(std::string("LoadedRoot"),result);
 	}
-/*
 	void testWriteSelection_withAMovedSelection()
 	{
 		LibXmlDomDocumentHandler doc;
@@ -377,11 +373,10 @@ private:
 		std::ostringstream os;
 		doc.writeSelection(os);
 
-		std::string expected = "<Element><Child/><OtherChild/></Element>";
+		std::string expected = _xmlHead+"<Element><Child/><OtherChild/></Element>\n";
 
 		CPPUNIT_ASSERT_EQUAL(expected,os.str());
 	}
-*/
 	void testWriteDocument_withAMovedSelectionBehavesTheSame()
 	{
 		LibXmlDomDocumentHandler doc;
@@ -392,7 +387,7 @@ private:
 		std::ostringstream os;
 		doc.writeDocument(os);
 
-		CPPUNIT_ASSERT_EQUAL("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+is.str()+"\n",os.str());
+		CPPUNIT_ASSERT_EQUAL(_xmlHead+is.str()+"\n",os.str());
 	}
 
 };
