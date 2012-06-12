@@ -10,9 +10,9 @@ from task import *
 from project import Project
 from client import Client
 from runner import Runner
-from commands import getoutput
 from utils import loadDictFile
 from mail import MailReporter
+from commands import getoutput
 
 def countLines( path ):
 	print 'loc for path:', path
@@ -59,14 +59,11 @@ os.environ['PKG_CONFIG_PATH']='%(installPath)s/lib/pkgconfig' % localDefinitions
 client = Client(localDefinitions['name'])
 client.brief_description = localDefinitions['description']
 
-
 clam = Task(
-	project = Project('CLAM','<a href="http://clam-project.org">clam web</a>' ), 
-	client = client, 
+	project = Project('CLAM','<a href="http://clam-project.org">clam web</a>' ),
+	client = client,
 	task_name='Full Tests' if '--slow-tests' in sys.argv else 'Quick Tests',
 	)
-
-#clam.set_repositories_to_keep_state_of(repositories + localDefinitions['private_repositories'].split())
 
 for repository in repositories :
 	clam.add_sandbox(SvnSandbox(os.path.join(localDefinitions['sandbox'], repository)))
@@ -74,8 +71,7 @@ for repository in repositories :
 for repository in localDefinitions['private_repositories'].split() :
 	clam.add_sandbox(SvnSandbox(os.path.join(localDefinitions['sandbox'], repository)))
 
-clam.set_check_for_new_commits( 
-#	checking_cmd='for a in %(repositories)s; do ( cd %(sandbox)s/$a && svn status -u); done | grep \'[*!]\''%localDefinitions,
+clam.set_check_for_new_commits(
 	checking_cmd='false'%localDefinitions,
 	minutes_idle=15
 )
@@ -100,7 +96,7 @@ clam.add_subtask('Unit Tests', [
 	'scons test_data_path=%(sandbox)s/clam-test-data clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions, # TODO: test_data_path and release
 	'cd UnitTests',
 	{INFO : lambda x:startTimer() },
-	{CMD: './UnitTests'},
+	'./UnitTests',
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
 clam.add_subtask('Functional Tests', [
@@ -108,7 +104,7 @@ clam.add_subtask('Functional Tests', [
 	'scons test_data_path=%(sandbox)s/clam-test-data clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
 	'cd FunctionalTests',
 	{INFO : lambda x:startTimer() },
-	{CMD:'./FunctionalTests'},
+	'./FunctionalTests',
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
 ] )
 clam.add_subtask('CLAM Examples', [
