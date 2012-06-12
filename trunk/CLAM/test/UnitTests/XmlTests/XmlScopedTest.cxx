@@ -25,15 +25,11 @@ class XmlScopedTest : public CppUnit::TestCase
 	CPPUNIT_TEST( testElementWithAttributeAndContent );
 	CPPUNIT_TEST( testElementWithAttributes );
 	CPPUNIT_TEST( testElementWithChildren );
-//	CPPUNIT_TEST( test );
-//	CPPUNIT_TEST( test );
-//	CPPUNIT_TEST( test );
-//	CPPUNIT_TEST( test );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	/// Common initialization, executed before each test method
-	void setUp() 
+	void setUp()
 	{
 		mTargetStream.str("");
 	}
@@ -76,10 +72,10 @@ private:
 			XmlContent content("A dummy text");
 		}
 		CPPUNIT_ASSERT_EQUAL(
-			std::string("<Tag1>A dummy text</Tag1>"), 
+			std::string("<Tag1>A dummy text</Tag1>"),
 			mTargetStream.str());
 	}
-	
+
 	void testEmptyElementWithAttribute()
 	{
 		XmlFragment theContext(mTargetStream);
@@ -87,7 +83,7 @@ private:
 			XmlAttribute a("attrib11","value11");
 		}
 		CPPUNIT_ASSERT_EQUAL(
-			std::string("<Tag1 attrib11='value11' />"), 
+			std::string("<Tag1 attrib11='value11' />"),
 			mTargetStream.str());
 	}
 
@@ -98,7 +94,7 @@ private:
 			XmlAttribute a("attrib11",2.34343);
 		}
 		CPPUNIT_ASSERT_EQUAL(
-			std::string("<Tag1 attrib11='2.34343' />"), 
+			std::string("<Tag1 attrib11='2.34343' />"),
 			mTargetStream.str());
 	}
 
@@ -110,7 +106,7 @@ private:
 			XmlContent content("A dummy text");
 		}
 		CPPUNIT_ASSERT_EQUAL(
-			std::string("<Tag1 attrib11='value11'>A dummy text</Tag1>"), 
+			std::string("<Tag1 attrib11='value11'>A dummy text</Tag1>"),
 			mTargetStream.str());
 	}
 
@@ -124,26 +120,25 @@ private:
 		}
 		CPPUNIT_ASSERT_EQUAL(
 			std::string("<Tag1 attrib11='value11' attrib12='value12'>"
-				"A dummy text</Tag1>"), 
+				"A dummy text</Tag1>"),
 			mTargetStream.str());
 	}
 
 	void testElementWithChildren()
 	{
 		XmlFragment theContext(mTargetStream);
-		{ 
+		{
 			XmlElement tag1("Tag1");
-			{ 
+			{
 				XmlElement tag11("Tag11");
 				XmlContent content("A dummy text");
 			}
 			{
 				XmlElement tag12("Tag12");
 			}
-			
 		}
 		CPPUNIT_ASSERT_EQUAL(
-			std::string("<Tag1><Tag11>A dummy text</Tag11><Tag12 /></Tag1>"), 
+			std::string("<Tag1><Tag11>A dummy text</Tag11><Tag12 /></Tag1>"),
 			mTargetStream.str());
 	}
 
