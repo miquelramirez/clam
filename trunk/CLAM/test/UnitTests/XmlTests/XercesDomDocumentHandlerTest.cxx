@@ -55,11 +55,21 @@ class XercesDomDocumentHandlerTest : public CppUnit::TestCase
 	CPPUNIT_TEST_SUITE_END();
 
 public:
+	// Definitions to make tests diffable with other DomDocumentHandlerTests
+	typedef XercesDomDocumentHandler DomDocumentHandler;
+	typedef xercesc::DOMElement ElementType;
+	std::string nodeName(ElementType * node)
+	{
+		return L(node->getNodeName());
+	}
+
+
 	/// Common initialization, executed before each test method
-	void setUp() 
+	void setUp()
 	{
 		XercesInitializer::require();
 		mTargetStream.str("");
+		_xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>";
 	}
 
 	/// Common clean up, executed after each test method
@@ -68,64 +78,60 @@ public:
 	}
 
 private:
+	std::string _xmlHead;
 	std::stringstream mTargetStream;
-
 
 	void testDefaultConstructor_PointsNoWhere()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 
-		CPPUNIT_ASSERT_EQUAL((xercesc::DOMElement*)0,doc.getSelection());
+		CPPUNIT_ASSERT_EQUAL((ElementType*)0,doc.getSelection());
 	}
-
 	void testSetDocument_ChangesSelectionToRoot()
 	{
 		xercesc::DOMImplementation * imp =
 			xercesc::DOMImplementation::getImplementation();
 		xercesc::DOMDocument * domDoc = imp->createDocument(0,U("RootNode"),0);
+		ElementType * root = domDoc->getDocumentElement();
 
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		doc.setDocument(domDoc);
 
-		CPPUNIT_ASSERT_EQUAL(domDoc->getDocumentElement(),doc.getSelection());
+		CPPUNIT_ASSERT_EQUAL(root,doc.getSelection());
 	}
-
 	void testCreate()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		doc.create("RootNode");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result=nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("RootNode"),result);
 	}
-
 	void testCreate_whenTwice()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		doc.create("RootNode");
 		doc.create("RootNode2");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result=nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("RootNode2"),result);
 	}
-
 	void testRead()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Child /></LoadedRoot>");
 
 		doc.read(stream);
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result=nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("LoadedRoot"),result);
 	}
-
 	void testRead_withErrors()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><UnclossedChild></LoadedRoot>");
 		try
 		{
@@ -140,13 +146,11 @@ private:
 				"expected end of tag 'UnclossedChild'\n";
 			CPPUNIT_ASSERT_EQUAL(expected,std::string(err.what()));
 		}
-		CPPUNIT_ASSERT_EQUAL((xercesc::DOMElement*)0,doc.getSelection());
-
+		CPPUNIT_ASSERT_EQUAL((ElementType*)0,doc.getSelection());
 	}
-
 	void testWriteSelection()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream is("<LoadedRoot><Child/></LoadedRoot>");
 
 		doc.read(is);
@@ -157,10 +161,9 @@ private:
 		CPPUNIT_ASSERT_EQUAL(is.str(),os.str());
 
 	}
-
 	void testWriteDocument()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream is("<LoadedRoot><Child/></LoadedRoot>");
 
 		doc.read(is);
@@ -168,69 +171,64 @@ private:
 		std::ostringstream os;
 		doc.writeDocument(os);
 
-		CPPUNIT_ASSERT_EQUAL("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"+is.str(),os.str());
+		CPPUNIT_ASSERT_EQUAL(_xmlHead+is.str(),os.str());
 
 	}
-
 	void testSelect_withEmptyPathKeepsTheSelection()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Child /></LoadedRoot>");
 
 		doc.read(stream);
 
 		doc.selectPath("");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("LoadedRoot"),result);
 	}
-
 	void testSelect_withRelativePathMovesTheSelection()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Child /></LoadedRoot>");
 
 		doc.read(stream);
 
 		doc.selectPath("Child");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("Child"),result);
 	}
-
 	void testSelect_withRelativePathIgnoringNonElements()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot>ToBe Ignored <!-- Ignored Comment --><Child /></LoadedRoot>");
 
 		doc.read(stream);
 
 		doc.selectPath("Child");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("Child"),result);
 	}
-
 	void testSelect_withRelativePathIgnoringElementsWithDifferentNames()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Ignored /><Child /></LoadedRoot>");
 
 		doc.read(stream);
 
 		doc.selectPath("Child");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("Child"),result);
 	}
-
 	void testSelect_givesExceptionWheneverTheNameIsNotFound()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Child /></LoadedRoot>");
 
 		doc.read(stream);
@@ -245,28 +243,26 @@ private:
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("LoadedRoot"),result);
 	}
-
 	void testSelect_multipleLevelSelection()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Element><Child /></Element></LoadedRoot>");
 
 		doc.read(stream);
 
 		doc.selectPath("Element/Child");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("Child"),result);
 	}
-
 	void testSelect_badPathKeepsTheSelection()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Element><Child /></Element></LoadedRoot>");
 
 		doc.read(stream);
@@ -282,28 +278,26 @@ private:
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("LoadedRoot"),result);
 	}
-
 	void testSelect_withSomeMoreLevels()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Element><Child><SubChild /></Child></Element></LoadedRoot>");
 
 		doc.read(stream);
 
 		doc.selectPath("Element/Child/SubChild");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("SubChild"),result);
 	}
-
 	void testSelect_successiveRelative()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Element><Child><SubChild /></Child></Element></LoadedRoot>");
 
 		doc.read(stream);
@@ -311,27 +305,27 @@ private:
 		doc.selectPath("Element/Child");
 		doc.selectPath("SubChild");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("SubChild"),result);
 	}
 	void testSelect_withAbsolutePath()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Element><Child /></Element></LoadedRoot>");
 
 		doc.read(stream);
 
 		doc.selectPath("/LoadedRoot/Element/Child");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("Child"),result);
 	}
 
 	void testSelect_absoluteWithBadRootNameFails()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Element><Child /></Element></LoadedRoot>");
 
 		doc.read(stream);
@@ -348,14 +342,14 @@ private:
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("Element"),result);
 	}
 
 	void testSelect_absoluteFailsKeepsOldSelection()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Element><Child /><OtherChild /></Element></LoadedRoot>");
 
 		doc.read(stream);
@@ -372,14 +366,13 @@ private:
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("OtherChild"),result);
 	}
-
 	void testSelect_withASingleBarGoesToRoot()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream stream("<LoadedRoot><Element><Child /><OtherChild /></Element></LoadedRoot>");
 
 		doc.read(stream);
@@ -387,14 +380,13 @@ private:
 		doc.selectPath("Element/OtherChild");
 		doc.selectPath("/");
 
-		std::string result(L(doc.getSelection()->getNodeName()));
+		std::string result = nodeName(doc.getSelection());
 
 		CPPUNIT_ASSERT_EQUAL(std::string("LoadedRoot"),result);
 	}
-
 	void testWriteSelection_withAMovedSelection()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream is("<LoadedRoot><Element><Child/><OtherChild/></Element><OtherElement/></LoadedRoot>");
 
 		doc.read(is);
@@ -409,7 +401,7 @@ private:
 	}
 	void testWriteDocument_withAMovedSelectionBehavesTheSame()
 	{
-		XercesDomDocumentHandler doc;
+		DomDocumentHandler doc;
 		std::istringstream is("<LoadedRoot><Element><Child/><OtherChild/></Element><OtherElement/></LoadedRoot>");
 
 		doc.read(is);
@@ -417,17 +409,13 @@ private:
 		std::ostringstream os;
 		doc.writeDocument(os);
 
-		CPPUNIT_ASSERT_EQUAL("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"+is.str(),os.str());
+		CPPUNIT_ASSERT_EQUAL(_xmlHead+is.str(),os.str());
 	}
-
 
 };
 
-
-
-
 } // namespace Test
-} // namespace Cuidado
+} // namespace CLAM
 
 #endif // USE_XERCES
 
