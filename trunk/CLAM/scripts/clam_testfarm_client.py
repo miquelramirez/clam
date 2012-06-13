@@ -209,6 +209,7 @@ clam.add_subtask('ipyclam compilation and test', [
 	'./runTests.py',
 ] )
 
+"""
 clam.add_subtask('pyCLAM build', [
 	'cd %(sandbox)s/clam/pyclam'%localDefinitions,
 	 './generate_bindings.py && scons',
@@ -221,7 +222,6 @@ clam.add_subtask('pyCLAM Unit Tests', [
 	{STATS : lambda x:{'exectime_pyclamtests' : ellapsedTime()} },
 ])
 
-"""
 clam.add_subtask('Padova Speech SMS (external repository)', [
 	'cd %(sandbox)s/clam/padova-speech-sms/'%localDefinitions,
 	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
