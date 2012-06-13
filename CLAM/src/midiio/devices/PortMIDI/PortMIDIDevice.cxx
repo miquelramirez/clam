@@ -30,7 +30,6 @@ namespace CLAM {
 
 	std::ostream& operator<<( std::ostream& out_str, const PmDeviceInfo* dev_info )
 	{
-	
 		out_str << "Device Name: " << dev_info->name << std::endl;
 		out_str << "Interface Name: " << dev_info->interf << std::endl;
 		if ( dev_info->output == 1 ) out_str << "Output device" << std::endl ;
@@ -42,8 +41,8 @@ namespace CLAM {
 	class PortMIDIDevice: public MIDIDevice
 	{
 	private:
-		std::string mDevice;   
-		PmStream *mHandleIn;  
+		std::string mDevice;
+		PmStream *mHandleIn;
 		///// NEW ///////////
 		PmStream *mHandleOut;
 		///// NEW ///////////
@@ -66,7 +65,7 @@ namespace CLAM {
 	{
 		mDevice = device;
 		////// NEW /////////
-		mHandleIn = NULL;  
+		mHandleIn = NULL;
 		mHandleOut = NULL;
 	}
 
@@ -107,7 +106,7 @@ namespace CLAM {
  	void PortMIDIDevice::ConcreteStart(void) throw(Err)
 	{
 		int dev;
-		
+
 		if (mDevice == "default")
 		{
 			if (mInputs.size())
@@ -122,7 +121,7 @@ namespace CLAM {
 		}
 
 		std::string type = mDevice.substr(0,mDevice.find(":",0));
-    std::string name = mDevice.substr(mDevice.find(":",0)+1,mDevice.size());
+		std::string name = mDevice.substr(mDevice.find(":",0)+1,mDevice.size());
 
 		if (mInputs.size())
 		{
