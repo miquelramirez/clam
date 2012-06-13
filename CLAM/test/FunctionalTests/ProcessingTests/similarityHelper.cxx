@@ -18,7 +18,7 @@ namespace CLAMTest
 	DataSizeMismatch::~DataSizeMismatch() throw()
 	{
 	}
-	
+
 	static double evaluateAverage( const CLAM::DataArray& left )
 	{
 		double avg = 0.0;
@@ -29,7 +29,7 @@ namespace CLAMTest
 		}
 
 		avg /= double( left.Size() );
-		
+
 		return avg;
 	}
 
@@ -92,25 +92,24 @@ namespace CLAMTest
 			return 1.0;
 
 		return covLeftRight/stddevX_times_stddevY;
-	
 	}
-	
+
 	void flattenSpectralPeakArray( const CLAM::SpectralPeakArray& in,
 				       CLAM::DataArray& out )
 	{
 		CLAM::TSize flattenedLen = in.GetMagBuffer().Size() + in.GetFreqBuffer().Size()
 			+ in.GetPhaseBuffer().Size() + in.GetBinPosBuffer().Size() + in.GetBinWidthBuffer().Size();
-		
+
 		out.Resize( flattenedLen );
 		out.SetSize( flattenedLen );
-		
+
 		int i = 0, j = 0;
-		
+
 		for ( i = 0; i < in.GetMagBuffer().Size(); i++, j++ )
 		{
 			out[j] = in.GetMagBuffer()[i];
 		}
-		
+
 		for ( i = 0; i < in.GetFreqBuffer().Size(); i++, j++ )
 		{
 			out[j] = in.GetFreqBuffer()[i];
@@ -130,7 +129,6 @@ namespace CLAMTest
 		{
 			out[j] = in.GetBinWidthBuffer()[i];
 		}
-				
 	}
 
 
