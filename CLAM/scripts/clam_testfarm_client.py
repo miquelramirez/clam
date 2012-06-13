@@ -50,7 +50,7 @@ localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"loca
 if slowTests : localDefinitions['name']+="_slow"
 repositories = localDefinitions['repositories'].split()
 private_repositories = localDefinitions['private_repositories'].split()
-os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitionsa
+os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitions
 os.environ['PATH']=':'.join([
 	'%(installPath)s/bin'% localDefinitions,
 	os.path.expanduser('~/bin'), # for soxsucks
