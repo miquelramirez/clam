@@ -23,7 +23,7 @@ namespace CLAMTest
 
 		CLAM::FFT_base * mProcessing;
 		virtual const std::string getProcessing()=0;
-		void setupSine_F0400Hz_SR8kHz( CLAM::Audio& audio, int nSamples ) 
+		void setupSine_F0400Hz_SR8kHz( CLAM::Audio& audio, int nSamples )
 		{
 			const CLAM::TSize sampleRate = 8000;
 			const CLAM::TData sineFreq = 400.0f;
@@ -111,11 +111,10 @@ namespace CLAMTest
 			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
 								output.GetMagBuffer() );
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange()
 					== output.GetSpectralRange() );
 		}
-		
-		
+
 		void test_WithComplex()
 		{
 			CLAM::Audio     input;
@@ -134,7 +133,7 @@ namespace CLAMTest
 			processingConfig.SetAudioSize( input.GetSize() );
 
 			mProcessing->Configure( processingConfig );
-			
+
 			mProcessing->Start();
 			mProcessing->Do(input,output);
 			mProcessing->Stop();
@@ -145,7 +144,7 @@ namespace CLAMTest
 								output.GetMagBuffer() );
 
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange()
 					== output.GetSpectralRange() );
 		}
 
@@ -166,7 +165,7 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			
+
 			mProcessing->Configure( processingConfig );
 			mProcessing->Start();
 			mProcessing->Do(input,output);
@@ -177,9 +176,9 @@ namespace CLAMTest
 			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
 								output.GetMagBuffer() );
 
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange()
 					== output.GetSpectralRange() );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSize() 
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSize()
 					== output.GetSize() );
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
 		}
@@ -202,7 +201,7 @@ namespace CLAMTest
 			processingConfig.SetAudioSize( input.GetSize() );
 
 			mProcessing->Configure( processingConfig );
-			
+
 			mProcessing->Start();
 			mProcessing->Do(input,output);
 			mProcessing->Stop();
@@ -213,7 +212,7 @@ namespace CLAMTest
 								output.GetMagBuffer() );
 
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange()
 					== output.GetSpectralRange() );
 		}
 
@@ -232,7 +231,7 @@ namespace CLAMTest
 			processingConfig.SetAudioSize( input.GetSize() );
 
 			mProcessing->Configure( processingConfig );
-			
+
 			mProcessing->Start();
 			mProcessing->Do( input, output );
 			mProcessing->Stop();
@@ -241,7 +240,7 @@ namespace CLAMTest
 								output.GetMagBuffer() );
 
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange()
 					== output.GetSpectralRange() );
 		}
 
@@ -263,7 +262,7 @@ namespace CLAMTest
 		}
 	};
 
-	double FFTFunctionalTest::smEqualityThreshold = 0.99999999999; // More accurate as close to 1
+	double FFTFunctionalTest::smEqualityThreshold = 0.9999999; // More accurate as close to 1
 	bool FFTFunctionalTest::smBack2BackDataLoaded = false;
 	CLAM::Spectrum FFTFunctionalTest::smReferenceP2Spectrum;
 	CLAM::Spectrum FFTFunctionalTest::smReferenceNP2Spectrum;
