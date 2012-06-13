@@ -501,7 +501,7 @@ namespace CLAM
 		std::string newPrefix=prefix;
 		if (cutOnLastSeparator==true)
 		{
-			int lastSeparatorPos=prefix.rfind(separator);
+			size_t lastSeparatorPos=prefix.rfind(separator);
 			if (lastSeparatorPos!=-1)
 				newPrefix=prefix.substr(0,lastSeparatorPos);
 		}
