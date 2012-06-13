@@ -209,17 +209,8 @@ clam.add_subtask('ipyclam compilation and test', [
 	'./runTests.py',
 ] )
 
-"""
-clam.add_subtask('Padova Speech SMS (external repository)', [
-	'cd %(sandbox)s/clam/padova-speech-sms/'%localDefinitions,
-	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
-	{CMD: 'svn up', INFO: lambda x:x },
-	'make',
-] )
-
-clam.add_subtask('pyCLAM update', [
+clam.add_subtask('pyCLAM build', [
 	'cd %(sandbox)s/clam/pyclam'%localDefinitions,
-	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
 	 './generate_bindings.py && scons',
 ] )
 clam.add_subtask('pyCLAM Unit Tests', [
@@ -227,9 +218,18 @@ clam.add_subtask('pyCLAM Unit Tests', [
 	'cd test',
 	{INFO : lambda x:startTimer() },
 	{CMD: './UnitTestsSuite.py'},
-	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
+	{STATS : lambda x:{'exectime_pyclamtests' : ellapsedTime()} },
 ])
+
 """
+clam.add_subtask('Padova Speech SMS (external repository)', [
+	'cd %(sandbox)s/clam/padova-speech-sms/'%localDefinitions,
+	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
+	{CMD: 'svn up', INFO: lambda x:x },
+	'make',
+] )
+"""
+
 
 if slowTests :
 	dirs = [
