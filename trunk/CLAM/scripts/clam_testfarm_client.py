@@ -76,8 +76,8 @@ for repository in localDefinitions['private_repositories'].split() :
 	clam.add_sandbox(SvnSandbox(os.path.join(localDefinitions['sandbox'], repository)))
 
 clam.set_check_for_new_commits(
-	checking_cmd='false'%localDefinitions,
-	minutes_idle=15
+	checking_cmd = 'false'%localDefinitions,
+	minutes_idle = 1500 if slowTests else 15,
 )
 
 clam.add_subtask('count lines of code', [
