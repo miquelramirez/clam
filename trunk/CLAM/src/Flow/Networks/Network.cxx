@@ -502,15 +502,15 @@ namespace CLAM
 		if (cutOnLastSeparator==true)
 		{
 			size_t lastSeparatorPos=prefix.rfind(separator);
-			if (lastSeparatorPos!=-1)
+			if (lastSeparatorPos!=std::string::npos)
 				newPrefix=prefix.substr(0,lastSeparatorPos);
 		}
 
-		for ( int i = 0; i<9999999; i++ ) 
+		for ( int i = 0; i<9999999; i++ )
 		{
-			std::stringstream tmp; 
+			std::stringstream tmp;
 			tmp << i;
-			name = i? newPrefix + separator + tmp.str() : newPrefix; 
+			name = i? newPrefix + separator + tmp.str() : newPrefix;
 			if (!this->HasProcessing( name ) ) return name;
 		}
 		CLAM_ASSERT(false, "All valid id's for given prefix are exhausted");
