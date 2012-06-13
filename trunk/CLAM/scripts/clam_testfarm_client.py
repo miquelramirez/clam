@@ -50,8 +50,12 @@ localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"loca
 if slowTests : localDefinitions['name']+="_slow"
 repositories = localDefinitions['repositories'].split()
 private_repositories = localDefinitions['private_repositories'].split()
-os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitions
-os.environ['PATH']='%(installPath)s/bin:~/bin:' % localDefinitions + os.environ['PATH']
+os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitionsa
+os.environ['PATH']=':'.join([
+	'%(installPath)s/bin'% localDefinitions 
+	os.path.expanduser('~/bin'), # for soxsucks
+	os.environ['PATH']
+	])
 os.environ['CLAM_PLUGIN_PATH']='%(installPath)s/lib/clam' % localDefinitions
 os.environ['LADSPA_PATH']='%(installPath)s/lib/ladspa' % localDefinitions
 os.environ['PKG_CONFIG_PATH']='%(installPath)s/lib/pkgconfig' % localDefinitions
