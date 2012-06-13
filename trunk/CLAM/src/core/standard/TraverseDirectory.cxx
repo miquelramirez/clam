@@ -85,24 +85,23 @@ void TraverseDirectory::TraverseHelper( Directory dir, const std::string& curren
 	tmp+="*.*";
 	hFind = FindFirstFile(tmp.c_str(), &fd);
 	if (hFind == INVALID_HANDLE_VALUE) return;
-	
+
 	do
 	{
 		std::string tmp2=currentDirname;
 		tmp2+="/";
 		tmp2+=fd.cFileName;
-				
-		if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
-		{	
+
+		if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+		{
 			if (strcmp(fd.cFileName,".") && strcmp(fd.cFileName,".."))
 			{
-				
 				OnDirectory(tmp2);
 				if (curdepth<maxdepth || maxdepth==-1)
 				{
 					TraverseHelper(fd, tmp2, curdepth+1, maxdepth);
 				}
-			}	
+			}
 		}
 		else
 		{
@@ -140,7 +139,7 @@ void TraverseDirectory::Traverse(const std::string& rootname,int maxdepth)
 	hFind = FindFirstFile(tmp.c_str(), &fd);
 	if (hFind == INVALID_HANDLE_VALUE) return;
 	if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-	{	
+	{
 		OnDirectory(rootname);
 		TraverseHelper(fd,rootname,0,maxdepth);
 	}
