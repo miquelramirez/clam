@@ -281,7 +281,7 @@ if 'irc_report' in localDefinitions :
 Runner( clam, 
 	continuous = False,
 	first_run_always = forceRun,
-	remote_server_url = 'http://84.88.76.14/testfarm_server',
+	remote_server_url = 'http://84.88.76.92/testfarm_server',
 #	local_base_dir='/tmp',
 	extra_listeners = extra_listeners,
 )
