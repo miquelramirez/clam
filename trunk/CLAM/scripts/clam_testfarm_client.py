@@ -52,9 +52,9 @@ repositories = localDefinitions['repositories'].split()
 private_repositories = localDefinitions['private_repositories'].split()
 os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitionsa
 os.environ['PATH']=':'.join([
-	'%(installPath)s/bin'% localDefinitions 
+	'%(installPath)s/bin'% localDefinitions,
 	os.path.expanduser('~/bin'), # for soxsucks
-	os.environ['PATH']
+	os.environ['PATH'],
 	])
 os.environ['CLAM_PLUGIN_PATH']='%(installPath)s/lib/clam' % localDefinitions
 os.environ['LADSPA_PATH']='%(installPath)s/lib/ladspa' % localDefinitions
