@@ -24,13 +24,13 @@ p, li { white-space: pre-wrap; }
   </processing>
 
   <processing id="MonoAudioFileReader_0" position="-49,54" size="246,64" type="MonoAudioFileReader">
-    <SourceFile>/usr/local/share/clam/jaume-voice.mp3</SourceFile>
+    <SourceFile>example-data/jaume-voice.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>0</Loop>
   </processing>
 
   <processing id="MonoAudioFileReader_1" position="-43,268" size="246,64" type="MonoAudioFileReader">
-    <SourceFile>/usr/local/share/clam/Elvis.wav</SourceFile>
+    <SourceFile>example-data/Elvis.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
