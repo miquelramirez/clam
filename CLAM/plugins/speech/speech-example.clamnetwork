@@ -19,7 +19,7 @@ p, li { white-space: pre-wrap; }
   <processing id="FormantExtractor_0" position="-24,144" size="185,58" type="FormantExtractor"/>
 
   <processing id="MonoAudioFileReader_0" position="-56,16" size="211,58" type="MonoAudioFileReader">
-    <SourceFile>/usr/local/share/clam/ElvisStereo.wav</SourceFile>
+    <SourceFile>../../../../clam-test-data/ElvisStereo.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
