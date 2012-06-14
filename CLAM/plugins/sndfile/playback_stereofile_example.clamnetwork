@@ -24,7 +24,7 @@ p, li { white-space: pre-wrap; }
   <processing id="ProgressControl" position="13,-46" size="403,73" type="ProgressControl"/>
 
   <processing id="SndfilePlayer" position="35,108" size="142,94" type="SndfilePlayer">
-    <SourceFile>/usr/local/share/clam/ElvisStereo.wav</SourceFile>
+    <SourceFile>../../../../clam-test-data/ElvisStereo.wav</SourceFile>
     <Loop>1</Loop>
     <SavedNumberOfChannels>2</SavedNumberOfChannels>
   </processing>
