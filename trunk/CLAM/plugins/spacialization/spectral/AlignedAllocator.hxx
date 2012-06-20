@@ -78,7 +78,7 @@ public:
 		return std::numeric_limits<size_type>::max() / sizeof(T);
 	}
 
-	inline void construct(pointer p, const T& t) { new(p) T(t); }
+	inline void construct(pointer p, const T& t = T()) { new(p) T(t); }
 	inline void destroy(pointer p) { p->~T(); }
 
 	inline bool operator==(AlignedAllocator const&) { return true; }
