@@ -207,6 +207,7 @@ public:
 		{}
 		bool read(std::istream & stream)
 		{
+			_value="";
 			stream >> std::ws;
 			std::getline(stream, _value);
 			return true;
