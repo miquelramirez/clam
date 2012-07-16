@@ -68,9 +68,10 @@ public:
 		TEST_CASE( test_remaining_whenSingleWord );
 		TEST_CASE( test_remaining_whenSingleWord );
 		TEST_CASE( test_remaining_withTwoLines );
+		TEST_CASE( test_remaining_withEmptySecondLine_clearsIt );
 	}
 
-	class SingleIntColumn : public TableParser 
+	class SingleIntColumn : public TableParser
 	{
 	public:
 		Token<int> intColumn;
@@ -889,8 +890,20 @@ public:
 		ASSERT_EQUALS(2, parser.column());
 		ASSERT_EQUALS("other words", parser.remaining());
 	}
-	
-
+	void test_remaining_withEmptySecondLine_clearsIt()
+	{
+		std::istringstream os(
+			"1 many words\n"
+			"2 \n"
+		);
+		RemainingParser parser(os);
+		parser.feedLine();
+		bool ok2 = parser.feedLine();
+		ASSERT_EQUALS("", parser.errorMessage());
+		ASSERT( ok2 );
+		ASSERT_EQUALS(2, parser.column());
+		ASSERT_EQUALS("", parser.remaining());
+	}
 };
 
 
