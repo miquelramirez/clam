@@ -66,12 +66,12 @@ class ipyclam_controller(QtGui.QWidget):
 		net.DryOutput = 'AudioSink'
 		net.Transposed_0 = 'AudioSink'
 		net.Transposed_1 = 'AudioSink'
-		net.Input["1"] > net.SMS:!AnalysisCore["Input Audio"]
+		net.Input["1"] > net.SMSAnalysisCore["Input Audio"]
 		net.SMSAnalysisCore["Sinusoidal Peaks"] > net.SMSTranspose_0["In SpectralPeaks"]
 		net.SMSAnalysisCore["Sinusoidal Peaks"] > net.SMSTranspose_1["In SpectralPeaks"]
 		net.SMSAnalysisCore["Residual Spectrum"] > net.SMSSynthesis_0.InputResSpectrum
 		net.SMSAnalysisCore["Residual Spectrum"] > net.SMSSynthesis_1.InputResSpectrum
-		net.AudioSource > net.DryOutput
+		net.Input > net.DryOutput
 		net.SMSSynthesis_0.OutputAudio > net.Transposed_0["1"]
 		net.SMSSynthesis_1.OutputAudio > net.Transposed_1["1"]
 		net.SMSTranspose_0["Out SpectralPeaks"] > net.SMSSynthesis_0.InputSinPeaks
