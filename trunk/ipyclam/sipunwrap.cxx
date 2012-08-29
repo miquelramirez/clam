@@ -1,4 +1,5 @@
 #include "sipunwrap.hxx"
+#include <sip.h>
 #include <boost/python.hpp>
 #include <iostream>
 

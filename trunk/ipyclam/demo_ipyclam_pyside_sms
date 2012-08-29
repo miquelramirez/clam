@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from PyQt4 import QtGui, QtCore
+from PySide import QtGui, QtCore
 import sys
 import ipyclam
 
@@ -34,7 +34,7 @@ class ipyclam_controller(QtGui.QWidget):
 		self.configButton.setProperty("clamConfiguration", self.box.currentText())
 		self.grid.addWidget(self.configButton, 1, 2)
 
-		self.ui = self._network.loadUi("SMSTransposition.ui")
+		self.ui = self._network.loadUiPySide("SMSTransposition.ui")
 		self.setMinimumWidth(600)
 		self.setMinimumHeight(600)
 		self.grid.addWidget(self.ui, 2, 0, 10, 3)

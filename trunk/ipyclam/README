@@ -3,8 +3,8 @@ ipyclam: Interactive CLAM for Python
 What is this
 ============
 
-ipyclam provides interactive exploration and manipulation
-of CLAM networks from a python console/script.
+ipyclam provides interactive exploration, manipulation
+and execution of CLAM networks from a python console/script.
 
 How similar is that to pyCLAM
 =============================
@@ -26,6 +26,14 @@ functional and useful.
 See the TODO file for more details on what's to do and
 what's done.
 
+
+Dependencies:
+=============
+
+libboost-python-dev
+python-sip-dev
+libshiboken-dev
+libpyside-dev
 
 
 

@@ -228,12 +228,13 @@
 - Implement net.source.disconnect()
 + net.processing.[tab] should include 'name' as it includes 'type'
 - code() generates net.proc.in, does not even compile, 'in' is a python keywords, same for 'as', 'for', 'is'....
-	- http://docs.python.org/release/2.5.2/ref/keywords.html
-	- and del from not while as elif global or with assert else if pass yield break except 
-	- import print class exec in raise continue finally is return def for lambda try
+	- Future proof way to idenify them: http://docs.python.org/release/2.7/library/keyword.html
 - Obtaining type metadata (category, description, icon...) (how? attributes, dictionary...)
 - How to know whether the configuration failed
 - Obtaining the configuration error
+- Case setBackend("Whatever") raises "unknown backend, try with..."
+- Case insensitive backend names?
+- When setBackend fails because errors, tell the problem (Player::NonWorkingReason)
 
 
 

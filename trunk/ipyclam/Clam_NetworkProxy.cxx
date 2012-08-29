@@ -13,6 +13,7 @@
 #include <QtGui/QMessageBox>
 #include "ConfigurationProxy.hxx"
 #include "sipunwrap.hxx"
+#include "shibokenunwrap.hxx"
 #include <QtUiTools/QUiLoader>
 #include <QtGui/QApplication>
 #include <QtGui/QIcon>
@@ -546,7 +547,11 @@ void setBackend(CLAM::Network & network, const std::string & backend)
 
 void bindUi(CLAM::Network & network, PyObject * object)
 {
-	QObject * qobject = (QObject*) sipUnwrap(object);
+	QObject * qobject = 0;
+	if (not qobject) qobject = (QObject*) shibokenUnwrap(object);
+	if (not qobject) qobject = (QObject*) sipUnwrap(object);
+	if (not qobject)
+		std::cerr << "Not a QObject" << std::endl;
 	
 	QStringList errors;
 	CLAM::QtBinder::bindAllBinders(qobject, network, errors);
@@ -556,6 +561,32 @@ void bindUi(CLAM::Network & network, PyObject * object)
 		errors.join("\n"));
 }
 
+
+PyObject * loadUiPySide(CLAM::Network & network, const std::string & uifilename)
+{
+	QString uiFile = uifilename.c_str();
+	QFile file(uiFile);
+	file.open(QFile::ReadOnly);
+	QUiLoader loader;
+	loader.addPluginPath("/user/share/NetworkEditor/qtplugins"); //TODO Make that an option
+	QDir dir(QApplication::applicationDirPath());
+	loader.addPluginPath( QString(dir.absolutePath())+"/../plugins" ); //TODO do only for mac?
+
+	QStringList paths = loader.pluginPaths();
+	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
+	{
+		std::cout << "Looking for plugins at path: " << it->toLocal8Bit().constData() << std::endl;
+	}
+	QWidget * userInterface = loader.load(&file, 0 );
+	if (userInterface)
+	{
+		if (userInterface->windowIcon().isNull())
+			userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
+	}
+	file.close();
+	PyObject * object = shibokenWrap(userInterface);
+	return object;
+}
 
 PyObject * loadUi(CLAM::Network & network, const std::string & uifilename)
 {
@@ -749,6 +780,10 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			)
 		.def("loadUi",
 			loadUi,
+			"Returns a QWidget filled with the given qt ui."
+			)
+		.def("loadUiPySide",
+			loadUiPySide,
 			"Returns a QWidget filled with the given qt ui."
 			)
 		.def("createWidget",
