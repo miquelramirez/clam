@@ -136,6 +136,9 @@ class Network(object):
 	def loadUi(self, uiFilename) :
 		return self._proxy.loadUi(uiFilename)
 
+	def loadUiPySide(self, uiFilename) :
+		return self._proxy.loadUiPySide(uiFilename)
+
 	def createWidget(self, className) :
 		return self._proxy.createWidget(className)
 
