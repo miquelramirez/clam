@@ -29,16 +29,34 @@ class Network(object):
 
 		codeLines = []
 
+		def isidentifier(k):
+			"""
+			Return True if the string k can be used as the name of a valid
+			Python keyword argument, otherwise return False.
+			"""
+			import keyword
+			import tokenize
+			import re
+			# Don't allow python reserved words as arg names
+			if k in keyword.kwlist:
+				return False
+			return re.match('^' + tokenize.Name + '$', k) is not None
+
+
 		def configCode(networkVar, fullConfig):
 			configCode = ""
 			for name in self._proxy.processingNames():
 				configCode += self.__getitem__(name)._config.code(name, networkVar, fullConfig)
 			return configCode
 		def appendAttribute(name):
-			if name[0].isdigit() or not name.isalnum() :
+			"""Choses among attribute or subscripting depending whether
+			the name can be used as attribute
+			TODO: consider also object attributes (description, config...)
+			"""
+			if not isidentifier(name) :
 				return "[\"%s\"]"%name
-			else :
-				return "."+name
+			return "."+name
+
 		code = ""
 		if self._proxy.getDescription() != "":
 			code += "%s.description = %s\n"%(

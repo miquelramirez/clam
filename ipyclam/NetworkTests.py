@@ -142,7 +142,7 @@ class NetworkTests(unittest.TestCase):
 			"\n"
 			"\n"
 			"net.processing1.OutControl1 > net.processing2.InControl1"
-			, net.code("net"))		
+			, net.code("net"))
 
 	def test_deleteProcessingAsAttribute(self):
 		net = Network(self.empty())
@@ -182,6 +182,24 @@ class NetworkTests(unittest.TestCase):
 			"\n"
 			"network.processing1[\"An outport\"] > network.processing2[\"An inport\"]\n"
 			"network.processing3[\"An outcontrol\"] > network.processing4[\"An incontrol\"]"
+			, net.code())
+
+	def test_code_whenNameHasUnderlines(self) :
+		net = Network(self.empty())
+		net.name_with_underlines = "PortSource"
+		self.assertEquals(
+			"network.name_with_underlines = 'PortSource'\n"
+			"\n"
+			"\n"
+			, net.code())
+
+	def test_code_whenNameIsAKeyword(self) :
+		net = Network(self.empty())
+		net["while"] = "PortSource"
+		self.assertEquals(
+			"network[\"while\"] = 'PortSource'\n"
+			"\n"
+			"\n"
 			, net.code())
 
 	def test_addProcessingWithName_code_AndFail(self):

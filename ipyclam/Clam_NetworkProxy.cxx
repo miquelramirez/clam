@@ -332,7 +332,7 @@ int connectorIndex(CLAM::Network & network, const std::string & processingName, 
 				if(&inport == &proc.GetInPort(i))
 					return i;
 			}
-		}	
+		}
 		else
 		{
 			CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(connector);
@@ -552,7 +552,7 @@ void bindUi(CLAM::Network & network, PyObject * object)
 	if (not qobject) qobject = (QObject*) sipUnwrap(object);
 	if (not qobject)
 		std::cerr << "Not a QObject" << std::endl;
-	
+
 	QStringList errors;
 	CLAM::QtBinder::bindAllBinders(qobject, network, errors);
 	if (errors.empty()) return;
