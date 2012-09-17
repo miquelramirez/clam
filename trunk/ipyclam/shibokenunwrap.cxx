@@ -13,7 +13,6 @@ static void * error(const std::string & msg)
 
 void * shibokenUnwrap(PyObject * pyobject)
 {
-	std::cerr << "Unwrapping" << std::endl;
 	if (not Shiboken::Object::checkType(pyobject))
 		return error("Not a shiboken object");
 
