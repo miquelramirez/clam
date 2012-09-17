@@ -562,7 +562,7 @@ void bindUi(CLAM::Network & network, PyObject * object)
 }
 
 
-PyObject * loadUiPySide(CLAM::Network & network, const std::string & uifilename)
+QWidget * loadUiGeneric(CLAM::Network & network, const std::string & uifilename)
 {
 	QString uiFile = uifilename.c_str();
 	QFile file(uiFile);
@@ -578,38 +578,26 @@ PyObject * loadUiPySide(CLAM::Network & network, const std::string & uifilename)
 		std::cout << "Looking for plugins at path: " << it->toLocal8Bit().constData() << std::endl;
 	}
 	QWidget * userInterface = loader.load(&file, 0 );
+	file.close();
 	if (userInterface)
 	{
 		if (userInterface->windowIcon().isNull())
 			userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
 	}
-	file.close();
+	return userInterface;
+}
+
+
+PyObject * loadUiPySide(CLAM::Network & network, const std::string & uifilename)
+{
+	QWidget * userInterface = loadUiGeneric(network, uifilename);
 	PyObject * object = shibokenWrap(userInterface);
 	return object;
 }
 
 PyObject * loadUi(CLAM::Network & network, const std::string & uifilename)
 {
-	QString uiFile = uifilename.c_str();
-	QFile file(uiFile);
-	file.open(QFile::ReadOnly);
-	QUiLoader loader;
-	loader.addPluginPath("/user/share/NetworkEditor/qtplugins"); //TODO Make that an option
-	QDir dir(QApplication::applicationDirPath());
-	loader.addPluginPath( QString(dir.absolutePath())+"/../plugins" ); //TODO do only for mac?
-
-	QStringList paths = loader.pluginPaths();
-	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
-	{
-		std::cout << "Looking for plugins at path: " << it->toLocal8Bit().constData() << std::endl;
-	}
-	QWidget * userInterface = loader.load(&file, 0 );
-	if (userInterface)
-	{
-		if (userInterface->windowIcon().isNull())
-			userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
-	}
-	file.close();
+	QWidget * userInterface = loadUiGeneric(network, uifilename);
 	PyObject * object = sipWrap(userInterface);
 	return object;
 }
