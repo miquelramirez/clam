@@ -163,7 +163,7 @@ def runBack2BackProgram(datapath, argv, back2BackCases, help=help) :
 	availableCases = [case for case, command, outputs in back2BackCases]
 
 	if "--list" in argv :
-		
+
 		for case in availableCases :
 			print case
 		sys.exit()
