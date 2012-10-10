@@ -88,7 +88,7 @@ public:
 	}
 	double sphericalHarmonic(unsigned order, unsigned zProjection, bool positiveSpin) const
 	{
-		double zComponent = positiveSpin? 
+		double xyComponent = positiveSpin? 
 			std::cos(zProjection*aradians): 
 			std::sin(zProjection*aradians);
 		switch (order) 
@@ -98,18 +98,18 @@ public:
 			CLAM_ASSERT(false,"Degree greater than order");
 		case 1:
 			if (zProjection==0) return              se;
-			if (zProjection==1) return zComponent * ce;
+			if (zProjection==1) return xyComponent * ce;
 			CLAM_ASSERT(false,"Degree greater than order");
 		case 2:
 			if (zProjection==0) return              std::sqrt(1./4)*(3*se*se -1);
-			if (zProjection==1) return zComponent * std::sqrt(3./1)*se*ce;
-			if (zProjection==2) return zComponent * std::sqrt(3./4)*ce*ce;
+			if (zProjection==1) return xyComponent * std::sqrt(3./1)*se*ce;
+			if (zProjection==2) return xyComponent * std::sqrt(3./4)*ce*ce;
 			CLAM_ASSERT(false,"Degree greater than order");
 		case 3:
 			if (zProjection==0) return              std::sqrt( 1./4)*se*(5*se*se -3);
-			if (zProjection==1) return zComponent * std::sqrt( 3./8)*ce*(5*se*se -1);
-			if (zProjection==2) return zComponent * std::sqrt(15./4)*se*ce*ce;
-			if (zProjection==3) return zComponent * std::sqrt( 5./8)*ce*ce*ce;
+			if (zProjection==1) return xyComponent * std::sqrt( 3./8)*ce*(5*se*se -1);
+			if (zProjection==2) return xyComponent * std::sqrt(15./4)*se*ce*ce;
+			if (zProjection==3) return xyComponent * std::sqrt( 5./8)*ce*ce*ce;
 			CLAM_ASSERT(false,"Degree greater than order");
 		default:
 			CLAM_ASSERT(false,"Unsupported order");
