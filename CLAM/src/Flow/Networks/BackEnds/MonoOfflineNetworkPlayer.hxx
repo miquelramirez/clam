@@ -10,6 +10,9 @@
 
 namespace CLAM
 {
+/**
+@deprecated use OfflineNetworkPlayer instead
+*/
 
 
 class MonoOfflineNetworkPlayer : public NetworkPlayer
