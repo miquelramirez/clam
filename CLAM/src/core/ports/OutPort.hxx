@@ -28,6 +28,7 @@
 #include <string>
 #include "InPort.hxx"
 #include "InPortPublisher.hxx"
+#include "TypeInfo.hxx"
 
 namespace CLAM
 {
