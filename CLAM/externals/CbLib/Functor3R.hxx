@@ -41,8 +41,6 @@ public:
 		return thunk( *this, param1, param2, param3 );
 	}
 	
-	FunctorBase::operator bool;
-	
 protected:
 	
 	typedef TypeOfReturn (*Thunk) (const FunctorBase&, Parm1Type, Parm2Type, Parm3Type );
