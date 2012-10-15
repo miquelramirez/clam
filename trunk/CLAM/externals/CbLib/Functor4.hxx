@@ -41,8 +41,6 @@ public:
 		thunk( *this, param1, param2, param3, param4 );
 	}
 	
-	FunctorBase::operator bool;
-	
 protected:
 
 	typedef void (*Thunk) (const FunctorBase&, Parm1Type, Parm2Type, Parm3Type, Parm4Type );

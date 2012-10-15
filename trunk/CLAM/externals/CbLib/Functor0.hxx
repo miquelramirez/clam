@@ -40,8 +40,6 @@ public:
 		thunk( *this );
 	}
 	
-	FunctorBase::operator bool;
-	
 protected:
 	
 	typedef void (*Thunk) (const FunctorBase&);
