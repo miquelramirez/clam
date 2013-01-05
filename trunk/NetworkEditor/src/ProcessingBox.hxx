@@ -24,7 +24,7 @@ public:
 		controlStep = controlSpacing + controlWidth,
 		controlOffset = margin + portWidth
 	};
-	enum Region 
+	enum Region
 	{
 		noRegion=0,
 		inportsRegion,
