@@ -459,7 +459,7 @@ public: // Actions
 				CLAM_ASSERT(false, "Ending a wire drag but not in wire drag status");
 				return;
 		}
-		switch (_dragStatus) 
+		switch (_dragStatus)
 		{
 			case InportDrag:
 			case OutportDrag:
@@ -912,7 +912,7 @@ public:
 		ProcessingBox ** outProcessing = selfIsInput? &peerProcessing : &selfProcessing;
 		unsigned * inlet  = selfIsInput ? &selfConnection : &peerConnection;
 		unsigned * outlet = selfIsInput ? &peerConnection : &selfConnection;
-		
+
 		for (unsigned i = 0; i<_processings.size(); i++ )
 		{
 			peerProcessing =_processings[i];
@@ -1146,7 +1146,7 @@ public: // Event Handlers
 			));
 		return QGraphicsView::event(event);
 	}
-	
+
 protected:
 	std::vector<ProcessingBox *> _processings;
 	std::vector<PortWire *> _portWires;
