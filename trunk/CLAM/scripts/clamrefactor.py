@@ -260,7 +260,7 @@ class ClamNetwork() :
 		"""Change the value for a config parameter"""
 		if self._versionNotApplies() : return
 		processing = self._processingOfId(processingId)
-		if not processing : raise "Processing ID '%s' not found" % processingId
+		if len(processing)==0 : raise RuntimeError("Processing ID '%s' not found" % processingId)
 		configs = processing.findall(param)
 		for config in configs :
 			config.text = value
@@ -288,7 +288,7 @@ class ClamNetwork() :
 					processing.get("id"), name))
 
 	def moveConfig(self, processingType, name, beforeTag=None) :
-		raise "Not implemented!!!!"
+		raise RuntimeError("Not implemented!!!!")
 		if self._versionNotApplies() : return
 		for processing in self._processingsOfType(processingType) :
 			for param in processing.findall(name) :
