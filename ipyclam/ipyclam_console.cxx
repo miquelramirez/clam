@@ -41,20 +41,30 @@ private:
 public:
 	void run()
 	{
-		std::string shellBanner = "Interactive python console for CLAM "+std::string(CLAM::GetFullVersion());
+		std::string shellBanner =
+			"Interactive Python console for CLAM " + std::string(CLAM::GetFullVersion()) + "\n";
 		std::string shellHeader = "Start by typing 'net.' and pressing the tab key";
 		std::string shellFarewell = "Bye";
 
 		// This needs to be defined for ipython
-		py::exec("sys.argv=[]\n", _main_ns, _main_ns);
+		py::exec("sys.argv=['ipyclam']\n", _main_ns, _main_ns);
 
-		py::object shellmodule = py::import("IPython.Shell");
-		py::list shellOptions;
-		shellOptions.append("-prompt_in1");
-		shellOptions.append("ipyclam > ");
-		py::object shell = shellmodule.attr("IPShellEmbed")
-			(shellOptions, shellBanner, shellFarewell);
-		shell(shellHeader, _main_ns, _main_ns);
+		py::object configmodule = py::import("IPython.config.loader");
+		py::object configClass = configmodule.attr("Config");
+		py::object config = configClass();
+		config.attr("PromptManager").attr("in_template") = "ipyclam[\\#] > ";
+
+		py::object shellmodule = py::import("IPython.frontend.terminal.embed");
+		py::dict shellConstructorArgs;
+		shellConstructorArgs["config"]=config;
+		shellConstructorArgs["exit_msg"] = shellFarewell;
+		shellConstructorArgs["banner1"] = shellBanner;
+		shellConstructorArgs["header"] = shellHeader;
+
+		py::object shell = shellmodule.attr("InteractiveShellEmbed")
+			(*py::tuple(), **shellConstructorArgs);
+		py::dict shellCallArgs;
+		shell(shellHeader, _main_ns, py::object(), 0, py::object(), _main_ns );
 	}
 };
 
