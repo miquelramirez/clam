@@ -33,7 +33,7 @@
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -75,6 +75,8 @@
      <string>&amp;View</string>
     </property>
     <addaction name="action_Show_processing_toolbox"/>
+    <addaction name="action_Show_description_panel"/>
+    <addaction name="action_Show_console"/>
     <addaction name="action_Default_zoom"/>
     <addaction name="action_Zoom_in"/>
     <addaction name="action_Zoom_out"/>
@@ -150,6 +152,7 @@
    <addaction name="separator"/>
    <addaction name="action_Show_processing_toolbox"/>
    <addaction name="action_Show_description_panel"/>
+   <addaction name="action_Show_console"/>
    <addaction name="action_Zoom_in"/>
    <addaction name="action_Default_zoom"/>
    <addaction name="action_Zoom_out"/>
@@ -159,7 +162,7 @@
   </widget>
   <action name="action_New">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="filenew" resource="images.qrc">
      <normaloff>:/icons/images/filenew.png</normaloff>:/icons/images/filenew.png</iconset>
    </property>
    <property name="text">
@@ -274,7 +277,7 @@
      <normaloff>:/icons/images/view_tree.png</normaloff>:/icons/images/view_tree.png</iconset>
    </property>
    <property name="text">
-    <string>Show &amp;processing toolbox</string>
+    <string>Toggle &amp;processing toolbox</string>
    </property>
   </action>
   <action name="action_Whats_this">
@@ -449,10 +452,25 @@
      <normaloff>:/icons/images/edit.png</normaloff>:/icons/images/edit.png</iconset>
    </property>
    <property name="text">
-    <string>Show_description_panel</string>
+    <string>Toggle &amp;description_panel</string>
+   </property>
+  </action>
+  <action name="action_Show_console">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/images/utilities-terminal.png</normaloff>:/icons/images/utilities-terminal.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show_console</string>
    </property>
    <property name="toolTip">
-    <string>Show description panel</string>
+    <string>Toggle python console</string>
    </property>
   </action>
  </widget>

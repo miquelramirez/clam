@@ -38,4 +38,4 @@ qt-mac-opensource-src-4.2.2/tools/designer/src/components/formeditor/images/widg
 http://upload.wikimedia.org/wikipedia/commons/c/c4/LV2_shaded_black.svg
 ledon.png from qsynth
 ledoff.png from qsynth
-
+/usr/share/icons/oxygen/32x32/apps/utilities-terminal.png

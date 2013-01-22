@@ -20,6 +20,7 @@
 #include "NetworkEditorVersion.hxx"
 #include "RichTextEditor.hxx"
 #include "NetworkUpgrader.hxx"
+#include "IPyClamConsole.hxx"
 
 // copied from Annotator:
 #include "TaskRunner.hxx"
@@ -122,6 +123,15 @@ public:
 		_descriptionPanel->setWidget(_textDescriptionEdit);
 		addDockWidget(Qt::LeftDockWidgetArea, _descriptionPanel);
 
+		// add an Interactive console if available
+		_console = GetIPyClamConsole(_network);
+		_consoleDock = new QDockWidget(this);
+		_consoleDock->setObjectName("Console");
+		_consoleDock->setWindowTitle(tr("Console"));
+		_consoleDock->setWidget(_console ? _console : new QLabel(tr("<p>Python console not available</p>")));
+		addDockWidget(Qt::BottomDockWidgetArea, _consoleDock);
+
+
 		_aboutDialog = new QDialog(this);
 		Ui::About aboutUi;
 		aboutUi.setupUi(_aboutDialog);
@@ -160,6 +170,7 @@ public:
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), _processingTreeDock, SLOT(setVisible(bool)));
 		connect(ui.action_Show_description_panel, SIGNAL(toggled(bool)), _descriptionPanel, SLOT(setVisible(bool)));
+		connect(ui.action_Show_console, SIGNAL(toggled(bool)), _consoleDock, SLOT(setVisible(bool)));
 
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
@@ -706,6 +717,8 @@ private:
 	
 	QDockWidget * _processingTreeDock;
 	NetworkGUI::ProcessingTree * _processingTree;
+	QDockWidget * _consoleDock;
+	QWidget * _console;
 #ifdef AFTER13RELEASE
 	QTabWidget * _centralTab;
 #endif//AFTER13RELEASE
