@@ -17,7 +17,7 @@ from IPython.frontend.qt.kernelmanager import QtKernelManager
 from IPython.frontend.qt.console.rich_ipython_widget import RichIPythonWidget
 from IPython.config.application import catch_config_error
 
-DEFAULT_INSTANCE_ARGS = ['qtconsole','--pylab=inline', '--colors=linux']
+DEFAULT_INSTANCE_ARGS = ['qtconsole','--pylab=inline',] # '--colors=linux']
 
 class IPythonLocalKernelApp(IPKernelApp):
     @catch_config_error
@@ -74,7 +74,7 @@ class IPythonConsoleQtWidget(RichIPythonWidget):
     def __init__(self, *args, **kwd) :
         super(IPythonConsoleQtWidget, self).__init__(*args, **kwd)
 
-        self.set_default_style(colors='linux')
+        self.set_default_style() #colors='linux')
 
         self.kernel = IPythonLocalKernelApp.instance()
         self.kernel.initialize()
