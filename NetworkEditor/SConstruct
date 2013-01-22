@@ -44,12 +44,16 @@ CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
 if env['enable_python'] :
+	env.AppendUnique(CPPDEFINES=[ "CLAM_USE_PYTHON" ])
 	env.ParseConfig('python-config --cflags')
 	env.ParseConfig('python-config --libs')
+	# Those lines are for ipyclam console
+	env.AppendUnique(LIBS=['boost_python'])
+	env.ParseConfig('pkg-config --cflags --libs shiboken')
 	# g++ complaints about -Wstrict-prototypes added by python-config
 	if '-Wstrict-prototypes' in env['CCFLAGS'] :
 		env['CCFLAGS'].remove("-Wstrict-prototypes")
-	env.AppendUnique(CPPDEFINES=[ "CLAM_USE_PYTHON" ])
+
 
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
@@ -190,6 +194,7 @@ qtmonitorInstall, qtmonitorLocal = qtmonitorEnv.ClamModule(
 		],
 	)
 qtmonitorEnv.AppendUnique(CPPPATH=qtmonitorDirs)
+
 
 env.PrependUnique(LIBPATH=['.'])
 env.PrependUnique(LIBS=['clam_qtmonitors'])
