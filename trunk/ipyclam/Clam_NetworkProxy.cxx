@@ -776,7 +776,7 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			)
 		.def("createWidget",
 			createWidget,
-			"Returns a QWidget of the named class."
+			"Returns QWidget from a Qt plugin of the named class using Qt factories."
 			)
 		.def("load",
 			load,
