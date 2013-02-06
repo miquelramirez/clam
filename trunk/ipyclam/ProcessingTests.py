@@ -24,30 +24,30 @@ class ProcessingTests(unittest.TestCase):
 		p = Processing("Processing1", self.proxy())
 		self.assertEqual(p.name, "Processing1")
 
-	def _test_ConfigGettingAsDictionary(self):
+	def test_ConfigGettingAsDictionary(self):
 		p = Processing("Processing1", self.proxy())
 		self.assertEqual(p["ConfigParam1"], "default1")
 
-	def _test_ConfigSettingAndGettingAsDictionary(self):
+	def test_ConfigSettingAndGettingAsDictionary(self):
 		p = Processing("Processing1", self.proxy())
 		p["ConfigParam1"] = 'newvalue'
 		self.assertEqual(p["ConfigParam1"], "newvalue")
 
-	def _test_configGettingAsAttribute(self):
+	def test_configGettingAsAttribute(self):
 		p = Processing("Processing1", self.proxy())
 		self.assertEqual(p.ConfigParam1, "default1")
 
-	def _test_configSettingAndGettingAsAttribute(self):
+	def test_configSettingAndGettingAsAttribute(self):
 		p = Processing("Processing1", self.proxy())
 		p.ConfigParam1 = 'newvalue'
 		self.assertEqual(p.ConfigParam1, "newvalue")
 
-	def _test_ConfigGettersBy_configInterface(self):
+	def test_ConfigGettersBy_configInterface(self):
 		p = Processing("Processing1", self.proxy())
 		self.assertEqual(p._config.ConfigParam1, "default1")
 		self.assertEqual(p._config["ConfigParam2"], "default2")
 
-	def _test_ConfigSettersBy_configInterface(self):
+	def test_ConfigSettersBy_configInterface(self):
 		p = Processing("Processing1", self.proxy())
 		p._config.ConfigParam1 = "newvalue1"
 		p._config["ConfigParam2"] = "newvalue2"
