@@ -45,10 +45,10 @@ namespace {
 
 void displayPADevices()
 {
-	int howManiApis = Pa_GetHostApiCount();
+	int howManyApis = Pa_GetHostApiCount();
 	int defaultApi = Pa_GetDefaultHostApi();
 	std::cout << "Default API " << defaultApi << std::endl;
-	for (int api=0; api<howManiApis; api++)
+	for (int api=0; api<howManyApis; api++)
 	{
 		const PaHostApiInfo * apiInfo = Pa_GetHostApiInfo( api );
 		std::cout
