@@ -1,5 +1,5 @@
-#include <CLAM/InControlBase.hxx>
-#include <CLAM/Processing.hxx>
+#include "InControlBase.hxx"
+#include "Processing.hxx"
 
 namespace CLAM
 {
