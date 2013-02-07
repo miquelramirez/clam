@@ -8,23 +8,23 @@ Homepage: http://clam-project.org/
 Vcs-Browser: https://clam-project.org/clam/trunk/packaging/CLAM/debian
 Vcs-Svn: https://clam-project.org/clam/trunk/packaging/CLAM/debian
 Build-Depends:
- debhelper (>= 5.0.0), 
- scons,
- ladspa-sdk,
- lv2core,
- libxerces-c-dev,
- portaudio19-dev,
- libfftw3-dev | fftw3-dev,
- libjack-dev,
- libmad0-dev,
- libogg-dev,
- libsndfile1-dev,
- libvorbis-dev,
- libid3-3.8.3-dev,
- libasound2-dev,
- liblo0-dev,
- doxygen,
- python-central
+	debhelper (>= 5.0.0), 
+	scons,
+	ladspa-sdk,
+	lv2core,
+	libxerces-c-dev,
+	portaudio19-dev,
+	libfftw3-dev,
+	libjack-dev,
+	libmad0-dev,
+	libogg-dev,
+	libsndfile1-dev,
+	libvorbis-dev,
+	libid3-3.8.3-dev,
+	libasound2-dev,
+	liblo0-dev,
+	doxygen,
+	python-central
 
 Package: libclam1.4
 Section: libs
