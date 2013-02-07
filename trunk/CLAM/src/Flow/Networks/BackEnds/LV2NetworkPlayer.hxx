@@ -5,14 +5,14 @@
 #include <math.h>
 #include <iostream>
 
-#include <CLAM/Network.hxx>
-#include <CLAM/AudioSource.hxx>
-#include <CLAM/AudioSink.hxx>
-#include <CLAM/ControlSource.hxx>
-#include <CLAM/ControlSink.hxx>
-#include <CLAM/PushFlowControl.hxx>
-#include <CLAM/XMLStorage.hxx>
-#include <CLAM/NetworkPlayer.hxx>
+#include "Network.hxx"
+#include "AudioSource.hxx"
+#include "AudioSink.hxx"
+#include "ControlSource.hxx"
+#include "ControlSink.hxx"
+#include "PushFlowControl.hxx"
+#include "XMLStorage.hxx"
+#include "NetworkPlayer.hxx"
 
 namespace CLAM
 {
