@@ -90,6 +90,12 @@ public:
 	MainWindow()
 		: _networkPlayer(0)
 		, _clientName("CLAM network player")
+		, _processingTree(0)
+		, _processingTreeDock(0)
+		, _consoleDock(0)
+		, _descriptionPanel(0)
+		, _textDescriptionEdit(0)
+
 	{
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
@@ -109,28 +115,28 @@ public:
 		setCentralWidget(scroll);
 #endif//AFTER13RELEASE
 		_processingTreeDock = new QDockWidget(this);
-		_processingTree = new NetworkGUI::ProcessingTree(_processingTreeDock);
-		_processingTreeDock->setObjectName("ProcessingTree");
+		_processingTreeDock->setObjectName("ProcessingTree"); // To restore state
 		_processingTreeDock->setWindowTitle(tr("Processing Toolbox"));
-		_processingTreeDock->setWidget(_processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, _processingTreeDock);
+		_processingTree = new NetworkGUI::ProcessingTree(_processingTreeDock);
+		_processingTreeDock->setWidget(_processingTree);
 
 		// add a Description Panel for description of networks
 		_descriptionPanel = new QDockWidget(this);
-		_descriptionPanel->setObjectName("Description");
+		_descriptionPanel->setObjectName("Description"); // to restore state
 		_descriptionPanel->setWindowTitle(tr("Description"));
+		addDockWidget(Qt::LeftDockWidgetArea, _descriptionPanel);
 		_textDescriptionEdit = new RichTextEditor(_descriptionPanel);
 		_descriptionPanel->setWidget(_textDescriptionEdit);
-		addDockWidget(Qt::LeftDockWidgetArea, _descriptionPanel);
 
 		// add an Interactive console if available
-		_console = GetIPyClamConsole(_network);
 		_consoleDock = new QDockWidget(this);
-		_consoleDock->setObjectName("Console");
+		_consoleDock->setObjectName("Console"); // To restore state
 		_consoleDock->setWindowTitle(tr("Console"));
-		_consoleDock->setWidget(_console ? _console : new QLabel(tr("<p>Python console not available</p>")));
 		addDockWidget(Qt::BottomDockWidgetArea, _consoleDock);
-
+		QWidget * console = GetIPyClamConsole(_network);
+		_consoleDock->setFeatures(_consoleDock->features()|QDockWidget::DockWidgetVerticalTitleBar);
+		_consoleDock->setWidget(console ? console : new QLabel(tr("<p>Python console not available</p>")));
 
 		_aboutDialog = new QDialog(this);
 		Ui::About aboutUi;
@@ -169,13 +175,16 @@ public:
 		periodicPlayStatusUpdate(); // Should be directly called just once
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), _processingTreeDock, SLOT(setVisible(bool)));
-		connect(ui.action_Show_description_panel, SIGNAL(toggled(bool)), _descriptionPanel, SLOT(setVisible(bool)));
-		connect(ui.action_Show_console, SIGNAL(toggled(bool)), _consoleDock, SLOT(setVisible(bool)));
+		connect(ui.action_Show_description_editor, SIGNAL(toggled(bool)), _descriptionPanel, SLOT(setVisible(bool)));
+		connect(ui.action_Show_python_console, SIGNAL(toggled(bool)), _consoleDock, SLOT(setVisible(bool)));
 
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
 		connect(_canvas, SIGNAL(browseUrlRequest(const QString&)),this,SLOT(browseUrlInternalFromProcessing(const QString &)));
 		connect(_textDescriptionEdit, SIGNAL(textChanged()), this, SLOT(updateNetworkDescription()));
+
+		connect(ui.action_Refresh, SIGNAL(triggered()), this, SLOT(refreshCanvas()));
+
 		updateCaption();
 
 	}
@@ -478,6 +487,16 @@ public:
 	}
 
 public slots:
+	/// To be used when the network changes outside the canvas
+	void refreshCanvas()
+	{
+		std::cout << "Refreshing" << std::endl;
+		_textDescriptionEdit->setText(QString::fromLocal8Bit(_network.GetDescription().c_str()));
+		_playingLabel->setNetwork(&_network);
+		_canvas->loadNetwork(&_network);
+		_canvas->loadGeometriesFromXML();
+	}
+
 	// Do not call this slot but by the timer, call updatePlayStatusIndicator instead
 	void periodicPlayStatusUpdate()
 	{
@@ -718,7 +737,6 @@ private:
 	QDockWidget * _processingTreeDock;
 	NetworkGUI::ProcessingTree * _processingTree;
 	QDockWidget * _consoleDock;
-	QWidget * _console;
 #ifdef AFTER13RELEASE
 	QTabWidget * _centralTab;
 #endif//AFTER13RELEASE
