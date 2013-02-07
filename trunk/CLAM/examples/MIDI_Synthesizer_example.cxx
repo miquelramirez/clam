@@ -43,13 +43,12 @@ using namespace CLAM;
 
 class MyAudioApplication:public AudioApplication
 {
-	void AppCleanup() {}
 private:
 	const char* mMidiDeviceStr;
 	const char* mAudioDeviceStr;
 	void ConfigureAndCheck(Processing& p,ProcessingConfig& cfg);
 public:
-	void AudioMain(void);	
+	void AudioMain();	
 	MyAudioApplication(const char* midiDeviceStr,const char* audioDeviceStr)
 	:	AudioApplication(),
 		mMidiDeviceStr(midiDeviceStr),
@@ -58,24 +57,36 @@ public:
 	}
 };
 
-class MyInstrumentConfig: public ProcessingConfig
-{
-public:
-	DYNAMIC_TYPE_USING_INTERFACE (MyInstrumentConfig, 6, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, TData, AttackTime);
-	DYN_ATTRIBUTE (2, public, TData, DecayTime);
-	DYN_ATTRIBUTE (3, public, TData, SustainLevel);
-	DYN_ATTRIBUTE (4, public, TData , ReleaseTime);
-	DYN_ATTRIBUTE (5, public, TData , SampleRate);
-protected:
-	void DefaultInit(void);
-};
-
 class MyInstrument:public Instrument
 {
 public:
-		MyInstrumentConfig            mConfig;
+		class Config: public ProcessingConfig
+		{
+		public:
+			DYNAMIC_TYPE_USING_INTERFACE (Config, 6, ProcessingConfig);
+			DYN_ATTRIBUTE (0, public, std::string, Name);
+			DYN_ATTRIBUTE (1, public, TData, AttackTime);
+			DYN_ATTRIBUTE (2, public, TData, DecayTime);
+			DYN_ATTRIBUTE (3, public, TData, SustainLevel);
+			DYN_ATTRIBUTE (4, public, TData , ReleaseTime);
+			DYN_ATTRIBUTE (5, public, TData , SampleRate);
+		protected:
+			void DefaultInit()
+			{
+				AddAll();
+				UpdateData();
+				try
+				{
+					SetSampleRate( AudioManager::Current().SampleRate() );
+				}
+				catch(Err)
+				{
+					SetSampleRate( 8000 );
+				}
+			}
+		};
+
+		Config            mConfig;
 		ADSR                          mADSR;
 		Audio                         mEnvelope;
 		Oscillator                    mOscillator;
@@ -107,7 +118,7 @@ public:
 		}
 
 	public:
-		MyInstrument( const MyInstrumentConfig& c = MyInstrumentConfig())
+		MyInstrument( const Config& c = Config())
 			: mPitchBendIn( "PitchBend", this, &MyInstrument::UpdatePitchBend )
 			, mPitchBendOut( "PitchBendOut", this )
 		{
@@ -125,28 +136,6 @@ public:
 		bool Do(Audio& out) ;
 };
 
-
-void MyInstrumentConfig::DefaultInit(void)
-{
-	AddName();
-	AddAttackTime();
-	AddDecayTime(),
-	AddSustainLevel();
-	AddReleaseTime();
-	AddSampleRate();
-
-	UpdateData();
-
-	try
-	{
-		SetSampleRate( AudioManager::Current().SampleRate() );
-	}
-	catch(Err)
-	{
-		SetSampleRate( 8000 );
-	}
-
-}
 
 
 bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
@@ -217,7 +206,7 @@ void MyAudioApplication::ConfigureAndCheck(Processing& p,ProcessingConfig& cfg)
 	CLAM_ASSERT(p.Configure(cfg),p.GetConfigErrorMessage().c_str());
 }
 
-void MyAudioApplication::AudioMain(void)
+void MyAudioApplication::AudioMain()
 {
 	TControlData curTime = 0.;
 	TControlData curTimeInc = 0.;
@@ -306,10 +295,10 @@ void MyAudioApplication::AudioMain(void)
 		MIDIClocker clocker(clockerCfg);
 
 		// Instrument
-		MyInstrumentConfig instrumentCfg[ nVoices ];
+		MyInstrument::Config instrumentCfg[ nVoices ];
 		for (int i=0;i<nVoices;i++)
 		{
-			char tmp[10];
+			char tmp[20];
 			sprintf(tmp,"instrument%d",i);
 			instrumentCfg[i].SetAttackTime( (TData) 0.05 );
 			instrumentCfg[i].SetDecayTime( (TData) 0.07 );
