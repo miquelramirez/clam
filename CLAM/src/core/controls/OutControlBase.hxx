@@ -4,8 +4,8 @@
 #include <string>
 #include <list>
 #include <typeinfo>
-#include <CLAM/Assert.hxx>
-#include <CLAM/InControlBase.hxx>
+#include "Assert.hxx"
+#include "InControlBase.hxx"
 
 
 namespace CLAM {
