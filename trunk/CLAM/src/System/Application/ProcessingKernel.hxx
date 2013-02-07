@@ -25,6 +25,9 @@
 namespace CLAM
 {
 
+/**
+@deprecated
+*/
 class Thread;
 
 class ProcessingKernel
