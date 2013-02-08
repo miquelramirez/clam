@@ -173,6 +173,7 @@ namespace CLAMTest {
 		CPPUNIT_TEST (testExtraction_withIncorrectInputs);
 		CPPUNIT_TEST (testExtraction_withResetFlags);
 		CPPUNIT_TEST (testReloadingXML);
+		// TODO: Test the following cases
 //		CPPUNIT_TEST (testStringConstructor);
 //		CPPUNIT_TEST (testSetValue);
 //		CPPUNIT_TEST (testSetValue_WithString);
