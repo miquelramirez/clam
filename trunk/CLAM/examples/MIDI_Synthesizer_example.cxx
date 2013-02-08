@@ -75,6 +75,10 @@ public:
 			{
 				AddAll();
 				UpdateData();
+				SetAttackTime(   0.05 );
+				SetDecayTime(    0.07 );
+				SetSustainLevel( 0.5 );
+				SetReleaseTime(  0.05 );
 				try
 				{
 					SetSampleRate( AudioManager::Current().SampleRate() );
@@ -229,11 +233,11 @@ void MyAudioApplication::AudioMain()
 		inCfgL.SetDevice(mAudioDeviceStr);
 		inCfgL.SetChannelID(0);
 		inCfgL.SetFrameSize(buffersize);
-		
+
 		inCfgR.SetDevice(mAudioDeviceStr);
 		inCfgR.SetChannelID(1);
 		inCfgR.SetFrameSize(buffersize);
-	
+
 		AudioIn inL(inCfgL);
 		AudioIn inR(inCfgR);
 
@@ -295,23 +299,9 @@ void MyAudioApplication::AudioMain()
 		MIDIClocker clocker(clockerCfg);
 
 		// Instrument
-		MyInstrument::Config instrumentCfg[ nVoices ];
-		for (int i=0;i<nVoices;i++)
-		{
-			char tmp[20];
-			sprintf(tmp,"instrument%d",i);
-			instrumentCfg[i].SetAttackTime( (TData) 0.05 );
-			instrumentCfg[i].SetDecayTime( (TData) 0.07 );
-			instrumentCfg[i].SetSustainLevel( (TData) 0.5 );
-			instrumentCfg[i].SetReleaseTime( (TData) 0.05 );
-		}
-
 		Array< Instrument* > instruments( nVoices );
-
 		for (int i=0;i<nVoices;i++)
-		{
-			instruments.AddElem( new MyInstrument( instrumentCfg[i] ) );
-		}
+			instruments[i] = new MyInstrument;
 
 		// Dispatcher declaration
 		DispatcherConfig dispatcherCfg;
@@ -320,17 +310,6 @@ void MyAudioApplication::AudioMain()
 		dispatcherCfg.SetNInValues( 2 ) ;
 
 		Dispatcher dispatcher( dispatcherCfg );
-
-		// Audio Array
-		Array< Audio > audioArray( nVoices );
-
-		Audio bufOsc;
-		bufOsc.SetSize(buffersize);
-
-		for( int i = 0; i < nVoices; i++ )
-		{
-			audioArray.AddElem( bufOsc );
-		}
 
 		// Output buffer
 		Audio out;
