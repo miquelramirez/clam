@@ -147,8 +147,11 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path)
 void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath)
 {
 #ifdef WIN32
-//		SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT |
-//			SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX );
+//		SetErrorMode(
+//			SEM_FAILCRITICALERRORS |
+//			SEM_NOALIGNMENTFAULTEXCEPT |
+//			SEM_NOGPFAULTERRORBOX |
+//			SEM_NOOPENFILEERRORBOX );
 	return LoadLibrary(libraryPath.c_str());
 #else
 	return dlopen( libraryPath.c_str(), RTLD_NOW);
