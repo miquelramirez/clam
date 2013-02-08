@@ -149,7 +149,7 @@ namespace CLAMTest
 		void testOpenExisting_FileExists_and_Is_PCM()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string("Elvis.wav") );
+			file.OpenExisting( mPathToTestData + "Elvis.wav" );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("PCM"),
 					      file.GetCodec().GetString() );
@@ -158,16 +158,16 @@ namespace CLAMTest
 		void testOpenExisting_FileExists_and_Is_OggVorbis()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.ogg" ) );
+			file.OpenExisting( mPathToTestData + "Elvis.ogg" );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("Ogg/Vorbis"),
-					      file.GetCodec().GetString() );			
+					file.GetCodec().GetString() );
 		}
 
 		void testOpenExisting_FileDoesNotExist_UnrecognizedFormat()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string("nikora") );
+			file.OpenExisting( mPathToTestData + "nikora" );
 
 			CPPUNIT_ASSERT_EQUAL( std::string( "Unknown" ),
 					      file.GetCodec().GetString() );
@@ -176,7 +176,7 @@ namespace CLAMTest
 		void testGetHeader_HeaderIsRight_PCM()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
+			file.OpenExisting( mPathToTestData + "Elvis.wav" );
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
@@ -203,7 +203,7 @@ namespace CLAMTest
 		void testGetHeader_HeaderIsRight_OggVorbis()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.ogg" ) );
+			file.OpenExisting( mPathToTestData + "Elvis.ogg" );
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
@@ -236,7 +236,7 @@ namespace CLAMTest
 		void testGetHeader_NoHeaderWhenFileIsUnreadable_AfterOneSuccessful()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
+			file.OpenExisting( mPathToTestData + "Elvis.wav" );
 	
 			file.OpenExisting( "Momonga" );
 			
@@ -423,7 +423,7 @@ namespace CLAMTest
 		void testOpenExisting_FileExists_and_Is_Mpeg()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "trumpet.mp3" ) );
+			file.OpenExisting( mPathToTestData + "trumpet.mp3" );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio"),
 					      file.GetCodec().GetString() );			
@@ -434,7 +434,7 @@ namespace CLAMTest
 		void testOpenExisting_FileExists_NotSpurious_Mpeg()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "ElvisStereo.wav" ) );
+			file.OpenExisting( mPathToTestData + "ElvisStereo.wav" );
 
 			CPPUNIT_ASSERT( std::string("Mpeg Audio") != file.GetCodec().GetString() );						
 		}
@@ -442,7 +442,7 @@ namespace CLAMTest
 		void testGetHeader_HeaderIsRight_Mpeg()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "trumpet.mp3" ) );
+			file.OpenExisting( mPathToTestData + "trumpet.mp3" );
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
@@ -464,7 +464,7 @@ namespace CLAMTest
 		void testTextDescriptorsExtraction_From_OggVorbis()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.ogg" ) );
+			file.OpenExisting( mPathToTestData + "Elvis.ogg" );
 
 			const CLAM::AudioTextDescriptors& txtDesc = file.GetTextDescriptors();
 			
@@ -481,7 +481,7 @@ namespace CLAMTest
 		void testTextDescriptorsExtraction_From_Mpeg()
 		{
 			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + CLAM::Text( "trumpet.mp3" ) );
+			file.OpenExisting( mPathToTestData + "trumpet.mp3" );
 
 			const CLAM::AudioTextDescriptors& txtDesc = file.GetTextDescriptors();
 			
