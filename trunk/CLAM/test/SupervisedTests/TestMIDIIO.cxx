@@ -23,8 +23,8 @@ int main()
 	MIDIIOConfig inNoteCfg;
 	MIDIIOConfig outNoteCfg;
 
-	MIDIClockerConfig inpClockerCfg;
-	MIDIClockerConfig outClockerCfg;
+	MIDIClocker::Config inpClockerCfg;
+	MIDIClocker::Config outClockerCfg;
 
 	inpClockerCfg.SetDevice(indevice);
 	outClockerCfg.SetDevice(outdevice);
