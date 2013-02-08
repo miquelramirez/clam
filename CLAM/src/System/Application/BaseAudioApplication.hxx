@@ -42,8 +42,8 @@ namespace CLAM {
 		
 		static void* SAudioThread(BaseAudioApplication *pThis);
 		static void SAudioThreadCleanup(BaseAudioApplication *pThis);
-		virtual void AudioMain(void) = 0;
-		virtual void UserMain(void);
+		virtual void AudioMain() = 0;
+		virtual void UserMain();
 		virtual void AppCleanup() {};
 	protected:
 		bool cancel;
