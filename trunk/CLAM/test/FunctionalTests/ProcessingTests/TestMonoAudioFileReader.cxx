@@ -10,6 +10,7 @@
 #include "similarityHelper.hxx"
 #include <algorithm>
 #include <cstdio>
+#include "FileCleaner.hxx"
 
 namespace CLAMTest
 {
@@ -51,6 +52,7 @@ namespace CLAMTest
 	protected: // Attributes
 
 		std::string mPathToTestData;
+		FileCleaner _cleaner;
 
 	protected: // Auxiliary methods
 
@@ -359,7 +361,7 @@ namespace CLAMTest
 		{
 			CLAM::AudioFileSource file;
 			
-			file.OpenExisting( mPathToTestData + std::string("1-wav-8000.wav" ) );
+			file.OpenExisting( mPathToTestData + "1-wav-8000.wav" );
 			
 			CPPUNIT_ASSERT_EQUAL( true,
 					       file.IsReadable() );
@@ -374,7 +376,7 @@ namespace CLAMTest
 			procReader.Configure( cfgReader );
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( "trumpet-copy.wav" );
+			cfgWriter.SetTargetFile( _cleaner.add("trumpet-copy.wav") );
 			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate());
 			CLAM::MonoAudioFileWriter procWriter;
 			procWriter.Configure( cfgWriter );

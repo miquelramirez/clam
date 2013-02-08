@@ -8,6 +8,7 @@
 #include "similarityHelper.hxx"
 #include <deque>
 #include <CLAM/CLAM_Math.hxx>
+#include "FileCleaner.hxx"
 
 namespace CLAMTest
 {
@@ -29,6 +30,7 @@ namespace CLAMTest
 	protected:
 		
 		std::string mPathToTestData;
+		FileCleaner _cleaner;
 
 	public:
 		void setUp()
@@ -48,34 +50,32 @@ namespace CLAMTest
 			cfg.SetTargetFile( "NewFile.wav" );
 
 			CLAM::MonoAudioFileWriter proc;
-			bool configResult = proc.Configure( cfg );
-
-			CPPUNIT_ASSERT_EQUAL( false,
-					      configResult );
+			CPPUNIT_ASSERT( not proc.Configure( cfg ));
 		}
 
 		void testConfigure_twoOnTheSameFileFail()
 		{
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( "twosines-stereo.wav" );			
+			_cleaner.add("twosines-stereo.wav");
+			cfgWriter.SetTargetFile( "twosines-stereo.wav" );
 
 			CLAM::MonoAudioFileWriter procWriter;
 			CLAM::MonoAudioFileWriter procWriter2;
 			procWriter.Configure( cfgWriter );
 
-			CPPUNIT_ASSERT_EQUAL( false, procWriter2.Configure( cfgWriter ) );
+			CPPUNIT_ASSERT( not procWriter2.Configure( cfgWriter ) );
 		}
 
 		void testDo_PCM_WritesTheSameItWasRead()
 		{
 			CLAM::MonoAudioFileReaderConfig cfgReader;
-			cfgReader.SetSourceFile( mPathToTestData + std::string( "Elvis.wav" ) );
+			cfgReader.SetSourceFile( mPathToTestData + "Elvis.wav" );
 			cfgReader.SetSelectedChannel( 0 );
 
 			CLAM::MonoAudioFileReader procReader;
-			CPPUNIT_ASSERT_EQUAL( true,
-					      procReader.Configure( cfgReader ) );		
+			CPPUNIT_ASSERT( procReader.Configure( cfgReader ) );
 
+			_cleaner.add("CopyOfElvis.wav");
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "CopyOfElvis.wav" );
 			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
@@ -84,8 +84,7 @@ namespace CLAMTest
 //			cfgWriter.SetEncoding( procReader.GetHeader().GetEncoding() );
 //			cfgWriter.SetEndianess( procReader.GetHeader().GetEndianess() );
 			CLAM::MonoAudioFileWriter procWriter;
-			CPPUNIT_ASSERT_EQUAL( true,
-					      procWriter.Configure( cfgWriter ) );
+			CPPUNIT_ASSERT( procWriter.Configure( cfgWriter ) );
 
 			CLAM::Audio readSamples;
 			readSamples.SetSize( 256 );
@@ -108,7 +107,8 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			cfgReader.SetSourceFile( "CopyOfElvis.wav.wav" );
+			_cleaner.add("CopyOfElvis.wav");
+			cfgReader.SetSourceFile( "CopyOfElvis.wav" );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
 			CLAM::Audio readSamples2;
@@ -136,12 +136,13 @@ namespace CLAMTest
 		void testDo_OggVorbis_WritesTheSameItWasRead()
 		{
 			CLAM::MonoAudioFileReaderConfig cfgReader;
-			cfgReader.SetSourceFile( mPathToTestData + std::string( "Elvis.wav" ) );
+			cfgReader.SetSourceFile( mPathToTestData + "Elvis.wav" );
 			cfgReader.SetSelectedChannel( 0 );
 			CLAM::MonoAudioFileReader procReader;
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procReader.Configure( cfgReader ) );
 
+			_cleaner.add("CopyOfElvis.ogg");
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "CopyOfElvis.ogg" );
 			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
