@@ -9,7 +9,7 @@ AddOption(
 	dest="target", nargs=1, type='string', action='store', metavar="TARGET",
 	help='Generate binaries for TARGET architecture')
 
-crosscompiling = GetOption('target') and GetOption("target").rfind('mingw') != -1 or False
+crosscompiling = GetOption('target') and 'mingw' in GetOption("target") or False
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
