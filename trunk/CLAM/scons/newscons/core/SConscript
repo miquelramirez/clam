@@ -49,11 +49,7 @@ def Configure(sconf) :
 
 def Targets(env) :
 	sourceDirs = [
-		'core',
-		'core/Base',
-		'core/Storage',
-		'core/Defines',
-		'core/Errors',
+		'core/',
 		]
 	headers = env.scanFiles("*.hxx", sourceDirs, recursive=True)
 	sources = env.scanFiles("*.cxx", sourceDirs, recursive=True)
