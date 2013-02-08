@@ -23,7 +23,7 @@
 #define __InPortPublisher_hxx__
 
 #include "InPort.hxx"
-#include <typeinfo>
+#include "TypeInfo.hxx"
 
 namespace CLAM
 {

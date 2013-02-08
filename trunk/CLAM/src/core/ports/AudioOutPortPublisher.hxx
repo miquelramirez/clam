@@ -24,6 +24,7 @@
 
 #include "OutPortPublisher.hxx"
 #include "Audio.hxx"
+#include "TypeInfo.hxx"
 
 namespace CLAM
 {
