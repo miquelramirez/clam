@@ -75,11 +75,14 @@
      <string>&amp;View</string>
     </property>
     <addaction name="action_Show_processing_toolbox"/>
-    <addaction name="action_Show_description_panel"/>
-    <addaction name="action_Show_console"/>
+    <addaction name="action_Show_description_editor"/>
+    <addaction name="action_Show_python_console"/>
+    <addaction name="separator"/>
     <addaction name="action_Default_zoom"/>
     <addaction name="action_Zoom_in"/>
     <addaction name="action_Zoom_out"/>
+    <addaction name="separator"/>
+    <addaction name="action_Refresh"/>
     <addaction name="action_White_colors_Option"/>
    </widget>
    <widget class="QMenu" name="menu_Network">
@@ -151,8 +154,9 @@
    <addaction name="action_CompileAsLadspaPlugin"/>
    <addaction name="separator"/>
    <addaction name="action_Show_processing_toolbox"/>
-   <addaction name="action_Show_description_panel"/>
-   <addaction name="action_Show_console"/>
+   <addaction name="action_Show_description_editor"/>
+   <addaction name="action_Show_python_console"/>
+   <addaction name="action_Refresh"/>
    <addaction name="action_Zoom_in"/>
    <addaction name="action_Default_zoom"/>
    <addaction name="action_Zoom_out"/>
@@ -162,7 +166,7 @@
   </widget>
   <action name="action_New">
    <property name="icon">
-    <iconset theme="filenew" resource="images.qrc">
+    <iconset theme="document-new" resource="images.qrc">
      <normaloff>:/icons/images/filenew.png</normaloff>:/icons/images/filenew.png</iconset>
    </property>
    <property name="text">
@@ -177,7 +181,7 @@
   </action>
   <action name="action_Open">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="document-open" resource="images.qrc">
      <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -189,7 +193,7 @@
   </action>
   <action name="action_Open_example">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="document-open" resource="images.qrc">
      <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -201,7 +205,7 @@
   </action>
   <action name="action_Play">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="media-playback-start" resource="images.qrc">
      <normaloff>:/icons/images/player_play.png</normaloff>:/icons/images/player_play.png</iconset>
    </property>
    <property name="text">
@@ -213,7 +217,7 @@
   </action>
   <action name="action_Save">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="document-save" resource="images.qrc">
      <normaloff>:/icons/images/filesave.png</normaloff>:/icons/images/filesave.png</iconset>
    </property>
    <property name="text">
@@ -225,7 +229,7 @@
   </action>
   <action name="action_Stop">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="media-playback-stop" resource="images.qrc">
      <normaloff>:/icons/images/player_stop.png</normaloff>:/icons/images/player_stop.png</iconset>
    </property>
    <property name="text">
@@ -237,7 +241,7 @@
   </action>
   <action name="action_Save_as">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="document-save-as" resource="images.qrc">
      <normaloff>:/icons/images/filesaveas.png</normaloff>:/icons/images/filesaveas.png</iconset>
    </property>
    <property name="text">
@@ -246,7 +250,7 @@
   </action>
   <action name="action_Quit">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="application-exit" resource="images.qrc">
      <normaloff>:/icons/images/exit.png</normaloff>:/icons/images/exit.png</iconset>
    </property>
    <property name="text">
@@ -258,7 +262,7 @@
   </action>
   <action name="action_About">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="help-about" resource="images.qrc">
      <normaloff>:/icons/images/NetworkEditor-icon.png</normaloff>:/icons/images/NetworkEditor-icon.png</iconset>
    </property>
    <property name="text">
@@ -273,16 +277,19 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="view-list-tree" resource="images.qrc">
      <normaloff>:/icons/images/view_tree.png</normaloff>:/icons/images/view_tree.png</iconset>
    </property>
    <property name="text">
-    <string>Toggle &amp;processing toolbox</string>
+    <string>&amp;Processing toolbox</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle processing toolbox</string>
    </property>
   </action>
   <action name="action_Whats_this">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="help-contextual" resource="images.qrc">
      <normaloff>:/icons/images/contexthelp.png</normaloff>:/icons/images/contexthelp.png</iconset>
    </property>
    <property name="text">
@@ -294,7 +301,7 @@
   </action>
   <action name="action_Online_tutorial">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="help-contents" resource="images.qrc">
      <normaloff>:/icons/images/help.png</normaloff>:/icons/images/help.png</iconset>
    </property>
    <property name="text">
@@ -303,7 +310,7 @@
   </action>
   <action name="action_Run_prototyper">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="system-run" resource="images.qrc">
      <normaloff>:/icons/images/exec.png</normaloff>:/icons/images/exec.png</iconset>
    </property>
    <property name="text">
@@ -312,7 +319,7 @@
   </action>
   <action name="action_Print">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="document-print" resource="images.qrc">
      <normaloff>:/icons/images/fileprint.png</normaloff>:/icons/images/fileprint.png</iconset>
    </property>
    <property name="text">
@@ -333,7 +340,7 @@
   </action>
   <action name="action_Zoom_in">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="zoom-in" resource="images.qrc">
      <normaloff>:/icons/images/viewmag+.png</normaloff>:/icons/images/viewmag+.png</iconset>
    </property>
    <property name="text">
@@ -345,7 +352,7 @@
   </action>
   <action name="action_Zoom_out">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="zoom-out" resource="images.qrc">
      <normaloff>:/icons/images/viewmag-.png</normaloff>:/icons/images/viewmag-.png</iconset>
    </property>
    <property name="text">
@@ -357,7 +364,7 @@
   </action>
   <action name="action_Default_zoom">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="zoom-original" resource="images.qrc">
      <normaloff>:/icons/images/viewmag1.png</normaloff>:/icons/images/viewmag1.png</iconset>
    </property>
    <property name="text">
@@ -366,7 +373,7 @@
   </action>
   <action name="action_New_dummy">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="document-new" resource="images.qrc">
      <normaloff>:/icons/images/filenew.png</normaloff>:/icons/images/filenew.png</iconset>
    </property>
    <property name="text">
@@ -375,7 +382,7 @@
   </action>
   <action name="action_OpenToolbar">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="document-open" resource="images.qrc">
      <normaloff>:/icons/images/fileopen_draggable.png</normaloff>:/icons/images/fileopen_draggable.png</iconset>
    </property>
    <property name="text">
@@ -430,7 +437,7 @@
   </action>
   <action name="action_Pause">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="media-playback-pause" resource="images.qrc">
      <normaloff>:/icons/images/player_pause.png</normaloff>:/icons/images/player_pause.png</iconset>
    </property>
    <property name="text">
@@ -440,7 +447,7 @@
     <string>Space</string>
    </property>
   </action>
-  <action name="action_Show_description_panel">
+  <action name="action_Show_description_editor">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -448,14 +455,17 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="document-edit" resource="images.qrc">
      <normaloff>:/icons/images/edit.png</normaloff>:/icons/images/edit.png</iconset>
    </property>
    <property name="text">
-    <string>Toggle &amp;description_panel</string>
+    <string>&amp;Description editor</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle description editor</string>
    </property>
   </action>
-  <action name="action_Show_console">
+  <action name="action_Show_python_console">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -463,14 +473,29 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset theme="utilities-terminal" resource="images.qrc">
      <normaloff>:/icons/images/utilities-terminal.png</normaloff>:/icons/images/utilities-terminal.png</iconset>
    </property>
    <property name="text">
-    <string>Show_console</string>
+    <string>Python &amp;console</string>
    </property>
    <property name="toolTip">
-    <string>Toggle python console</string>
+    <string>Toggle Python console</string>
+   </property>
+   <property name="shortcut">
+    <string>F4</string>
+   </property>
+  </action>
+  <action name="action_Refresh">
+   <property name="icon">
+    <iconset theme="view-refresh" resource="images.qrc">
+     <normaloff>:/icons/images/view-refresh.png</normaloff>:/icons/images/view-refresh.png</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh view</string>
    </property>
   </action>
  </widget>
