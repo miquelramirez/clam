@@ -24,7 +24,7 @@ def CheckPkgConfigProgram(context, minimum_version=None) :
 	runok = _command_check(
 		context,
 		"Checking for pkg-config availability%s..."%(message),
-		"echo boo # $PKG_CONFIG %s>&1"%options
+		"$PKG_CONFIG %s>&1"%options
 		)
 	return runok
 
