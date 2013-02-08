@@ -5,6 +5,7 @@
 #include "similarityHelper.hxx"
 #include "CLAM_Math.hxx"
 #include "OSDefines.hxx"
+#include "FileCleaner.hxx"
 
 namespace CLAMTest
 {
@@ -24,6 +25,7 @@ namespace CLAMTest
 
 	protected:
 		std::string mPathToTestData;
+		FileCleaner _cleaner;
 	public:
 
 		void setUp()
@@ -41,7 +43,7 @@ namespace CLAMTest
 		void testDo_PCM_WritesRightAKnownSignal()
 		{
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( "twosines-stereo.wav" );
+			cfgWriter.SetTargetFile( _cleaner.add("twosines-stereo.wav") );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			CPPUNIT_ASSERT_EQUAL( true, procWriter.Configure( cfgWriter ) );
@@ -98,14 +100,14 @@ namespace CLAMTest
 		void testDo_DoubleWriting_Is_Not_Allowed()
 		{
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( "twosines-stereo.wav" );
+			cfgWriter.SetTargetFile( _cleaner.add("twosines-stereo.wav") );
 
 			CLAM::MultiChannelAudioFileWriter procWriter;
 			CLAM::MultiChannelAudioFileWriter procWriter2;
 			
 			procWriter.Configure( cfgWriter );
 
-			CPPUNIT_ASSERT_EQUAL( false, procWriter2.Configure( cfgWriter ) );
+			CPPUNIT_ASSERT( not procWriter2.Configure( cfgWriter ) );
 
 		}
 
@@ -116,7 +118,7 @@ namespace CLAMTest
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( "test-stereo-decoding-copy.wav" );
+			cfgWriter.SetTargetFile( _cleaner.add("test-stereo-decoding-copy.wav") );
 			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
 			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
 			// Not yet supported
@@ -198,7 +200,7 @@ namespace CLAMTest
 					      procReader.Configure( cfgReader ) );		
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( "ElvisStereo-copy.ogg" );
+			cfgWriter.SetTargetFile( _cleaner.add("ElvisStereo-copy.ogg" ));
 			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate());
 			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels());
 			CLAM::MultiChannelAudioFileWriter procWriter;
