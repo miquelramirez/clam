@@ -36,6 +36,12 @@ public:
 	{
 		_toRemove.push_back(filename);
 	}
+	std::string addTemp()
+	{
+		std::string filename(std::tmpnam(0));
+		add(filename);
+		return filename;
+	}
 	~FileCleaner()
 	{
 		for (FileNames::iterator it = _toRemove.begin();
