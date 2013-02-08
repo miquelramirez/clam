@@ -39,3 +39,4 @@ http://upload.wikimedia.org/wikipedia/commons/c/c4/LV2_shaded_black.svg
 ledon.png from qsynth
 ledoff.png from qsynth
 /usr/share/icons/oxygen/32x32/apps/utilities-terminal.png
+/usr/share/icons/oxygen/32x32/actions/view-refresh.png
