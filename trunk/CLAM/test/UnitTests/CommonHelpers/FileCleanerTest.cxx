@@ -39,6 +39,7 @@ class FileCleanerTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( test_destructor_whenAddedMany );
 	CPPUNIT_TEST( test_destructor_whenNotCreated );
 	CPPUNIT_TEST( test_addTemp_withoutExtension );
+	CPPUNIT_TEST( test_add_returnsTheFile );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -139,6 +140,14 @@ private:
 			create(filename);
 		}
 		CPPUNIT_ASSERT(not exists(filename));
+	}
+
+	void test_add_returnsTheFile()
+	{
+		std::string filename1 = tempfilename();
+		FileCleaner cleaner;
+		std::string filename2 = cleaner.add(filename1);
+		CPPUNIT_ASSERT_EQUAL(filename1, filename2);
 	}
 
 };

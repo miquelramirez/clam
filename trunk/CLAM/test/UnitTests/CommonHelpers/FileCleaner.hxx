@@ -32,9 +32,10 @@ class CLAMTest::FileCleaner
 	typedef std::list<std::string> FileNames;
 	FileNames _toRemove;
 public:
-	void add(const std::string & filename)
+	std::string add(const std::string & filename)
 	{
 		_toRemove.push_back(filename);
+		return filename;
 	}
 	std::string addTemp()
 	{
