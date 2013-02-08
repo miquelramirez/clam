@@ -26,7 +26,6 @@
 #include <iostream>
 #ifdef WIN32
 #include "CLAM_windows.h"
-#undef GetClassName
 #else
 #include <unistd.h>
 #endif
