@@ -56,18 +56,17 @@ bool ThreeBandGate::Do(const Spectrum& in, Spectrum& out)
 	TData midThreshold = 	log2lin(mMidThresholdCtl.GetLastValue());
 	TData highThreshold = 	log2lin(mHighThresholdCtl.GetLastValue());
 	
-	int i;
-	for( i = 0; i<lowCutoff; i++)
+	for(unsigned i = 0; i<lowCutoff; i++)
 	{
 		if(iMag[i]<lowThreshold)
 			oMag[i] = 0;
 	}
-	for( i = lowCutoff; i<highCutoff; i++)
+	for(unsigned i = lowCutoff; i<highCutoff; i++)
 	{
 		if(iMag[i]<midThreshold)
 			oMag[i] = 0;
 	}
-	for( i = highCutoff; i<spectrumSize; i++)
+	for(unsigned i = highCutoff; i<spectrumSize; i++)
 	{
 		if(iMag[i]<highThreshold)
 			oMag[i] = 0;
