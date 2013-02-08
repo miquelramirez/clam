@@ -42,7 +42,7 @@ class MIDIKeyboard : public Processing
 		MIDIIOConfig mModulationConfig;
 		MIDIInControl mModulationIn;
 
-		MIDIClockerConfig mClockerConfig;
+		MIDIClocker::Config mClockerConfig;
 		MIDIClocker mClocker;
 
 		OutControlPublisher mNoteOut;

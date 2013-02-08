@@ -36,7 +36,6 @@ using CLAM::MIDIMelody;
 using CLAM::MIDIManager;
 using CLAM::MIDIIOConfig;
 using CLAM::MIDIIn;
-using CLAM::MIDIClockerConfig;
 using CLAM::MIDIClocker;
 using CLAM::MIDI2Melody;
 using CLAM::TTime;
@@ -99,7 +98,7 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	MIDIInControl inStop(inStopCfg);
 
 	//MIDI clocker to keep track of timing
-	MIDIClockerConfig clockerCfg;
+	MIDIClocker::Config clockerCfg;
 
 	clockerCfg.SetDevice(midiDeviceStr);
 		

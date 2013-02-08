@@ -292,7 +292,7 @@ void MyAudioApplication::AudioMain()
 		MIDIInControl inPitchBend;
 		ConfigureAndCheck(inPitchBend,inPitchBendCfg);
 
-		MIDIClockerConfig clockerCfg;
+		MIDIClocker::Config clockerCfg;
 
 		clockerCfg.SetDevice(mMidiDeviceStr);
 		

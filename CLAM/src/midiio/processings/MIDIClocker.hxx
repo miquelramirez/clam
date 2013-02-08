@@ -19,52 +19,53 @@
  *
  */
 
-#ifndef __MIDIClocker__
-#define __MIDIClocker__
+#ifndef CLAM_MIDIClocker_hxx
+#define CLAM_MIDIClocker_hxx
 
 #include "Processing.hxx"
 #include "MIDIDevice.hxx"
 #include "MIDIEnums.hxx"
 
-namespace CLAM
-{
-
-/** Configuration of the MIDIClocker class. You can specify
- * a device (string), which will be used by the MIDIManager, when creating
- * the MIDIDevice objects. When you don't specify a concrete device, or
- * specify "default", the MIDIManager will choose the default device for your
- * setup. For multichannel MIDI, you need to configure each in/out with it's
- * own channel id, typically 0 for left, and 1 for right.
- * @see MIDIClocker, MIDIDevice, MIDIManager, ProcessingConfig
- */
-class MIDIClockerConfig: public ProcessingConfig
-{
-public:
-	DYNAMIC_TYPE_USING_INTERFACE (MIDIClockerConfig, 1, ProcessingConfig);
-
-	/** The Device that will be used by this MIDIClocker or MIDIOut instantiation, if it is not indicated, or its value is "default:default", system will choose the best device for this object*/
-	DYN_ATTRIBUTE (0, public, std::string, Device);
-
-protected:
-	void DefaultInit(void)
-	{
-		AddDevice();
-		UpdateData();
-
-		SetDevice("default:default");
-	}
-};
+namespace CLAM { class MIDIClocker; }
 
 
 /** This class is the interface to an input of an MIDIDevice.
- *  @see Processing, MIDIClockerConfig, MIDIOut, MIDIManager, MIDIDevice
+ *  @see Processing, MIDIClocker::Config, MIDIOut, MIDIManager, MIDIDevice
  */
-class MIDIClocker: public Processing
+class CLAM::MIDIClocker : public Processing
 {
-friend class MIDIManager;
-friend class MIDIDevice;
+	friend class MIDIManager;
+	friend class MIDIDevice;
+
+public:
+	/** Configuration of the MIDIClocker class. You can specify
+	 * a device (string), which will be used by the MIDIManager, when creating
+	 * the MIDIDevice objects. When you don't specify a concrete device, or
+	 * specify "default", the MIDIManager will choose the default device for your
+	 * setup. For multichannel MIDI, you need to configure each in/out with it's
+	 * own channel id, typically 0 for left, and 1 for right.
+	 * @see MIDIClocker, MIDIDevice, MIDIManager, ProcessingConfig
+	 */
+	class Config: public ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (Config, 1, ProcessingConfig);
+
+		/** The Device that will be used by this MIDIClocker or MIDIOut instantiation, if it is not indicated, or its value is "default:default", system will choose the best device for this object*/
+		DYN_ATTRIBUTE (0, public, std::string, Device);
+
+	protected:
+		void DefaultInit(void)
+		{
+			AddDevice();
+			UpdateData();
+
+			SetDevice("default:default");
+		}
+	};
+
 protected:
-	MIDIClockerConfig mConfig;
+	Config mConfig;
 	MIDIDevice* mpDevice;
 	FloatInControl mInput;
 public:
@@ -83,18 +84,11 @@ public:
 	 */		
 	const ProcessingConfig &GetConfig() const { return mConfig;}
 
-	MIDIClocker()
-	:mInput("input",this,&MIDIClocker::DoClock)
-	{
-		mpDevice = 0;
-		Configure(MIDIClockerConfig());
-	}
-
-	/** Constructor of the class with an MIDIIOConfig object constructed by the user as parameter.
-	 *  @param c The concrete MIDIIOConfig that will be used for this construction
+	/** 
+	 *  @param c Initialization config
 	 */		
-	MIDIClocker(const MIDIClockerConfig &c)
-	:mInput("input",this,&MIDIClocker::DoClock)
+	MIDIClocker(const Config &c = Config())
+		: mInput("input",this,&MIDIClocker::DoClock)
 	{
 		mpDevice = 0;
 		Configure(c);
@@ -127,12 +121,11 @@ public:
 	}
 
 protected:
-	bool ConcreteStart(void);
+	bool ConcreteStart();
 
 };
 
 
 
-} // namespace CLAM
 #endif
 

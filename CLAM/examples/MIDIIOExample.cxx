@@ -40,11 +40,11 @@ int main()
 	
 	MIDIManager manager;
 
-	MIDIClockerConfig inpClockerCfg;
+	MIDIClocker::Config inpClockerCfg;
 	inpClockerCfg.SetDevice(indevice);
 	MIDIClocker inpClocker(inpClockerCfg);
 
-	MIDIClockerConfig outClockerCfg;
+	MIDIClocker::Config outClockerCfg;
 	outClockerCfg.SetDevice(outdevice);
 	MIDIClocker outClocker(outClockerCfg);
 
