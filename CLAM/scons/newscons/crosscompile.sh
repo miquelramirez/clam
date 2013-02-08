@@ -7,7 +7,7 @@ die()
 }
 
 
-[ -d $SANDBOX ] || die "Please, define properly the SANBOX variable in the script."
+[ -d $SANDBOX ] || die "Please, define the SANDBOX variable in the script."
 
 #export PKG_CONFIG_PATH=$SANDBOX/lib/pkgconfig/
 #export PKG_CONFIG=$SANDBOX/bin/pkg-config.exe
