@@ -77,7 +77,7 @@ namespace CLAMTest
 					      procReader.Configure( cfgReader ) );		
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( "CopyOfElvis.wav.wav" );
+			cfgWriter.SetTargetFile( "CopyOfElvis.wav" );
 			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
 			// TODO: Those parameters have not been moved from the header to configuration
 //			cfgWriter.SetFormat( procReader.GetHeader().GetFormat() );
