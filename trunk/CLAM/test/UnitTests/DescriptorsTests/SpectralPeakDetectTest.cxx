@@ -147,7 +147,6 @@ private:
 	{
 		CLAM::SpectralPeakArray peaks;
 		peaks = helperGetData("sin5000.wav");
-		CLAM::XMLStorage::Dump(peaks, "Peaks",  "sin5000-Peaks.xml");
 		CPPUNIT_ASSERT( peaks.GetFreqBuffer()[0] > 4995);
 		CPPUNIT_ASSERT( peaks.GetFreqBuffer()[0] < 5001);
 	}	
