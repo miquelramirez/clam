@@ -32,7 +32,7 @@ namespace CLAM
 		};
 		typedef std::vector<Port> Ports;
 
-	private:
+	public:
 
 		class Config : public ProcessingConfig
 		{
@@ -58,84 +58,84 @@ namespace CLAM
 			}
 		};
 
-		private:
-			Config _config;
-			Ports  _ports;
+	private:
+		Config _config;
+		Ports  _ports;
 
-		public:
-			AudioBufferSource(const ProcessingConfig & config=Config())
-			{
-				//After being dropped it is ready to run as it does not need any configuration at all
-				//SetExecState(Ready);
-				Configure( config );
+	public:
+		AudioBufferSource(const ProcessingConfig & config=Config())
+		{
+			//After being dropped it is ready to run as it does not need any configuration at all
+			//SetExecState(Ready);
+			Configure( config );
 
-				// default constructed with 1 port
-				ResizePorts(1);
-			}
+			// default constructed with 1 port
+			ResizePorts(1);
+		}
 
-			~AudioBufferSource()
-			{
-				for (unsigned port = 0; port < _ports.size(); ++port)
-					delete _ports[port].mPort;
-			}
+		~AudioBufferSource()
+		{
+			for (unsigned port = 0; port < _ports.size(); ++port)
+				delete _ports[port].mPort;
+		}
 
-			void SetFrameAndHopSize(const int val, unsigned index)
-			{
-				CLAM_ASSERT(index < _ports.size(), "AudioOutPort index out of range");
-				Port& port = _ports[index];
-				port.mPort->SetSize(1);
-				port.mPort->SetHop(1);
-			}
+		void SetFrameAndHopSize(const int val, unsigned index)
+		{
+			CLAM_ASSERT(index < _ports.size(), "AudioOutPort index out of range");
+			Port& port = _ports[index];
+			port.mPort->SetSize(1);
+			port.mPort->SetHop(1);
+		}
 
-			void SetExternalBuffer(const float* buf, unsigned nframes, unsigned index);
-			void SetExternalBuffer(const double* buf, unsigned nframes, unsigned index);
+		void SetExternalBuffer(const float* buf, unsigned nframes, unsigned index);
+		void SetExternalBuffer(const double* buf, unsigned nframes, unsigned index);
 
-			bool Do();
+		bool Do();
 
-            virtual bool SupportsVariableAudioSize() const {return true;}
+		virtual bool SupportsVariableAudioSize() const {return true;}
 
-			const char* GetClassName() const { return "AudioBufferSource";}
+		const char* GetClassName() const { return "AudioBufferSource";}
 
-			const ProcessingConfig & GetConfig() const
-			{
-				return _config;
-			}
+		const ProcessingConfig & GetConfig() const
+		{
+			return _config;
+		}
 
-			bool ConcreteConfigure(const ProcessingConfig& config)
-			{
-				CopyAsConcreteConfig(_config, config);
-				unsigned sources = _config.GetNSources();
+		bool ConcreteConfigure(const ProcessingConfig& config)
+		{
+			CopyAsConcreteConfig(_config, config);
+			unsigned sources = _config.GetNSources();
 
-				ResizePorts(sources);
+			ResizePorts(sources);
 
-				return true;
-			}
+			return true;
+		}
 
-			Ports& GetPorts() { return _ports; }
-			const Ports & GetPorts() const { return _ports; }
+		Ports& GetPorts() { return _ports; }
+		const Ports & GetPorts() const { return _ports; }
 
-		private:
-			std::string const Portname(unsigned port) const
-			{
-				std::ostringstream os;
-				os << port + 1; //to make ports one based (when viewed in jack)
-				return os.str();
-			}
+	private:
+		std::string const Portname(unsigned port) const
+		{
+			std::ostringstream os;
+			os << port + 1; //to make ports one based (when viewed in jack)
+			return os.str();
+		}
 
-			void ResizePorts(unsigned sources)
-			{
-				if (sources == _ports.size())
-					return;
+		void ResizePorts(unsigned sources)
+		{
+			if (sources == _ports.size())
+				return;
 
-				for (unsigned port = sources; port < _ports.size(); ++port)
-					delete _ports[port].mPort;
+			for (unsigned port = sources; port < _ports.size(); ++port)
+				delete _ports[port].mPort;
 
-				unsigned oldSize = _ports.size();
-				_ports.resize(sources);
+			unsigned oldSize = _ports.size();
+			_ports.resize(sources);
 
-				for (unsigned port = oldSize; port < sources; ++port)
-					_ports[port] = Port(new OutPort<Audio>(Portname(port), this));
-			}
+			for (unsigned port = oldSize; port < sources; ++port)
+				_ports[port] = Port(new OutPort<Audio>(Portname(port), this));
+		}
 
 
 	};

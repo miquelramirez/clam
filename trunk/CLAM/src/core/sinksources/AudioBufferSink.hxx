@@ -33,7 +33,7 @@ namespace CLAM
 		};
 		typedef std::vector<Port> Ports;
 
-	private:
+	public:
 		class Config : public ProcessingConfig
 		{
 			DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
