@@ -18,6 +18,8 @@
  * Removed some deprecated symbols
    * enum EFFTType
    * Untemplatized ComplexTmpl/PolarTmpl -> Complex/Polar
+   * Win32ConsoleApp, Win32Utils, ProcessingKernel
+   * Application, BaseAudioAplication, AudioApllication
  * Bug fixes:
    * InControls are initialized to the default value of the control type
      (0 for numerics), this could change the behaviour (previously undefined)
