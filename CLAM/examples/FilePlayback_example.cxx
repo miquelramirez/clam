@@ -41,25 +41,14 @@ int main( int argc, char** argv )
 	try
 	{
 		// We take as a parameter from the command line the file to be played back
-		
-		if ( argc == 1 ) // No input file
+		if ( argc != 2 ) 
 		{
-			std::cerr << "No input file" << std::endl;
 			std::cerr << "Usage: AudioFileReading <input file name>" << std::endl;
-			
-			exit( - 1 );
-		}
-		else if ( argc > 2 ) // Too many parameters
-		{
-			std::cerr << "Too many parameters" << std::endl;
-			std::cerr << "Usage: AudioFileReading <input file name>" << std::endl;
-			
-			exit( -1 );			
+			exit(-1);
 		}
 	
 		// Now we will prepare file playback very similarly as the first half of the
 		// "AudioFileReading" example
-
 		CLAM::MultiChannelAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( argv[1] );
 		CLAM::MultiChannelAudioFileReader reader;
@@ -70,8 +59,9 @@ int main( int argc, char** argv )
 			exit(-1);
 		}
 
+		const unsigned nChannels = reader.GetHeader().GetChannels();
 		std::vector<CLAM::Audio> incomingAudioChannels;
-		incomingAudioChannels.resize( reader.GetHeader().GetChannels() );
+		incomingAudioChannels.resize( nChannels );
 
 		// Once we made sure we can start playing the file, it's time to access and configure the audio hardware devices
 		// present in our computer. We will do this through the 'AudioManager': a global, unique object that
@@ -98,7 +88,7 @@ int main( int argc, char** argv )
 
 		// And now we set the size of each Audio object to our intended 'read size'
 		// in this case ouf frame size
-		for ( unsigned i = 0; i < incomingAudioChannels.size(); i++ )
+		for ( unsigned i = 0; i < nChannels; i++ )
 		{
 			incomingAudioChannels[i].SetSize( frameSize );
 		}
@@ -106,10 +96,9 @@ int main( int argc, char** argv )
 		CLAM::AudioManager theAudioManager( (int)playbackSampleRate, frameSize );
 
 		// Now we will create as many AudioOuts as input channels
-
 		CLAM::Array<CLAM::AudioOut > audioOutputs;
-		audioOutputs.Resize( incomingAudioChannels.size() );
-		audioOutputs.SetSize( incomingAudioChannels.size() );
+		audioOutputs.Resize( nChannels );
+		audioOutputs.SetSize( nChannels );
 
 		// And now we will configure them
 		CLAM::AudioIOConfig  audioOutCfg;
@@ -134,7 +123,6 @@ int main( int argc, char** argv )
 				audioOutputs[i].Do( incomingAudioChannels[i] );
 		}
 
-		
 		for ( int i = 0; i < audioOutputs.Size(); i++ )
 			audioOutputs[i].Stop();
 
