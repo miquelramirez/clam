@@ -25,6 +25,7 @@
 #include "Processing.hxx"
 #include "MIDIDevice.hxx"
 #include "MIDIEnums.hxx"
+#include "AudioInPort.hxx"
 
 namespace CLAM { class MIDIClocker; }
 
@@ -66,8 +67,10 @@ public:
 
 protected:
 	Config mConfig;
-	MIDIDevice* mpDevice;
 	FloatInControl mInput;
+	AudioInPort _audioSync;
+	MIDIDevice* mpDevice;
+	TControlData mTime;
 public:
 
 	/** Configuration method interface. The Processing base class forces all the concrete classes derived from it to implement this method, which must actually perform the specific configuration tasks.  
@@ -89,8 +92,10 @@ public:
 	 */		
 	MIDIClocker(const Config &c = Config())
 		: mInput("input",this,&MIDIClocker::DoClock)
+		, _audioSync("audioSync",this)
+		, mpDevice(0)
+		, mTime(0)
 	{
-		mpDevice = 0;
 		Configure(c);
 	}
 
@@ -102,7 +107,13 @@ public:
 	/** Non supervised mode of Do function. Non implemented yet
 	 */
 	bool Do(void)
-	{ 
+	{
+		if (not mpDevice) return true;
+		mpDevice->SetClock(mTime);
+		long unsigned sampleRate = BackendSampleRate();
+		long unsigned bufferSize = BackendBufferSize();
+		mTime += 1000. * bufferSize / sampleRate;
+		_audioSync.Consume();
 		return true;
 	}
 
@@ -117,6 +128,7 @@ public:
 	 */
 	void DoClock(TControlData val)
 	{
+		mTime = val;
 		if (mpDevice) mpDevice->SetClock(val);
 	}
 
