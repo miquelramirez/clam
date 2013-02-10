@@ -114,7 +114,6 @@ singleSourceExamples = [
 	"WritingProcessings.cxx",
 	"NetworkPersistence_example.cxx",
 	"NetworkUsage_example.cxx",
-	"AudioApplicationExample.cxx", # TODO: Windows lacks GUIAudioApplication
 	"AudioFileReading_example.cxx",
 	"AudioFileWriting_example.cxx",
 	"AudioIOExample.cxx",
@@ -130,7 +129,7 @@ singleSourceExamples = [
 	"MIDIFileReadWriteExample.cxx",
 	"MIDIIOExample.cxx",
 	"MIDIOut_example.cxx",
-	"MIDI_Synthesizer_example.cxx", # TODO: Windows lacks GUIAudioApplication
+	"MIDI_Synthesizer_example.cxx",
 	"NetworkPersistence_example.cxx",
 	"NetworkUsage_example.cxx",
 	"OfflineAudioConvolution.cxx",
