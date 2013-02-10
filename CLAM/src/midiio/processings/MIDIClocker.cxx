@@ -74,6 +74,7 @@ bool MIDIClocker::ConcreteStart(void)
 		throw(Err("MIDIClocker::ConcreteStart(): No Device found!"));
 	/** Starting the MIDIDevice object assigned to the MIDIClocker */		
 	mpDevice->Start();
+	mTime = 0;
 	return true;
 }
 
