@@ -93,6 +93,10 @@ protected:
 		mIndex = 0;
 		mLength = 0;
 		mMIDIManager = 0;
+		for (int status = 0;status<8;status++)
+			for (int channel = 0;channel<16;channel++)
+				for (int i=0;i<128;i++)
+					target[status][channel][i] = 0;
 	}
 	
 	/** Destructor of class*/
