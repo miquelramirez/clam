@@ -25,37 +25,13 @@ A FLOW DIAGRAM TO DEMONSTRATE THIS EXAMPLE CAN BE FOUND IN
 CLAM-Docs/MIDI_Synthesizer_example (development-branch)
 */
 
-#include "AudioIn.hxx"
-#include "AudioOut.hxx"
-#include "Oscillator.hxx"
-#include "AudioApplication.hxx"
-#include "MIDIManager.hxx"
-#include "MIDIInControl.hxx"
-#include "MIDIClocker.hxx"
-#include "Dispatcher.hxx"
-#include "AudioMixer.hxx"
-#include "AudioManager.hxx"
-#include "TopLevelProcessing.hxx"
+#include <CLAM/Dispatcher.hxx>
+#include <CLAM/Oscillator.hxx>
 #include <vector>
 #include <iostream>
+#include <unistd.h>
 
 using namespace CLAM;
-
-class MyAudioApplication:public AudioApplication
-{
-private:
-	const char* mMidiDeviceStr;
-	const char* mAudioDeviceStr;
-	void ConfigureAndCheck(Processing& p,ProcessingConfig& cfg);
-public:
-	void AudioMain();	
-	MyAudioApplication(const char* midiDeviceStr,const char* audioDeviceStr)
-	:	AudioApplication(),
-		mMidiDeviceStr(midiDeviceStr),
-		mAudioDeviceStr(audioDeviceStr)
-	{
-	}
-};
 
 class MyInstrument:public Instrument
 {
@@ -79,14 +55,7 @@ public:
 				SetDecayTime(    0.07 );
 				SetSustainLevel( 0.5 );
 				SetReleaseTime(  0.05 );
-				try
-				{
-					SetSampleRate( AudioManager::Current().SampleRate() );
-				}
-				catch(Err)
-				{
-					SetSampleRate( 8000 );
-				}
+				SetSampleRate( 0);
 			}
 		};
 
@@ -146,6 +115,9 @@ bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
 
+	unsigned sampleRate = mConfig.GetSampleRate();
+	if (not sampleRate) sampleRate = BackendSampleRate();
+
 	ADSRConfig ADSRCfg;
 	std::string tmp = mConfig.GetName() + ".ADSR";
 
@@ -153,7 +125,7 @@ bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
 	ADSRCfg.SetDecayTime( mConfig.GetDecayTime() );
 	ADSRCfg.SetSustainLevel( mConfig.GetSustainLevel() );
 	ADSRCfg.SetReleaseTime( mConfig.GetReleaseTime() );
-	ADSRCfg.SetSampleRate( mConfig.GetSampleRate() );
+	ADSRCfg.SetSampleRate( sampleRate );
 
 	mADSR.Configure( ADSRCfg );
 
@@ -175,7 +147,7 @@ bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
 
 	ControlMapperConfig MapperPBendCfg;
 	MapperPBendCfg.SetMapping( "ValueToRatio" );
-	TData ptr3[] = { 12 } ;							
+	TData ptr3[] = { 12 } ;
 	MapperPBendCfg.SetArguments( DataArray( ptr3, 1 ) );
 
 	mMapperPitchBend.Configure( MapperPBendCfg );
@@ -205,209 +177,121 @@ bool MyInstrument::Do( Audio& out )
 	return true;
 }
 
-void MyAudioApplication::ConfigureAndCheck(Processing& p,ProcessingConfig& cfg)
+#include <CLAM/AudioMixer.hxx>
+#include <CLAM/PANetworkPlayer.hxx>
+#include <CLAM/AudioSource.hxx>
+#include <CLAM/AudioSink.hxx>
+#include <CLAM/MIDIManager.hxx>
+#include <CLAM/MIDIInControl.hxx>
+#include <CLAM/MIDIClocker.hxx>
+
+std::string toString(unsigned i)
 {
-	CLAM_ASSERT(p.Configure(cfg),p.GetConfigErrorMessage().c_str());
+	std::ostringstream os;
+	os << i;
+	return os.str();
 }
 
-void MyAudioApplication::AudioMain()
+void runSynthesizer(const std::string midiDeviceStr)
 {
-	TControlData curTime = 0.;
-	TControlData curTimeInc = 0.;
-	try
+
+
+	const int nVoices = 6;
+
+	Network network;
+	network.SetPlayer(new PANetworkPlayer);
+
+	Processing & sink = network.AddProcessing("sink", "AudioSink");
+	AudioSink::Config sinkConfig;
+	sinkConfig.SetNSinks(2);
+	sink.Configure(sinkConfig);
+
+	//  MIDI manager
+	MIDIManager midiManager;
+
+	// If we pass a non-existant device, an error gets thrown somewhere
+	// deep done, which gets cought in Configure, and added to the Status.
+	// The ConfigureAndCheck will assert on this.
+	
+	// MIDIInControls
+	MIDIIOConfig inNoteCfg;
+	inNoteCfg.SetDevice(midiDeviceStr);
+	inNoteCfg.SetMessage(MIDI::eNoteOnOff);
+	network.AddProcessing("inNote", new MIDIInControl(inNoteCfg));
+
+	MIDIIOConfig inCtrlCfg;
+	inCtrlCfg.SetDevice(midiDeviceStr);
+	inCtrlCfg.SetMessage(MIDI::eControlChange);
+	inCtrlCfg.SetFirstData(0x0a);
+	network.AddProcessing("inCtrl", new MIDIInControl(inCtrlCfg));
+
+	MIDIIOConfig inPitchBendCfg;
+	inPitchBendCfg.SetDevice(midiDeviceStr);
+	inPitchBendCfg.SetMessage(MIDI::ePitchbend);
+	network.AddProcessing("inPitchBend", new MIDIInControl(inPitchBendCfg));
+
+	MIDIClocker::Config clockerCfg;
+	clockerCfg.SetDevice(midiDeviceStr);
+	network.AddProcessing("clocker", new MIDIClocker(clockerCfg));
+
+	// Instrument
+	Array< Instrument* > instruments( nVoices );
+	for (int i=0;i<nVoices;i++)
 	{
-		const int nVoices = 6;
-		// TODO: this is a bit of a kludge
-		// to make sure all buffersizes us the default AudioOutPort buffersize
-		AudioOutPort dummy("dummy",0);
-		unsigned int buffersize = dummy.GetSize(); 
-
-		// Audio and MIDI managers
-		AudioManager audioManager(44100,4096);
-		MIDIManager midiManager;
-
-		// AudioIn
-		AudioIOConfig inCfgL;
-		AudioIOConfig inCfgR;
-
-		inCfgL.SetDevice(mAudioDeviceStr);
-		inCfgL.SetChannelID(0);
-		inCfgL.SetFrameSize(buffersize);
-
-		inCfgR.SetDevice(mAudioDeviceStr);
-		inCfgR.SetChannelID(1);
-		inCfgR.SetFrameSize(buffersize);
-
-		AudioIn inL(inCfgL);
-		AudioIn inR(inCfgR);
-
-		// AudioOut
-		AudioIOConfig outCfgL;
-		AudioIOConfig outCfgR;
-
-		outCfgL.SetDevice(mAudioDeviceStr);
-		outCfgL.SetChannelID(0);
-		outCfgL.SetFrameSize(buffersize);
-
-		outCfgR.SetDevice(mAudioDeviceStr);
-		outCfgR.SetChannelID(1);
-		outCfgR.SetFrameSize(buffersize);
-
-		AudioOut outL(outCfgL);
-		AudioOut outR(outCfgR);
-
-		// Buffers
-		Audio bufL;
-		bufL.SetSize(buffersize);
-		Audio bufR;
-		bufR.SetSize(buffersize);
-
-		// If we pass a non-existant device, an error gets thrown somewhere
-		// deep done, which gets cought in Configure, and added to the Status.
-		// The ConfigureAndCheck will assert on this.
-		
-		// MIDIInControls
-		MIDIIOConfig inNoteCfg;
-		
-		inNoteCfg.SetDevice(mMidiDeviceStr);
-		inNoteCfg.SetMessage(MIDI::eNoteOnOff);
-		
-		MIDIInControl inNote;
-		ConfigureAndCheck(inNote,inNoteCfg);
-
-		MIDIIOConfig inCtrlCfg;
-		
-		inCtrlCfg.SetDevice(mMidiDeviceStr);
-		inCtrlCfg.SetMessage(MIDI::eControlChange);
-		inCtrlCfg.SetFirstData(0x0a);
-		
-		MIDIInControl inCtrl;
-		ConfigureAndCheck(inCtrl,inCtrlCfg);
-
-		MIDIIOConfig inPitchBendCfg;
-		
-		inPitchBendCfg.SetDevice(mMidiDeviceStr);
-		inPitchBendCfg.SetMessage(MIDI::ePitchbend);
-		
-		MIDIInControl inPitchBend;
-		ConfigureAndCheck(inPitchBend,inPitchBendCfg);
-
-		MIDIClocker::Config clockerCfg;
-
-		clockerCfg.SetDevice(mMidiDeviceStr);
-		
-		MIDIClocker clocker(clockerCfg);
-
-		// Instrument
-		Array< Instrument* > instruments( nVoices );
-		for (int i=0;i<nVoices;i++)
-			instruments[i] = new MyInstrument;
-
-		// Dispatcher declaration
-		DispatcherConfig dispatcherCfg;
-		
-		dispatcherCfg.SetInstruments( instruments );
-		dispatcherCfg.SetNInValues( 2 ) ;
-
-		Dispatcher dispatcher( dispatcherCfg );
-
-		// Output buffer
-		Audio out;
-		out.SetSize( buffersize );
-
-		// Mixer Declaration
-		AudioMixerConfig mixerCfg;
-		mixerCfg.SetNumberOfInPorts(nVoices);
-		AudioMixer mixer;
-		mixer.Configure(mixerCfg);
-
-		/* Connecting audio inputs / outputs
-		 * TODO port-names should be homogenic! */
-		for ( int i=0;i<nVoices;i++)
-		{
-			std::ostringstream sstr;
-			sstr << "Input " << i;
-			ConnectPorts(*instruments[i],"AudioOut", mixer, sstr.str());
-		}
-		ConnectPorts(mixer,"Output Audio", outR, "Audio Input");
-		ConnectPorts(mixer,"Output Audio", outL, "Audio Input");
-		
-		/** Ignoring channel, which is OutControl 0 */
-		
-		/** Key for Note On/Off */
-		ConnectControls(inNote, 1, dispatcher, 1);
-		/** Velocity for Note On/Off */
-		ConnectControls(inNote, 2, dispatcher, 2);
-		
-		for( int i = 0; i < nVoices; i++ )
-			ConnectControls(inPitchBend, 1, *instruments[i], 3);
-		
-		mixer.Start();
-
-		inL.Start();
-		inR.Start();
-		outL.Start();
-		outR.Start();
-
-		midiManager.Start();
-
-		audioManager.Start();
-
-		for ( int i = 0; i < nVoices; i++ )
-		{
-			instruments[ i ]->Start();
-		}
-
-		curTimeInc = TData(buffersize)*1000./audioManager.SampleRate();
-
-		do
-		{
-			inL.Do(bufL);
-			inR.Do(bufR);
-
-			SendFloatToInControl(clocker,0,curTime);
-			curTime += curTimeInc;
-			
-			midiManager.Check();
-		
-			for ( int i = 0; i < nVoices; i++ )
-			{
-				instruments[ i ]->Do();
-			}
-
-			mixer.Do();
-
-			outL.Do();
-			outR.Do();
-		} while (!Canceled()) ;
-
-		for ( int i = 0; i < nVoices; i++ )
-			delete instruments[ i ];
-
+		instruments[i] = new MyInstrument;
+		network.AddProcessing("instrument"+toString(i), instruments[i]);
 	}
-	catch(Err error)
+	// Dispatcher declaration
+	DispatcherConfig dispatcherCfg;
+	dispatcherCfg.SetInstruments( instruments );
+	dispatcherCfg.SetNInValues( 2 ) ;
+	network.AddProcessing("dispatcher", new Dispatcher(dispatcherCfg ));
+
+	// Mixer Declaration
+	AudioMixerConfig mixerCfg;
+	mixerCfg.SetNumberOfInPorts(nVoices);
+	network.AddProcessing("mixer", new AudioMixer, &mixerCfg);
+
+	// TODO: Check configuration
+
+	/* Connecting audio inputs / outputs
+	 * TODO port-names should be homogenic! */
+	for ( int i=0;i<nVoices;i++)
 	{
-		error.Print();
-		std::cerr << "Abnormal Program Termination" << std::endl;
-		exit(-1);
+		network.ConnectPorts("instrument"+toString(i)+".AudioOut", "mixer.Input "+toString(i));
 	}
-	catch (std::exception e)
+	network.ConnectPorts("mixer.Output Audio", "sink.1");
+	network.ConnectPorts("mixer.Output Audio", "sink.2");
+	network.ConnectPorts("mixer.Output Audio", "clocker.audioSync");
+	
+	/** Key for Note On/Off */
+	network.ConnectControls("inNote.NoteOnOff:Key", "dispatcher.Note");
+	/** Velocity for Note On/Off */
+	network.ConnectControls("inNote.NoteOnOff:Vel", "dispatcher.Velocity");
+	
+	for( int i = 0; i < nVoices; i++ )
+		network.ConnectControls("inPitchBend.Pitchbend:Value", "instrument"+toString(i)+".PitchBend");
+	
+	midiManager.Start();
+	network.Start();
+
+	do
 	{
-		std::cout << e.what() << std::endl;
-		exit(-1);
-	}
+		usleep(10);
+		midiManager.Check();
+	} while (true) ;
+
 }
 
 int main(int argc,char** argv)
 {
-	//const char* midiDeviceStr = "alsa:hw:1,0";
-	const char* midiDeviceStr = "file:test.mid";
-	const char* audioDeviceStr = "default";
+//	std::string midiDeviceStr = "alsa:hw:1,0";
+	std::string midiDeviceStr = std::string("file:") + ( argc<2 ? "midi_out.mid": argv[1] );
+	std::string audioDeviceStr = "default";
 	
 	try
 	{
-		MyAudioApplication app(midiDeviceStr,audioDeviceStr);
-		app.Run(argc,argv);
+		runSynthesizer(midiDeviceStr);
 	}
 	catch(Err error)
 	{
