@@ -58,8 +58,7 @@ MIDIInControl::MIDIInControl(const MIDIIOConfig &c):MIDIIn(false)
 bool MIDIInControl::ConcreteConfigure(const ProcessingConfig& c)
 	throw(ErrProcessingObj)
 {
-	bool ret = MIDIIn::ConcreteConfigure(c);
-	if (ret==false) return false;
+	if (not MIDIIn::ConcreteConfigure(c)) return false;
 
 	MIDI::Message m = MIDI::Message(mConfig.GetMessage());
 
@@ -74,8 +73,10 @@ bool MIDIInControl::ConcreteConfigure(const ProcessingConfig& c)
 	 * which is particularly useful for control change messages */
 	if (mConfig.GetFirstData()!=128) mControllingBytes--;
 
-	if (mMsgByteIdToControlId) delete mMsgByteIdToControlId;
-	mMsgByteIdToControlId = new unsigned char[mControllingBytes];
+	if (mMsgByteIdToControlId) delete[] mMsgByteIdToControlId;
+	// TOCHECK: This is the former code, but later we acces till 
+//	mMsgByteIdToControlId = new unsigned char[mControllingBytes];
+	mMsgByteIdToControlId = new unsigned char[mMessageSize];
 
 	int ctrlid = 0;
 	
@@ -134,7 +135,7 @@ bool MIDIInControl::ConcreteConfigure(const ProcessingConfig& c)
 		}
 		if (fieldname)
 		{
-			std::string tmp = std::string() + MIDI::GetMessageInfo(m).name + ":" + fieldname;
+			std::string tmp = std::string(MIDI::GetMessageInfo(m).name) + ":" + fieldname;
 			/* add the InControl, and remember which message byte it will
 			 * control */
 			mMsgByteIdToControlId[i] = ctrlid++;
