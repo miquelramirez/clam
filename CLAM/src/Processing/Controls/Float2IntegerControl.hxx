@@ -1,8 +1,8 @@
 #ifndef Float2IntegerControl_hxx
 #define Float2IntegerControl_hxx
 
-#include <CLAM/Processing.hxx>
-#include <CLAM/OutControl.hxx>
+#include "Processing.hxx"
+#include "OutControl.hxx"
 #include <math.h>
 
 

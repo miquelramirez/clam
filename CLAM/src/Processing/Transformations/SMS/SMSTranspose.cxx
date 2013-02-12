@@ -20,7 +20,7 @@
  */
 
 #include "SMSTranspose.hxx"
-#include <CLAM/ProcessingFactory.hxx>
+#include "ProcessingFactory.hxx"
 #include <cmath>
 
 namespace CLAM

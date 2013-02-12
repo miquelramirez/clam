@@ -25,7 +25,7 @@
 #include "MIDISong.hxx"
 #include "MIDITempo.hxx"
 // #include "Defines.hxx"
-#include <CLAM/MIDIDataTypes.hxx>
+#include "MIDIDataTypes.hxx"
 
 namespace MIDI
 {

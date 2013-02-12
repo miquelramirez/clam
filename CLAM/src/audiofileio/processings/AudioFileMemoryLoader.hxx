@@ -22,12 +22,12 @@
 #ifndef AudioFileMemoryLoader_hxx
 #define AudioFileMemoryLoader_hxx
 
-#include <CLAM/Processing.hxx>
-#include <CLAM/MonoAudioFileReader.hxx>
-#include <CLAM/MonoAudioFileReaderConfig.hxx>
-#include <CLAM/AudioOutPort.hxx>
-#include <CLAM/OutControl.hxx>
-#include <CLAM/InControl.hxx>
+#include "Processing.hxx"
+#include "MonoAudioFileReader.hxx"
+#include "MonoAudioFileReaderConfig.hxx"
+#include "AudioOutPort.hxx"
+#include "OutControl.hxx"
+#include "InControl.hxx"
 
 namespace CLAM
 {

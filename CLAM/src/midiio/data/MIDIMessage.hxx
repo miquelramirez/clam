@@ -25,7 +25,7 @@
 #define __MIDIMessage__
 
 #include "MIDIDataTypes.hxx"
-#include <CLAM/TypeInfo.hxx>
+#include "TypeInfo.hxx"
 #include <iostream>
 
 namespace MIDI

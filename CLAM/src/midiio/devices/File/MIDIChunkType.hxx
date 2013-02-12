@@ -24,7 +24,7 @@
 #ifndef __MIDIChunkType__
 #define __MIDIChunkType__
 
-#include <CLAM/MIDIDataTypes.hxx>
+#include "MIDIDataTypes.hxx"
 
 namespace MIDI
 {

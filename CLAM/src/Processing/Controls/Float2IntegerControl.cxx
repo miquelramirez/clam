@@ -1,5 +1,5 @@
 #include "Float2IntegerControl.hxx"
-#include <CLAM/ProcessingFactory.hxx>
+#include "ProcessingFactory.hxx"
 
 
 namespace CLAM
