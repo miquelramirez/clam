@@ -1,5 +1,5 @@
-#include <CLAM/OutControlBase.hxx>
-#include <CLAM/Processing.hxx>
+#include "OutControlBase.hxx"
+#include "Processing.hxx"
 
 namespace CLAM{
 	OutControlBase::OutControlBase(const std::string &name, Processing * proc)

@@ -23,14 +23,14 @@
 #ifndef _SMSTranspose_
 #define _SMSTranspose_
 
-#include <CLAM/InPort.hxx>
-#include <CLAM/OutPort.hxx>
-#include <CLAM/InControl.hxx>
-#include <CLAM/SpectralPeakArray.hxx>
-#include <CLAM/Frame.hxx>
-#include <CLAM/SegmentTransformationConfig.hxx>
-#include <CLAM/FrameTransformation.hxx>
-#include <CLAM/FrameTransformationConfig.hxx>
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "SpectralPeakArray.hxx"
+#include "Frame.hxx"
+#include "SegmentTransformationConfig.hxx"
+#include "FrameTransformation.hxx"
+#include "FrameTransformationConfig.hxx"
 
 namespace CLAM{
 

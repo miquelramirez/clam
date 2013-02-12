@@ -3,7 +3,7 @@
 #include <sstream>
 #include "ProcessingFactory.hxx"
 
-//#include <CLAM/MIDIMessage.hxx>
+//#include "MIDIMessage.hxx"
 
 namespace CLAM
 {

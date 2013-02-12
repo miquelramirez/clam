@@ -23,7 +23,7 @@
 #define _ControlPrinterTyped_
 
 
-#include <CLAM/Enum.hxx>
+#include "Enum.hxx"
 
 #include "DataTypes.hxx"
 #include "Processing.hxx"
