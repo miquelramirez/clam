@@ -59,7 +59,6 @@ public:
 		shellConstructorArgs["config"]=config;
 		shellConstructorArgs["exit_msg"] = shellFarewell;
 		shellConstructorArgs["banner1"] = shellBanner;
-		shellConstructorArgs["header"] = shellHeader;
 
 		py::object shell = shellmodule.attr("InteractiveShellEmbed")
 			(*py::tuple(), **shellConstructorArgs);
