@@ -80,7 +80,7 @@ class IPythonConsoleQtWidget(RichIPythonWidget):
         self.kernel.initialize()
 
         self.connect_kernel(connection_file=self.kernel.get_connection_file())
-        self.namespace_inject("widget", self)
+        self.namespace_inject("console", self)
         self.namespace_inject("QtGui", QtGui)
 
     def connect_kernel(self, connection_file, heartbeat = False):
@@ -132,6 +132,7 @@ def main():
     app = QtGui.QApplication([])
 
     widget = IPythonConsoleQtWidget()
+    widget.namespace_inject("ipyclam", ipyclam)
     widget.namespace_inject("net", ipyclam.Network())
     widget.show()
     app.exec_()
