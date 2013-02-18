@@ -126,6 +126,7 @@ class Network(object):
 		if not self._proxy.hasProcessing(name) :
 			raise KeyError(name)
 		self.__delattr__(name)
+
 	# TODO: Workaround to be able to use the function from the C++ proxy
 	def xml(self):
 		return self._proxy.xml()
@@ -151,6 +152,15 @@ class Network(object):
 	def stop(self) :
 		self._proxy.stop()
 
+	def processingNames(self):
+		return self._proxy.processingNames()
+
+	def load(self, filename):
+		self._proxy.load(filename)
+
+	def save(self, filename):
+		self._proxy.save(filename)
+
 	def bindUi(self, pyqt_object) :
 		self._proxy.bindUi(pyqt_object)
 
@@ -163,11 +173,9 @@ class Network(object):
 	def createWidget(self, className) :
 		return self._proxy.createWidget(className)
 
-	def processingNames(self):
-		return self._proxy.processingNames()
+	def createWidgetPySide(self, className) :
+		return self._proxy.createWidgetPySide(className)
 
-	def load(self, filename):
-		self._proxy.load(filename)
+	def availableWidgets(self, className) :
+		return self._proxy.availableWidgets()
 
-	def save(self, filename):
-		self._proxy.save(filename)

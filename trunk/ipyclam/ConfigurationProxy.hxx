@@ -16,19 +16,22 @@ class ConfigurationProxy
 public:
 	CLAM::Processing * _processing;
 	CLAM::ProcessingConfig * _processingConfig;
+
+	/// Required by binding compilation but not called
 	ConfigurationProxy()
 		: _processing(0)
 		, _processingConfig(0)
 	{
 		CLAM_ASSERT(false, "Unexpected use of ConfigurationProxy default constructor");
 	}
+
+	/// Maybe not required??
 	ConfigurationProxy(const ConfigurationProxy &)
 		: _processing(0)
 		, _processingConfig(0)
 	{
 		CLAM_ASSERT(false, "Unexpected use of ConfigurationProxy copy constructor");
 	}
-
 	ConfigurationProxy(CLAM::Processing & processing)
 		: _processing(&processing)
 		, _processingConfig(0)

@@ -602,17 +602,40 @@ PyObject * loadUi(CLAM::Network & network, const std::string & uifilename)
 	return object;
 }
 
-PyObject * createWidget(CLAM::Network & network, const std::string & className)
+QWidget * createWidgetGeneric(const std::string & className)
 {
 	QUiLoader loader;
 	QString qClassName = className.c_str();
 	if (not loader.availableWidgets().contains(qClassName))
 	{
+		// TODO: Turn this into an exception
 		foreach (const QString & availableClassName, loader.availableWidgets())
 			std::cout << availableClassName.toStdString() << std::endl;
 	}
-	return sipWrap(loader.createWidget(qClassName));
+	return loader.createWidget(qClassName);
 }
+
+PyObject * createWidgetPySide(CLAM::Network & network, const std::string & className)
+{
+	QWidget * widget = createWidgetGeneric(className);
+	return shibokenWrap(widget);
+}
+
+PyObject * createWidget(CLAM::Network & network, const std::string & className)
+{
+	QWidget * widget = createWidgetGeneric(className);
+	return sipWrap(widget);
+}
+
+py::list availableWidgets(CLAM::Network & network)
+{
+	py::list result;
+	QUiLoader loader;
+	foreach (const QString & availableClassName, loader.availableWidgets())
+		result.append(availableClassName.toStdString());
+	return result;
+}
+
 
 void load(CLAM::Network & network, const std::string & filename)
 {
@@ -644,6 +667,7 @@ py::object relative_import(py::str name)
 			n, globals.ptr(), globals.ptr(), 0, -1));
 	return py::object(module);
 }
+
 
 BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 {
@@ -762,22 +786,6 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			setBackend,
 			"Sets a backend to play the network"
 			)
-		.def("bindUi",
-			bindUi,
-			"Binds..."
-			)
-		.def("loadUi",
-			loadUi,
-			"Returns a QWidget filled with the given qt ui."
-			)
-		.def("loadUiPySide",
-			loadUiPySide,
-			"Returns a QWidget filled with the given qt ui."
-			)
-		.def("createWidget",
-			createWidget,
-			"Returns QWidget from a Qt plugin of the named class using Qt factories."
-			)
 		.def("load",
 			load,
 			"Loads a Network from an xml file."
@@ -797,6 +805,30 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("isPaused",
 			isPaused,
 			"Returns true if the network is paused."
+			)
+		.def("bindUi",
+			bindUi,
+			"Binds..."
+			)
+		.def("loadUi",
+			loadUi,
+			"Returns a QWidget filled with the given qt ui (PyQt4 version)."
+			)
+		.def("loadUiPySide",
+			loadUiPySide,
+			"Returns a QWidget filled with the given qt ui (PySide version)."
+			)
+		.def("createWidget",
+			createWidget,
+			"Returns QWidget from a Qt plugin of the named class using Qt factories (PyQt4 version)."
+			)
+		.def("createWidgetPySide",
+			createWidgetPySide,
+			"Returns QWidget from a Qt plugin of the named class using Qt factories (PySide version)."
+			)
+		.def("availableWidgets",
+			availableWidgets,
+			"Returns the names of the widget classes that can be instantiated by createWidget."
 			)
 		;
 }
