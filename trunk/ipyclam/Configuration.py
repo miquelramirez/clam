@@ -60,3 +60,16 @@ class Configuration(object):
 	def clone(self):
 		return Configuration( self._proxy.clone() )
 
+	# TODO Untested
+	def __enter__(self) :
+		self.hold()
+		return self
+
+	# TODO Untested
+	def __exit__(self, type, value, traceback) :
+		if type is None :
+			self.apply()
+
+
+
+
