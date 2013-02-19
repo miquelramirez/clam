@@ -62,17 +62,17 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual(124.78, proxy["DoubleAttribute"])
 
 	def test_setAttr_wrongName(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
+		c = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
 		try:
-			proxy["WrongAttribute"] = 24
+			c["WrongParam"] = 24
 			self.fail("Exception expected")
 		except KeyError, e:
-			self.assertEquals("WrongAttribute", e.args[0])
+			self.assertEquals("WrongParam", e.args[0])
 
 	def test_set_wrongTypeForString(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		c = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		try:
-			proxy["AString"] = 2
+			c["AString"] = 2
 			self.fail("Exception expected")
 		except TypeError, e:
 			self.assertEquals(
@@ -127,14 +127,13 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		proxy["NSources"] = 2
 		self.assertEqual(True, proxy.nonDefault("NSources"))
 
-	# TODO: reevaluate if this is the required behaviour
 	def test_hold_apply(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
-		proxy.hold()
-		proxy["NSources"] = 2
-		self.assertEqual(1, proxy["NSources"])
-		proxy.apply()
-		self.assertEqual(2, proxy["NSources"])
+		c = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
+		c.hold()
+		c["NSources"] = 2
+		self.assertEqual(1, c["NSources"])
+		c.apply()
+		self.assertEqual(2, c["NSources"])
 
 	def test_clone(self):
 		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")

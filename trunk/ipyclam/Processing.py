@@ -29,7 +29,7 @@ class Processing(object):
 		raise KeyError(name)
 	def __setitem__(self, name, value):
 		if name == 'name':
-			self.__dict__["proxy"].processingRename(self.__dict__[name], value)
+			self.__dict__["proxy"].renameProcessing(self.__dict__[name], value)
 			self.__dict__["name"] = value
 			return
 		self._config[name] = value

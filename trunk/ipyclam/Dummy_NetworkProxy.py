@@ -1,4 +1,5 @@
 import Connector
+from collections import OrderedDict as odict
 
 _connectorKindNames = [
 	(Connector.Port, Connector.In, 'inports'),
@@ -11,7 +12,7 @@ _kind2Name = dict([((k,d),n) for k,d,n in _connectorKindNames])
 _dummyPrototypes = dict(
 	MinimalProcessing = dict(
 		type = "MinimalProcessing",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [],
 		incontrols = [],
@@ -19,7 +20,7 @@ _dummyPrototypes = dict(
 	),
 	PortSink = dict(
 		type = "PortSink",
-		config = dict(),
+		config = odict(),
 		inports = [['InPort1', 'DataType']],
 		outports = [],
 		incontrols = [],
@@ -27,7 +28,7 @@ _dummyPrototypes = dict(
 	),
 	PortSource = dict(
 		type = "PortSource",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [['OutPort1', 'DataType']],
 		incontrols = [],
@@ -35,7 +36,7 @@ _dummyPrototypes = dict(
 	),
 	ControlSink = dict(
 		type = "ControlSink",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [],
 		incontrols = [['InControl1', 'ControlType']],
@@ -43,7 +44,7 @@ _dummyPrototypes = dict(
 	),
 	DummyControlSink = dict(
 		type = "DummyControlSink",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [],
 		incontrols = [['InControl1', 'ControlType']],
@@ -51,7 +52,7 @@ _dummyPrototypes = dict(
 	),
 	ControlSource = dict(
 		type = "ControlSource",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [],
 		incontrols = [],
@@ -59,7 +60,7 @@ _dummyPrototypes = dict(
 	),
 	DummyControlSource = dict(
 		type = "DummyControlSource",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [],
 		incontrols = [],
@@ -67,7 +68,7 @@ _dummyPrototypes = dict(
 	),
 	OtherControlSink = dict(
 		type = "OtherControlSink",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [],
 		incontrols = [['InControl1', 'OtherControlType']],
@@ -75,7 +76,7 @@ _dummyPrototypes = dict(
 	),
 	SeveralInPortsProcessing = dict(
 		type = "SeveralInPortsProcessing",
-		config = dict(),
+		config = odict(),
 		inports = [['InPort1', 'DataType'], ['InPort2', 'DataType'], ['InPort3', 'DataType'], ['InPort4', 'DataType']],
 		outports = [],
 		incontrols = [],
@@ -83,7 +84,7 @@ _dummyPrototypes = dict(
 	),
 	SeveralInControlsProcessing = dict(
 		type = "SeveralInControlsProcessing",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [],
 		incontrols = [['InControl1', 'ControlType'], ['InControl2', 'ControlType'], ['InControl3', 'ControlType'], ['InControl4', 'ControlType']],
@@ -91,7 +92,7 @@ _dummyPrototypes = dict(
 	),
 	ProcessingWithNameSpacedPorts = dict(
 		type = "ProcessingWithNameSpacedPorts",
-		config = dict(),
+		config = odict(),
 		inports = [['An inport', 'DataType']],
 		outports = [['An outport', 'DataType']],
 		incontrols = [],
@@ -99,7 +100,7 @@ _dummyPrototypes = dict(
 	),
 	ProcessingWithNameSpacedControls = dict(
 		type = "ProcessingWithNameSpacedControls",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [],
 		incontrols = [['An incontrol', 'ControlType']],
@@ -107,49 +108,106 @@ _dummyPrototypes = dict(
 	),
 	ProcessingWithPortsAndControls = dict(
 		type = "ProcessingWithPortsAndControls",
-		config = dict(),
-		inports = [['InPort1', 'DataType'], ['InPort2', 'DataType'], ['InPort3', 'DataType']],
-		outports = [['OutPort1', 'DataType'], ['OutPort2', 'DataType'], ['OutPort3', 'DataType'], ['OutPort4', 'DataType']],
-		incontrols = [['InControl1', 'ControlType'], ['InControl2', 'ControlType'], ['InControl3', 'ControlType'], ['InControl4', 'ControlType']],
-		outcontrols = [['OutControl1', 'ControlType'], ['OutControl2', 'ControlType'], ['OutControl3', 'ControlType']]
+		config = odict(),
+		inports = [
+			['InPort1', 'DataType'],
+			['InPort2', 'DataType'],
+			['InPort3', 'DataType'],
+			],
+		outports = [
+			['OutPort1', 'DataType'],
+			['OutPort2', 'DataType'],
+			['OutPort3', 'DataType'],
+			['OutPort4', 'DataType'],
+			],
+		incontrols = [
+			['InControl1', 'ControlType'],
+			['InControl2', 'ControlType'],
+			['InControl3', 'ControlType'],
+			['InControl4', 'ControlType'],
+			],
+		outcontrols = [
+			['OutControl1', 'ControlType'],
+			['OutControl2', 'ControlType'],
+			['OutControl3', 'ControlType'],
+			]
 	),
 	ProcessingWithNumericPorts = dict(
 		type = "ProcessingWithNumericPorts",
-		config = dict(),
-		inports = [['1', 'DataType']],
-		outports = [['1', 'DataType'], ['2', 'DataType']],
+		config = odict(),
+		inports = [
+			['1', 'DataType'],
+			],
+		outports = [
+			['1', 'DataType'],
+			['2', 'DataType'],
+			],
 		incontrols = [],
 		outcontrols = []
 	),
 	ProcessingWithNumericControls = dict(
 		type = "ProcessingWithNumericControls",
-		config = dict(),
+		config = odict(),
 		inports = [],
 		outports = [],
-		incontrols = [['1', 'ControlType'], ['2', 'ControlType']],
-		outcontrols = [['1', 'ControlType']]
+		incontrols = [
+			['1', 'ControlType'],
+			['2', 'ControlType'],
+			],
+		outcontrols = [
+			['1', 'ControlType'],
+			]
 	),
 	ProcessingWithConfig = dict(
 		type = "ProcessingWithConfig",
-		config = dict(
-			ConfigParam1 = "default1",
-			ConfigParam2 = "default2",
-		),
+		config = odict([
+			("ConfigParam1", "default1"),
+			("ConfigParam2", "default2"),
+		]),
 		inports = [],
 		outports = [],
-		incontrols = [['1', 'ControlType'], ['2', 'ControlType']],
-		outcontrols = [['1', 'ControlType']]
+		incontrols = [
+			['1', 'ControlType'],
+			['2', 'ControlType'],
+			],
+		outcontrols = [
+			['1', 'ControlType'],
+			]
 	),
 	DummyProcessingWithStringConfiguration = dict(
 		type = "DummyProcessingWithStringConfiguration",
-		config = dict(
-			AString = "DefaultValue",
-			OtherString = "Another default value",
-		),
+		config = odict([
+			("AString", "DefaultValue"),
+			("OtherString", "Another default value"),
+		]),
 		inports = [],
 		outports = [],
 		incontrols = [],
 		outcontrols = []
+	),
+	Dummy6IOPorts = dict(
+		type = "Dummy6IOPorts",
+		config = odict(),
+		inports = [
+			['inport1', 'DataType'],
+			['inport2', 'DataType'],
+			['inport3', 'DataType'],
+			['inport4', 'DataType'],
+			['inport5', 'DataType'],
+			['inport6', 'DataType'],
+			],
+		outports = [
+			['outport1', 'DataType'],
+			['outport2', 'DataType'],
+			['outport3', 'DataType'],
+			['outport4', 'DataType'],
+			['outport5', 'DataType'],
+			['outport6', 'DataType'],
+			],
+		incontrols = [
+			],
+		outcontrols = [
+			]
 	),
 )
 
@@ -184,7 +242,7 @@ class Dummy_NetworkProxy :
 		import Dummy_ConfigurationProxy
 		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(self._processings[name]["config"])
 
-	def processingRename(self, oldName, newName):
+	def renameProcessing(self, oldName, newName):
 		if newName in self._processings.keys():
 			raise KeyError("A processing named '%s' already exists"%newName)
 		self._processings[newName] = self._processings[oldName]
@@ -222,7 +280,8 @@ class Dummy_NetworkProxy :
 			raise BadProcessingName(name, "Name repeated")
 		if type not in self._types.keys():
 			raise BadProcessingType(type)
-		self._processings[name] = self._types[type]
+		self._processings[name] = self._types[type].copy()
+		self._processings[name]['config'] = self._processings[name]['config'].copy()
 
 	def processingHasConnector(self, processingName, kind, direction, connectorName):
 		return connectorName in self.processingConnectors(processingName, kind, direction)

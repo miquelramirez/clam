@@ -3,6 +3,7 @@ from Dummy_ConfigurationProxy import Dummy_ConfigurationProxy
 import operator
 import unittest
 import TestFixtures
+
 class Dummy_ConfigurationProxyTests(unittest.TestCase):
 
 	def test_get_default(self):
@@ -30,10 +31,10 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 	def test_set_wrongName(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		try:
-			c["WrongParam1"] = "ParamValue"
+			c["WrongParam"] = "ParamValue"
 			self.fail("Exception expected")
 		except KeyError, e:
-			self.assertEquals("WrongParam1", e.args[0])
+			self.assertEquals("WrongParam", e.args[0])
 
 	def test_get_wrongName(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
@@ -52,6 +53,45 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 	def test_nestedconfig(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithNestedConfigs())
 		self.assertEquals('defaultnested1', c["ConfigParam3"]["NestedParam1"])
+
+	def test_hold_apply(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		c.hold()
+		c["ConfigParam1"] = 'newvalue'
+		self.assertEqual('Param1', c["ConfigParam1"])
+		c.apply()
+		self.assertEqual('newvalue', c["ConfigParam1"])
+
+	def test_hold_discard(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		c.hold()
+		c["ConfigParam1"] = 'newvalue'
+		self.assertEqual('Param1', c["ConfigParam1"])
+		c.discard()
+		self.assertEqual('Param1', c["ConfigParam1"])
+
+	def test_hold_hold(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		c.hold()
+		c["ConfigParam1"] = 'newvalue'
+		self.assertEqual('Param1', c["ConfigParam1"])
+		try :
+			c.hold()
+		except AssertionError, e:
+			self.assertEqual(e.message,
+				"Configuration is already held")
+		else:
+			self.fail("Should have failed an assertion")
+
+	def test_discard_withoutHold(self):
+		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
+		try :
+			c.discard()
+		except AssertionError, e:
+			self.assertEqual(e.message,
+				"Discarding a configuration requires to be held")
+		else:
+			self.fail("Should have failed an assertion")
 
 	def test_clone(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())

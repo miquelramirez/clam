@@ -24,6 +24,9 @@ class Network(object):
 	def __dir__(self):
 		return self._proxy.processingNames() + ["description"]
 
+	def __contains__(self, processingName) :
+		return self._proxy.hasProcessing(processingName)
+
 	@property
 	def types(self) :
 		return ProcessingTypes.ProcessingTypes(self._proxy)

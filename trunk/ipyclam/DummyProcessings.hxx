@@ -52,11 +52,6 @@ public:
  
 	bool Do()
 	{
-		return 1;
-	}
-
-	bool Do(float in, float out)
-	{
 		return true;
 	}
 };
@@ -88,11 +83,6 @@ public:
  
 	bool Do()
 	{
-		return 1;
-	}
-
-	bool Do(float in, float out)
-	{
 		return true;
 	}
 };
@@ -113,7 +103,7 @@ public:
  
 	bool Do()
 	{
-		return 1;
+		return true;
 	}
 
 	bool Do(float in, float out)
@@ -151,7 +141,7 @@ public:
  
 	bool Do()
 	{
-		return 1;
+		return true;
 	}
 
 	bool Do(float in, float out)
@@ -188,7 +178,7 @@ public:
  
 	bool Do()
 	{
-		return 1;
+		return true;
 	}
 
 	bool Do(float in, float out)
@@ -226,14 +216,9 @@ public:
  
 	bool Do()
 	{
-		return 1;
-	}
-
-	bool Do(float in, float out)
-	{
 		return true;
 	}
-	
+
 	const CLAM::ProcessingConfig & GetConfig() const
 	{
 		return mConfig;
@@ -284,14 +269,9 @@ public:
  
 	bool Do()
 	{
-		return 1;
-	}
-
-	bool Do(float in, float out)
-	{
 		return true;
 	}
-	
+
 	const CLAM::ProcessingConfig & GetConfig() const
 	{
 		return mConfig;
@@ -340,14 +320,9 @@ public:
  
 	bool Do()
 	{
-		return 1;
-	}
-
-	bool Do(float in, float out)
-	{
 		return true;
 	}
-	
+
 	const CLAM::ProcessingConfig & GetConfig() const
 	{
 		return mConfig;
@@ -400,13 +375,8 @@ public:
 	{
 		Configure( config );
 	}
- 
-	bool Do()
-	{
-		return 1;
-	}
 
-	bool Do(float in, float out)
+	bool Do()
 	{
 		return true;
 	}
@@ -427,11 +397,6 @@ public:
  
 	bool Do()
 	{
-		return 1;
-	}
-
-	bool Do(float in, float out)
-	{
 		return true;
 	}
 };
@@ -450,11 +415,6 @@ public:
 	}
  
 	bool Do()
-	{
-		return 1;
-	}
-
-	bool Do(float in, float out)
 	{
 		return true;
 	}
@@ -475,7 +435,7 @@ public:
  
 	bool Do()
 	{
-		return 1;
+		return true;
 	}
 
 	bool Do(float in, float out)
@@ -499,7 +459,7 @@ public:
  
 	bool Do()
 	{
-		return 1;
+		return true;
 	}
 
 	bool Do(float in, float out)
@@ -525,7 +485,7 @@ public:
  
 	bool Do()
 	{
-		return 1;
+		return true;
 	}
 
 	bool Do(float in, float out)
@@ -551,7 +511,7 @@ public:
  
 	bool Do()
 	{
-		return 1;
+		return true;
 	}
 
 	bool Do(float in, float out)
@@ -579,7 +539,7 @@ public:
  
 	bool Do()
 	{
-		return 1;
+		return true;
 	}
 
 	bool Do(float in, float out)
@@ -587,4 +547,40 @@ public:
 		return true;
 	}
 };
+class Dummy6IOPorts : public CLAM::Processing
+{
+	CLAM::InPort<float> mIn1;
+	CLAM::InPort<float> mIn2;
+	CLAM::InPort<float> mIn3;
+	CLAM::InPort<float> mIn4;
+	CLAM::InPort<float> mIn5;
+	CLAM::InPort<float> mIn6;
+	CLAM::OutPort<float> mOut1;
+	CLAM::OutPort<float> mOut2;
+	CLAM::OutPort<float> mOut3;
+	CLAM::OutPort<float> mOut4;
+	CLAM::OutPort<float> mOut5;
+	CLAM::OutPort<float> mOut6;
+public:
+	const char* GetClassName() const { return "Dummy6IOPorts"; }
+	Dummy6IOPorts(const Config& config = Config()) 
+		: mIn1("inport1", this)
+		, mIn2("inport2", this)
+		, mIn3("inport3", this)
+		, mIn4("inport4", this)
+		, mIn5("inport5", this)
+		, mIn6("inport6", this)
+		, mOut1("outport1", this)
+		, mOut2("outport2", this)
+		, mOut3("outport3", this)
+		, mOut4("outport4", this)
+		, mOut5("outport5", this)
+		, mOut6("outport6", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do() { return true; }
+};
+
 #endif // DummyProcessings_hxx
