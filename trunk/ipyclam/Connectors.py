@@ -1,4 +1,5 @@
 import Connector
+import Processing
 
 class Connectors(object):
 	def __init__(self, networkProxy, processingName, kind, direction) :
@@ -33,13 +34,14 @@ class Connectors(object):
 
 	def connect(self, peer):
 		if isinstance(peer, Connector.Connector) :
-			for connector in self._list :
+			return sum((
 				connector.connect(peer)
-			return
-		index = 0;
-		for connector in peer:
-			self._list[index].connect(connector)
-			index += 1
+				for connector in self ))
+		if isinstance(peer, Processing.Processing) :
+			return peer.connect(self)
+		return sum((
+			mine.connect(peers)
+				for mine,peers in zip(self,peer) ))
 
 	def __gt__(self, peer) :
 		return self.connect(peer)

@@ -123,7 +123,7 @@ class ProcessingTests(unittest.TestCase):
 		net.proc1 = "ProcessingWithPortsAndControls"
 		net.proc2 = "ProcessingWithPortsAndControls"
 		self.assertEquals(6, net.proc1 > net.proc2)
-		self.assertEquals(
+		self.assertMultiLineEqual(
 			"network.proc1 = 'ProcessingWithPortsAndControls'\n"
 			"network.proc2 = 'ProcessingWithPortsAndControls'\n"
 			"\n"
@@ -149,8 +149,8 @@ class ProcessingTests(unittest.TestCase):
 		net = Network.Network(self.empty())
 		net.proc1 = "ProcessingWithPortsAndControls"
 		net.proc2 = "ProcessingWithPortsAndControls"
-		self.assertEquals(12, net.proc1 > net.proc2._incontrols)
-		self.assertEquals(12, net.proc1 > net.proc2._inports)
+		self.assertEquals(3, net.proc1 > net.proc2._incontrols)
+		self.assertEquals(3, net.proc1 > net.proc2._inports)
 
 class Clam_ProcessingTests(ProcessingTests):
 	def proxy(self):

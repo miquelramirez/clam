@@ -284,7 +284,6 @@ class NetworkTests(object):
 	# processing, connectors, slice, connector
 
 	# broadcast connections one to many
-	@unittest.skip("Not working yet")
 	def test_connect_portToSlice(self):
 		net = Network(self.empty())
 		net.proc1 = "Dummy6IOPorts"
@@ -300,7 +299,6 @@ class NetworkTests(object):
 			"network.proc1.outport3 > network.proc2.inport5\n"
 			, net.code())
 
-	@unittest.skip("Not working yet")
 	def test_connect_sliceToPort(self):
 		net = Network(self.empty())
 		net.proc1 = "Dummy6IOPorts"
@@ -352,13 +350,11 @@ class NetworkTests(object):
 			"network.proc1.outport6 > network.proc2.inport3\n"
 			, net.code())
 
-	@unittest.skip("Not working yet")
 	def test_connect_portToProcessing(self):
 		net = Network(self.empty())
 		net.proc1 = "Dummy6IOPorts"
 		net.proc2 = "Dummy6IOPorts"
 		net.proc1.outport3 > net.proc2
-		self.maxDiff = 1000
 		self.assertMultiLineEqual(
 			"network.proc1 = 'Dummy6IOPorts'\n"
 			"network.proc2 = 'Dummy6IOPorts'\n"
@@ -371,7 +367,6 @@ class NetworkTests(object):
 			"network.proc1.outport3 > network.proc2.inport6\n"
 			, net.code())
 
-	@unittest.skip("Not working yet")
 	def test_connect_processingToPort(self):
 		net = Network(self.empty())
 		net.proc1 = "Dummy6IOPorts"
@@ -405,7 +400,6 @@ class NetworkTests(object):
 			"network.proc1.outport3 > network.proc2.inport5\n"
 			, net.code())
 
-	@unittest.skip("Not working yet")
 	def test_connect_sliceToInports(self):
 		net = Network(self.empty())
 		net.proc1 = "Dummy6IOPorts"
@@ -420,12 +414,12 @@ class NetworkTests(object):
 			"network.proc1.outport5 > network.proc2.inport3\n"
 			, net.code())
 
-	@unittest.skip("Not working yet")
 	def test_connect_processingToSlice(self):
 		net = Network(self.empty())
 		net.proc1 = "Dummy6IOPorts"
 		net.proc2 = "Dummy6IOPorts"
 		net.proc1 > net.proc2._inports[::2]
+		self.maxDiff = 1000
 		self.assertMultiLineEqual(
 			"network.proc1 = 'Dummy6IOPorts'\n"
 			"network.proc2 = 'Dummy6IOPorts'\n"
@@ -435,7 +429,6 @@ class NetworkTests(object):
 			"network.proc1.outport3 > network.proc2.inport5\n"
 			, net.code())
 
-	@unittest.skip("Not working yet")
 	def test_connect_sliceToProcessing(self):
 		net = Network(self.empty())
 		net.proc1 = "Dummy6IOPorts"
@@ -532,6 +525,34 @@ class NetworkTests_Clam(NetworkTests, unittest.TestCase):
 		net.proc1 = "Dummy6IOPorts"
 		net.proc2 = "Dummy6IOPorts"
 		net.proc1._outports > net.proc2.inport3
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport3\n"
+			, net.code())
+
+	def test_connect_processingToPort(self):
+		"CLAM limits inports connections"
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1 > net.proc2.inport3
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport3\n"
+			, net.code())
+
+	def test_connect_sliceToPort(self):
+		"CLAM limits inports connections"
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1._outports[::2] > net.proc2.inport3
 		self.maxDiff = 1000
 		self.assertMultiLineEqual(
 			"network.proc1 = 'Dummy6IOPorts'\n"
