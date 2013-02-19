@@ -56,6 +56,20 @@ void throwPythonException(PyObject * type, const std::string & msg)
 	py::throw_error_already_set();
 }
 
+void assertProcessingExists(CLAM::Network & network, const std::string & processingName)
+{
+	if (network.HasProcessing(processingName)) return;
+	std::string errorMsg = "Processing '" + processingName + "' not found";
+	throwPythonException(PyExc_AssertionError, errorMsg);
+}
+
+void assertProcessingNameAvailable(CLAM::Network & network, const std::string & processingName)
+{
+	if (not network.HasProcessing(processingName)) return;
+	std::string errorMsg = "Processing '" + processingName + "' already exists";
+	throwPythonException(PyExc_AssertionError, errorMsg);
+}
+
 py::tuple connectorTuple(const std::string & name)
 {
 	size_t tokenPosition = name.find(".");
@@ -100,8 +114,7 @@ py::list processingNames(CLAM::Network & network)
 
 void addProcessing(CLAM::Network & network, const std::string & type, const std::string & processingName)
 {
-	if( network.HasProcessing(processingName) )
-		throw BadProcessingName(processingName + ": name repeated");
+	assertProcessingNameAvailable(network, processingName);
 	network.AddProcessing(processingName, type);
 }
 
@@ -112,11 +125,13 @@ bool hasProcessing(CLAM::Network & network, const std::string & processingName)
 
 std::string processingType(CLAM::Network & network, const std::string & processingName)
 {
+	assertProcessingExists(network, processingName);
 	return network.GetProcessing(processingName).GetClassName();
 }
 
 bool processingHasConnector(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
 {
+	assertProcessingExists(network, processingName);
 	if (kind == "Port")
 	{
 		if (direction == "In")
@@ -132,6 +147,20 @@ bool processingHasConnector(CLAM::Network & network, const std::string & process
 			return network.GetProcessing(processingName).HasOutControl(connectorName);
 	}
 }
+
+void assertConnectorExists(CLAM::Network & network,
+		const std::string & processingName,
+		const std::string & kind,
+		const std::string & direction,
+		const std::string & name
+		)
+{
+	if ( processingHasConnector(network, processingName, kind, direction, name) )
+		return;
+	std::string errorMsg = processingName + " does not have connector " + name;
+	throwPythonException(PyExc_AssertionError, errorMsg);
+}
+
 
 std::string getDescription(CLAM::Network & network)
 {
@@ -208,27 +237,8 @@ bool connect(CLAM::Network & network, const std::string & kind, const std::strin
 	const std::string producer = fromProcessing + "." + fromConnector;
 	const std::string consumer = toProcessing + "." + toConnector;
 	
-	if (!network.HasProcessing(fromProcessing))
-	{
-		std::string errorMsg = fromProcessing + " does not exist";
-		throwPythonException(PyExc_AssertionError, errorMsg);
-	}
-	if (!network.HasProcessing(toProcessing))
-	{
-		std::string errorMsg = toProcessing + " does not exist";
-		throwPythonException(PyExc_AssertionError, errorMsg);
-	}
-
-	if ( !processingHasConnector(network, fromProcessing, kind, "Out", fromConnector) )
-	{
-		std::string errorMsg = fromProcessing + " does not have connector " + fromConnector;
-		throwPythonException(PyExc_AssertionError, errorMsg);
-	}
-	if ( !processingHasConnector(network, toProcessing, kind, "In", toConnector) )
-	{
-		std::string errorMsg = toProcessing + " does not have connector " + toConnector;
-		throwPythonException(PyExc_AssertionError, errorMsg);
-	}
+	assertConnectorExists(network, fromProcessing, kind, "Out", fromConnector);
+	assertConnectorExists(network, toProcessing, kind, "In", toConnector);
 
 	if ( connectionExists(network, kind, fromProcessing, fromConnector, toProcessing, toConnector) )
 	{
@@ -275,6 +285,7 @@ std::string connectorType(CLAM::Network & network, const std::string & processin
 
 py::list connectorPeers(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
 {
+	// TODO: assertConnectorExists
 	const std::string connector = processingName + "." + connectorName;
 	if (kind == "Port")
 	{
@@ -320,6 +331,7 @@ bool disconnect(CLAM::Network & network, const std::string & kind, const std::st
 
 int connectorIndex(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
 {
+	// TODO: assertConnectorExists{
 	CLAM::Processing & proc = network.GetProcessing(processingName);
 	const std::string connector = processingName + "." + connectorName;
 	if (kind == "Port")
@@ -424,18 +436,21 @@ py::list controlConnections(CLAM::Network & network)
 	return controlConnections;
 }
 
-void processingRename(CLAM::Network & network, const std::string & oldName, const std::string & newName)
+void renameProcessing(CLAM::Network & network, const std::string & oldName, const std::string & newName)
 {
+	assertProcessingExists(network, oldName);
+	assertProcessingNameAvailable(network, newName);
 	if ( !network.RenameProcessing( oldName, newName ) )
 	{
-		std::string errorMsg = "A processing named '" + newName + "' already exists";
-		PyErr_SetString(PyExc_KeyError, errorMsg.c_str() );
+		std::string errorMsg = "Unable to rename '"+oldName+"' as '" + newName + "' already exists";
+		PyErr_SetString(PyExc_RuntimeError, errorMsg.c_str() );
 		py::throw_error_already_set();
 	}
 }
 
 void deleteProcessing(CLAM::Network & network, const std::string & processingName)
 {
+	assertProcessingExists(network, processingName);
 	network.RemoveProcessing(processingName);
 }
 
@@ -444,16 +459,8 @@ bool areConnectable(CLAM::Network & network, const std::string & kind, const std
 	const std::string producer = fromProcessing + "." + fromConnector;
 	const std::string consumer = toProcessing + "." + toConnector;
 
-	if ( !processingHasConnector(network, fromProcessing, kind, "Out", fromConnector) )
-	{
-		std::string errorMsg = fromProcessing + " does not have connector " + fromConnector;
-		throwPythonException(PyExc_AssertionError, errorMsg);
-	}
-	if ( !processingHasConnector(network, toProcessing, kind, "In", toConnector) )
-	{
-		std::string errorMsg = toProcessing + " does not have connector " + toConnector;
-		throwPythonException(PyExc_AssertionError, errorMsg);
-	}
+	assertConnectorExists(network, fromProcessing, kind, "Out", fromConnector);
+	assertConnectorExists(network, toProcessing, kind, "In", toConnector);
 
 	if (kind == "Port")
 	{
@@ -753,8 +760,8 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 			controlConnections,
 			"Returns a list of tuples containing the control connections of the network"
 			)
-		.def("processingRename",
-			processingRename,
+		.def("renameProcessing",
+			renameProcessing,
 			"Renames a processing. Returns true if successfull."
 			)
 		.def("deleteProcessing",

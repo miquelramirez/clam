@@ -40,13 +40,29 @@ pythonc_module = env.SharedLibrary (
 
 configurationModule = env.SharedLibrary (
 	target='Clam_ConfigurationProxy',
-	source=['Clam_ConfigurationProxy.cxx', 'ConfigurationProxy.cxx'],
+	source=[
+		'Clam_ConfigurationProxy.cxx',
+		'ConfigurationProxy.cxx',
+		],
 	SHLIBPREFIX='',
 )
 
 dummyProcessingsModule = env.SharedLibrary (
 	target='DummyProcessingsModule',
-	source=['DummyProcessingsModule.cxx','DummyProcessings.cxx'],
+	source=[
+		'DummyProcessingsModule.cxx',
+		'DummyProcessings.cxx',
+		],
+	SHLIBPREFIX='',
+)
+
+pysideUiModule = env.SharedLibrary (
+	target='PySide',
+	source=[
+		'PySideModule.cxx',
+		'shibokenunwrap.cxx',
+		'sipunwrap.cxx',
+		],
 	SHLIBPREFIX='',
 )
 
@@ -75,6 +91,7 @@ install = [
 	env.Install(targetDir, files) for targetDir, files in [
 	( lib_dir,[
 		pythonc_module,
+		pysideUiModule,
 		python_modules,
 		configurationModule,
 	]),
@@ -89,6 +106,7 @@ Default(
 	pythonc_module,
 	configurationModule,
 	dummyProcessingsModule,
+	pysideUiModule,
 	program,
 )
 

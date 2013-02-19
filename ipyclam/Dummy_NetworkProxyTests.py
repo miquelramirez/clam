@@ -374,7 +374,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_processingRenaming(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
-		proxy.processingRename("Processing1", "ProcessingRenamed")
+		proxy.renameProcessing("Processing1", "ProcessingRenamed")
 		self.assertFalse(proxy.hasProcessing("Processing1"))
 		self.assertTrue(proxy.hasProcessing("ProcessingRenamed"))
 
@@ -384,7 +384,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy.addProcessing("PortSink", "ProcessingToRename")
 		# TOFIX: KeyError should be used just when a non existing key, and args should be the kay
 		try:
-			proxy.processingRename("ProcessingToRename", "ExistingName")
+			proxy.renameProcessing("ProcessingToRename", "ExistingName")
 		except KeyError, e:
 			self.assertEquals(("A processing named 'ExistingName' already exists", ), e.args)
 

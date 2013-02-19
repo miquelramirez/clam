@@ -32,6 +32,10 @@ class Connectors(object):
 		return self._dict.keys()
 
 	def connect(self, peer):
+		if isinstance(peer, Connector.Connector) :
+			for connector in self._list :
+				connector.connect(peer)
+			return
 		index = 0;
 		for connector in peer:
 			self._list[index].connect(connector)
@@ -39,4 +43,5 @@ class Connectors(object):
 
 	def __gt__(self, peer) :
 		return self.connect(peer)
+
 

@@ -69,18 +69,41 @@ class Connector(object):
 		return PeerConnectors(self._proxy, self._hostname(), self.kind, self.direction, self.name)
 
 	def connect(self, peer):
+		if not isinstance(peer, Connector) :
+			return peer.connect(self)
+
 		if self.direction == peer.direction :
-			raise SameConnectorDirection("Same direction: %s %s"%(self.name, peer.name))
+			raise SameConnectorDirection(
+				"Same direction: %s %s"%(self.name, peer.name))
 		if self.kind != peer.kind :
-			raise DifferentConnectorKind("Different kind: %s %s"%(self.name, peer.name))
+			raise DifferentConnectorKind(
+				"Different kind: %s %s"%(self.name, peer.name))
 		if self.type != peer.type :
-			raise DifferentConnectorType("Different type: %s %s"%(self.name, peer.name))
-		if self._proxy.connectionExists(self.kind, self._hostname(), self.name, peer._hostname(), peer.name):
-			raise ConnectionExists("%s.%s and %s.%s already connected"%(self._hostname(), self.name, peer._hostname(), peer.name))
+			raise DifferentConnectorType(
+				"Different type: %s %s"%(self.name, peer.name))
+
 		if self.direction == Out :
-			self._proxy.connect(self.kind, self._hostname(), self.name, peer._hostname(), peer.name)
+			fromProcessing = self._hostname()
+			fromConnector = self.name
+			toProcessing = peer._hostname()
+			toConnector = peer.name
 		else :
-			self._proxy.connect(self.kind, peer._hostname(), peer.name, self._hostname(), self.name)
+			fromProcessing = peer._hostname()
+			fromConnector = peer.name
+			toProcessing = self._hostname()
+			toConnector = self.name
+
+		if self._proxy.connectionExists(self.kind,
+				fromProcessing, fromConnector,
+				toProcessing, toConnector):
+			raise ConnectionExists(
+				"%s.%s and %s.%s already connected"%(
+					fromProcessing, fromConnector,
+					toProcessing, toConnector))
+
+		self._proxy.connect(self.kind,
+			fromProcessing, fromConnector,
+			toProcessing, toConnector)
 
 	def __gt__(self, peer) :
 		if self.direction == In and peer.direction == Out:

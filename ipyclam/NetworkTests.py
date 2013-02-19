@@ -3,11 +3,7 @@ import operator
 import unittest
 import TestFixtures
 
-class NetworkTests(unittest.TestCase):
-	def proxy(self):
-		return TestFixtures.proxy()
-	def empty(self):
-		return TestFixtures.empty()
+class NetworkTests(object):
 
 	def test_ProcessingGettingAsDictionary(self) :
 		net = Network(self.proxy())
@@ -242,6 +238,218 @@ class NetworkTests(unittest.TestCase):
 			"network.proc1[\"2\"] > network.proc2[\"1\"]\n"
 			, net.code())
 
+	def test_in(self) :
+		net = Network(self.empty())
+		self.assertFalse("proc1" in net)
+		net.proc1 = "DummyProcessingWithStringConfiguration"
+		self.assertTrue("proc1" in net)
+
+	def test_renameProcessing(self):
+		net = Network(self.empty())
+		net.NameToBeChanged = "DummyProcessingWithStringConfiguration"
+		net.NameToBeChanged.name = "NewName"
+		self.assertTrue('NameToBeChanged' not in net)
+		self.assertTrue('NewName' in net)
+
+	def test_connect_slice(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1._outports[::2] > net.proc2._inports[::2]
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport1\n"
+			"network.proc1.outport3 > network.proc2.inport3\n"
+			"network.proc1.outport5 > network.proc2.inport5\n"
+			, net.code())
+
+	def test_connect_slice_reverse(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1._outports[::2] > net.proc2._inports[::-2]
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport6\n"
+			"network.proc1.outport3 > network.proc2.inport4\n"
+			"network.proc1.outport5 > network.proc2.inport2\n"
+			, net.code())
+
+	# processing, connectors, slice, connector
+
+	# broadcast connections one to many
+	@unittest.skip("Not working yet")
+	def test_connect_portToSlice(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1.outport3 > net.proc2._inports[::2]
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport3 > network.proc2.inport1\n"
+			"network.proc1.outport3 > network.proc2.inport3\n"
+			"network.proc1.outport3 > network.proc2.inport5\n"
+			, net.code())
+
+	@unittest.skip("Not working yet")
+	def test_connect_sliceToPort(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1._outports[::2] > net.proc2.inport3
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport3\n"
+			"network.proc1.outport3 > network.proc2.inport3\n"
+			"network.proc1.outport5 > network.proc2.inport3\n"
+			, net.code())
+
+	def test_connect_portToImports(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1.outport3 > net.proc2._inports
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport3 > network.proc2.inport1\n"
+			"network.proc1.outport3 > network.proc2.inport2\n"
+			"network.proc1.outport3 > network.proc2.inport3\n"
+			"network.proc1.outport3 > network.proc2.inport4\n"
+			"network.proc1.outport3 > network.proc2.inport5\n"
+			"network.proc1.outport3 > network.proc2.inport6\n"
+			, net.code())
+
+	def test_connect_outportsToPort(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1._outports > net.proc2.inport3
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport3\n"
+			"network.proc1.outport2 > network.proc2.inport3\n"
+			"network.proc1.outport3 > network.proc2.inport3\n"
+			"network.proc1.outport4 > network.proc2.inport3\n"
+			"network.proc1.outport5 > network.proc2.inport3\n"
+			"network.proc1.outport6 > network.proc2.inport3\n"
+			, net.code())
+
+	@unittest.skip("Not working yet")
+	def test_connect_portToProcessing(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1.outport3 > net.proc2
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport3 > network.proc2.inport1\n"
+			"network.proc1.outport3 > network.proc2.inport2\n"
+			"network.proc1.outport3 > network.proc2.inport3\n"
+			"network.proc1.outport3 > network.proc2.inport4\n"
+			"network.proc1.outport3 > network.proc2.inport5\n"
+			"network.proc1.outport3 > network.proc2.inport6\n"
+			, net.code())
+
+	@unittest.skip("Not working yet")
+	def test_connect_processingToPort(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1 > net.proc2.inport3
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport3\n"
+			"network.proc1.outport2 > network.proc2.inport3\n"
+			"network.proc1.outport3 > network.proc2.inport3\n"
+			"network.proc1.outport4 > network.proc2.inport3\n"
+			"network.proc1.outport5 > network.proc2.inport3\n"
+			"network.proc1.outport6 > network.proc2.inport3\n"
+			, net.code())
+
+	def test_connect_outportsToSlice(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1._outports > net.proc2._inports[::2]
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport1\n"
+			"network.proc1.outport2 > network.proc2.inport3\n"
+			"network.proc1.outport3 > network.proc2.inport5\n"
+			, net.code())
+
+	@unittest.skip("Not working yet")
+	def test_connect_sliceToInports(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1._outports[::2] > net.proc2._inports
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport1\n"
+			"network.proc1.outport3 > network.proc2.inport2\n"
+			"network.proc1.outport5 > network.proc2.inport3\n"
+			, net.code())
+
+	@unittest.skip("Not working yet")
+	def test_connect_processingToSlice(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1 > net.proc2._inports[::2]
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport1\n"
+			"network.proc1.outport2 > network.proc2.inport3\n"
+			"network.proc1.outport3 > network.proc2.inport5\n"
+			, net.code())
+
+	@unittest.skip("Not working yet")
+	def test_connect_sliceToProcessing(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1._outports[::2] > net.proc2
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport1\n"
+			"network.proc1.outport3 > network.proc2.inport2\n"
+			"network.proc1.outport5 > network.proc2.inport3\n"
+			, net.code())
+
 	def test_change_config_attributes(self):
 		net = Network(self.proxy())
 		net.Processing1["ConfigParam1"] = 'newvalue'
@@ -251,43 +459,136 @@ class NetworkTests(unittest.TestCase):
 		net = Network(self.empty())
 		net.Processing1 = "DummyProcessingWithStringConfiguration"
 		net.Processing1.AString = 'newvalue'
+		self.assertMultiLineEqual(
+			"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
+			"network.Processing1['AString'] = 'newvalue'\n"
+			"network.Processing1['OtherString'] = 'Another default value'\n"
+			"\n\n"
+			, net.code(fullConfig=True))
+
+	def test_config_notPersistent(self):
+		net = Network(self.empty())
+		net.Processing1 = "DummyProcessingWithStringConfiguration"
+		net.Processing1.AString = 'newvalue'
+		net.Processing2 = "DummyProcessingWithStringConfiguration"
 		self.assertEquals(
 			"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
-			"network.Processing1['OtherString'] = 'Another default value'\n"
+			"network.Processing2 = 'DummyProcessingWithStringConfiguration'\n"
 			"network.Processing1['AString'] = 'newvalue'\n"
+			"network.Processing1['OtherString'] = 'Another default value'\n"
+			"network.Processing2['AString'] = 'DefaultValue'\n"
+			"network.Processing2['OtherString'] = 'Another default value'\n"
+			"\n\n"
+			, net.code(fullConfig=True))
+
+	def test_withClause_holdsConfiguration(self):
+		net = Network(self.empty())
+		net.Processing1 = "DummyProcessingWithStringConfiguration"
+		with net.Processing1._config as c :
+			c.AString = 'newvalue'
+			c.OtherString = 'othernewvalue'
+			self.assertMultiLineEqual(
+				"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
+				"network.Processing1['AString'] = 'DefaultValue'\n"
+				"network.Processing1['OtherString'] = 'Another default value'\n"
+				"\n\n"
+				, net.code(fullConfig=True))
+		self.assertMultiLineEqual(
+			"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
+			"network.Processing1['AString'] = 'newvalue'\n"
+			"network.Processing1['OtherString'] = 'othernewvalue'\n"
 			"\n\n"
 			, net.code(fullConfig=True))
 
 """
-	Tests for isStopped, isPlaying, isPaused
+	Tests for Network isStopped, isPlaying, isPaused
 """
 
-class Clam_NetworkTests(NetworkTests):
+class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
+	def proxy(self):
+		return TestFixtures.proxy()
+	def empty(self):
+		return TestFixtures.empty()
+
+	@unittest.skip("Not working yet")
+	def test_withClause_holdsConfiguration(self):
+		pass
+
+class NetworkTests_Clam(NetworkTests, unittest.TestCase):
 	def proxy(self):
 		import Clam_NetworkProxy
-		import Network
 		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
-		network = Network.Network(proxy)
-		network.Processing1 = "DummyTypeProcessing1"
-		network.Processing2 = "DummyTypeProcessing2"
+		proxy.addProcessing("DummyTypeProcessing1", "Processing1")
+		proxy.addProcessing("DummyTypeProcessing2", "Processing2")
 		return proxy
 
 	def empty(self):
 		import Clam_NetworkProxy
 		return Clam_NetworkProxy.Clam_NetworkProxy()
 
-	# Overwritten because dummy use alphabetical order while
-	# clam uses positional order
-	def test_code_for_changing_config_attributes(self):
+	def test_connect_outportsToPort(self):
+		"CLAM limits inports connections"
 		net = Network(self.empty())
-		net.Processing1 = "DummyProcessingWithStringConfiguration"
-		net.Processing1.AString = 'newvalue'
+		net.proc1 = "Dummy6IOPorts"
+		net.proc2 = "Dummy6IOPorts"
+		net.proc1._outports > net.proc2.inport3
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy6IOPorts'\n"
+			"network.proc2 = 'Dummy6IOPorts'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport3\n"
+			, net.code())
+
+
+	def test_processingConfig(self):
+		net = Network(self.empty())
+		net.proc1 = "DummyProcessingWithCompleteConfiguration"
+		self.assertEquals(42, net.proc1.IntAttribute)
+
+	def test_set_config_attribute(self) :
+		net = Network(self.empty())
+		net.p = "AudioSource"
+		self.assertEquals(['1'], net.p._outports.__dir__() )
+		net.p.NSources = 2
+		self.assertEquals(['1', '2'], net.p._outports.__dir__() )
+		self.assertEquals(2, net.p.NSources)
+
+	def test_set_config_attribute_with_hold_apply(self) :
+		net = Network(self.empty())
+		net.p = "AudioSource"
+		c = net.p._config
+		c.hold()
+		c.NSources = 2
+		self.assertEquals(1, net.p.NSources)
+		c.apply()
+		self.assertEquals(2, net.p.NSources)
+
+	def test_clone_and_apply(self) :
+		net = Network(self.empty())
+		net.p = "AudioSource"
+		c = net.p._config.clone()
+		c.NSources = 2
+		self.assertEquals(1, net.p.NSources)
+		self.assertEquals(2, c.NSources)
+		net.p._config = c
+		self.assertEquals(2, net.p.NSources)
+
+	def test_connect_from_processing_to_processing(self):
+		net = Network(self.empty())
+		net.proc1 = "DummyProcessingWithMultiplePortsAndControls"
+		net.proc2 = "DummyProcessingWithMultiplePortsAndControls"
+		self.assertEquals(4, net.proc1 > net.proc2)
 		self.assertEquals(
-			"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
-			"network.Processing1['AString'] = 'newvalue'\n"
-			"network.Processing1['OtherString'] = 'Another default value'\n"
-			"\n\n"
-			, net.code(fullConfig=True))
+			"network.proc1 = 'DummyProcessingWithMultiplePortsAndControls'\n"
+			"network.proc2 = 'DummyProcessingWithMultiplePortsAndControls'\n"
+			"\n"
+			"network.proc1.Outport1 > network.proc2.Inport1\n"
+			"network.proc1.Outport2 > network.proc2.Inport2\n"
+			"network.proc1.Outcontrol1 > network.proc2.Incontrol1\n"
+			"network.proc1.Outcontrol2 > network.proc2.Incontrol2"
+			, net.code())
+
 
 if __name__ == '__main__':
 	unittest.main()
