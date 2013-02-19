@@ -104,16 +104,17 @@ class Connector(object):
 		self._proxy.connect(self.kind,
 			fromProcessing, fromConnector,
 			toProcessing, toConnector)
+		return 1
 
 	def __gt__(self, peer) :
-		if self.direction == In and peer.direction == Out:
+		if self.direction == In :
 			raise BadConnectorDirectionOrder("Wrong connectors order: Output > Input")
-		self.connect(peer)
+		return self.connect(peer)
 
 	def __lt__(self, peer) :
-		if self.direction == Out and peer.direction == In:
+		if self.direction == Out :
 			raise BadConnectorDirectionOrder("Wrong connectors order: Input < Output")
-		peer.connect(self)
+		return peer.connect(self)
 
 	def disconnect(self, peer = None):
 		if peer == None:

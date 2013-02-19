@@ -60,65 +60,35 @@ class Processing(object):
 		)
 
 	def connect(self, peer):
-		if type(peer) == Processing:
-			return self.connectProcessings(peer)
-		if type(peer) == Connector.Connector:
-			return self.connectWithConnector(peer)
-		if type(peer) == Connectors.Connectors:
-			return self.connectWithConnectors(peer)
+
+		def peerConnectorSet(peer) :
+			"""Returns the complementary connector set to peer"""
+			if peer.kind == "Control":
+				if peer.direction == "In" :
+					return self._outcontrols
+				else :
+					return self._incontrols
+			else :
+				if peer.direction == "In" :
+					return self._outports
+				else :
+					return self._inports
+
+		if isinstance(peer, Processing):
+			return (
+				(self._outports > peer._inports) +
+				(self._outcontrols > peer._incontrols) )
+
+		if isinstance(peer, Connector.Connector) :
+			connectors = peerConnectorSet(peer)
+			return peer.connect(connectors)
+
+		if isinstance(peer, Connectors.Connectors) :
+			connectors = peerConnectorSet(peer[0])
+			return peer.connect(connectors)
 
 	def __gt__(self, peer) :
 		return self.connect(peer)
 
-	#Helper method to connect ports and controls from processing to processing
-	def connectProcessings(self, peer):
-		inports = 0
-		incontrols = 0
-		for connector in peer.__dict__["_inports"]:
-			if inports >= self.__dict__["_outports"].__len__():
-				break
-			if self.__dict__["proxy"].areConnectable("Port", self.__dict__["name"], self.__dict__["_outports"][inports].name, connector.host.name, connector.name):
-				self.__dict__["_outports"][inports] > connector
-				inports += 1
-		for connector in peer.__dict__["_incontrols"]:
-			if incontrols >= self.__dict__["_outcontrols"].__len__():
-				break
-			if self.__dict__["proxy"].areConnectable("Control", self.__dict__["name"], self.__dict__["_outcontrols"][incontrols].name, connector.host.name, connector.name):
-				self.__dict__["_outcontrols"][incontrols] > connector
-				incontrols += 1
-		return inports + incontrols
 
-	#Helper method to connect compatible ports or controls to a single connector
-	def connectWithConnector(self, peer):
-		connections = 0
-		if peer.kind == "Control":
-			for connector in self.__dict__["_outcontrols"]:
-				if self.__dict__["proxy"].areConnectable("Control", self.__dict__["name"], connector.name, peer.host.name, peer.name):
-					connector > peer
-					connections += 1
-			return connections
-		if peer.kind == "Port":
-			for connector in self.__dict__["_outports"]:
-				if self.__dict__["proxy"].areConnectable("Port", self.__dict__["name"], connector.name, peer.host.name, peer.name):
-					connector > peer
-					connections += 1
-			return connections
-
-	#Helper method to connect compatible ports or controls to connectors
-	def connectWithConnectors(self, peers):
-		connections = 0
-		if peers[0].kind == "Control":
-			for connector in self.__dict__["_outcontrols"]:
-				for peer in peers:
-					if self.__dict__["proxy"].areConnectable("Control", self.__dict__["name"], connector.name, peer.host.name, peer.name):
-						connector > peer
-						connections += 1
-			return connections
-		if peers[0].kind == "Port":
-			for connector in self.__dict__["_outports"]:
-				for peer in peers:
-					if self.__dict__["proxy"].areConnectable("Port", self.__dict__["name"], connector.name, peer.host.name, peer.name):
-						connector > peer
-						connections += 1
-			return connections
 
