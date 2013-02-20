@@ -37,52 +37,52 @@ class NetworkTests(object):
 
 	def test_addProcessing(self) :
 		net = Network(self.empty())
-		net.processing1 = "PortSource"
+		net.processing1 = "DummyPortSource"
 		self.assertEquals(
-			"network.processing1 = 'PortSource'\n"
+			"network.processing1 = 'DummyPortSource'\n"
 			"\n"
 			"\n"
 			, net.code())
 
 	def test_addProcessingAsItem(self) :
 		net = Network(self.empty())
-		net["processing1"] = "PortSource"
+		net["processing1"] = "DummyPortSource"
 		self.assertEquals(
-			"network.processing1 = 'PortSource'\n"
+			"network.processing1 = 'DummyPortSource'\n"
 			"\n"
 			"\n"
 			, net.code())
 
 	def test_addTwoProcessingsSameType(self) :
 		net = Network(self.empty())
-		net.processing1 = "PortSource"
-		net.processing2 = "PortSource"
+		net.processing1 = "DummyPortSource"
+		net.processing2 = "DummyPortSource"
 		self.assertEquals(
-			"network.processing1 = 'PortSource'\n"
-			"network.processing2 = 'PortSource'\n"
+			"network.processing1 = 'DummyPortSource'\n"
+			"network.processing2 = 'DummyPortSource'\n"
 			"\n"
 			"\n"
 			, net.code())
 
 	def test_addTwoProcessingsDifferentType(self) :
 		net = Network(self.empty())
-		net.processing1 = "PortSource"
-		net.processing2 = "PortSink"
+		net.processing1 = "DummyPortSource"
+		net.processing2 = "DummyPortSink"
 		self.assertEquals(
-			"network.processing1 = 'PortSource'\n"
-			"network.processing2 = 'PortSink'\n"
+			"network.processing1 = 'DummyPortSource'\n"
+			"network.processing2 = 'DummyPortSink'\n"
 			"\n"
 			"\n"
 			, net.code())
 
 	def test_addPortSourceAndPortSinkAndConnectPorts(self) :
 		net = Network(self.empty())
-		net.processing1 = "PortSource"
-		net.processing2 = "PortSink"
+		net.processing1 = "DummyPortSource"
+		net.processing2 = "DummyPortSink"
 		net.processing1.OutPort1 > net.processing2.InPort1
 		self.assertEquals(
-			"network.processing1 = 'PortSource'\n"
-			"network.processing2 = 'PortSink'\n"
+			"network.processing1 = 'DummyPortSource'\n"
+			"network.processing2 = 'DummyPortSink'\n"
 			"\n"
 			"network.processing1.OutPort1 > network.processing2.InPort1\n"
 			, net.code())
@@ -102,15 +102,15 @@ class NetworkTests(object):
 
 	def test_addPortControlSourceAndPortControlSinkAndConnectPortsAndControls(self) :
 		net = Network(self.empty())
-		net.processing1 = "PortSource"
-		net.processing2 = "PortSink"
+		net.processing1 = "DummyPortSource"
+		net.processing2 = "DummyPortSink"
 		net.processing3 = "DummyControlSource"
 		net.processing4 = "DummyControlSink"
 		net.processing1.OutPort1 > net.processing2.InPort1
 		net.processing3.OutControl1 > net.processing4.InControl1
 		self.assertEquals(
-			"network.processing1 = 'PortSource'\n"
-			"network.processing2 = 'PortSink'\n"
+			"network.processing1 = 'DummyPortSource'\n"
+			"network.processing2 = 'DummyPortSink'\n"
 			"network.processing3 = 'DummyControlSource'\n"
 			"network.processing4 = 'DummyControlSink'\n"
 			"\n"
@@ -142,22 +142,22 @@ class NetworkTests(object):
 
 	def test_deleteProcessingAsAttribute(self):
 		net = Network(self.empty())
-		net.processing1 = "PortSource"
-		net.processing2 = "PortSink"
+		net.processing1 = "DummyPortSource"
+		net.processing2 = "DummyPortSink"
 		del net.processing1
 		self.assertEquals(
-			"network.processing2 = 'PortSink'\n"
+			"network.processing2 = 'DummyPortSink'\n"
 			"\n"
 			"\n"
 			, net.code())
 
 	def test_deleteProcessingAsItem(self):
 		net = Network(self.empty())
-		net["processing1"] = "PortSource"
-		net["processing2"] = "PortSink"
+		net["processing1"] = "DummyPortSource"
+		net["processing2"] = "DummyPortSink"
 		del net["processing1"]
 		self.assertEquals(
-			"network.processing2 = 'PortSink'\n"
+			"network.processing2 = 'DummyPortSink'\n"
 			"\n"
 			"\n"
 			, net.code())
@@ -182,18 +182,18 @@ class NetworkTests(object):
 
 	def test_code_whenNameHasUnderlines(self) :
 		net = Network(self.empty())
-		net.name_with_underlines = "PortSource"
+		net.name_with_underlines = "DummyPortSource"
 		self.assertEquals(
-			"network.name_with_underlines = 'PortSource'\n"
+			"network.name_with_underlines = 'DummyPortSource'\n"
 			"\n"
 			"\n"
 			, net.code())
 
 	def test_code_whenNameIsAKeyword(self) :
 		net = Network(self.empty())
-		net["while"] = "PortSource"
+		net["while"] = "DummyPortSource"
 		self.assertEquals(
-			"network[\"while\"] = 'PortSource'\n"
+			"network[\"while\"] = 'DummyPortSource'\n"
 			"\n"
 			"\n"
 			, net.code())
@@ -201,7 +201,7 @@ class NetworkTests(object):
 	def test_addProcessingWithName_code_AndFail(self):
 		net = Network(self.empty())
 		try:
-			net.code = "PortSource"
+			net.code = "DummyPortSource"
 			self.fail("Exception expected")
 		except AssertionError, e:
 			self.assertEquals("Wrong processing name: code is a method", e.__str__())
@@ -209,7 +209,7 @@ class NetworkTests(object):
 	def test_addProcessingWithName_types_AndFail(self):
 		net = Network(self.empty())
 		try:
-			net.types = "PortSource"
+			net.types = "DummyPortSource"
 			self.fail("Exception expected")
 		except AssertionError, e:
 			self.assertEquals("Wrong processing name: types is a method", e.__str__())
@@ -217,11 +217,11 @@ class NetworkTests(object):
 	def test_codeShowsDescription(self):
 		net = Network(self.empty())
 		net.description = "A description"
-		net.proc1 = "PortSink"
+		net.proc1 = "DummyPortSink"
 		self.assertEquals("A description", net.description)
 		self.assertEquals(
 			"network.description = 'A description'\n"
-			"network.proc1 = 'PortSink'\n"
+			"network.proc1 = 'DummyPortSink'\n"
 			"\n"
 			"\n"
 			, net.code())

@@ -181,11 +181,6 @@ public:
 		return true;
 	}
 
-	bool Do(float in, float out)
-	{
-		return true;
-	}
-	
 	const CLAM::ProcessingConfig & GetConfig() const
 	{
 		return mConfig;
@@ -383,13 +378,13 @@ public:
 };
 
 // Created for compatibility with Dummy Testing
-class PortSink : public CLAM::Processing
+class DummyPortSink : public CLAM::Processing
 {
 private:
 	CLAM::InPort<float> mIn;
 public:
-	const char* GetClassName() const { return "PortSink"; }
-	PortSink(const Config& config = Config()) 
+	const char* GetClassName() const { return "DummyPortSink"; }
+	DummyPortSink(const Config& config = Config()) 
 		: mIn("InPort1", this)
 	{
 		Configure( config );
@@ -402,13 +397,13 @@ public:
 };
 
 // Created for compatibility with Dummy Testing
-class PortSource : public CLAM::Processing
+class DummyPortSource : public CLAM::Processing
 {
 private:
 	CLAM::OutPort<float> mOut;
 public:
-	const char* GetClassName() const { return "PortSource"; }
-	PortSource(const Config& config = Config()) 
+	const char* GetClassName() const { return "DummyPortSource"; }
+	DummyPortSource(const Config& config = Config()) 
 		: mOut("OutPort1", this)
 	{
 		Configure( config );

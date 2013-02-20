@@ -153,7 +153,7 @@ class ProcessingTests(object):
 		net = Network.Network(self.empty())
 		net.proc1 = "ProcessingWithPortsAndControls"
 		net.proc2 = "DummyControlSink"
-		net.proc3 = "PortSink"
+		net.proc3 = "DummyPortSink"
 		self.assertEquals(3, net.proc1 > net.proc2.InControl1)
 		self.assertEquals(4, net.proc1 > net.proc3.InPort1)
 

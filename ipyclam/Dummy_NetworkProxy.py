@@ -18,16 +18,32 @@ _dummyPrototypes = dict(
 		incontrols = [],
 		outcontrols = []
 	),
-	PortSink = dict(
-		type = "PortSink",
+	AudioSink = dict(
+		type = "AudioSink",
 		config = odict(),
 		inports = [['InPort1', 'DataType']],
 		outports = [],
 		incontrols = [],
 		outcontrols = []
 	),
-	PortSource = dict(
-		type = "PortSource",
+	AudioSource = dict(
+		type = "AudioSource",
+		config = odict(),
+		inports = [],
+		outports = [['OutPort1', 'DataType']],
+		incontrols = [],
+		outcontrols = []
+	),
+	DummyPortSink = dict(
+		type = "DummyPortSink",
+		config = odict(),
+		inports = [['InPort1', 'DataType']],
+		outports = [],
+		incontrols = [],
+		outcontrols = []
+	),
+	DummyPortSource = dict(
+		type = "DummyPortSource",
 		config = odict(),
 		inports = [],
 		outports = [['OutPort1', 'DataType']],
