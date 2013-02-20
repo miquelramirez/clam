@@ -115,7 +115,7 @@ class ProcessingTests(unittest.TestCase):
 			'OutPort1', 'OutPort2',
 			'InControl1', 'InControl2',
 			'OutControl1', 'OutControl2',
-			'name', 'type', '_config', '_inports', '_outports', '_incontrols', '_outcontrols']), dir(p))
+			'name', 'type', 'connect', '_config', '_inports', '_outports', '_incontrols', '_outcontrols']), dir(p))
 
 	def test_connect_from_processing_to_processing(self):
 		import Network
