@@ -462,6 +462,12 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	# TODO: Tests for playback and the like
 
+"""
+class Dummy_NetworkTest(Clam_NetworkProxyTests) :
+	def engine(self) :
+		import Dummy_NetworkProxy
+		return Dummy_NetworkProxy.Dummy_NetworkProxy()
+"""
 
 
 if __name__ == '__main__':

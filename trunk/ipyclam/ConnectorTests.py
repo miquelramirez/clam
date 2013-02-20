@@ -180,9 +180,9 @@ class ConnectorTests(unittest.TestCase):
 	def test_disconnectports_from_processing(self):
 		import Network
 		net = Network.Network(self.empty())
-		net.source = "PortSource"
-		net.sink = "PortSink"
-		net.sink2 = "PortSink"
+		net.source = "DummyPortSource"
+		net.sink = "DummyPortSink"
+		net.sink2 = "DummyPortSink"
 		net.source.OutPort1 > net.sink.InPort1
 		net.source.OutPort1 > net.sink2.InPort1
 		listPeers = [ connector.name for connector in net.source.OutPort1.peers ]
@@ -214,9 +214,9 @@ class ConnectorTests(unittest.TestCase):
 	def test_disconnectallport_peers(self) :
 		import Network
 		net = Network.Network(self.empty())
-		net.Processing1 = "PortSource"
-		net.Processing2 = "PortSink"
-		net.Processing3 = "PortSink"
+		net.Processing1 = "DummyPortSource"
+		net.Processing2 = "DummyPortSink"
+		net.Processing3 = "DummyPortSink"
 		net.Processing1.OutPort1 > net.Processing2.InPort1
 		net.Processing1.OutPort1 > net.Processing3.InPort1
 		listPeers = [ (connector.host.name, connector.name) for connector in net.Processing1.OutPort1.peers ]
