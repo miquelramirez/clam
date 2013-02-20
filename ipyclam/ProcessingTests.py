@@ -1,12 +1,7 @@
 from Processing import Processing
 
 import unittest
-import TestFixtures
-class ProcessingTests(unittest.TestCase):
-	def proxy(self):
-		return TestFixtures.proxy()
-	def empty(self):
-		return TestFixtures.empty()
+class ProcessingTests(object):
 
 	def test_type(self) :
 		p = Processing("Processing1", self.proxy())
@@ -135,6 +130,24 @@ class ProcessingTests(unittest.TestCase):
 			"network.proc1.OutControl3 > network.proc2.InControl3"
 			, net.code())
 
+	def test_connect_to_processing_from_processing(self):
+		import Network
+		net = Network.Network(self.empty())
+		net.proc1 = "ProcessingWithPortsAndControls"
+		net.proc2 = "ProcessingWithPortsAndControls"
+		self.assertEquals(6, net.proc2 < net.proc1)
+		self.assertMultiLineEqual(
+			"network.proc1 = 'ProcessingWithPortsAndControls'\n"
+			"network.proc2 = 'ProcessingWithPortsAndControls'\n"
+			"\n"
+			"network.proc1.OutPort1 > network.proc2.InPort1\n"
+			"network.proc1.OutPort2 > network.proc2.InPort2\n"
+			"network.proc1.OutPort3 > network.proc2.InPort3\n"
+			"network.proc1.OutControl1 > network.proc2.InControl1\n"
+			"network.proc1.OutControl2 > network.proc2.InControl2\n"
+			"network.proc1.OutControl3 > network.proc2.InControl3"
+			, net.code())
+
 	def test_connect_from_processing_to_connector(self):
 		import Network
 		net = Network.Network(self.empty())
@@ -152,7 +165,28 @@ class ProcessingTests(unittest.TestCase):
 		self.assertEquals(3, net.proc1 > net.proc2._incontrols)
 		self.assertEquals(3, net.proc1 > net.proc2._inports)
 
-class Clam_ProcessingTests(ProcessingTests):
+	def test_connect_from_processing_to_connectors(self):
+		import Network
+		net = Network.Network(self.empty())
+		net.proc1 = "ProcessingWithPortsAndControls"
+
+		try :
+			net.proc1 > 34
+		except AssertionError, e :
+			self.assertEqual(e.message,
+				"Unexpected connection peer: 34")
+		else :
+			self.fail("Failed assertion expected")
+
+class ProcessingTests_Dummy(ProcessingTests, unittest.TestCase):
+	def proxy(self):
+		import TestFixtures
+		return TestFixtures.proxy()
+	def empty(self):
+		import TestFixtures
+		return TestFixtures.empty()
+
+class Clam_ProcessingTests(ProcessingTests, unittest.TestCase):
 	def proxy(self):
 		import Clam_NetworkProxy
 		import Network

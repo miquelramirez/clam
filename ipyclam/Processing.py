@@ -20,6 +20,7 @@ class Processing(object):
 			proxy, name, Connector.Control, Connector.In)
 		self.__dict__["_outcontrols"] = Connectors.Connectors(
 			proxy, name, Connector.Control, Connector.Out)
+
 	def __getitem__(self, name):
 		if name in dir(self._config):
 			return self._config[name]
@@ -32,20 +33,24 @@ class Processing(object):
 		if name in dir(self._outcontrols):
 			return self._outcontrols[name]
 		raise KeyError(name)
+
 	def __setitem__(self, name, value):
 		if name == 'name':
 			self.__dict__["proxy"].renameProcessing(self.__dict__[name], value)
 			self.__dict__["name"] = value
 			return
 		self._config[name] = value
+
 	def __getattr__(self, name):
 		try:
 			return self.__getitem__(name)
 		except KeyError:
 			raise AttributeError(name)
+
 	def __setattr__(self, name, value):
 		if name is 'type': raise AttributeError("Attribute 'type' is read only")
 		self.__setitem__(name, value)
+
 	def __dir__(self):
 		return (
 			dir(self._config) + 
@@ -93,8 +98,13 @@ class Processing(object):
 			connectors = peerConnectorSet(peer[0])
 			return peer.connect(connectors)
 
+		assert False, "Unexpected connection peer: %s"%peer
+
 	def __gt__(self, peer) :
 		return self.connect(peer)
+
+	def __lt__(self, peer) :
+		return peer.connect(self)
 
 
 

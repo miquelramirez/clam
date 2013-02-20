@@ -1,6 +1,6 @@
 
 class Configuration(object):
-	"""A Configuration represents the static parameters of an Processing.
+	"""A Configuration represents the static parameters of a Processing.
 	Parameters are typed. If they are optional they can be None.
 	You can obtain the configuration from an existing processing.
 	Configurations maybe bound, unbound or hold.
@@ -8,7 +8,7 @@ class Configuration(object):
 	When they are bound to a processing, any change to a parameter
 	reconfigures the processing. This can be quite bad if your are
 	changing many parameters and the configuration is expensive,
-	so you can hold() a configuration and then apply().
+	so you can hold() a bound configuration and then apply().
 	"""
 
 	def __init__(self, proxy):

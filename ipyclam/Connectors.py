@@ -33,17 +33,29 @@ class Connectors(object):
 		return self._dict.keys()
 
 	def connect(self, peer):
+		if isinstance(peer, Processing.Processing) :
+			return peer.connect(self)
 		if isinstance(peer, Connector.Connector) :
 			return sum((
 				connector.connect(peer)
 				for connector in self ))
-		if isinstance(peer, Processing.Processing) :
-			return peer.connect(self)
-		return sum((
-			mine.connect(peers)
-				for mine,peers in zip(self,peer) ))
+		if isinstance(peer, Connectors) :
+			return sum((
+				mine.connect(peers)
+					for mine,peers in zip(self,peer) ))
 
 	def __gt__(self, peer) :
+		# TODO: Untested check
+		if self[0].direction == "In" :
+			raise Connector.BadConnectorDirectionOrder(
+				"Wrong connectors order: Output > Input")
 		return self.connect(peer)
+
+	def __lt__(self, peer) :
+		# TODO: Untested check
+		if self[0].direction == "Out" :
+			raise Connector.BadConnectorDirectionOrder(
+				"Wrong connectors order: Input < Output")
+		return peer.connect(self)
 
 
