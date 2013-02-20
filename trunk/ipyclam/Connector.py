@@ -68,6 +68,18 @@ class Connector(object):
 		from PeerConnectors import PeerConnectors
 		return PeerConnectors(self._proxy, self._hostname(), self.kind, self.direction, self.name)
 
+	def __gt__(self, peer) :
+		if self.direction == In :
+			raise BadConnectorDirectionOrder(
+				"Wrong connectors order: Output > Input")
+		return self.connect(peer)
+
+	def __lt__(self, peer) :
+		if self.direction == Out :
+			raise BadConnectorDirectionOrder(
+				"Wrong connectors order: Input < Output")
+		return peer.connect(self)
+
 	def connect(self, peer):
 		if not isinstance(peer, Connector) :
 			return peer.connect(self)
@@ -106,49 +118,41 @@ class Connector(object):
 			toProcessing, toConnector)
 		return 1
 
-	def __gt__(self, peer) :
-		if self.direction == In :
-			raise BadConnectorDirectionOrder("Wrong connectors order: Output > Input")
-		return self.connect(peer)
-
-	def __lt__(self, peer) :
-		if self.direction == Out :
-			raise BadConnectorDirectionOrder("Wrong connectors order: Input < Output")
-		return peer.connect(self)
-
 	def disconnect(self, peer = None):
-		if peer == None:
+		if peer is None:
 			self.disconnectFromAllPeers()
 			return
 		import Processing
 		if type(peer) == Processing.Processing:
 			self.disconnectProcessing(peer)
 			return
-		self._proxy.disconnect(self.kind, self._hostname(), self.name, peer._hostname(), peer.name)
+		self._proxy.disconnect(self.kind,
+			self._hostname(), self.name,
+			peer._hostname(), peer.name)
 
 	def disconnectProcessing(self, peer):
 		names = (self._hostname(), self.name)
 		if self.kind == Port:
-			connections = [connection for connection in self._proxy.portConnections()]
-			for connection in connections:
-				if (connection[0:2] == names) & (peer.name == connection[2]):
-					self._proxy.disconnect(self.kind, self._hostname(), self.name, peer.name, connection[3])
-		else:
-			connections = [connection for connection in self._proxy.controlConnections()]
-			for connection in connections:
-				if (connection[0:2] == names) & (peer.name == connection[2]):
-					self._proxy.disconnect(self.kind, self._hostname(), self.name, peer.name, connection[3])
+			connections = self._proxy.portConnections()
+		elif self.kind == Control:
+			connections = self._proxy.controlConnections()
+		connections = [connection for connection in connections]
+		for connection in connections:
+			if connection[0:2] == names and peer.name == connection[2]:
+				self._proxy.disconnect(self.kind,
+					self._hostname(), self.name,
+					peer.name, connection[3])
 
 	def disconnectFromAllPeers(self):
 		names = (self._hostname(), self.name)
 		if self.kind == Port:
-			connections = [connection for connection in self._proxy.portConnections()]
-			for connection in connections:
-				if (connection[0:2] == names):
-					self._proxy.disconnect(self.kind, self._hostname(), self.name, connection[2], connection[3])
-		if self.kind == Control:
-			connections = [connection for connection in self._proxy.controlConnections()]
-			for connection in connections:
-				if (connection[0:2] == names):
-					self._proxy.disconnect(self.kind, self._hostname(), self.name, connection[2], connection[3])
+			connections = self._proxy.portConnections()
+		elif self.kind == Control:
+			connections = self._proxy.controlConnections()
+		connections = [connection for connection in connections]
+		for connection in connections:
+			if connection[0:2] == names:
+				self._proxy.disconnect(self.kind,
+					self._hostname(), self.name,
+					connection[2], connection[3])
 
