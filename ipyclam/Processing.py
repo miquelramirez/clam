@@ -10,11 +10,16 @@ class Processing(object):
 		self.__dict__["name"] = name
 		self.__dict__["proxy"] = proxy
 		self.__dict__["type"] = proxy.processingType(name)
-		self.__dict__["_config"] = Configuration.Configuration(proxy.processingConfig(self.name))
-		self.__dict__["_inports"] = Connectors.Connectors(proxy, name, Connector.Port, Connector.In)
-		self.__dict__["_outports"] = Connectors.Connectors(proxy, name, Connector.Port, Connector.Out)
-		self.__dict__["_incontrols"] = Connectors.Connectors(proxy, name, Connector.Control, Connector.In)
-		self.__dict__["_outcontrols"] = Connectors.Connectors(proxy, name, Connector.Control, Connector.Out)
+		self.__dict__["_config"] = Configuration.Configuration(
+			proxy.processingConfig(self.name))
+		self.__dict__["_inports"] = Connectors.Connectors(
+			proxy, name, Connector.Port, Connector.In)
+		self.__dict__["_outports"] = Connectors.Connectors(
+			proxy, name, Connector.Port, Connector.Out)
+		self.__dict__["_incontrols"] = Connectors.Connectors(
+			proxy, name, Connector.Control, Connector.In)
+		self.__dict__["_outcontrols"] = Connectors.Connectors(
+			proxy, name, Connector.Control, Connector.Out)
 	def __getitem__(self, name):
 		if name in dir(self._config):
 			return self._config[name]
@@ -51,6 +56,7 @@ class Processing(object):
 			[
 				"type",
 				"name",
+				"connect",
 				"_config", 
 				"_inports", 
 				"_outports", 
