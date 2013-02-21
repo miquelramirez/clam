@@ -1,6 +1,6 @@
 from Dummy_NetworkProxy import Dummy_NetworkProxy
 # TODO: BadProcessingType and BadProcessingName should be in a common module for Clam and Dummy
-from Dummy_NetworkProxy import BadProcessingName
+from Dummy_NetworkProxy import NameAlreadyExists
 from Dummy_NetworkProxy import BadProcessingType
 import Connector
 
@@ -213,8 +213,8 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		try:
 			proxy.addProcessing("ControlSource", "ARepeatedName")
 			self.fail("Exception expected")
-		except BadProcessingName, e:
-			self.assertEquals("'ARepeatedName: Name repeated'", e.__str__())
+		except NameAlreadyExists, e:
+			self.assertEquals("Name 'ARepeatedName' already exists", e.message)
 
 	def test_addProcessing_withBadType(self) :
 		proxy = Dummy_NetworkProxy()

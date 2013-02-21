@@ -10,8 +10,10 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	def test_availableTypes(self):
 		engine = self.engine()
-		self.assertTrue('DummyProcessingWithInAndOutPorts' in engine.availableTypes())
-		self.assertTrue('DummyProcessingWithInAndOutControls' in engine.availableTypes())
+		self.assertTrue('DummyPortSource' in engine.availableTypes())
+		self.assertTrue('DummyPortSink' in engine.availableTypes())
+		self.assertTrue('DummyControlSink' in engine.availableTypes())
+		self.assertTrue('DummyControlSource' in engine.availableTypes())
 
 	def test_xml(self):
 		engine = self.engine()
@@ -31,35 +33,32 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	def test_processingNames_whenAddingAProcessing(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSink","proc1")
+		engine.addProcessing("DummyPortSink","proc1")
 		self.assertEqual(['proc1'], engine.processingNames())
 
 	def test_processingNames_whenAddingTwoProcessings(self):
-		import Network
 		engine = self.engine()
-		engine.addProcessing("AudioSink","proc1")
-		engine.addProcessing("AudioSource","proc2")
+		engine.addProcessing("DummyPortSink","proc1")
+		engine.addProcessing("DummyPortSource","proc2")
 		self.assertEqual(['proc1', 'proc2'], engine.processingNames())
 
 	def test_addProcessing_takenName(self):
-		import Network
 		engine = self.engine()
-		engine.addProcessing("AudioSink","SameName")
+		engine.addProcessing("DummyPortSink","SameName")
 		try :
-			engine.addProcessing("AudioSource","SameName")
+			engine.addProcessing("DummyPortSource","SameName")
 		except AssertionError, e :
 			self.assertEqual(e.message,
-				"Processing 'SameName' already exists")
+				"Name 'SameName' already exists")
 		else :
 			self.fail("Runtime error expected")
 		self.assertEqual(['SameName'], engine.processingNames())
 
 	def test_addProcessing_badType(self):
-		import Network
 		engine = self.engine()
 		try :
 			engine.addProcessing("BadType","Name")
-		except RuntimeError, e :
+		except Exception, e :
 			self.assertTrue(e.message.startswith(
 				"GetCreatorSafe invoked with a non existent key: BadType\n")
 				)
@@ -74,14 +73,14 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 	def test_hasProcessing_whenAdding(self):
 		engine = self.engine()
 		self.assertFalse(engine.hasProcessing('proc1'))
-		engine.addProcessing("AudioSink","proc1")
+		engine.addProcessing("DummyPortSink","proc1")
 		self.assertTrue(engine.hasProcessing('proc1'))
 		self.assertFalse(engine.hasProcessing('Missing'))
 
 	def test_processingType(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSink", "AddedProcessing1")
-		self.assertEqual("AudioSink", engine.processingType("AddedProcessing1"))
+		engine.addProcessing("DummyPortSink", "AddedProcessing1")
+		self.assertEqual("DummyPortSink", engine.processingType("AddedProcessing1"))
 
 	def test_processingType_whenMissing(self):
 		engine = self.engine()
@@ -186,15 +185,15 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	def test_connect_ports(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSource","proc1")
-		engine.addProcessing("AudioSink","proc2")
-		self.assertTrue(engine.connect("Port", "proc1", "1", "proc2", "1"))
+		engine.addProcessing("DummyPortSource","proc1")
+		engine.addProcessing("DummyPortSink","proc2")
+		self.assertTrue(engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1"))
 
 	def test_connect_controls(self):
 		engine = self.engine()
-		engine.addProcessing("ControlSource","proc1")
-		engine.addProcessing("ControlSink","proc2")
-		self.assertTrue(engine.connect("Control", "proc1", "output", "proc2", "input"))
+		engine.addProcessing("DummyControlSource","proc1")
+		engine.addProcessing("DummyControlSink","proc2")
+		self.assertTrue(engine.connect("Control", "proc1", "OutControl1", "proc2", "InControl1"))
 
 	def test_connectorType_forPorts(self) :
 		engine = self.engine()
@@ -210,92 +209,97 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	def test_connectionExists_onControls_whenItDoesnt(self):
 		engine = self.engine()
-		engine.addProcessing("ControlSource","proc1")
-		engine.addProcessing("ControlSink","proc2")
-		self.assertFalse(engine.connectionExists("Control", "proc1", "output", "proc2", "input"))
+		engine.addProcessing("DummyControlSource","proc1")
+		engine.addProcessing("DummyControlSink","proc2")
+		self.assertFalse(engine.connectionExists("Control", "proc1", "OutControl1", "proc2", "InControl1"))
 
 	def test_connectionExists_onPorts_whenItDoesnt(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSource","proc1")
-		engine.addProcessing("AudioSink","proc2")
-		self.assertFalse(engine.connectionExists("Port", "proc1", "1", "proc2", "1"))
+		engine.addProcessing("DummyPortSource","proc1")
+		engine.addProcessing("DummyPortSink","proc2")
+		self.assertFalse(engine.connectionExists("Port", "proc1", "OutPort1", "proc2", "InPort1"))
+
+	# TODO: Test case engine.connectionExists("Port", "proc", "missing", ...) crash
+	# TODO: Test case engine.connectionExists("Port", "proc", "port", "proc", "missing") crash
 
 	def test_connectionExists_onPorts_whenItDoes(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSource","proc1")
-		engine.addProcessing("AudioSink","proc2")
-		engine.connect("Port", "proc1", "1", "proc2", "1")
-		self.assertTrue(engine.connectionExists("Port", "proc1", "1", "proc2", "1"))
+		engine.addProcessing("DummyPortSource","proc1")
+		engine.addProcessing("DummyPortSink","proc2")
+		engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1")
+		self.assertTrue(engine.connectionExists("Port", "proc1", "OutPort1", "proc2", "InPort1"))
 
 	def test_connectionExists_onControls_whenItDoes(self):
 		engine = self.engine()
-		engine.addProcessing("ControlSource","proc1")
-		engine.addProcessing("ControlSink","proc2")
-		engine.connect("Control", "proc1", "output", "proc2", "input")
-		self.assertTrue(engine.connectionExists("Control", "proc1", "output", "proc2", "input"))
+		engine.addProcessing("DummyControlSource","proc1")
+		engine.addProcessing("DummyControlSink","proc2")
+		engine.connect("Control", "proc1", "OutControl1", "proc2", "InControl1")
+		self.assertTrue(engine.connectionExists("Control", "proc1", "OutControl1", "proc2", "InControl1"))
 
 	def test_connectorPeers_outport(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSource","proc1")
-		engine.addProcessing("AudioSink","proc2")
-		engine.addProcessing("AudioSink","proc3")
-		engine.connect("Port", "proc1", "1", "proc2", "1")
-		engine.connect("Port", "proc1", "1", "proc3", "1")
+		engine.addProcessing("DummyPortSource","proc1")
+		engine.addProcessing("DummyPortSink","proc2")
+		engine.addProcessing("DummyPortSink","proc3")
+		engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1")
+		engine.connect("Port", "proc1", "OutPort1", "proc3", "InPort1")
 		self.assertEqual([
-			("proc2", "1"),
-			("proc3", "1"),
-			], engine.connectorPeers("proc1", "Port", "Out", "1"))
+			("proc2", "InPort1"),
+			("proc3", "InPort1"),
+			], engine.connectorPeers("proc1", "Port", "Out", "OutPort1"))
+
+	# TODO: connectorPeers("proc", "Port", "Out", "Missing") crash
 
 	def test_connectorPeers_inport(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSource","proc1")
-		engine.addProcessing("AudioSink","proc2")
-		engine.connect("Port", "proc1", "1", "proc2", "1")
+		engine.addProcessing("DummyPortSource","proc1")
+		engine.addProcessing("DummyPortSink","proc2")
+		engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1")
 		self.assertEqual([
-			("proc1", "1"),
-			], engine.connectorPeers("proc2", "Port", "In", "1"))
+			("proc1", "OutPort1"),
+			], engine.connectorPeers("proc2", "Port", "In", "InPort1"))
 
 	def test_connectorPeers_outcontrol(self):
 		engine = self.engine()
-		engine.addProcessing("ControlSource","proc1")
-		engine.addProcessing("ControlSink","proc2")
-		engine.addProcessing("ControlSink","proc3")
-		engine.connect("Control", "proc1", "output", "proc2", "input")
-		engine.connect("Control", "proc1", "output", "proc3", "input")
+		engine.addProcessing("DummyControlSource","proc1")
+		engine.addProcessing("DummyControlSink","proc2")
+		engine.addProcessing("DummyControlSink","proc3")
+		engine.connect("Control", "proc1", "OutControl1", "proc2", "InControl1")
+		engine.connect("Control", "proc1", "OutControl1", "proc3", "InControl1")
 		self.assertEqual([
-			("proc2", "input"),
-			("proc3", "input"),
-			], engine.connectorPeers("proc1", "Control", "Out", "output"))
+			("proc2", "InControl1"),
+			("proc3", "InControl1"),
+			], engine.connectorPeers("proc1", "Control", "Out", "OutControl1"))
 
 	def test_connectorPeers_incontrol(self):
 		engine = self.engine()
-		engine.addProcessing("ControlSource","proc1")
-		engine.addProcessing("ControlSink","proc2")
-		engine.addProcessing("ControlSource","proc3")
-		engine.connect("Control", "proc1", "output", "proc2", "input")
-		engine.connect("Control", "proc3", "output", "proc2", "input")
+		engine.addProcessing("DummyControlSource","proc1")
+		engine.addProcessing("DummyControlSink","proc2")
+		engine.addProcessing("DummyControlSource","proc3")
+		engine.connect("Control", "proc1", "OutControl1", "proc2", "InControl1")
+		engine.connect("Control", "proc3", "OutControl1", "proc2", "InControl1")
 		self.assertEqual([
-			("proc1", "output"),
-			("proc3", "output"),
-			], engine.connectorPeers("proc2", "Control", "In", "input"))
+			("proc1", "OutControl1"),
+			("proc3", "OutControl1"),
+			], engine.connectorPeers("proc2", "Control", "In", "InControl1"))
 
 	def test_disconnect_ports(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSource","proc1")
-		engine.addProcessing("AudioSink","proc2")
-		engine.connect("Port", "proc1", "1", "proc2", "1")
-		self.assertTrue(engine.disconnect("Port", "proc1", "1", "proc2", "1"))
+		engine.addProcessing("DummyPortSource","proc1")
+		engine.addProcessing("DummyPortSink","proc2")
+		engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1")
+		self.assertTrue(engine.disconnect("Port", "proc1", "OutPort1", "proc2", "InPort1"))
 		self.assertEqual([
-			], engine.connectorPeers("proc2", "Port", "In", "1"))
+			], engine.connectorPeers("proc2", "Port", "In", "InPort1"))
 
 	def test_disconnect_controls(self):
 		engine = self.engine()
-		engine.addProcessing("ControlSource","proc1")
-		engine.addProcessing("ControlSink","proc2")
-		engine.connect("Control", "proc1", "output", "proc2", "input")
-		self.assertTrue(engine.disconnect("Control", "proc1", "output", "proc2", "input"))
+		engine.addProcessing("DummyControlSource","proc1")
+		engine.addProcessing("DummyControlSink","proc2")
+		engine.connect("Control", "proc1", "OutControl1", "proc2", "InControl1")
+		self.assertTrue(engine.disconnect("Control", "proc1", "OutControl1", "proc2", "InControl1"))
 		self.assertEqual([
-			], engine.connectorPeers("proc2", "Control", "In", "input"))
+			], engine.connectorPeers("proc2", "Control", "In", "InControl1"))
 
 	def test_connectorIndex_inport(self):
 		engine = self.engine()
@@ -325,33 +329,33 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		import Network
 		engine = self.engine()
 		net = Network.Network(engine)
-		engine.addProcessing("AudioSource","proc1")
-		engine.addProcessing("AudioSink","proc2")
+		engine.addProcessing("DummyPortSource","proc1")
+		engine.addProcessing("DummyPortSink","proc2")
 		engine.addProcessing("DummyProcessingWithInAndOutPorts", "proc3")
 		engine.addProcessing("DummyProcessingWithInAndOutPorts", "proc4")
-		net.proc1["1"] > net.proc2["1"]
+		net.proc1["OutPort1"] > net.proc2["InPort1"]
 		net.proc3.Outport1 > net.proc4.Inport1
 		self.assertEquals([
-			('proc1', '1', 'proc2', '1'),
+			('proc1', 'OutPort1', 'proc2', 'InPort1'),
 			('proc3', 'Outport1', 'proc4', 'Inport1')
 		], engine.portConnections())
 
 	def test_controlConnections(self):
 		engine = self.engine()
-		engine.addProcessing("ControlSource","proc1")
-		engine.addProcessing("ControlSink","proc2")
+		engine.addProcessing("DummyControlSource","proc1")
+		engine.addProcessing("DummyControlSink","proc2")
 		engine.addProcessing("DummyProcessingWithInAndOutControls", "proc3")
 		engine.addProcessing("DummyProcessingWithInAndOutControls", "proc4")
-		engine.connect("Control", "proc1", "output", "proc2","input")
+		engine.connect("Control", "proc1", "OutControl1", "proc2","InControl1")
 		engine.connect("Control", "proc3", "Outcontrol1", "proc4","Incontrol1")
 		self.assertEquals([
-			('proc1', 'output', 'proc2', 'input'),
+			('proc1', 'OutControl1', 'proc2', 'InControl1'),
 			('proc3', 'Outcontrol1', 'proc4', 'Incontrol1')
 		], engine.controlConnections())
 
 	def test_deleteProcessing(self):
 		engine = self.engine()
-		engine.addProcessing("ControlSource", "ProcessingToDelete")
+		engine.addProcessing("DummyControlSource", "ProcessingToDelete")
 		self.assertTrue(engine.hasProcessing('ProcessingToDelete'))
 		engine.deleteProcessing("ProcessingToDelete")
 		self.assertFalse(engine.hasProcessing('ProcessingToDelete'))
@@ -368,7 +372,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	def test_renameProcessing(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSource","NameToBeChanged")
+		engine.addProcessing("DummyPortSource","NameToBeChanged")
 		engine.renameProcessing("NameToBeChanged", "NewName")
 		self.assertFalse(engine.hasProcessing('NameToBeChanged'))
 		self.assertTrue(engine.hasProcessing('NewName'))
@@ -385,12 +389,12 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	def test_renameProcessing_takenName(self):
 		engine = self.engine()
-		engine.addProcessing("AudioSource","proc1")
-		engine.addProcessing("AudioSource","proc2")
+		engine.addProcessing("DummyPortSource","proc1")
+		engine.addProcessing("DummyPortSource","proc2")
 		try:
 			engine.renameProcessing("proc1", "proc2")
 		except AssertionError, e:
-			self.assertEquals(("Processing 'proc2' already exists", ), e.args)
+			self.assertEquals(("Name 'proc2' already exists", ), e.args)
 		else:
 			self.fail("Exception expected")
 
@@ -462,13 +466,67 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	# TODO: Tests for playback and the like
 
-"""
 class Dummy_NetworkTest(Clam_NetworkProxyTests) :
 	def engine(self) :
 		import Dummy_NetworkProxy
 		return Dummy_NetworkProxy.Dummy_NetworkProxy()
-"""
 
+	def test_xml(self): pass
+
+#	def test_processingNames_whenEmpty(self): pass
+#	def test_processingNames_whenAddingAProcessing(self): pass
+#	def test_processingNames_whenAddingTwoProcessings(self): pass
+#	def test_addProcessing_takenName(self): pass
+	def test_addProcessing_badType(self): pass
+#	def test_hasProcessing_whenEmpty(self): pass
+#	def test_hasProcessing_whenAdding(self): pass
+#	def test_processingType(self): pass
+	def test_processingType_whenMissing(self): pass
+	def test_processingHasConnector_missingProcessing(self): pass
+	def test_processingHasConnector_InPort_missing(self): pass
+	def test_processingHasConnector_InPort(self): pass
+	def test_processingHasConnector_OutPort(self): pass
+	def test_processingHasConnector_OutPort_missing(self): pass
+	def test_processingHasConnector_InControl_missing(self): pass
+	def test_processingHasConnector_InControl(self): pass
+	def test_processingHasConnector_OutControl(self): pass
+	def test_processingHasConnector_OutControl_missing(self): pass
+	def test_getDescription_whenNotSet(self): pass
+	def test_setDescription_whenSet(self): pass
+	def test_processingConnectors_withInportAndOutport(self): pass
+	def test_processingConnectors_withIncontrolAndOutcontrol(self): pass
+	def test_processingConnectors_withMultiplePortsAndControls(self): pass
+	def test_connect_ports(self): pass
+	def test_connect_controls(self): pass
+	def test_connectorType_forPorts(self) : pass
+	def test_connectorType_forControls(self) : pass
+	def test_connectionExists_onControls_whenItDoesnt(self): pass
+	def test_connectionExists_onPorts_whenItDoesnt(self): pass
+	def test_connectionExists_onPorts_whenItDoes(self): pass
+	def test_connectionExists_onControls_whenItDoes(self): pass
+	def test_connectorPeers_outport(self): pass
+	def test_connectorPeers_inport(self): pass
+	def test_connectorPeers_outcontrol(self): pass
+	def test_connectorPeers_incontrol(self): pass
+	def test_disconnect_ports(self): pass
+	def test_disconnect_controls(self): pass
+	def test_connectorIndex_inport(self): pass
+	def test_connectorIndex_outport(self): pass
+	def test_connectorIndex_incontrol(self): pass
+	def test_connectorIndex_outcontrol(self): pass
+	def test_portConnections(self): pass
+	def test_controlConnections(self): pass
+	def test_deleteProcessing(self): pass
+	def test_deleteProcessing_missing(self): pass
+	def test_renameProcessing(self): pass
+	def test_renameProcessing_missing(self): pass
+	def test_renameProcessing_takenName(self): pass
+	def test_connect_whenAlreadyConnected(self) : pass
+	def test_connect_missingFromPort(self) : pass
+	def test_connect_missingToPort(self) : pass
+	def test_connect_missingToProcessing(self) : pass
+	def test_connect_missingFromProcessing(self) : pass
+	def test_connect_missingToProcessing(self) : pass
 
 if __name__ == '__main__':
 	unittest.main()
