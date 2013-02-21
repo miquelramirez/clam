@@ -1,7 +1,7 @@
 from Dummy_NetworkProxy import Dummy_NetworkProxy
-# TODO: BadProcessingType and BadProcessingName should be in a common module for Clam and Dummy
-from Dummy_NetworkProxy import NameAlreadyExists
-from Dummy_NetworkProxy import BadProcessingType
+from Exceptions import NameAlreadyExists
+from Exceptions import BadProcessingType
+from Exceptions import ProcessingNotFound
 import Connector
 
 import unittest
@@ -12,7 +12,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		return [
 		[
 			dict(
-				type = "AudioSource",
+				type = "DummyPortSource",
 				name = "Processing1",
 				config = dict(
 					ConfigParam1 = "default1",
@@ -36,7 +36,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				],
 			),
 			dict(
-				type = "AudioSink",
+				type = "DummyPortSink",
 				name = "Processing2",
 				config = dict(
 					ConfigParam1 = "default1",
@@ -75,7 +75,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_type(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
-		self.assertEquals("AudioSource", proxy.processingType("Processing1"))
+		self.assertEquals("DummyPortSource", proxy.processingType("Processing1"))
 
 	def test_inports(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
@@ -109,13 +109,13 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			], proxy.processingConnectors(
 				"Processing1", Connector.Control, Connector.Out))
 
-	def test_withBadProcessingName(self) :
+	def test_processingType_withBadProcessingName(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
-		self.assertRaises(KeyError, proxy.processingType, "Processing3")
+		self.assertRaises(ProcessingNotFound, proxy.processingType, "Missing")
 
-	def test_typeSecondProcessing(self) :
+	def test_procensignType_secondProcessing(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
-		self.assertEquals("AudioSink", proxy.processingType("Processing2"))
+		self.assertEquals("DummyPortSink", proxy.processingType("Processing2"))
 
 	def test_portConnectionsOut(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
@@ -159,9 +159,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_addProcessing_withOneMinimalProcessing(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("MinimalProcessing", "AProcessing")
+		proxy.addProcessing("Minimal", "AProcessing")
 		self.assertEquals(['AProcessing'], proxy.processingNames())
-		self.assertEquals('MinimalProcessing', proxy.processingType('AProcessing'))
+		self.assertEquals('Minimal', proxy.processingType('AProcessing'))
 		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Port, Connector.In))
 		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Port, Connector.Out))
 		self.assertEquals([], proxy.processingConnectors('AProcessing', Connector.Control, Connector.In))
@@ -179,9 +179,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_addProcessing_withInControl(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSink", "AControlSink")
+		proxy.addProcessing("DummyControlSink", "AControlSink")
 		self.assertEquals(['AControlSink'], proxy.processingNames())
-		self.assertEquals('ControlSink', proxy.processingType('AControlSink'))
+		self.assertEquals('DummyControlSink', proxy.processingType('AControlSink'))
 		self.assertEquals([], proxy.processingConnectors('AControlSink', Connector.Port, Connector.In))
 		self.assertEquals([], proxy.processingConnectors('AControlSink', Connector.Port, Connector.Out))
 		self.assertEquals(["InControl1"], proxy.processingConnectors('AControlSink', Connector.Control, Connector.In))
@@ -199,9 +199,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_addProcessing_withInControl(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "AControlSource")
+		proxy.addProcessing("DummyControlSource", "AControlSource")
 		self.assertEquals(['AControlSource'], proxy.processingNames())
-		self.assertEquals('ControlSource', proxy.processingType('AControlSource'))
+		self.assertEquals('DummyControlSource', proxy.processingType('AControlSource'))
 		self.assertEquals([], proxy.processingConnectors('AControlSource', Connector.Port, Connector.In))
 		self.assertEquals([], proxy.processingConnectors('AControlSource', Connector.Port, Connector.Out))
 		self.assertEquals([], proxy.processingConnectors('AControlSource', Connector.Control, Connector.In))
@@ -209,9 +209,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_addProcessing_withNameAlreadyAdded(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "ARepeatedName")
+		proxy.addProcessing("DummyControlSource", "ARepeatedName")
 		try:
-			proxy.addProcessing("ControlSource", "ARepeatedName")
+			proxy.addProcessing("DummyControlSource", "ARepeatedName")
 			self.fail("Exception expected")
 		except NameAlreadyExists, e:
 			self.assertEquals("Name 'ARepeatedName' already exists", e.message)
@@ -222,7 +222,8 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 			proxy.addProcessing("ABadType", "Processing1")
 			self.fail("Exception expected")
 		except BadProcessingType, e:
-			self.assertEquals("'BadProcessingType(ABadType)'", e.__str__())
+			self.assertEquals(e.message,
+				"Type 'ABadType' is not available")
 
 	def test_connect_ports(self) :
 		proxy = Dummy_NetworkProxy()
@@ -235,8 +236,8 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_connect_controls(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Processing1")
-		proxy.addProcessing("ControlSink", "Processing2")
+		proxy.addProcessing("DummyControlSource", "Processing1")
+		proxy.addProcessing("DummyControlSink", "Processing2")
 		proxy.connect(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1")
 		self.assertEquals([
 				("Processing2", "InControl1")]
@@ -244,7 +245,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_connect_missingProcessing(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Processing1")
+		proxy.addProcessing("DummyControlSource", "Processing1")
 		try:
 			proxy.connect(Connector.Control, "Processing1", "OutControl1", "NonExistingProcessing", "InControl1")
 			self.fail("Exception expected")
@@ -253,8 +254,8 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_connect_missingconnector(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Processing1")
-		proxy.addProcessing("ControlSink", "ProcessingWithNoIncontrol2")
+		proxy.addProcessing("DummyControlSource", "Processing1")
+		proxy.addProcessing("DummyControlSink", "ProcessingWithNoIncontrol2")
 		try:
 			proxy.connect(Connector.Control, "Processing1", "OutControl1", "ProcessingWithNoIncontrol2", "InControl2")
 			self.fail("Exception expected")
@@ -263,7 +264,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_connect_connectorsWithDifferentTypes(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Processing1")
+		proxy.addProcessing("DummyControlSource", "Processing1")
 		proxy.addProcessing("OtherControlSink", "ProcessingWithOtherControlType")
 		try:
 			proxy.connect(Connector.Control, "Processing1", "OutControl1", "ProcessingWithOtherControlType", "InControl1")
@@ -292,24 +293,24 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		self.assertEquals([
 			'DummyPortSource',
 			'DummyPortSink',
-			'ControlSource', 
+			'DummyControlSource', 
 			'OtherControlSink',
-			'MinimalProcessing',
+			'Minimal',
 			'SeveralInPortsProcessing',
-			'ControlSink',
+			'DummyControlSink',
 			].sort(), proxy.availableTypes().sort())
 
 	def test_areConnectable_whenSameDataType(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Source")
-		proxy.addProcessing("ControlSink", "Sink")
+		proxy.addProcessing("DummyControlSource", "Source")
+		proxy.addProcessing("DummyControlSink", "Sink")
 		self.assertTrue(
 			proxy.areConnectable(
 				Connector.Control, "Source", "OutControl1", "Sink", "InControl1"))
 
 	def test_areConnectable_whenDifferentDataType(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Source")
+		proxy.addProcessing("DummyControlSource", "Source")
 		proxy.addProcessing("OtherControlSink", "Sink")
 		self.assertFalse(
 			proxy.areConnectable(
@@ -317,7 +318,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_processingHasConnector(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Processing1")
+		proxy.addProcessing("DummyControlSource", "Processing1")
 		self.assertTrue(proxy.processingHasConnector("Processing1", Connector.Control, Connector.Out, "OutControl1"))
 		self.assertFalse(proxy.processingHasConnector("Processing1", Connector.Control, Connector.In, "InControl1"))
 
@@ -327,8 +328,8 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 
 	def test_connectionExists_withControls_whenExists(self) :
 		proxy = Dummy_NetworkProxy()
-		proxy.addProcessing("ControlSource", "Processing1")
-		proxy.addProcessing("ControlSink", "Processing2")
+		proxy.addProcessing("DummyControlSource", "Processing1")
+		proxy.addProcessing("DummyControlSink", "Processing2")
 		self.assertTrue(proxy.connectionExists(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1"))
 
 	def test_connectionExists_withPorts_whenDoesNotExists(self) :
@@ -359,13 +360,13 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		proxy.disconnect(Connector.Port, "Processing1", "OutPort1", "Processing2", "Inport2")
 		self.assertEquals([]
-				, proxy.connectorPeers("Processing1", Connector.Port, Connector.Out, "OutPort1"))
+			, proxy.connectorPeers("Processing1", Connector.Port, Connector.Out, "OutPort1"))
 
 	def test_disconnect_controls(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
 		proxy.disconnect(Connector.Control, "Processing1", "OutControl1", "Processing2", "Incontrol2")
 		self.assertEquals([]
-				, proxy.connectorPeers("Processing1", Connector.Control, Connector.Out, "OutControl1"))
+			, proxy.connectorPeers("Processing1", Connector.Control, Connector.Out, "OutControl1"))
 
 	def test_processingRenaming(self) :
 		proxy = Dummy_NetworkProxy(*self.definition())
@@ -377,11 +378,13 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("DummyPortSource", "ExistingName")
 		proxy.addProcessing("DummyPortSink", "ProcessingToRename")
-		# TOFIX: KeyError should be used just when a non existing key, and args should be the kay
 		try:
 			proxy.renameProcessing("ProcessingToRename", "ExistingName")
-		except KeyError, e:
-			self.assertEquals(("A processing named 'ExistingName' already exists", ), e.args)
+		except NameAlreadyExists, e:
+			self.assertEquals(e.message,
+				"Name 'ExistingName' already exists")
+		else:
+			self.fail("exception expected")
 
 	def test_getNetworkDescriptionEmpty(self):
 		proxy = Dummy_NetworkProxy()

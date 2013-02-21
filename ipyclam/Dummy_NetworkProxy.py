@@ -10,27 +10,11 @@ _connectorKindNames = [
 _kind2Name = dict([((k,d),n) for k,d,n in _connectorKindNames])
 
 _dummyPrototypes = dict(
-	MinimalProcessing = dict(
-		type = "MinimalProcessing",
+	Minimal = dict(
+		type = "Minimal",
 		config = odict(),
 		inports = [],
 		outports = [],
-		incontrols = [],
-		outcontrols = []
-	),
-	AudioSink = dict(
-		type = "AudioSink",
-		config = odict(),
-		inports = [['InPort1', 'DataType']],
-		outports = [],
-		incontrols = [],
-		outcontrols = []
-	),
-	AudioSource = dict(
-		type = "AudioSource",
-		config = odict(),
-		inports = [],
-		outports = [['OutPort1', 'DataType']],
 		incontrols = [],
 		outcontrols = []
 	),
@@ -50,14 +34,6 @@ _dummyPrototypes = dict(
 		incontrols = [],
 		outcontrols = []
 	),
-	ControlSink = dict(
-		type = "ControlSink",
-		config = odict(),
-		inports = [],
-		outports = [],
-		incontrols = [['InControl1', 'ControlType']],
-		outcontrols = []
-	),
 	DummyControlSink = dict(
 		type = "DummyControlSink",
 		config = odict(),
@@ -66,34 +42,35 @@ _dummyPrototypes = dict(
 		incontrols = [['InControl1', 'ControlType']],
 		outcontrols = []
 	),
-	ControlSource = dict(
-		type = "ControlSource",
-		config = odict(),
-		inports = [],
-		outports = [],
-		incontrols = [],
-		outcontrols = [['OutControl1', 'ControlType']]
-	),
 	DummyControlSource = dict(
 		type = "DummyControlSource",
 		config = odict(),
 		inports = [],
 		outports = [],
 		incontrols = [],
-		outcontrols = [['OutControl1', 'ControlType']]
+		outcontrols = [
+			['OutControl1', 'ControlType'],
+			]
 	),
 	OtherControlSink = dict(
 		type = "OtherControlSink",
 		config = odict(),
 		inports = [],
 		outports = [],
-		incontrols = [['InControl1', 'OtherControlType']],
+		incontrols = [
+			['InControl1', 'OtherControlType'],
+			],
 		outcontrols = []
 	),
 	SeveralInPortsProcessing = dict(
 		type = "SeveralInPortsProcessing",
 		config = odict(),
-		inports = [['InPort1', 'DataType'], ['InPort2', 'DataType'], ['InPort3', 'DataType'], ['InPort4', 'DataType']],
+		inports = [
+			['InPort1', 'DataType'],
+			['InPort2', 'DataType'],
+			['InPort3', 'DataType'],
+			['InPort4', 'DataType'],
+			],
 		outports = [],
 		incontrols = [],
 		outcontrols = []
@@ -103,7 +80,12 @@ _dummyPrototypes = dict(
 		config = odict(),
 		inports = [],
 		outports = [],
-		incontrols = [['InControl1', 'ControlType'], ['InControl2', 'ControlType'], ['InControl3', 'ControlType'], ['InControl4', 'ControlType']],
+		incontrols = [
+			['InControl1', 'ControlType'],
+			['InControl2', 'ControlType'],
+			['InControl3', 'ControlType'],
+			['InControl4', 'ControlType'],
+			],
 		outcontrols = []
 	),
 	ProcessingWithNameSpacedPorts = dict(
@@ -227,15 +209,7 @@ _dummyPrototypes = dict(
 	),
 )
 
-class NameAlreadyExists(AssertionError):
-	def __init__(self, name) :
-		self.message = "Name '{0}' already exists".format(name)
-
-class BadProcessingType(Exception):
-	def __init__(self, type):
-		self.type = type
-	def __str__(self):
-		return repr("BadProcessingType(" + self.type + ")")
+from Exceptions import *
 
 class Dummy_NetworkProxy :
 
@@ -249,15 +223,20 @@ class Dummy_NetworkProxy :
 		self._description = description
 
 	def processingType(self, name) :
-		return self._processings[name]["type"]
+		try :
+			return self._processings[name]["type"]
+		except KeyError :
+			raise ProcessingNotFound(name)
 
 	def processingConfig(self, name) :
 		import Dummy_ConfigurationProxy
 		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(self._processings[name]["config"])
 
 	def renameProcessing(self, oldName, newName):
-		if newName in self._processings.keys():
-			raise KeyError("A processing named '%s' already exists"%newName)
+		if oldName not in self._processings:
+			raise ProcessingNotFound(oldName)
+		if newName in self._processings:
+			raise NameAlreadyExists(newName)
 		self._processings[newName] = self._processings[oldName]
 		del self._processings[oldName]
 
@@ -342,6 +321,8 @@ class Dummy_NetworkProxy :
 		self._description = description
 
 	def deleteProcessing(self, processingName):
+		if processingName not in self._processings:
+			raise ProcessingNotFound(processingName)
 		del self._processings[processingName]
 
 

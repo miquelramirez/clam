@@ -8,7 +8,7 @@ class ProcessingTypesTests(unittest.TestCase):
 
 	def test_ProcessingGettingAsAttribute(self) :
 		type = ProcessingTypes(self.proxy())
-		self.assertEqual("ControlSource", type.ControlSource)
+		self.assertEqual("DummyControlSource", type.DummyControlSource)
 
 	def test_BadProcessingGettingAsAttributeAndFail(self) :
 		type = ProcessingTypes(self.proxy())
@@ -20,7 +20,7 @@ class ProcessingTypesTests(unittest.TestCase):
 
 	def test_dir(self) :
 		type = ProcessingTypes(self.proxy())
-		self.assertTrue("ControlSource" in dir(type))
+		self.assertTrue("DummyControlSource" in dir(type))
 
 class Clam_ProcessingTypesTests(ProcessingTypesTests):
 	def proxy(self):
