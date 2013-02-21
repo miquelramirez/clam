@@ -227,12 +227,9 @@ _dummyPrototypes = dict(
 	),
 )
 
-class BadProcessingName(Exception):
-	def __init__(self, name, reason):
-		self.name = name
-		self.reason = reason
-	def __str__(self):
-		return repr(self.name + ': ' + self.reason)
+class NameAlreadyExists(AssertionError):
+	def __init__(self, name) :
+		self.message = "Name '{0}' already exists".format(name)
 
 class BadProcessingType(Exception):
 	def __init__(self, type):
@@ -293,7 +290,7 @@ class Dummy_NetworkProxy :
 
 	def addProcessing(self, type, name) :
 		if self.hasProcessing(name):
-			raise BadProcessingName(name, "Name repeated")
+			raise NameAlreadyExists(name)
 		if type not in self._types.keys():
 			raise BadProcessingType(type)
 		self._processings[name] = self._types[type].copy()
@@ -314,6 +311,7 @@ class Dummy_NetworkProxy :
 		assert not self.connectionExists(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s.%s and %s.%s already connected"%(fromProcessing, fromConnector, toProcessing, toConnector)
 		connections = self._controlConnections if kind == Connector.Control else self._portConnections
 		connections.append((fromProcessing, fromConnector, toProcessing, toConnector))
+		return True
 
 	def portConnections(self) :
 		return self._portConnections
@@ -324,9 +322,12 @@ class Dummy_NetworkProxy :
 	def availableTypes(self) :
 		return self._types.keys()
 
-	def connectionExists(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
+	def connectionExists(self, kind,
+			fromProcessing, fromConnector,
+			toProcessing, toConnector) :
+		toFind = (fromProcessing, fromConnector, toProcessing, toConnector)
 		connections = self._controlConnections if kind == Connector.Control else self._portConnections
-		return (fromProcessing, fromConnector, toProcessing, toConnector) in connections
+		return toFind in connections
 
 	def disconnect(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
 		if kind == Connector.Port:

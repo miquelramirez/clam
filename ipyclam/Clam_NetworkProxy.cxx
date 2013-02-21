@@ -23,17 +23,6 @@
 
 namespace py = boost::python;
 
-class BadProcessingName : public std::exception {
-private:
-	std::string _msg;
-public:
-	BadProcessingName(const std::string & msg) : _msg(msg) {}
-	~BadProcessingName() throw() {}
-	const char * what() const throw () {
-		return _msg.c_str();
-	}
-};
-
 std::string Dump(CLAM::Network & net)
 {
 	std::ostringstream str;
@@ -66,7 +55,7 @@ void assertProcessingExists(CLAM::Network & network, const std::string & process
 void assertProcessingNameAvailable(CLAM::Network & network, const std::string & processingName)
 {
 	if (not network.HasProcessing(processingName)) return;
-	std::string errorMsg = "Processing '" + processingName + "' already exists";
+	std::string errorMsg = "Name '" + processingName + "' already exists";
 	throwPythonException(PyExc_AssertionError, errorMsg);
 }
 
