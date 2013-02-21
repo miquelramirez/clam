@@ -2,6 +2,7 @@ from Dummy_NetworkProxy import Dummy_NetworkProxy
 from Exceptions import NameAlreadyExists
 from Exceptions import BadProcessingType
 from Exceptions import ProcessingNotFound
+from Exceptions import ConnectorNotFound
 import Connector
 
 import unittest
@@ -249,8 +250,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		try:
 			proxy.connect(Connector.Control, "Processing1", "OutControl1", "NonExistingProcessing", "InControl1")
 			self.fail("Exception expected")
-		except AssertionError, e:
-			self.assertEquals(("NonExistingProcessing does not exist", ), e.args)
+		except ProcessingNotFound, e:
+			self.assertEquals(e.message,
+			"Processing 'NonExistingProcessing' not found")
 
 	def test_connect_missingconnector(self) :
 		proxy = Dummy_NetworkProxy()
@@ -259,8 +261,9 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		try:
 			proxy.connect(Connector.Control, "Processing1", "OutControl1", "ProcessingWithNoIncontrol2", "InControl2")
 			self.fail("Exception expected")
-		except AssertionError, e:
-			self.assertEquals(("ProcessingWithNoIncontrol2 does not have connector InControl2", ), e.args)
+		except ConnectorNotFound, e:
+			self.assertEqual(e.message,
+				"In Control connector 'InControl2' not found in processing 'ProcessingWithNoIncontrol2'")
 
 	def test_connect_connectorsWithDifferentTypes(self) :
 		proxy = Dummy_NetworkProxy()
@@ -330,6 +333,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		proxy = Dummy_NetworkProxy()
 		proxy.addProcessing("DummyControlSource", "Processing1")
 		proxy.addProcessing("DummyControlSink", "Processing2")
+		proxy.connect("Control", "Processing1","OutControl1", "Processing2", "InControl1")
 		self.assertTrue(proxy.connectionExists(Connector.Control, "Processing1", "OutControl1", "Processing2", "InControl1"))
 
 	def test_connectionExists_withPorts_whenDoesNotExists(self) :
