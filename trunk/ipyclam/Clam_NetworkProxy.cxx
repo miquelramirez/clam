@@ -23,6 +23,19 @@
 
 namespace py = boost::python;
 
+/// ModificatioNetwork.pyn of boost::python::import
+py::object relative_import(py::str name)
+{
+	char *n = py::extract<char *>(name);
+	if (py::scope() == py::object()) return py::import(name);
+	py::object globals = py::scope().attr("__dict__");
+
+	py::handle<> module(
+		PyImport_ImportModuleLevel(
+			n, globals.ptr(), globals.ptr(), 0, -1));
+	return py::object(module);
+}
+
 std::string Dump(CLAM::Network & net)
 {
 	std::ostringstream str;
@@ -45,18 +58,29 @@ void throwPythonException(PyObject * type, const std::string & msg)
 	py::throw_error_already_set();
 }
 
+void throwIpyclamException(const std::string & type, const std::string & msg)
+{
+	py::object exception = relative_import("Exceptions").attr(type.c_str());
+	PyErr_SetString(exception.ptr(), msg.c_str() );
+	py::throw_error_already_set();
+}
+
 void assertProcessingExists(CLAM::Network & network, const std::string & processingName)
 {
 	if (network.HasProcessing(processingName)) return;
-	std::string errorMsg = "Processing '" + processingName + "' not found";
-	throwPythonException(PyExc_AssertionError, errorMsg);
+	throwIpyclamException("ProcessingNotFound", processingName);
 }
 
 void assertProcessingNameAvailable(CLAM::Network & network, const std::string & processingName)
 {
 	if (not network.HasProcessing(processingName)) return;
-	std::string errorMsg = "Name '" + processingName + "' already exists";
-	throwPythonException(PyExc_AssertionError, errorMsg);
+	throwIpyclamException("NameAlreadyExists", processingName);
+}
+
+void assertTypeExists(CLAM::Network & network, const std::string & typeName)
+{
+	if (CLAM::ProcessingFactory::GetInstance().KeyExists(typeName)) return;
+	throwIpyclamException("BadProcessingType", typeName);
 }
 
 py::tuple connectorTuple(const std::string & name)
@@ -104,6 +128,7 @@ py::list processingNames(CLAM::Network & network)
 void addProcessing(CLAM::Network & network, const std::string & type, const std::string & processingName)
 {
 	assertProcessingNameAvailable(network, processingName);
+	assertTypeExists(network, type);
 	network.AddProcessing(processingName, type);
 }
 
@@ -650,18 +675,6 @@ void load(CLAM::Network & network, const std::string & filename)
 void save(CLAM::Network & network, const std::string & filename)
 {
 	CLAM::XMLStorage::Dump(network, "network", filename);
-}
-
-/// ModificatioNetwork.pyn of boost::python::import
-py::object relative_import(py::str name)
-{
-	char *n = py::extract<char *>(name);
-	py::object globals = py::scope().attr("__dict__");
-
-	py::handle<> module(
-		PyImport_ImportModuleLevel(
-			n, globals.ptr(), globals.ptr(), 0, -1));
-	return py::object(module);
 }
 
 

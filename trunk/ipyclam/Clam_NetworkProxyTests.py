@@ -2,6 +2,7 @@ import Clam_NetworkProxy
 import DummyProcessingsModule
 import unittest
 import TestFixtures
+from Exceptions import *
 
 class Clam_NetworkProxyTests(unittest.TestCase):
 
@@ -47,7 +48,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		engine.addProcessing("DummyPortSink","SameName")
 		try :
 			engine.addProcessing("DummyPortSource","SameName")
-		except AssertionError, e :
+		except NameAlreadyExists, e :
 			self.assertEqual(e.message,
 				"Name 'SameName' already exists")
 		else :
@@ -59,9 +60,8 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		try :
 			engine.addProcessing("BadType","Name")
 		except Exception, e :
-			self.assertTrue(e.message.startswith(
-				"GetCreatorSafe invoked with a non existent key: BadType\n")
-				)
+			self.assertEqual(e.message,
+				"Type 'BadType' is not available")
 		else :
 			self.fail("Runtime error expected")
 		self.assertEqual([], engine.processingNames())
@@ -86,7 +86,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		engine = self.engine()
 		try :
 			engine.processingType("Missing")
-		except AssertionError, e :
+		except ProcessingNotFound, e :
 			self.assertEqual("Processing 'Missing' not found", e.message)
 		else:
 			self.fail("Failed assertion expected")
@@ -96,7 +96,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		try :
 			engine.processingHasConnector(
 				'MissingProcessing', "Port", "In", "Inport1")
-		except AssertionError, e :
+		except ProcessingNotFound, e :
 			self.assertEqual(e.message,
 				"Processing 'MissingProcessing' not found")
 		else :
@@ -364,7 +364,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		engine = self.engine()
 		try :
 			engine.deleteProcessing("Missing")
-		except AssertionError, e:
+		except ProcessingNotFound, e:
 			self.assertEquals(e.message,
 				"Processing 'Missing' not found")
 		else :
@@ -381,7 +381,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		engine = self.engine()
 		try:
 			engine.renameProcessing("missing", "proc2")
-		except AssertionError, e:
+		except ProcessingNotFound, e:
 			self.assertEquals(e.message,
 				"Processing 'missing' not found")
 		else:
@@ -393,8 +393,9 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		engine.addProcessing("DummyPortSource","proc2")
 		try:
 			engine.renameProcessing("proc1", "proc2")
-		except AssertionError, e:
-			self.assertEquals(("Name 'proc2' already exists", ), e.args)
+		except NameAlreadyExists, e:
+			self.assertEquals(e.message,
+				"Name 'proc2' already exists")
 		else:
 			self.fail("Exception expected")
 
@@ -438,7 +439,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		try:
 			engine.connect("Port", "proc1", "Outport1", "Missing", "Inport1")
 			self.fail("Exception expected")
-		except AssertionError, e:
+		except ProcessingNotFound, e:
 			self.assertEquals(("Processing 'Missing' not found", ), e.args)
 
 	def test_connect_missingFromProcessing(self) :
@@ -446,7 +447,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		engine.addProcessing("DummyProcessingWithInAndOutPorts", "proc1")
 		try:
 			engine.connect("Port", "Missing", "Outport1", "proc1", "Inport1")
-		except AssertionError, e:
+		except ProcessingNotFound, e:
 			self.assertEquals(e.message,
 				"Processing 'Missing' not found" )
 		else :
@@ -458,7 +459,7 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 		try:
 			engine.connect("Port", "Missing", "Outport1", "proc1", "Inport1")
 			self.fail("Exception expected")
-		except AssertionError, e:
+		except ProcessingNotFound, e:
 			self.assertEquals(e.message,
 				"Processing 'Missing' not found" )
 
@@ -477,11 +478,11 @@ class Dummy_NetworkTest(Clam_NetworkProxyTests) :
 #	def test_processingNames_whenAddingAProcessing(self): pass
 #	def test_processingNames_whenAddingTwoProcessings(self): pass
 #	def test_addProcessing_takenName(self): pass
-	def test_addProcessing_badType(self): pass
+#	def test_addProcessing_badType(self): pass
 #	def test_hasProcessing_whenEmpty(self): pass
 #	def test_hasProcessing_whenAdding(self): pass
 #	def test_processingType(self): pass
-	def test_processingType_whenMissing(self): pass
+#	def test_processingType_whenMissing(self): pass
 	def test_processingHasConnector_missingProcessing(self): pass
 	def test_processingHasConnector_InPort_missing(self): pass
 	def test_processingHasConnector_InPort(self): pass
@@ -491,13 +492,13 @@ class Dummy_NetworkTest(Clam_NetworkProxyTests) :
 	def test_processingHasConnector_InControl(self): pass
 	def test_processingHasConnector_OutControl(self): pass
 	def test_processingHasConnector_OutControl_missing(self): pass
-	def test_getDescription_whenNotSet(self): pass
-	def test_setDescription_whenSet(self): pass
+#	def test_getDescription_whenNotSet(self): pass
+#	def test_setDescription_whenSet(self): pass
 	def test_processingConnectors_withInportAndOutport(self): pass
 	def test_processingConnectors_withIncontrolAndOutcontrol(self): pass
 	def test_processingConnectors_withMultiplePortsAndControls(self): pass
-	def test_connect_ports(self): pass
-	def test_connect_controls(self): pass
+#	def test_connect_ports(self): pass
+#	def test_connect_controls(self): pass
 	def test_connectorType_forPorts(self) : pass
 	def test_connectorType_forControls(self) : pass
 	def test_connectionExists_onControls_whenItDoesnt(self): pass
@@ -516,15 +517,15 @@ class Dummy_NetworkTest(Clam_NetworkProxyTests) :
 	def test_connectorIndex_outcontrol(self): pass
 	def test_portConnections(self): pass
 	def test_controlConnections(self): pass
-	def test_deleteProcessing(self): pass
-	def test_deleteProcessing_missing(self): pass
-	def test_renameProcessing(self): pass
-	def test_renameProcessing_missing(self): pass
-	def test_renameProcessing_takenName(self): pass
+#	def test_deleteProcessing(self): pass
+#	def test_deleteProcessing_missing(self): pass
+#	def test_renameProcessing(self): pass
+#	def test_renameProcessing_missing(self): pass
+#	def test_renameProcessing_takenName(self): pass
 	def test_connect_whenAlreadyConnected(self) : pass
 	def test_connect_missingFromPort(self) : pass
 	def test_connect_missingToPort(self) : pass
-	def test_connect_missingToProcessing(self) : pass
+#	def test_connect_missingToProcessing(self) : pass
 	def test_connect_missingFromProcessing(self) : pass
 	def test_connect_missingToProcessing(self) : pass
 
