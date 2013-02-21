@@ -207,6 +207,30 @@ _dummyPrototypes = dict(
 		outcontrols = [
 			]
 	),
+	Dummy6IOControls = dict(
+		type = "Dummy6IOControls",
+		config = odict(),
+		inports = [
+			],
+		outports = [
+			],
+		incontrols = [
+			['incontrol1', 'DataType'],
+			['incontrol2', 'DataType'],
+			['incontrol3', 'DataType'],
+			['incontrol4', 'DataType'],
+			['incontrol5', 'DataType'],
+			['incontrol6', 'DataType'],
+			],
+		outcontrols = [
+			['outcontrol1', 'DataType'],
+			['outcontrol2', 'DataType'],
+			['outcontrol3', 'DataType'],
+			['outcontrol4', 'DataType'],
+			['outcontrol5', 'DataType'],
+			['outcontrol6', 'DataType'],
+			]
+	),
 )
 
 from Exceptions import *
@@ -217,8 +241,8 @@ class Dummy_NetworkProxy :
 		self._processings = dict()
 		for process in processings:
 			self._processings[process['name']] = process
-		self._portConnections = portConnections
-		self._controlConnections = controlConnections
+		self._portConnections = portConnections or []
+		self._controlConnections = controlConnections or []
 		self._types = types
 		self._description = description
 
@@ -241,6 +265,8 @@ class Dummy_NetworkProxy :
 		del self._processings[oldName]
 
 	def processingConnectors(self, name, kind, direction) :
+		if name not in self._processings :
+			raise ProcessingNotFound(name)
 		connectorKindName = _kind2Name[(kind,direction)]
 		return [name for name,type in self._processings[name][connectorKindName]]
 
@@ -255,11 +281,14 @@ class Dummy_NetworkProxy :
 		connectorKindName = _kind2Name[(kind,direction)]
 		for i, (name, type) in enumerate(self._processings[processingName][connectorKindName]):
 			if name == connectorName: return i
+		return -1
 
 	def connectorType(self, processingName, kind, direction, connectorName) :
+		self._assertHasProcessing(processingName)
 		connectorKindName = _kind2Name[(kind,direction)]
 		for name, type in self._processings[processingName][connectorKindName]:
 			if name == connectorName: return type
+		raise ConnectorNotFound(processingName, kind, direction, connectorName)
 
 	def hasProcessing(self, processingName) :
 		return processingName in self._processings
@@ -282,10 +311,9 @@ class Dummy_NetworkProxy :
 		return self.connectorType(fromProcessing, kind, Connector.Out, fromConnector) == self.connectorType(toProcessing, kind, Connector.In, toConnector)
 
 	def connect(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
-		assert self.hasProcessing(fromProcessing), "%s does not exist" %(fromProcessing)
-		assert self.hasProcessing(toProcessing), "%s does not exist" %(toProcessing)
-		assert self.processingHasConnector(fromProcessing, kind, Connector.Out, fromConnector), "%s does not have connector %s"%(fromProcessing, fromConnector)
-		assert self.processingHasConnector(toProcessing, kind, Connector.In, toConnector), "%s does not have connector %s"%(toProcessing, toConnector)
+		self._assertHasConnector(fromProcessing, kind, Connector.Out, fromConnector)
+		self._assertHasConnector(toProcessing, kind, Connector.In, toConnector)
+
 		assert self.areConnectable(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s and %s have incompatible types"%(fromConnector, toConnector)
 		assert not self.connectionExists(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s.%s and %s.%s already connected"%(fromProcessing, fromConnector, toProcessing, toConnector)
 		connections = self._controlConnections if kind == Connector.Control else self._portConnections
@@ -313,6 +341,7 @@ class Dummy_NetworkProxy :
 			self._portConnections.remove((fromProcessing, fromConnector, toProcessing, toConnector))
 		else:
 			self._controlConnections.remove((fromProcessing, fromConnector, toProcessing, toConnector))
+		return True
 
 	def getDescription(self):
 		return self._description
@@ -321,9 +350,15 @@ class Dummy_NetworkProxy :
 		self._description = description
 
 	def deleteProcessing(self, processingName):
-		if processingName not in self._processings:
-			raise ProcessingNotFound(processingName)
+		self._assertHasProcessing(processingName)
 		del self._processings[processingName]
 
+	def _assertHasProcessing(self, name) :
+		if not self.hasProcessing(name) :
+			raise ProcessingNotFound(name)
 
+	def _assertHasConnector(self, proc, kind, direction, connector) :
+		self._assertHasProcessing(proc)
+		if not self.processingHasConnector(proc, kind, direction, connector) :
+			raise ConnectorNotFound(proc, kind, direction, connector)
 

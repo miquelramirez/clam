@@ -578,4 +578,40 @@ public:
 	bool Do() { return true; }
 };
 
+class Dummy6IOControls : public CLAM::Processing
+{
+	CLAM::InControl<float> mIn1;
+	CLAM::InControl<float> mIn2;
+	CLAM::InControl<float> mIn3;
+	CLAM::InControl<float> mIn4;
+	CLAM::InControl<float> mIn5;
+	CLAM::InControl<float> mIn6;
+	CLAM::OutControl<float> mOut1;
+	CLAM::OutControl<float> mOut2;
+	CLAM::OutControl<float> mOut3;
+	CLAM::OutControl<float> mOut4;
+	CLAM::OutControl<float> mOut5;
+	CLAM::OutControl<float> mOut6;
+public:
+	const char* GetClassName() const { return "Dummy6IOControls"; }
+	Dummy6IOControls(const Config& config = Config()) 
+		: mIn1("incontrol1", this)
+		, mIn2("incontrol2", this)
+		, mIn3("incontrol3", this)
+		, mIn4("incontrol4", this)
+		, mIn5("incontrol5", this)
+		, mIn6("incontrol6", this)
+		, mOut1("outcontrol1", this)
+		, mOut2("outcontrol2", this)
+		, mOut3("outcontrol3", this)
+		, mOut4("outcontrol4", this)
+		, mOut5("outcontrol5", this)
+		, mOut6("outcontrol6", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do() { return true; }
+};
+
 #endif // DummyProcessings_hxx

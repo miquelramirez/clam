@@ -17,4 +17,10 @@ class ProcessingNotFound(IpyclamRTException):
 		self.processingName = name
 		self.message = "Processing '{0}' not found".format(name)
 
+class ConnectorNotFound(IpyclamRTException):
+	def __init__(self, processing, kind, direction, name) :
+		self.connection = processing, kind, direction, name
+		self.message = "{0} {1} connector '{2}' not found in processing '{3}'".format(
+			direction, kind, name, processing)
+
 

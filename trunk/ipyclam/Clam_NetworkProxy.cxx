@@ -171,8 +171,14 @@ void assertConnectorExists(CLAM::Network & network,
 {
 	if ( processingHasConnector(network, processingName, kind, direction, name) )
 		return;
-	std::string errorMsg = processingName + " does not have connector " + name;
-	throwPythonException(PyExc_AssertionError, errorMsg);
+	py::object exception = relative_import("Exceptions").attr("ConnectorNotFound");
+	py::object errorArgs = py::make_tuple(
+		py::object(processingName),
+		py::object(kind),
+		py::object(direction),
+		py::object(name));
+	PyErr_SetObject(exception.ptr(), errorArgs.ptr() );
+	py::throw_error_already_set();
 }
 
 
@@ -268,6 +274,7 @@ bool connect(CLAM::Network & network, const std::string & kind, const std::strin
 
 std::string connectorType(CLAM::Network & network, const std::string & processingName, const std::string & kind, const std::string & direction, const std::string & connectorName)
 {
+	assertConnectorExists(network, processingName, kind, direction, connectorName);
 	const std::string connector = processingName + "." + connectorName;
 	if (kind == "Port")
 	{
@@ -352,42 +359,30 @@ int connectorIndex(CLAM::Network & network, const std::string & processingName, 
 	{
 		if (direction == "In")
 		{
-			CLAM::InPortBase & inport = network.GetInPortByCompleteName(connector);
 			for(unsigned int i = 0; i < proc.GetNInPorts(); ++i)
-			{
-				if(&inport == &proc.GetInPort(i))
+				if(connectorName == proc.GetInPort(i).GetName())
 					return i;
-			}
 		}
 		else
 		{
-			CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(connector);
 			for(unsigned int i = 0; i < proc.GetNOutPorts(); ++i)
-			{
-				if(&outport == &proc.GetOutPort(i))
+				if(connectorName == proc.GetOutPort(i).GetName())
 					return i;
-			}
 		}
 	}
 	else
 	{
 		if (direction == "In")
 		{
-			CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(connector);
 			for(unsigned int i = 0; i < proc.GetNInControls(); ++i)
-			{
-				if(&incontrol == &proc.GetInControl(i))
+				if(connectorName == proc.GetInControl(i).GetName())
 					return i;
-			}
 		}
 		else
 		{
-			CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(connector);
 			for(unsigned int i = 0; i < proc.GetNOutControls(); ++i)
-			{
-				if(&outcontrol == &proc.GetOutControl(i))
+				if(connectorName == proc.GetOutControl(i).GetName())
 					return i;
-			}
 		}
 	}
 	return -1;
