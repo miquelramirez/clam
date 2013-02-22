@@ -6,7 +6,7 @@ from Exceptions import BadProcessingType
 from Exceptions import ProcessingNotFound
 from Exceptions import ConnectorNotFound
 
-import DummyProcessingsModule # 0 python content, loads dummy CLAM processings
+import DummyProcessings # 0 python content, loads dummy CLAM processings
 
 class Clam_NetworkProxyTests(unittest.TestCase):
 
