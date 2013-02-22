@@ -106,7 +106,7 @@ class ConnectorTests(unittest.TestCase):
 
 	def peerList(self, connector) :
 		return "".join((
-			"{0}.{1}\n".format(peer.host.name, peer.name)
+			"{0}\n".format(peer.fullname)
 			for peer in connector.peers))
 
 	def test_connectTwoPorts(self) :
