@@ -9,6 +9,9 @@ _connectorKindNames = [
 	]
 _kind2Name = dict([((k,d),n) for k,d,n in _connectorKindNames])
 
+def kind2Name(k,d) :
+	return _kind2Name[(k,d)]
+
 _dummyPrototypes = dict(
 	DummyTypeProcessing1 = dict(
 		type = "DummyTypeProcessing1",
@@ -336,7 +339,7 @@ class Dummy_NetworkProxy :
 	def processingConnectors(self, name, kind, direction) :
 		if name not in self._processings :
 			raise ProcessingNotFound(name)
-		connectorKindName = _kind2Name[(kind,direction)]
+		connectorKindName = kind2Name(kind,direction)
 		return [name for name,type in self._processings[name][connectorKindName]]
 
 	def connectorPeers(self, processingName, kind, direction, portName):
@@ -347,14 +350,14 @@ class Dummy_NetworkProxy :
 			return [x[2:4] for x in connections if (processingName, portName)==x[0:2] ]
 
 	def connectorIndex(self, processingName, kind, direction, connectorName) :
-		connectorKindName = _kind2Name[(kind,direction)]
+		connectorKindName = kind2Name(kind,direction)
 		for i, (name, type) in enumerate(self._processings[processingName][connectorKindName]):
 			if name == connectorName: return i
 		return -1
 
 	def connectorType(self, processingName, kind, direction, connectorName) :
 		self._assertHasProcessing(processingName)
-		connectorKindName = _kind2Name[(kind,direction)]
+		connectorKindName = kind2Name(kind,direction)
 		for name, type in self._processings[processingName][connectorKindName]:
 			if name == connectorName: return type
 		raise ConnectorNotFound(processingName, kind, direction, connectorName)
