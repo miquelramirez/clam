@@ -201,16 +201,12 @@ py::list processingConnectors(CLAM::Network & network, const std::string & proce
 		if (direction == "In")
 		{
 			for(unsigned int i = 0; i < proc.GetNInPorts(); ++i)
-			{
 				connectors.append(proc.GetInPort(i).GetName());
-			}
 		}	
 		else
 		{
 			for(unsigned int i = 0; i < proc.GetNOutPorts(); ++i)
-			{
 				connectors.append(proc.GetOutPort(i).GetName());
-			}
 		}
 	}
 	else
@@ -218,16 +214,12 @@ py::list processingConnectors(CLAM::Network & network, const std::string & proce
 		if (direction == "In")
 		{
 			for(unsigned int i = 0; i < proc.GetNInControls(); ++i)
-			{
 				connectors.append(proc.GetInControl(i).GetName());
-			}
 		}
 		else
 		{
 			for(unsigned int i = 0; i < proc.GetNOutControls(); ++i)
-			{
 				connectors.append(proc.GetOutControl(i).GetName());
-			}
 		}
 	}
 	return connectors;
@@ -252,6 +244,28 @@ bool connectionExists(CLAM::Network & network, const std::string & kind, const s
 	}
 }
 
+bool areConnectable(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
+{
+	const std::string producer = fromProcessing + "." + fromConnector;
+	const std::string consumer = toProcessing + "." + toConnector;
+
+	assertConnectorExists(network, fromProcessing, kind, "Out", fromConnector);
+	assertConnectorExists(network, toProcessing, kind, "In", toConnector);
+
+	if (kind == "Port")
+	{
+		CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(producer);
+		CLAM::InPortBase & inport = network.GetInPortByCompleteName(consumer);
+		return outport.IsConnectableTo(inport);
+	}
+	else
+	{
+		CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(producer);
+		CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(consumer);
+		return outcontrol.IsLinkable(incontrol);
+	}
+}
+
 bool connect(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
 {
 	const std::string producer = fromProcessing + "." + fromConnector;
@@ -263,6 +277,11 @@ bool connect(CLAM::Network & network, const std::string & kind, const std::strin
 	if ( connectionExists(network, kind, fromProcessing, fromConnector, toProcessing, toConnector) )
 	{
 		std::string errorMsg = producer + " and "+ consumer + " already connected";
+		throwPythonException(PyExc_AssertionError, errorMsg);
+	}
+	if ( not areConnectable(network, kind, fromProcessing, fromConnector, toProcessing, toConnector) )
+	{
+		std::string errorMsg = producer + " and "+ consumer + " have incompatible types";
 		throwPythonException(PyExc_AssertionError, errorMsg);
 	}
 
@@ -461,28 +480,6 @@ void deleteProcessing(CLAM::Network & network, const std::string & processingNam
 {
 	assertProcessingExists(network, processingName);
 	network.RemoveProcessing(processingName);
-}
-
-bool areConnectable(CLAM::Network & network, const std::string & kind, const std::string & fromProcessing, const std::string &fromConnector, const std::string & toProcessing, const std::string & toConnector)
-{
-	const std::string producer = fromProcessing + "." + fromConnector;
-	const std::string consumer = toProcessing + "." + toConnector;
-
-	assertConnectorExists(network, fromProcessing, kind, "Out", fromConnector);
-	assertConnectorExists(network, toProcessing, kind, "In", toConnector);
-
-	if (kind == "Port")
-	{
-		CLAM::OutPortBase & outport = network.GetOutPortByCompleteName(producer);
-		CLAM::InPortBase & inport = network.GetInPortByCompleteName(consumer);
-		return outport.IsConnectableTo(inport);
-	}
-	else
-	{
-		CLAM::OutControlBase & outcontrol = network.GetOutControlByCompleteName(producer);
-		CLAM::InControlBase & incontrol = network.GetInControlByCompleteName(consumer);
-		return outcontrol.IsLinkable(incontrol);
-	}
 }
 
 ConfigurationProxy * processingConfig(CLAM::Network & network, const std::string & processingName)

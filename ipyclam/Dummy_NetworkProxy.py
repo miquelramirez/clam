@@ -183,6 +183,26 @@ _dummyPrototypes = dict(
 		incontrols = [],
 		outcontrols = []
 	),
+	Dummy2IOPortsControls = dict(
+		type = "Dummy2IOPortsControls",
+		config = odict(),
+		inports = [
+			['inport1', 'DataType'],
+			['inport2', 'DataType'],
+			],
+		outports = [
+			['outport1', 'DataType'],
+			['outport2', 'DataType'],
+			],
+		incontrols = [
+			['incontrol1', 'DataType'],
+			['incontrol2', 'DataType'],
+			],
+		outcontrols = [
+			['outcontrol1', 'DataType'],
+			['outcontrol2', 'DataType'],
+			]
+	),
 	Dummy6IOPorts = dict(
 		type = "Dummy6IOPorts",
 		config = odict(),
@@ -314,7 +334,10 @@ class Dummy_NetworkProxy :
 		self._assertHasConnector(fromProcessing, kind, Connector.Out, fromConnector)
 		self._assertHasConnector(toProcessing, kind, Connector.In, toConnector)
 
-		assert self.areConnectable(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s and %s have incompatible types"%(fromConnector, toConnector)
+		assert self.areConnectable(kind,
+			fromProcessing, fromConnector, toProcessing, toConnector
+			), "%s.%s and %s.%s have incompatible types"%(
+			fromProcessing, fromConnector, toProcessing, toConnector)
 		assert not self.connectionExists(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s.%s and %s.%s already connected"%(fromProcessing, fromConnector, toProcessing, toConnector)
 		connections = self._controlConnections if kind == Connector.Control else self._portConnections
 		connections.append((fromProcessing, fromConnector, toProcessing, toConnector))

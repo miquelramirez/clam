@@ -56,7 +56,7 @@ public:
 	}
 };
 
-class DummyProcessingWithMultiplePortsAndControls : public CLAM::Processing
+class Dummy2IOPortsControls : public CLAM::Processing
 {
 	CLAM::InPort<float> mIn;
 	CLAM::InPort<float> mIn2;
@@ -67,16 +67,16 @@ class DummyProcessingWithMultiplePortsAndControls : public CLAM::Processing
 	CLAM::OutControl<float> mOutControl;
 	CLAM::OutControl<float> mOutControl2;
 public:
-	const char* GetClassName() const { return "DummyProcessingWithMultiplePortsAndControls"; }
-	DummyProcessingWithMultiplePortsAndControls(const Config& config = Config()) 
-		: mIn("Inport1", this)
-		, mIn2("Inport2", this)
-		, mOut("Outport1", this)
-		, mOut2("Outport2", this)
-		, mInControl("Incontrol1", this)
-		, mInControl2("Incontrol2", this)
-		, mOutControl("Outcontrol1", this)
-		, mOutControl2("Outcontrol2", this)
+	const char* GetClassName() const { return "Dummy2IOPortsControls"; }
+	Dummy2IOPortsControls(const Config& config = Config()) 
+		: mIn("inport1", this)
+		, mIn2("inport2", this)
+		, mOut("outport1", this)
+		, mOut2("outport2", this)
+		, mInControl("incontrol1", this)
+		, mInControl2("incontrol2", this)
+		, mOutControl("outcontrol1", this)
+		, mOutControl2("outcontrol2", this)
 	{
 		Configure( config );
 	}
@@ -612,6 +612,30 @@ public:
 	}
  
 	bool Do() { return true; }
+};
+
+// Created for compatibility with Dummy Testing
+class OtherControlSink : public CLAM::Processing
+{
+private:
+	CLAM::InControl<bool> mInControl;
+public:
+	const char* GetClassName() const { return "OtherControlSink"; }
+	OtherControlSink(const Config& config = Config()) 
+		: mInControl("InControl1", this)
+	{
+		Configure( config );
+	}
+ 
+	bool Do()
+	{
+		return true;
+	}
+
+	bool Do(float in, float out)
+	{
+		return true;
+	}
 };
 
 #endif // DummyProcessings_hxx

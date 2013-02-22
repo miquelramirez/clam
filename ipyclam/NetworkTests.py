@@ -493,6 +493,22 @@ class NetworkTests(object):
 			"\n\n"
 			, net.code(fullConfig=True))
 
+	def test_connect_from_processing_to_processing(self):
+		net = Network(self.empty())
+		net.proc1 = "Dummy2IOPortsControls"
+		net.proc2 = "Dummy2IOPortsControls"
+		self.assertEquals(4, net.proc1 > net.proc2)
+		self.maxDiff = 1000
+		self.assertMultiLineEqual(
+			"network.proc1 = 'Dummy2IOPortsControls'\n"
+			"network.proc2 = 'Dummy2IOPortsControls'\n"
+			"\n"
+			"network.proc1.outport1 > network.proc2.inport1\n"
+			"network.proc1.outport2 > network.proc2.inport2\n"
+			"network.proc1.outcontrol1 > network.proc2.incontrol1\n"
+			"network.proc1.outcontrol2 > network.proc2.incontrol2"
+			, net.code())
+
 """
 	Tests for Network isStopped, isPlaying, isPaused
 """
@@ -594,21 +610,6 @@ class NetworkTests_Clam(NetworkTests, unittest.TestCase):
 		self.assertEquals(2, c.NSources)
 		net.p._config = c
 		self.assertEquals(2, net.p.NSources)
-
-	def test_connect_from_processing_to_processing(self):
-		net = Network(self.empty())
-		net.proc1 = "DummyProcessingWithMultiplePortsAndControls"
-		net.proc2 = "DummyProcessingWithMultiplePortsAndControls"
-		self.assertEquals(4, net.proc1 > net.proc2)
-		self.assertEquals(
-			"network.proc1 = 'DummyProcessingWithMultiplePortsAndControls'\n"
-			"network.proc2 = 'DummyProcessingWithMultiplePortsAndControls'\n"
-			"\n"
-			"network.proc1.Outport1 > network.proc2.Inport1\n"
-			"network.proc1.Outport2 > network.proc2.Inport2\n"
-			"network.proc1.Outcontrol1 > network.proc2.Incontrol1\n"
-			"network.proc1.Outcontrol2 > network.proc2.Incontrol2"
-			, net.code())
 
 
 if __name__ == '__main__':
