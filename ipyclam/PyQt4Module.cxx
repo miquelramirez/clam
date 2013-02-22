@@ -1,7 +1,7 @@
 #include <boost/python.hpp>
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
-#include "shibokenunwrap.hxx"
+#include "sipunwrap.hxx"
 #include <QtUiTools/QUiLoader>
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
@@ -37,10 +37,10 @@ QWidget * loadUiGeneric(const std::string & uifilename)
 	return userInterface;
 }
 
-PyObject * loadUiPySide(const std::string & uifilename)
+PyObject * loadUiPyQt4(const std::string & uifilename)
 {
 	QWidget * userInterface = loadUiGeneric(uifilename);
-	PyObject * object = shibokenWrap(userInterface);
+	PyObject * object = sipWrap(userInterface);
 	return object;
 }
 
@@ -57,10 +57,10 @@ QWidget * createWidgetGeneric(const std::string & className)
 	return loader.createWidget(qClassName);
 }
 
-PyObject * createWidgetPySide(const std::string & className)
+PyObject * createWidgetPyQt4(const std::string & className)
 {
 	QWidget * widget = createWidgetGeneric(className);
-	return shibokenWrap(widget);
+	return sipWrap(widget);
 }
 
 py::list availableWidgets()
@@ -72,17 +72,17 @@ py::list availableWidgets()
 	return result;
 }
 
-BOOST_PYTHON_MODULE(PySide)
+BOOST_PYTHON_MODULE(PyQt4)
 {
 	// Keep 'using namespace' in the inner scope
 	using namespace boost::python;
 
 	def("loadUi",
-		loadUiPySide,
+		loadUiPyQt4,
 		"Returns a QWidget filled with the given qt ui (PySide version)."
 		);
 	def("createWidget",
-		createWidgetPySide,
+		createWidgetPyQt4,
 		"Returns QWidget from a Qt plugin of the named class using Qt factories (PySide version)."
 		);
 	def("availableWidgets",

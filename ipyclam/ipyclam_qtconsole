@@ -1,0 +1,27 @@
+#!/usr/bin/python
+#coding: utf-8
+'''
+Updated for IPython 0.13
+Created on 18-03-2012
+Updated:   11-09-2012
+@author: Paweł Jarosz
+'''
+import ipyclam
+import ipyclam.qtconsole
+from PySide import QtGui
+
+def main():
+
+    import ipyclam
+    app = QtGui.QApplication([])
+
+    widget = ipyclam.qtconsole.IPythonConsoleQtWidget()
+    widget.namespace_inject("ipyclam", ipyclam)
+    widget.namespace_inject("net", ipyclam.Network())
+    widget.show()
+    app.exec_()
+
+
+if __name__=='__main__':
+    main()
+

@@ -60,7 +60,7 @@ void throwPythonException(PyObject * type, const std::string & msg)
 
 void throwIpyclamException(const std::string & type, const std::string & msg)
 {
-	py::object exception = relative_import("Exceptions").attr(type.c_str());
+	py::object exception = relative_import("ipyclam.Exceptions").attr(type.c_str());
 	PyErr_SetString(exception.ptr(), msg.c_str() );
 	py::throw_error_already_set();
 }
@@ -171,7 +171,7 @@ void assertConnectorExists(CLAM::Network & network,
 {
 	if ( processingHasConnector(network, processingName, kind, direction, name) )
 		return;
-	py::object exception = relative_import("Exceptions").attr("ConnectorNotFound");
+	py::object exception = relative_import("ipyclam.Exceptions").attr("ConnectorNotFound");
 	py::object errorArgs = py::make_tuple(
 		py::object(processingName),
 		py::object(kind),
@@ -574,82 +574,6 @@ void bindUi(CLAM::Network & network, PyObject * object)
 		errors.join("\n"));
 }
 
-
-QWidget * loadUiGeneric(CLAM::Network & network, const std::string & uifilename)
-{
-	QString uiFile = uifilename.c_str();
-	QFile file(uiFile);
-	file.open(QFile::ReadOnly);
-	QUiLoader loader;
-	loader.addPluginPath("/user/share/NetworkEditor/qtplugins"); //TODO Make that an option
-	QDir dir(QApplication::applicationDirPath());
-	loader.addPluginPath( QString(dir.absolutePath())+"/../plugins" ); //TODO do only for mac?
-
-	QStringList paths = loader.pluginPaths();
-	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
-	{
-		std::cout << "Looking for plugins at path: " << it->toLocal8Bit().constData() << std::endl;
-	}
-	QWidget * userInterface = loader.load(&file, 0 );
-	file.close();
-	if (userInterface)
-	{
-		if (userInterface->windowIcon().isNull())
-			userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
-	}
-	return userInterface;
-}
-
-
-PyObject * loadUiPySide(CLAM::Network & network, const std::string & uifilename)
-{
-	QWidget * userInterface = loadUiGeneric(network, uifilename);
-	PyObject * object = shibokenWrap(userInterface);
-	return object;
-}
-
-PyObject * loadUi(CLAM::Network & network, const std::string & uifilename)
-{
-	QWidget * userInterface = loadUiGeneric(network, uifilename);
-	PyObject * object = sipWrap(userInterface);
-	return object;
-}
-
-QWidget * createWidgetGeneric(const std::string & className)
-{
-	QUiLoader loader;
-	QString qClassName = className.c_str();
-	if (not loader.availableWidgets().contains(qClassName))
-	{
-		// TODO: Turn this into an exception
-		foreach (const QString & availableClassName, loader.availableWidgets())
-			std::cout << availableClassName.toStdString() << std::endl;
-	}
-	return loader.createWidget(qClassName);
-}
-
-PyObject * createWidgetPySide(CLAM::Network & network, const std::string & className)
-{
-	QWidget * widget = createWidgetGeneric(className);
-	return shibokenWrap(widget);
-}
-
-PyObject * createWidget(CLAM::Network & network, const std::string & className)
-{
-	QWidget * widget = createWidgetGeneric(className);
-	return sipWrap(widget);
-}
-
-py::list availableWidgets(CLAM::Network & network)
-{
-	py::list result;
-	QUiLoader loader;
-	foreach (const QString & availableClassName, loader.availableWidgets())
-		result.append(availableClassName.toStdString());
-	return result;
-}
-
-
 void load(CLAM::Network & network, const std::string & filename)
 {
 	try
@@ -810,26 +734,6 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("bindUi",
 			bindUi,
 			"Binds..."
-			)
-		.def("loadUi",
-			loadUi,
-			"Returns a QWidget filled with the given qt ui (PyQt4 version)."
-			)
-		.def("loadUiPySide",
-			loadUiPySide,
-			"Returns a QWidget filled with the given qt ui (PySide version)."
-			)
-		.def("createWidget",
-			createWidget,
-			"Returns QWidget from a Qt plugin of the named class using Qt factories (PyQt4 version)."
-			)
-		.def("createWidgetPySide",
-			createWidgetPySide,
-			"Returns QWidget from a Qt plugin of the named class using Qt factories (PySide version)."
-			)
-		.def("availableWidgets",
-			availableWidgets,
-			"Returns the names of the widget classes that can be instantiated by createWidget."
 			)
 		;
 }
