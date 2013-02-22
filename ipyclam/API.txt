@@ -1,9 +1,9 @@
 - General controls
 	# with an implicit network would be free functions.
 	network.load("filename.clamnetwork")
-	network.import("<Network> .... </Network>")
-	network.save()
-	network.save("filename")
+	network.save("filename.clamnetwork")
+	network.xml()     #  dumps xml of the network
+	network.code()    #  dumps the Python code to get it
 
 - Transport
 	# with an implicit network would be free functions.
@@ -16,64 +16,70 @@
 	network.whyIsNotReady # TOREVIEW
 
 - Processings
-	proc = network.add("ProcessingType")
-	proc = network.add("name", "ProcessingType")
-	proc = add("ProcessingType") # implicit network
-	proc = add("name", "ProcessingType") # implicit network
-	network.remove("name")
-	remove(proc) # implicit network alternative
-	proc.remove() # alternative
-	ports = proc._outports  # connections is an iterable
-	ports = proc._inports  # connections is an iterable
-	controls = proc._outcontrols  # connections is an iterable
-	controls = proc._incontrols  # connections is an iterable
-	proc.rename("newname")
-	proc2 = proc.clone()
-	proc2 = proc.clone("name2")
-	network.processing1 = "ProcessingType" # new proposal
-	del network.processing1 # new proposal
+	net.proc = "ProcessingType"  # creation
+	net.proc = net.types.ProcessingType # creation tab completion friendly types
+	net['proc'] = "ProcessingType"   # creation for non proper id names
+	del net.proc              # removal
+	net.proc.name = "newname" # renaming
+	net.proc.name   # accessing the name
+	net.proc.type   # accessing the type
+
+	# not yet implemented
+	net.proc2 = proc.clone()
+	net.clone(net.proc1, net.proc2...) # copy with inter connections
 
 - Processing Configuration
-	# Changes on proc._config has no effect on the processing 
-	# until 'reconfigure' is called
+	# changes on config are inmediate unless done under 'with' statement
+	net.proc.ConfigField = newvalue
+	net.proc["ConfigField"] = newvalue
+	net.proc._config["ConfigField"] = newvalue
+	net.proc._config.ConfigField = newvalue
+	# analog options for getters
+
+	# differing reconfiguration until all values are set
+	with net.proc._config as c :
+		c.ConfigField = newvalue
+		c.ConfigField2 = othervalue
+
+	# deattached configs
 	config = Config("ProcessingType")
 	config = proc._config.clone()
-	proc.ConfigField = newvalue
-	proc["ConfigField"] = newvalue
-	proc._config["ConfigField"] = newvalue
-	proc._config.ConfigField = newvalue
-	# analog for getters
-	proc.updateConfig(
-		ConfigField = value1,
-		ConfigField2 = value2,
-	)
-	proc.config=config
-	proc.reconfigure()
-	proc.configured
-	proc.configErrorMessage
+
+	# not yet implemented
+	proc.configErrors
 
 - Obtaining ports/controls
 	proc.Output
 	proc['Output']
 	proc._outports['Output']
 	proc._outports.Output
-	proc._outports[4] # Zero based to be consistent with python indexing
-	proc.Output.type  # not sure what to return
-	proc.Output.name
-	proc.Output.index
+	proc._outports[4] # Fith outport (Zero based)
+	proc.Output.name # name
+	proc.Output.kind # "Port" or "Control"
+	proc.Output.direction # "In" or "Out"
+	proc.Output.index # order within host and same kind and direction
+	proc.Output.type # data type it handles
 	proc.Output.peers # returns a list of connected peers
-	proc.Output.processing
-	proc.Output.peers[0].processing
+	proc.Output.host # the processing that hosts it
+	proc.Output.peers[0].host
 
 - Connecting
-	proc._outports.connect(proc2) # Connects all feasible ports
-	proc._outcontrols.connect(proc2) # Connects all feasible controls
-	proc > proc2        # shorthand for ._outports.connect
-	proc.Output.connect(proc2.Input)
-	proc.Output > proc2.Input      # shorthand for .connect
+	proc1.OutPort1 > proc2.InPort4  # direct port connection
+	proc1 > proc2  # tries first outport with first inport, second with second, and so on, then with controls
+	proc1._outports > proc2  # same as above but restricst to inports
+	proc1._outports[1::2] > proc2  # connect indexes 1,3,5... with 0,1,2...
+	proc1.OutPort1 > proc2 # connects OutPort1 to as many inports in proc2 it can connect to
+	xxx < yyy #  is equivalent but checks the direction is reversed (xxx input, yyy output)
+	xxx.connect(yyy) #  is equivalent with no direction checking is done unless they are two processings, then forward is considered
 
 - Disconnect controls/ports
 	proc.Output.disconnect(proc2.Input)
 	proc.Output.disconnect() # any connected
 	proc.Input.disconnect() # any connected
 	for port in proc._inports : port.disconnect()
+
+	# not yet implemented
+	proc.disconnect()
+
+
+
