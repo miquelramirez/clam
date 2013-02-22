@@ -22,56 +22,83 @@ class ConnectorTests(unittest.TestCase):
 	def test_name(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertEqual(port.name, "InPort1")
+
 	def test_name_isReadOnly(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertRaises(AttributeError, setattr, port, "name", 'InPort2')
+
 	def test_kind_whenPort(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertEqual(port.kind, "Port")
+
 	def test_kind_whenControl(self):
 		control = Connector(self.fixture1(), "proc1", kind=Control, direction=In, name="InControl1")
 		self.assertEqual(control.kind, "Control")
+
 	def test_kind_isReadOnly(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertRaises(AttributeError, setattr, port, "kind", Control)
+
 	def test_direction_whenIn(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertEqual(port.direction, "In")
+
 	def test_direction_whenOut(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=Out, name="InPort1")
 		self.assertEqual(port.direction, "Out")
+
 	def test_direction_isReadOnly(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertRaises(AttributeError, setattr, port, "direction", Out)
+
 	def test_index(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertEqual(port.index, 0)
+
 	def test_index_isReadOnly(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertRaises(AttributeError, setattr, port, "index", 2)
+
 	def test_type(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertEqual(port.type, "f")
+
 	def test_type_isReadOnly(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
 		self.assertRaises(AttributeError, setattr, port, "type", "tipus2")
+
 	def test_host(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="OutPort1")
 		self.assertEqual(port.host.name, "proc1")
 		self.assertEqual(port.host.type, "DummyTypeProcessing1")
-	# TODO: is host read only?
+
+	def test_host_isReadOnly(self):
+		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
+		self.assertRaises(AttributeError, setattr, port, "host", "otherhost")
+
+	def test_fullname(self) :
+		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
+		self.assertEqual(port.fullname, "proc1.InPort1")
+
+	def test_fullname_isReadOnly(self):
+		port = Connector(self.fixture1(), "proc1", kind=Port, direction=In, name="InPort1")
+		self.assertRaises(AttributeError, setattr, port, "fullname", "lala.foo")
+
 	def test_peers_forInPorts(self):
 		port = Connector(self.fixture1(), "proc2", kind=Port, direction=In, name="Inport2")
 		listPeers = [ connector.name for connector in port.peers ]
 		self.assertEqual(['OutPort1'], listPeers)
+
 	def test_peers_forInPorts_whenEmpty(self):
 		port = Connector(self.fixture1(), "proc2", kind=Port, direction=In, name="Inport1")
 		listPeers = [ connector.name for connector in port.peers ]
 		self.assertEqual([], listPeers)
+
 	def test_peers_forIncontrols_whenEmpty(self):
 		port = Connector(self.fixture1(), "proc2", kind=Control, direction=In, name="Incontrol1")
 		listPeers = [ connector.name for connector in port.peers ]
 		self.assertEqual([], listPeers)
+
 	def test_peers_forOutPorts(self):
 		port = Connector(self.fixture1(), "proc1", kind=Port, direction=Out, name="OutPort1")
 		listPeers = [ connector.name for connector in port.peers ]
@@ -119,7 +146,7 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port.connect(port2)
 		except SameConnectorDirection, e:
-			self.assertEquals("Same direction: OutPort1 Outport1", e.__str__())
+			self.assertEquals("Unable to connect: proc1.OutPort1 and proc2.Outport1 have the same direction", e.message)
 		else:
 			self.fail("Exception expected")
 
@@ -131,7 +158,9 @@ class ConnectorTests(unittest.TestCase):
 			port.connect(port2)
 		except DifferentConnectorKind, e:
 			self.assertEqual(e.message,
-				"Different kind: OutPort1 Incontrol1")
+				"Unable to connect: "
+				"proc1.OutPort1 and proc2.Incontrol1 "
+				"are different kinds of connectors")
 		else :
 			self.fail("Exception expected")
 
@@ -144,7 +173,9 @@ class ConnectorTests(unittest.TestCase):
 			self.fail("Exception expected")
 		except DifferentConnectorType, e:
 			self.assertEqual(e.message,
-				"Different type: OutControl1 Incontrol3")
+				"Unable to connect: "
+				"proc1.OutControl1 and proc2.Incontrol3 "
+				"handle different data types")
 
 	def test_connectWith__gt__Operator(self) :
 		engine = self.fixture1()

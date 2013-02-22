@@ -1,21 +1,14 @@
+from Exceptions import BadConnectorDirectionOrder
+from Exceptions import SameConnectorDirection
+from Exceptions import DifferentConnectorKind
+from Exceptions import DifferentConnectorType
+
 In = "In"
 Out = "Out"
 Port = "Port"
 Control = "Control"
 
 class ConnectionExists(Exception):
-	pass
-
-class BadConnectorDirectionOrder(Exception):
-	pass
-
-class DifferentConnectorKind(Exception):
-	pass
-
-class SameConnectorDirection(Exception):
-	pass
-
-class DifferentConnectorType(Exception):
 	pass
 
 class Connector(object):
@@ -56,6 +49,10 @@ class Connector(object):
 		return self._proxy.connectorType(self._hostname(), self.kind, self.direction, self.name)
 
 	@property
+	def fullname(self):
+		return "{0}.{1}".format(self.host.name, self.name)
+
+	@property
 	def host(self):
 		import Processing
 		return Processing.Processing(
@@ -86,32 +83,38 @@ class Connector(object):
 
 		if self.direction == peer.direction :
 			raise SameConnectorDirection(
-				"Same direction: %s %s"%(self.name, peer.name))
+				"Unable to connect: %s and %s "
+				"have the same direction"%(
+					self.fullname, peer.fullname))
 		if self.kind != peer.kind :
 			raise DifferentConnectorKind(
-				"Different kind: %s %s"%(self.name, peer.name))
+				"Unable to connect: %s and %s "
+				"are different kinds of connectors"%(
+					self.fullname, peer.fullname))
 		if self.type != peer.type :
 			raise DifferentConnectorType(
-				"Different type: %s %s"%(self.name, peer.name))
+				"Unable to connect: %s and %s "
+				"handle different data types"%(
+					self.fullname, peer.fullname))
 
 		if self.direction == Out :
-			fromProcessing = self._hostname()
-			fromConnector = self.name
-			toProcessing = peer._hostname()
-			toConnector = peer.name
+			fromSide = self
+			toSide = peer
 		else :
-			fromProcessing = peer._hostname()
-			fromConnector = peer.name
-			toProcessing = self._hostname()
-			toConnector = self.name
+			fromSide = peer
+			toSide = self
+		
+		fromProcessing = fromSide._hostname()
+		fromConnector = fromSide.name
+		toProcessing = toSide._hostname()
+		toConnector = toSide.name
 
 		if self._proxy.connectionExists(self.kind,
 				fromProcessing, fromConnector,
 				toProcessing, toConnector):
 			raise ConnectionExists(
-				"%s.%s and %s.%s already connected"%(
-					fromProcessing, fromConnector,
-					toProcessing, toConnector))
+				"%s and %s already connected"%(
+					fromSide.fullname, toSide.fullname))
 
 		return self._proxy.connect(self.kind,
 			fromProcessing, fromConnector,
@@ -138,9 +141,7 @@ class Connector(object):
 		connections = [connection for connection in connections]
 		for connection in connections:
 			if connection[0:2] == names and peer.name == connection[2]:
-				self._proxy.disconnect(self.kind,
-					self._hostname(), self.name,
-					peer.name, connection[3])
+				self._proxy.disconnect(self.kind, *connection)
 
 	def disconnectFromAllPeers(self):
 		names = (self._hostname(), self.name)
@@ -151,7 +152,5 @@ class Connector(object):
 		connections = [connection for connection in connections]
 		for connection in connections:
 			if connection[0:2] == names:
-				self._proxy.disconnect(self.kind,
-					self._hostname(), self.name,
-					connection[2], connection[3])
+				self._proxy.disconnect(self.kind, *connection)
 

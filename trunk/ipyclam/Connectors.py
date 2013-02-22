@@ -47,14 +47,12 @@ class Connectors(object):
 					for mine,peers in zip(self,peer) ))
 
 	def __gt__(self, peer) :
-		# TODO: Untested check
 		if self.direction == "In" :
 			raise Connector.BadConnectorDirectionOrder(
 				"Wrong connectors order: Output > Input")
 		return self.connect(peer)
 
 	def __lt__(self, peer) :
-		# TODO: Untested check
 		if self.direction == "Out" :
 			raise Connector.BadConnectorDirectionOrder(
 				"Wrong connectors order: Input < Output")
