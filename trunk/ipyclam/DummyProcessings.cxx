@@ -11,7 +11,7 @@ static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, NAME> registrator_##NUM
 
 IPYCLAMTEST_REGISTER_PROCESSING( 1, DummyProcessingWithInAndOutPorts);
 IPYCLAMTEST_REGISTER_PROCESSING( 2, DummyProcessingWithInAndOutControls);
-IPYCLAMTEST_REGISTER_PROCESSING( 3, DummyProcessingWithMultiplePortsAndControls);
+IPYCLAMTEST_REGISTER_PROCESSING( 3, Dummy2IOPortsControls);
 IPYCLAMTEST_REGISTER_PROCESSING( 4, DummyProcessingWithStringConfiguration);
 IPYCLAMTEST_REGISTER_PROCESSING( 5, DummyProcessingWithIntConfiguration);
 IPYCLAMTEST_REGISTER_PROCESSING( 6, DummyProcessingWithCompleteConfiguration);
@@ -28,5 +28,6 @@ IPYCLAMTEST_REGISTER_PROCESSING(16, ProcessingWithNameSpacedControls);
 IPYCLAMTEST_REGISTER_PROCESSING(17, ProcessingWithNumericPorts);
 IPYCLAMTEST_REGISTER_PROCESSING(18, Dummy6IOPorts);
 IPYCLAMTEST_REGISTER_PROCESSING(19, Dummy6IOControls);
+IPYCLAMTEST_REGISTER_PROCESSING(20, OtherControlSink);
 
 
