@@ -1,4 +1,5 @@
 from Processing import Processing
+from Connector import BadConnectorDirectionOrder
 
 import unittest
 class ProcessingTests(object):
@@ -135,7 +136,7 @@ class ProcessingTests(object):
 		engine.addProcessing("DummyPortSource", "psource")
 		return engine
 
-	def test_connect_from_processing_to_processing(self):
+	def test_connect_to_processing(self):
 		engine = self.connectivityFixture()
 		p1 = Processing("multi1", engine)
 		p2 = Processing("multi2", engine)
@@ -151,7 +152,7 @@ class ProcessingTests(object):
 			("multi1", "OutPort3", "multi2", "InPort3"),
 			], engine.portConnections())
 
-	def test_connect_to_processing_from_processing(self):
+	def test_connect_from_processing(self):
 		engine = self.connectivityFixture()
 		p1 = Processing("multi1", engine)
 		p2 = Processing("multi2", engine)
@@ -167,7 +168,24 @@ class ProcessingTests(object):
 			("multi1", "OutPort3", "multi2", "InPort3"),
 			], engine.portConnections())
 
-	def test_connect_from_processing_to_control(self):
+	def test_connect_to_connectors(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+		self.assertEqual(3, multi1 > multi2._incontrols)
+		self.assertEqual(3, multi1 > multi2._inports)
+		self.assertEqual([
+			("multi1", "OutControl1", "multi2", "InControl1"),
+			("multi1", "OutControl2", "multi2", "InControl2"),
+			("multi1", "OutControl3", "multi2", "InControl3"),
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi1", "OutPort1", "multi2", "InPort1"),
+			("multi1", "OutPort2", "multi2", "InPort2"),
+			("multi1", "OutPort3", "multi2", "InPort3"),
+			], engine.portConnections())
+
+	def test_connect_to_connector(self):
 		engine = self.connectivityFixture()
 		multi1 = Processing("multi1", engine)
 		csink = Processing("csink", engine)
@@ -181,43 +199,32 @@ class ProcessingTests(object):
 		self.assertEqual([
 			], engine.portConnections())
 
-	def test_connect_from_processing_to_control(self):
-		engine = self.connectivityFixture()
-		multi1 = Processing("multi1", engine)
-		csink = Processing("csink", engine)
-
-		self.assertEqual(3, multi1 < csink.InControl1)
-		self.assertEqual([
-			("multi1", "OutControl1", "csink", "InControl1"),
-			("multi1", "OutControl2", "csink", "InControl1"),
-			("multi1", "OutControl3", "csink", "InControl1"),
-			], engine.controlConnections())
-		self.assertEqual([
-			], engine.portConnections())
-
-	def test_connect_from_processing_to_port(self):
-		engine = self.connectivityFixture()
-		multi1 = Processing("multi1", engine)
-		psink = Processing("psink", engine)
-
-		self.assertEqual(4, multi1 > psink.InPort1)
-		self.assertEqual([
-			], engine.controlConnections())
-		self.assertEqual([
-			("multi1", "OutPort1", "psink", "InPort1"),
-			("multi1", "OutPort2", "psink", "InPort1"),
-			("multi1", "OutPort3", "psink", "InPort1"),
-			("multi1", "OutPort4", "psink", "InPort1"),
-			], engine.portConnections())
-
-	def test_connect_from_processing_to_connectors(self):
+	def test_connect_to_connectors_wrongDirecction(self):
 		engine = self.connectivityFixture()
 		multi1 = Processing("multi1", engine)
 		multi2 = Processing("multi2", engine)
-		self.assertEqual(3, net.multi1 > net.multi2._incontrols)
-		self.assertEqual(3, net.multi1 > net.multi2._inports)
+		try :
+			multi1 > multi2._outports
+		except BadConnectorDirectionOrder, e:
+			self.assertEqual(e.message,
+				"Wrong connectors order: Output > Input")
+		else :
+			self.fail("Exception expected")
 
-	def test_connect_from_processing_to_connectors(self):
+	def test_connect_to_connector_wrongDirection(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		csource = Processing("csource", engine)
+
+		try :
+			multi1 > csource.OutControl1
+		except BadConnectorDirectionOrder, e:
+			self.assertEqual(e.message,
+				"Wrong connectors order: Output > Input")
+		else:
+			self.fail("Exception expected")
+
+	def test_connect_to_alien(self):
 		engine = self.connectivityFixture()
 		proc1 = Processing("multi1", engine)
 
@@ -228,6 +235,84 @@ class ProcessingTests(object):
 				"Unexpected connection peer: 34")
 		else :
 			self.fail("Failed assertion expected")
+
+	def test_connect_from_connectors(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+		self.assertEqual(3, multi2 < multi1._outcontrols)
+		self.assertEqual(3, multi2 < multi1._outports)
+		self.assertEqual([
+			("multi1", "OutControl1", "multi2", "InControl1"),
+			("multi1", "OutControl2", "multi2", "InControl2"),
+			("multi1", "OutControl3", "multi2", "InControl3"),
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi1", "OutPort1", "multi2", "InPort1"),
+			("multi1", "OutPort2", "multi2", "InPort2"),
+			("multi1", "OutPort3", "multi2", "InPort3"),
+			], engine.portConnections())
+
+	def test_connect_from_connector(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+		self.assertEqual(4, multi2 < multi1.OutControl2)
+		self.assertEqual(3, multi2 < multi1.OutPort3)
+		self.assertEqual([
+			("multi1", "OutControl2", "multi2", "InControl1"),
+			("multi1", "OutControl2", "multi2", "InControl2"),
+			("multi1", "OutControl2", "multi2", "InControl3"),
+			("multi1", "OutControl2", "multi2", "InControl4"),
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi1", "OutPort3", "multi2", "InPort1"),
+			("multi1", "OutPort3", "multi2", "InPort2"),
+			("multi1", "OutPort3", "multi2", "InPort3"),
+			], engine.portConnections())
+
+	def test_connect_from_connectors_wrongDirecction(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+		try :
+			multi1 < multi2._inports
+		except BadConnectorDirectionOrder, e:
+			self.assertEqual(e.message,
+				"Wrong connectors order: Input < Output")
+		else :
+			self.fail("Exception expected")
+
+	def test_connect_from_connector_wrongDirection(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		try :
+			multi1 < multi2.InControl1
+		except BadConnectorDirectionOrder, e:
+			self.assertEqual(e.message,
+				"Wrong connectors order: Input < Output")
+		else:
+			self.fail("Exception expected")
+
+	def test_connect_from_alien(self):
+		engine = self.connectivityFixture()
+		proc1 = Processing("multi1", engine)
+
+		try :
+			proc1 < 34
+		except AttributeError, e :
+			self.assertEqual(e.message,
+				"'int' object has no attribute 'connect'")
+		else :
+			self.fail("Failed assertion expected")
+
+	def test_connect_noConnectorToConnect(self):
+		engine = self.connectivityFixture()
+		psource = Processing("psource", engine)
+		csink = Processing("csink", engine)
+		self.assertEqual(0, psource > csink)
 
 class ProcessingTests_Dummy(ProcessingTests, unittest.TestCase):
 	def empty(self):

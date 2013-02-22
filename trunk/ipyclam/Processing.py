@@ -87,23 +87,43 @@ class Processing(object):
 
 		if isinstance(peer, Processing):
 			return (
-				(self._outports > peer._inports) +
-				(self._outcontrols > peer._incontrols) )
+				(self._outports.connect(peer._inports)) +
+				(self._outcontrols.connect(peer._incontrols)) )
 
 		if isinstance(peer, Connector.Connector) :
 			connectors = peerConnectorSet(peer)
 			return peer.connect(connectors)
 
 		if isinstance(peer, Connectors.Connectors) :
-			connectors = peerConnectorSet(peer[0])
+			connectors = peerConnectorSet(peer)
 			return peer.connect(connectors)
 
 		assert False, "Unexpected connection peer: %s"%peer
 
 	def __gt__(self, peer) :
+		# TODO: Move it to Exceptions
+		from Connector import BadConnectorDirectionOrder
+		if isinstance(peer, Connectors.Connectors) :
+			if peer.direction != 'In' :
+				raise BadConnectorDirectionOrder(
+					"Wrong connectors order: Output > Input")
+		if isinstance(peer, Connector.Connector) :
+			if peer.direction != 'In' :
+				raise BadConnectorDirectionOrder(
+					"Wrong connectors order: Output > Input")
 		return self.connect(peer)
 
 	def __lt__(self, peer) :
+		# TODO: Move it to Exceptions
+		from Connector import BadConnectorDirectionOrder
+		if isinstance(peer, Connectors.Connectors) :
+			if peer.direction != 'Out' :
+				raise BadConnectorDirectionOrder(
+					"Wrong connectors order: Input < Output")
+		if isinstance(peer, Connector.Connector) :
+			if peer.direction != 'Out' :
+				raise BadConnectorDirectionOrder(
+					"Wrong connectors order: Input < Output")
 		return peer.connect(self)
 
 
