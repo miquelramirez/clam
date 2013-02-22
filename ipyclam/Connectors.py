@@ -6,6 +6,8 @@ class Connectors(object):
 		connectorNames = networkProxy.processingConnectors(processingName, kind, direction)
 		self._dict = dict()
 		self._list = list()
+		self.direction = direction
+		self.kind = kind
 		for conectorName in connectorNames:
 			connector = Connector.Connector(networkProxy, processingName, kind=kind, direction=direction, name=conectorName)
 			self._list.append(connector)
@@ -46,14 +48,14 @@ class Connectors(object):
 
 	def __gt__(self, peer) :
 		# TODO: Untested check
-		if self[0].direction == "In" :
+		if self.direction == "In" :
 			raise Connector.BadConnectorDirectionOrder(
 				"Wrong connectors order: Output > Input")
 		return self.connect(peer)
 
 	def __lt__(self, peer) :
 		# TODO: Untested check
-		if self[0].direction == "Out" :
+		if self.direction == "Out" :
 			raise Connector.BadConnectorDirectionOrder(
 				"Wrong connectors order: Input < Output")
 		return peer.connect(self)
