@@ -5,30 +5,41 @@ import TestFixtures
 
 class NetworkTests(object):
 
+	def fixture1(self):
+		engine = self.empty()
+		engine.addProcessing("DummyTypeProcessing1", "proc1")
+		engine.addProcessing("DummyTypeProcessing2", "proc2")
+		engine.connect("Port","proc1","OutPort1","proc2","Inport2")
+		engine.connect("Port","proc2","Outport2","proc1","InPort2")
+		engine.connect("Control","proc1","OutControl1","proc2","Incontrol2")
+		engine.connect("Control","proc1","OutControl2","proc2","Incontrol2")
+		engine.connect("Control","proc2","Outcontrol1","proc1","InControl2")
+		return engine
+
 	def test_ProcessingGettingAsDictionary(self) :
-		net = Network(self.proxy())
-		self.assertEqual("Processing1", net["Processing1"].name)
-		self.assertEqual("Processing2", net["Processing2"].name)
+		net = Network(self.fixture1())
+		self.assertEqual("proc1", net["proc1"].name)
+		self.assertEqual("proc2", net["proc2"].name)
 
 	def test_ProcessingGettingAsAttribute(self) :
-		net = Network(self.proxy())
-		self.assertEqual("Processing1", net.Processing1.name)
-		self.assertEqual("Processing2", net.Processing2.name)
+		net = Network(self.fixture1())
+		self.assertEqual("proc1", net.proc1.name)
+		self.assertEqual("proc2", net.proc2.name)
 
 	def test_dirFunction(self) :
-		net = Network(self.proxy())
-		self.assertEquals(["Processing1", "Processing2", "description"], dir(net))
+		net = Network(self.fixture1())
+		self.assertEquals(["description", "proc1", "proc2"], dir(net))
 
 	def test_processingNames(self):
-		net = Network(self.proxy())
-		self.assertEquals(["Processing1", "Processing2"], net.processingNames())
+		net = Network(self.fixture1())
+		self.assertEquals(["proc1", "proc2"], net.processingNames())
 
 	def test_ProcessingAsAttributesGettingAndFailing(self):
-		net = Network(self.proxy())
+		net = Network(self.fixture1())
 		self.assertRaises(AttributeError, getattr, net, "NonExistingProcessing")
 
 	def test_ValuesAsDictionaryGettingAndFailing(self):
-		net = Network(self.proxy())
+		net = Network(self.fixture1())
 		self.assertRaises(KeyError, operator.getitem, net, "NonExistingProcessing")
 
 	def test_codeEmptyNetwork(self) :
@@ -444,52 +455,52 @@ class NetworkTests(object):
 			, net.code())
 
 	def test_change_config_attributes(self):
-		net = Network(self.proxy())
-		net.Processing1["ConfigParam1"] = 'newvalue'
-		self.assertEqual(net.Processing1["ConfigParam1"], "newvalue")
+		net = Network(self.fixture1())
+		net.proc1["ConfigParam1"] = 'newvalue'
+		self.assertEqual(net.proc1["ConfigParam1"], "newvalue")
 
 	def test_code_for_changing_config_attributes(self):
 		net = Network(self.empty())
-		net.Processing1 = "DummyProcessingWithStringConfiguration"
-		net.Processing1.AString = 'newvalue'
+		net.proc1 = "DummyProcessingWithStringConfiguration"
+		net.proc1.AString = 'newvalue'
 		self.assertMultiLineEqual(
-			"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
-			"network.Processing1['AString'] = 'newvalue'\n"
-			"network.Processing1['OtherString'] = 'Another default value'\n"
+			"network.proc1 = 'DummyProcessingWithStringConfiguration'\n"
+			"network.proc1['AString'] = 'newvalue'\n"
+			"network.proc1['OtherString'] = 'Another default value'\n"
 			"\n\n"
 			, net.code(fullConfig=True))
 
 	def test_config_notPersistent(self):
 		net = Network(self.empty())
-		net.Processing1 = "DummyProcessingWithStringConfiguration"
-		net.Processing1.AString = 'newvalue'
-		net.Processing2 = "DummyProcessingWithStringConfiguration"
+		net.proc1 = "DummyProcessingWithStringConfiguration"
+		net.proc1.AString = 'newvalue'
+		net.proc2 = "DummyProcessingWithStringConfiguration"
 		self.assertEquals(
-			"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
-			"network.Processing2 = 'DummyProcessingWithStringConfiguration'\n"
-			"network.Processing1['AString'] = 'newvalue'\n"
-			"network.Processing1['OtherString'] = 'Another default value'\n"
-			"network.Processing2['AString'] = 'DefaultValue'\n"
-			"network.Processing2['OtherString'] = 'Another default value'\n"
+			"network.proc1 = 'DummyProcessingWithStringConfiguration'\n"
+			"network.proc2 = 'DummyProcessingWithStringConfiguration'\n"
+			"network.proc1['AString'] = 'newvalue'\n"
+			"network.proc1['OtherString'] = 'Another default value'\n"
+			"network.proc2['AString'] = 'DefaultValue'\n"
+			"network.proc2['OtherString'] = 'Another default value'\n"
 			"\n\n"
 			, net.code(fullConfig=True))
 
 	def test_withClause_holdsConfiguration(self):
 		net = Network(self.empty())
-		net.Processing1 = "DummyProcessingWithStringConfiguration"
-		with net.Processing1._config as c :
+		net.proc1 = "DummyProcessingWithStringConfiguration"
+		with net.proc1._config as c :
 			c.AString = 'newvalue'
 			c.OtherString = 'othernewvalue'
 			self.assertMultiLineEqual(
-				"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
-				"network.Processing1['AString'] = 'DefaultValue'\n"
-				"network.Processing1['OtherString'] = 'Another default value'\n"
+				"network.proc1 = 'DummyProcessingWithStringConfiguration'\n"
+				"network.proc1['AString'] = 'DefaultValue'\n"
+				"network.proc1['OtherString'] = 'Another default value'\n"
 				"\n\n"
 				, net.code(fullConfig=True))
 		self.assertMultiLineEqual(
-			"network.Processing1 = 'DummyProcessingWithStringConfiguration'\n"
-			"network.Processing1['AString'] = 'newvalue'\n"
-			"network.Processing1['OtherString'] = 'othernewvalue'\n"
+			"network.proc1 = 'DummyProcessingWithStringConfiguration'\n"
+			"network.proc1['AString'] = 'newvalue'\n"
+			"network.proc1['OtherString'] = 'othernewvalue'\n"
 			"\n\n"
 			, net.code(fullConfig=True))
 
@@ -514,23 +525,15 @@ class NetworkTests(object):
 """
 
 class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
-	def proxy(self):
-		return TestFixtures.proxy()
 	def empty(self):
-		return TestFixtures.empty()
+		import Dummy_NetworkProxy
+		return Dummy_NetworkProxy.Dummy_NetworkProxy()
 
 	@unittest.skip("Not working yet")
 	def test_withClause_holdsConfiguration(self):
 		pass
 
 class NetworkTests_Clam(NetworkTests, unittest.TestCase):
-	def proxy(self):
-		import Clam_NetworkProxy
-		proxy = Clam_NetworkProxy.Clam_NetworkProxy()
-		proxy.addProcessing("DummyTypeProcessing1", "Processing1")
-		proxy.addProcessing("DummyTypeProcessing2", "Processing2")
-		return proxy
-
 	def empty(self):
 		import Clam_NetworkProxy
 		return Clam_NetworkProxy.Clam_NetworkProxy()
