@@ -1,3 +1,15 @@
+class BadConnectorDirectionOrder(Exception):
+	pass
+
+class DifferentConnectorKind(Exception):
+	pass
+
+class SameConnectorDirection(Exception):
+	pass
+
+class DifferentConnectorType(Exception):
+	pass
+
 class IpyclamRTException(Exception) :
 	def __str__(self) :
 		return self.message
