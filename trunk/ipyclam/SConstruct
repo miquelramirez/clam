@@ -5,8 +5,6 @@ import glob
 
 options = Variables('options.cache', ARGUMENTS)
 
-
-
 toolChain = 'default' if sys.platform is not 'win32' else 'mingw'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
@@ -19,17 +17,18 @@ env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --li
 env.ParseConfig('pkg-config clam_qtmonitors QtUiTools QtGui QtCore --cflags --libs') # UI binding
 env.ParseConfig('pkg-config --cflags --libs pyside')
 
-
 env.AppendUnique(
 	LIBS=['boost_python']
 )
+
+env["SHOBJPREFIX"] = "generated/"
 
 # python-config adds a flag that is refused by g++
 if '-Wstrict-prototypes' in env['CCFLAGS'] :
 	env['CCFLAGS'].remove('-Wstrict-prototypes')
 
-pythonc_module = env.SharedLibrary (
-	target='Clam_NetworkProxy',
+clamengine_module = env.SharedLibrary (
+	target='ipyclam/Clam_NetworkProxy',
 	source=[
 		'Clam_NetworkProxy.cxx',
 		'shibokenunwrap.cxx',
@@ -38,8 +37,8 @@ pythonc_module = env.SharedLibrary (
 	SHLIBPREFIX='',
 )
 
-configurationModule = env.SharedLibrary (
-	target='Clam_ConfigurationProxy',
+clamengine_config_module = env.SharedLibrary (
+	target='ipyclam/Clam_ConfigurationProxy',
 	source=[
 		'Clam_ConfigurationProxy.cxx',
 		'ConfigurationProxy.cxx',
@@ -48,18 +47,26 @@ configurationModule = env.SharedLibrary (
 )
 
 dummyProcessingsModule = env.SharedLibrary (
-	target='DummyProcessings',
+	target='ipyclam/DummyProcessings',
 	source=[
 		'DummyProcessings.cxx',
 		],
 	SHLIBPREFIX='',
 )
 
-pysideUiModule = env.SharedLibrary (
-	target='PySide',
+ui_pyside_module = env.SharedLibrary (
+	target='ipyclam/ui/PySide',
 	source=[
 		'PySideModule.cxx',
 		'shibokenunwrap.cxx',
+		],
+	SHLIBPREFIX='',
+)
+
+ui_pyqt4_module = env.SharedLibrary (
+	target='ipyclam/ui/PyQt4',
+	source=[
+		'PyQt4Module.cxx',
 		'sipunwrap.cxx',
 		],
 	SHLIBPREFIX='',
@@ -70,12 +77,11 @@ program = env.Program(
 	source='ipyclam_console.cxx',
 )
 blacklist = [
-	"ProxyAPI.py",
-	"ipyclamqt_sms.py",
+	"ipyclam/ProxyAPI.py",
 ]
 
 python_modules = [
-	source for source in  glob.glob('*.py')
+	source for source in  glob.glob('ipyclam/*.py')
 	if source not in blacklist
 	and "Test" not in source
 	]
@@ -84,28 +90,38 @@ python_modules = [
 prefix = os.path.expanduser('~/local')
 mod_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
 lib_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
+uilib_dir = os.path.join(lib_dir, 'ui')
 bin_dir = os.path.join(prefix, 'bin')
 
 install = [
 	env.Install(targetDir, files) for targetDir, files in [
 	( lib_dir,[
-		pythonc_module,
-		pysideUiModule,
+		clamengine_module,
+		clamengine_config_module,
 		python_modules,
-		configurationModule,
+	]),
+	( uilib_dir, [
+		ui_pyside_module,
+		ui_pyqt4_module,
+		'ipyclam/ui/__init__.py',
 	]),
 	( bin_dir,[
 		program,
+		"demo_ipyclam_pyside_sms",
+		"demo_ipyclam_pyqt_sms",
+		"ipyclam_console",
+		"ipyclam_qtconsole",
 	]),
 ]]
 
 env.Alias('install', install)
 
 Default(
-	pythonc_module,
-	configurationModule,
+	clamengine_module,
+	clamengine_config_module,
 	dummyProcessingsModule,
-	pysideUiModule,
+	ui_pyside_module,
+	ui_pyqt4_module,
 	program,
 )
 

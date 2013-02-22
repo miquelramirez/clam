@@ -167,18 +167,3 @@ class Network(object):
 	def bindUi(self, pyqt_object) :
 		self._proxy.bindUi(pyqt_object)
 
-	def loadUi(self, uiFilename) :
-		return self._proxy.loadUi(uiFilename)
-
-	def loadUiPySide(self, uiFilename) :
-		return self._proxy.loadUiPySide(uiFilename)
-
-	def createWidget(self, className) :
-		return self._proxy.createWidget(className)
-
-	def createWidgetPySide(self, className) :
-		return self._proxy.createWidgetPySide(className)
-
-	def availableWidgets(self, className) :
-		return self._proxy.availableWidgets()
-
