@@ -10,6 +10,55 @@ _connectorKindNames = [
 _kind2Name = dict([((k,d),n) for k,d,n in _connectorKindNames])
 
 _dummyPrototypes = dict(
+	DummyTypeProcessing1 = dict(
+		type = "DummyTypeProcessing1",
+		config = odict(
+			ConfigParam1 = "default1",
+			ConfigParam2 = "default2",
+		),
+		inports = [
+			["InPort1", "f"],
+			["InPort2", "f"],
+			['InPort3', 'f'],
+			['InPort4', 'f'],
+		],
+		outports = [
+			["OutPort1", "f"],
+			["OutPort2", "f"]
+		],
+		incontrols = [
+			["InControl1", "f"],
+			["InControl2", "f"]
+		],
+		outcontrols = [
+			["OutControl1", "f"],
+			["OutControl2", "f"]
+		],
+	),
+	DummyTypeProcessing2 = dict(
+		type = "DummyTypeProcessing2",
+		config = odict(
+			ConfigParam1 = "default1",
+			ConfigParam2 = "default2",
+		),
+		inports = [
+			["Inport1", "f"],
+			["Inport2", "f"]
+		],
+		outports = [
+			["Outport1", "f"],
+			["Outport2", "f"]
+		],
+		incontrols = [
+			["Incontrol1", "f"],
+			["Incontrol2", "f"],
+			["Incontrol3", "i"]
+		],
+		outcontrols = [
+			["Outcontrol1", "f"],
+			["Outcontrol2", "f"]
+		],
+	),
 	Minimal = dict(
 		type = "Minimal",
 		config = odict(),

@@ -113,10 +113,9 @@ class Connector(object):
 					fromProcessing, fromConnector,
 					toProcessing, toConnector))
 
-		self._proxy.connect(self.kind,
+		return self._proxy.connect(self.kind,
 			fromProcessing, fromConnector,
 			toProcessing, toConnector)
-		return 1
 
 	def disconnect(self, peer = None):
 		if peer is None:
