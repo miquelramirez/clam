@@ -30,14 +30,16 @@ public:
 	virtual boost::python::object getAttribute(const ConfigurationProxy & config, unsigned index)
 	{
 		CLAM_ASSERT(accepts(config,index),
-			"Configuration plugins should be accepted by the parameter before using them");
+			"Configuration plugins should be accepted by the parameter "
+			"before using them");
 		BridgeType value = config.attributeValue<Type>(index);
 		return boost::python::object(value);
 	}
 	virtual void setAttribute(ConfigurationProxy & config, unsigned index, boost::python::object value)
 	{
 		CLAM_ASSERT(accepts(config,index),
-			"Configuration plugins should be accepted by the parameter before using them");
+			"Configuration plugins should be accepted by the parameter "
+			"before using them");
 		py::extract<BridgeType> extractor(value);
 		if (not extractor.check())
 			throwPythonError(PyExc_TypeError, std::string() +
@@ -53,6 +55,8 @@ public:
 		return config.nonDefault<Type>(index);;
 	}
 };
+
+
 #include <CLAM/AudioInFilename.hxx>
 #include <CLAM/AudioOutFilename.hxx>
 static BasicConfigurationPlugin<CLAM::AudioOutFilename, std::string> audioFileOutRegistrator("AudioOutFilename");

@@ -107,8 +107,6 @@ install = [
 	]),
 	( bin_dir,[
 		program,
-		"demo_ipyclam_pyside_sms",
-		"demo_ipyclam_pyqt_sms",
 		"ipyclam_console",
 		"ipyclam_qtconsole",
 	]),
