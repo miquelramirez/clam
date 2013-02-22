@@ -48,9 +48,8 @@ configurationModule = env.SharedLibrary (
 )
 
 dummyProcessingsModule = env.SharedLibrary (
-	target='DummyProcessingsModule',
+	target='DummyProcessings',
 	source=[
-		'DummyProcessingsModule.cxx',
 		'DummyProcessings.cxx',
 		],
 	SHLIBPREFIX='',
