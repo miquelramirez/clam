@@ -610,6 +610,14 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("xml",
 			Dump,
 			"Returns the xml representation" )
+		.def("load",
+			load,
+			"Loads a Network from an xml file."
+			)
+		.def("save",
+			save,
+			"Saves the Network on an xml file."
+			)
 		.def("availableTypes",
 			processingTypes,
 			"Returns the names of the processing types than can be added to the network"
@@ -710,14 +718,6 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 		.def("setBackend",
 			setBackend,
 			"Sets a backend to play the network"
-			)
-		.def("load",
-			load,
-			"Loads a Network from an xml file."
-			)
-		.def("save",
-			save,
-			"Saves the Network on an xml file."
 			)
 		.def("isStopped",
 			isStopped,

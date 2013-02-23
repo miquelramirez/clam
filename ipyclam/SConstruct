@@ -16,6 +16,7 @@ env.ParseConfig('python-config --libs')
 env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
 env.ParseConfig('pkg-config clam_qtmonitors QtUiTools QtGui QtCore --cflags --libs') # UI binding
 env.ParseConfig('pkg-config --cflags --libs pyside')
+env.ParseConfig('pkg-config --cflags --libs jack')
 
 env.AppendUnique(
 	LIBS=['boost_python']
@@ -33,6 +34,14 @@ clamengine_module = env.SharedLibrary (
 		'Clam_NetworkProxy.cxx',
 		'shibokenunwrap.cxx',
 		'sipunwrap.cxx',
+		],
+	SHLIBPREFIX='',
+)
+
+jackengine_module = env.SharedLibrary (
+	target='ipyclam/Jack_NetworkEngine',
+	source=[
+		'Jack_NetworkEngine.cxx',
 		],
 	SHLIBPREFIX='',
 )
@@ -98,6 +107,7 @@ install = [
 	( lib_dir,[
 		clamengine_module,
 		clamengine_config_module,
+		jackengine_module,
 		python_modules,
 	]),
 	( uilib_dir, [
@@ -115,6 +125,7 @@ install = [
 env.Alias('install', install)
 
 Default(
+	jackengine_module,
 	clamengine_module,
 	clamengine_config_module,
 	dummyProcessingsModule,

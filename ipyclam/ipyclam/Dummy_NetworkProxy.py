@@ -326,7 +326,8 @@ class Dummy_NetworkProxy :
 
 	def processingConfig(self, name) :
 		import Dummy_ConfigurationProxy
-		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(self._processings[name]["config"])
+		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(
+			self._processings[name]["config"])
 
 	def renameProcessing(self, oldName, newName):
 		if oldName not in self._processings:
@@ -342,31 +343,35 @@ class Dummy_NetworkProxy :
 		connectorKindName = kind2Name(kind,direction)
 		return [name for name,type in self._processings[name][connectorKindName]]
 
-	def connectorPeers(self, processingName, kind, direction, portName):
-		connections = self._portConnections if kind == Connector.Port else self._controlConnections
-		if direction == Connector.In :
-			return [x[0:2] for x in connections if (processingName, portName)==x[2:4] ]
+	def connectorPeers(self, unitName, kind, direction, portName):
+		if kind == Connector.Port :
+			connections = self._portConnections
 		else :
-			return [x[2:4] for x in connections if (processingName, portName)==x[0:2] ]
+			connections = self._controlConnections
 
-	def connectorIndex(self, processingName, kind, direction, connectorName) :
-		connectorKindName = kind2Name(kind,direction)
-		for i, (name, type) in enumerate(self._processings[processingName][connectorKindName]):
+		if direction == Connector.In :
+			return [x[0:2] for x in connections if (unitName, portName)==x[2:4] ]
+		else :
+			return [x[2:4] for x in connections if (unitName, portName)==x[0:2] ]
+
+	def connectorIndex(self, unitName, kind, direction, connectorName) :
+		kindKey = kind2Name(kind,direction)
+		for i, (name, type) in enumerate(self._processings[unitName][kindKey]):
 			if name == connectorName: return i
 		return -1
 
-	def connectorType(self, processingName, kind, direction, connectorName) :
-		self._assertHasProcessing(processingName)
+	def connectorType(self, unitName, kind, direction, connectorName) :
+		self._assertHasProcessing(unitName)
 		connectorKindName = kind2Name(kind,direction)
-		for name, type in self._processings[processingName][connectorKindName]:
+		for name, type in self._processings[unitName][connectorKindName]:
 			if name == connectorName: return type
-		raise ConnectorNotFound(processingName, kind, direction, connectorName)
+		raise ConnectorNotFound(unitName, kind, direction, connectorName)
 
-	def hasProcessing(self, processingName) :
-		return processingName in self._processings
+	def hasProcessing(self, unitName) :
+		return unitName in self._processings
 
 	def processingNames(self) :
-		return [ processingName for processingName in self._processings]
+		return [ unitName for unitName in self._processings]
 
 	def addProcessing(self, type, name) :
 		if self.hasProcessing(name):
@@ -376,23 +381,29 @@ class Dummy_NetworkProxy :
 		self._processings[name] = self._types[type].copy()
 		self._processings[name]['config'] = self._processings[name]['config'].copy()
 
-	def processingHasConnector(self, processingName, kind, direction, connectorName):
-		return connectorName in self.processingConnectors(processingName, kind, direction)
+	def processingHasConnector(self, unitName, kind, direction, connectorName):
+		return connectorName in self.processingConnectors(
+			unitName, kind, direction)
 
-	def areConnectable(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
-		return self.connectorType(fromProcessing, kind, Connector.Out, fromConnector) == self.connectorType(toProcessing, kind, Connector.In, toConnector)
+	def areConnectable(self, kind, fromUnit, fromConnector, toUnit, toConnector) :
+		fromType = self.connectorType(fromUnit,kind,Connector.Out,fromConnector)
+		toType = self.connectorType(toUnit,kind,Connector.In, toConnector)
+		return fromType == toType
 
-	def connect(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
-		self._assertHasConnector(fromProcessing, kind, Connector.Out, fromConnector)
-		self._assertHasConnector(toProcessing, kind, Connector.In, toConnector)
+	def connect(self, kind, fromUnit, fromConnector, toUnit, toConnector) :
+		self._assertHasConnector(fromUnit, kind, Connector.Out, fromConnector)
+		self._assertHasConnector(toUnit, kind, Connector.In, toConnector)
+		toConnect = (fromUnit, fromConnector, toUnit, toConnector)
 
-		assert self.areConnectable(kind,
-			fromProcessing, fromConnector, toProcessing, toConnector
-			), "%s.%s and %s.%s have incompatible types"%(
-			fromProcessing, fromConnector, toProcessing, toConnector)
-		assert not self.connectionExists(kind, fromProcessing, fromConnector, toProcessing, toConnector), "%s.%s and %s.%s already connected"%(fromProcessing, fromConnector, toProcessing, toConnector)
-		connections = self._controlConnections if kind == Connector.Control else self._portConnections
-		connections.append((fromProcessing, fromConnector, toProcessing, toConnector))
+		assert self.areConnectable(kind, *toConnect) , \
+			"%s.%s and %s.%s have incompatible types"%toConnect
+		assert not self.connectionExists(kind, *toConnect), \
+			"%s.%s and %s.%s already connected"%toConnect
+
+		if kind == Connector.Control :
+			self._controlConnections.append(toConnect)
+		else:
+			self._portConnections.append(toConnect)
 		return True
 
 	def portConnections(self) :
@@ -405,17 +416,24 @@ class Dummy_NetworkProxy :
 		return self._types.keys()
 
 	def connectionExists(self, kind,
-			fromProcessing, fromConnector,
-			toProcessing, toConnector) :
-		toFind = (fromProcessing, fromConnector, toProcessing, toConnector)
-		connections = self._controlConnections if kind == Connector.Control else self._portConnections
-		return toFind in connections
+			fromUnit, fromConnector,
+			toUnit, toConnector) :
 
-	def disconnect(self, kind, fromProcessing, fromConnector, toProcessing, toConnector) :
+		toFind = (fromUnit, fromConnector, toUnit, toConnector)
+		if kind == Connector.Control :
+			return toFind in self._controlConnections
+		else :
+			return toFind in self._portConnections
+
+	def disconnect(self, kind,
+			fromUnit, fromConnector,
+			toUnit, toConnector) :
+
+		toRemove = (fromUnit, fromConnector, toUnit, toConnector)
 		if kind == Connector.Port:
-			self._portConnections.remove((fromProcessing, fromConnector, toProcessing, toConnector))
+			self._portConnections.remove(toRemove)
 		else:
-			self._controlConnections.remove((fromProcessing, fromConnector, toProcessing, toConnector))
+			self._controlConnections.remove(toRemove)
 		return True
 
 	def getDescription(self):
@@ -424,9 +442,9 @@ class Dummy_NetworkProxy :
 	def setDescription(self, description):
 		self._description = description
 
-	def deleteProcessing(self, processingName):
-		self._assertHasProcessing(processingName)
-		del self._processings[processingName]
+	def deleteProcessing(self, unitName):
+		self._assertHasProcessing(unitName)
+		del self._processings[unitName]
 
 	def _assertHasProcessing(self, name) :
 		if not self.hasProcessing(name) :
