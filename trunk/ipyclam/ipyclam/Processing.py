@@ -21,18 +21,26 @@ class Processing(object):
 		self.__dict__["_outcontrols"] = Connectors.Connectors(
 			proxy, name, Connector.Control, Connector.Out)
 
-	def __getitem__(self, name):
-		if name in dir(self._config):
-			return self._config[name]
-		if name in dir(self._inports):
-			return self._inports[name]
-		if name in dir(self._outports):
-			return self._outports[name]
-		if name in dir(self._incontrols):
-			return self._incontrols[name]
-		if name in dir(self._outcontrols):
-			return self._outcontrols[name]
-		raise KeyError(name)
+	def __getitem__(self, key):
+		if type(key) is slice :
+			return Connectors.Connectors(
+				self.__dict__['proxy'],
+				self.__dict__['name'],
+				None,
+				None,
+				key)
+
+		if key in dir(self._config):
+			return self._config[key]
+		if key in dir(self._inports):
+			return self._inports[key]
+		if key in dir(self._outports):
+			return self._outports[key]
+		if key in dir(self._incontrols):
+			return self._incontrols[key]
+		if key in dir(self._outcontrols):
+			return self._outcontrols[key]
+		raise KeyError(key)
 
 	def __setitem__(self, name, value):
 		if name == 'name':
@@ -75,15 +83,15 @@ class Processing(object):
 		def peerConnectorSet(peer) :
 			"""Returns the complementary connector set to peer"""
 			if peer.kind == "Control":
-				if peer.direction == "In" :
-					return self._outcontrols
-				else :
+				if peer.direction == "Out" :
 					return self._incontrols
-			else :
-				if peer.direction == "In" :
-					return self._outports
 				else :
+					return self._outcontrols
+			else :
+				if peer.direction == "Out" :
 					return self._inports
+				else :
+					return self._outports
 
 		if isinstance(peer, Processing):
 			return (
@@ -101,27 +109,24 @@ class Processing(object):
 		assert False, "Unexpected connection peer: %s"%peer
 
 	def __gt__(self, peer) :
-		# TODO: Move it to Exceptions
-		from Connector import BadConnectorDirectionOrder
-		if isinstance(peer, Connectors.Connectors) :
-			if peer.direction != 'In' :
-				raise BadConnectorDirectionOrder(
-					"Wrong connectors order: Output > Input")
-		if isinstance(peer, Connector.Connector) :
+		from Exceptions import BadConnectorDirectionOrder
+		if type(peer) in (
+				Connectors.Connectors,
+				Connector.Connector,
+				) :
 			if peer.direction != 'In' :
 				raise BadConnectorDirectionOrder(
 					"Wrong connectors order: Output > Input")
 		return self.connect(peer)
 
 	def __lt__(self, peer) :
-		# TODO: Move it to Exceptions
-		from Connector import BadConnectorDirectionOrder
-		if isinstance(peer, Connectors.Connectors) :
-			if peer.direction != 'Out' :
-				raise BadConnectorDirectionOrder(
-					"Wrong connectors order: Input < Output")
-		if isinstance(peer, Connector.Connector) :
-			if peer.direction != 'Out' :
+		from Exceptions import BadConnectorDirectionOrder
+		if type(peer) in (
+				Connectors.Connectors,
+				Connector.Connector,
+				) :
+			if peer.direction is not None \
+			and peer.direction != 'Out' :
 				raise BadConnectorDirectionOrder(
 					"Wrong connectors order: Input < Output")
 		return peer.connect(self)

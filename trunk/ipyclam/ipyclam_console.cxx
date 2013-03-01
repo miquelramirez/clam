@@ -29,7 +29,7 @@ public:
 
 	void setupDummyNetwork()
 	{
-		py::object proxy = py::import("ipyclam").attr("Dummy_NetworkProxy")();
+		py::object proxy = py::import("ipyclam").attr("Dummy_Engine")();
 		setupNetwork(proxy);
 	}
 private:

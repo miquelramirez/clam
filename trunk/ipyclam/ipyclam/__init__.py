@@ -1,6 +1,6 @@
 
-from Clam_NetworkProxy import Clam_NetworkProxy
-from Dummy_NetworkProxy import Dummy_NetworkProxy
+from Clam_Engine import Clam_Engine
+from Dummy_Engine import Dummy_Engine
 
 from Network import Network
 

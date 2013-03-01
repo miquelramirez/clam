@@ -1,9 +1,9 @@
-from Dummy_NetworkProxy import Dummy_NetworkProxy
+from Dummy_Engine import Dummy_Engine
 import Connector
 
 import unittest
 
-class Dummy_NetworkProxyTest(unittest.TestCase) :
+class Dummy_EngineTest(unittest.TestCase) :
 
 	def definition(self) :
 		return [
@@ -71,11 +71,11 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 	]
 
 	def test_type(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals("DummyPortSource", proxy.processingType("Processing1"))
 
 	def test_inports(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals([
 				"InPort1",
 				"InPort2",
@@ -83,7 +83,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				"Processing1", Connector.Port, Connector.In))
 
 	def test_outports(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals([
 				"OutPort1",
 				"OutPort2",
@@ -91,7 +91,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				"Processing1", Connector.Port, Connector.Out))
 
 	def test_incontrols(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals([
 				"InControl1",
 				"InControl2",
@@ -99,7 +99,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				"Processing1", Connector.Control, Connector.In))
 
 	def test_outcontrols(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals([
 				"OutControl1",
 				"OutControl2",
@@ -107,39 +107,39 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 				"Processing1", Connector.Control, Connector.Out))
 
 	def test_procensignType_secondProcessing(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals("DummyPortSink", proxy.processingType("Processing2"))
 
 	def test_portConnectionsOut(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals([
 				("Processing1", "OutPort1"),
 				("Processing1", "OutPort2")]
 				, proxy.connectorPeers("Processing2", Connector.Port, Connector.In, "Inport2"))
 	
 	def test_portConnectionsIn(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals([
 				("Processing2", "Inport2")]
 				, proxy.connectorPeers("Processing1", Connector.Port, Connector.Out, "OutPort1"))
 
 	def test_connectorType(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		type = proxy.connectorType("Processing1", Connector.Port, Connector.In, "InPort1")
 		self.assertEquals("type1", type)
 
 	def test_connectorInfo(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		index = proxy.connectorIndex("Processing1", Connector.Port, Connector.In, "InPort1")
 		self.assertEquals(0, index)
 
 	def test_processingsName(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		listProcessings = [ processName for processName in proxy.processingNames() ]
 		self.assertEquals(['Processing1', 'Processing2'], listProcessings)
 
 	def test_portConnections(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals([
 			("Processing1", "OutPort1", "Processing2", "Inport2"),
 			("Processing1", "OutPort2", "Processing2", "Inport2"),
@@ -147,7 +147,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		], proxy.portConnections())
 
 	def test_controlConnections(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals([
 			("Processing1", "OutControl1", "Processing2", "Incontrol2"),
 			("Processing1", "OutControl2", "Processing2", "Incontrol2"),
@@ -155,7 +155,7 @@ class Dummy_NetworkProxyTest(unittest.TestCase) :
 		], proxy.controlConnections())
 
 	def test_config(self) :
-		proxy = Dummy_NetworkProxy(*self.definition())
+		proxy = Dummy_Engine(*self.definition())
 		self.assertEquals("default1", proxy.processingConfig("Processing1")["ConfigParam1"] )
 		self.assertEquals("default2", proxy.processingConfig("Processing1")["ConfigParam2"] )
 

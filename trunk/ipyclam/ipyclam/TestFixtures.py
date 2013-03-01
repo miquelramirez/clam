@@ -1,7 +1,7 @@
-import Dummy_NetworkProxy
+import Dummy_Engine
 
 def empty() :
-	return Dummy_NetworkProxy.Dummy_NetworkProxy([], [], [])
+	return Dummy_Engine.Dummy_Engine([], [], [])
 
 
 def dummyConfigWithStrings() :

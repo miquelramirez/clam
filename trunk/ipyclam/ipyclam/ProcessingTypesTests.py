@@ -4,8 +4,8 @@ import TestFixtures
 
 class ProcessingTypesTests(unittest.TestCase):
 	def empty(self):
-		import Dummy_NetworkProxy
-		return Dummy_NetworkProxy.Dummy_NetworkProxy()
+		import Dummy_Engine
+		return Dummy_Engine.Dummy_Engine()
 
 	def fixture1(self):
 		engine = self.empty()
@@ -36,8 +36,8 @@ class ProcessingTypesTests(unittest.TestCase):
 
 class Clam_ProcessingTypesTests(ProcessingTypesTests):
 	def empty(self):
-		import Clam_NetworkProxy
-		return Clam_NetworkProxy.Clam_NetworkProxy()
+		import Clam_Engine
+		return Clam_Engine.Clam_Engine()
 
 if __name__ == "__main__":
 	unittest.main()

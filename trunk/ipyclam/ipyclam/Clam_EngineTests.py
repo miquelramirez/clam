@@ -1,4 +1,4 @@
-import Clam_NetworkProxy
+import Clam_Engine
 import unittest
 import TestFixtures
 from Exceptions import NameAlreadyExists
@@ -8,10 +8,10 @@ from Exceptions import ConnectorNotFound
 
 import DummyProcessings # 0 python content, loads dummy CLAM processings
 
-class Clam_NetworkProxyTests(unittest.TestCase):
+class Clam_EngineTests(unittest.TestCase):
 
 	def engine(self) :
-		return Clam_NetworkProxy.Clam_NetworkProxy()
+		return Clam_Engine.Clam_Engine()
 
 	def test_availableTypes(self):
 		engine = self.engine()
@@ -546,10 +546,10 @@ class Clam_NetworkProxyTests(unittest.TestCase):
 
 	# TODO: Tests for playback and the like
 
-class Dummy_NetworkTest(Clam_NetworkProxyTests) :
+class Dummy_NetworkTest(Clam_EngineTests) :
 	def engine(self) :
-		import Dummy_NetworkProxy
-		return Dummy_NetworkProxy.Dummy_NetworkProxy()
+		import Dummy_Engine
+		return Dummy_Engine.Dummy_Engine()
 
 	def defaultDataType(self) :
 		return "DataType"

@@ -29,9 +29,9 @@ if '-Wstrict-prototypes' in env['CCFLAGS'] :
 	env['CCFLAGS'].remove('-Wstrict-prototypes')
 
 clamengine_module = env.SharedLibrary (
-	target='ipyclam/Clam_NetworkProxy',
+	target='ipyclam/Clam_Engine',
 	source=[
-		'Clam_NetworkProxy.cxx',
+		'Clam_Engine.cxx',
 		'shibokenunwrap.cxx',
 		'sipunwrap.cxx',
 		],
@@ -39,9 +39,9 @@ clamengine_module = env.SharedLibrary (
 )
 
 jackengine_module = env.SharedLibrary (
-	target='ipyclam/Jack_NetworkEngine',
+	target='ipyclam/Jack_Engine',
 	source=[
-		'Jack_NetworkEngine.cxx',
+		'Jack_Engine.cxx',
 		],
 	SHLIBPREFIX='',
 )

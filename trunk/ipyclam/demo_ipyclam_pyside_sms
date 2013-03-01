@@ -43,7 +43,7 @@ class ipyclam_controller(QtGui.QWidget):
 		self._network.bindUi(self)
 
 	def createNetwork(self):
-		net = ipyclam.Network( ipyclam.Clam_NetworkProxy() )
+		net = ipyclam.Network( ipyclam.Clam_Engine() )
 		net.backend = "JACK"
 #		net.backend = "PortAudio"
 		net.Input = 'AudioSource'

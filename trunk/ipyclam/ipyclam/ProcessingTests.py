@@ -314,15 +314,128 @@ class ProcessingTests(object):
 		csink = Processing("csink", engine)
 		self.assertEqual(0, psource > csink)
 
+	def test_slice(self) :
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		aSlice = multi1[2:4]
+		self.assertEqual(None, aSlice.kind)
+		self.assertEqual(None, aSlice.direction)
+
+	def test_connect_slice(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi2[::2] < multi1)
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi1", "OutPort1", "multi2", "InPort1"),
+			("multi1", "OutPort2", "multi2", "InPort3"),
+			], engine.portConnections())
+
+	def test_connect_slice_fromControls(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi2[::2] < multi1._outcontrols)
+		self.assertEqual([
+			("multi1", "OutControl1", "multi2", "InControl1"),
+			("multi1", "OutControl2", "multi2", "InControl3"),
+			], engine.controlConnections())
+		self.assertEqual([
+			], engine.portConnections())
+
+	def test_connect_slice_to_controls(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi2[::2] > multi1._incontrols)
+		self.assertEqual([
+			("multi2", "OutControl1", "multi1", "InControl1"),
+			("multi2", "OutControl3", "multi1", "InControl2"),
+			], engine.controlConnections())
+		self.assertEqual([
+			], engine.portConnections())
+
+	def test_connect_slice_to_control(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi2[::2] > multi1.InControl1)
+		self.assertEqual([
+			("multi2", "OutControl1", "multi1", "InControl1"),
+			("multi2", "OutControl3", "multi1", "InControl1"),
+			], engine.controlConnections())
+		self.assertEqual([
+			], engine.portConnections())
+
+	def test_connect_control_from_slice(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi1.InControl1 < multi2[::2])
+		self.assertEqual([
+			("multi2", "OutControl1", "multi1", "InControl1"),
+			("multi2", "OutControl3", "multi1", "InControl1"),
+			], engine.controlConnections())
+		self.assertEqual([
+			], engine.portConnections())
+
+	def test_connect_controls_from_slice(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi1._incontrols < multi2[::2])
+		self.assertEqual([
+			("multi2", "OutControl1", "multi1", "InControl1"),
+			("multi2", "OutControl3", "multi1", "InControl2"),
+			], engine.controlConnections())
+		self.assertEqual([
+			], engine.portConnections())
+
+	def test_connect_processing_from_slice(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi1 < multi2[::2])
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi2", "OutPort1", "multi1", "InPort1"),
+			("multi2", "OutPort3", "multi1", "InPort2"),
+			], engine.portConnections())
+
+	def test_connect_processing_to_slice(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi2[::2] > multi1)
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi2", "OutPort1", "multi1", "InPort1"),
+			("multi2", "OutPort3", "multi1", "InPort2"),
+			], engine.portConnections())
+
+
 class ProcessingTests_Dummy(ProcessingTests, unittest.TestCase):
 	def empty(self):
-		import Dummy_NetworkProxy
-		return Dummy_NetworkProxy.Dummy_NetworkProxy()
+		import Dummy_Engine
+		return Dummy_Engine.Dummy_Engine()
+
 
 class ProcessingTests_Clam(ProcessingTests, unittest.TestCase):
 	def empty(self):
-		import Clam_NetworkProxy
-		return Clam_NetworkProxy.Clam_NetworkProxy()
+		import Clam_Engine
+		return Clam_Engine.Clam_Engine()
 
 	"Override because of CLAM inport connection limitation"
 	def test_connect_from_processing_to_port(self):
@@ -338,6 +451,7 @@ class ProcessingTests_Clam(ProcessingTests, unittest.TestCase):
 		self.assertEqual([
 			("proc1", "OutPort1", "proc2", "InPort1"),
 			], engine.portConnections())
+
 
 if __name__ == '__main__':
 	unittest.main()
