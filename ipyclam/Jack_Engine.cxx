@@ -309,14 +309,14 @@ std::string getDescription(JackEngine & client)
 
 
 
-BOOST_PYTHON_MODULE(Jack_NetworkEngine)
+BOOST_PYTHON_MODULE(Jack_Engine)
 {
 	// Keep 'using namespace' in the inner scope
 	using namespace boost::python;
 
 	typedef const std::string & cstringref;
 
-	class_<JackEngine>("Jack_NetworkEngine")
+	class_<JackEngine>("Jack_Engine")
 		.def("addProcessing",
 			&JackEngine::addProcessing,
 			"Adds a Processing with the name and type specified to the network"

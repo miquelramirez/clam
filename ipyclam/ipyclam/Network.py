@@ -4,8 +4,8 @@ import ProcessingTypes
 class Network(object):
 	def __init__(self, networkProxy=None):
 		if networkProxy is None :
-			import Clam_NetworkProxy
-			networkProxy = Clam_NetworkProxy.Clam_NetworkProxy()
+			import Clam_Engine
+			networkProxy = Clam_Engine.Clam_Engine()
 		self.__dict__['_proxy'] = networkProxy
 		self.__dict__['methods'] = ["types", "code", "xml"]
 

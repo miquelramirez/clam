@@ -10,8 +10,8 @@ import TestFixtures
 
 class ConnectorsTests(unittest.TestCase):
 	def empty(self):
-		import Dummy_NetworkProxy
-		return Dummy_NetworkProxy.Dummy_NetworkProxy()
+		import Dummy_Engine
+		return Dummy_Engine.Dummy_Engine()
 
 	def fixture1(self):
 		engine = self.empty()
@@ -217,11 +217,65 @@ class ConnectorsTests(unittest.TestCase):
 				"csource.OutControl1 and othercsink.InControl1 "
 				"handle different data types")
 
+	def test_connect_undefined_to_connector(self) :
+		engine = self.connectivityFixture()
+		undefined = Connectors(engine, "multi1", Connector.Port, None,
+			index=slice(None,None,2))
+		inport = Connector.Connector(engine, "multi2", Connector.Port, Connector.In, "InPort1")
+		self.assertEqual(2, undefined > inport)
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			('multi1', 'OutPort1', 'multi2', 'InPort1'),
+			('multi1', 'OutPort3', 'multi2', 'InPort1'),
+			], engine.portConnections())
+
+	def test_connect_undefined_from_connector(self) :
+		engine = self.connectivityFixture()
+		undefined = Connectors(engine, "multi1", Connector.Port, None,
+			index=slice(None,None,2))
+		outport = Connector.Connector(engine, "multi2", Connector.Port, Connector.Out, "OutPort1")
+		self.assertEqual(2, undefined < outport)
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			('multi2', 'OutPort1', 'multi1', 'InPort1'),
+			('multi2', 'OutPort1', 'multi1', 'InPort3'),
+			], engine.portConnections())
+
+	def test_connect_undefined_takes_from_peer(self) :
+		engine = self.connectivityFixture()
+		undefined = Connectors(engine, "multi1", None, None,
+			index=slice(None,None,2))
+		outcontrol = Connector.Connector(engine, "multi2", Connector.Control, Connector.Out, "OutControl1")
+		self.assertEqual(2, undefined.connect(outcontrol))
+		self.assertEqual([
+			('multi2', 'OutControl1', 'multi1', 'InControl1'),
+			('multi2', 'OutControl1', 'multi1', 'InControl3'),
+			], engine.controlConnections())
+		self.assertEqual([
+			], engine.portConnections())
+
 
 class ConnectorsTests_Clam(ConnectorsTests):
 	def empty(self):
-		import Clam_NetworkProxy
-		return Clam_NetworkProxy.Clam_NetworkProxy()
+		import Clam_Engine
+		return Clam_Engine.Clam_Engine()
+
+	# CLAM inport connections are limited
+	def test_connect_undefined_to_connector(self) :
+		engine = self.connectivityFixture()
+		undefined = Connectors(engine, "multi1", Connector.Port, None,
+			index=slice(None,None,None))
+		inport = Connector.Connector(engine, "multi2", Connector.Port, Connector.In, "InPort1")
+		self.assertEqual(1, undefined > inport)
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			('multi1', 'OutPort1', 'multi2', 'InPort1'),
+			], engine.portConnections())
+
+
 
 if __name__ == '__main__':
 	unittest.main()

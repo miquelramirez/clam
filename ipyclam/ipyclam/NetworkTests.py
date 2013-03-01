@@ -526,8 +526,8 @@ class NetworkTests(object):
 
 class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
 	def empty(self):
-		import Dummy_NetworkProxy
-		return Dummy_NetworkProxy.Dummy_NetworkProxy()
+		import Dummy_Engine
+		return Dummy_Engine.Dummy_Engine()
 
 	@unittest.skip("Not working yet")
 	def test_withClause_holdsConfiguration(self):
@@ -535,8 +535,8 @@ class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
 
 class NetworkTests_Clam(NetworkTests, unittest.TestCase):
 	def empty(self):
-		import Clam_NetworkProxy
-		return Clam_NetworkProxy.Clam_NetworkProxy()
+		import Clam_Engine
+		return Clam_Engine.Clam_Engine()
 
 	def test_connect_outportsToPort(self):
 		"CLAM limits inports connections"

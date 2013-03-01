@@ -594,7 +594,7 @@ void save(CLAM::Network & network, const std::string & filename)
 }
 
 
-BOOST_PYTHON_MODULE(Clam_NetworkProxy)
+BOOST_PYTHON_MODULE(Clam_Engine)
 {
 	// Keep 'using namespace' in the inner scope
 	using namespace boost::python;
@@ -606,7 +606,7 @@ BOOST_PYTHON_MODULE(Clam_NetworkProxy)
 	class_<Processing, boost::noncopyable>("Processing", no_init);
 
 	
-	class_<Network>("Clam_NetworkProxy")
+	class_<Network>("Clam_Engine")
 		.def("xml",
 			Dump,
 			"Returns the xml representation" )

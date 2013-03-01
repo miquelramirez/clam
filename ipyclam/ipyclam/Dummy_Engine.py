@@ -307,7 +307,7 @@ _dummyPrototypes = dict(
 
 from Exceptions import *
 
-class Dummy_NetworkProxy :
+class Dummy_Engine :
 
 	def __init__(self, processings=[], portConnections=[], controlConnections=[], description="", types=_dummyPrototypes) :
 		self._processings = dict()
