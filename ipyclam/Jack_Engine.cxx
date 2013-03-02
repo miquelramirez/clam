@@ -52,6 +52,18 @@ class JackEngine
 			return ("Method " + _name + " not implemented yet").c_str();
 		}
 	};
+	class InvalidClient : public std::exception
+	{
+	public:
+		InvalidClient() throw()
+		{
+		}
+		virtual ~InvalidClient() throw() {};
+		virtual const char* what() const throw()
+		{
+			return "Invalid JACK client";
+		}
+	};
 private:
 	jack_client_t * _client;
 public:
@@ -62,8 +74,8 @@ public:
 	{
 		jack_status_t status;
 		_client = jack_client_open("ipyjack", JackNullOption, &status);
-		if (not _client) 
-			std::cerr << "Failed to create client" << std::endl;
+		if (not _client)
+			throw InvalidClient();
 	}
 	~JackEngine()
 	{
