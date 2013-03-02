@@ -2,34 +2,34 @@ import Processing
 import ProcessingTypes
 
 class Network(object):
-	def __init__(self, networkProxy=None):
-		if networkProxy is None :
+	def __init__(self, engine=None):
+		if engine is None :
 			import Clam_Engine
-			networkProxy = Clam_Engine.Clam_Engine()
-		self.__dict__['_proxy'] = networkProxy
+			engine = Clam_Engine.Clam_Engine()
+		self.__dict__['_engine'] = engine
 		self.__dict__['methods'] = ["types", "code", "xml"]
 
 	def __getitem__(self, name):
-		if not self._proxy.hasProcessing(name) :
+		if not self._engine.hasProcessing(name) :
 			raise KeyError(name)
-		return Processing.Processing(proxy=self._proxy, name=name)
+		return Processing.Processing(engine=self._engine, name=name)
 
 	def __getattr__(self, name):
 		if name == "description":
-			return self._proxy.getDescription()
-		if not self._proxy.hasProcessing(name) :
+			return self._engine.getDescription()
+		if not self._engine.hasProcessing(name) :
 			raise AttributeError(name)
-		return Processing.Processing(proxy=self._proxy, name=name)
+		return Processing.Processing(engine=self._engine, name=name)
 
 	def __dir__(self):
-		return self._proxy.processingNames() + ["description"]
+		return self._engine.processingNames() + ["description"]
 
 	def __contains__(self, processingName) :
-		return self._proxy.hasProcessing(processingName)
+		return self._engine.hasProcessing(processingName)
 
 	@property
 	def types(self) :
-		return ProcessingTypes.ProcessingTypes(self._proxy)
+		return ProcessingTypes.ProcessingTypes(self._engine)
 
 	def code(self, networkVar = "network", fullConfig = False):
 
@@ -51,7 +51,7 @@ class Network(object):
 
 		def configCode(networkVar, fullConfig):
 			configCode = ""
-			for name in self._proxy.processingNames():
+			for name in self._engine.processingNames():
 				configCode += self.__getitem__(name)._config.code(name, networkVar, fullConfig)
 			return configCode
 		def appendAttribute(name):
@@ -64,18 +64,18 @@ class Network(object):
 			return "."+name
 
 		code = ""
-		if self._proxy.getDescription() != "":
+		if self._engine.getDescription() != "":
 			code += "%s.description = %s\n"%(
 				networkVar,
-				repr(self._proxy.getDescription()),
+				repr(self._engine.getDescription()),
 				)
 		code += "\n".join([
 			"%s%s = '%s'"%(
 				networkVar,
 				appendAttribute(name),
-				self._proxy.processingType(name),
+				self._engine.processingType(name),
 				)
-			for name in self._proxy.processingNames()])
+			for name in self._engine.processingNames()])
 		code += "\n"
 		code += configCode(networkVar, fullConfig)
 		code += "\n"
@@ -89,7 +89,7 @@ class Network(object):
 					appendAttribute(toConnector),
 					)
 				for fromProcessing, fromConnector, toProcessing, toConnector
-				in self._proxy.portConnections()])
+				in self._engine.portConnections()])
 		code += "\n"
 		code += "\n".join([
 				"%s%s%s > %s%s%s"%(
@@ -101,69 +101,69 @@ class Network(object):
 					appendAttribute(toConnector),
 					)
 				for fromProcessing, fromConnector, toProcessing, toConnector
-				in self._proxy.controlConnections()])
+				in self._engine.controlConnections()])
 		return code
 
 
 	def __setattr__(self, name, type) :
 		if name == "description":
-			self._proxy.setDescription(type)
+			self._engine.setDescription(type)
 			return
 		if name == "backend":
-			self._proxy.setBackend(type)
+			self._engine.setBackend(type)
 			return
 		if name in self.__dict__['methods']:
 			raise AssertionError("Wrong processing name: %s is a method"%(name))
 		# TODO: fail on existing attributes (not processings)
-		self._proxy.addProcessing(type, name)
+		self._engine.addProcessing(type, name)
 
 	def __setitem__(self, name, type) :
 		self.__setattr__(name, type)
 
 	def __delattr__(self, name):
-		if not self._proxy.hasProcessing(name) :
+		if not self._engine.hasProcessing(name) :
 			raise AttributeError(name)
-		self._proxy.deleteProcessing(name)
+		self._engine.deleteProcessing(name)
 
 	def __delitem__(self, name):
-		if not self._proxy.hasProcessing(name) :
+		if not self._engine.hasProcessing(name) :
 			raise KeyError(name)
 		self.__delattr__(name)
 
-	# TODO: Workaround to be able to use the function from the C++ proxy
+	# TODO: Workaround to be able to use the function from the C++ engine
 	def xml(self):
-		return self._proxy.xml()
+		return self._engine.xml()
 
 	def __repr__(self) :
 		return self.code()
 
 	def play(self) :
-		self._proxy.play()
+		self._engine.play()
 
 	def pause(self) :
-		self._proxy.pause()
+		self._engine.pause()
 
 	def isStopped(self) :
-		return self._proxy.isStopped()
+		return self._engine.isStopped()
 
 	def isPlaying(self) :
-		return self._proxy.isPlaying()
+		return self._engine.isPlaying()
 
 	def isPaused(self) :
-		return self._proxy.isPaused()
+		return self._engine.isPaused()
 
 	def stop(self) :
-		self._proxy.stop()
+		self._engine.stop()
 
 	def processingNames(self):
-		return self._proxy.processingNames()
+		return self._engine.processingNames()
 
 	def load(self, filename):
-		self._proxy.load(filename)
+		self._engine.load(filename)
 
 	def save(self, filename):
-		self._proxy.save(filename)
+		self._engine.save(filename)
 
 	def bindUi(self, pyqt_object) :
-		self._proxy.bindUi(pyqt_object)
+		self._engine.bindUi(pyqt_object)
 

@@ -5,26 +5,26 @@ import Connectors
 class NotFound(Exception) : pass
 
 class Processing(object):
-	def __init__(self, name, proxy):
-		assert(proxy.hasProcessing(name)) # TODO unit test
+	def __init__(self, name, engine):
+		assert(engine.hasProcessing(name)) # TODO unit test
 		self.__dict__["name"] = name
-		self.__dict__["proxy"] = proxy
-		self.__dict__["type"] = proxy.processingType(name)
+		self.__dict__["engine"] = engine
+		self.__dict__["type"] = engine.processingType(name)
 		self.__dict__["_config"] = Configuration.Configuration(
-			proxy.processingConfig(self.name))
+			engine.processingConfig(self.name))
 		self.__dict__["_inports"] = Connectors.Connectors(
-			proxy, name, Connector.Port, Connector.In)
+			engine, name, Connector.Port, Connector.In)
 		self.__dict__["_outports"] = Connectors.Connectors(
-			proxy, name, Connector.Port, Connector.Out)
+			engine, name, Connector.Port, Connector.Out)
 		self.__dict__["_incontrols"] = Connectors.Connectors(
-			proxy, name, Connector.Control, Connector.In)
+			engine, name, Connector.Control, Connector.In)
 		self.__dict__["_outcontrols"] = Connectors.Connectors(
-			proxy, name, Connector.Control, Connector.Out)
+			engine, name, Connector.Control, Connector.Out)
 
 	def __getitem__(self, key):
 		if type(key) is slice :
 			return Connectors.Connectors(
-				self.__dict__['proxy'],
+				self.__dict__['engine'],
 				self.__dict__['name'],
 				None,
 				None,
@@ -44,7 +44,7 @@ class Processing(object):
 
 	def __setitem__(self, name, value):
 		if name == 'name':
-			self.__dict__["proxy"].renameProcessing(self.__dict__[name], value)
+			self.__dict__["engine"].renameProcessing(self.__dict__[name], value)
 			self.__dict__["name"] = value
 			return
 		self._config[name] = value
