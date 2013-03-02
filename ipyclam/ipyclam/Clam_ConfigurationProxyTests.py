@@ -5,7 +5,7 @@ import unittest
 class Clam_ConfigurationProxyTests(unittest.TestCase):
 
 	def test_createConfigurationProxy(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		self.assertEqual(
 		"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n"
 		"<Configuration>\n"
@@ -15,51 +15,51 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		"  <OtherString>Another default value</OtherString>\n"
 		"\n"
 		"</Configuration>\n"
-		, proxy.xml())
+		, engine.xml())
 
 	def test_getValueFromStringAttributes(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
-		self.assertEqual("DefaultValue", proxy["AString"])
-		self.assertEqual("Another default value", proxy["OtherString"])
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		self.assertEqual("DefaultValue", engine["AString"])
+		self.assertEqual("Another default value", engine["OtherString"])
 
 	def test_raiseAttributeErrorGettingValueFromWrongAttribute(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
 		try:
-			proxy["WrongAttribute"]
+			engine["WrongAttribute"]
 			self.fail("Exception expected")
 		except KeyError, e:
 			self.assertEqual("WrongAttribute", e.args[0])
 
 	def test_getDefaultValue_whenInt(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
-		self.assertEqual(42, proxy["FirstInt"])
-		self.assertEqual(15, proxy["SecondInt"])
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
+		self.assertEqual(42, engine["FirstInt"])
+		self.assertEqual(15, engine["SecondInt"])
 
 	def test_getDefaultValue_whenOtherTypes(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
-		self.assertEqual(42, proxy["IntAttribute"])
-		self.assertEqual(False, proxy["BoolAttribute"])
-		self.assertEqual(3.140000104904175, proxy["FloatAttribute"])
-		self.assertEqual(134.15, proxy["DoubleAttribute"])
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
+		self.assertEqual(42, engine["IntAttribute"])
+		self.assertEqual(False, engine["BoolAttribute"])
+		self.assertEqual(3.140000104904175, engine["FloatAttribute"])
+		self.assertEqual(134.15, engine["DoubleAttribute"])
 
 	def test_setValueFromStringAttributes(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
-		proxy["AString"] = "newvalue"
-		self.assertEqual("newvalue", proxy["AString"])
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		engine["AString"] = "newvalue"
+		self.assertEqual("newvalue", engine["AString"])
 
 	def test_setValueFromIntegerAttributes(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
-		proxy["FirstInt"] = 24
-		self.assertEqual(24, proxy["FirstInt"])
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
+		engine["FirstInt"] = 24
+		self.assertEqual(24, engine["FirstInt"])
 
 	def test_setValueFromDifferentTypesOfAttributes(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
-		proxy["BoolAttribute"] = True
-		proxy["FloatAttribute"] = 4.15
-		proxy["DoubleAttribute"] = 124.78
-		self.assertEqual(True, proxy["BoolAttribute"])
-		self.assertEqual(4.150000095367432, proxy["FloatAttribute"])
-		self.assertEqual(124.78, proxy["DoubleAttribute"])
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
+		engine["BoolAttribute"] = True
+		engine["FloatAttribute"] = 4.15
+		engine["DoubleAttribute"] = 124.78
+		self.assertEqual(True, engine["BoolAttribute"])
+		self.assertEqual(4.150000095367432, engine["FloatAttribute"])
+		self.assertEqual(124.78, engine["DoubleAttribute"])
 
 	def test_setAttr_wrongName(self):
 		c = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
@@ -82,9 +82,9 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 				, e.args[0])
 
 	def test_set_wrongTypeForInt(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithIntConfiguration")
 		try:
-			proxy["FirstInt"] = "WrongType"
+			engine["FirstInt"] = "WrongType"
 			self.fail("Exception expected")
 		except TypeError, e:
 			self.assertEquals(
@@ -94,9 +94,9 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 				, e.args[0])
 
 	def test_set_wrongTypeForBool(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
 		try:
-			proxy["BoolAttribute"] = 2.15
+			engine["BoolAttribute"] = 2.15
 			self.fail("Exception expected")
 		except TypeError, e:
 			self.assertEquals(
@@ -106,9 +106,9 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 				, e.args[0])
 
 	def test_set_wrongTypeForFloat(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithCompleteConfiguration")
 		try:
-			proxy["FloatAttribute"] = "Value"
+			engine["FloatAttribute"] = "Value"
 			self.fail("Exception expected")
 		except TypeError, e:
 			self.assertEquals(
@@ -118,14 +118,14 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 				, e.args[0])
 
 	def test_keys(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
-		self.assertEqual( ["AString", "OtherString"], proxy.keys() )
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
+		self.assertEqual( ["AString", "OtherString"], engine.keys() )
 
 	def test_nonDefault(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
-		self.assertEqual(False, proxy.nonDefault("NSources"))
-		proxy["NSources"] = 2
-		self.assertEqual(True, proxy.nonDefault("NSources"))
+		engine = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
+		self.assertEqual(False, engine.nonDefault("NSources"))
+		engine["NSources"] = 2
+		self.assertEqual(True, engine.nonDefault("NSources"))
 
 	def test_hold_apply(self):
 		c = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
@@ -136,34 +136,34 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual(2, c["NSources"])
 
 	def test_clone(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
-		configClone = proxy.clone()
+		engine = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
+		configClone = engine.clone()
 		configClone["NSources"] = 2
-		self.assertEqual(1, proxy["NSources"])
+		self.assertEqual(1, engine["NSources"])
 		self.assertEqual(2, configClone["NSources"])
 
 	def test_copyConfig(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
+		engine = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
 		config = Clam_ConfigurationProxy.createConfigurationProxyWithProc("AudioSource")
 		config["NSources"] = 2
-		self.assertEqual(1, proxy["NSources"])
-		proxy.copyConfig(config)
+		self.assertEqual(1, engine["NSources"])
+		engine.copyConfig(config)
 		self.assertEqual(2, config["NSources"])
-		self.assertEqual(2, proxy["NSources"])
+		self.assertEqual(2, engine["NSources"])
 
 	def test_get_optional_attribute(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
-		self.assertEqual(None, proxy["SecondInt"])
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
+		self.assertEqual(None, engine["SecondInt"])
 
 	def test_set_optional_attribute(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
-		proxy["SecondInt"] = 22
-		self.assertEqual(22, proxy["SecondInt"])
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
+		engine["SecondInt"] = 22
+		self.assertEqual(22, engine["SecondInt"])
 
 	def test_set_attribute_as_removed(self):
-		proxy = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
-		proxy["FirstInt"] = None
-		self.assertEqual(None, proxy["FirstInt"])
+		engine = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithOptionalAttributes")
+		engine["FirstInt"] = None
+		self.assertEqual(None, engine["FirstInt"])
 
 if __name__ == '__main__':
 	unittest.main()

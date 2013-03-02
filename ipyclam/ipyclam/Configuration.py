@@ -11,17 +11,17 @@ class Configuration(object):
 	so you can hold() a bound configuration and then apply().
 	"""
 
-	def __init__(self, proxy):
-		object.__setattr__(self, "_proxy", proxy)
+	def __init__(self, engine):
+		object.__setattr__(self, "_engine", engine)
 
 	def __getitem__(self, name):
-		return self._proxy[name]
+		return self._engine[name]
 
 	def __setitem__(self, name, value):
 		if name == "_config":
-			self._proxy.copyConfig( value._proxy )
+			self._engine.copyConfig( value._engine )
 			return
-		self._proxy[name] = value
+		self._engine[name] = value
 
 	def __getattr__(self, name):
 		try:
@@ -34,7 +34,7 @@ class Configuration(object):
 		except KeyError, e:
 			raise AttributeError(e.args[0])
 	def __dir__(self):
-		return self._proxy.keys()
+		return self._engine.keys()
 
 	def code(self, processingName, networkVar = "network", fullConfig = False):
 		code = ""
@@ -43,22 +43,22 @@ class Configuration(object):
 					networkVar, 
 					processingName,
 					attribute,
-					self._proxy[attribute].__repr__(),
+					self._engine[attribute].__repr__(),
 					)
-				for attribute in self._proxy.keys()
-				if fullConfig or self._proxy.nonDefault(attribute)
+				for attribute in self._engine.keys()
+				if fullConfig or self._engine.nonDefault(attribute)
 			])
 		if code: code += "\n"
 		return code
 
 	def hold(self):
-		self._proxy.hold()
+		self._engine.hold()
 
 	def apply(self):
-		self._proxy.apply()
+		self._engine.apply()
 
 	def clone(self):
-		return Configuration( self._proxy.clone() )
+		return Configuration( self._engine.clone() )
 
 	# TODO Untested
 	def __enter__(self) :
