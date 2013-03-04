@@ -4,6 +4,10 @@ import sys
 import glob
 
 options = Variables('options.cache', ARGUMENTS)
+options.AddVariables(
+	BoolVariable('enable_clam', 'Compile CLAM engine', 'yes'),
+	BoolVariable('enable_jack', 'Compile JACK engine', 'yes'),
+	)
 
 toolChain = 'default' if sys.platform is not 'win32' else 'mingw'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
@@ -13,10 +17,13 @@ env.SConsignFile() # Single signature file
 
 env.ParseConfig('python-config --cflags')
 env.ParseConfig('python-config --libs')
-env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
-env.ParseConfig('pkg-config clam_qtmonitors QtUiTools QtGui QtCore --cflags --libs') # UI binding
 env.ParseConfig('pkg-config --cflags --libs pyside')
-env.ParseConfig('pkg-config --cflags --libs jack')
+if env['enable_clam'] :
+	env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
+	env.ParseConfig('pkg-config clam_qtmonitors QtUiTools QtGui QtCore --cflags --libs') # UI binding
+env.ParseConfig('pkg-config QtUiTools QtGui QtCore --cflags --libs') # UI binding
+if env['enable_jack'] :
+	env.ParseConfig('pkg-config --cflags --libs jack')
 
 env.AppendUnique(
 	LIBS=['boost_python']
@@ -36,15 +43,7 @@ clamengine_module = env.SharedLibrary (
 		'sipunwrap.cxx',
 		],
 	SHLIBPREFIX='',
-)
-
-jackengine_module = env.SharedLibrary (
-	target='ipyclam/Jack_Engine',
-	source=[
-		'Jack_Engine.cxx',
-		],
-	SHLIBPREFIX='',
-)
+) if env['enable_clam']  else []
 
 clamengine_config_module = env.SharedLibrary (
 	target='ipyclam/Clam_ConfigurationProxy',
@@ -53,7 +52,15 @@ clamengine_config_module = env.SharedLibrary (
 		'ConfigurationProxy.cxx',
 		],
 	SHLIBPREFIX='',
-)
+) if env['enable_clam']  else []
+
+jackengine_module = env.SharedLibrary (
+	target='ipyclam/Jack_Engine',
+	source=[
+		'Jack_Engine.cxx',
+		],
+	SHLIBPREFIX='',
+) if env['enable_jack']  else []
 
 dummyProcessingsModule = env.SharedLibrary (
 	target='ipyclam/DummyProcessings',
@@ -61,7 +68,7 @@ dummyProcessingsModule = env.SharedLibrary (
 		'DummyProcessings.cxx',
 		],
 	SHLIBPREFIX='',
-)
+) if env['enable_clam']  else []
 
 ui_pyside_module = env.SharedLibrary (
 	target='ipyclam/ui/PySide',

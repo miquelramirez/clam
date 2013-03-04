@@ -4,8 +4,10 @@ import ProcessingTypes
 class Network(object):
 	def __init__(self, engine=None):
 		if engine is None :
-			import Clam_Engine
-			engine = Clam_Engine.Clam_Engine()
+			try :
+				import Clam_Engine
+				engine = Clam_Engine.Clam_Engine()
+			except ImportError: pass
 		self.__dict__['_engine'] = engine
 		self.__dict__['methods'] = ["types", "code", "xml"]
 
