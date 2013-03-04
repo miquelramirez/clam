@@ -1,10 +1,15 @@
-#include <CLAM/Network.hxx>
-#include <CLAM/CLAMVersion.hxx>
-#include <CLAM/JACKNetworkPlayer.hxx>
+//#include <CLAM/Network.hxx>
+//#include <CLAM/CLAMVersion.hxx>
+//#include <CLAM/JACKNetworkPlayer.hxx>
 #include <boost/python.hpp>
 #include <iostream>
 #include <string>
 
+
+bool hasattr(boost::python::object obj, std::string const &attrName)
+{
+	return PyObject_HasAttrString(obj.ptr(), attrName.c_str());
+}
 
 namespace py = boost::python;
 
@@ -19,17 +24,33 @@ public:
 	{
 		exec("import sys; sys.path.append('.')" , _main_ns, _main_ns);
 	}
-
-	void setupClamNetwork(CLAM::Network & network)
+	void setupClamEngine()
+	{
+		py::object proxy = py::import("ipyclam").attr("Clam_Engine")();
+		setupNetwork(proxy);
+	}
+/*
+	void setupClamEngine(CLAM::Network & network)
 	{
 		py::object clamProxyModule = py::import("ipyclam");
 		py::object proxy = py::object(py::ptr(&network));
 		setupNetwork(proxy);
 	}
-
-	void setupDummyNetwork()
+*/
+	void setupJackEngine()
+	{
+		py::object proxy = py::import("ipyclam").attr("Jack_Engine")();
+		setupNetwork(proxy);
+	}
+	void setupDummyEngine()
 	{
 		py::object proxy = py::import("ipyclam").attr("Dummy_Engine")();
+		setupNetwork(proxy);
+	}
+	void setupEngine(const std::string & engine)
+	{
+		std::cout << "Engine: " << engine << std::endl;
+		py::object proxy = py::import("ipyclam").attr(engine.c_str())();
 		setupNetwork(proxy);
 	}
 private:
@@ -42,7 +63,7 @@ public:
 	void run()
 	{
 		std::string shellBanner =
-			"Interactive Python console for CLAM " + std::string(CLAM::GetFullVersion()) + "\n";
+			"Interactive Python console for CLAM ";// + std::string(CLAM::GetFullVersion()) + "\n";
 		std::string shellHeader = "Start by typing 'net.' and pressing the tab key";
 		std::string shellFarewell = "Bye";
 
@@ -74,19 +95,17 @@ int main( int argc, char ** argv )
 	{
 		Py_Initialize();
 
-		CLAM::Network network;
-		CLAM::NetworkPlayer * networkPlayer = 0;
-		CLAM::JACKNetworkPlayer *jackPlayer = new CLAM::JACKNetworkPlayer();
-		if ( jackPlayer->IsWorking() )
-		{
-			networkPlayer = jackPlayer;
-		}
-		network.SetPlayer( networkPlayer );
 		IpyclamShell shell;
-		if (argc>1 and std::string(argv[1])=="--dummy")
-			shell.setupDummyNetwork();
-		else
-			shell.setupClamNetwork(network);
+		if (argc>1)
+		{
+			std::string option = argv[1];
+			if (option=="--dummy")
+				shell.setupEngine("Dummy_Engine");
+			else if (option=="--jack")
+				shell.setupEngine("Jack_Engine");
+		}
+		else 
+			shell.setupEngine("Clam_Engine");
 
 		shell.run();
 	}
