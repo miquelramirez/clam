@@ -54,6 +54,7 @@
 	proc._outports['Output']
 	proc._outports.Output
 	proc._outports[4] # Fith outport (Zero based)
+	proc[2:4] # undefined (in-out, port-control) but useful, see 'Connecting'
 	proc.Output.name # name
 	proc.Output.kind # "Port" or "Control"
 	proc.Output.direction # "In" or "Out"
@@ -69,8 +70,10 @@
 	proc1._outports > proc2  # same as above but restricst to inports
 	proc1._outports[1::2] > proc2  # connect indexes 1,3,5... with 0,1,2...
 	proc1.OutPort1 > proc2 # connects OutPort1 to as many inports in proc2 it can connect to
+	proc1[1::2] > proc2  # arrow defines the first term as output, defaults to ports
+	proc1[1::2] > proc2._incontrols  # arrow defines the first term as output, peer defines it as control
 	xxx < yyy #  is equivalent but checks the direction is reversed (xxx input, yyy output)
-	xxx.connect(yyy) #  is equivalent with no direction checking is done unless they are two processings, then forward is considered
+	xxx.connect(yyy) #  is equivalent but no direction checking is done, unless they are two processings, then forward is considered
 
 - Disconnect controls/ports
 	proc.Output.disconnect(proc2.Input)
@@ -79,7 +82,10 @@
 	for port in proc._inports : port.disconnect()
 
 	# not yet implemented
-	proc.disconnect()
-
+	proc.disconnect() # any connection of any kind of proc
+	proc1.disconnect(proc2) # any connection of any kind between them
+	proc1.disconnect(proc2._incontrols) # any control connection from proc1 to proc2
+	proc1._incontrols.disconnect() # any connection to proc1 incontrols
+	proc1 / proc2
 
 

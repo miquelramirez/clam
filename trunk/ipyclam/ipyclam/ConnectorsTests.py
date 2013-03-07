@@ -256,6 +256,19 @@ class ConnectorsTests(unittest.TestCase):
 		self.assertEqual([
 			], engine.portConnections())
 
+	def test_connect_connectors_to_undefined(self) :
+		engine = self.connectivityFixture()
+		undefined = Connectors(engine, "multi1", None, None,
+			index=slice(None,None,2))
+		outcontrols = Connectors(engine, "multi2", Connector.Control, Connector.Out)
+		self.assertEqual(2, outcontrols > undefined)
+		self.assertEqual([
+			('multi2', 'OutControl1', 'multi1', 'InControl1'),
+			('multi2', 'OutControl2', 'multi1', 'InControl3'),
+			], engine.controlConnections())
+		self.assertEqual([
+			], engine.portConnections())
+
 
 class ConnectorsTests_Clam(ConnectorsTests):
 	def empty(self):

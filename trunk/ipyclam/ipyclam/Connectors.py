@@ -1,6 +1,9 @@
 import Connector
 import Processing
 
+def _hasDirection(connector) :
+	return hasattr(connector, "direction") and connector.direction is not None
+
 class Connectors(object):
 	def __init__(self, engine, processingName, kind, direction, index=slice(None)) :
 		self._dict = dict()
@@ -55,34 +58,45 @@ class Connectors(object):
 	def __dir__(self):
 		return self._dict.keys()
 
-	def connect(self, peer):
+	def _completeAsPeerOf(self, peer, fallback= Connector.Out) :
+		"Turns connector set with no direction and kind into a determined one "
+		"based on the peer and the parameter position."
+		if self.direction is not None : return self
+		
 		def kind(self, peer) :
 			if self.kind : return self.kind
 			if not hasattr(peer,"kind") : return Connector.Port
 			if peer.kind : return peer.kind
 			return Connector.Port
 		def direction(self, peer) :
-			if not hasattr(peer,"direction") : return Connector.Out
+			if not hasattr(peer,"direction") : return fallback
+			if peer.direction is None : return fallback
 			if peer.direction == Connector.In : return Connector.Out
 			return Connector.In
+		return Connectors(
+			self._engine,
+			self.processing,
+			kind(self,peer),
+			direction(self,peer),
+			self._slice)
+
+	def connect(self, peer):
+		completeSelf = self
 		if self.direction is None :
-			asPeer = Connectors(
-				self._engine,
-				self.processing,
-				kind(self,peer),
-				direction(self,peer),
-				self._slice)
-			return asPeer.connect(peer)
+			completeSelf = self._completeAsPeerOf(peer)
+
 		if isinstance(peer, Processing.Processing) :
-			return peer.connect(self)
+			return peer.connect(completeSelf)
 		if isinstance(peer, Connector.Connector) :
 			return sum((
 				connector.connect(peer)
-				for connector in self ))
+				for connector in completeSelf ))
 		if isinstance(peer, Connectors) :
+			if peer.direction is None :
+				return peer.connect(completeSelf);
 			return sum((
 				mine.connect(peers)
-					for mine,peers in zip(self,peer) ))
+					for mine,peers in zip(completeSelf,peer) ))
 
 	def __gt__(self, peer) :
 		if self.direction == "In" :
@@ -100,7 +114,7 @@ class Connectors(object):
 				kind(self,peer),
 				"Out",
 				self._slice)
-			return asOutput > peer
+			return asOutput.connect(peer)
 		return self.connect(peer)
 
 	def __lt__(self, peer) :
@@ -119,7 +133,8 @@ class Connectors(object):
 				kind(self, peer),
 				"In",
 				self._slice)
-			return asInput < peer
+			return peer.connect(asInput)
 		return peer.connect(self)
+
 
 

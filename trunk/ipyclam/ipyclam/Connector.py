@@ -122,35 +122,48 @@ class Connector(object):
 
 	def disconnect(self, peer = None):
 		if peer is None:
-			self.disconnectFromAllPeers()
-			return
+			return self._disconnectPattern(
+				(self.host.name, self.name, None, None))
+
 		import Processing
 		if type(peer) == Processing.Processing:
-			self.disconnectProcessing(peer)
-			return
-		self._engine.disconnect(self.kind,
-			self._hostname(), self.name,
-			peer._hostname(), peer.name)
+			return self._disconnectPattern((
+				self.host.name, self.name,
+				peer.name, None))
 
-	def disconnectProcessing(self, peer):
-		names = (self._hostname(), self.name)
+		# TODO: Untested
+		import Connectors
+		if type(peer) == Connectors.Connectors :
+			return sum((
+				self._disconnectPattern((
+					self.host.name, self.name,
+					peer.processing.name, connector.name))
+				for connector in peer))
+
+		return self._disconnectPattern((
+				self.host.name, self.name,
+				peer.host.name, peer.name))
+
+	def _disconnectPattern(self, pattern) :
+		def match(pattern, connection) :
+			for p,c in zip (pattern, connection) :
+				if p is None : continue
+				if p==c : continue
+				return False
+			return True
+
 		if self.kind == Port:
 			connections = self._engine.portConnections()
 		elif self.kind == Control:
 			connections = self._engine.controlConnections()
-		connections = [connection for connection in connections]
-		for connection in connections:
-			if connection[0:2] == names and peer.name == connection[2]:
-				self._engine.disconnect(self.kind, *connection)
+		if self.direction == "In" :
+			pattern = pattern[2], pattern[3], pattern[0], pattern[1]
 
-	def disconnectFromAllPeers(self):
-		names = (self._hostname(), self.name)
-		if self.kind == Port:
-			connections = self._engine.portConnections()
-		elif self.kind == Control:
-			connections = self._engine.controlConnections()
-		connections = [connection for connection in connections]
-		for connection in connections:
-			if connection[0:2] == names:
-				self._engine.disconnect(self.kind, *connection)
+		return sum((
+			self._engine.disconnect(self.kind, *connection)
+			for connection in connections[:] # copy while deleting
+			if match(pattern,connection)
+			))
 
+	def __div__(self, peer) :
+		return self.disconnect(peer)
