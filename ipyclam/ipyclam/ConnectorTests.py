@@ -333,6 +333,96 @@ class ConnectorTests(unittest.TestCase):
 		source.disconnect()
 		self.assertMultiLineEqual(self.peerList(source), "")
 
+	def test_div_delegatesOnDisconnect(self) :
+		engine = self.empty()
+		engine.addProcessing("DummyControlSource", "source")
+		engine.addProcessing("DummyControlSink", "sink")
+		engine.addProcessing("DummyControlSink", "sink2")
+		source = Connector(engine, "source", "Control", "Out", "OutControl1")
+		sink = Connector(engine, "sink", "Control", "In", "InControl1")
+		sink2 = Connector(engine, "sink2", "Control", "In", "InControl1")
+		source > sink
+		source > sink2
+		self.assertMultiLineEqual(
+			self.peerList(source),
+			"sink.InControl1\n"
+			"sink2.InControl1\n"
+			)
+		source / sink
+		self.assertMultiLineEqual(self.peerList(source), 
+			"sink2.InControl1\n"
+			)
+
+	def test_disconnect_inverseOrder(self) :
+		engine = self.empty()
+		engine.addProcessing("DummyControlSource", "source")
+		engine.addProcessing("DummyControlSink", "sink")
+		engine.addProcessing("DummyControlSink", "sink2")
+		source = Connector(engine, "source", "Control", "Out", "OutControl1")
+		sink = Connector(engine, "sink", "Control", "In", "InControl1")
+		sink2 = Connector(engine, "sink2", "Control", "In", "InControl1")
+		source > sink
+		source > sink2
+		self.assertMultiLineEqual(
+			self.peerList(source),
+			"sink.InControl1\n"
+			"sink2.InControl1\n"
+			)
+		sink.disconnect(source)
+		self.assertMultiLineEqual(self.peerList(source), 
+			"sink2.InControl1\n"
+			)
+
+	def test_disconnectports_from_processing_inverse(self):
+		engine = self.empty()
+		engine.addProcessing("DummyPortSource", "source")
+		engine.addProcessing("DummyPortSink", "sink")
+		engine.addProcessing("DummyPortSink", "sink2")
+		source = Connector(engine, "source", "Port", "Out", "OutPort1")
+		sink = Connector(engine, "sink", "Port", "In", "InPort1")
+		sink2 = Connector(engine, "sink2", "Port", "In", "InPort1")
+		source > sink
+		source > sink2
+		self.assertMultiLineEqual(
+			self.peerList(source),
+			"sink.InPort1\n"
+			"sink2.InPort1\n"
+			)
+		sink.disconnect(source.host)
+		self.assertMultiLineEqual(
+			self.peerList(source),
+			"sink2.InPort1\n"
+			)
+		source.disconnect(sink2.host)
+		self.assertMultiLineEqual(
+			self.peerList(source),"")
+
+	def test_disconnectports_from_processing_inverse(self):
+		engine = self.empty()
+		engine.addProcessing("DummyPortSource", "source")
+		engine.addProcessing("DummyPortSink", "sink")
+		engine.addProcessing("DummyPortSink", "sink2")
+		source = Connector(engine, "source", "Port", "Out", "OutPort1")
+		sink = Connector(engine, "sink", "Port", "In", "InPort1")
+		sink2 = Connector(engine, "sink2", "Port", "In", "InPort1")
+		source > sink
+		source > sink2
+		self.assertMultiLineEqual(
+			self.peerList(source),
+			"sink.InPort1\n"
+			"sink2.InPort1\n"
+			)
+		sink.disconnect(source.host)
+		self.assertMultiLineEqual(
+			self.peerList(source),
+			"sink2.InPort1\n"
+			)
+		source.disconnect(sink2.host)
+		self.assertMultiLineEqual(
+			self.peerList(source),"")
+
+
+
 class Clam_ConnectorTests(ConnectorTests):
 	def empty(self):
 		import Clam_Engine

@@ -9,7 +9,6 @@ Updated:   11-09-2012
 import ipyclam
 import ipyclam.qtconsole
 from PySide import QtGui
-from ipyclam.Jack_Engine import Jack_Engine
 
 def main():
 
@@ -20,7 +19,10 @@ def main():
     widget.namespace_inject("ipyclam", ipyclam)
     widget.namespace_inject("net", ipyclam.Network())
     try :
+        from ipyclam.Jack_Engine import Jack_Engine
         widget.namespace_inject("jack", ipyclam.Network(Jack_Engine()))
+    except ImportError :
+        pass
     except RuntimeError :
         pass
     widget.namespace_inject("console", widget)

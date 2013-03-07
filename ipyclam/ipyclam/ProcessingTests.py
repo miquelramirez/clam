@@ -425,6 +425,59 @@ class ProcessingTests(object):
 			("multi2", "OutPort3", "multi1", "InPort2"),
 			], engine.portConnections())
 
+	def test_connect_connector_to_slice(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi1.OutPort1 > multi2[1:])
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi1", "OutPort1", "multi2", "InPort2"),
+			("multi1", "OutPort1", "multi2", "InPort3"),
+			], engine.portConnections())
+
+	def test_connect_connectors_to_slice(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi1._outports > multi2[1:])
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi1", "OutPort1", "multi2", "InPort2"),
+			("multi1", "OutPort2", "multi2", "InPort3"),
+			], engine.portConnections())
+
+	def test_connect_connectors_from_slice(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(3, multi1._inports < multi2[1:])
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi2", "OutPort2", "multi1", "InPort1"),
+			("multi2", "OutPort3", "multi1", "InPort2"),
+			("multi2", "OutPort4", "multi1", "InPort3"),
+			], engine.portConnections())
+
+	def test_connect_slice_to_slice(self):
+		engine = self.connectivityFixture()
+		multi1 = Processing("multi1", engine)
+		multi2 = Processing("multi2", engine)
+
+		self.assertEqual(2, multi2[::2] > multi1[1:])
+		self.assertEqual([
+			], engine.controlConnections())
+		self.assertEqual([
+			("multi2", "OutPort1", "multi1", "InPort2"),
+			("multi2", "OutPort3", "multi1", "InPort3"),
+			], engine.portConnections())
+
 
 class ProcessingTests_Dummy(ProcessingTests, unittest.TestCase):
 	def empty(self):

@@ -110,25 +110,16 @@ class Processing(object):
 
 	def __gt__(self, peer) :
 		from Exceptions import BadConnectorDirectionOrder
-		if type(peer) in (
-				Connectors.Connectors,
-				Connector.Connector,
-				) :
-			if peer.direction != 'In' :
-				raise BadConnectorDirectionOrder(
-					"Wrong connectors order: Output > Input")
+		if hasattr(peer, 'direction') and peer.direction == "Out" :
+			raise BadConnectorDirectionOrder(
+				"Wrong connectors order: Output > Input")
 		return self.connect(peer)
 
 	def __lt__(self, peer) :
 		from Exceptions import BadConnectorDirectionOrder
-		if type(peer) in (
-				Connectors.Connectors,
-				Connector.Connector,
-				) :
-			if peer.direction is not None \
-			and peer.direction != 'Out' :
-				raise BadConnectorDirectionOrder(
-					"Wrong connectors order: Input < Output")
+		if hasattr(peer, 'direction') and peer.direction == "In" :
+			raise BadConnectorDirectionOrder(
+				"Wrong connectors order: Input < Output")
 		return peer.connect(self)
 
 
