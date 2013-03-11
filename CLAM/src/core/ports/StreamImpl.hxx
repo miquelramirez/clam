@@ -23,12 +23,20 @@
 #define StreamImpl_hxx
 
 #include "Region.hxx"
-#include <list>
-#include <vector>
 #include "PhantomBuffer.hxx"
 namespace CLAM
 {
 
+/**
+	@ingroup PortsImplementation
+	Implements data flow between one output port and many input ports.
+
+	For each port it uses a Region to keep their write or read positions,
+	and a PhantomBuffer is used to keep the data, from writing until
+	all the readers have read it.
+
+	This class is an internal implementation detail not to be used by users.
+*/
 template< typename Token >
 class StreamImpl
 {

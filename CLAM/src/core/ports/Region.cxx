@@ -34,45 +34,46 @@ Region::~Region()
 {
 }
 
-const long & Region::Pos() const 
+long Region::Pos() const 
 {
 	return mPos;
 }
 
-const int & Region::Size() const
+int Region::Size() const
 {
 	return mSize;
 }
 
-const int & Region::Hop() const
+int Region::Hop() const
 {
 	return mHop;
 }
 
-const int & Region::BeginDistance()
+int Region::BeginDistance()
 {
 	return mBeginDistance;
 }
 
-void Region::BeginDistance( const int &dist )
+void Region::BeginDistance(int dist)
 {
-	mBeginDistance = dist;		
+	mBeginDistance = dist;
 }
 
-void Region::Pos( const long & pos )
+void Region::Pos(long pos)
 {
 	mPos = pos;
 }
 
-void Region::Size( const int & size )
+void Region::Size(int size)
 {
 	mSize = size;
 	SizeChanged(size);
 }
 
-void Region::Hop( const int & hop )
+void Region::Hop(int hop)
 {
-	CLAM_ASSERT( hop <= mSize, "Region::hop() - hop can't be greater than size" );
+	CLAM_ASSERT( hop <= mSize,
+		"Region::hop() - hop can't be greater than size" );
 	mHop = hop;
 }
 
