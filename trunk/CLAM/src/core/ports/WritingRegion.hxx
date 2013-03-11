@@ -25,11 +25,15 @@
 #include "ReadingRegion.hxx"
 #include "StreamImpl.hxx"
 
-#include <iostream> // TODO: remove
-
 namespace CLAM
 {
 
+/**
+	@ingroup PortsImplementation
+	A WritingRegion is a writting window in a data stream.
+	A WritingRegion produce data consumed by many ReadingRegion's
+	and cannot advance until more free space is available on the underlaying structure.
+*/
 template< typename Token, template <class> class DataStructure = PhantomBuffer>
 class WritingRegion : public Region
 {
@@ -86,7 +90,7 @@ public:
 private:
 	/** Don't allow copies. Thus copy contructor made private */
 	WritingRegion(const WritingRegion<Token>& original){}
-	void SizeChanged(const int & newSize);
+	void SizeChanged(int newSize);
 	int GetGreatestReaderRegionSize();
 
 	/*
@@ -295,7 +299,7 @@ Region* WritingRegion< Token, DataStructure >::ProducerRegion()
 }
 
 template< typename Token, template <class> class DataStructure>
-void WritingRegion< Token, DataStructure >::SizeChanged(const int & newSize)
+void WritingRegion< Token, DataStructure >::SizeChanged(int newSize)
 {
 	mStream.NewWritingRegionSize( *this );
 }

@@ -28,7 +28,18 @@
 #include "Assert.hxx"
 
 namespace CLAM {
+	/**
+		@ingroup PortImplementation
+		A special circular buffer providing contiguous data tokens windows for read.
 
+		This class is an internal implementation detail not to be used by users.
+
+		A PhantomBuffer has a special region at the end of the physical buffer
+		that is used to hold duplicated data from the begining of the buffer
+		to provide contiguous regions for reading even if the reading region
+		is in the otherwise discontiguous zone of the buffer.
+		This is done at the cost of writting data twice while in that zone.
+	*/
 	template<class T>
 	class PhantomBuffer 
 	{

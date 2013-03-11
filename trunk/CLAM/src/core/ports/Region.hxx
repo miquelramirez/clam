@@ -26,7 +26,13 @@
 
 namespace CLAM
 {
-	
+
+/**
+	@ingroup PortsImplementation
+	A Region defines a sliding window in a data token stream.
+
+	This class is an internal implementation detail not to be used by users.
+*/
 class Region
 {
 public:
@@ -36,15 +42,18 @@ public:
 	Region();
 	virtual ~Region();
 
-	const long& Pos() const;
-	const int& Size() const;
-	const int& Hop() const;
-	const int& BeginDistance();
+	/// Current window position
+	long Pos() const;
+	/// Number of tokens accessible at once
+	int Size() const;
+	/// Number of tokens the window advances each time
+	int Hop() const;
+	int BeginDistance();
 
-	void Pos( const long & pos );
-	void Size( const int & size );
-	void Hop( const int & hop );
-	void BeginDistance( const int & dist );
+	void Pos(long pos );
+	void Size(int size );
+	void Hop(int hop );
+	void BeginDistance(int dist );
 	
 	virtual void RemoveProducer(){}
 	virtual Region* ProducerRegion() = 0;
@@ -53,7 +62,7 @@ public:
 	virtual void RemoveRegion( Region & Region ){}
 
 protected:
- 	virtual void SizeChanged(const int & newSize) = 0;
+ 	virtual void SizeChanged(int newSize) = 0;
 
 private:
 	long mPos;

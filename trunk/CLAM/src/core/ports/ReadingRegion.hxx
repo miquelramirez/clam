@@ -28,6 +28,12 @@
 namespace CLAM
 {
 
+/**
+	@ingroup PortsImplementation
+	A ReadingRegion is a reading window in a data token stream.
+	A ReadingRegion consumes data produced by a WritingRegion
+	and cannot advance until the WritingRegion has produced.
+*/
 template<class WritingRegion>
 class ReadingRegion : public Region
 {
@@ -41,7 +47,7 @@ public:
 	void LinkAndNotifySizeToStream( ProperStream& stream );
 	ProperStream& Stream();
 	/** Condition of overlap between reading and writing regions.
-		Returns true if are not overlapping so it can consume
+		Returns true if there is not overlapping so it can consume
 	*/
 	bool CanConsume();
 	/**
@@ -62,7 +68,7 @@ public:
 	ReadingRegionsIterator EndReaders();
 
 private:
-	void SizeChanged(const int & newSize);
+	void SizeChanged(int newSize);
 
 	ProperStream* mAttachedStream;
 	Region* mProducingRegion;
@@ -72,7 +78,8 @@ private:
 
 template<class WritingRegion>
 ReadingRegion<WritingRegion>::ReadingRegion() 
-		: mAttachedStream(0), mProducingRegion(0)
+	: mAttachedStream(0)
+	, mProducingRegion(0)
 {
 }
 
@@ -139,7 +146,7 @@ Region* ReadingRegion<WritingRegion>::ProducerRegion()
 	return mProducingRegion;
 }
 
-	template<class WritingRegion>
+template<class WritingRegion>
 void ReadingRegion<WritingRegion>::RemoveProducer()
 {
 	mProducingRegion = 0;
@@ -159,7 +166,7 @@ typename ReadingRegion<WritingRegion>::ReadingRegionsIterator ReadingRegion<Writ
 }
 
 template<class WritingRegion>
-void ReadingRegion<WritingRegion>::SizeChanged(const int & newSize)
+void ReadingRegion<WritingRegion>::SizeChanged(int newSize)
 {
 	if (mAttachedStream)
 		mAttachedStream->NewReadingRegionSize(*this);
