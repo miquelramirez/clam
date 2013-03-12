@@ -30,6 +30,11 @@
 #endif
 #include <pthread.h>
 
+// KLUDGE: C11 defines TIME_UTC as macro in time.h
+#ifdef TIME_UTC
+#undef TIME_UTC
+#endif
+
 namespace CLAM
 {
 
