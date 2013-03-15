@@ -380,10 +380,10 @@ protected:
 		if (networkIsDummy()) return;
 		_network->RemoveProcessing(name.toStdString());
 	}
-	virtual void networkRemoveTextBox(void * informationText)
+	virtual void networkRemoveTextBox(void * comment)
 	{
 		if (networkIsDummy()) return;
-		_network->removeInformationText((CLAM::InformationText*) informationText);
+		_network->removeComment((CLAM::Comment*) comment);
 	}
 
 public:
@@ -404,13 +404,13 @@ public:
 			CLAM::Processing * processing = it->second;
 			addProcessingBox( name,  processing );
 		}
-		typedef CLAM::Network::InformationTexts::iterator TextIterator;
-		for (TextIterator it=_network->BeginInformationTexts(); it!=_network->EndInformationTexts(); it++)
+		typedef CLAM::Network::Comments::iterator TextIterator;
+		for (TextIterator it=_network->BeginComments(); it!=_network->EndComments(); it++)
 		{
 			TextBox *textBox=new TextBox(this);
 			textBox->setText(QString::fromLocal8Bit((*it)->text.c_str()));
 			textBox->setPos(QPoint((*it)->x, (*it)->y));
-			textBox->setInformationText(*it); // TODO: Too sensible to the order
+			textBox->setComment(*it); // TODO: Too sensible to the order
 			scene()->addItem(textBox);
 			_textBoxes.push_back(textBox);
 		}
@@ -682,11 +682,11 @@ private slots:
 		QString newText = askText(tr("New text box"));
 		if (newText.isNull()) return;
 
-		CLAM::InformationText * informationText= new CLAM::InformationText();
-		_network->addInformationText(informationText);
+		CLAM::Comment * comment = new CLAM::Comment();
+		_network->addComment(comment);
 
 		TextBox * textbox = new TextBox(this);
-		textbox->setInformationText(informationText);
+		textbox->setComment(comment);
 		textbox->setText(newText);
 		textbox->setPos(point);
 		scene()->addItem(textbox);
@@ -720,7 +720,7 @@ private slots:
 	virtual void networkUpdateTextBox(void * modelText, const QString & text, const QPointF & pos)
 	{
 		if (not modelText) return;
-		CLAM::InformationText * clamText = (CLAM::InformationText *) modelText;
+		CLAM::Comment * clamText = (CLAM::Comment *) modelText;
 		clamText->text=text.toStdString();
 		clamText->x=pos.x();
 		clamText->y=pos.y();

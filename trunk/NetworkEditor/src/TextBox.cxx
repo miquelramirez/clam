@@ -46,12 +46,12 @@ void TextBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 	QGraphicsTextItem::mouseDoubleClickEvent(event);
 }
 
-void TextBox::setInformationText(void * informationText)
+void TextBox::setComment(void * comment)
 {
-	_modelText=informationText;
+	_modelText=comment;
 }
 
-void * TextBox::getInformationText()
+void * TextBox::getComment()
 {
 	return _modelText;
 }

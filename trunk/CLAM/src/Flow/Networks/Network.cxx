@@ -26,7 +26,7 @@
 #include <algorithm>
 #include "ProcessingDefinitionAdapter.hxx"
 #include "ConnectionDefinitionAdapter.hxx"
-#include "InformationTextAdapter.hxx"
+#include "CommentAdapter.hxx"
 #include "ProcessingFactory.hxx"
 #include "XmlStorageErr.hxx"
 #include "ControlSink.hxx"
@@ -156,10 +156,10 @@ namespace CLAM
 				}
 			}
 		}
-		InformationTexts::const_iterator ibIt;
-		for(ibIt=BeginInformationTexts();ibIt!=EndInformationTexts();ibIt++)
+		Comments::const_iterator ibIt;
+		for(ibIt=BeginComments();ibIt!=EndComments();ibIt++)
 		{
-			InformationTextAdapter infoTextDefinition((*ibIt)->x, (*ibIt)->y, (*ibIt)->text);
+			CommentAdapter infoTextDefinition((*ibIt)->x, (*ibIt)->y, (*ibIt)->text);
 			XMLComponentAdapter xmlAdapter(infoTextDefinition, "information", true);
 			storage.Store(xmlAdapter);
 		}
@@ -252,16 +252,16 @@ namespace CLAM
 
 		while(true and not _inPasteMode)
 		{
-			InformationTextAdapter infoTextDefinition;
+			CommentAdapter infoTextDefinition;
 			XMLComponentAdapter xmlAdapter(infoTextDefinition, "information", true);
 			if (not storage.Load(xmlAdapter)) break;
 			
-			InformationText *myInformationText=new InformationText();
-			myInformationText->x=infoTextDefinition.GetCoordX();
-			myInformationText->y=infoTextDefinition.GetCoordY();
-			myInformationText->text=infoTextDefinition.GetText();			
+			Comment *myComment=new Comment();
+			myComment->x=infoTextDefinition.GetCoordX();
+			myComment->y=infoTextDefinition.GetCoordY();
+			myComment->text=infoTextDefinition.GetText();			
 
-			_informationTexts.push_back(myInformationText);
+			_informationTexts.push_back(myComment);
 		}
 
 		_inPasteMode=false;
@@ -749,7 +749,7 @@ namespace CLAM
 		}
 		for(unsigned i=0;i<_informationTexts.size();i++)
 		{
-			removeInformationText(_informationTexts[i]);
+			removeComment(_informationTexts[i]);
 		}
 		_informationTexts.clear();
 	}
@@ -775,37 +775,37 @@ namespace CLAM
 
 	// accessors to text boxes
 
-	void Network::addInformationText(InformationText * informationText)
+	void Network::addComment(Comment * informationText)
 	{
 		_informationTexts.push_back(informationText);
 	}
 
-	void Network::removeInformationText(InformationText * informationText)
+	void Network::removeComment(Comment * informationText)
 	{
-		InformationTexts::iterator it = find(BeginInformationTexts(), EndInformationTexts(), informationText);
+		Comments::iterator it = find(BeginComments(), EndComments(), informationText);
 	
-		if(it!=EndInformationTexts())
+		if(it!=EndComments())
 			_informationTexts.erase(it);
 		else
 			std::cerr << "Warning: Information Text Box does not exist.";
 	}
 
-	Network::InformationTexts::iterator Network::BeginInformationTexts()
+	Network::Comments::iterator Network::BeginComments()
 	{
 		return _informationTexts.begin();
 	}
 	
-	Network::InformationTexts::iterator Network::EndInformationTexts()
+	Network::Comments::iterator Network::EndComments()
 	{
 		return _informationTexts.end();
 	}
 	
-	Network::InformationTexts::const_iterator Network::BeginInformationTexts() const
+	Network::Comments::const_iterator Network::BeginComments() const
 	{
 		return _informationTexts.begin();
 	}
 	
-	Network::InformationTexts::const_iterator Network::EndInformationTexts() const
+	Network::Comments::const_iterator Network::EndComments() const
 	{
 		return _informationTexts.end();
 	}
