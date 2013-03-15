@@ -592,7 +592,7 @@ public:
 	}
 	void removeTextBox(TextBox * textBox)
 	{
-		networkRemoveTextBox(textBox->getInformationText());
+		networkRemoveTextBox(textBox->getComment());
 		delete textBox;
 		_textBoxes.erase(std::find(_textBoxes.begin(), _textBoxes.end(), textBox));
 		markAsChanged();

@@ -30,7 +30,7 @@
 namespace CLAM
 {
 
-class InformationTextAdapter :public Component
+class CommentAdapter :public Component
 {
 private:
 	int _coordX;
@@ -38,8 +38,8 @@ private:
 	Text _text;
 
 public:
-	InformationTextAdapter( int coordX = 0, int coordY = 0, const Text & text = "");
-	virtual ~InformationTextAdapter();	
+	CommentAdapter( int coordX = 0, int coordY = 0, const Text & text = "");
+	virtual ~CommentAdapter();	
 
 	const Text & GetText() {return _text;}
 	int GetCoordX() {return _coordX;}
@@ -49,7 +49,7 @@ public:
 	//* Returns the class name
 	const char * GetClassName() const 
 	{
-		return "InformationTextBoxAdapter";
+		return "CommentBoxAdapter";
 	}
 	
 	virtual void StoreOn (Storage & store) const;

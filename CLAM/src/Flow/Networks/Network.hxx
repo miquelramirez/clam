@@ -42,7 +42,7 @@ class FlowControl;
 class ControlSink;
 class ControlSource;
 
-class InformationText
+class Comment
 {
 public:
 	int x;
@@ -64,7 +64,7 @@ public:
 	typedef std::vector<ControlSource*> ControlSources;
 	typedef std::vector<ControlSink*> ControlSinks;
 
-	typedef std::vector<InformationText*> InformationTexts;
+	typedef std::vector<Comment*> Comments;
 
 	typedef struct { int x, y, width, height; } Geometry;
 	typedef std::map <std::string, Geometry> ProcessingsGeometriesMap;
@@ -248,13 +248,13 @@ public:
 	ProcessingsMap::const_iterator EndProcessings() const;
 
 	// accessors to txt boxes
-	void addInformationText(InformationText * informationText);
-	void removeInformationText(InformationText * informationText);
+	void addComment(Comment * informationText);
+	void removeComment(Comment * informationText);
 
-	InformationTexts::iterator BeginInformationTexts();
-	InformationTexts::iterator EndInformationTexts();
-	InformationTexts::const_iterator BeginInformationTexts() const;
-	InformationTexts::const_iterator EndInformationTexts() const;
+	Comments::iterator BeginComments();
+	Comments::iterator EndComments();
+	Comments::const_iterator BeginComments() const;
+	Comments::const_iterator EndComments() const;
 
 	InPortBase & GetInPortByCompleteName( const std::string& ) const;
 	OutPortBase & GetOutPortByCompleteName( const std::string& ) const;
@@ -320,7 +320,7 @@ private:
 	ProcessingsMap _processings;
 	FlowControl* _flowControl;
 	NetworkPlayer* _player;
-	InformationTexts _informationTexts;
+	Comments _informationTexts;
 
 	/// holds the names of the processings that are to be cut
 	mutable NamesSet _selectedProcessings;

@@ -24,8 +24,8 @@ public:
 	TextBox(NetworkCanvas * canvas=0);
 	~TextBox();
 
- 	void setInformationText(void * informationText);
-	void * getInformationText();
+ 	void setComment(void * comment);
+	void * getComment();
 	void setText(const QString& text);
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

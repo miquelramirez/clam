@@ -20,23 +20,23 @@
  */
 
 
-#include "InformationTextAdapter.hxx"
+#include "CommentAdapter.hxx"
 #include "Assert.hxx"
 #include "XMLAdapter.hxx"
 #include "XMLStorage.hxx"
 
 namespace CLAM
 {
-	InformationTextAdapter::InformationTextAdapter( int coordX, int coordY, const Text & text)
+	CommentAdapter::CommentAdapter( int coordX, int coordY, const Text & text)
 		: _coordX(coordX)
 		,_coordY(coordY)
 		,_text(text)
 	{}
 
-	InformationTextAdapter::~InformationTextAdapter()
+	CommentAdapter::~CommentAdapter()
 	{}
 
-	void InformationTextAdapter::StoreOn (Storage & store) const
+	void CommentAdapter::StoreOn (Storage & store) const
 	{
 		Text text(_text);
 
@@ -49,7 +49,7 @@ namespace CLAM
 		store.Store(infoAdapter);
 	}
 
-	void InformationTextAdapter::LoadFrom (Storage & store) 
+	void CommentAdapter::LoadFrom (Storage & store) 
 	{
 		XMLAdapter<int> coordXAdapter( _coordX, "x", true);
 		if (not store.Load(coordXAdapter))
