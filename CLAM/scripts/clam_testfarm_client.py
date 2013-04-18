@@ -277,6 +277,16 @@ if 'irc_report' in localDefinitions :
 		IrcReporter(
 			testfarm_page="http://clam-project.org/testfarm.html",
 			**irc_report_args))
+if False:
+	from serverv2reporter import ServerV2Reporter
+	from testfarm.server import Server
+	extra_listeners.append(
+		ServerV2Reporter(
+			Server(os.path.expanduser("~/.config/testfarm/server")),
+			"TestFarm",
+			"Shoebox",
+		)
+	)
 
 Runner( clam, 
 	continuous = False,
