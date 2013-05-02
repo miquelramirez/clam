@@ -1,15 +1,19 @@
 #ifndef __ABOUTBOX__
 #define __ABOUTBOX__
 
-#include "AboutBoxBase.h"
+#include "ui_AboutBox.hxx"
 
 namespace QtSMS
 {
-	class AboutBox : public AboutBoxBase
+	class AboutBox : public QDialog, public Ui::AboutBox
 	{
 	public:
 		AboutBox(QWidget* parent=0);
 		~AboutBox();
+		void mouseReleaseEvent( QMouseEvent * e )
+		{
+			close();
+		}
 	};
 }
 

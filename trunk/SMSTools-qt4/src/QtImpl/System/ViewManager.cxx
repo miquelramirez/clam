@@ -1,10 +1,9 @@
 #include <qlayout.h>
 #include <qsplitter.h>
 #include <q3frame.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3BoxLayout>
-#include <Q3VBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QBoxLayout>
+#include <QtGui/QVBoxLayout>
 #include <CLAM/Navigator.hxx>
 #include <CLAM/SMSTimeMultiDisplay.hxx>
 #include <CLAM/SMSFreqMultiDisplay.hxx>
@@ -220,8 +219,8 @@ namespace QtSMS
 		mPlotList.push_back(new CLAM::VM::SMSTimeMultiDisplay(mTimeViewContainer));
 		mPlotList.push_back(new CLAM::VM::SMSFreqMultiDisplay(mSpecViewContainer));
 
-		timeViewLayout = new Q3HBoxLayout(mTimeViewContainer);
-		specViewLayout = new Q3HBoxLayout(mSpecViewContainer);
+		timeViewLayout = new QHBoxLayout(mTimeViewContainer);
+		specViewLayout = new QHBoxLayout(mSpecViewContainer);
 
 		timeViewLayout->addWidget(mPlotList[TIME_GROUP_VIEW]);
 		specViewLayout->addWidget(mPlotList[SPECTRUM_GROUP_VIEW]);
@@ -239,12 +238,12 @@ namespace QtSMS
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->ShowDisplayOnNewData(false);
 		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->ShowDisplayOnNewData(false);
 
-		Q3BoxLayout* navigator = new Q3HBoxLayout;
+		QBoxLayout* navigator = new QHBoxLayout;
 		navigator->addWidget(hole);
 		navigator->addWidget(mFrameNavigator);
 		navigator->addStretch();
 
-		Q3BoxLayout* layout = new Q3VBoxLayout(view);
+		QBoxLayout* layout = new QVBoxLayout(view);
 		layout->addWidget(splitter);
 		layout->addLayout(navigator);
 

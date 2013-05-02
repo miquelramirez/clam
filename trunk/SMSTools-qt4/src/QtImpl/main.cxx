@@ -4,10 +4,6 @@
 ///////////////////////////////////////
 #include "QtSMSTools.hxx"
 
-#ifdef Q_WS_X11
-#include <X11/Xlib.h>
-#endif
-
 #ifdef WIN32
 	#include <CLAM/InitAudioIO.hxx>
 	#include <CLAM/InitProcessing.hxx>
@@ -18,10 +14,6 @@ int main( int argc, char ** argv )
 #ifdef WIN32
 	CLAM::ProcessingModule::init();
 	CLAM::AudioIOModule::init();
-#endif
-
-#ifdef Q_WS_X11
-	XInitThreads();
 #endif
 
 	QApplication app( argc, argv );

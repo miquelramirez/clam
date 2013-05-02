@@ -2,10 +2,9 @@
 #include <q3buttongroup.h>
 #include <qradiobutton.h>
 #include "Qt_SMS_Gender_Selector.hxx"
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <Q3BoxLayout>
-#include <Q3VBoxLayout>
+#include <QtGui/QGridLayout>
+#include <QtGui/QBoxLayout>
+#include <QtGui/QVBoxLayout>
 
 namespace QtSMS
 {
@@ -19,7 +18,7 @@ namespace QtSMS
 		QRadioButton* m2f = new QRadioButton(buttonGroup);
 		QRadioButton* f2m = new QRadioButton(buttonGroup);
 
-		Q3BoxLayout* innerLayout = new Q3VBoxLayout(buttonGroup,10,1);
+		QBoxLayout* innerLayout = new QVBoxLayout(buttonGroup,10,1);
 		innerLayout->addWidget(m2f);
 		innerLayout->addWidget(f2m);
 
@@ -29,7 +28,7 @@ namespace QtSMS
 		m2f->setChecked(true);
 
 		// layout
-		Q3GridLayout* layout = new Q3GridLayout(this,3,1,10);
+		QGridLayout* layout = new QGridLayout(this,3,1,10);
 		layout->addWidget(buttonGroup,1,0);
 
 		connect(buttonGroup,SIGNAL(clicked(int)),this,SIGNAL(genderChanged(int)));

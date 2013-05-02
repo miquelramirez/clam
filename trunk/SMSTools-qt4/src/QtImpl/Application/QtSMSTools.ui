@@ -1,0 +1,1210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QtSMSTools</class>
+ <widget class="QMainWindow" name="QtSMSTools">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>819</width>
+    <height>504</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>SMS Tools 2 | MTG-UPF (Barcelona)</string>
+  </property>
+  <widget class="QWidget" name="widget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>21</y>
+     <width>819</width>
+     <height>483</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QMenuBar" name="mMenuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>819</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="mMenuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="mMenuFileNewCfg"/>
+    <addaction name="mMenuFileLoadCfg"/>
+    <addaction name="separator"/>
+    <addaction name="fileExitAction"/>
+   </widget>
+   <widget class="QMenu" name="SMS_Analysis">
+    <property name="title">
+     <string>SMS &amp;Analysis</string>
+    </property>
+    <addaction name="mMenuAnalysisAnalyze"/>
+    <addaction name="mMenuFileLoadAnalysis"/>
+    <addaction name="mMenuFileStoreAnalysis"/>
+    <addaction name="separator"/>
+    <addaction name="mMenuAnalysisExtractMelody"/>
+    <addaction name="mMenuFileSaveMelody"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="SMS_Transformation">
+    <property name="title">
+     <string>SMS &amp;Transformation</string>
+    </property>
+    <addaction name="mMenuFileNewScore"/>
+    <addaction name="mMenuFileLoadScore"/>
+    <addaction name="mMenuTransformApply"/>
+    <addaction name="mMenuTransformUndo"/>
+   </widget>
+   <widget class="QMenu" name="SMS_Synthesis">
+    <property name="title">
+     <string>SMS &amp;Synthesis</string>
+    </property>
+    <addaction name="mMenuSynthSinthesize"/>
+    <addaction name="mMenuFileSaveSynSound"/>
+    <addaction name="mMenuFileSaveSynSinusoidal"/>
+    <addaction name="mMenuFileSaveSynResidual"/>
+   </widget>
+   <widget class="QMenu" name="mMenuView">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="popupMenu_24">
+     <property name="title">
+      <string>Sonogram</string>
+     </property>
+     <addaction name="mMenuViewColorSonogram"/>
+     <addaction name="mMenuViewBWSonogram"/>
+    </widget>
+    <widget class="QMenu" name="popupMenu_27">
+     <property name="title">
+      <string>Frame Data</string>
+     </property>
+     <addaction name="mMenuViewSpecPeaks"/>
+     <addaction name="mMenuViewSinSpec"/>
+     <addaction name="mMenuViewResSpec"/>
+    </widget>
+    <widget class="QMenu" name="popupMenu_36">
+     <property name="title">
+      <string>Scheme</string>
+     </property>
+     <addaction name="mBackgroundBlack"/>
+     <addaction name="mBackgroundWhite"/>
+    </widget>
+    <addaction name="mMenuViewOriginalAudio"/>
+    <addaction name="mMenuViewFundFreq"/>
+    <addaction name="mMenuViewSinTracks"/>
+    <addaction name="viewSonogram"/>
+    <addaction name="popupMenu_24"/>
+    <addaction name="viewFrameData"/>
+    <addaction name="popupMenu_27"/>
+    <addaction name="separator"/>
+    <addaction name="mMenuViewSynAudio"/>
+    <addaction name="mMenuViewSynSinusoidal"/>
+    <addaction name="mMenuViewSynResidual"/>
+    <addaction name="separator"/>
+    <addaction name="viewSchemeAction"/>
+    <addaction name="popupMenu_36"/>
+   </widget>
+   <widget class="QMenu" name="Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="mMenuOnlineHelp"/>
+    <addaction name="mMenuAbout"/>
+   </widget>
+   <addaction name="mMenuFile"/>
+   <addaction name="SMS_Analysis"/>
+   <addaction name="SMS_Transformation"/>
+   <addaction name="SMS_Synthesis"/>
+   <addaction name="mMenuView"/>
+   <addaction name="Help"/>
+  </widget>
+  <action name="fileConfig">
+   <property name="text">
+    <string>Configuration</string>
+   </property>
+   <property name="iconText">
+    <string>Configuration</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>fileConfig</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileNewCfg">
+   <property name="text">
+    <string>New Configuration...</string>
+   </property>
+   <property name="iconText">
+    <string>New Configuration...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileNewCfg</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileLoadCfg">
+   <property name="text">
+    <string>Load Configuration...</string>
+   </property>
+   <property name="iconText">
+    <string>Load Configuration...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileLoadCfg</cstring>
+   </property>
+  </action>
+  <action name="fileSMSAnalysis">
+   <property name="text">
+    <string>SMS Analysis</string>
+   </property>
+   <property name="iconText">
+    <string>SMS Analysis</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>fileSMSAnalysis</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileLoadAnalysis">
+   <property name="text">
+    <string>Load Analysis Data...</string>
+   </property>
+   <property name="iconText">
+    <string>Load Analysis Data...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileLoadAnalysis</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileStoreAnalysis">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Store Analysis Data...</string>
+   </property>
+   <property name="iconText">
+    <string>Store Analysis Data...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileStoreAnalysis</cstring>
+   </property>
+  </action>
+  <action name="fileMelody">
+   <property name="text">
+    <string>Melody</string>
+   </property>
+   <property name="iconText">
+    <string>Melody</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>fileMelody</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileSaveMelody">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save Extracted Melody...</string>
+   </property>
+   <property name="iconText">
+    <string>Save Extracted Melody...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileSaveMelody</cstring>
+   </property>
+  </action>
+  <action name="fileSMSTransform">
+   <property name="text">
+    <string>SMS Transformation</string>
+   </property>
+   <property name="iconText">
+    <string>SMS Transformation</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>fileSMSTransform</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileNewScore">
+   <property name="text">
+    <string>New Score...</string>
+   </property>
+   <property name="iconText">
+    <string>New Score...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileNewScore</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileLoadScore">
+   <property name="text">
+    <string>Load Score...</string>
+   </property>
+   <property name="iconText">
+    <string>Load Score...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileLoadScore</cstring>
+   </property>
+  </action>
+  <action name="fileSMSSynthesis">
+   <property name="text">
+    <string>SMS Synthesis</string>
+   </property>
+   <property name="iconText">
+    <string>SMS Synthesis</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>fileSMSSynthesis</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileSaveSynSound">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save synthesized sound...</string>
+   </property>
+   <property name="iconText">
+    <string>Save synthesized sound...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileSaveSynSound</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileSaveSynSinusoidal">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save synthesized sinusoidal...</string>
+   </property>
+   <property name="iconText">
+    <string>Save synthesized sinusoidal...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileSaveSynSinusoidal</cstring>
+   </property>
+  </action>
+  <action name="mMenuFileSaveSynResidual">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save synthesized residual...</string>
+   </property>
+   <property name="iconText">
+    <string>Save synthesized residual...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuFileSaveSynResidual</cstring>
+   </property>
+  </action>
+  <action name="fileExitAction">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="iconText">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>fileExitAction</cstring>
+   </property>
+  </action>
+  <action name="mMenuAnalysisAnalyze">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Analyze</string>
+   </property>
+   <property name="iconText">
+    <string>Analyze</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuAnalysisAnalyze</cstring>
+   </property>
+  </action>
+  <action name="mMenuAnalysisExtractMelody">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Melody Extraction</string>
+   </property>
+   <property name="iconText">
+    <string>Melody Extraction</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuAnalysisExtractMelody</cstring>
+   </property>
+  </action>
+  <action name="mMenuTransformApply">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Apply</string>
+   </property>
+   <property name="iconText">
+    <string>Apply</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuTransformApply</cstring>
+   </property>
+  </action>
+  <action name="mMenuTransformUndo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Undo Transformation</string>
+   </property>
+   <property name="iconText">
+    <string>Undo Transformation</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuTransformUndo</cstring>
+   </property>
+  </action>
+  <action name="mMenuSynthSinthesize">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Synthesize</string>
+   </property>
+   <property name="iconText">
+    <string>Synthesize</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuSynthSinthesize</cstring>
+   </property>
+  </action>
+  <action name="mMenuOnlineHelp">
+   <property name="text">
+    <string>CLAM home page</string>
+   </property>
+   <property name="iconText">
+    <string>CLAM home page</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuOnlineHelp</cstring>
+   </property>
+  </action>
+  <action name="mMenuLicense">
+   <property name="text">
+    <string>License...</string>
+   </property>
+   <property name="iconText">
+    <string>License...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuLicense</cstring>
+   </property>
+  </action>
+  <action name="mMenuAbout">
+   <property name="text">
+    <string>About SMS Tools 2...</string>
+   </property>
+   <property name="iconText">
+    <string>About SMS Tools 2...</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuAbout</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewSinTracks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Sinusoidal Tracks</string>
+   </property>
+   <property name="iconText">
+    <string>Sinusoidal Tracks</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewSinTracks</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewFundFreq">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Fundametal Frequency</string>
+   </property>
+   <property name="iconText">
+    <string>Fundametal Frequency</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewFundFreq</cstring>
+   </property>
+  </action>
+  <action name="viewSonogram">
+   <property name="text">
+    <string>Sonogram</string>
+   </property>
+   <property name="iconText">
+    <string>Sonogram</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>viewSonogram</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewColorSonogram">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Color</string>
+   </property>
+   <property name="iconText">
+    <string>Color</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewColorSonogram</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewBWSonogram">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>B&amp;&amp;W</string>
+   </property>
+   <property name="iconText">
+    <string>B&amp;W</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewBWSonogram</cstring>
+   </property>
+  </action>
+  <action name="viewFrameData">
+   <property name="text">
+    <string>Frame Data</string>
+   </property>
+   <property name="iconText">
+    <string>Frame Data</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>viewFrameData</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewSpecPeaks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Spectrum and Peaks</string>
+   </property>
+   <property name="iconText">
+    <string>Spectrum and Peaks</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewSpecPeaks</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewSinSpec">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Sinusoidal Spectrum</string>
+   </property>
+   <property name="iconText">
+    <string>Sinusoidal Spectrum</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewSinSpec</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewResSpec">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Residual Spectrum</string>
+   </property>
+   <property name="iconText">
+    <string>Residual Spectrum</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewResSpec</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewSynSinusoidal">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Synthesized Sinusoidal</string>
+   </property>
+   <property name="iconText">
+    <string>Synthesized Sinusoidal</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewSynSinusoidal</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewSynResidual">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Synthesized Residual</string>
+   </property>
+   <property name="iconText">
+    <string>Synthesized Residual</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewSynResidual</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewSynAudio">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Synthesized Audio</string>
+   </property>
+   <property name="iconText">
+    <string>Synthesized Audio</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewSynAudio</cstring>
+   </property>
+  </action>
+  <action name="mMenuViewOriginalAudio">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Original Audio</string>
+   </property>
+   <property name="iconText">
+    <string>Original Audio</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mMenuViewOriginalAudio</cstring>
+   </property>
+  </action>
+  <action name="viewSchemeAction">
+   <property name="text">
+    <string>Scheme</string>
+   </property>
+   <property name="iconText">
+    <string>Scheme</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>viewSchemeAction</cstring>
+   </property>
+  </action>
+  <action name="mBackgroundBlack">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Background black</string>
+   </property>
+   <property name="iconText">
+    <string>Background black</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mBackgroundBlack</cstring>
+   </property>
+  </action>
+  <action name="mBackgroundWhite">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Background white</string>
+   </property>
+   <property name="iconText">
+    <string>Background white</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>mBackgroundWhite</cstring>
+   </property>
+  </action>
+  <action name="Action">
+   <property name="iconText">
+    <string>Unnamed</string>
+   </property>
+   <property name="name" stdset="0">
+    <cstring>Action</cstring>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Q3MainWindow</class>
+   <extends>QWidget</extends>
+   <header>q3mainwindow.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mMenuAnalysisAnalyze</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>analyze()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fileExitAction</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileLoadCfg</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>loadConfiguration()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileNewCfg</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>newConfiguration()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileSaveMelody</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>storeExtractedMelody()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileLoadAnalysis</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>loadAnalysisData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileStoreAnalysis</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>storeAnalysisData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileSaveSynSound</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>saveSynthesizedAudio()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileSaveSynSinusoidal</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>saveSynthesizedSinusoidal()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileSaveSynResidual</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>saveSynthesizedResidua()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileLoadScore</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>loadTransformationScore()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuFileNewScore</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>newTransformationScore()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuAnalysisExtractMelody</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>melodyExtraction()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuTransformApply</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>doTransformation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuTransformUndo</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>undoTransformation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewBWSonogram</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displayBWSonogram(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewColorSonogram</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displayColorSonogram(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewFundFreq</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displayFundamentalFrequency(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewOriginalAudio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displayOriginalAudio(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewResSpec</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displayResidualSpectrum(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewSinSpec</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displaySinusoidalSpectrum(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewSinTracks</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displaySinusoidalTracks(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewSpecPeaks</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displaySpectrumAndPeaks(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewSynAudio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displaySynthesizedSound(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewSynResidual</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displaySynthesizedResidual(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuViewSynSinusoidal</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>displaySynthesizedSinusoidal(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuOnlineHelp</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>showOnlineHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuLicense</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>showLicense()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuAbout</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>showAboutBox()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mMenuSynthSinthesize</sender>
+   <signal>activated()</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>synthesize()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mBackgroundBlack</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>backgroundBlack(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mBackgroundWhite</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtSMSTools</receiver>
+   <slot>backgroundWhite(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

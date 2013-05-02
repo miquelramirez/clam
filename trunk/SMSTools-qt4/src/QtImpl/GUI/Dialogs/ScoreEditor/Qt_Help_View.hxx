@@ -1,7 +1,7 @@
 #ifndef __QTHELPVIEW__
 #define __QTHELPVIEW__
 
-#include <qtextedit.h>
+#include <QtGui/QTextEdit>
 
 namespace QtSMS
 {

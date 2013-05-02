@@ -5,8 +5,7 @@
 #include <qstatusbar.h>
 #include <qapplication.h>
 #include <qmessagebox.h>
-//Added by qt3to4:
-#include <Q3Frame>
+#include <QtGui/QFrame>
 #include "Engine.hxx"
 #include "ViewManager.hxx"
 #include "SMSConfigDlg.hxx"
@@ -30,8 +29,8 @@
 namespace QtSMS
 {
 	QtSMSTools::QtSMSTools()
-		: SMSToolsBase(0,"SMSTools",Qt::WDestructiveClose)
 	{
+		setupUi(this);
 		InitSMSTools();
 	}
 
@@ -588,12 +587,12 @@ namespace QtSMS
 	void QtSMSTools::InitStatusBar()
 	{
 		mLeftSBLabel = new QLabel(this);
-		mLeftSBLabel->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
-		mLeftSBLabel->setAlignment(AlignLeft);
+		mLeftSBLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+		mLeftSBLabel->setAlignment(Qt::AlignLeft);
 		mLeftSBLabel->setText("ready");
 		mRightSBLabel = new QLabel(this);
-		mRightSBLabel->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
-		mRightSBLabel->setAlignment(AlignLeft);
+		mRightSBLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+		mRightSBLabel->setAlignment(Qt::AlignLeft);
 		mRightSBLabel->setText("sr: --      dur: --:--,--- ");
 		statusBar()->addWidget(mLeftSBLabel,1);
 		statusBar()->addWidget(mRightSBLabel,0);

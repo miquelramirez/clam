@@ -1,4 +1,5 @@
 #include <q3filedialog.h>
+#include <QtGui/QFileDialog>
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
@@ -8,9 +9,10 @@
 namespace QtSMS
 {
 	SMSConfigDlg::SMSConfigDlg(CLAM::SMSAnalysisSynthesisConfig& config, QWidget* parent) 
-		: SMSConfigDlgBase(parent)
+		: QDialog(parent)
 		, mConfig(config)
 	{
+		setupUi(this);
 		InitConfigDlg();
 	}
 
@@ -134,7 +136,10 @@ namespace QtSMS
 
 	void SMSConfigDlg::browseInputSoundFile()
 	{
-		QString filename = Q3FileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = QFileDialog::getOpenFileName(this,
+			tr("Choose Input Sound file"),
+			QString(), // dir
+			"Audio (*.wav *.ogg *.mp3)");
 		if(filename.isEmpty()) return;
 		mInputSoundLineEdit->setText(filename);
 	}
