@@ -75,14 +75,11 @@
 # define M_SQRT2l       1.4142135623730950488016887242096981L  /* sqrt(2) */
 # define M_SQRT1_2l     0.7071067811865475244008443621048490L  /* 1/sqrt(2) */
 
-
+#endif // defined(M_PIl)
 
 #ifndef PI
 	# define PI M_PIl
 #endif
-
-#endif // defined(M_PIl)
-
 
 #ifndef TWO_PI
 # define TWO_PI (PI*2.)
