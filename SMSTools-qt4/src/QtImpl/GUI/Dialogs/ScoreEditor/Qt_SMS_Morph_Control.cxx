@@ -7,11 +7,10 @@
 #include "Qt_SMS_BPF_Editor.hxx"
 #include "Qt_SMS_BPF_Editor_Sync.hxx"
 #include "Qt_SMS_Morph_Control.hxx"
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3BoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QBoxLayout>
+#include <QtGui/QVBoxLayout>
 #include <QPixmap>
-#include <Q3VBoxLayout>
 
 namespace QtSMS
 {
@@ -467,18 +466,18 @@ namespace QtSMS
 		mWhatsThisButton->setFixedSize(25,25);
 		QToolTip::add(mWhatsThisButton,"What's this?");
 
-		Q3BoxLayout* innerLayout0 = new Q3HBoxLayout;
+		QBoxLayout* innerLayout0 = new QHBoxLayout;
 		innerLayout0->addWidget(mEnvelopeSelector);
 		innerLayout0->addStretch();
 		innerLayout0->addWidget(mWhatsThisButton);
 
-		Q3BoxLayout* innerLayout1 = new Q3HBoxLayout;
+		QBoxLayout* innerLayout1 = new QHBoxLayout;
 		for(unsigned i=0; i < mBPFEditorList.size(); i++)
 		{
 			innerLayout1->addWidget(mBPFEditorList[i]);
 		}
 
-		Q3BoxLayout* mainLayout = new Q3VBoxLayout(this);
+		QBoxLayout* mainLayout = new QVBoxLayout(this);
 		mainLayout->addWidget(mFrameInterpSelector);
 		mainLayout->addLayout(innerLayout0);
 		mainLayout->addLayout(innerLayout1);

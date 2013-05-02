@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <CLAM/SMSTransformationChainConfig.hxx>
-#include "ScoreEditorDlgBase.h"
+#include "ui_ScoreEditorDlg.hxx"
 
 class QBoxLayout;
 
@@ -13,7 +13,7 @@ namespace QtSMS
 {
 	class SMSConfigurator;
 	
-	class ScoreEditorDlg : public ScoreEditorDlgBase
+	class ScoreEditorDlg : public QDialog, public Ui::ScoreEditorDlg
 	{
 		typedef std::map<std::string,QWidget*> HelpWidgetTable;
 		typedef std::vector<SMSConfigurator*>  SMSConfiguratorList;

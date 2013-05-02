@@ -2,12 +2,12 @@
 #define __SMSCONFIGDLG__
 
 #include <vector>
-#include "SMSConfigDlgBase.h"
+#include "ui_SMSConfigDlg.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
 
 namespace QtSMS
 {
-	class SMSConfigDlg : public SMSConfigDlgBase
+	class SMSConfigDlg : public QDialog, public Ui::SMSConfigDlg
 	{
 		Q_OBJECT
 	public:

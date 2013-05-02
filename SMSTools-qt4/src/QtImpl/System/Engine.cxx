@@ -154,7 +154,7 @@ namespace QtSMS
 				"Unable to open or unrecognized format."
 				"%2")
 				.arg(filename.c_str())
-				.arg(fileReader.GetConfigErrorMessage()));
+				.arg(fileReader.GetConfigErrorMessage().c_str()));
 			return false;
 		}
 

@@ -3,8 +3,8 @@
 namespace QtSMS
 {	
 	AboutBox::AboutBox(QWidget* parent)
-		: AboutBoxBase(parent)
 	{
+		setupUi(this);
 	}
 		
 	AboutBox::~AboutBox()
