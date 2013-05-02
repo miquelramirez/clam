@@ -51,6 +51,8 @@
 
 #endif
 
+#ifndef M_PIl // checking for one long constant to avoid redefinitions
+
 /* The above constants are not adequate for computation using `long double's.
    Therefore we provide as an extension constants with similar names as a
    GNU extension.  Provide enough digits for the 128-bit IEEE quad.  */
@@ -78,6 +80,9 @@
 #ifndef PI
 	# define PI M_PIl
 #endif
+
+#endif // defined(M_PIl)
+
 
 #ifndef TWO_PI
 # define TWO_PI (PI*2.)
