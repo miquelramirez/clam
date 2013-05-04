@@ -465,6 +465,8 @@ def enable_modules(self, modules, debug=False, crosscompiling=False, useFrameWor
             self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4")])
             self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
         pcmodules = [module+debugSuffix for module in modules if module not in pclessModules ]
+        if 'QtOpenGL' in modules:
+			self.AppendUnique(LIBS='GL')
         if 'QtDBus' in pcmodules:
             self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4","QtDBus")])
         if "QtAssistant" in pcmodules:
