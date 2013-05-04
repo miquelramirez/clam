@@ -88,8 +88,6 @@ env.EnableQt4Modules([
 	crosscompiling=crosscompiling,
 	)
 
-#env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
-
 mainSources = {
 	'Voice2MIDI' : os.path.join('src','main.cxx'),
 }
@@ -131,7 +129,7 @@ qrcfiles = scanFiles("*.qrc", sourcePaths)
 if qrcfiles : sources += env.Qrc(source=qrcfiles)
 
 uifiles = scanFiles("*.ui", sourcePaths)
-if uifiles: env.Uic(source=uifiles)
+if uifiles: env.Uic4(source=uifiles)
 
 sources += [ os.path.join( os.path.dirname(uiccpp),
 		'uic_'+os.path.splitext(os.path.basename(uiccpp))[0]+'.cxx') for uiccpp in uifiles ]
