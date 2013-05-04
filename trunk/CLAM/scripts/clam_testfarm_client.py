@@ -280,7 +280,7 @@ if 'irc_report' in localDefinitions :
 
 print sys.path
 try:
-	from loggerv2reporter import ServerV2Reporter
+	from loggerv2reporter import LoggerV2Reporter
 	from testfarm.logger import Logger
 	from testfarm.remotelogger import RemoteLogger
 	extra_listeners.append(
