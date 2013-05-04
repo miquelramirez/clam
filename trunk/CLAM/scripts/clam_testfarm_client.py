@@ -277,21 +277,28 @@ if 'irc_report' in localDefinitions :
 		IrcReporter(
 			testfarm_page="http://clam-project.org/testfarm.html",
 			**irc_report_args))
-if False:
-	from serverv2reporter import ServerV2Reporter
-	from testfarm.server import Server
+
+print sys.path
+try:
+	from loggerv2reporter import ServerV2Reporter
+	from testfarm.logger import Logger
+	from testfarm.remotelogger import RemoteLogger
 	extra_listeners.append(
-		ServerV2Reporter(
-			Server(os.path.expanduser("~/.config/testfarm/server")),
-			"TestFarm",
-			"Shoebox",
+		LoggerV2Reporter(
+			RemoteLogger("http://localhost/testfarm/server/testfarmservice"),
+#			Logger(os.path.expanduser("~/logs/")),
+			"CLAM",
+			localDefinitions['name'],
 		)
 	)
+except ImportError as e:
+	print >> sys.stderr, "Testfarm server v2 not available"
+	raise
 
 Runner( clam, 
 	continuous = False,
 	first_run_always = forceRun,
-	remote_server_url = 'http://84.88.76.92/testfarm_server',
+#	remote_server_url = 'http://84.88.76.92/testfarm_server',
 #	local_base_dir='/tmp',
 	extra_listeners = extra_listeners,
 )
