@@ -11,8 +11,6 @@ from testfarm.v1.project import Project
 from testfarm.v1.client import Client
 from testfarm.v1.runner import Runner
 from testfarm.utils import loadDictFile
-from testfarm.v1.mailreporter import MailReporter
-from testfarm.v1.ircreporter import IrcReporter
 from testfarm.v1.SvnSandbox import SvnSandbox
 from commands import getoutput
 
@@ -259,25 +257,11 @@ if slowTests :
 forceRun = len(sys.argv)>1
 print "force Run: ", forceRun
 
-extra_listeners = []
-
-if 'mail_report' in config :
-	extra_listeners.append(
-		MailReporter(
-			testfarm_page="http://clam-project.org/testfarm.html",
-			**config['mail_report']))
-
-if 'irc_report' in config :
-	extra_listeners.append(
-		IrcReporter(
-			testfarm_page="http://clam-project.org/testfarm.html",
-			**config['irc_report']))
-
 Runner( clam, 
 	continuous = False,
 	first_run_always = forceRun,
 	remote_server_url = 'http://localhost/testfarm/server/testfarmservice',
 #	local_base_dir='~/logs',
-	extra_listeners = extra_listeners,
+	config = config,
 )
 
