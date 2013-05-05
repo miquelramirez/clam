@@ -10,7 +10,7 @@ from testfarm.v1.task import *
 from testfarm.v1.project import Project
 from testfarm.v1.client import Client
 from testfarm.v1.runner import Runner
-from testfarm.v1.SvnSandbox import SvnSandbox
+from testfarm.svnsandbox import SvnSandbox
 from testfarm.utils import loadDictFile
 from commands import getoutput
 
