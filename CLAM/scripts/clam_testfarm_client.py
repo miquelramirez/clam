@@ -5,14 +5,15 @@
 
 
 import os, sys, time
-sys.path.append('%s/testfarm/src' % os.environ['HOME'])
-from task import *
-from project import Project
-from client import Client
-from runner import Runner
-from utils import loadDictFile
-from mailreporter import MailReporter
-from ircreporter import IrcReporter
+sys.path.append('%s/testfarm/v2' % os.environ['HOME'])
+from testfarm.v1.task import *
+from testfarm.v1.project import Project
+from testfarm.v1.client import Client
+from testfarm.v1.runner import Runner
+from testfarm.utils import loadDictFile
+from testfarm.v1.mailreporter import MailReporter
+from testfarm.v1.ircreporter import IrcReporter
+from testfarm.v1.SvnSandbox import SvnSandbox
 from commands import getoutput
 
 def countLines( path ):
@@ -278,28 +279,11 @@ if 'irc_report' in localDefinitions :
 			testfarm_page="http://clam-project.org/testfarm.html",
 			**irc_report_args))
 
-print sys.path
-try:
-	from loggerv2reporter import LoggerV2Reporter
-	from testfarm.logger import Logger
-	from testfarm.remotelogger import RemoteLogger
-	extra_listeners.append(
-		LoggerV2Reporter(
-			RemoteLogger("http://localhost/testfarm/server/testfarmservice"),
-#			Logger(os.path.expanduser("~/logs/")),
-			"CLAM",
-			localDefinitions['name'],
-		)
-	)
-except ImportError as e:
-	print >> sys.stderr, "Testfarm server v2 not available"
-	raise
-
 Runner( clam, 
 	continuous = False,
 	first_run_always = forceRun,
-#	remote_server_url = 'http://84.88.76.92/testfarm_server',
-#	local_base_dir='/tmp',
+	remote_server_url = 'http://localhost/testfarm/server/testfarmservice',
+#	local_base_dir='~/logs',
 	extra_listeners = extra_listeners,
 )
 
