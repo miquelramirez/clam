@@ -10,8 +10,8 @@ from testfarm.v1.task import *
 from testfarm.v1.project import Project
 from testfarm.v1.client import Client
 from testfarm.v1.runner import Runner
-from testfarm.utils import loadDictFile
 from testfarm.v1.SvnSandbox import SvnSandbox
+from testfarm.utils import loadDictFile
 from commands import getoutput
 
 def countLines( path ):
@@ -36,6 +36,7 @@ config = dict(
 	sandbox= os.path.expanduser('~/'),
 	extraLibOptions = 'release=0',
 	extraAppOptions = '',
+	testfarm_page = 'http://clam-project.org/testfarm.html',
 )
 try :
 	config.update(loadDictFile(os.path.expanduser('~/.config/testfarmrc')))
