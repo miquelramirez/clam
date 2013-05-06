@@ -5,7 +5,7 @@
 
 
 import os, sys, time
-sys.path.append('%s/testfarm/v2' % os.environ['HOME'])
+sys.path.append('%s/testfarm/' % os.environ['HOME'])
 from testfarm.v1.task import *
 from testfarm.v1.project import Project
 from testfarm.v1.client import Client
