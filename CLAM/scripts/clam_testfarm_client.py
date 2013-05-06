@@ -66,7 +66,7 @@ client.brief_description = config['description']
 clam = Task(
 	project = Project('CLAM','<a href="http://clam-project.org">clam web</a>' ),
 	client = client,
-	task_name='Full Tests' if '--slow-tests' in sys.argv else 'Quick Tests',
+	task_name='Full Tests' if slowTests else 'Quick Tests',
 	)
 
 for repository in repositories :
@@ -172,11 +172,13 @@ clam.add_subtask('NetworkEditor installation', [
 	'scons install',
 ] )
 
+"""
+# requires installation of layouts
 clam.add_subtask('Back-to-back network tests', [
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%config,
 	'./back2back.py',
 ] )
-
+"""
 clam.add_subtask('SMSTools installation', [
 	'cd %(sandbox)s/clam/SMSTools'%config,
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s'%config,
@@ -261,7 +263,7 @@ print "force Run: ", forceRun
 Runner( clam, 
 	continuous = False,
 	first_run_always = forceRun,
-	remote_server_url = 'http://localhost/testfarm/server/testfarmservice',
+	remote_server_url = 'http://clam-project.org/testfarmserver',
 #	local_base_dir='~/logs',
 	config = config,
 )
