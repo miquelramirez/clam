@@ -90,11 +90,11 @@ public:
 	MainWindow()
 		: _networkPlayer(0)
 		, _clientName("CLAM network player")
-		, _processingTree(0)
-		, _processingTreeDock(0)
-		, _consoleDock(0)
 		, _descriptionPanel(0)
 		, _textDescriptionEdit(0)
+		, _processingTreeDock(0)
+		, _processingTree(0)
+		, _consoleDock(0)
 
 	{
 		ui.setupUi(this);
@@ -137,6 +137,8 @@ public:
 		QWidget * console = GetIPyClamConsole(_network);
 		_consoleDock->setFeatures(_consoleDock->features()|QDockWidget::DockWidgetVerticalTitleBar);
 		_consoleDock->setWidget(console ? console : new QLabel(tr("<p>Python console not available</p>")));
+		if (console)
+			connect(console, SIGNAL(modelChanged()), this, SLOT(refreshCanvas()));
 
 		_aboutDialog = new QDialog(this);
 		Ui::About aboutUi;
@@ -732,7 +734,7 @@ private:
 	PlaybackIndicator * _playingLabel;
 	QStringList _recentFiles;
 	QDockWidget * _descriptionPanel;
-	RichTextEditor * _textDescriptionEdit; 
+	RichTextEditor * _textDescriptionEdit;
 	
 	QDockWidget * _processingTreeDock;
 	NetworkGUI::ProcessingTree * _processingTree;
