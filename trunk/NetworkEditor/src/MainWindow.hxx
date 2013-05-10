@@ -494,6 +494,7 @@ public slots:
 	{
 		std::cout << "Refreshing" << std::endl;
 		_textDescriptionEdit->setText(QString::fromLocal8Bit(_network.GetDescription().c_str()));
+		_canvas->updateGeometriesOnXML();
 		_playingLabel->setNetwork(&_network);
 		_canvas->loadNetwork(&_network);
 		_canvas->loadGeometriesFromXML();
