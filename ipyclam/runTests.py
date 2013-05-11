@@ -11,6 +11,7 @@ from ipyclam.ProcessingTests import *
 from ipyclam.PeerConnectorsTests import *
 from ipyclam.NetworkTests import *
 from ipyclam.ProcessingTypesTests import *
+from ipyclam.Notifier_EngineDecoratorTest import *
 
 if __name__ == '__main__':
 	unittest.main()
