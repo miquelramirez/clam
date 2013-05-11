@@ -30,7 +30,7 @@ class NotifierTest(unittest.TestCase) :
 	def testSetter(self) :
 		o  = self.Notifier(self.Adaptee())
 		result = o.setter("param")
-		self.assertEqual(result, "Setting param notifier")
+		self.assertEqual(result, "Setting param")
 		self.assertTrue(o._notified)
 
 
