@@ -26,17 +26,23 @@ class Notifier(object) :
 			return method(*args, **kwd)
 
 class Notifier_EngineDecorator(Notifier) :
+	def __init__(self, adaptee, callback) :
+		super(Notifier_EngineDecorator, self).__init__(self, adaptee)
+		self._callback = callback
 	
 	@notified
 	def processingConfig(self, name) : pass
 
 	@notified
 	def renameProcessing(self, oldName, newName): pass
+
 	@notified
 	def connectorIndex(self, unitName, kind, direction, connectorName) :
 		pass
+
 	@notified
 	def addProcessing(self, type, name) : pass
+
 	@notified
 	def processingHasConnector(self,
 			unitName, kind, direction, connectorName):
@@ -59,6 +65,8 @@ class Notifier_EngineDecorator(Notifier) :
 	@notified
 	def deleteProcessing(self, unitName): pass
 
+	def notify(self) :
+		self._callback()
 
 
 
