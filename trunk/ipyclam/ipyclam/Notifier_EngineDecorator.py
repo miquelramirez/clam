@@ -1,10 +1,10 @@
-
 #!/usr/bin/python
 from decorator import decorator
 
 @decorator
 def notified(f, self, *args, **kwd) :
-	result = getattr(self.__dict__['adaptee'],f.__name__)(*args, **kwd) + " notifier"
+	method = getattr(self.__dict__['adaptee'],f.__name__)
+	result = method(*args, **kwd)
 	self.notify()
 	return result
 
