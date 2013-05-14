@@ -27,7 +27,7 @@ class Notifier(object) :
 
 class Notifier_EngineDecorator(Notifier) :
 	def __init__(self, adaptee, callback) :
-		super(Notifier_EngineDecorator, self).__init__(self, adaptee)
+		super(Notifier_EngineDecorator, self).__init__(adaptee)
 		self._callback = callback
 	
 	@notified
