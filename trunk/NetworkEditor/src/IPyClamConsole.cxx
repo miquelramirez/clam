@@ -56,12 +56,14 @@ QWidget * GetIPyClamConsole(CLAM::Network & network)
 		py::exec("sys.argv=['ipyclam']\n", _main_ns, _main_ns);
 		// Build an ipyclam network having the CLAM network as backend
 		py::object ipyclamModule = py::import("ipyclam");
-		py::object proxy = py::object(py::ptr(&network)); // The proxy backend
-		py::object net = ipyclamModule.attr("Network")(proxy); // The ipyclam network
+		py::object engine = py::object(py::ptr(&network)); // The engine
+		py::object net = ipyclamModule.attr("Network")(engine); // The ipyclam network api
 		// Creating the IPython based console widget
 
 		py::object consoleModule = py::import("ipyclam.qtconsole");
 		py::object console = consoleModule.attr("IPythonConsoleQtWidget")();
+		py::object signal = console.attr("modelChanged").attr("emit");
+		net.attr("__dict__")["_engine"].attr("setCallback")(signal);
 
 		// Injecting the network into the namespace
 		console.attr("namespace_inject")("net", net);
