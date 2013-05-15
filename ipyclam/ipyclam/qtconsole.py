@@ -11,6 +11,9 @@ import atexit
 
 from PySide import QtCore, QtGui
 
+if "pyqtSignal" in vars(QtCore) :
+    QtCore.Signal = QtCore.pyqtSignal
+
 from IPython.zmq.ipkernel import IPKernelApp
 from IPython.lib.kernel import find_connection_file
 from IPython.frontend.qt.kernelmanager import QtKernelManager
@@ -124,6 +127,8 @@ class IPythonConsoleQtWidget(RichIPythonWidget):
 
     def namespace_inject(self, name, object) :
         self.kernel.get_user_namespace()[name] = object
+
+    modelChanged = QtCore.Signal()
 
 
 def main():
