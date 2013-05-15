@@ -5,17 +5,20 @@ from decorator import decorator
 def notified(f, self, *args, **kwd) :
 	method = getattr(self.__dict__['adaptee'],f.__name__)
 	result = method(*args, **kwd)
-	self.notify()
+	self._callback()
 	return result
 
 class Notifier(object) :
 
 	def __init__(self, adaptee) :
 		self.adaptee = adaptee
+		self._callback = lambda : None
 
+	def setCallback(self, callback) :
+		self._callback = callback
+	
 	def __getattr__(self, name) :
 		return Notifier.MethodAdapter(self.adaptee, name)
-
 
 	class MethodAdapter(object) :
 		def __init__(self, receptor, method) :
@@ -26,10 +29,7 @@ class Notifier(object) :
 			return method(*args, **kwd)
 
 class Notifier_EngineDecorator(Notifier) :
-	def __init__(self, adaptee, callback) :
-		super(Notifier_EngineDecorator, self).__init__(adaptee)
-		self._callback = callback
-	
+
 	@notified
 	def processingConfig(self, name) : pass
 
@@ -64,9 +64,6 @@ class Notifier_EngineDecorator(Notifier) :
 
 	@notified
 	def deleteProcessing(self, unitName): pass
-
-	def notify(self) :
-		self._callback()
 
 
 
