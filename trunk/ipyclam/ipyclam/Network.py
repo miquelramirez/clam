@@ -9,12 +9,8 @@ class Network(object):
 				import Clam_Engine
 				engine = Clam_Engine.Clam_Engine()
 			except ImportError: pass
-		self.__dict__['_engine'] = Notifier_EngineDecorator.Notifier_EngineDecorator(engine, self._notify)
+		self.__dict__['_engine'] = Notifier_EngineDecorator.Notifier_EngineDecorator(engine)
 		self.__dict__['methods'] = ["types", "code", "xml"]
-
-	def _notify(self) :
-		print "Notified"
-		pass
 
 	def __getitem__(self, name):
 		if not self._engine.hasProcessing(name) :

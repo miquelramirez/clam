@@ -23,15 +23,23 @@ class NotifierTest(unittest.TestCase) :
 
 	def testGetter(self) :
 		o  = self.Notifier(self.Adaptee())
+		o.setCallback(o.notify)
 		result = o.getter()
 		self.assertEqual(result, "Getting")
 		self.assertFalse(o._notified)
 
 	def testSetter(self) :
 		o  = self.Notifier(self.Adaptee())
+		o.setCallback(o.notify)
 		result = o.setter("param")
 		self.assertEqual(result, "Setting param")
 		self.assertTrue(o._notified)
+
+	def testSetter_withNoCallback(self) :
+		o  = self.Notifier(self.Adaptee())
+		result = o.setter("param")
+		self.assertEqual(result, "Setting param")
+		self.assertFalse(o._notified)
 
 
 if __name__ == "__main__" :
