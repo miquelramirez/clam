@@ -30,8 +30,8 @@ class Notifier(object) :
 
 class Notifier_EngineDecorator(Notifier) :
 
-	@notified
-	def processingConfig(self, name) : pass
+#	@notified
+#	def processingConfig(self, name) : pass
 
 	@notified
 	def renameProcessing(self, oldName, newName): pass
