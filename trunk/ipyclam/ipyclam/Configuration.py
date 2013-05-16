@@ -28,6 +28,7 @@ class Configuration(object):
 			return self.__getitem__(name)
 		except KeyError, e:
 			raise AttributeError(e.args[0])
+
 	def __setattr__(self, name, value):
 		try:		
 			self.__setitem__(name, value)
