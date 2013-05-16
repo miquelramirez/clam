@@ -11,11 +11,11 @@ def notified(f, self, *args, **kwd) :
 class Notifier(object) :
 
 	def __init__(self, adaptee) :
-		self.adaptee = adaptee
-		self._callback = lambda : None
+		self.__dict__['adaptee'] = adaptee
+		self.__dict__['_callback'] = lambda : None
 
 	def setCallback(self, callback) :
-		self._callback = callback
+		self.__dict__['_callback'] = callback
 	
 	def __getattr__(self, name) :
 		return Notifier.MethodAdapter(self.adaptee, name)
@@ -28,10 +28,24 @@ class Notifier(object) :
 			method = getattr(self.receptor, self.method)
 			return method(*args, **kwd)
 
+class Notifier_ConfigEngineDecorator(Notifier) :
+
+	@notified
+	def apply(self) : pass
+
+	@notified
+	def __setitem__(self, name, value) : pass
+
+	def __getitem__(self, name) :
+		return self.adaptee.__getitem__(name)
+
 class Notifier_EngineDecorator(Notifier) :
 
-#	@notified
-#	def processingConfig(self, name) : pass
+	def processingConfig(self, name) :
+		configEngine = self.adaptee.processingConfig(name)
+		wrapper = Notifier_ConfigEngineDecorator(configEngine)
+		wrapper.setCallback(self._callback)
+		return wrapper
 
 	@notified
 	def renameProcessing(self, oldName, newName): pass
