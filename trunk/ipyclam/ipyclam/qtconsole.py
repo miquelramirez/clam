@@ -86,6 +86,11 @@ class IPythonConsoleQtWidget(RichIPythonWidget):
         self.namespace_inject("console", self)
         self.namespace_inject("QtGui", QtGui)
 
+        # Hack solving the problem of the outter widget receiving the focus
+        # instead the inner (_control which is an implementation detail for
+        # IPython!=0.13.2 that could not work on other versions)
+        self.setFocusProxy(self._control)
+
     def connect_kernel(self, connection_file, heartbeat = False):
         """
         connection_file: str - is the connection file name, for example 'kernel-16098.json'
