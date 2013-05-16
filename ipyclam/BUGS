@@ -1,0 +1,31 @@
+Compilation of example that should work and they don't
+
+import ipyclam
+net.a="AudioSource"
+net.a._config.hold()
+net.a._config.apply()
+Crash!
+hold and apply should not be available on the user API.
+
+
+import ipyclam
+net.a="AudioSource"
+c = net.a._config()
+c.hold()
+c.apply()
+
+
+clamEngine.addProcessing("unexistingType","name") RunTime error, ok but refers C++ classes
+clamEngine.addProcessing("type","repeatedname") RunTime error, ok but refers C++ classes
+clamEngine.processinType("unexistingprocessing") Crash!
+clamEngine.hasConnector("badprocname", ....) Crash!
+clamEngine.connectorPeers(
+
+
+
+
+
+
+
+
+
