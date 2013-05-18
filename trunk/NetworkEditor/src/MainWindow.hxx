@@ -300,11 +300,9 @@ public:
 			NetworkUpgrader upgrader;
 			const char * translatedNetwork = upgrader.run(
 				filename.toLocal8Bit().data());
-			std::cout << "Back from run: " << upgrader.errorMessage() <<  std::endl;
 			if (not translatedNetwork)
 			{
 				QString error = upgrader.errorMessage();
-				std::cout << "PASO!!" << std::endl;
 				QMessageBox::warning(this,
 					tr("Error upgrading the network"),
 					error,
