@@ -6,6 +6,9 @@
    * Available by linking to qtmonitors library
    * Use of custom properties: no name collisions, you can set more binding information
    * Configuration binders to open the configurator of a given processing in prototyper
+ * Uses native icon theme, failback icons updated to Oxygen theme
+ * Python console to manipulate the network (requires installing ipyclam and ipython)
+ * Buttons to toggle new dock panels
  * More examples:
    * Boolean controls example
    * Configuration binder example
