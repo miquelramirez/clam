@@ -178,7 +178,7 @@ public:
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), _processingTreeDock, SLOT(setVisible(bool)));
 		connect(ui.action_Show_description_editor, SIGNAL(toggled(bool)), _descriptionPanel, SLOT(setVisible(bool)));
-		connect(ui.action_Show_python_console, SIGNAL(toggled(bool)), _consoleDock, SLOT(setVisible(bool)));
+		connect(ui.action_Show_python_console, SIGNAL(toggled(bool)), this, SLOT(activateConsole(bool)));
 
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
@@ -300,11 +300,14 @@ public:
 			NetworkUpgrader upgrader;
 			const char * translatedNetwork = upgrader.run(
 				filename.toLocal8Bit().data());
+			std::cout << "Back from run: " << upgrader.errorMessage() <<  std::endl;
 			if (not translatedNetwork)
 			{
+				QString error = upgrader.errorMessage();
+				std::cout << "PASO!!" << std::endl;
 				QMessageBox::warning(this,
-					tr("Network upgrade error"),
-					tr(upgrader.errorMessage()),
+					tr("Error upgrading the network"),
+					error,
 					QMessageBox::Ok);
 				return;
 			}
@@ -489,6 +492,12 @@ public:
 	}
 
 public slots:
+	void activateConsole(bool activated)
+	{
+		_consoleDock->setVisible(activated);
+		if (activated)
+			_consoleDock->widget()->setFocus();
+	}
 	/// To be used when the network changes outside the canvas
 	void refreshCanvas()
 	{
