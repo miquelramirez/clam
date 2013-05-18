@@ -46,7 +46,7 @@ QWidget * GetIPyClamConsole(CLAM::Network & network)
 {
 	try
 	{
-		Py_Initialize();
+		if (not Py_IsInitialized()) Py_Initialize();
 		// Dummy __main__ namespace, to run execs
 		py::object _main = py::import("__main__");
 		py::object _main_ns = _main.attr("__dict__");
