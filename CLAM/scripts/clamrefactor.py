@@ -60,7 +60,7 @@ class ClamNetwork() :
 			inport = self.document.findall("port_connection/in"),
 			outport = self.document.findall("port_connection/out"),
 			)
-		self.version = self.document.find("/").attrib.get("clamVersion","1.3.0")
+		self.version = self.document.getroot().attrib.get("clamVersion","1.3.0")
 		self.log = []
 		self.verbose = False
 		self.ensuredVersion = ""
@@ -120,7 +120,7 @@ class ClamNetwork() :
 		
 	def upgrade(self, version) :
 		if self._versionNotApplies() : return
-		self.document.find('/').attrib['clamVersion'] = version
+		self.document.getroot().attrib['clamVersion'] = version
 		self.version = version
 
 	def renameClass(self, oldType, newType) :
@@ -315,7 +315,8 @@ class ClamNetwork() :
 				raise ScriptException(line, e)
 
 def test() :
-	testInput = "../../NetworkEditor/example-data/FilePlayer.clamnetwork"
+	import os.path
+	testInput = os.path.normpath(os.path.join(__file__,"..","../../NetworkEditor/example-data/FilePlayer.clamnetwork"))
 	network = ClamNetwork(file(testInput))
 	commandFileContent =  [
 		'beVerbose',
