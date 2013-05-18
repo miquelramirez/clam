@@ -9,69 +9,12 @@
 #include <CLAM/EmbeddedFile.hxx>
 #include <CLAM/Assert.hxx>
 #include <iostream>
+#include <boost/python.hpp>
+#include <boost/python/stl_iterator.hpp>
+namespace py=boost::python;
 
 CLAM_EMBEDDED_FILE(migrationScript, "migrationScript")
 CLAM_EMBEDDED_FILE(clamrefactor, CLAM_PREFIX "/share/clam/clamrefactor.py")
-
-/**
-	Scoped python initialization and finalization
-*/
-class PyContext
-{
-public:
-	PyContext() { Py_Initialize(); }
-	~PyContext() { Py_Finalize(); }
-};
-
-/**
-	Wraps a PyObject borrowed reference (no need to Py_DECREF)
-*/
-typedef PyObject * PyBorrowed;
-
-/**
-	Wraps a PyObject* new reference which must be Py_DECREF.
-*/
-class PyReference
-{
-	typedef PyObject * Pointer;
-	Pointer _obj;
-public:
-	PyReference(Pointer obj, bool skipCheck=false)
-		: _obj(obj)
-	{
-	}
-	~PyReference()
-	{
-		if (_obj) { Py_DECREF(_obj);}
-	}
-	operator bool()
-	{
-		return _obj!=0;
-	}
-	operator Pointer()
-	{
-		CLAM_ASSERT(_obj,"Accessing a null python object");
-		return _obj;
-	}
-	PyObject & operator*()
-	{
-		CLAM_ASSERT(_obj,"Accessing a null python object");
-		return *_obj;
-	}
-};
-
-static std::string pythonString(PyObject * object)
-{
-	PyReference pythonString = PyObject_Str(object);
-	return PyString_AsString(pythonString);
-}
-
-static std::string pythonClassName(PyObject * object)
-{
-	PyReference pystring = PyObject_GetAttrString(object,"__name__");
-	return PyString_AsString(pystring);
-}
-
 
 class NetworkUpgrader::Impl
 {
@@ -79,7 +22,7 @@ public:
 	std::string _result;
 	std::string _errorMessage;
 	const char * run(const std::string & networkContents);
-	const char * takePythonError();
+	const char * takePythonError(const std::string & context);
 	const char * setError(const std::string & error)
 	{
 		_errorMessage = error;
@@ -108,79 +51,63 @@ const char * NetworkUpgrader::errorMessage() const
 }
 
 
-
-const char * NetworkUpgrader::Impl::takePythonError()
+const char * NetworkUpgrader::Impl::takePythonError(const std::string & context="")
 {
-	std::cout << "Taking error" << std::endl;
-	PyObject *pType=0;
-	PyObject *pValue=0;
-	PyObject *pTrace=0;
+	PyObject * pType=0;
+	PyObject * pValue=0;
+	PyObject * pTrace=0;
 	PyErr_Fetch(&pType, &pValue, &pTrace);
-	CLAM_ASSERT(pType,"pType es zero");
-	CLAM_ASSERT(pValue,"pValue es zero");
-	PyReference type = pType;
-	PyReference value = pValue;
-//	PyReference trace = pTrace;
-	_errorMessage = 
-		pythonClassName(pType) + ": " +
-		pythonString(pValue);
-//		(pTrace? pythonString(pTrace):"");
 
+	_errorMessage = context;
+
+	py::object type(py::handle<>(py::allow_null(pType)));
+	_errorMessage += py::extract<std::string>(type.attr("__name__"));
+	_errorMessage += ": ";
+
+	_errorMessage += py::extract<std::string>(
+		py::object(py::handle<>(py::allow_null(pValue))));
+
+	if (pTrace)
+	{
+		_errorMessage += "\nTraceback:\n";
+		py::object trace(py::handle<>(py::allow_null(pTrace)));
+		py::object tb = py::import("traceback");
+		py::str tracebackstring = py::str("").join(
+				tb.attr("format_tb")(trace));
+		_errorMessage += py::extract<std::string>(tracebackstring);
+	}
 	std::cerr << _errorMessage << std::endl;
 	return 0;
 }
 
 const char * NetworkUpgrader::Impl::run(const std::string & filename)
 {
-	PyContext context;
-	PyReference main = PyImport_ImportModule("__main__");
-	if (not main)
-		return takePythonError();
-
-	PyBorrowed mainDict = PyModule_GetDict(main);
-	// Hack to avoid __main__ exectuion
+	try
 	{
-		PyReference moduleName =  Py_BuildValue("s","CLAM_NetworkUpgrader_clamrefactor");
-		PyDict_SetItemString(mainDict, "__name__", moduleName);
+		if (not Py_IsInitialized()) Py_Initialize();
+		py::object _main = py::import("__main__");
+		py::object _main_ns = _main.attr("__dict__");
+		py::object builtin = py::import("__builtin__");
+		// Simulate that we have a working command line
+		py::exec("import sys" , _main_ns);
+		py::exec("sys.argv=['clamrefactor.py']\n", _main_ns);
+		// Not __main__ so it is run as it was a module, not a script
+		_main.attr("__name__") = "NetworkUpgrader";
+		// Run the embedded script
+		_main.attr("__file__") = "(binary embeded) clamrefactor.py";
+		py::exec(clamrefactor, _main_ns);
+
+		py::object network = _main.attr("ClamNetwork")(filename);
+		network.attr("runScript")(std::string(migrationScript));
+		py::object stringio = py::import("StringIO").attr("StringIO")();
+		network.attr("dump")(stringio);
+		_result = py::extract<std::string>(stringio.attr("getvalue")());
+		return _result.c_str();
 	}
-
-	int error = PyRun_SimpleString(clamrefactor);
-	if (error)
-		return setError("Error loading clamrefactor python script");
-
-	PyBorrowed clamNetworkClass = PyDict_GetItemString(mainDict, "ClamNetwork");
-	if (!clamNetworkClass)
-		return setError("Bad clamrefactor script: No ClamNetwork class found");
-	if (!PyCallable_Check(clamNetworkClass))
-		return setError("Bad clamrefactor script: ClamNetwork is not callable");
-
-	PyReference networkFilename = Py_BuildValue( "(s)", filename.c_str() );
-	PyReference network = PyObject_CallObject(clamNetworkClass, networkFilename); 
-	if (not network)
+	catch (py::error_already_set & e)
+	{
 		return takePythonError();
-
-	PyReference runScriptResult = PyObject_CallMethod(
-		network, "runScript", "(s)", migrationScript );
-	if (not runScriptResult)
-		return takePythonError();
-
-	PyReference stringIOModule = PyImport_ImportModule("StringIO");
-	if (!stringIOModule)
-		return setError("Unexpected error: No StringIO module found");
-	PyBorrowed stringIODict = PyModule_GetDict(stringIOModule);
-	PyBorrowed stringIOClass = PyDict_GetItemString(stringIODict, "StringIO");
-	if (!stringIOClass)
-		return setError("Unexpected error: No StringIO class found");
-	if (!PyCallable_Check(stringIOClass))
-		return setError("Unexpected error: StringIO is not callable");
-
-	PyReference initStreamValue = Py_BuildValue( "(s)", "" );
-	PyReference stream = PyObject_CallObject(stringIOClass, initStreamValue);
-	PyReference(PyObject_CallMethod(network, "dump", "(O)", &*stream));
-	PyReference result = PyObject_CallMethod(stream, "getvalue", NULL);
-	_result = pythonString(result);
-
-	return _result.c_str();
+	}
 }
 
 #else // CLAM_USE_PYTHON not defined
