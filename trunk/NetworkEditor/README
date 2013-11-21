@@ -5,6 +5,19 @@ Those processing networks can become the processing core of an application
 by using the CLAM::NetworkPlayer class in your program or by using
 the CLAM Prototyper to link the network to a Qt Designer interface.
 
+= Extra dependencies =
+
+Besides CLAM and its dependencies, NetworkEditor compilation depends on:
+
+	- Qt4
+	- boost-python (for ipyclam console and network auto-upgrade)
+	- shiboke (for ipyclam console and network auto-upgrade)n
+
+= Run-time dependencies =
+
+If you want an integrated Python console you need to have ipyclam Python 
+module installed.
+
 == NetworkEditor usage ==
 
 Note: this is valid for Linux and Mac OSX:
@@ -32,5 +45,5 @@ cvs -d:pserver:anonymous@faudiostream.cvs.sourceforge.net:/cvsroot/faudiostream 
  
 cvs -z3 -d:pserver:anonymous@faudiostream.cvs.sourceforge.net:/cvsroot/faudiostream co -P faust
 
-make 
+make
 sudo make install
