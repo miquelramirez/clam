@@ -134,7 +134,10 @@ private:
 		{
 			std::string expected =
 				"\nXML Parser Errors:\n"
-				"Document not well-formed.\n";
+				"Document not well-formed.\n"
+				"Line 1, column 42 (fatal):\n"
+				"Opening and ending tag mismatch: UnclossedChild line 1 and LoadedRoot\n"
+				"\n";
 			CPPUNIT_ASSERT_EQUAL(expected,std::string(err.what()));
 		}
 		CPPUNIT_ASSERT_EQUAL((ElementType*)0,doc.getSelection());
