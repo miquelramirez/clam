@@ -93,7 +93,7 @@ private: \
 	 * Gives a compilation error message. \
 	 */ \
 	template <unsigned int NAttrib> \
-	void CheckAttribute (StaticFalse*inRange,AttributePosition<NAttrib>*a) { \
+	static void CheckAttribute (StaticFalse*inRange,AttributePosition<NAttrib>*a) { \
 		AttributePosition<(NAttrib)-1>* previous; \
 		previous->CompilationError_AttributePositionOutOfBounds(); \
 	}\
@@ -102,7 +102,7 @@ private: \
 	 * Gives a compilation error message. \
 	 */ \
 	template <unsigned int NAttrib> \
-	void CheckAttribute (StaticTrue*inRange,AttributePosition<NAttrib>*a) { \
+	static void CheckAttribute (StaticTrue*inRange,AttributePosition<NAttrib>*a) { \
 		a->CompilationError_AttributeNotDefined(); \
 	}\
 	/** Undefined link for the Visit method chain (Visit)*/  \
