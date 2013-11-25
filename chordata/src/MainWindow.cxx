@@ -437,7 +437,7 @@ void MainWindow::loadAudioFile(const std::string & fileName)
 	_chromaPeaksSource.setStorage(_chromaPeaksStorage, sampleRate, &_frameDivision);
 	_polarChromaPeaks->setDataSource(_chromaPeaksSource);
 
-	CLAM::OutPort<CLAM::Segmentation> &segmentationOutput = (CLAM::OutPort<CLAM::Segmentation>&)(_tonalAnalysis->GetOutPort("Chord Segmentation"));
+	CLAM::OutPort<CLAM::DiscontinuousSegmentation> &segmentationOutput = (CLAM::OutPort<CLAM::DiscontinuousSegmentation>&)(_tonalAnalysis->GetOutPort("Chord Segmentation"));
 	_segmentationSource.updateData(segmentationOutput.GetData());
 	_segmentationView->setDataSource(_segmentationSource);
 	// End analysis
