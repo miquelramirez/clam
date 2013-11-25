@@ -150,7 +150,8 @@ else :
 if sys.platform=='win32' or crosscompiling :
 	# TODO: This should not be hardcoded neither prefix (because package intall)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/voice2midi/example-data\\""')
-	env.Append(LIBS=['pthread'])
+
+env.Append(LIBS=['pthread'])
 
 if sys.platform=='linux2' :
 	if env['release'] :
