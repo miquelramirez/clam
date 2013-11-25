@@ -88,6 +88,9 @@ private:
 					"\n"
 					"XML Parser Errors:\n"
 					"Document not well-formed.\n"
+					"Line 1, column 1 (fatal):\n"
+					"Document is empty\n"
+					"\n"
 					),
 			std::string(e.what()));
 		}
@@ -143,6 +146,9 @@ private:
 			"\n"
 			"XML Parser Errors:\n"
 			"Document not well-formed.\n"
+			"Line 1, column 38 (fatal):\n"
+			"Attribute attribute redefined\n"
+			"\n"
 			), std::string(e.what()));
 		}
 	}
@@ -170,6 +176,9 @@ private:
 			"\n"
 			"XML Parser Errors:\n"
 			"Document not well-formed.\n"
+			"Line 1, column 71 (fatal):\n"
+			"Opening and ending tag mismatch: Unclosed line 1 and Element\n"
+			"\n"
 			), std::string(e.what()));
 		}
 	}
@@ -197,6 +206,9 @@ private:
 			"\n"
 			"XML Parser Errors:\n"
 			"Document not well-formed.\n"
+			"Line 1, column 62 (fatal):\n"
+			"Opening and ending tag mismatch: Element line 1 and Unopened\n"
+			"\n"
 			), std::string(e.what()));
 		}
 	}
