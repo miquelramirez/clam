@@ -23,6 +23,7 @@
  * Bug fixes:
    * InControls are initialized to the default value of the control type
      (0 for numerics), this could change the behaviour (previously undefined)
+   * SpectralPeaks/Harmonizer: Phase was scrumbled, and last peaks were not transfered
  * Ports and Controls enhancements:
    * TypedIn/OutControl from deprecated to obsolete
    * Added In/OutControl/PortBase::SetName to be able to change the name of a 
