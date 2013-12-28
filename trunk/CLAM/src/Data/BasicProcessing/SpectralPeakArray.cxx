@@ -552,7 +552,7 @@ void SpectralPeakArray::CopyMembers(SpectralPeakArray& sourceSpectralPeakArray)
 }
 
 //xamat: this operator is bound to fail if operands have different attributes, should add checking?
-SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
+SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in) const
 {
 	CLAM_ASSERT(in.HasMagBuffer(), "SpectralPeakArray::operator+: second operand needs to have a Magnitude Buffer");
 	CLAM_ASSERT(in.HasFreqBuffer(), "SpectralPeakArray::operator+: second operand needs to have a Frequency Buffer");
@@ -589,15 +589,15 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 	IndexArray& tmpPeakIndexArray = tmp.GetIndexArray();
 
 	bool finished=false,finishedOrig=false, finishedIn=false;
-	TSize origSize,inSize;
-	origSize=GetnPeaks();
-	inSize=in.GetnPeaks();
+	const TSize origSize=GetnPeaks();
+	const TSize inSize=in.GetnPeaks();
+	tmp.SetnPeaks(origSize+inSize);
 	//xamat optimizing
 	int nAddedPeaks = 0;
 	while(!finished)
 	{
-		if(origIndex>=origSize-1) finishedOrig=true;
-		if(inIndex>=inSize-1) finishedIn=true;
+		if(origIndex>=origSize) finishedOrig=true;
+		if(inIndex>=inSize) finishedIn=true;
 		//add always peak with lower freq. If both are equal, add magnitudes (and take original phase?)
 		if(finishedOrig)
 		{
@@ -606,7 +606,7 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 				//note: we could overload the SetSpectralPeak operator but not passing a SpectralPeaks but the values
 				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
 				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = inPeakMagArray[inIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = inPeakPhaseArray[inIndex];
 				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
 
 				nAddedPeaks++;
@@ -620,7 +620,7 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 			{
 				tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
 				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = origPeakMagArray[origIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = origPeakPhaseArray[origIndex];
 				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
 
 				nAddedPeaks++;
@@ -634,7 +634,7 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 			{
 				tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
 				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = origPeakMagArray[origIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = origPeakPhaseArray[origIndex];
 				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
 				nAddedPeaks++;
 				origIndex++;
@@ -643,9 +643,8 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 			{
 				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
 				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = inPeakMagArray[inIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = inPeakPhaseArray[inIndex];
 				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
-
 				nAddedPeaks++;
 				inIndex++;
 			}
@@ -653,16 +652,15 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 			{
 				tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
 				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = origPeakMagArray[origIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = origPeakPhaseArray[origIndex];
 				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
-
 				nAddedPeaks++;
 				origIndex++;
+
 				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
 				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = inPeakMagArray[inIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = inPeakPhaseArray[inIndex];
 				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
-
 				nAddedPeaks++;
 				inIndex++;
 			}

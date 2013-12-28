@@ -419,7 +419,7 @@ public:
 		Copies the properties Scale and MinimizeResizes too. */
 	void CopyMembers(SpectralPeakArray& sourceSpectralPeakArray);
 
-	SpectralPeakArray operator+(const SpectralPeakArray& in);
+	SpectralPeakArray operator+(const SpectralPeakArray& in) const;
 private:
 	bool mIsIndexUpToDate;
 
