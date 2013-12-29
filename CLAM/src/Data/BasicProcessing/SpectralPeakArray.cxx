@@ -570,9 +570,11 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in) cons
 	tmp.SetScale(in.GetScale());
 
 	tmp.SetnMaxPeaks(GetnMaxPeaks()+in.GetnMaxPeaks());
-	tmp.SetnPeaks(tmp.GetnMaxPeaks());
 
-	int origIndex=0,inIndex=0;
+	const TSize origSize=GetnPeaks();
+	const TSize inSize=in.GetnPeaks();
+	tmp.SetnPeaks(origSize+inSize);
+
 	DataArray& inPeakMagArray = in.GetMagBuffer();
 	DataArray& inPeakFreqArray = in.GetFreqBuffer();
 	DataArray& inPeakPhaseArray = in.GetPhaseBuffer();
@@ -588,85 +590,32 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in) cons
 	DataArray& tmpPeakPhaseArray = tmp.GetPhaseBuffer();
 	IndexArray& tmpPeakIndexArray = tmp.GetIndexArray();
 
-	bool finished=false,finishedOrig=false, finishedIn=false;
-	const TSize origSize=GetnPeaks();
-	const TSize inSize=in.GetnPeaks();
-	tmp.SetnPeaks(origSize+inSize);
-	//xamat optimizing
-	int nAddedPeaks = 0;
-	while(!finished)
+
+	for (unsigned nAddedPeaks=0, origIndex=0, inIndex=0; true; nAddedPeaks++)
 	{
-		if(origIndex>=origSize) finishedOrig=true;
-		if(inIndex>=inSize) finishedIn=true;
-		//add always peak with lower freq. If both are equal, add magnitudes (and take original phase?)
-		if(finishedOrig)
-		{
-			if(!finishedIn)
-			{
-				//note: we could overload the SetSpectralPeak operator but not passing a SpectralPeaks but the values
-				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
-				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = inPeakPhaseArray[inIndex];
-				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
+		bool finishedOrig = origIndex >= origSize;
+		bool finishedIn = inIndex >= inSize;
+		if (finishedIn and finishedOrig) break;
+		// Add always peak with lower freq.
+		// TODO; If both are equal, add magnitudes (and take original phase?)
 
-				nAddedPeaks++;
-				inIndex++;
-			}
-			else finished=true;
-		}
-		else if(finishedIn)
+		if (finishedIn or (not finishedOrig and origPeakFreqArray[origIndex]<=inPeakFreqArray[inIndex]))
 		{
-			if(!finishedOrig)
-			{
-				tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
-				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = origPeakPhaseArray[origIndex];
-				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
-
-				nAddedPeaks++;
-				origIndex++;
-			}
-			else finished=true;
+			tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
+			tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
+			tmpPeakPhaseArray[nAddedPeaks] = origPeakPhaseArray[origIndex];
+			tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
+			origIndex++;
 		}
 		else
 		{
-			if(origPeakFreqArray[origIndex]<inPeakFreqArray[inIndex])
-			{
-				tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
-				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = origPeakPhaseArray[origIndex];
-				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
-				nAddedPeaks++;
-				origIndex++;
-			}
-			else if(origPeakFreqArray[origIndex]>inPeakFreqArray[inIndex])
-			{
-				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
-				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = inPeakPhaseArray[inIndex];
-				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
-				nAddedPeaks++;
-				inIndex++;
-			}
-			else
-			{
-				tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
-				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = origPeakPhaseArray[origIndex];
-				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
-				nAddedPeaks++;
-				origIndex++;
-
-				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
-				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
-				tmpPeakPhaseArray[nAddedPeaks] = inPeakPhaseArray[inIndex];
-				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
-				nAddedPeaks++;
-				inIndex++;
-			}
+			tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
+			tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
+			tmpPeakPhaseArray[nAddedPeaks] = inPeakPhaseArray[inIndex];
+			tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
+			inIndex++;
 		}
 	}
-	tmp.SetnPeaks(nAddedPeaks);
 	return tmp;
 }
 

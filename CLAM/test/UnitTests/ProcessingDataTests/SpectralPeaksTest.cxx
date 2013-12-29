@@ -18,6 +18,7 @@ class CLAMTest::SpectralPeaksTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(test_asString_withEmptyPeaks);
 	CPPUNIT_TEST(test_asString_withPeaks);
 	CPPUNIT_TEST(test_peakAddition_whenDisjoint);
+	CPPUNIT_TEST(test_peakAddition_whenSecondEndsFirst);
 	CPPUNIT_TEST(test_peakAddition_whenInterleaved);
 	CPPUNIT_TEST(test_peakAddition_whenCoincident);
 
@@ -149,6 +150,25 @@ private:
 		CPPUNIT_ASSERT_EQUAL(
 			std::string(
 			"Indices: [ 2 4 7 9 ]\n"
+			"Frequencies: [ 10 20 30 40 ]\n"
+			"Magnitudes: [ 1000 2000 3000 4000 ]\n"
+			"Phases: [ 0.1 0.2 0.3 0.4 ]\n"
+			), asString(result));
+	}
+	void test_peakAddition_whenSecondEndsFirst()
+	{
+		SpectralPeaks peaks1 = createPeaks();
+		addPeak(peaks1, 1, 10, 1000, .1);
+		addPeak(peaks1, 2, 20, 2000, .2);
+
+		SpectralPeaks peaks2 = createPeaks();
+		addPeak(peaks2, 3, 30, 3000, .3);
+		addPeak(peaks2, 4, 40, 4000, .4);
+
+		SpectralPeaks result = peaks2 + peaks1;
+		CPPUNIT_ASSERT_EQUAL(
+			std::string(
+			"Indices: [ 3 5 6 8 ]\n"
 			"Frequencies: [ 10 20 30 40 ]\n"
 			"Magnitudes: [ 1000 2000 3000 4000 ]\n"
 			"Phases: [ 0.1 0.2 0.3 0.4 ]\n"
