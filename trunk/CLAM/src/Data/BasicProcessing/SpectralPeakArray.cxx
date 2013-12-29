@@ -571,8 +571,8 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in) cons
 
 	tmp.SetnMaxPeaks(GetnMaxPeaks()+in.GetnMaxPeaks());
 
-	const TSize origSize=GetnPeaks();
-	const TSize inSize=in.GetnPeaks();
+	const unsigned origSize=GetnPeaks();
+	const unsigned inSize=in.GetnPeaks();
 	tmp.SetnPeaks(origSize+inSize);
 
 	DataArray& inPeakMagArray = in.GetMagBuffer();
