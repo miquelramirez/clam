@@ -600,7 +600,6 @@ BOOST_PYTHON_MODULE(Clam_Engine)
 	using namespace boost::python;
 	using namespace CLAM;
 
-	typedef const std::string & cstringref;
 	relative_import("Clam_ConfigurationProxy");
 
 	class_<Processing, boost::noncopyable>("Processing", no_init);

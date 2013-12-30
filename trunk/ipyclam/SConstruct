@@ -18,10 +18,13 @@ env.SConsignFile() # Single signature file
 env.ParseConfig('python-config --cflags')
 env.ParseConfig('python-config --libs')
 env.ParseConfig('pkg-config --cflags --libs pyside')
+
 if env['enable_clam'] :
 	env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
-	env.ParseConfig('pkg-config clam_qtmonitors QtUiTools QtGui QtCore --cflags --libs') # UI binding
+	env.ParseConfig('pkg-config clam_qtmonitors --cflags --libs') # UI binding
+
 env.ParseConfig('pkg-config QtUiTools QtGui QtCore --cflags --libs') # UI binding
+
 if env['enable_jack'] :
 	env.ParseConfig('pkg-config --cflags --libs jack')
 
@@ -29,18 +32,34 @@ env.AppendUnique(
 	LIBS=['boost_python']
 )
 
-env["SHOBJPREFIX"] = "generated/"
-
 # python-config adds a flag that is refused by g++
 if '-Wstrict-prototypes' in env['CCFLAGS'] :
 	env['CCFLAGS'].remove('-Wstrict-prototypes')
+
+if True :
+	env["SHCXXCOMSTR"] = "Compiling $SOURCE -> $TARGET"
+	env["CXXCOMSTR"] = "Compiling $SOURCE -> $TARGET"
+	env["SHLINKCOMSTR"] = "Linking $SOURCES -> $TARGET"
+	env["LINKCOMSTR"] = "Linking $SOURCES -> $TARGET"
+
+def print_cmd_line(commandline, target, source, env) :
+	sys.stdout.write("\033[32;1m%s\033[0m\n"%commandline)
+	sys.stdout.flush()
+env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
+
+
+env["SHOBJPREFIX"] = "generated/"
+
+
+shibokenunwrap = env.SharedObject(source='shibokenunwrap.cxx')
+sipunwrap = env.SharedObject(source='sipunwrap.cxx')
 
 clamengine_module = env.SharedLibrary (
 	target='ipyclam/Clam_Engine',
 	source=[
 		'Clam_Engine.cxx',
-		'shibokenunwrap.cxx',
-		'sipunwrap.cxx',
+		shibokenunwrap,
+		sipunwrap,
 		],
 	SHLIBPREFIX='',
 ) if env['enable_clam']  else []
@@ -74,7 +93,7 @@ ui_pyside_module = env.SharedLibrary (
 	target='ipyclam/ui/PySide',
 	source=[
 		'PySideModule.cxx',
-		'shibokenunwrap.cxx',
+		shibokenunwrap,
 		],
 	SHLIBPREFIX='',
 )
@@ -83,7 +102,7 @@ ui_pyqt4_module = env.SharedLibrary (
 	target='ipyclam/ui/PyQt4',
 	source=[
 		'PyQt4Module.cxx',
-		'sipunwrap.cxx',
+		sipunwrap,
 		],
 	SHLIBPREFIX='',
 )

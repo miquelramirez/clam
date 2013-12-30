@@ -4,18 +4,6 @@ namespace py = boost::python;
 
 #include <jack/jack.h>
 #include <iostream>
-/*
-struct DumyTypeDefinition
-{
-	const char * name;
-	unsigned ninports;
-	unsigned noutports;
-} dummyTypes[] =
-{
-	{"DummyPortSink", 1,0},
-	{0,0,0}
-};
-*/
 
 class JackEngine
 {
@@ -247,7 +235,7 @@ public:
 	bool connectionExists(
 		const std::string & kind,
 		const std::string & fromProcessing,
-		const std::string &fromConnector,
+		const std::string & fromConnector,
 		const std::string & toProcessing,
 		const std::string & toConnector)
 	{
@@ -325,8 +313,6 @@ BOOST_PYTHON_MODULE(Jack_Engine)
 {
 	// Keep 'using namespace' in the inner scope
 	using namespace boost::python;
-
-	typedef const std::string & cstringref;
 
 	class_<JackEngine>("Jack_Engine")
 		.def("addProcessing",
