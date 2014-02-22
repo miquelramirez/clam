@@ -222,9 +222,9 @@ void LPC_AutoCorrelation::SolveSystemByLevinsonDurbin( const Array<TData>& R,
 						       TData&        E)
 {
 	unsigned order = mCurrentConfig.GetOrder();
-	CLAM_ASSERT( A.Size() == order,
+	CLAM_ASSERT( A.Size() == int(order),
 				"A coefficient array size mismatch!" );
-	CLAM_ASSERT( K.Size() == order,
+	CLAM_ASSERT( K.Size() == int(order),
 				"K coefficient array size mismatch!" );
 
 	std::vector <TData> Ap(order);
