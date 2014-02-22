@@ -44,12 +44,12 @@ bool ThreeBandGate::Do(const Spectrum& in, Spectrum& out)
 	DataArray& oMag = out.GetMagBuffer();
 	DataArray& iMag = in.GetMagBuffer();
 	
-	int spectrumSize = in.GetSize();
+	unsigned spectrumSize = in.GetSize();
 	
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
 	
-	int lowCutoff = Round(mLowCutoffFreqCtl.GetLastValue()* spectralResolution);
-	int highCutoff = Round(mHighCutoffFreqCtl.GetLastValue()* spectralResolution);
+	unsigned lowCutoff = Round(mLowCutoffFreqCtl.GetLastValue()* spectralResolution);
+	unsigned highCutoff = Round(mHighCutoffFreqCtl.GetLastValue()* spectralResolution);
 
 	//note: control is supposed to be sent as dB's
 	TData lowThreshold = 	log2lin(mLowThresholdCtl.GetLastValue());
