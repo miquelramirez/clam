@@ -24,7 +24,6 @@
 
 namespace CLAM
 {
-
 namespace Hidden
 {
 	static const char * metadata[] = {
@@ -35,17 +34,20 @@ namespace Hidden
 	};
 	static FactoryRegistrator<ProcessingFactory, Peakalizer> reg = metadata;
 }
+}
 
-bool Peakalizer::Do(const Spectrum& in, Spectrum& out)
+bool CLAM::Peakalizer::Do(const Spectrum& in, Spectrum& out)
 {
 	if (!mConfig.GetPreserveOuts())
 	{
 		out = in; //TODO big cludge for streaming
 	}
 	DataArray& inMag = in.GetMagBuffer();
-	DataArray& outMag = out.GetMagBuffer();
+	// TODO: Work with this outMag
+	// DataArray& outMag = out.GetMagBuffer();
 	
-	int spectrumSize = in.GetSize();
+	unsigned spectrumSize = in.GetSize();
+	// TODO: Non-real time op!!
 	mMag.Resize(spectrumSize);
 	mMag.SetSize(spectrumSize);
 	
@@ -55,17 +57,16 @@ bool Peakalizer::Do(const Spectrum& in, Spectrum& out)
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
 	int bandwidth = Round(mBandWidthCtl.GetLastValue()* spectralResolution*0.5);
 	
-	int i,n;
 	//first we set everything to 0 (it could be done more efficiently)
-	for(i = 0; i<spectrumSize; i++)
+	for(unsigned i = 0; i<spectrumSize; i++)
 	{
 		mMag[i] = 0.;
 	}
-	for(i = 0; i<spectrumSize; i++)
+	for(unsigned i = 0; i<spectrumSize; i++)
 	{
 		if(inMag[i] > threshold)
 		{
-			for(n = i-bandwidth; n < i+bandwidth; n++)
+			for(unsigned n = i-bandwidth; n < i+bandwidth; n++)
 			{
 				mMag[n] = inMag[n];
 			}
@@ -76,6 +77,4 @@ bool Peakalizer::Do(const Spectrum& in, Spectrum& out)
 }
 
 
-
-}
 
