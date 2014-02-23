@@ -31,59 +31,66 @@
 #include "FrameTransformation.hxx"
 #include "FrameTransformationConfig.hxx"
 
-namespace CLAM{
+namespace CLAM { class Peakalizer; };
 
-	class Peakalizer: public FrameTransformationTmpl<Spectrum>
+
+/**
+Boosts the peaky part of a mag-phase spectrum.
+It works by muting all the spectrum but the bins over a certain magnitude.
+
+@arg Magnitude (dB) Magnitude to be considered peak
+@arg Bandwith (Hz) Arround the located peak that has to be boosted as well
+*/
+class CLAM::Peakalizer: public FrameTransformationTmpl<Spectrum>
+{
+	InPort<Spectrum> mIn;
+	OutPort<Spectrum> mOut;
+	
+	FloatInControl mThresholdCtl;
+	FloatInControl mBandWidthCtl;
+public:
+	const char* GetClassName() const
 	{
-		InPort<Spectrum> mIn;
-		OutPort<Spectrum> mOut;
+		return "Peakalizer";
+	}
+
+	Peakalizer()
+		: 
+		mIn("In Spectrum", this), 
+		mOut("Out Spectrum", this),
+		mThresholdCtl("Threshold", this),
+		mBandWidthCtl("Bandwidth", this)
+	{
+		Configure( FrameTransformationConfig() );
+	}
+
+	~Peakalizer() {}	
+	
+	virtual bool InitControls()
+	{ 
+		mThresholdCtl.DoControl(-60);
+		mBandWidthCtl.DoControl(500);
 		
-		FloatInControl mThresholdCtl;
-		FloatInControl mBandWidthCtl;
-	public:
-		const char* GetClassName() const
-		{
-			return "Peakalizer";
-		}
+		return true;
+	}
+	
+	bool Do(const Frame& in, Frame& out)
+	{
+		return Do(in.GetSpectrum(), 
+			  out.GetSpectrum());
+	}
 
-		Peakalizer()
-			: 
-			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this),
-			mThresholdCtl("Threshold", this),
-			mBandWidthCtl("Bandwidth", this)
-		{
-			Configure( FrameTransformationConfig() );
-		}
+	bool Do(const Spectrum& in, Spectrum& out);
 
- 		~Peakalizer() {}	
-		
-		virtual bool InitControls()
-		{ 
-			mThresholdCtl.DoControl(-60);
-			mBandWidthCtl.DoControl(500);
-			
-			return true;
-		}
-		
-		bool Do(const Frame& in, Frame& out)
-		{
-			return Do(in.GetSpectrum(), 
-				  out.GetSpectrum());
-		}
-
-		bool Do(const Spectrum& in, Spectrum& out);
-
-		bool Do()
-		{
-			bool result = Do(mIn.GetData(), mOut.GetData()); 
-			mIn.Consume();
-			mOut.Produce();
-			return result;
-		}
-	private:
-		DataArray mMag;
-	};		
-};//namespace CLAM
+	bool Do()
+	{
+		bool result = Do(mIn.GetData(), mOut.GetData()); 
+		mIn.Consume();
+		mOut.Produce();
+		return result;
+	}
+private:
+	DataArray mMag;
+};		
 
 #endif // _Peakalizer_
